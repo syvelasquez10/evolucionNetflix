@@ -49,13 +49,10 @@ public final class NetworkMonitorRepository
                 try {
                     Log.e("nf_net", "Intent can not be null!");
                     return;
-                    while (true) {
-                        Log.d("nf_net", "Nobody is listening for connectivity changes.");
-                        return;
-                        continue;
-                    }
+                    // iftrue(Label_0052:, this.listeners != null && !this.listeners.isEmpty())
+                    Log.d("nf_net", "Nobody is listening for connectivity changes.");
+                    return;
                 }
-                // iftrue(Label_0052:, this.listeners != null && !this.listeners.isEmpty())
                 finally {
                 }
                 // monitorexit(this)

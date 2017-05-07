@@ -177,14 +177,13 @@ class UserProfileMap
         if (this.mProfileMap != null) {
             boolean b = false;
             final Iterator keys = this.mProfileMap.keys();
-            String s;
-            Block_6_Outer:Label_0131_Outer:
+        Block_6_Outer:
             while (true) {
                 Label_0090: {
                     if (!keys.hasNext()) {
                         break Label_0090;
                     }
-                    s = keys.next();
+                    final String s = keys.next();
                     if ("currentAcc".equals(s) || "primaryAcc".equals(s)) {
                         continue;
                     }
@@ -194,18 +193,14 @@ class UserProfileMap
                         continue Block_6_Outer;
                         // iftrue(Label_0131:, !Log.isLoggable("nf_service_useragentproilemap", 3))
                         // iftrue(Label_0024:, !b)
+                    Label_0131:
                         while (true) {
-                            Block_7: {
-                                while (true) {
-                                    break Block_7;
-                                    continue Label_0131_Outer;
-                                }
-                                PreferenceUtils.putStringPref(this.mContext, "useragent_esnmigration_flags", this.mEsnMigrationFlags.toString());
-                                return;
-                            }
                             Log.d("nf_service_useragentproilemap", "markAllAccountForEsnMigration " + this.mEsnMigrationFlags);
+                            break Label_0131;
                             continue;
                         }
+                        PreferenceUtils.putStringPref(this.mContext, "useragent_esnmigration_flags", this.mEsnMigrationFlags.toString());
+                        return;
                     }
                     catch (JSONException ex) {}
                 }

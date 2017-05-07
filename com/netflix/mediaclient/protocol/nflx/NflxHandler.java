@@ -418,7 +418,7 @@ public class NflxHandler
             }
             else if ("view_details".equalsIgnoreCase(lowerCase)) {
                 if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
-                    clientLogging.getCustomerEventLogging().reportMdpFromDeepLinking();
+                    clientLogging.getCustomerEventLogging().reportMdpFromDeepLinking(map.toString());
                 }
                 enum1 = IClientLogging.ModalView.movieDetails;
                 response = this.handleViewDetailsAction(netflixActivity, map);

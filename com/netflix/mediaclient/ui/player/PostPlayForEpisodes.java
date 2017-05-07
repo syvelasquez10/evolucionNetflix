@@ -123,24 +123,24 @@ public final class PostPlayForEpisodes extends PostPlay
             }
             final String storyUrl = postPlayVideo.getStoryUrl();
             final String interestingUrl = postPlayVideo.getInterestingUrl();
-            final String format = String.format(this.mContext.getResources().getString(2131296684), title);
+            final String string = this.mContext.getResources().getString(2131296684, new Object[] { title });
             if (this.mBackground != null) {
                 if (!StringUtils.isEmpty(storyUrl) && this.mContext.isTablet()) {
-                    NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, storyUrl, IClientLogging.AssetType.merchStill, format, true, true, 1);
+                    NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, storyUrl, IClientLogging.AssetType.merchStill, string, true, true, 1);
                 }
                 else if (!StringUtils.isEmpty(interestingUrl) && !this.mContext.isTablet()) {
-                    NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, interestingUrl, IClientLogging.AssetType.merchStill, format, true, true, 1);
+                    NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, interestingUrl, IClientLogging.AssetType.merchStill, string, true, true, 1);
                 }
             }
             if (!StringUtils.isEmpty(interestingUrl) && this.mPlayButtonImage != null) {
-                NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mPlayButtonImage, interestingUrl, IClientLogging.AssetType.merchStill, format, true, true, 1);
+                NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mPlayButtonImage, interestingUrl, IClientLogging.AssetType.merchStill, string, true, true, 1);
             }
-            final String format2 = String.format(this.mContext.getResources().getString(2131296687, new Object[] { postPlayVideo.getSeasonNumber(), postPlayVideo.getEpisodeNumber(), title }), new Object[0]);
+            final String string2 = this.mContext.getResources().getString(2131296687, new Object[] { postPlayVideo.getSeasonNumber(), postPlayVideo.getEpisodeNumber(), title });
             if (Log.isLoggable("nf_postplay", 3)) {
-                Log.d("nf_postplay", "Title: " + format2);
+                Log.d("nf_postplay", "Title: " + string2);
             }
             if (this.mTitle != null) {
-                this.mTitle.setText((CharSequence)format2);
+                this.mTitle.setText((CharSequence)string2);
             }
             if (this.mSynopsis != null && postPlayVideo.getSynopsis() != null) {
                 this.mSynopsis.setText((CharSequence)postPlayVideo.getSynopsis());

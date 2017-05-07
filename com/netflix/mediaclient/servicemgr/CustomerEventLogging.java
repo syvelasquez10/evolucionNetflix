@@ -14,7 +14,7 @@ public interface CustomerEventLogging
     
     void reportApplicationLaunchedFromDeepLinking(final String p0, final String p1);
     
-    void reportMdpFromDeepLinking();
+    void reportMdpFromDeepLinking(final String p0);
     
     void reportNotificationOptIn(final boolean p0, final String p1);
 }

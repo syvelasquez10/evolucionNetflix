@@ -72,8 +72,8 @@ public final class LegacyCustomerEventLoggingImpl implements CustomerEventLoggin
     }
     
     @Override
-    public void reportMdpFromDeepLinking() {
-        final MdpFromDeepLink mdpFromDeepLink = new MdpFromDeepLink(this.mContext, this.getUserData());
+    public void reportMdpFromDeepLinking(final String s) {
+        final MdpFromDeepLink mdpFromDeepLink = new MdpFromDeepLink(this.mContext, this.getUserData(), s);
         Log.d("nf_log", "Execute reportMdpFromDeepLinking beacon...");
         new BackgroundTask().execute(mdpFromDeepLink);
         Log.d("nf_log", "Beacon send in background");

@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import com.netflix.mediaclient.servicemgr.UserProfile;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.ui.Asset;
@@ -262,31 +264,39 @@ public abstract class PostPlay
     protected boolean isPostPlayAllowed() {
         if (!this.isPostPlayEnabled()) {
             Log.d("nf_postplay", "PostPlay is not enabled.");
-            return false;
         }
-        if (this.mPostPlayDismissed) {
-            Log.d("nf_postplay", "PostPlay was dismissed by an user, do not start it again.");
-            return false;
+        else {
+            if (this.mPostPlayDismissed) {
+                Log.d("nf_postplay", "PostPlay was dismissed by an user, do not start it again.");
+                return false;
+            }
+            final PlayerActivity mContext = this.mContext;
+            if (mContext == null) {
+                Log.e("nf_postplay", "Activity not found! Postplay is NOT enabled. This should NOT happen!");
+                return false;
+            }
+            final Asset currentAsset = mContext.getCurrentAsset();
+            if (currentAsset == null) {
+                Log.e("nf_postplay", "Asset not found! Postplay is NOT enabled. This should NOT happen!");
+                return false;
+            }
+            if (!currentAsset.isAutoPlayEnabled()) {
+                Log.d("nf_postplay", "Autoplay is disabled for this title");
+                return false;
+            }
+            final ServiceManager serviceManager = mContext.getServiceManager();
+            if (serviceManager != null) {
+                final UserProfile currentProfile = serviceManager.getCurrentProfile();
+                if (currentProfile != null) {
+                    if (currentProfile.isAutoPlayEnabled()) {
+                        Log.d("nf_postplay", "Autoplay is enabled for this title and profile");
+                        return true;
+                    }
+                    Log.d("nf_postplay", "Autoplay is disabled for this profile");
+                    return false;
+                }
+            }
         }
-        final PlayerActivity mContext = this.mContext;
-        if (mContext == null) {
-            Log.e("nf_postplay", "Activity not found! Postplay is NOT enabled. This should NOT happen!");
-            return false;
-        }
-        final Asset currentAsset = mContext.getCurrentAsset();
-        if (currentAsset == null) {
-            Log.e("nf_postplay", "Asset not found! Postplay is NOT enabled. This should NOT happen!");
-            return false;
-        }
-        if (!currentAsset.isAutoPlayEnabled()) {
-            Log.d("nf_postplay", "Autoplay is disabled for this title");
-            return false;
-        }
-        if (mContext.getServiceManager().getCurrentProfile().isAutoPlayEnabled()) {
-            Log.d("nf_postplay", "Autoplay is enabled for this title and profile");
-            return true;
-        }
-        Log.d("nf_postplay", "Autoplay is disabled for this profile");
         return false;
     }
     
