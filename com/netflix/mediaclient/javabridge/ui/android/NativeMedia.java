@@ -6,9 +6,6 @@ package com.netflix.mediaclient.javabridge.ui.android;
 
 import com.netflix.mediaclient.javabridge.invoke.media.Unpause;
 import com.netflix.mediaclient.javabridge.invoke.media.Stop;
-import com.netflix.mediaclient.javabridge.invoke.android.SetWifiLinkSpeed;
-import com.netflix.mediaclient.javabridge.invoke.android.SetWifiApsInfo;
-import android.content.Context;
 import com.netflix.mediaclient.javabridge.invoke.media.SetVideoResolutionRangeToPlayer;
 import com.netflix.mediaclient.media.VideoResolutionRange;
 import com.netflix.mediaclient.javabridge.invoke.media.SetVideoBitrateRanges;
@@ -24,7 +21,10 @@ import com.netflix.mediaclient.javabridge.invoke.android.SetBytesReport;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.javabridge.invoke.media.SelectTracks;
 import com.netflix.mediaclient.javabridge.invoke.media.Swim;
+import com.netflix.mediaclient.javabridge.invoke.android.SendSubtitleError;
 import com.netflix.mediaclient.javabridge.invoke.android.SetFailedSubtitleDownloadUrl;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
+import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.javabridge.invoke.media.Play;
 import com.netflix.mediaclient.javabridge.invoke.media.Pause;
 import com.netflix.mediaclient.javabridge.invoke.media.Open;
@@ -808,8 +808,9 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void reportFailedSubtitleDownload(final String s) {
-        this.bridge.getNrdProxy().invokeMethod(new SetFailedSubtitleDownloadUrl(s));
+    public void reportFailedSubtitle(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b) {
+        this.bridge.getNrdProxy().invokeMethod(new SetFailedSubtitleDownloadUrl(s, media$SubtitleFailure));
+        this.bridge.getNrdProxy().invokeMethod(new SendSubtitleError(s, subtitleUrl, media$SubtitleFailure, b, this.mCurrentSubtitleTrack));
     }
     
     @Override
@@ -948,18 +949,6 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     @Override
     public void setVideoResolutionRange(final VideoResolutionRange videoResolutionRange) {
         this.bridge.getNrdProxy().invokeMethod(new SetVideoResolutionRangeToPlayer(videoResolutionRange.getMinWidth(), videoResolutionRange.getMaxWidth(), videoResolutionRange.getMinHeight(), videoResolutionRange.getMaxHeight()));
-    }
-    
-    @Override
-    public void setWifiApsInfo(final Context context, final String s, final boolean b) {
-        this.bridge.getNrdProxy().invokeMethod(new SetWifiApsInfo(context, s, b));
-        Log.d("nf-bridge", "invokeMethod setWifiApsInfo just called...");
-    }
-    
-    @Override
-    public void setWifiLinkSpeed(final Context context) {
-        this.bridge.getNrdProxy().invokeMethod(new SetWifiLinkSpeed(context));
-        Log.d("nf-bridge", "invokeMethod setWifiLinkSpeed just called...");
     }
     
     @Override

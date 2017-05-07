@@ -47,7 +47,7 @@ public class PostPlayForEpisodes extends PostPlay
     }
     
     private void init() {
-        this.mTimerValue = this.mNetflixActivity.getResources().getInteger(2131427344);
+        this.mTimerValue = this.mNetflixActivity.getResources().getInteger(2131427345);
         this.mAutoPlayEnabled = this.isAutoPlayEnabled();
         if (Log.isLoggable()) {
             Log.d("nf_postplay", "PostPlayForEpisodes:: timer max value " + this.mTimerValue);
@@ -60,7 +60,7 @@ public class PostPlayForEpisodes extends PostPlay
     }
     
     private void init(final Activity activity) {
-        this.mTimerValue = activity.getResources().getInteger(2131427344);
+        this.mTimerValue = activity.getResources().getInteger(2131427345);
         this.mAutoPlayEnabled = this.isAutoPlayEnabled();
         if (Log.isLoggable()) {
             Log.d("nf_postplay", "PostPlayForEpisodes:: timer max value " + this.mTimerValue);
@@ -106,9 +106,9 @@ public class PostPlayForEpisodes extends PostPlay
     
     @Override
     void findViews() {
-        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131624429);
-        this.mAutoPlayView = this.mNetflixActivity.findViewById(2131624428);
-        this.mTimerView = (TextView)this.mNetflixActivity.findViewById(2131624430);
+        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131624400);
+        this.mAutoPlayView = this.mNetflixActivity.findViewById(2131624399);
+        this.mTimerView = (TextView)this.mNetflixActivity.findViewById(2131624401);
     }
     
     @Override

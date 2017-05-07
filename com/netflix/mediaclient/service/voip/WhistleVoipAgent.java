@@ -16,30 +16,29 @@ import java.util.Iterator;
 import com.netflix.mediaclient.util.log.CustomerServiceLogUtils;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$CallQuality;
 import com.netflix.mediaclient.servicemgr.IVoip$Call;
+import android.media.AudioManager;
 import com.netflix.mediaclient.servicemgr.IVoip$AuthorizationTokens;
 import com.netflix.mediaclient.util.FileUtils;
 import com.vailsys.whistleengine.WhistleEngineConfig$TransportMode;
 import com.vailsys.whistleengine.WhistleEngineConfig;
-import com.netflix.mediaclient.android.app.BackgroundTask;
-import android.annotation.TargetApi;
-import android.os.PowerManager;
-import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.Log;
+import android.app.Service;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.NetflixService;
 import java.util.Collections;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import android.content.Context;
 import android.content.BroadcastReceiver;
-import android.os.PowerManager$WakeLock;
+import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.servicemgr.IVoip$OutboundCallListener;
 import java.util.List;
 import com.vailsys.whistleengine.WhistleEngine;
-import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.servicemgr.IVoip$ConnectivityState;
 import android.content.ServiceConnection;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.ThreadFactory;
 import com.vailsys.whistleengine.WhistleEngineDelegate;
 import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.service.ServiceAgent;
@@ -49,7 +48,9 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     private static final long DELAYED_DIAL = 100L;
     private static final float MIN_PROXIMITY = 0.5f;
     private static final String TAG = "nf_voip";
+    private static final ThreadFactory sThreadFactory;
     Runnable cancelAction;
+    private AtomicBoolean mAudioFocusRequested;
     private AuthorizationTokensManager mAuthorizationTokensManager;
     private final ServiceConnection mConnection;
     private IVoip$ConnectivityState mConnectivityState;
@@ -59,12 +60,17 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     private AtomicBoolean mEngineReady;
     private boolean mEngineStarted;
     private List<IVoip$OutboundCallListener> mListeners;
+    private PowerLockManager mLockManager;
     private CallNotificationManager mNotificationManager;
-    private PowerManager$WakeLock mProximityWakeLock;
+    AudioManager$OnAudioFocusChangeListener mOnAudioFocusChangeListener;
     private AtomicBoolean mReady;
     private WhistleVoipAgent$ServiceState mServiceState;
     private long mStartTime;
     private final BroadcastReceiver mVoipReceiver;
+    
+    static {
+        sThreadFactory = new WhistleVoipAgent$6();
+    }
     
     public WhistleVoipAgent(final Context context, final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface) {
         this.mReady = new AtomicBoolean(false);
@@ -73,64 +79,32 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         this.mServiceState = WhistleVoipAgent$ServiceState.NOT_STARTED;
         this.mListeners = Collections.synchronizedList(new ArrayList<IVoip$OutboundCallListener>());
         this.mDialRequested = new AtomicBoolean(false);
+        this.mAudioFocusRequested = new AtomicBoolean(false);
         this.mConnection = (ServiceConnection)new WhistleVoipAgent$1(this);
         this.cancelAction = new WhistleVoipAgent$2(this);
         this.mVoipReceiver = new WhistleVoipAgent$5(this);
+        this.mOnAudioFocusChangeListener = (AudioManager$OnAudioFocusChangeListener)new WhistleVoipAgent$7(this);
         this.mAuthorizationTokensManager = new AuthorizationTokensManager(context, serviceAgent$UserAgentInterface);
-    }
-    
-    private void acquireScreenLock() {
-        if (this.mProximityWakeLock == null) {
-            return;
-        }
-        if (!this.mProximityWakeLock.isHeld()) {
-            Log.d("nf_voip", "updateProximitySensorMode: acquiring...");
-            this.mProximityWakeLock.acquire();
-            return;
-        }
-        Log.w("nf_voip", "updateProximitySensorMode: lock already held.");
+        this.mLockManager = new PowerLockManager(context);
     }
     
     private void callCleanup() {
         this.mDialRequested.set(false);
         this.cancelNotification();
-        this.releaseScreenLock();
+        this.mLockManager.callEnded();
+        this.releaseAudioFocus();
         this.mStartTime = 0L;
         LocalBroadcastManager.getInstance(this.getContext()).sendBroadcast(new Intent("com.netflix.mediaclient.ui.cs.ACTION_CALL_ENDED"));
     }
     
     private void cancelNotification() {
         if (this.mNotificationManager != null) {
-            this.mNotificationManager.cancelNotification();
-        }
-    }
-    
-    @TargetApi(21)
-    private void createProximityLock() {
-        if (AndroidUtils.getAndroidVersion() < 21) {
-            Log.d("nf_voip", "Proximity screen wake off is not supported pre L");
-            return;
-        }
-        final PowerManager powerManager = (PowerManager)this.getContext().getSystemService("power");
-        if (powerManager == null) {
-            Log.w("nf_voip", "Power manager is not available!");
-            return;
-        }
-        if (!powerManager.isWakeLockLevelSupported(32)) {
-            Log.d("nf_voip", "Proximity screen wake off is not supported on this device");
-            return;
-        }
-        Log.d("nf_voip", "Proximity screen wake off is supported on this device");
-        try {
-            this.mProximityWakeLock = powerManager.newWakeLock(32, "nf_voip");
-        }
-        catch (Throwable t) {
-            Log.e("nf_voip", "Failed to created new wake lock for promixity!");
+            this.mNotificationManager.cancelNotification(this.getService());
         }
     }
     
     private void doDial() {
-        new BackgroundTask().execute(new WhistleVoipAgent$3(this));
+        execute(new WhistleVoipAgent$3(this));
     }
     
     private void doDialWithEngineCheck() {
@@ -146,7 +120,11 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     }
     
     private void doTerminate() {
-        new BackgroundTask().execute(new WhistleVoipAgent$4(this));
+        execute(new WhistleVoipAgent$4(this));
+    }
+    
+    private static void execute(final Runnable runnable) {
+        WhistleVoipAgent.sThreadFactory.newThread(runnable).start();
     }
     
     private int findLine() {
@@ -210,16 +188,44 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         Log.d("nf_voip", "Registered VOIP receiver");
     }
     
-    private void releaseScreenLock() {
-        if (this.mProximityWakeLock == null) {
+    private void releaseAudioFocus() {
+        if (!this.mAudioFocusRequested.getAndSet(false)) {
             return;
         }
-        if (this.mProximityWakeLock.isHeld()) {
-            Log.d("nf_voip", "updateProximitySensorMode: releasing...");
-            this.mProximityWakeLock.release();
+        Log.d("nf_voip", "We had audio focus, release it.");
+        final AudioManager audioManager = (AudioManager)this.getContext().getSystemService("audio");
+        if (audioManager == null) {
             return;
         }
-        Log.w("nf_voip", "updateProximitySensorMode: lock already released!");
+        try {
+            final int abandonAudioFocus = audioManager.abandonAudioFocus(this.mOnAudioFocusChangeListener);
+            if (Log.isLoggable()) {
+                Log.d("nf_voip", "Audio focus release is granted " + abandonAudioFocus);
+            }
+        }
+        catch (Throwable t) {
+            Log.e("nf_voip", "Failed to request audio focus release", t);
+        }
+    }
+    
+    private void requestAudioFocus() {
+        if (this.mAudioFocusRequested.getAndSet(true)) {
+            Log.w("nf_voip", "Already asked for audip focus...");
+        }
+        else {
+            final AudioManager audioManager = (AudioManager)this.getContext().getSystemService("audio");
+            if (audioManager != null) {
+                try {
+                    final int requestAudioFocus = audioManager.requestAudioFocus(this.mOnAudioFocusChangeListener, 0, 1);
+                    if (Log.isLoggable()) {
+                        Log.d("nf_voip", "Audio request is granted " + requestAudioFocus);
+                    }
+                }
+                catch (Throwable t) {
+                    Log.e("nf_voip", "Failed to request audio focus", t);
+                }
+            }
+        }
     }
     
     private boolean startEngine() {
@@ -303,8 +309,8 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     public void callConnected(final int n) {
         while (true) {
             while (true) {
-                Label_0218: {
-                    Label_0173: {
+                Label_0222: {
+                    Label_0177: {
                         synchronized (this) {
                             if (Log.isLoggable()) {
                                 Log.d("nf_voip", "Outbound call connected on line " + n);
@@ -315,7 +321,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                 }
                                 else {
                                     if (this.mCurrentCall.line != n) {
-                                        break Label_0173;
+                                        break Label_0177;
                                     }
                                     final Iterator<IVoip$OutboundCallListener> iterator = this.mListeners.iterator();
                                     while (iterator.hasNext()) {
@@ -323,13 +329,13 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                     }
                                 }
                                 this.mConnectivityState = IVoip$ConnectivityState.GREEN;
-                                this.mNotificationManager.updateConnectedNotification();
+                                this.mNotificationManager.updateConnectedNotification(this.getService());
                                 CustomerServiceLogUtils.reportCallConnected(this.getContext(), CustomerServiceLogging$CallQuality.green);
                                 Log.d("nf_voip", "Sets start time...");
                                 this.mStartTime = System.currentTimeMillis();
                                 return;
                             }
-                            break Label_0218;
+                            break Label_0222;
                         }
                     }
                     Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received connect on line " + n);
@@ -556,7 +562,6 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     protected void doInit() {
         this.mNotificationManager = new CallNotificationManager(this.getContext());
         this.registerReceiver();
-        this.createProximityLock();
         this.initCompleted(CommonStatus.OK);
     }
     
@@ -684,6 +689,11 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
             Log.d("nf_voip", "Set volume...");
             this.mEngine.setOutputVolume(outputVolume);
         }
+    }
+    
+    @Override
+    public void setSpeakerOn(final boolean speakerOn) {
+        this.mLockManager.setSpeakerOn(speakerOn);
     }
     
     @Override

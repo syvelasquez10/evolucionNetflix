@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
-import java.util.Set;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;

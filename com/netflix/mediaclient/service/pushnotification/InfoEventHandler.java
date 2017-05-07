@@ -22,9 +22,9 @@ public class InfoEventHandler
     private static InfoEventHandler mInfoEventHanlder;
     private static NetflixService mService;
     private final Runnable fetchPreAppDataRunnable;
-    private final Runnable refreshAllRunnable;
     private final Runnable refreshCWRunnable;
     private final Runnable refreshIQRunnable;
+    private final Runnable refreshLolomoRunnable;
     private final Runnable refreshSocialNotificationRunnable;
     
     static {
@@ -34,7 +34,7 @@ public class InfoEventHandler
     private InfoEventHandler() {
         this.refreshCWRunnable = new InfoEventHandler$1(this);
         this.refreshIQRunnable = new InfoEventHandler$2(this);
-        this.refreshAllRunnable = new InfoEventHandler$3(this);
+        this.refreshLolomoRunnable = new InfoEventHandler$3(this);
         this.refreshSocialNotificationRunnable = new InfoEventHandler$4(this);
         this.fetchPreAppDataRunnable = new InfoEventHandler$5(this);
     }
@@ -71,8 +71,8 @@ public class InfoEventHandler
             return;
         }
         UserActionLogUtils.reportNewLolomoActionStarted(netflixService.getApplicationContext(), null, null);
-        netflixService.getHandler().removeCallbacks(this.refreshAllRunnable);
-        netflixService.getHandler().postDelayed(this.refreshAllRunnable, this.getBrowseEventRateLimitMs(netflixService));
+        netflixService.getHandler().removeCallbacks(this.refreshLolomoRunnable);
+        netflixService.getHandler().postDelayed(this.refreshLolomoRunnable, this.getBrowseEventRateLimitMs(netflixService));
         UserActionLogUtils.reportNewLolomoActionEnded(netflixService.getApplicationContext(), IClientLogging$CompletionReason.success, null, payload.renoCause, payload.renoMessageGuid, payload.renoCreationTimestamp, payload.messageGuid, payload.guid);
     }
     

@@ -58,6 +58,13 @@ public class JsonUtils
         return !jsonElement.isJsonNull() && jsonElement.getAsBoolean();
     }
     
+    public static float getAsFloatSafe(final JsonElement jsonElement) {
+        if (!jsonElement.isJsonNull() && (!jsonElement.isJsonPrimitive() || !"null".equals(jsonElement.getAsString()))) {
+            return jsonElement.getAsFloat();
+        }
+        return 0.0f;
+    }
+    
     public static int getAsIntSafe(final JsonElement jsonElement) {
         if (!jsonElement.isJsonNull() && (!jsonElement.isJsonPrimitive() || !"null".equals(jsonElement.getAsString()))) {
             return jsonElement.getAsInt();

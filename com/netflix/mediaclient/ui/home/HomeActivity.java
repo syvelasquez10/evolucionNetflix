@@ -37,7 +37,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.os.Handler;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
+import com.netflix.mediaclient.util.IrisUtils$NotificationsListStatus;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.DialogInterface$OnClickListener;
@@ -69,7 +69,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     private long mStartedTimeMs;
     private ServiceManager manager;
     private final ManagerStatusListener managerStatusListener;
-    private SocialUtils$NotificationsListStatus notificationsListStatus;
+    private IrisUtils$NotificationsListStatus notificationsListStatus;
     private final BroadcastReceiver notificationsListUpdateReceiver;
     private long pauseTimeMs;
     private Runnable readRunnable;
@@ -80,7 +80,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     public HomeActivity() {
         this.backStackIntents = new LinkedList<Intent>();
-        this.notificationsListStatus = SocialUtils$NotificationsListStatus.NO_MESSAGES;
+        this.notificationsListStatus = IrisUtils$NotificationsListStatus.NO_MESSAGES;
         this.managerStatusListener = new HomeActivity$2(this);
         this.refreshHomeReceiver = new HomeActivity$3(this);
         this.notificationsListUpdateReceiver = new HomeActivity$4(this);
@@ -88,7 +88,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void cancelMarkingNotificationsAsRead() {
-        if (this.notificationsListStatus == SocialUtils$NotificationsListStatus.HAS_UNREAD_MESSAGES && this.readRunnableHandler != null && this.readRunnable != null) {
+        if (this.notificationsListStatus == IrisUtils$NotificationsListStatus.HAS_UNREAD_MESSAGES && this.readRunnableHandler != null && this.readRunnable != null) {
             this.readRunnableHandler.removeCallbacks(this.readRunnable);
         }
     }
@@ -179,26 +179,26 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     private void refreshSocialNotificationsStateIfNeeded() {
         if (this.manager != null && this.manager.getBrowse() != null) {
-            this.manager.getBrowse().refreshSocialNotifications(true);
+            this.manager.getBrowse().refreshIrisNotifications(true);
         }
     }
     
     private void registerReceivers() {
         this.registerReceiverWithAutoUnregister(this.refreshHomeReceiver, "com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO");
         if (this.slidingMenuAdapter.canLoadNotifications()) {
-            this.registerReceiverLocallyWithAutoUnregister(this.notificationsListUpdateReceiver, "com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED");
+            this.registerReceiverLocallyWithAutoUnregister(this.notificationsListUpdateReceiver, "com.netflix.mediaclient.intent.action.BA_IRIS_NOTIFICATION_LIST_UPDATED");
         }
     }
     
     private void setupViews() {
-        (this.drawerLayout = (DrawerLayout)this.findViewById(2131624202)).setDrawerListener(new HomeActivity$1(this));
+        (this.drawerLayout = (DrawerLayout)this.findViewById(2131624176)).setDrawerListener(new HomeActivity$1(this));
         this.unlockSlidingDrawerIfPossible();
         this.slidingMenuAdapter = BrowseExperience.get().createSlidingMenuAdapter(this, this.drawerLayout);
         if (Log.isLoggable()) {
             Log.v("HomeActivity", "Created sliding menu adapter of type: " + this.slidingMenuAdapter.getClass());
         }
         this.drawerLayout.setFocusable(false);
-        this.drawerLayout.setScrimColor(this.getResources().getColor(2131558477));
+        this.drawerLayout.setScrimColor(this.getResources().getColor(2131558468));
         this.updateActionBar();
         this.updateSlidingDrawer();
     }
@@ -211,7 +211,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.updateActionBar();
         this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131624200, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131624174, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, CommonStatus.OK);
     }
@@ -293,12 +293,12 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     @Override
     public int getActionBarParentViewId() {
-        return 2131624197;
+        return 2131624171;
     }
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903113;
+        return 2130903100;
     }
     
     public GenreList getGenre() {

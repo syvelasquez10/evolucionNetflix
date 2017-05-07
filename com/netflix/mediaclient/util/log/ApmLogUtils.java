@@ -88,6 +88,16 @@ public final class ApmLogUtils extends ConsolidatedLoggingUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
+    public static void reportLocalSettingsChange(final Context context, final String s) {
+        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
+            return;
+        }
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_LOCAL_SETTINGS_BW");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        intent.putExtra("localSettingData", s);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
     public static void reportPreappAddWidget(final Context context, final String s, final long n) {
         if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
             return;

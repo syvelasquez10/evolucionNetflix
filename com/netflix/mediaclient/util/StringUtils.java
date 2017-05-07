@@ -166,23 +166,6 @@ public final class StringUtils
         return array;
     }
     
-    public static CharSequence getBasicMovieInfoString(final Context context, final int n, final String s) {
-        if (context == null) {
-            return "";
-        }
-        if (context.getResources() == null) {
-            return "";
-        }
-        final StringBuilder sb = new StringBuilder();
-        if (n > 0) {
-            sb.append(n).append("   ");
-        }
-        if (isNotEmpty(s)) {
-            sb.append(s).append("   ");
-        }
-        return sb.toString();
-    }
-    
     public static CharSequence getBasicMovieInfoString(final Context context, final int n, final String s, final int n2) {
         if (context == null) {
             return "";
@@ -206,7 +189,7 @@ public final class StringUtils
         if (context == null) {
             return "";
         }
-        return getBasicMovieInfoString(context, movieDetails.getYear(), movieDetails.getCertification());
+        return getBasicMovieInfoString(context, movieDetails.getYear(), movieDetails.getCertification(), movieDetails.getPlayable().getRuntime());
     }
     
     public static CharSequence getBasicMovieInfoString(final Context context, final VideoDetails videoDetails) {

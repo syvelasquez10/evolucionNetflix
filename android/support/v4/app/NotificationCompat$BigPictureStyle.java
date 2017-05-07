@@ -16,10 +16,4 @@ public class NotificationCompat$BigPictureStyle extends NotificationCompat$Style
         this.mPicture = mPicture;
         return this;
     }
-    
-    public NotificationCompat$BigPictureStyle setSummaryText(final CharSequence charSequence) {
-        this.mSummaryText = NotificationCompat$Builder.limitCharSequenceLength(charSequence);
-        this.mSummaryTextSet = true;
-        return this;
-    }
 }

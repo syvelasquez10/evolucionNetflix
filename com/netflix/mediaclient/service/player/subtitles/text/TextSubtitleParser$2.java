@@ -17,13 +17,15 @@ import com.netflix.mediaclient.util.StringUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleData;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleParser$DownloadFailedCallback;
+import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.service.player.PlayerAgent;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
 import java.util.List;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import java.util.Map;
 import com.netflix.mediaclient.service.player.subtitles.BaseSubtitleParser;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.Log;
 
@@ -31,10 +33,12 @@ class TextSubtitleParser$2 implements Runnable
 {
     final /* synthetic */ TextSubtitleParser this$0;
     final /* synthetic */ String val$localUrl;
+    final /* synthetic */ String val$requestedUrl;
     
-    TextSubtitleParser$2(final TextSubtitleParser this$0, final String val$localUrl) {
+    TextSubtitleParser$2(final TextSubtitleParser this$0, final String val$localUrl, final String val$requestedUrl) {
         this.this$0 = this$0;
         this.val$localUrl = val$localUrl;
+        this.val$requestedUrl = val$requestedUrl;
     }
     
     @Override
@@ -63,7 +67,9 @@ class TextSubtitleParser$2 implements Runnable
             }
             catch (Throwable t) {
                 Log.e("nf_subtitles", "We failed to parse subtitle metadata", t);
+                final boolean access$700 = this.this$0.onError();
                 this.this$0.mPlayer.reportHandledException(new RuntimeException("We failed to parse subtitle metadata", t));
+                this.this$0.mPlayer.reportFailedSubtitle(this.val$requestedUrl, this.this$0.mSubtitleData, IMedia$SubtitleFailure.parsing, access$700);
                 continue;
             }
             continue;

@@ -34,14 +34,6 @@ public abstract class SimpleUserAgentWebCallback implements UserAgentWebCallback
     }
     
     @Override
-    public void onConnectWithFacebook(final Status status) {
-    }
-    
-    @Override
-    public void onDisconnectWithFacebook(final Status status) {
-    }
-    
-    @Override
     public void onDummyWebCallDone(final Status status) {
     }
     

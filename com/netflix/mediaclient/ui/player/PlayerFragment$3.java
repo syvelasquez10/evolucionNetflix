@@ -150,7 +150,7 @@ class PlayerFragment$3 implements View$OnClickListener
         }
         netflixDialogFrag.onManagerReady(this.this$0.mServiceManager, CommonStatus.OK);
         netflixDialogFrag.setCancelable(true);
-        netflixDialogFrag.setStyle(1, 2131362018);
+        netflixDialogFrag.setStyle(1, 2131362020);
         this.this$0.getNetflixActivity().showDialog(netflixDialogFrag);
     }
 }

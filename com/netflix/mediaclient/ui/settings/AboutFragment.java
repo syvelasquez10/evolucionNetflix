@@ -10,12 +10,9 @@ import com.netflix.mediaclient.ui.diagnosis.DiagnosisActivity;
 import android.preference.Preference$OnPreferenceClickListener;
 import android.content.Context;
 import android.os.Bundle;
-import android.content.pm.PackageInfo;
-import java.io.Serializable;
-import android.content.pm.PackageManager$NameNotFoundException;
-import com.netflix.mediaclient.Log;
 import android.os.Build;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.util.AndroidManifestUtils;
 import android.net.Uri;
 import android.content.Intent;
 import android.app.Fragment;
@@ -43,37 +40,28 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
     }
     
     private void updateAboutDevice() {
-        Serializable s2;
-        final String s = (String)(s2 = this.getString(2131165537));
-        while (true) {
-            try {
-                final PackageInfo packageInfo = this.activity.getPackageManager().getPackageInfo(this.activity.getPackageName(), 0);
-                s2 = s;
-                final Serializable s3 = s2 = packageInfo.versionName;
-                final int versionCode = packageInfo.versionCode;
-                s2 = new StringBuilder(this.getString(2131165622)).append(": ").append((String)s3);
-                if (versionCode > 0) {
-                    ((StringBuilder)s2).append(" (code ").append(versionCode).append("),");
-                }
-                ((StringBuilder)s2).append(" OS API: ").append(AndroidUtils.getAndroidVersion()).append("\n").append("Model: ").append(Build.MODEL).append(", build: ").append(Build.DISPLAY).append("\n");
-                if (this.manager != null) {
-                    ((StringBuilder)s2).append("ESN: ").append(this.manager.getESNProvider().getEsn()).append("\n");
-                }
-                this.findPreference((CharSequence)"ui.about").setSummary((CharSequence)((StringBuilder)s2).toString());
-                this.findPreference((CharSequence)"ui.about").setSelectable(false);
-                if (this.manager != null) {
-                    s2 = new StringBuilder().append(this.getString(2131165386)).append(": ").append(this.manager.getUserEmail());
-                    this.findPreference((CharSequence)"ui.account").setSummary((CharSequence)((StringBuilder)s2).toString());
-                    this.findPreference((CharSequence)"ui.account").setSelectable(false);
-                }
-            }
-            catch (PackageManager$NameNotFoundException ex) {
-                Log.handleException("PreferenceFragment", (Exception)ex);
-                final int versionCode = 0;
-                final Serializable s3 = s2;
-                continue;
-            }
-            break;
+        String s;
+        if ((s = AndroidManifestUtils.getVersion(this.activity.getApplicationContext())) == null) {
+            s = this.getString(2131165727);
+        }
+        final int versionCode = AndroidManifestUtils.getVersionCode(this.activity.getApplicationContext());
+        final StringBuilder append = new StringBuilder(this.getString(2131165622)).append(": ").append(s);
+        if (versionCode > 0) {
+            append.append(" (").append(this.getString(2131165726)).append(" ").append(versionCode).append("), ");
+        }
+        append.append(this.getString(2131165723)).append(": ").append(AndroidUtils.getAndroidVersion());
+        append.append("\n");
+        append.append(this.getString(2131165722)).append(": ").append(Build.MODEL);
+        append.append("\n");
+        append.append(this.getString(2131165708)).append(": ").append(Build.DISPLAY);
+        if (this.manager != null) {
+            append.append("\n");
+            append.append(this.getString(2131165721)).append(": ").append(this.manager.getESNProvider().getEsn());
+        }
+        this.findPreference((CharSequence)"ui.about.device").setSummary((CharSequence)append.toString());
+        if (this.manager != null) {
+            this.findPreference((CharSequence)"ui.account").setSummary((CharSequence)(this.getString(2131165386) + ": " + this.manager.getUserEmail()));
+            this.findPreference((CharSequence)"ui.account").setSelectable(false);
         }
     }
     
@@ -81,7 +69,7 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
         super.onCreate(bundle);
         this.activity = this.getActivity();
         this.addPreferencesFromResource(2131034112);
-        this.findPreference((CharSequence)this.getString(2131165787)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
+        this.findPreference((CharSequence)this.getString(2131165784)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
         final Preference preference = this.findPreference((CharSequence)"pref.privacy");
         preference.setIntent(this.createViewPrivacyPolicyIntent());
         preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$1(this));

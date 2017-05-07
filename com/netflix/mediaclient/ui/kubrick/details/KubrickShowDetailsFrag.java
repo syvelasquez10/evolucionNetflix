@@ -155,14 +155,14 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
         if (detailsPageContentWidth > 0) {
             n = (KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity()) - detailsPageContentWidth) / 2;
         }
-        return n + (int)this.getResources().getDimension(2131296529);
+        return n + (int)this.getResources().getDimension(2131296509);
     }
     
     @Override
     protected ViewGroup createSeasonsSelectorGroup() {
         final ViewGroup seasonsSelectorGroup = super.createSeasonsSelectorGroup();
         if (this.showDetailsOnLaunch) {
-            seasonsSelectorGroup.setBackgroundResource(2131558590);
+            seasonsSelectorGroup.setBackgroundResource(2131558581);
             seasonsSelectorGroup.setPadding(this.calculateSpinnerLeftPosition(), 0, 0, 0);
             this.setupSpinnerScroller();
             return seasonsSelectorGroup;
@@ -176,25 +176,25 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.rootContainer = view.findViewById(2131624231);
+        this.rootContainer = view.findViewById(2131624205);
         if (!this.showDetailsOnLaunch) {
-            this.seasonsDialogRecyclerView = (RecyclerView)view.findViewById(2131624230);
-            this.fragBackground = view.findViewById(2131624231);
+            this.seasonsDialogRecyclerView = (RecyclerView)view.findViewById(2131624204);
+            this.fragBackground = view.findViewById(2131624205);
             return;
         }
-        this.fragBackground = view.findViewById(2131624244);
+        this.fragBackground = view.findViewById(2131624218);
     }
     
     protected int getRecyclerViewShadowWidth() {
-        return KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296521) * 2;
+        return KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296501) * 2;
     }
     
     @Override
     protected int getlayoutId() {
         if (this.showDetailsOnLaunch) {
-            return 2130903214;
+            return 2130903200;
         }
-        return 2130903122;
+        return 2130903109;
     }
     
     @Override
@@ -256,7 +256,7 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
     public void onStart() {
         super.onStart();
         if (!this.showDetailsOnLaunch) {
-            this.getDialog().getWindow().setLayout(-1, (int)this.getResources().getDimension(2131296524));
+            this.getDialog().getWindow().setLayout(-1, (int)this.getResources().getDimension(2131296504));
         }
     }
     
@@ -270,7 +270,7 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                this.detailsPageParallaxScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.getRecyclerView(), new View[] { this.detailsViewGroup.getHeroImage(), ((KubrickVideoDetailsViewGroup)this.detailsViewGroup).getHeroImage2() }, (View)this.spinnerViewGroup, this.recyclerView.getResources().getColor(2131558586), 0, (View)this.detailsViewGroup.getFooterViewGroup());
+                this.detailsPageParallaxScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.getRecyclerView(), new View[] { this.detailsViewGroup.getHeroImage(), ((KubrickVideoDetailsViewGroup)this.detailsViewGroup).getHeroImage2() }, (View)this.spinnerViewGroup, this.recyclerView.getResources().getColor(2131558577), 0, (View)this.detailsViewGroup.getFooterViewGroup());
                 this.getRecyclerView().setOnScrollListener(this.detailsPageParallaxScrollListener);
                 this.detailsPageParallaxScrollListener.setOnScrollStateChangedListener(new KubrickShowDetailsFrag$5(this));
                 return this.detailsPageParallaxScrollListener;
@@ -292,14 +292,14 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
         this.recyclerView.setAdapter(this.episodesAdapter);
         this.episodesAdapter.setViewCreator(this.viewCreatorEpisodes);
         final View view = new View((Context)this.getActivity());
-        view.setLayoutParams(new ViewGroup$LayoutParams(-2, this.getResources().getDimensionPixelOffset(2131296507) / 2));
+        view.setLayoutParams(new ViewGroup$LayoutParams(-2, this.getResources().getDimensionPixelOffset(2131296487) / 2));
         this.episodesAdapter.addFooterView(view);
     }
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
         if (this.showDetailsOnLaunch) {
-            this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296507), this.numColumns));
+            this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296487), this.numColumns));
         }
     }
     

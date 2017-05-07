@@ -15,30 +15,29 @@ import java.util.Iterator;
 import com.netflix.mediaclient.util.log.CustomerServiceLogUtils;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$CallQuality;
 import com.netflix.mediaclient.servicemgr.IVoip$Call;
+import android.media.AudioManager;
 import com.netflix.mediaclient.servicemgr.IVoip$AuthorizationTokens;
 import com.netflix.mediaclient.util.FileUtils;
 import com.vailsys.whistleengine.WhistleEngineConfig$TransportMode;
 import com.vailsys.whistleengine.WhistleEngineConfig;
-import com.netflix.mediaclient.android.app.BackgroundTask;
-import android.annotation.TargetApi;
-import android.os.PowerManager;
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.service.NetflixService;
 import java.util.Collections;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import android.content.Context;
 import android.content.BroadcastReceiver;
-import android.os.PowerManager$WakeLock;
+import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.servicemgr.IVoip$OutboundCallListener;
 import java.util.List;
 import com.vailsys.whistleengine.WhistleEngine;
-import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.servicemgr.IVoip$ConnectivityState;
 import android.content.ServiceConnection;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.ThreadFactory;
 import com.vailsys.whistleengine.WhistleEngineDelegate;
 import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.service.ServiceAgent;
+import android.app.Service;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.Log;
@@ -61,7 +60,8 @@ class WhistleVoipAgent$3 implements Runnable
         }
         if (this.this$0.mCurrentCall != null) {
             this.this$0.mDialRequested.set(false);
-            throw new IllegalStateException("Call is already in progress! Terminate it first!");
+            Log.e("nf_voip", "Call is already in progress! Terminate it first!");
+            return;
         }
         final int access$800 = this.this$0.findLine();
         if (access$800 < 0) {
@@ -74,9 +74,10 @@ class WhistleVoipAgent$3 implements Runnable
         if (dial > 0) {
             Log.d("nf_voip", "Whistle engine was able to start dial");
             this.this$0.mCurrentCall = new WhistleVoipAgent$WhistleCall(dial);
-            this.this$0.acquireScreenLock();
+            this.this$0.mLockManager.callStarted();
+            this.this$0.requestAudioFocus();
             LocalBroadcastManager.getInstance(this.this$0.getContext()).sendBroadcast(new Intent("com.netflix.mediaclient.ui.cs.ACTION_CALL_STARTED"));
-            this.this$0.mNotificationManager.showCallinglNotification();
+            this.this$0.mNotificationManager.showCallingNotification(this.this$0.getService());
             return;
         }
         Log.e("nf_voip", "Whistle engine was unable to start dial!");

@@ -14,7 +14,6 @@ import com.netflix.mediaclient.service.pservice.PDiskData$ImageType;
 import com.netflix.mediaclient.service.resfetcher.LoggingResourceFetcherCallback;
 import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.service.pservice.PVideo;
@@ -23,6 +22,7 @@ import com.netflix.mediaclient.Log;
 import java.util.ArrayList;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -97,9 +97,6 @@ public class PreAppAgentDataHandler
         if (PreAppAgentEventType.isNonMemberListUpdated(preAppAgentEventType)) {
             set.add(PDiskData$ListType.NON_MEMBER);
         }
-        if (PreAppAgentEventType.isListInfoUpdated(preAppAgentEventType)) {
-            set.add(PDiskData$ListType.LOMO_INFO);
-        }
     }
     
     private void copyBBListIntoDiskData(final PDiskData pDiskData, final List<Billboard> list) {
@@ -170,11 +167,8 @@ public class PreAppAgentDataHandler
         }
     }
     
-    private void fetchLists(final PreAppAgentEventType preAppAgentEventType, final SimpleBrowseAgentCallback simpleBrowseAgentCallback, final SimpleBrowseAgentCallback simpleBrowseAgentCallback2, final SimpleBrowseAgentCallback simpleBrowseAgentCallback3, final SimpleBrowseAgentCallback simpleBrowseAgentCallback4, final SimpleBrowseAgentCallback simpleBrowseAgentCallback5, final SimpleBrowseAgentCallback simpleBrowseAgentCallback6) {
+    private void fetchLists(final PreAppAgentEventType preAppAgentEventType, final SimpleBrowseAgentCallback simpleBrowseAgentCallback, final SimpleBrowseAgentCallback simpleBrowseAgentCallback2, final SimpleBrowseAgentCallback simpleBrowseAgentCallback3, final SimpleBrowseAgentCallback simpleBrowseAgentCallback4, final SimpleBrowseAgentCallback simpleBrowseAgentCallback5) {
         final ServiceAgent$BrowseAgentInterface browseAgent = PreAppAgentDataHandler.mServiceAgent.getBrowseAgent();
-        if (PreAppAgentEventType.isListInfoUpdated(preAppAgentEventType)) {
-            browseAgent.fetchLoMos(0, 19, simpleBrowseAgentCallback6);
-        }
         if (PreAppAgentEventType.isBBUpdated(preAppAgentEventType)) {
             browseAgent.fetchBillboards(6, false, simpleBrowseAgentCallback);
         }
@@ -496,6 +490,6 @@ public class PreAppAgentDataHandler
         final HashSet<PDiskData$ListType> set = new HashSet<PDiskData$ListType>();
         this.setExperienceType(experienceType);
         this.collectFetchCallbacks(set, preAppAgentEventType);
-        this.fetchLists(preAppAgentEventType, new PreAppAgentDataHandler$1(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$2(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$3(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$4(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$5(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$6(this, experienceType, set, preAppAgentEventType));
+        PreAppAgentDataHandler.mServiceAgent.getBrowseAgent().fetchLoMos(0, 19, new PreAppAgentDataHandler$6(this, experienceType, set, preAppAgentEventType, new PreAppAgentDataHandler$1(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$2(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$3(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$4(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$5(this, experienceType, set, preAppAgentEventType)));
     }
 }

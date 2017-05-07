@@ -76,22 +76,22 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void createUI() {
-        this.setContentView(2130903215);
+        this.setContentView(2130903201);
         this.setupActionBar();
         this.findViews();
         this.setupLoadingWrapper();
         this.setupFragments(this.savedInstanceState);
         if (BrowseExperience.isKubrickKids()) {
-            this.leWrapper.getErrorMessageTextView().setTextColor(this.getResources().getColor(2131558460));
-            this.leWrapper.getErrorMessageTextView().setBackgroundColor(this.getResources().getColor(2131558601));
+            this.leWrapper.getErrorMessageTextView().setTextColor(this.getResources().getColor(2131558451));
+            this.leWrapper.getErrorMessageTextView().setBackgroundColor(this.getResources().getColor(2131558592));
             ((ViewGroup)this.leWrapper.getErrorMessageTextView().getParent()).setBackgroundColor(-1);
             ViewUtils.removeShadow(this.leWrapper.getErrorMessageTextView());
         }
     }
     
     private void findViews() {
-        this.fragGroup = (ViewGroup)this.findViewById(2131624513);
-        this.loadingWrapper = this.findViewById(2131624512);
+        this.fragGroup = (ViewGroup)this.findViewById(2131624476);
+        this.loadingWrapper = this.findViewById(2131624475);
     }
     
     private void handleNewIntent(final Intent intent) {
@@ -100,18 +100,18 @@ public class SearchActivity extends NetflixActivity
             Log.d("SearchActivity", "Received intent with action: " + action);
             Log.d("SearchActivity", intent);
         }
-        if ("android.intent.action.VIEW".equals(action)) {
-            return;
-        }
-        if ("android.intent.action.SEARCH".equals(action)) {
+        if (!"android.intent.action.VIEW".equals(action)) {
+            if (!"android.intent.action.SEARCH".equals(action)) {
+                throw new IllegalStateException("Unknown action: " + action);
+            }
             final String stringExtra = intent.getStringExtra("query");
             final boolean booleanExtra = intent.getBooleanExtra("submit", false);
             this.voiceSearch.set(this.isVoiceSearch(intent));
-            this.searchActionBar.setQuery(stringExtra, booleanExtra);
-            this.handleQueryUpdate(stringExtra);
-            return;
+            if (this.searchActionBar != null) {
+                this.searchActionBar.setQuery(stringExtra, booleanExtra);
+                this.handleQueryUpdate(stringExtra);
+            }
         }
-        throw new IllegalStateException("Unknown action: " + action);
     }
     
     private void handleQueryUpdate(final String s) {
@@ -167,7 +167,7 @@ public class SearchActivity extends NetflixActivity
     private void setupFragments(final Bundle bundle) {
         if (bundle == null) {
             (this.resultsFrag = SearchResultsFrag.create()).setServiceManager(this.serviceManager);
-            this.getFragmentManager().beginTransaction().add(2131624513, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131624476, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
             return;
         }
@@ -245,9 +245,14 @@ public class SearchActivity extends NetflixActivity
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.savedInstanceState = savedInstanceState;
-        SearchUtils.setSearchExperience(BrowseExperience.getSearchExperience());
+        if (DeviceUtils.isTabletByContext((Context)this)) {
+            SearchUtils.setSearchExperience(BrowseExperience.getSearchExperience());
+        }
+        else {
+            SearchUtils.setSearchExperience(SearchUtils$SearchExperience.PHONE);
+        }
         if (BrowseExperience.isKubrickKids()) {
-            this.setTheme(2131362162);
+            this.setTheme(2131362164);
         }
         this.createUI();
         if (savedInstanceState == null) {

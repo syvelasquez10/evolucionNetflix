@@ -118,6 +118,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
+    public int getMaturityLevel() {
+        return 0;
+    }
+    
+    @Override
     public String getNarrative() {
         return "Narrative";
     }

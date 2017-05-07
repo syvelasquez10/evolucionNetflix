@@ -38,11 +38,11 @@ class KidsGenresLoMoFrag$2 implements RecyclerViewHeaderAdapter$IViewCreator
     }
     
     private int getImageHeightHoriz() {
-        return (int)((this.this$0.recyclerView.getWidth() - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296507) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
+        return (int)((this.this$0.recyclerView.getWidth() - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296487) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
     }
     
     private int getImageHeightVert() {
-        return (int)((this.this$0.recyclerView.getWidth() - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296507) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 1.333f);
+        return (int)((this.this$0.recyclerView.getWidth() - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296487) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 1.333f);
     }
     
     @Override
@@ -51,14 +51,14 @@ class KidsGenresLoMoFrag$2 implements RecyclerViewHeaderAdapter$IViewCreator
         videoView.setAdjustViewBounds(true);
         videoView.setScaleType(ImageView$ScaleType.FIT_XY);
         int n;
-        if (BrowseExperience.useLolomoVerticalArt()) {
+        if (BrowseExperience.useLolomoBoxArt()) {
             n = this.getImageHeightVert();
         }
         else {
             n = this.getImageHeightHoriz();
         }
         videoView.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, n));
-        videoView.setIsHorizontal(!BrowseExperience.useLolomoVerticalArt());
+        videoView.setIsHorizontal(!BrowseExperience.useLolomoBoxArt());
         return (View)videoView;
     }
 }

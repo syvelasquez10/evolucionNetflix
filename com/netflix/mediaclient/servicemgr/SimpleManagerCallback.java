@@ -12,7 +12,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -23,12 +23,16 @@ import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
+import com.netflix.mediaclient.android.app.Status;
 
 public abstract class SimpleManagerCallback implements ManagerCallback
 {
+    @Override
+    public void onAutoLoginTokenCreated(final String s, final Status status) {
+    }
+    
     @Override
     public void onAvailableAvatarsListFetched(final List<AvatarInfo> list, final Status status) {
     }
@@ -98,7 +102,7 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     }
     
     @Override
-    public void onNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+    public void onNotificationsListFetched(final IrisNotificationsList list, final Status status) {
     }
     
     @Override

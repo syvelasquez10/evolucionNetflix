@@ -4,13 +4,14 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.model.leafs.SearchTrackableListSummary;
+import com.netflix.falkor.Ref;
+import com.netflix.model.branches.FalkorEvidenceList;
 import com.netflix.falkor.Func;
 
-final class Falkor$Creator$12 implements Func<SearchTrackableListSummary>
+final class Falkor$Creator$12 implements Func<FalkorEvidenceList<Ref>>
 {
     @Override
-    public SearchTrackableListSummary call() {
-        return new SearchTrackableListSummary();
+    public FalkorEvidenceList<Ref> call() {
+        return new FalkorEvidenceList<Ref>(Falkor$Creator.Ref);
     }
 }

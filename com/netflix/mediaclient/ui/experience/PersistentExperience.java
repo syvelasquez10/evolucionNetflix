@@ -21,6 +21,10 @@ public enum PersistentExperience
     KUBRICK_KIDS_HERO_IMGS, 
     KUBRICK_KIDS_HIGH_DENSITY, 
     KUBRICK_KIDS_HIGH_DENSITY_VERT, 
+    LOLOMO_TITLE_ART_LARGE_HORIZONTAL, 
+    LOLOMO_TITLE_ART_LARGE_PORTRAIT_BOXART, 
+    LOLOMO_TITLE_ART_SMALL_BOXART, 
+    LOLOMO_TITLE_ART_SMALL_HORIZONTAL, 
     NON_KUBRICK;
     
     private static final String PERSISTENT_EXPERIENCE_PREFS_KEY = "persistent_experience_key";
@@ -52,44 +56,13 @@ public enum PersistentExperience
             if (serviceAgent$ConfigurationAgentInterface.getDeviceCategory() == DeviceCategory.TABLET) {
                 persistentExperience2 = persistentExperience;
                 if (serviceAgent$ConfigurationAgentInterface.getKubrickConfiguration() != null) {
-                    switch (PersistentExperience$1.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$KubrickConfigData$KubrickCell[serviceAgent$ConfigurationAgentInterface.getKubrickConfiguration().getCell().ordinal()]) {
-                        default: {
-                            persistentExperience2 = PersistentExperience.NON_KUBRICK;
-                            break;
-                        }
-                        case 1: {
-                            persistentExperience2 = PersistentExperience.KUBRICK_HERO_IMGS;
-                            break;
-                        }
-                        case 2: {
-                            persistentExperience2 = PersistentExperience.KUBRICK_HIGH_DENSITY;
-                            break;
-                        }
-                    }
+                    persistentExperience2 = updateKubrickConfiguration(serviceAgent$ConfigurationAgentInterface);
                 }
-                if (serviceAgent$ConfigurationAgentInterface.getKubrickKidsConfiguration() != null) {
-                    switch (PersistentExperience$1.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$KubrickKidsConfigData$KubrickKidsCell[serviceAgent$ConfigurationAgentInterface.getKubrickKidsConfiguration().getCell().ordinal()]) {
-                        default: {
-                            persistentExperience2 = PersistentExperience.NON_KUBRICK;
-                            break;
-                        }
-                        case 1: {
-                            persistentExperience2 = PersistentExperience.KUBRICK_KIDS_HERO_IMGS;
-                            break;
-                        }
-                        case 2: {
-                            persistentExperience2 = PersistentExperience.KUBRICK_KIDS_HIGH_DENSITY;
-                            break;
-                        }
-                        case 3: {
-                            persistentExperience2 = PersistentExperience.KUBRICK_KIDS_HIGH_DENSITY_VERT;
-                            break;
-                        }
-                        case 4: {
-                            persistentExperience2 = PersistentExperience.KUBRICK_KIDS_CONTROL_FLAT_GENRES;
-                            break;
-                        }
-                    }
+                if (serviceAgent$ConfigurationAgentInterface.getABTestConfiguration_6538() != null) {
+                    persistentExperience2 = updateABTest_6538(serviceAgent$ConfigurationAgentInterface);
+                }
+                else if (serviceAgent$ConfigurationAgentInterface.getABTestConfiguration_6725() != null) {
+                    persistentExperience2 = updateABTest_6725(serviceAgent$ConfigurationAgentInterface);
                 }
             }
         }
@@ -110,5 +83,59 @@ public enum PersistentExperience
             }
         }
         PreferenceUtils.putStringPref(context, "persistent_experience_key", persistentExperience2.toString());
+    }
+    
+    private static PersistentExperience updateABTest_6538(final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
+        switch (PersistentExperience$1.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$ABTestConfigData$Cell[serviceAgent$ConfigurationAgentInterface.getABTestConfiguration_6538().getCell().ordinal()]) {
+            default: {
+                return PersistentExperience.NON_KUBRICK;
+            }
+            case 1: {
+                return PersistentExperience.KUBRICK_KIDS_CONTROL_FLAT_GENRES;
+            }
+            case 2: {
+                return PersistentExperience.KUBRICK_KIDS_HERO_IMGS;
+            }
+            case 3: {
+                return PersistentExperience.KUBRICK_KIDS_HIGH_DENSITY;
+            }
+            case 4: {
+                return PersistentExperience.KUBRICK_KIDS_HIGH_DENSITY_VERT;
+            }
+        }
+    }
+    
+    private static PersistentExperience updateABTest_6725(final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
+        switch (PersistentExperience$1.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$ABTestConfigData$Cell[serviceAgent$ConfigurationAgentInterface.getABTestConfiguration_6725().getCell().ordinal()]) {
+            default: {
+                return PersistentExperience.NON_KUBRICK;
+            }
+            case 1: {
+                return PersistentExperience.LOLOMO_TITLE_ART_SMALL_BOXART;
+            }
+            case 2: {
+                return PersistentExperience.LOLOMO_TITLE_ART_LARGE_HORIZONTAL;
+            }
+            case 3: {
+                return PersistentExperience.LOLOMO_TITLE_ART_SMALL_HORIZONTAL;
+            }
+            case 4: {
+                return PersistentExperience.LOLOMO_TITLE_ART_LARGE_PORTRAIT_BOXART;
+            }
+        }
+    }
+    
+    private static PersistentExperience updateKubrickConfiguration(final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
+        switch (PersistentExperience$1.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$KubrickConfigData$KubrickCell[serviceAgent$ConfigurationAgentInterface.getKubrickConfiguration().getCell().ordinal()]) {
+            default: {
+                return PersistentExperience.NON_KUBRICK;
+            }
+            case 1: {
+                return PersistentExperience.KUBRICK_HERO_IMGS;
+            }
+            case 2: {
+                return PersistentExperience.KUBRICK_HIGH_DENSITY;
+            }
+        }
     }
 }

@@ -24,6 +24,8 @@ public interface UserProfile
     
     String getLastName();
     
+    int getMaturityLevel();
+    
     String getProfileGuid();
     
     String getProfileName();
@@ -41,6 +43,4 @@ public interface UserProfile
     boolean isKidsProfile();
     
     boolean isPrimaryProfile();
-    
-    boolean isSocialConnected();
 }

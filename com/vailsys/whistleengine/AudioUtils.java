@@ -11,7 +11,7 @@ class AudioUtils
     private static final int[] sampleRates;
     
     static {
-        sampleRates = new int[] { 32000, 24000, 16000, 8000 };
+        sampleRates = new int[] { 48000, 32000, 24000, 16000, 8000 };
     }
     
     public static int getSampleRate() {

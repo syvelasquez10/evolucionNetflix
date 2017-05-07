@@ -5,7 +5,10 @@
 package com.netflix.mediaclient.service.player;
 
 import android.view.SurfaceHolder;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
+import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthSaving;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.media.Subtitle;
 import java.nio.ByteBuffer;
@@ -24,8 +27,6 @@ import com.netflix.mediaclient.media.JPlayer2Helper;
 import android.media.AudioManager;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.media.PlayoutMetadata;
-import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams$NetType;
-import com.netflix.mediaclient.service.player.subtitles.SubtitleParserFactory;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
 import com.netflix.mediaclient.javabridge.ui.IMedia$MediaEventEnum;
@@ -46,7 +47,7 @@ import android.os.PowerManager$WakeLock;
 import android.content.BroadcastReceiver;
 import java.util.Timer;
 import android.view.Surface;
-import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleDownloadManager;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.servicemgr.IPlayerFileCache;
@@ -70,12 +71,12 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private static final int DELAY_SEEKCOMPLETE_MS = 300;
     private static final int EOS_DELTA = 10000;
     private static final int IntialLowBRThreshold = 200;
+    private static final int MAX_BR_THRESHOLD_DEFAULT_KBPS = 20000;
     private static final int MAX_CELLULAR_DOWNLOAD_LIMIT = 150000;
     private static final int MAX_WIFI_DOWNLOAD_LIMIT = 300000;
-    private static final int MaxBRThreshold = 20000;
+    private static int MaxBRThreshold = 0;
     private static final int NETWORK_CHECK_INTERVAL = 1000;
     private static final int NETWORK_CHECK_TIMEOUT = 30000;
-    private static final int SIXTY_COUNT = 60;
     private static final int STATE_CLOSED = 4;
     private static final int STATE_CREATED = -1;
     private static final int STATE_OPENING = 0;
@@ -123,7 +124,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private volatile int mState;
     private boolean mStayAwake;
     private SubtitleConfiguration mSubtitleConfiguration;
-    private SubtitleParser mSubtitles;
+    private SubtitleDownloadManager mSubtitles;
     private Surface mSurface;
     private Timer mTimer;
     private final BroadcastReceiver mUserAgentReceiver;
@@ -137,7 +138,6 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private final BroadcastReceiver playerChangesReceiver;
     private boolean preparedCompleted;
     private int prevEndPosition;
-    private int ptsTicker;
     private int seekedToPosition;
     private boolean seeking;
     private long sessionInitRxBytes;
@@ -151,6 +151,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     static {
         TAG = PlayerAgent.class.getSimpleName();
+        PlayerAgent.MaxBRThreshold = 20000;
     }
     
     public PlayerAgent() {
@@ -163,7 +164,6 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.splashScreenRemoved = false;
         this.mBufferingCompleted = false;
         this.ignoreErrorsWhileActionId12IsProcessed = false;
-        this.ptsTicker = 0;
         this.mState = -1;
         this.toPlayAfterStop = false;
         this.toOpenAfterClose = false;
@@ -455,10 +455,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     private void handleSubtitleData(final SubtitleData subtitleData) {
         Log.d(PlayerAgent.TAG, "MEDIA_SUBTITLE_DATA 100");
-        if (Log.isLoggable()) {
-            Log.d(PlayerAgent.TAG, "Subtitles download started from URL " + subtitleData.getUrl() + ", content type " + subtitleData.getProfile().getNccpCode());
-        }
-        (this.mSubtitles = SubtitleParserFactory.createParser(this, subtitleData, this.getUserAgent().getUserSubtitlePreferences(), this.getUserAgent().getSubtitleDefaults(), this.mMedia.getDisplayAspectRatio(), this.mBookmark)).load();
+        this.mSubtitles.changeSubtitle(subtitleData, this.mMedia.getDisplayAspectRatio(), this.mBookmark);
     }
     
     private void handleSubtitleUpdate(final int n) {
@@ -475,13 +472,17 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                         if (this.mSubtitles != null) {
                             break Label_0087;
                         }
-                        Log.d(PlayerAgent.TAG, "Subtitle data is not available.");
+                        Log.d(PlayerAgent.TAG, "Subtitle manager is not available.");
                     }
                     return;
                 }
             }
-            final SubtitleParser subtitleParser;
-            if (!subtitleParser.isReady()) {
+            final SubtitleDownloadManager subtitleDownloadManager;
+            if (subtitleDownloadManager.getSubtitleParser() == null) {
+                Log.d(PlayerAgent.TAG, "Subtitle data is not available.");
+                return;
+            }
+            if (!subtitleDownloadManager.getSubtitleParser().isReady()) {
                 Log.d(PlayerAgent.TAG, "Subtitle data is not ready yet!");
                 return;
             }
@@ -493,7 +494,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                 Log.d(PlayerAgent.TAG, "Can not update position, do NOT send subtitle screen update");
                 return;
             }
-            this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleChangeHandler(), subtitleParser.getSubtitlesForPosition(n));
+            this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleChangeHandler(), subtitleDownloadManager.getSubtitleParser().getSubtitlesForPosition(n));
         }
     }
     
@@ -518,14 +519,6 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             }
         }
         this.handleSubtitleUpdate(n);
-        if (this.isPlaying()) {
-            final int ptsTicker = this.ptsTicker + 1;
-            this.ptsTicker = ptsTicker;
-            if (ptsTicker % 60 == 0 && AuthorizationParams$NetType.wifi.equals(ConnectivityUtils.getCurrentNetType(this.getContext()))) {
-                this.mMedia.setWifiLinkSpeed(this.getContext());
-                this.ptsTicker = 0;
-            }
-        }
         this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnUpdatePtsHandler(), n);
     }
     
@@ -683,7 +676,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         if (this.mState == 0) {
             this.mMedia.setAudioBitrateRange(this.mAudioBitrateRange);
             if (this.isMPPlayerType()) {
-                this.mMedia.setVideoBitrateRange(200, 20000);
+                this.mMedia.setVideoBitrateRange(200, PlayerAgent.MaxBRThreshold);
                 if (this.mTimer != null) {
                     this.mInitVBRTimeoutTask = new PlayerAgent$InitialVideoBitrateRangeTimeoutTask(this, null);
                     this.mTimer.schedule(this.mInitVBRTimeoutTask, 15000L);
@@ -789,7 +782,9 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     public void close() {
         Log.d(PlayerAgent.TAG, "close()");
         this.mSurface = null;
-        this.mSubtitles = null;
+        if (this.mSubtitles != null) {
+            this.mSubtitles.close();
+        }
         this.inPlaybackSession = false;
         this.muteAudio(true);
         this.mPlayerExecutor.execute(this.onCloseRunnable);
@@ -851,6 +846,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.registerUserAgentReceiver();
         this.mPlayerExecutor = Executors.newSingleThreadExecutor();
         this.mPlayerFileManager = new PlayerFileManager(this.getContext());
+        this.mSubtitles = new SubtitleDownloadManager(this, this.getUserAgent());
         this.initCompleted(CommonStatus.OK);
     }
     
@@ -946,9 +942,9 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     @Override
     public IMedia$SubtitleProfile getSubtitleProfileFromMetadata() {
-        final SubtitleParser mSubtitles = this.mSubtitles;
-        if (mSubtitles != null) {
-            return mSubtitles.getSubtitleProfile();
+        final SubtitleDownloadManager mSubtitles = this.mSubtitles;
+        if (mSubtitles != null && mSubtitles.getSubtitleParser() != null) {
+            return mSubtitles.getSubtitleParser().getSubtitleProfile();
         }
         return null;
     }
@@ -970,6 +966,12 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     public void handleConnectivityChange(final Intent intent) {
         if (ConnectivityUtils.isNetworkTypeCellular(this.getContext())) {
+            if (BandwidthSaving.isBWSavingEnabledForUser(this.getConfigurationAgent().getBWSaveConfigData())) {
+                final int maxBandwidth = BandwidthSaving.getMaxBandwidth(this.getContext(), this.getConfigurationAgent().getBWSaveConfigData());
+                if (maxBandwidth > 0 && maxBandwidth < PlayerAgent.MaxBRThreshold) {
+                    this.setVideoBitrateRange(0, maxBandwidth);
+                }
+            }
             this.setVideoStreamingBufferSize(150000);
         }
         else {
@@ -1009,6 +1011,18 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         synchronized (this) {
             if (Log.isLoggable()) {
                 Log.d(PlayerAgent.TAG, "Open called movieId:" + mMovieId + " trackId:" + mPlayContext.getTrackId() + " bookmark:" + mBookmark);
+            }
+            if (BandwidthSaving.isBWSavingEnabledForPlay(this.getContext(), this.getConfigurationAgent().getBWSaveConfigData(), this.getConfigurationAgent().shouldForceBwSettingsInWifi())) {
+                int maxBRThreshold = BandwidthSaving.getMaxBandwidth(this.getContext(), this.getConfigurationAgent().getBWSaveConfigData());
+                Log.d(PlayerAgent.TAG, String.format("nf_bw bwOverride: %d,MaxBRThreshold : %d ", maxBRThreshold, PlayerAgent.MaxBRThreshold));
+                if (maxBRThreshold <= 0) {
+                    maxBRThreshold = PlayerAgent.MaxBRThreshold;
+                }
+                PlayerAgent.MaxBRThreshold = maxBRThreshold;
+            }
+            else {
+                PlayerAgent.MaxBRThreshold = 20000;
+                Log.d(PlayerAgent.TAG, String.format("nf_bw MaxBRThreshold : %d ", PlayerAgent.MaxBRThreshold));
             }
             this.mMovieId = mMovieId;
             this.mPlayContext = mPlayContext;
@@ -1198,12 +1212,12 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.mPlayerListenerManager.removePlayerListener(player$PlayerListener);
     }
     
-    public void reportFailedToDownloadSubtitleMetadata(final String s) {
+    public void reportFailedSubtitle(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b) {
         if (Log.isLoggable()) {
-            Log.e(PlayerAgent.TAG, "Failed to download subtitles metadata from " + s);
+            Log.e(PlayerAgent.TAG, "Failed to download subtitles metadata from " + s + ", because " + media$SubtitleFailure);
         }
         this.getService().getClientLogging().getErrorLogging().logHandledException("Failed to download subtitle metadata");
-        this.mMedia.reportFailedSubtitleDownload(s);
+        this.mMedia.reportFailedSubtitle(s, subtitleUrl, media$SubtitleFailure, b);
         this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleFailedHandler(), new Object[0]);
     }
     
@@ -1218,8 +1232,8 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.mRelativeSeekPosition = 0;
         this.mFuzz = 0;
         this.mPlayerExecutor.execute(this.onSeekRunnable);
-        if (this.mSubtitles != null) {
-            this.mSubtitles.seeked(this.seekedToPosition);
+        if (this.mSubtitles != null && this.mSubtitles.getSubtitleParser() != null) {
+            this.mSubtitles.getSubtitleParser().seeked(this.seekedToPosition);
         }
     }
     
@@ -1230,8 +1244,8 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.mRelativeSeekPosition = mRelativeSeekPosition;
         this.mFuzz = mFuzz;
         this.mPlayerExecutor.execute(this.onSeekRunnable);
-        if (this.mSubtitles != null) {
-            this.mSubtitles.seeked(this.seekedToPosition);
+        if (this.mSubtitles != null && this.mSubtitles.getSubtitleParser() != null) {
+            this.mSubtitles.getSubtitleParser().seeked(this.seekedToPosition);
         }
     }
     
@@ -1245,7 +1259,6 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             this.mMedia.selectTracks(audioSource, subtitle);
             if (subtitle == null) {
                 Log.d(PlayerAgent.TAG, "Removing subtitles");
-                this.mSubtitles = null;
             }
             return true;
         }
@@ -1288,8 +1301,13 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.mMedia.setVOapi(n, n2);
     }
     
-    void setVideoBitrateRange(final int n, final int n2) {
-        if (this.mMedia != null) {}
+    @Override
+    public void setVideoBitrateRange(final int n, final int maxBRThreshold) {
+        if (this.mMedia != null) {
+            Log.d(PlayerAgent.TAG, String.format("nf_bw setVideoBitrateRange :(%d, %d)", n, maxBRThreshold));
+            PlayerAgent.MaxBRThreshold = maxBRThreshold;
+            this.mMedia.setVideoBitrateRange(n, maxBRThreshold);
+        }
     }
     
     void setVideoStreamingBufferSize(final int maxVideoBufferSize) {

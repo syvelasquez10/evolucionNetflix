@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.kubrick_kids.details;
 
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.ui.details.IHandleBackPress;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationEdgePadding;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
@@ -30,12 +32,12 @@ public class KubrickKidsMovieDetailsFrag extends KubrickMovieDetailsFrag
     
     @Override
     protected int getLayoutId() {
-        return 2130903128;
+        return 2130903115;
     }
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296521) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296501) * 2;
     }
     
     @Override
@@ -68,7 +70,7 @@ public class KubrickKidsMovieDetailsFrag extends KubrickMovieDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131296535), this.numColumns, 3));
+        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131296515), this.numColumns, 3));
     }
     
     @Override
@@ -76,5 +78,13 @@ public class KubrickKidsMovieDetailsFrag extends KubrickMovieDetailsFrag
         super.setupRecyclerViewLayoutManager();
         this.recyclerView.getLayoutParams().width = KidsUtils.getDetailsPageContentWidth((Context)this.getActivity());
         this.recyclerView.setAlpha(0.0f);
+    }
+    
+    public void showViews() {
+        if (new MaturityValidator(this, this.getNetflixActivity(), this.mVideoDetails).isRestricted()) {
+            this.leWrapper.hide(false);
+            return;
+        }
+        super.showViews();
     }
 }

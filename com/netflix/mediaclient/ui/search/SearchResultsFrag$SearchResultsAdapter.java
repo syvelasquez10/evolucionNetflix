@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.search;
 
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
@@ -70,23 +69,15 @@ class SearchResultsFrag$SearchResultsAdapter extends BaseAdapter implements Adap
     }
     
     private void adjustHeight(final SearchResultView searchResultView) {
-        int n = 0;
-        if (searchResultView.getImage() != null) {
-            switch (SearchResultsFrag$7.$SwitchMap$com$netflix$mediaclient$ui$search$SearchResultsFrag$SearchCategory[this.searchCategory.ordinal()]) {
-                default: {
-                    n = this.this$0.imgHeightVideo;
-                    break;
+        switch (SearchResultsFrag$7.$SwitchMap$com$netflix$mediaclient$ui$search$SearchResultsFrag$SearchCategory[this.searchCategory.ordinal()]) {
+            case 2: {
+                if (SearchUtils.getSearchExperience() == SearchUtils$SearchExperience.PHONE) {
+                    searchResultView.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.this$0.imgHeightPeople));
+                    return;
                 }
-                case 2: {
-                    n = this.this$0.imgHeightPeople;
-                    break;
-                }
+                break;
             }
         }
-        else {
-            n = -2;
-        }
-        searchResultView.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, n));
     }
     
     private View createView() {
@@ -118,7 +109,7 @@ class SearchResultsFrag$SearchResultsAdapter extends BaseAdapter implements Adap
     private void setResid() {
         switch (SearchResultsFrag$7.$SwitchMap$com$netflix$mediaclient$ui$search$SearchResultsFrag$SearchCategory[this.searchCategory.ordinal()]) {
             default: {
-                this.resId = 2130903217;
+                this.resId = 2130903203;
             }
             case 2: {
                 this.resId = SearchUtils.getSearchViewLayoutPeople();
@@ -166,14 +157,14 @@ class SearchResultsFrag$SearchResultsAdapter extends BaseAdapter implements Adap
         final PlayContextImp playContextImp = new PlayContextImp(trackableForPos, n);
         final Object item = this.getItem(n);
         if (this.searchCategory == SearchResultsFrag$SearchCategory.SUGGESTIONS && !(item instanceof SearchSuggestion)) {
-            String access$500;
+            String access$300;
             if (this.this$0.query != "") {
-                access$500 = this.this$0.query;
+                access$300 = this.this$0.query;
             }
             else {
-                access$500 = "null";
+                access$300 = "null";
             }
-            this.this$0.getNetflixActivity().getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("SPY-8015 - bad search query  %s", access$500));
+            this.this$0.getNetflixActivity().getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("SPY-8015 - bad search query  %s", access$300));
             return view;
         }
         ((SearchResultView)view).update(item, playContextImp, this.this$0.query, trackableForPos.getReferenceId());

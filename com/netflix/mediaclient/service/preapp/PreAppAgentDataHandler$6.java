@@ -38,22 +38,36 @@ import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
 class PreAppAgentDataHandler$6 extends SimpleBrowseAgentCallback
 {
     final /* synthetic */ PreAppAgentDataHandler this$0;
+    final /* synthetic */ SimpleBrowseAgentCallback val$callbacks;
     final /* synthetic */ Set val$fetchCallbacksList;
+    final /* synthetic */ SimpleBrowseAgentCallback val$iqCallback;
     final /* synthetic */ PDiskData val$newData;
+    final /* synthetic */ SimpleBrowseAgentCallback val$nonMemberListCallback;
+    final /* synthetic */ SimpleBrowseAgentCallback val$standardListsCallback;
+    final /* synthetic */ SimpleBrowseAgentCallback val$standardListsCallback2;
     final /* synthetic */ PreAppAgentEventType val$updateType;
     
-    PreAppAgentDataHandler$6(final PreAppAgentDataHandler this$0, final PDiskData val$newData, final Set val$fetchCallbacksList, final PreAppAgentEventType val$updateType) {
+    PreAppAgentDataHandler$6(final PreAppAgentDataHandler this$0, final PDiskData val$newData, final Set val$fetchCallbacksList, final PreAppAgentEventType val$updateType, final SimpleBrowseAgentCallback val$callbacks, final SimpleBrowseAgentCallback val$iqCallback, final SimpleBrowseAgentCallback val$standardListsCallback, final SimpleBrowseAgentCallback val$standardListsCallback2, final SimpleBrowseAgentCallback val$nonMemberListCallback) {
         this.this$0 = this$0;
         this.val$newData = val$newData;
         this.val$fetchCallbacksList = val$fetchCallbacksList;
         this.val$updateType = val$updateType;
+        this.val$callbacks = val$callbacks;
+        this.val$iqCallback = val$iqCallback;
+        this.val$standardListsCallback = val$standardListsCallback;
+        this.val$standardListsCallback2 = val$standardListsCallback2;
+        this.val$nonMemberListCallback = val$nonMemberListCallback;
     }
     
     @Override
     public void onLoMosFetched(final List<LoMo> list, final Status status) {
         Log.d("nf_preappagentdatahandler", String.format("LoMos fetched ", new Object[0]));
-        this.this$0.copyListInfoIntoDiskData(this.val$newData, list);
-        this.val$fetchCallbacksList.remove(PDiskData$ListType.LOMO_INFO);
-        this.this$0.proceedAfterFetchOfLists(this.val$fetchCallbacksList, this.val$newData, this.val$updateType);
+        if (status.isSucces()) {
+            this.this$0.copyListInfoIntoDiskData(this.val$newData, list);
+            this.val$fetchCallbacksList.remove(PDiskData$ListType.LOMO_INFO);
+            this.this$0.fetchLists(this.val$updateType, this.val$callbacks, this.val$iqCallback, this.val$standardListsCallback, this.val$standardListsCallback2, this.val$nonMemberListCallback);
+            return;
+        }
+        Log.e("nf_preappagentdatahandler", String.format(" updateType: %s - skip fetching data for widget because lomo fetch failed - avoid triggering multiple lolomos", this.val$updateType));
     }
 }

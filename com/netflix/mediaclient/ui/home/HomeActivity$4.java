@@ -42,8 +42,8 @@ import android.support.v4.widget.DrawerLayout;
 import java.util.LinkedList;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
-import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
-import com.netflix.mediaclient.util.SocialUtils;
+import com.netflix.mediaclient.util.IrisUtils$NotificationsListStatus;
+import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
@@ -61,13 +61,13 @@ class HomeActivity$4 extends BroadcastReceiver
         if (Log.isLoggable()) {
             Log.v("HomeActivity", "notificationsListUpdateReceiver, onReceive");
         }
-        final SocialUtils$NotificationsListStatus handleNotificationsUpdateReceiver = SocialUtils.handleNotificationsUpdateReceiver(intent, "HomeActivity");
+        final IrisUtils$NotificationsListStatus handleNotificationsUpdateReceiver = IrisUtils.handleNotificationsUpdateReceiver(intent, "HomeActivity");
         if (handleNotificationsUpdateReceiver != this.this$0.notificationsListStatus) {
             this.this$0.notificationsListStatus = handleNotificationsUpdateReceiver;
             if (Log.isLoggable()) {
                 Log.v("HomeActivity", "Updating menu indicator with new status: " + handleNotificationsUpdateReceiver);
             }
-            this.this$0.getNetflixActionBar().setSandwichIcon(this.this$0.notificationsListStatus == SocialUtils$NotificationsListStatus.HAS_UNREAD_MESSAGES);
+            this.this$0.getNetflixActionBar().setSandwichIcon(this.this$0.notificationsListStatus == IrisUtils$NotificationsListStatus.HAS_UNREAD_MESSAGES);
         }
     }
 }

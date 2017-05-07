@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.player;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.view.KeyEvent;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListener;
@@ -26,11 +27,12 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.app.Activity;
 import android.annotation.TargetApi;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
+import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthDialog$BandwidthSavingCallback;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 
 @TargetApi(14)
-public class PlayerActivity extends FragmentHostActivity implements NetflixDialogFrag$DialogCanceledListenerProvider, PlayContextProvider
+public class PlayerActivity extends FragmentHostActivity implements NetflixDialogFrag$DialogCanceledListenerProvider, BandwidthDialog$BandwidthSavingCallback, PlayContextProvider
 {
     static final String EXTRA_GET_DETAILS_EPISODE_DETAILS = "extra_get_details_EPISODE_DETAILS";
     static final String EXTRA_GET_DETAILS_IS_EPISODE = "extra_get_details_is_episode";
@@ -132,7 +134,7 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903112;
+        return 2130903099;
     }
     
     @Override
@@ -192,6 +194,11 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
     @Override
     public boolean isLoadingData() {
         return false;
+    }
+    
+    @Override
+    public void onBandwidthSettingsDone(final ServiceManager serviceManager) {
+        ((PlayerFragment)this.getPrimaryFrag()).onBandwidthSettingsDone(serviceManager);
     }
     
     @Override

@@ -19,7 +19,8 @@ import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleData;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleParser$DownloadFailedCallback;
+import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.service.player.PlayerAgent;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
 import java.util.List;
@@ -42,8 +43,8 @@ public class TextSubtitleParser extends BaseSubtitleParser
     private double mTickRate;
     private String mTimeBase;
     
-    public TextSubtitleParser(final PlayerAgent playerAgent, final SubtitleData subtitleData, final TextStyle textStyle, final TextStyle textStyle2, final float n) {
-        super(playerAgent, subtitleData, textStyle, textStyle2, n);
+    public TextSubtitleParser(final PlayerAgent playerAgent, final SubtitleUrl subtitleUrl, final TextStyle textStyle, final TextStyle textStyle2, final float n, final SubtitleParser$DownloadFailedCallback subtitleParser$DownloadFailedCallback) {
+        super(playerAgent, subtitleUrl, textStyle, textStyle2, n, subtitleParser$DownloadFailedCallback);
         this.mStyles = new HashMap<String, TextStyle>();
         this.mRegions = new HashMap<String, Region>();
         this.mTextBlocks = new ArrayList<SubtitleBlock>();
@@ -433,7 +434,7 @@ public class TextSubtitleParser extends BaseSubtitleParser
     
     protected void handleDownloadedSubtitleData(final String s, final String s2) {
         Log.d("nf_subtitles", "MEDIA_SUBTITLE_DATA 100");
-        new BackgroundTask().execute(new TextSubtitleParser$2(this, s));
+        new BackgroundTask().execute(new TextSubtitleParser$2(this, s, s2));
     }
     
     protected void handleSubtitleData(final String s) {

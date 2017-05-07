@@ -50,15 +50,15 @@ public final class MdxMenu
     
     private int getIcon() {
         if (this.activity.isConnectingToTarget()) {
-            return 2130837703;
+            return 2130837655;
         }
         if (MdxUtils.isTargetReadyToControl(this.activity.getServiceManager())) {
-            return 2130837702;
+            return 2130837654;
         }
         if (this.useDarkIcon) {
-            return 2130837724;
+            return 2130837676;
         }
-        return 2130837701;
+        return 2130837653;
     }
     
     private boolean isAnyMdxTargetAvailable() {

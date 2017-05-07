@@ -14,8 +14,8 @@ import com.netflix.model.branches.FalkorSeason;
 import com.netflix.model.branches.SearchMap;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.model.branches.FalkorPerson;
-import com.netflix.model.leafs.social.SocialNotificationsListSummary;
-import com.netflix.model.branches.FalkorSocialNotification;
+import com.netflix.model.leafs.social.IrisNotificationsListSummary;
+import com.netflix.model.branches.FalkorIrisNotification;
 import com.netflix.model.branches.FalkorVideo;
 import com.netflix.model.leafs.LoLoMoSummary;
 import com.netflix.model.leafs.ListOfMoviesSummary;
@@ -43,8 +43,8 @@ public class Root implements BranchNode, Flushable
     private BranchMap<SummarizedList<Ref, LoLoMoSummary>> lolomos;
     private BranchMap<FalkorVideo> movies;
     private BranchMap<Ref> nonMemberVideos;
-    private BranchMap<FalkorSocialNotification> notifications;
-    private SummarizedList<Ref, SocialNotificationsListSummary> notificationsList;
+    private BranchMap<FalkorIrisNotification> notifications;
+    private SummarizedList<Ref, IrisNotificationsListSummary> notificationsList;
     private BranchMap<FalkorPerson> people;
     private ModelProxy<? extends BranchNode> proxy;
     private SearchMap search;
@@ -253,7 +253,7 @@ public class Root implements BranchNode, Flushable
                 return this.characters = new BranchMap<FalkorKidsCharacter>(Falkor$Creator.FalkorKidsCharacter(this.proxy));
             }
             case "notifications": {
-                return this.notifications = new BranchMap<FalkorSocialNotification>(Falkor$Creator.FalkorSocialNotifications(this.proxy));
+                return this.notifications = new BranchMap<FalkorIrisNotification>(Falkor$Creator.FalkorSocialNotifications(this.proxy));
             }
             case "notificationsList": {
                 return this.notificationsList = Falkor$Creator.FalkorSocialNotificationsList(this.proxy);
@@ -327,10 +327,10 @@ public class Root implements BranchNode, Flushable
                 this.nonMemberVideos = (BranchMap<Ref>)o;
             }
             case "notifications": {
-                this.notifications = (BranchMap<FalkorSocialNotification>)o;
+                this.notifications = (BranchMap<FalkorIrisNotification>)o;
             }
             case "notificationsList": {
-                this.notificationsList = (SummarizedList<Ref, SocialNotificationsListSummary>)o;
+                this.notificationsList = (SummarizedList<Ref, IrisNotificationsListSummary>)o;
             }
         }
     }

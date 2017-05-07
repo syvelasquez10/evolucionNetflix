@@ -39,7 +39,7 @@ public class KubrickLoLoMoAdapter extends LoLoMoAdapter
     
     @Override
     protected int getViewLayoutId() {
-        return 2130903133;
+        return 2130903120;
     }
     
     @Override

@@ -470,44 +470,6 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
         }
     }
     
-    public static void reportRecommendSheetActionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final Error error) {
-        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") || ConsolidatedLoggingUtils.isNull(clientLogging$CompletionReason, "Reason can not be null!")) {
-            return;
-        }
-        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_RECOMMEND_SHEET_ENDED");
-        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("reason", clientLogging$CompletionReason.name());
-        while (true) {
-            if (error == null) {
-                break Label_0066;
-            }
-            try {
-                intent.putExtra("error", error.toJSONObject().toString());
-                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-            }
-            catch (JSONException ex) {
-                Log.e("nf_log", "Failed to get JSON string from UIError", (Throwable)ex);
-                continue;
-            }
-            break;
-        }
-    }
-    
-    public static void reportRecommendSheetActionStarted(final Context context, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
-        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
-            return;
-        }
-        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_RECOMMEND_SHEET_START");
-        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        if (clientLogging$ModalView != null) {
-            intent.putExtra("view", clientLogging$ModalView.name());
-        }
-        if (userActionLogging$CommandName != null) {
-            intent.putExtra("cmd", userActionLogging$CommandName.name());
-        }
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
-    
     public static void reportRemoveFromQueueActionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
         if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") || ConsolidatedLoggingUtils.isNull(clientLogging$CompletionReason, "Reason can not be null!")) {
             return;
@@ -541,44 +503,6 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
             }
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
-    }
-    
-    public static void reportSayThanksActionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final Error error) {
-        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") || ConsolidatedLoggingUtils.isNull(clientLogging$CompletionReason, "Reason can not be null!")) {
-            return;
-        }
-        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_ENDED");
-        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("reason", clientLogging$CompletionReason.name());
-        while (true) {
-            if (error == null) {
-                break Label_0066;
-            }
-            try {
-                intent.putExtra("error", error.toJSONObject().toString());
-                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-            }
-            catch (JSONException ex) {
-                Log.e("nf_log", "Failed to get JSON string from UIError", (Throwable)ex);
-                continue;
-            }
-            break;
-        }
-    }
-    
-    public static void reportSayThanksActionStarted(final Context context, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
-        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
-            return;
-        }
-        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_START");
-        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        if (clientLogging$ModalView != null) {
-            intent.putExtra("view", clientLogging$ModalView.name());
-        }
-        if (userActionLogging$CommandName != null) {
-            intent.putExtra("cmd", userActionLogging$CommandName.name());
-        }
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
     public static void reportSearchActionEnded(final long n, final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {

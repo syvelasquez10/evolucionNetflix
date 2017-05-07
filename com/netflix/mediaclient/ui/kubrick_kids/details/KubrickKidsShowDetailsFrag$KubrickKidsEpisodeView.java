@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.kubrick_kids.details;
 
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.ui.details.IHandleBackPress;
 import android.widget.SpinnerAdapter;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter$IViewCreator;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
@@ -45,7 +47,7 @@ class KubrickKidsShowDetailsFrag$KubrickKidsEpisodeView extends KubrickShowDetai
     
     @Override
     protected void adjustHeight() {
-        this.image.getLayoutParams().height = (int)((KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296507) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
+        this.image.getLayoutParams().height = (int)((KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296487) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
     }
     
     @Override
@@ -71,7 +73,7 @@ class KubrickKidsShowDetailsFrag$KubrickKidsEpisodeView extends KubrickShowDetai
     protected void updateTitle(final EpisodeDetails episodeDetails) {
         if (this.title != null) {
             super.updateTitle(episodeDetails);
-            this.title.setTextColor(this.getResources().getColor(2131558502));
+            this.title.setTextColor(this.getResources().getColor(2131558493));
             final View view = (View)this.getParent();
             if (view != null) {
                 view.setTag(2131623950, (Object)episodeDetails.getSeasonNumber());

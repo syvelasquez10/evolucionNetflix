@@ -44,7 +44,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.uiview.model.CommandEndedEvent$InputValue;
 import android.os.Handler;
-import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
+import com.netflix.mediaclient.util.IrisUtils$NotificationsListStatus;
 import android.content.Context;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.Log;
@@ -73,7 +73,7 @@ class HomeActivity$1 implements DrawerLayout$DrawerListener
     @Override
     public void onDrawerOpened(View view) {
         Log.i("HomeActivity", "onDrawerOpened");
-        if (this.this$0.notificationsListStatus == SocialUtils$NotificationsListStatus.HAS_UNREAD_MESSAGES) {
+        if (this.this$0.notificationsListStatus == IrisUtils$NotificationsListStatus.HAS_UNREAD_MESSAGES) {
             Log.i("HomeActivity", "Drawer was opened - scheduling a timer to mark all visible notifications as read");
             this.this$0.readRunnable = new HomeActivity$1$1(this);
             this.this$0.readRunnableHandler = new Handler();
@@ -94,8 +94,8 @@ class HomeActivity$1 implements DrawerLayout$DrawerListener
                 view = (View)new JSONObject();
                 while (true) {
                     try {
-                        ((JSONObject)view).put("notifications", this.this$0.notificationsListStatus != SocialUtils$NotificationsListStatus.NO_MESSAGES);
-                        ((JSONObject)view).put("unreadNotifications", this.this$0.notificationsListStatus == SocialUtils$NotificationsListStatus.HAS_UNREAD_MESSAGES);
+                        ((JSONObject)view).put("notifications", this.this$0.notificationsListStatus != IrisUtils$NotificationsListStatus.NO_MESSAGES);
+                        ((JSONObject)view).put("unreadNotifications", this.this$0.notificationsListStatus == IrisUtils$NotificationsListStatus.HAS_UNREAD_MESSAGES);
                         UIViewLogUtils.reportLeftMenuImpressionStarted((Context)this.this$0, (JSONObject)view);
                         ((StandardSlidingMenu)this.this$0.slidingMenuAdapter).reportNotificationsImpression(true);
                         return;

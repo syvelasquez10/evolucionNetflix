@@ -12,6 +12,7 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.app.Activity;
 import com.netflix.mediaclient.util.MathUtils;
 import java.util.ArrayList;
@@ -127,11 +128,19 @@ public abstract class BasePaginatedAdapter<T extends Video>
     }
     
     public int getRowHeightInPx() {
-        final int n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.numItemsPerPage * 1.43f + 0.5f);
-        if (Log.isLoggable()) {
-            Log.v("BasePaginatedAdapter", "Computed view height: " + n);
+        final float n = LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.numItemsPerPage;
+        float n2;
+        if (BrowseExperience.useLolomoBoxArt()) {
+            n2 = 1.43f;
         }
-        return n;
+        else {
+            n2 = 0.5625f;
+        }
+        final int n3 = (int)(n2 * n + 0.5f);
+        if (Log.isLoggable()) {
+            Log.v("BasePaginatedAdapter", "Computed view height: " + n3);
+        }
+        return n3;
     }
     
     public View getView(final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final BasicLoMo basicLoMo, final int n) {

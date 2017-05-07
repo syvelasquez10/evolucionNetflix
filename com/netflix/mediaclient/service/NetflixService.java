@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.service;
 
-import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
-import java.util.Set;
 import android.os.Process;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;
@@ -163,7 +161,7 @@ public final class NetflixService extends Service implements INetflixService
                 Log.d("NetflixService", "MDX command intent ");
                 this.mMdxAgent.handleCommand(intent);
             }
-            if (intent.hasCategory("com.netflix.mediaclient.intent.category.PUSH") && (this.mPushAgent.isSupported() || intent.hasExtra("swiped_social_notification_id"))) {
+            if (intent.hasCategory("com.netflix.mediaclient.intent.category.PUSH") && (this.mPushAgent.isSupported() || intent.hasExtra("swiped_notification_id"))) {
                 Log.d("NetflixService", "Push notification command intent ");
                 this.mPushAgent.handleCommand(intent);
             }
@@ -317,8 +315,8 @@ public final class NetflixService extends Service implements INetflixService
         this.mUserAgent.addWebUserProfile(s, b, s2, new NetflixService$UserAgentClientCallback(this, n, n2));
     }
     
-    public void connectWithFacebook(final String s, final int n, final int n2) {
-        this.mUserAgent.connectWithFacebook(s, new NetflixService$UserAgentClientCallback(this, n, n2));
+    public void createAutoLoginToken(final long n, final int n2, final int n3) {
+        this.mUserAgent.createAutoLoginToken(n, new NetflixService$UserAgentClientCallback(this, n2, n3));
     }
     
     public boolean deleteLocalResource(final String s) {
@@ -405,10 +403,6 @@ public final class NetflixService extends Service implements INetflixService
         return this.mFalkorAccess;
     }
     
-    public void getFriendsForRecommendationList(final String s, final int n, final String s2, final int n2, final int n3) {
-        this.mUserAgent.fetchFriendsForRecommendations(s, n, s2, new NetflixService$UserAgentClientCallback(this, n2, n3));
-    }
-    
     public Handler getHandler() {
         return this.handler;
     }
@@ -458,8 +452,8 @@ public final class NetflixService extends Service implements INetflixService
         return this.mVoipAgent;
     }
     
-    public boolean isCurrentProfileFacebookConnected() {
-        return this.mUserAgent.isCurrentProfileFacebookConnected();
+    public boolean isApkMissingSupportForLocale() {
+        return this.mUserAgent.isApkMissingSupportForLocale();
     }
     
     public boolean isCurrentProfileIQEnabled() {
@@ -648,10 +642,6 @@ public final class NetflixService extends Service implements INetflixService
     
     public void selectProfile(final String s) {
         this.mUserAgent.selectProfile(s);
-    }
-    
-    public void sendRecommendationsToFriends(final String s, final Set<FriendForRecommendation> set, final String s2, final String s3) {
-        this.mUserAgent.sendRecommendationsToFriends(s, set, s2, s3);
     }
     
     public void setCurrentAppLocale(final String currentAppLocale) {

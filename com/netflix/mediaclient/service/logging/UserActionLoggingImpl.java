@@ -10,10 +10,8 @@ import com.netflix.mediaclient.service.logging.uiaction.model.StartPlayEndedEven
 import com.netflix.mediaclient.service.logging.android.model.ShareSheetEndedEvent;
 import com.netflix.mediaclient.service.logging.android.model.ShareSheetOpenEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.SelectProfileEndedEvent;
-import com.netflix.mediaclient.service.logging.uiaction.model.SayThanksEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.RemoveFromPlaylistEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.RegisterEndedEvent;
-import com.netflix.mediaclient.service.logging.android.model.RecommendSheetEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.RateTitleEndedEvent;
 import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetActionEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.PostPlayEndedEvent;
@@ -56,10 +54,8 @@ import com.netflix.mediaclient.service.logging.android.ShareSheetOpenSession;
 import com.netflix.mediaclient.service.logging.uiaction.SelectProfileSession;
 import com.netflix.mediaclient.service.logging.uiaction.SearchSession;
 import java.util.Map;
-import com.netflix.mediaclient.service.logging.uiaction.SayThanksSession;
 import com.netflix.mediaclient.service.logging.uiaction.RemoveFromPlaylistSession;
 import com.netflix.mediaclient.service.logging.uiaction.RegisterSession;
-import com.netflix.mediaclient.service.logging.android.RecommendSheetSession;
 import com.netflix.mediaclient.service.logging.uiaction.RateTitleSession;
 import com.netflix.mediaclient.service.logging.android.preapp.PreAppWidgetActionSession;
 import com.netflix.mediaclient.service.logging.uiaction.PostPlaySession;
@@ -90,10 +86,8 @@ final class UserActionLoggingImpl implements UserActionLogging
     private PostPlaySession mPostPlaySession;
     private PreAppWidgetActionSession mPreAppWidgetActionSession;
     private RateTitleSession mRateTitleSession;
-    private RecommendSheetSession mRecommendSheetSession;
     private RegisterSession mRegisterSession;
     private RemoveFromPlaylistSession mRemoveFromPlaylistSession;
-    private SayThanksSession mSayThanksSession;
     private Map<Long, SearchSession> mSearchSessions;
     private SelectProfileSession mSelectProfileSession;
     private ShareSheetOpenSession mShareSheetOpenSession;
@@ -514,28 +508,28 @@ final class UserActionLoggingImpl implements UserActionLogging
         int n = intent.getIntExtra("chosenVideoId", -1);
         while (true) {
             while (true) {
-                Label_0068: {
+                Label_0067: {
                     if (n < 0) {
                         final Integer value = null;
-                        break Label_0068;
+                        break Label_0067;
                     }
-                    Label_0147: {
-                        break Label_0147;
+                    Label_0146: {
+                        break Label_0146;
                         Integer value = null;
                         UIError instance;
                         Integer value2 = null;
-                        Label_0099_Outer:Label_0114_Outer:
+                        Label_0098_Outer:Label_0113_Outer:
                         while (true) {
                             n = intent.getIntExtra("trackId", 0);
                             while (true) {
-                                Label_0186: {
+                                Label_0185: {
                                     while (true) {
-                                    Label_0180:
+                                    Label_0179:
                                         while (true) {
                                             try {
                                                 instance = UIError.createInstance(stringExtra);
                                                 if (!StringUtils.isNotEmpty((String)s)) {
-                                                    break Label_0186;
+                                                    break Label_0185;
                                                 }
                                                 s = IClientLogging$CompletionReason.valueOf((String)s);
                                                 if (StringUtils.isNotEmpty((String)s2)) {
@@ -543,16 +537,16 @@ final class UserActionLoggingImpl implements UserActionLogging
                                                     this.endPostPlaySession((IClientLogging$CompletionReason)s, (IClientLogging$ModalView)s2, instance, booleanExtra, booleanExtra2, value, value2, n);
                                                     return;
                                                 }
-                                                break Label_0180;
+                                                break Label_0179;
                                                 value2 = n;
-                                                continue Label_0099_Outer;
+                                                continue Label_0098_Outer;
                                                 value = n;
                                                 break;
                                             }
                                             catch (JSONException ex) {
                                                 Log.e("nf_log", "Failed JSON", (Throwable)ex);
                                                 instance = null;
-                                                continue Label_0114_Outer;
+                                                continue Label_0113_Outer;
                                             }
                                             break;
                                         }
@@ -677,57 +671,6 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.startRateTitleSession(value, value2);
     }
     
-    private void handleRecommendSheetEnded(final Intent intent) {
-    Label_0043_Outer:
-        while (true) {
-            IClientLogging$ModalView value = null;
-            Serializable s = intent.getStringExtra("reason");
-            final String stringExtra = intent.getStringExtra("error");
-            final String stringExtra2 = intent.getStringExtra("view");
-            while (true) {
-                while (true) {
-                    try {
-                        final UIError instance = UIError.createInstance(stringExtra);
-                        if (StringUtils.isNotEmpty((String)s)) {
-                            s = IClientLogging$CompletionReason.valueOf((String)s);
-                            if (StringUtils.isNotEmpty(stringExtra2)) {
-                                value = IClientLogging$ModalView.valueOf(stringExtra2);
-                            }
-                            this.endRecommendSheetSession((IClientLogging$CompletionReason)s, value, instance);
-                            return;
-                        }
-                    }
-                    catch (JSONException ex) {
-                        Log.e("nf_log", "Failed JSON", (Throwable)ex);
-                        final UIError instance = null;
-                        continue Label_0043_Outer;
-                    }
-                    break;
-                }
-                s = null;
-                continue;
-            }
-        }
-    }
-    
-    private void handleRecommendSheetStart(final Intent intent) {
-        final IClientLogging$ModalView clientLogging$ModalView = null;
-        final String stringExtra = intent.getStringExtra("cmd");
-        UserActionLogging$CommandName value;
-        if (!StringUtils.isEmpty(stringExtra)) {
-            value = UserActionLogging$CommandName.valueOf(stringExtra);
-        }
-        else {
-            value = null;
-        }
-        final String stringExtra2 = intent.getStringExtra("view");
-        IClientLogging$ModalView value2 = clientLogging$ModalView;
-        if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
-        }
-        this.startRecommendSheetSession(value, value2);
-    }
-    
     private void handleRegisterEnded(final Intent intent) {
         IClientLogging$CompletionReason value = null;
         final String stringExtra = intent.getStringExtra("reason");
@@ -804,57 +747,6 @@ final class UserActionLoggingImpl implements UserActionLogging
             value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
         this.startRemoveFromPlaylistSession(value, value2);
-    }
-    
-    private void handleSayThanksEnded(final Intent intent) {
-    Label_0043_Outer:
-        while (true) {
-            IClientLogging$ModalView value = null;
-            Serializable s = intent.getStringExtra("reason");
-            final String stringExtra = intent.getStringExtra("error");
-            final String stringExtra2 = intent.getStringExtra("view");
-            while (true) {
-                while (true) {
-                    try {
-                        final UIError instance = UIError.createInstance(stringExtra);
-                        if (StringUtils.isNotEmpty((String)s)) {
-                            s = IClientLogging$CompletionReason.valueOf((String)s);
-                            if (StringUtils.isNotEmpty(stringExtra2)) {
-                                value = IClientLogging$ModalView.valueOf(stringExtra2);
-                            }
-                            this.endSayThanksSession((IClientLogging$CompletionReason)s, value, instance);
-                            return;
-                        }
-                    }
-                    catch (JSONException ex) {
-                        Log.e("nf_log", "Failed JSON", (Throwable)ex);
-                        final UIError instance = null;
-                        continue Label_0043_Outer;
-                    }
-                    break;
-                }
-                s = null;
-                continue;
-            }
-        }
-    }
-    
-    private void handleSayThanksStart(final Intent intent) {
-        final IClientLogging$ModalView clientLogging$ModalView = null;
-        final String stringExtra = intent.getStringExtra("cmd");
-        UserActionLogging$CommandName value;
-        if (!StringUtils.isEmpty(stringExtra)) {
-            value = UserActionLogging$CommandName.valueOf(stringExtra);
-        }
-        else {
-            value = null;
-        }
-        final String stringExtra2 = intent.getStringExtra("view");
-        IClientLogging$ModalView value2 = clientLogging$ModalView;
-        if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
-        }
-        this.startSayThanksSession(value, value2);
     }
     
     private void handleSearchEnded(final Intent intent) {
@@ -1393,7 +1285,6 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.endRateTitleSession(IClientLogging$CompletionReason.canceled, null, 0, 0);
             this.endRegisterSession(IClientLogging$CompletionReason.canceled, null);
             this.endRemoveFromPlaylistSession(IClientLogging$CompletionReason.canceled, null);
-            this.endSayThanksSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
             this.endSelectProfileSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
             this.endStartPlaySession(IClientLogging$CompletionReason.canceled, null, 0, null);
             this.endSubmitPaymentSession(IClientLogging$CompletionReason.canceled, null, false, null, null);
@@ -1401,7 +1292,6 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.endShareSheetOpenSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
             this.endShareSheetSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
             this.endPostPlaySession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null, false, false, null, null, 0);
-            this.endRecommendSheetSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
             this.endPreAppWidgetActionSession(IClientLogging$CompletionReason.canceled, null);
             final HashSet<Long> set = new HashSet<Long>(this.mSearchSessions.size());
             set.addAll((Collection<?>)this.mSearchSessions.keySet());
@@ -1567,20 +1457,6 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
-    public void endRecommendSheetSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError) {
-        if (this.mRecommendSheetSession == null) {
-            return;
-        }
-        final RecommendSheetEndedEvent endedEvent = this.mRecommendSheetSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView);
-        this.populateEvent(endedEvent, this.mDataContext, clientLogging$ModalView);
-        this.mEventHandler.removeSession(this.mRecommendSheetSession);
-        Log.d("nf_log", "RecommendSheetSession end event posting...");
-        this.mEventHandler.post(endedEvent);
-        this.mRecommendSheetSession = null;
-        Log.d("nf_log", "RecommendSheetSession end event posted.");
-    }
-    
-    @Override
     public void endRegisterSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
         if (this.mRegisterSession == null) {
             return;
@@ -1616,25 +1492,6 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.post(endedEvent);
         this.mRemoveFromPlaylistSession = null;
         Log.d("nf_log", "RemoveFromPlaylist session end event posted.");
-    }
-    
-    @Override
-    public void endSayThanksSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError) {
-        if (this.mSayThanksSession == null) {
-            return;
-        }
-        Log.d("nf_log", "SayThanks ended and posted to executor");
-        final SayThanksEndedEvent endedEvent = this.mSayThanksSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView);
-        if (endedEvent == null) {
-            Log.d("nf_log", "SayThanks still waits on session id, do not post at this time.");
-            return;
-        }
-        this.populateEvent(endedEvent, this.mDataContext, clientLogging$ModalView);
-        this.mEventHandler.removeSession(this.mSayThanksSession);
-        Log.d("nf_log", "SayThanks end event posting...");
-        this.mEventHandler.post(endedEvent);
-        this.mSayThanksSession = null;
-        Log.d("nf_log", "SayThanks end event posted.");
     }
     
     @Override
@@ -1922,26 +1779,6 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.handleDeleteProfileEnded(intent);
             return true;
         }
-        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_START".equals(action)) {
-            Log.d("nf_log", "SAY_THANKS_START");
-            this.handleSayThanksStart(intent);
-            return true;
-        }
-        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_ENDED".equals(action)) {
-            Log.d("nf_log", "SAY_THANKS_ENDED");
-            this.handleSayThanksEnded(intent);
-            return true;
-        }
-        if ("com.netflix.mediaclient.intent.action.LOG_UIA_RECOMMEND_SHEET_START".equals(action)) {
-            Log.d("nf_log", "RECOMMEND_SHEET_START");
-            this.handleRecommendSheetStart(intent);
-            return true;
-        }
-        if ("com.netflix.mediaclient.intent.action.LOG_UIA_RECOMMEND_SHEET_ENDED".equals(action)) {
-            Log.d("nf_log", "RECOMMEND_SHEET_ENDED");
-            this.handleRecommendSheetEnded(intent);
-            return true;
-        }
         if ("com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_START".equals(action)) {
             Log.d("nf_log", "SHARE_SHEET_START");
             this.handleShareSheetStart(intent);
@@ -2146,18 +1983,6 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
-    public void startRecommendSheetSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
-        if (this.mRecommendSheetSession != null) {
-            Log.e("nf_log", "RecommendSheetSession session already started!");
-            return;
-        }
-        Log.d("nf_log", "RecommendSheetSession session starting...");
-        this.mRecommendSheetSession = new RecommendSheetSession(userActionLogging$CommandName, clientLogging$ModalView);
-        this.mEventHandler.addSession(this.mRecommendSheetSession);
-        Log.d("nf_log", "RecommendSheetSession session start done.");
-    }
-    
-    @Override
     public void startRegisterSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mRegisterSession != null) {
             Log.e("nf_log", "Register session already started!");
@@ -2181,18 +2006,6 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.addSession(mRemoveFromPlaylistSession);
         this.mRemoveFromPlaylistSession = mRemoveFromPlaylistSession;
         Log.d("nf_log", "RemoveFromPlaylist session start done.");
-    }
-    
-    @Override
-    public void startSayThanksSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
-        if (this.mSayThanksSession != null) {
-            Log.e("nf_log", "SayThanks session already started!");
-            return;
-        }
-        Log.d("nf_log", "SayThanks session starting...");
-        this.mSayThanksSession = new SayThanksSession(userActionLogging$CommandName, clientLogging$ModalView);
-        this.mEventHandler.addSession(this.mSayThanksSession);
-        Log.d("nf_log", "SayThanks  session start done.");
     }
     
     @Override

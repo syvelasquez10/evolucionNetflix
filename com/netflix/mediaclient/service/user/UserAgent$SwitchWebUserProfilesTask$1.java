@@ -5,8 +5,6 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
-import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
-import java.util.Set;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
@@ -14,7 +12,7 @@ import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.util.PrivacyUtils;
-import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.repository.UserLocale;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
@@ -35,6 +33,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
 import com.netflix.mediaclient.javabridge.ui.Registration;
@@ -47,7 +46,6 @@ import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallba
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
-import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserBoundCookies;
@@ -69,7 +67,6 @@ class UserAgent$SwitchWebUserProfilesTask$1 extends SimpleUserAgentWebCallback
             if (this.this$1.this$0.mUserAgentStateManager != null) {
                 this.this$1.this$0.mUserAgentStateManager.profileSwitched(userBoundCookies);
             }
-            SocialUtils.removeSocialNotificationsFromStatusBar(this.this$1.this$0.getContext());
         }
         else {
             if (Log.isLoggable()) {

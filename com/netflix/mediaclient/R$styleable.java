@@ -508,35 +508,6 @@ public final class R$styleable
     public static final int View_paddingEnd = 3;
     public static final int View_paddingStart = 2;
     public static final int View_theme = 4;
-    public static final int[] com_facebook_friend_picker_fragment;
-    public static final int com_facebook_friend_picker_fragment_multi_select = 0;
-    public static final int[] com_facebook_like_view;
-    public static final int com_facebook_like_view_auxiliary_view_position = 3;
-    public static final int com_facebook_like_view_foreground_color = 0;
-    public static final int com_facebook_like_view_horizontal_alignment = 4;
-    public static final int com_facebook_like_view_object_id = 1;
-    public static final int com_facebook_like_view_style = 2;
-    public static final int[] com_facebook_login_view;
-    public static final int com_facebook_login_view_confirm_logout = 0;
-    public static final int com_facebook_login_view_fetch_user_info = 1;
-    public static final int com_facebook_login_view_login_text = 2;
-    public static final int com_facebook_login_view_logout_text = 3;
-    public static final int[] com_facebook_picker_fragment;
-    public static final int com_facebook_picker_fragment_done_button_background = 6;
-    public static final int com_facebook_picker_fragment_done_button_text = 4;
-    public static final int com_facebook_picker_fragment_extra_fields = 1;
-    public static final int com_facebook_picker_fragment_show_pictures = 0;
-    public static final int com_facebook_picker_fragment_show_title_bar = 2;
-    public static final int com_facebook_picker_fragment_title_bar_background = 5;
-    public static final int com_facebook_picker_fragment_title_text = 3;
-    public static final int[] com_facebook_place_picker_fragment;
-    public static final int com_facebook_place_picker_fragment_radius_in_meters = 0;
-    public static final int com_facebook_place_picker_fragment_results_limit = 1;
-    public static final int com_facebook_place_picker_fragment_search_text = 2;
-    public static final int com_facebook_place_picker_fragment_show_search_box = 3;
-    public static final int[] com_facebook_profile_picture_view;
-    public static final int com_facebook_profile_picture_view_is_cropped = 1;
-    public static final int com_facebook_profile_picture_view_preset_size = 0;
     
     static {
         ActionBar = new int[] { 2130771970, 2130771985, 2130771988, 2130771989, 2130771990, 2130771991, 2130771992, 2130771993, 2130771994, 2130771995, 2130771996, 2130771997, 2130771998, 2130771999, 2130772000, 2130772001, 2130772002, 2130772003, 2130772004, 2130772005, 2130772006, 2130772007, 2130772008, 2130772009, 2130772010, 2130772011, 2130772215 };
@@ -595,11 +566,5 @@ public final class R$styleable
         ViewBackgroundHelper = new int[] { 16842964, 2130772308, 2130772309 };
         ViewPagerIndicator = new int[] { 2130772310, 2130772311, 2130772312, 2130772313, 2130772314, 2130772315 };
         ViewStubCompat = new int[] { 16842960, 16842994, 16842995 };
-        com_facebook_friend_picker_fragment = new int[] { 2130772316 };
-        com_facebook_like_view = new int[] { 2130772317, 2130772318, 2130772319, 2130772320, 2130772321 };
-        com_facebook_login_view = new int[] { 2130772322, 2130772323, 2130772324, 2130772325 };
-        com_facebook_picker_fragment = new int[] { 2130772326, 2130772327, 2130772328, 2130772329, 2130772330, 2130772331, 2130772332 };
-        com_facebook_place_picker_fragment = new int[] { 2130772333, 2130772334, 2130772335, 2130772336 };
-        com_facebook_profile_picture_view = new int[] { 2130772337, 2130772338 };
     }
 }

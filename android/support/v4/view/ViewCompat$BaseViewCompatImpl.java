@@ -120,6 +120,11 @@ class ViewCompat$BaseViewCompatImpl implements ViewCompat$ViewCompatImpl
     }
     
     @Override
+    public int getMeasuredWidthAndState(final View view) {
+        return view.getMeasuredWidth();
+    }
+    
+    @Override
     public int getMinimumHeight(final View view) {
         return ViewCompatBase.getMinimumHeight(view);
     }

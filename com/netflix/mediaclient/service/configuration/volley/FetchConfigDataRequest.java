@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.netflix.mediaclient.service.configuration.NflxSupportedLocales;
 import com.netflix.mediaclient.service.webclient.model.leafs.VoipAuthorizationData;
 import com.netflix.mediaclient.service.webclient.model.leafs.AccountConfigData;
 import com.netflix.mediaclient.service.webclient.model.leafs.DeviceConfigData;
@@ -25,12 +26,14 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
     private static final String ACCOUNT_CONFIG = "accountConfig";
     private static final String CUSTOMER_SUPPORT_VOIP_AUTHORIZATIONS = "customerSupportVoipAuthorizations";
     private static final String DEVICE_CONFIG = "deviceConfig";
+    public static final String NETFLIX_SUPPORTED_LOCALES = "supportedLanguages";
     private static final String STREAMING_CONFIG = "streamingqoe";
     private static final String STREAMING_CONFIG_DEFAULT = "streamingqoeDefault";
     private static final String TAG = "nf_config_data";
     private static final String accountConfigPql;
     public static final String customerSupportVoipPql;
     public static final String deviceConfigPql;
+    public static final String netflixSupportedLocales;
     private static final String streamingQoePql;
     public static final String streamingQoePqlDefault;
     private final ConfigurationAgentWebCallback responseCallback;
@@ -41,6 +44,7 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
         streamingQoePql = String.format("['%s']", "streamingqoe");
         streamingQoePqlDefault = String.format("['%s']", "streamingqoeDefault");
         customerSupportVoipPql = String.format("['%s']", "customerSupportVoipAuthorizations");
+        netflixSupportedLocales = String.format("['%s']", "supportedLanguages");
     }
     
     public FetchConfigDataRequest(final Context context, final ConfigurationAgentWebCallback responseCallback) {
@@ -51,6 +55,7 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
             Log.d("nf_config_data", "accountConfigPql = " + FetchConfigDataRequest.accountConfigPql);
             Log.d("nf_config_data", "steamingqoePql = " + FetchConfigDataRequest.streamingQoePql);
             Log.d("nf_config_data", "customerSupportVoipPql = " + FetchConfigDataRequest.customerSupportVoipPql);
+            Log.d("nf_config_data", "netflixSupportedLocales = " + FetchConfigDataRequest.netflixSupportedLocales);
         }
     }
     
@@ -105,12 +110,15 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
                 Log.v("nf_config_data", "Parsed VOIP authorizations: " + configData.customerSupportVoipAuthorizations);
             }
         }
+        if (dataObj.has("supportedLanguages")) {
+            configData.nflxSupportedLocales = NflxSupportedLocales.create(dataObj);
+        }
         return configData;
     }
     
     @Override
     protected List<String> getPQLQueries() {
-        return Arrays.asList(FetchConfigDataRequest.deviceConfigPql, FetchConfigDataRequest.accountConfigPql, FetchConfigDataRequest.streamingQoePql, FetchConfigDataRequest.customerSupportVoipPql);
+        return Arrays.asList(FetchConfigDataRequest.deviceConfigPql, FetchConfigDataRequest.accountConfigPql, FetchConfigDataRequest.streamingQoePql, FetchConfigDataRequest.customerSupportVoipPql, FetchConfigDataRequest.netflixSupportedLocales);
     }
     
     @Override

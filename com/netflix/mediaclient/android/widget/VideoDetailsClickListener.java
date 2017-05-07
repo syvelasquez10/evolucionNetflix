@@ -6,9 +6,6 @@ package com.netflix.mediaclient.android.widget;
 
 import android.content.Context;
 import android.widget.Toast;
-import com.netflix.mediaclient.ui.social.FacebookLoginActivity;
-import android.app.Activity;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
@@ -40,13 +37,7 @@ public class VideoDetailsClickListener implements View$OnClickListener, View$OnL
             Log.w("VideoDetailsClickListener", "No video details for click listener to use");
             return;
         }
-        final Video video = (Video)tag;
-        if (VideoType.SOCIAL_POPULAR.equals(video.getType())) {
-            Log.v("VideoDetailsClickListener", "Launching connect with facebook activity...");
-            FacebookLoginActivity.show((Activity)view.getContext());
-            return;
-        }
-        this.launchDetailsActivity(this.activity, video, this.playContextProvider.getPlayContext());
+        this.launchDetailsActivity(this.activity, (Video)tag, this.playContextProvider.getPlayContext());
     }
     
     public boolean onLongClick(final View view) {

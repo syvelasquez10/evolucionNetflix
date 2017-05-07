@@ -9,12 +9,16 @@ import android.os.IBinder;
 import android.content.Intent;
 import java.util.Iterator;
 import java.util.Map;
+import android.util.Log;
+import android.app.Notification;
 import android.os.Handler;
 import android.content.Context;
 import android.app.Service;
 
 public class WhistleEngine extends Service
 {
+    private WhistleEngine$ApplicationState appState;
+    private int callsActive;
     private Context context;
     private Handler eventHandler;
     private WhistleEngineDelegate eventListener;
@@ -23,6 +27,10 @@ public class WhistleEngine extends Service
     static {
         System.loadLibrary("whistleengine");
         loadInitialization();
+    }
+    
+    public WhistleEngine() {
+        this.appState = WhistleEngine$ApplicationState.UNKNOWN;
     }
     
     private String NormalizeAccount(final String s, String string) {
@@ -48,7 +56,18 @@ public class WhistleEngine extends Service
         this.callbackEvent(new WhistleEngine$4(this, n));
     }
     
+    private void callEnded() {
+        synchronized (this) {
+            final int callsActive = this.callsActive - 1;
+            this.callsActive = callsActive;
+            if (callsActive == 0 && this.appState != WhistleEngine$ApplicationState.FOREGROUND) {
+                this.stopForeground(true);
+            }
+        }
+    }
+    
     private void callEnded(final int n) {
+        this.callEnded();
         if (this.eventListener != null) {
             this.callbackEvent(new WhistleEngine$7(this, n));
         }
@@ -101,6 +120,7 @@ public class WhistleEngine extends Service
     }
     
     private void incomingCall(final int n, final String s, final String s2) {
+        this.newCallActive();
         this.callbackEvent(new WhistleEngine$1(this, s2, n, s));
     }
     
@@ -143,6 +163,16 @@ public class WhistleEngine extends Service
     
     private static native void loadInitialization();
     
+    private void newCallActive() {
+        synchronized (this) {
+            final int callsActive = this.callsActive + 1;
+            this.callsActive = callsActive;
+            if (callsActive == 1 && this.appState != WhistleEngine$ApplicationState.FOREGROUND) {
+                this.startForeground();
+            }
+        }
+    }
+    
     private void passwordDialog(final boolean b) {
         this.callbackEvent(new WhistleEngine$8(this, b));
     }
@@ -169,11 +199,46 @@ public class WhistleEngine extends Service
     
     private native void setUDPMode();
     
+    private void startForeground() {
+        try {
+            final Notification notification = new Notification();
+            notification.flags |= 0x40;
+            this.startForeground(74819, notification);
+        }
+        catch (Exception ex) {
+            Log.e("WhistleEngine", "unable to start foreground operation: " + ex.getLocalizedMessage());
+        }
+    }
+    
     private native void stopNative();
     
     public native void answer(final int p0);
     
-    public native int dial(final int p0, final String p1);
+    public void applicationInBackground() {
+        synchronized (this) {
+            this.appState = WhistleEngine$ApplicationState.BACKGROUND;
+            if (this.callsActive > 0) {
+                this.startForeground();
+            }
+        }
+    }
+    
+    public void applicationInForeground() {
+        synchronized (this) {
+            this.appState = WhistleEngine$ApplicationState.FOREGROUND;
+            if (this.callsActive > 0) {
+                this.stopForeground(true);
+            }
+        }
+    }
+    
+    public int dial(int dialnative, final String s) {
+        dialnative = this.dialnative(dialnative, s);
+        if (dialnative > 0) {
+            this.newCallActive();
+        }
+        return dialnative;
+    }
     
     public int dial(final int n, final String s, final DialExtra dialExtra) {
         for (final Map.Entry<String, String> entry : dialExtra.getXHeaders().entrySet()) {
@@ -181,6 +246,8 @@ public class WhistleEngine extends Service
         }
         return this.dial(n, s);
     }
+    
+    public native int dialnative(final int p0, final String p1);
     
     public native float getInputLevel();
     
@@ -202,6 +269,7 @@ public class WhistleEngine extends Service
     public void onDestroy() {
         this.stop();
         this.powerManagement.releaseLocks();
+        this.stopForeground(true);
         super.onDestroy();
     }
     

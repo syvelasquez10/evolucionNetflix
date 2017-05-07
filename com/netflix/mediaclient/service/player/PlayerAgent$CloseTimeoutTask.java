@@ -5,7 +5,10 @@
 package com.netflix.mediaclient.service.player;
 
 import android.view.SurfaceHolder;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
+import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthSaving;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.media.Subtitle;
 import java.nio.ByteBuffer;
@@ -23,8 +26,6 @@ import com.netflix.mediaclient.media.JPlayer2Helper;
 import android.media.AudioManager;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.media.PlayoutMetadata;
-import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams$NetType;
-import com.netflix.mediaclient.service.player.subtitles.SubtitleParserFactory;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
 import com.netflix.mediaclient.javabridge.ui.IMedia$MediaEventEnum;
@@ -44,7 +45,7 @@ import android.os.PowerManager$WakeLock;
 import android.content.BroadcastReceiver;
 import java.util.Timer;
 import android.view.Surface;
-import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleDownloadManager;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.servicemgr.IPlayerFileCache;

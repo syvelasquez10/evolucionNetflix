@@ -105,8 +105,8 @@ public final class NflxProtocolUtils
             throw new IllegalArgumentException("Tiny URL can not be empty!");
         }
         String substring = s;
-        if (s.contains("?s=a")) {
-            substring = s.substring(0, s.length() - "?s=a".length());
+        if (s.contains("source=android")) {
+            substring = s.substring(0, s.length() - "source=android".length());
         }
         final String[] split = substring.split("/");
         if (split == null || split.length < 2) {

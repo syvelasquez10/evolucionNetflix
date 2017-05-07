@@ -23,6 +23,7 @@ public class PlayScreenJB extends PlayScreen
     void hideNavigationBar() {
         Log.d("screen", "hide nav JB");
         this.mController.getWindow().getDecorView().setSystemUiVisibility(1795);
+        this.hideQuickActions();
     }
     
     @Override
@@ -39,5 +40,6 @@ public class PlayScreenJB extends PlayScreen
     void showNavigationBar() {
         Log.d("screen", "show nav JB");
         this.mController.getWindow().getDecorView().setSystemUiVisibility(1792);
+        this.showQuickActions();
     }
 }

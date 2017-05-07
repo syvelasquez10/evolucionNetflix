@@ -59,17 +59,17 @@ public class KubrickHighDensityCwView extends RelativeLayout implements VideoVie
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837941);
+        this.setBackgroundResource(2130837892);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        netflixActivity.getLayoutInflater().inflate(2130903125, (ViewGroup)this);
-        this.playViewGroup = this.findViewById(2131624243);
-        this.infoViewGroup = this.findViewById(2131624241);
-        this.title = (TextView)this.findViewById(2131624165);
-        this.subtitle = (TextView)this.findViewById(2131624242);
-        this.img = (AdvancedImageView)this.findViewById(2131624163);
-        this.progress = (ProgressBar)this.findViewById(2131624167);
-        this.infoIcon = this.findViewById(2131624166);
+        netflixActivity.getLayoutInflater().inflate(2130903112, (ViewGroup)this);
+        this.playViewGroup = this.findViewById(2131624217);
+        this.infoViewGroup = this.findViewById(2131624215);
+        this.title = (TextView)this.findViewById(2131624139);
+        this.subtitle = (TextView)this.findViewById(2131624216);
+        this.img = (AdvancedImageView)this.findViewById(2131624137);
+        this.progress = (ProgressBar)this.findViewById(2131624141);
+        this.infoIcon = this.findViewById(2131624140);
         this.clicker = new VideoDetailsClickListener(netflixActivity, this);
     }
     

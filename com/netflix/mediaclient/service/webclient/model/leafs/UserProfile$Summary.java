@@ -21,13 +21,13 @@ public class UserProfile$Summary
     private boolean isPrimaryProfile;
     public List<UserProfile$Language> languages;
     private String lastName;
+    private int maturityLevel;
     @SerializedName("profileId")
     private String profileGuid;
     private String profileName;
     @SerializedName("userId")
     private String profileToken;
     private String reqCountry;
-    private UserProfile$Social social;
     final /* synthetic */ UserProfile this$0;
     
     public UserProfile$Summary(final UserProfile this$0) {

@@ -21,14 +21,14 @@ public class LoMoUtils
     }
     
     public static int getKidsLomoGenreNumColumns(final Activity activity) {
-        if (BrowseExperience.useLolomoVerticalArt()) {
+        if (BrowseExperience.useLolomoBoxArt()) {
             return activity.getResources().getInteger(2131427330);
         }
         return activity.getResources().getInteger(2131427329);
     }
     
     public static int getLomoFragImageOffsetLeftPx(final NetflixActivity netflixActivity) {
-        return getLomoFragOffsetLeftPx(netflixActivity) + netflixActivity.getResources().getDimensionPixelOffset(2131296555);
+        return getLomoFragOffsetLeftPx(netflixActivity) + netflixActivity.getResources().getDimensionPixelOffset(2131296535);
     }
     
     public static int getLomoFragOffsetLeftPx(final Activity activity) {
@@ -39,29 +39,26 @@ public class LoMoUtils
         if (Log.isLoggable()) {
             Log.v("LoMoUtils", "getLomoFragOffsetRightPx, activity: " + netflixActivity.getClass().getSimpleName() + ", widthType: " + loMoUtils$LoMoWidthType);
         }
-        int lomoFragOffsetRightDimenId = 0;
         switch (LoMoUtils$1.$SwitchMap$com$netflix$mediaclient$ui$lomo$LoMoUtils$LoMoWidthType[loMoUtils$LoMoWidthType.ordinal()]) {
             default: {
-                lomoFragOffsetRightDimenId = BrowseExperience.getLomoFragOffsetRightDimenId();
-                break;
+                return LomoConfig.getLomoFragOffsetRightPx(netflixActivity);
             }
             case 1: {
-                lomoFragOffsetRightDimenId = 2131296534;
-                break;
+                return netflixActivity.getResources().getDimensionPixelOffset(2131296514);
             }
             case 2: {
+                int n;
                 if (DeviceUtils.isLandscape((Context)netflixActivity)) {
-                    lomoFragOffsetRightDimenId = 2131296538;
-                    break;
+                    n = 2131296518;
                 }
-                lomoFragOffsetRightDimenId = 2131296544;
-                break;
+                else {
+                    n = 2131296524;
+                }
+                return netflixActivity.getResources().getDimensionPixelOffset(n);
             }
             case 3: {
-                lomoFragOffsetRightDimenId = 2131296509;
-                break;
+                return netflixActivity.getResources().getDimensionPixelOffset(2131296489);
             }
         }
-        return netflixActivity.getResources().getDimensionPixelOffset(lomoFragOffsetRightDimenId);
     }
 }

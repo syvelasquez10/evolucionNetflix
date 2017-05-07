@@ -14,6 +14,7 @@ import com.netflix.mediaclient.javabridge.ui.Log$AppIdSetListener;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent;
 import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent$WidgetInstallAction;
+import com.netflix.mediaclient.service.logging.android.settings.model.LocalSettingsChangeEvent;
 import android.content.Context;
 import com.netflix.mediaclient.service.logging.apm.model.UserSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIStartupSessionEndedEvent;
@@ -333,6 +334,11 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         }
     }
     
+    private void handleLocalSettingsChange(final Intent intent) {
+        Log.d("nf_log_apm", "LOCAL_SETTINGS_CHANGE_BANDWIDTH");
+        this.localSettingsChange(intent.getStringExtra("localSettingData"));
+    }
+    
     private void handlePreappAddWidget(final Intent intent) {
         Log.d("nf_log_apm", "PREAPP_ADD_WIDGET");
         this.preappAddWidget(intent.getStringExtra("widgetData"), intent.getLongExtra("eventTime", System.currentTimeMillis()));
@@ -636,6 +642,10 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
                 this.handleSharedContextEnded(intent);
                 return true;
             }
+            case "com.netflix.mediaclient.intent.action.LOG_APM_LOCAL_SETTINGS_BW": {
+                this.handleLocalSettingsChange(intent);
+                return true;
+            }
         }
     }
     
@@ -646,6 +656,15 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     @Override
     public boolean isUserSessionExist() {
         return this.mUserSession != null;
+    }
+    
+    @Override
+    public void localSettingsChange(final String s) {
+        if (Log.isLoggable()) {
+            Log.d("nf_log_apm", "local setting log data");
+        }
+        this.mEventHandler.post(new LocalSettingsChangeEvent(s));
+        Log.d("nf_log_apm", "local setting event done");
     }
     
     public void logoutCompleted() {

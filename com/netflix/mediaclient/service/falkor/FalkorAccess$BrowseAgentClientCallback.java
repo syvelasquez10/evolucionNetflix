@@ -4,11 +4,9 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import android.content.Intent;
-import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.servicemgr.Asset;
-import com.netflix.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.IrisNotificationSummary;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -23,7 +21,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -122,6 +120,13 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
     }
     
     @Override
+    public void onIrisNotificationsMarkedAsRead(final Status status) {
+        if (Log.isLoggable()) {
+            Log.i("FalkorAccess", "onIrisNotificationsMarkedAsRead: " + status);
+        }
+    }
+    
+    @Override
     public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
         final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
         if (netflixServiceCallback == null) {
@@ -172,13 +177,13 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
     }
     
     @Override
-    public void onNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+    public void onNotificationsListFetched(final IrisNotificationsList list, final Status status) {
         final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
         if (netflixServiceCallback == null) {
-            Log.w("FalkorAccess", "No client callback found for onNotificationsListFetched");
+            Log.w("FalkorAccess", "No client callback found for onIrisNotificationsListFetched");
             return;
         }
-        netflixServiceCallback.onNotificationsListFetched(this.requestId, list, status);
+        netflixServiceCallback.onIrisNotificationsListFetched(this.requestId, list, status);
     }
     
     @Override
@@ -269,23 +274,6 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
             return;
         }
         netflixServiceCallback.onSimilarVideosFetched(this.requestId, searchVideoListProvider, status);
-    }
-    
-    @Override
-    public void onSocialNotificationWasThanked(final Status status) {
-        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
-        if (netflixServiceCallback == null) {
-            Log.w("FalkorAccess", "No client callback found for onSocialNotificationWasThanked");
-            return;
-        }
-        netflixServiceCallback.onSocialNotificationWasThanked(this.requestId, status);
-    }
-    
-    @Override
-    public void onSocialNotificationsMarkedAsRead(final Status status) {
-        if (Log.isLoggable()) {
-            Log.i("FalkorAccess", "onSocialNotificationsMarkedAsRead: " + status);
-        }
     }
     
     @Override

@@ -4,13 +4,13 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.model.leafs.ListOfMoviesSummary;
+import com.netflix.model.leafs.LoLoMoSummary;
 import com.netflix.falkor.Func;
 
-final class Falkor$Creator$6 implements Func<ListOfMoviesSummary>
+final class Falkor$Creator$6 implements Func<LoLoMoSummary>
 {
     @Override
-    public ListOfMoviesSummary call() {
-        return new ListOfMoviesSummary();
+    public LoLoMoSummary call() {
+        return new LoLoMoSummary();
     }
 }

@@ -15,11 +15,13 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.io.File;
 import com.netflix.mediaclient.util.FileUtils;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleParser$DownloadFailedCallback;
 import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleData;
+import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.service.player.PlayerAgent;
 import com.netflix.mediaclient.service.player.subtitles.BaseSubtitleParser;
 import com.netflix.mediaclient.Log;
@@ -50,10 +52,10 @@ class ImageSubtitleParser$2 extends LoggingResourceFetcherCallback
         Log.d("nf_subtitles", "Ready to serve subtitles...");
         this.this$0.mReady = true;
         this.this$0.saveFileSafelyToCache("segment.idx", array);
-        final int access$600 = this.this$0.getCurrentSegmentIndex();
+        final int access$1100 = this.this$0.getCurrentSegmentIndex();
         if (Log.isLoggable()) {
-            Log.d("nf_subtitles", "Download segment " + access$600 + " on start");
+            Log.d("nf_subtitles", "Download segment " + access$1100 + " on start");
         }
-        this.this$0.downloadNextRange(access$600);
+        this.this$0.downloadNextRange(access$1100);
     }
 }

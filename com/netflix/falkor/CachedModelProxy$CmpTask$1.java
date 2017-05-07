@@ -6,7 +6,7 @@ package com.netflix.falkor;
 
 import com.netflix.model.leafs.Video$Bookmark;
 import com.netflix.mediaclient.servicemgr.Asset;
-import com.netflix.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.IrisNotificationSummary;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.service.NetflixService;

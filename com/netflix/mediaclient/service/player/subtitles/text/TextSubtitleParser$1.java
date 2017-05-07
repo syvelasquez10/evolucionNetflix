@@ -18,13 +18,15 @@ import java.io.File;
 import com.netflix.mediaclient.util.FileUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleData;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleParser$DownloadFailedCallback;
+import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.service.player.PlayerAgent;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
 import java.util.List;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import java.util.Map;
 import com.netflix.mediaclient.service.player.subtitles.BaseSubtitleParser;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.resfetcher.LoggingResourceFetcherCallback;
@@ -51,6 +53,6 @@ class TextSubtitleParser$1 extends LoggingResourceFetcherCallback
         if (Log.isLoggable()) {
             Log.e("nf_subtitles", "Failed to download subtitle metadata, status " + status);
         }
-        this.this$0.mPlayer.reportFailedToDownloadSubtitleMetadata(s);
+        this.this$0.mPlayer.reportFailedSubtitle(s, this.this$0.mSubtitleData, IMedia$SubtitleFailure.download, this.this$0.onError());
     }
 }

@@ -116,6 +116,7 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
             if (googleApiClient != null) {
                 break Label_0017;
             }
+        Block_3_Outer:
             while (true) {
                 try {
                     Log.d("SignupActivity", "GPS client is null, unable to try to save credentials");
@@ -123,17 +124,18 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
                         return;
                     }
                     // iftrue(Label_0073:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
-                    // iftrue(Label_0014:, !this.saveCredentials)
-                Label_0057:
                     while (true) {
-                        Log.d("SignupActivity", "Trying to save credentials to GPS");
-                        this.saveCredentials = false;
-                        break Label_0057;
+                        while (true) {
+                            Log.w("SignupActivity", "Credential is empty, do not save it.");
+                            return;
+                            Log.d("SignupActivity", "Trying to save credentials to GPS");
+                            this.saveCredentials = false;
+                            continue Block_3_Outer;
+                        }
                         continue;
                     }
-                    Log.w("SignupActivity", "Credential is empty, do not save it.");
-                    return;
                 }
+                // iftrue(Label_0014:, !this.saveCredentials)
                 finally {
                 }
                 // monitorexit(this)
@@ -240,9 +242,9 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     }
     
     private void setUpSignInView(final ServiceManager serviceManager) {
-        this.setContentView(2130903231);
-        this.mWebView = (WebView)this.findViewById(2131624533);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131624194);
+        this.setContentView(2130903214);
+        this.mWebView = (WebView)this.findViewById(2131624492);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131624168);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
         this.mSoftwareVersion = serviceManager.getSoftwareVersion();

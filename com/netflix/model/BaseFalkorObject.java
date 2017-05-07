@@ -44,11 +44,6 @@ public abstract class BaseFalkorObject implements BranchNode, Expires, ModelProx
         return this.getModelProxy().getServiceProvider().getService();
     }
     
-    protected boolean isCurrentProfileFacebookConnected() {
-        final NetflixService service = this.getService();
-        return service != null && service.isCurrentProfileFacebookConnected();
-    }
-    
     @Override
     public void setExpires(final Date expires) {
         this.expires = expires;

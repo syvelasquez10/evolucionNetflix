@@ -7,8 +7,9 @@ package com.netflix.mediaclient.ui.details;
 import android.view.MenuItem;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.ui.mdx.MdxMenu;
+import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.mdx.MdxMenu;
 import android.view.Menu;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.os.Bundle;
@@ -16,7 +17,6 @@ import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
-import com.netflix.mediaclient.util.SocialUtils;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
@@ -117,8 +117,8 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     }
     
     private void updateSocialNotificationsState() {
-        if (this.serviceMan != null && SocialUtils.isNotificationsFeatureSupported(this.serviceMan)) {
-            this.serviceMan.getBrowse().refreshSocialNotifications(false);
+        if (this.serviceMan != null) {
+            this.serviceMan.getBrowse().refreshIrisNotifications(false);
         }
     }
     
@@ -213,8 +213,8 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     
     @Override
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
-        SocialUtils.addShareIconIfNeeded(this, menu);
         MdxMenu.addSelectPlayTarget(this, menu, false);
+        IrisUtils.addShareIcon(menu, (Context)this);
         this.detailsMenu = new DetailsMenu(this, menu, false);
         super.onCreateOptionsMenu(menu, menu2);
     }
@@ -251,7 +251,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     
     @Override
     public boolean onOptionsItemSelected(final MenuItem menuItem) {
-        return SocialUtils.tryHandleMenuItemClick(menuItem, (Context)this) || super.onOptionsItemSelected(menuItem);
+        return IrisUtils.tryHandleMenuItemClick(menuItem, (Context)this) || super.onOptionsItemSelected(menuItem);
     }
     
     @Override

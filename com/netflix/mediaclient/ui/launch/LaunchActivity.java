@@ -101,14 +101,14 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void createContentView() {
-        this.setContentView(2130903235);
-        final ImageView imageView = (ImageView)this.findViewById(2131624541);
+        this.setContentView(2130903218);
+        final ImageView imageView = (ImageView)this.findViewById(2131624501);
         int imageResource;
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            imageResource = 2130837956;
+            imageResource = 2130837906;
         }
         else {
-            imageResource = 2130837955;
+            imageResource = 2130837905;
         }
         imageView.setImageResource(imageResource);
         if (DeviceUtils.getScreenResolutionDpi((Context)this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
@@ -261,8 +261,8 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void manipulateSplashBackground() {
-        final ImageView imageView = (ImageView)this.findViewById(2131624541);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$1(this, imageView, (ImageView)this.findViewById(2131624214), (ProgressBar)this.findViewById(2131624215)));
+        final ImageView imageView = (ImageView)this.findViewById(2131624501);
+        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$1(this, imageView, (ImageView)this.findViewById(2131624188), (ProgressBar)this.findViewById(2131624189)));
     }
     
     private void onCredentialRetrieved(final Credential credential) {
@@ -458,7 +458,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
             this.setContentView((View)new LoadingView((Context)this));
             return;
         }
-        Log.d("LaunchActivity", "Service is NOT ready, use splash screen...");
+        Log.d("LaunchActivity", "Service is NOT ready, use splash screen... nf_config: splashscreen");
         this.mSplashScreenStarted = System.currentTimeMillis();
         this.createContentView();
     }

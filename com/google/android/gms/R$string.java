@@ -6,7 +6,7 @@ package com.google.android.gms;
 
 public final class R$string
 {
-    public static final int accept = 2131165733;
+    public static final int accept = 2131165731;
     public static final int common_android_wear_update_text = 2131165202;
     public static final int common_android_wear_update_title = 2131165203;
     public static final int common_google_play_services_api_unavailable_text = 2131165204;
@@ -31,9 +31,9 @@ public final class R$string
     public static final int common_google_play_services_update_title = 2131165227;
     public static final int common_google_play_services_updating_text = 2131165228;
     public static final int common_google_play_services_updating_title = 2131165229;
-    public static final int create_calendar_message = 2131165745;
-    public static final int create_calendar_title = 2131165746;
-    public static final int decline = 2131165747;
-    public static final int store_picture_message = 2131165788;
-    public static final int store_picture_title = 2131165789;
+    public static final int create_calendar_message = 2131165740;
+    public static final int create_calendar_title = 2131165741;
+    public static final int decline = 2131165742;
+    public static final int store_picture_message = 2131165785;
+    public static final int store_picture_title = 2131165786;
 }

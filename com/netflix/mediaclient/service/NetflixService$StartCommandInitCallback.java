@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.service;
 
-import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
-import java.util.Set;
 import android.os.Process;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;

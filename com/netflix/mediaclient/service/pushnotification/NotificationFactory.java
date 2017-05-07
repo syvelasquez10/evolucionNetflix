@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.pushnotification;
 
-import com.netflix.mediaclient.util.SocialUtils;
 import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.NetflixApplication;
@@ -84,32 +83,24 @@ public final class NotificationFactory
     }
     
     private static boolean handleSocialAction(final NetflixService netflixService, final Payload payload, final Intent intent) {
-        if ("SOCIAL".equals(payload.defaultActionKey)) {
-            if (netflixService.getCurrentProfile() == null) {
-                if (Log.isLoggable()) {
-                    Log.e("nf_push_notificationFactory", String.format("currentProfile null dropping social event payload:%s", payload));
-                }
-            }
-            else {
-                if (SocialUtils.isNotificationsFeatureSupported(netflixService.getCurrentProfile(), netflixService.getApplicationContext())) {
-                    if (Log.isLoggable()) {
-                        Log.d("nf_push_notificationFactory", String.format("rcvd visible push social notification: payload: %s", payload));
-                    }
-                    final MessageData instance = MessageData.createInstance(intent);
-                    if (Log.isLoggable()) {
-                        Log.d("nf_push_notificationFactory", "refreshSocialNotifications with " + instance);
-                    }
-                    netflixService.getBrowse().refreshSocialNotifications(true, true, instance);
-                    return true;
-                }
-                if (Log.isLoggable()) {
-                    Log.d("nf_push_notificationFactory", String.format("Skipping notification because social recommendation feature is not supported for current profile: %s or device.", netflixService.getCurrentProfile()));
-                    return true;
-                }
+        if (!"SOCIAL".equals(payload.defaultActionKey)) {
+            return false;
+        }
+        if (netflixService.getCurrentProfile() == null) {
+            if (Log.isLoggable()) {
+                Log.e("nf_push_notificationFactory", String.format("currentProfile null dropping social event payload:%s", payload));
             }
             return true;
         }
-        return false;
+        if (Log.isLoggable()) {
+            Log.d("nf_push_notificationFactory", String.format("rcvd visible push social notification: payload: %s", payload));
+        }
+        final MessageData instance = MessageData.createInstance(intent);
+        if (Log.isLoggable()) {
+            Log.d("nf_push_notificationFactory", "refreshIrisNotifications with " + instance);
+        }
+        netflixService.getBrowse().refreshIrisNotifications(true, true, instance);
+        return true;
     }
     
     private static boolean isValid(final Payload payload) {

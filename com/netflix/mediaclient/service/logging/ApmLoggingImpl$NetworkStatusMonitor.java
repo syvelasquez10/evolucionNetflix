@@ -14,6 +14,7 @@ import com.netflix.mediaclient.javabridge.ui.Log$AppIdSetListener;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent;
 import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent$WidgetInstallAction;
+import com.netflix.mediaclient.service.logging.android.settings.model.LocalSettingsChangeEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UserSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIStartupSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionEndedEvent;

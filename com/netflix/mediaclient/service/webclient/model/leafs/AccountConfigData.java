@@ -17,10 +17,15 @@ import com.google.gson.annotations.SerializedName;
 public class AccountConfigData
 {
     private static final KubrickConfigData DEFAULT_KUBRICK_CONFIG;
-    private static final KubrickKidsConfigData DEFAULT_KUBRICK_KIDS_CONFIG;
     private static final String TAG = "nf_config";
+    @SerializedName("kubrickKidsTabletConfig")
+    private ABTestConfigData abTestConfig_6538;
+    @SerializedName("titleArtTabletConfig")
+    private ABTestConfigData abTestConfig_6725;
     @SerializedName("castWhitelistTargets")
     private final String castWhitelist;
+    @SerializedName("bandwidthSaving")
+    private DataSaveConfigData dataSaveConfigData;
     @SerializedName("disableMcQueenV2")
     private boolean disableMcQueenV2;
     @SerializedName("disableSuspendPlay")
@@ -33,12 +38,12 @@ public class AccountConfigData
     private boolean enableLowBitrateStreams;
     @SerializedName("enableWidevineL3ABTest")
     private boolean enableWidevineL3ABTest;
+    @SerializedName("forceBwSettingsInWifi")
+    public boolean forceBwSettingsInWifi;
     @SerializedName("JPlayerConfig")
     private String jPlayerConfig;
     @SerializedName("kubrickConfig")
     private KubrickConfigData kubrickConfig;
-    @SerializedName("kubrickKidsTabletConfig")
-    private KubrickKidsConfigData kubrickKidsConfig;
     @Expose
     private JSONArray mCastWhitelistJSONArray;
     @Expose
@@ -51,8 +56,6 @@ public class AccountConfigData
     private String preAppPartnerExperience;
     @SerializedName("preAppWidgetExperience")
     private String preAppWidgetExperience;
-    @SerializedName("shareSheetExperience")
-    private int shareSheetExperience;
     @SerializedName("videoBufferSize")
     private final int videoBufferSize;
     @SerializedName("voipEnabledOnAccount")
@@ -60,11 +63,11 @@ public class AccountConfigData
     
     static {
         DEFAULT_KUBRICK_CONFIG = new KubrickConfigData();
-        DEFAULT_KUBRICK_KIDS_CONFIG = new KubrickKidsConfigData();
     }
     
     public AccountConfigData() {
         this.videoBufferSize = 0;
+        this.enableLowBitrateStreams = true;
         this.castWhitelist = null;
         this.mdxBlacklistTargets = null;
         this.mCastWhitelistJSONArray = null;
@@ -105,6 +108,18 @@ public class AccountConfigData
     
     public boolean enableWidevineL3ABTest() {
         return this.enableWidevineL3ABTest;
+    }
+    
+    public ABTestConfigData getABTestConfiguration_6538() {
+        return this.abTestConfig_6538;
+    }
+    
+    public ABTestConfigData getABTestConfiguration_6725() {
+        return this.abTestConfig_6725;
+    }
+    
+    public DataSaveConfigData getBWSaveConfigData() {
+        return this.dataSaveConfigData;
     }
     
     public String getCastBlacklist() {
@@ -165,10 +180,6 @@ public class AccountConfigData
         return this.kubrickConfig;
     }
     
-    public KubrickKidsConfigData getKubrickKidsConfig() {
-        return this.kubrickKidsConfig;
-    }
-    
     public String getMdxBlacklist() {
         return this.mdxBlacklistTargets;
     }
@@ -202,10 +213,6 @@ public class AccountConfigData
     
     public String getPreAppWidgetExperience() {
         return this.preAppWidgetExperience;
-    }
-    
-    public int getShareSheetExperience() {
-        return this.shareSheetExperience;
     }
     
     public int getVideoBufferSize() {

@@ -145,27 +145,27 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
     }
     
     private void initUI() {
-        this.setContentView(2130903206);
+        this.setContentView(2130903193);
         this.getSupportActionBar().hide();
-        this.mContentView = this.findViewById(2131624478);
-        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131624477), this.errorCallback);
-        (this.mCancelButton = this.findViewById(2131624486)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$4(this));
-        this.mDeleteSection = this.findViewById(2131624484);
-        (this.mDeleteButton = this.findViewById(2131624485)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$5(this));
-        (this.mKidsSection = this.findViewById(2131624480)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$6(this));
-        this.mKidsCheckBox = (CheckBox)this.findViewById(2131624481);
-        this.mSaveButtonText = this.findViewById(2131624488);
-        (this.mSaveButton = this.findViewById(2131624487)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$7(this));
-        (this.mName = (EditText)this.findViewById(2131624479)).addTextChangedListener((TextWatcher)new ProfileDetailsActivity$8(this));
-        this.mProfilePictureView = (AdvancedImageView)this.findViewById(2131624072);
+        this.mContentView = this.findViewById(2131624449);
+        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131624448), this.errorCallback);
+        (this.mCancelButton = this.findViewById(2131624457)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$4(this));
+        this.mDeleteSection = this.findViewById(2131624455);
+        (this.mDeleteButton = this.findViewById(2131624456)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$5(this));
+        (this.mKidsSection = this.findViewById(2131624451)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$6(this));
+        this.mKidsCheckBox = (CheckBox)this.findViewById(2131624452);
+        this.mSaveButtonText = this.findViewById(2131624459);
+        (this.mSaveButton = this.findViewById(2131624458)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$7(this));
+        (this.mName = (EditText)this.findViewById(2131624450)).addTextChangedListener((TextWatcher)new ProfileDetailsActivity$8(this));
+        this.mProfilePictureView = (AdvancedImageView)this.findViewById(2131624066);
         final ProfileDetailsActivity$9 profileDetailsActivity$9 = new ProfileDetailsActivity$9(this);
         this.mProfilePictureView.setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
-        (this.mProfilePictureSection = this.findViewById(2131624482)).setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
-        this.mPictureSelectorHint = this.findViewById(2131624483);
+        (this.mProfilePictureSection = this.findViewById(2131624453)).setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
+        this.mPictureSelectorHint = this.findViewById(2131624454);
         if (this.mNewProfileCreation) {
             this.mName.requestFocus();
         }
-        final TextView textView = (TextView)this.findViewById(2131624489);
+        final TextView textView = (TextView)this.findViewById(2131624460);
         if (textView != null) {
             int text;
             if (this.mNewProfileCreation) {
@@ -232,15 +232,9 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         this.mDeleteButton.setEnabled(!b);
         this.mKidsCheckBox.setEnabled(!b);
         this.mKidsSection.setEnabled(!b);
-        final boolean b4 = this.isCurrentAvatarDataValid() && !b;
-        if (!this.mNewProfileCreation && this.mInputProfile != null) {
-            this.mProfilePictureView.setEnabled(!this.mInputProfile.isSocialConnected() && b4);
-            this.mProfilePictureSection.setEnabled(!this.mInputProfile.isSocialConnected() && b4 && b3);
-        }
-        else {
-            this.mProfilePictureView.setEnabled(b4);
-            this.mProfilePictureSection.setEnabled(b4);
-        }
+        final boolean b4 = this.isCurrentAvatarDataValid() && !b && b3;
+        this.mProfilePictureView.setEnabled(b4);
+        this.mProfilePictureSection.setEnabled(b4);
         if (b2) {
             final ViewPropertyAnimator animate = this.mContentView.animate();
             if (!b) {
@@ -280,15 +274,10 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
     
     private void updateUI() {
         this.showDeleteProfileSection(this.mInputProfileId != null && this.mInputProfile != null && !this.mInputProfile.isPrimaryProfile());
-        if (!this.mNewProfileCreation && this.mInputProfile != null) {
-            if (!this.mDataWasInitialized) {
-                this.mName.setText((CharSequence)this.mInputProfile.getProfileName());
-                this.mKidsCheckBox.setChecked(this.mInputProfile.isKidsProfile());
-                this.mDataWasInitialized = true;
-            }
-            if (this.mInputProfile.isSocialConnected()) {
-                this.mPictureSelectorHint.setVisibility(8);
-            }
+        if (!this.mNewProfileCreation && this.mInputProfile != null && !this.mDataWasInitialized) {
+            this.mName.setText((CharSequence)this.mInputProfile.getProfileName());
+            this.mKidsCheckBox.setChecked(this.mInputProfile.isKidsProfile());
+            this.mDataWasInitialized = true;
         }
         int n;
         if (this.mServiceManager != null) {

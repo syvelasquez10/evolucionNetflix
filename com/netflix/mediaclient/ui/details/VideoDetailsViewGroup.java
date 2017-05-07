@@ -57,7 +57,6 @@ public class VideoDetailsViewGroup extends LinearLayout
     private ViewGroup imgGroup;
     protected NetflixRatingBar ratingBar;
     private final BroadcastReceiver ratingsUpdateBroadcastReceiver;
-    private Button recommend;
     protected TextView relatedTitle;
     private TextView starring;
     protected TextView synopsis;
@@ -132,7 +131,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private int getBadgesPadding() {
-        return this.getResources().getDimensionPixelSize(2131296485);
+        return this.getResources().getDimensionPixelSize(2131296465);
     }
     
     private String getInterBadgePadding() {
@@ -178,21 +177,20 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     protected void findViews() {
-        this.ratingBar = (NetflixRatingBar)this.findViewById(2131624216);
-        this.addToMyList = (Button)this.findViewById(2131624561);
-        this.basicInfo = (TextView)this.findViewById(2131624441);
-        this.recommend = (Button)this.findViewById(2131624560);
-        this.synopsis = (TextView)this.findViewById(2131624285);
-        this.starring = (TextView)this.findViewById(2131624275);
-        this.creators = (TextView)this.findViewById(2131624276);
-        this.horzDispImg = (AdvancedImageView)this.findViewById(2131624206);
-        this.title = (TextView)this.findViewById(2131624210);
-        this.imgGroup = (ViewGroup)this.findViewById(2131624569);
-        this.backgroundImg = (ImageView)this.findViewById(2131624203);
-        this.relatedTitle = (TextView)this.findViewById(2131624212);
-        this.basicInfoBadges = (TextView)this.findViewById(2131624568);
-        this.footerViewGroup = (ViewGroup)this.findViewById(2131624211);
-        this.copyright = (ViewGroup)this.findViewById(2131624562);
+        this.ratingBar = (NetflixRatingBar)this.findViewById(2131624190);
+        this.addToMyList = (Button)this.findViewById(2131624520);
+        this.basicInfo = (TextView)this.findViewById(2131624412);
+        this.synopsis = (TextView)this.findViewById(2131624259);
+        this.starring = (TextView)this.findViewById(2131624249);
+        this.creators = (TextView)this.findViewById(2131624250);
+        this.horzDispImg = (AdvancedImageView)this.findViewById(2131624180);
+        this.title = (TextView)this.findViewById(2131624184);
+        this.imgGroup = (ViewGroup)this.findViewById(2131624528);
+        this.backgroundImg = (ImageView)this.findViewById(2131624177);
+        this.relatedTitle = (TextView)this.findViewById(2131624186);
+        this.basicInfoBadges = (TextView)this.findViewById(2131624527);
+        this.footerViewGroup = (ViewGroup)this.findViewById(2131624185);
+        this.copyright = (ViewGroup)this.findViewById(2131624521);
     }
     
     public TextView getAddToMyListButton() {
@@ -215,16 +213,8 @@ public class VideoDetailsViewGroup extends LinearLayout
         return this.horzDispImg;
     }
     
-    public TextView getRecommendButton() {
-        return (TextView)this.recommend;
-    }
-    
-    public TextView getRecommendButtonLabel() {
-        return null;
-    }
-    
     protected int getlayoutId() {
-        return 2130903251;
+        return 2130903234;
     }
     
     public void hideRelatedTitle() {

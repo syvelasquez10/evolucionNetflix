@@ -5,8 +5,6 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
-import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
-import java.util.Set;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
@@ -14,7 +12,7 @@ import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.util.PrivacyUtils;
-import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.repository.UserLocale;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
@@ -35,8 +33,8 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
 import com.netflix.mediaclient.javabridge.ui.Registration;
@@ -45,6 +43,7 @@ import java.util.List;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
 import com.netflix.mediaclient.javabridge.ui.DeviceAccount;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
@@ -65,6 +64,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     private final UserAgentWebCallback commonProfilesUpdateCallback;
     private final ConfigurationAgentWebCallback configDataCallback;
     private boolean isProfileSwitchingDisabled;
+    private Status localeSupportStatus;
     private UserAgent$AccountErrorReceiver mAccountErrorReceiver;
     private EventListener mActivateListener;
     private EventListener mAppResetListener;
@@ -86,6 +86,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     private UserLocaleRepository userLocaleRepository;
     
     public UserAgent() {
+        this.localeSupportStatus = CommonStatus.OK;
         this.commonProfilesUpdateCallback = new UserAgent$3(this);
         this.configDataCallback = new UserAgent$4(this);
     }
@@ -337,8 +338,12 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         this.launchWebTask(new UserAgent$AddWebUserProfilesTask(this, s, b, s2, userAgent$UserAgentCallback));
     }
     
-    public void connectWithFacebook(final String s, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
-        this.launchTask(new UserAgent$ConnectWithFacebookTask(this, s, userAgent$UserAgentCallback));
+    public void createAutoLoginToken(final long n, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
+        if (userAgent$UserAgentCallback == null) {
+            throw new IllegalStateException("Callback can not be null!");
+        }
+        Log.d("nf_service_useragent", "Create auto login token");
+        this.launchTask(new UserAgent$CreateAutoLoginTokenTask(this, n, userAgent$UserAgentCallback));
     }
     
     @Override
@@ -385,6 +390,14 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             Log.d("nf_service_useragent", "Current device locale as raw user locale: " + rawDeviceLocale);
         }
         this.userLocaleRepository.setApplicationLanguage(new UserLocale(rawDeviceLocale));
+        NetflixImmutableStatus localeSupportStatus;
+        if (this.isApkMissingSupportForLocale()) {
+            localeSupportStatus = CommonStatus.NON_SUPPORTED_LOCALE;
+        }
+        else {
+            localeSupportStatus = CommonStatus.OK;
+        }
+        this.localeSupportStatus = localeSupportStatus;
         this.mNrdp = this.getNrdController().getNrdp();
         if (this.mNrdp == null || !this.mNrdp.isReady()) {
             this.initCompleted(CommonStatus.NRD_ERROR);
@@ -421,11 +434,6 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     public void fetchAvailableAvatarsList(final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
         Log.d("nf_service_useragent", "fetchAvailableAvatarsList");
         this.launchWebTask(new UserAgent$FetchAvailableAvatarsListTask(this, userAgent$UserAgentCallback));
-    }
-    
-    public void fetchFriendsForRecommendations(final String s, final int n, final String s2, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
-        Log.d("nf_service_useragent", "fetchFriendsForRecommendations");
-        this.launchWebTask(new UserAgent$FetchFriendsForRecommendationsTask(this, s, n, s2, userAgent$UserAgentCallback));
     }
     
     public void fetchProfileData(final String s) {
@@ -596,7 +604,14 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     
     @Override
     public void initialized(final Status status) {
-        this.initCompleted(status);
+        Status localeSupportStatus = status;
+        if (status.equals(CommonStatus.OK)) {
+            localeSupportStatus = status;
+            if (!this.localeSupportStatus.equals(CommonStatus.OK)) {
+                localeSupportStatus = this.localeSupportStatus;
+            }
+        }
+        this.initCompleted(localeSupportStatus);
     }
     
     @Override
@@ -604,13 +619,8 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         return this.mUser != null && this.mUser.isAgeVerified();
     }
     
-    public boolean isCurrentProfileFacebookConnected() {
-        boolean socialConnected = false;
-        if (this.mCurrentUserProfile != null) {
-            socialConnected = this.mCurrentUserProfile.isSocialConnected();
-        }
-        Log.d("nf_service_useragent", "isCurrentProfileFacebookConnected result: " + socialConnected);
-        return socialConnected;
+    public boolean isApkMissingSupportForLocale() {
+        return this.userLocaleRepository.isApkMissingSupportForLocale(this.getConfigurationAgent().getNflxSupportedLocales(), this.getConfigurationAgent().getAlertedLocales());
     }
     
     @Override
@@ -760,11 +770,6 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     @Override
     public void selectProfileResult(final Status status) {
         UserAgentBroadcastIntents.signalProfileSelectionResult(this.getContext(), status.getStatusCode().getValue(), null);
-    }
-    
-    public void sendRecommendationsToFriends(final String s, final Set<FriendForRecommendation> set, final String s2, final String s3) {
-        Log.d("nf_service_useragent", "sendRecommendationsToFriends");
-        this.launchWebTask(new UserAgent$SendRecommendationsTask(s, set, s2, s3));
     }
     
     public void setCurrentAppLocale(final String s) {

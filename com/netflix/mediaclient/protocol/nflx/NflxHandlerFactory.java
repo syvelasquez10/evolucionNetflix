@@ -185,13 +185,6 @@ public final class NflxHandlerFactory
             clientLogging$ModalView = movieDetails2;
             b = false;
         }
-        else if ("send_thanks".equalsIgnoreCase(lowerCase)) {
-            Log.v("NflxHandler", "Send thanks to social notification starts...");
-            final IClientLogging$ModalView homeScreen3 = IClientLogging$ModalView.homeScreen;
-            nflxHandler = new SendThanksToSocialNotificationActionHandler(netflixActivity, map);
-            clientLogging$ModalView = homeScreen3;
-            b = false;
-        }
         else {
             Log.w("NflxHandler", "Unknown Nflx action: " + lowerCase);
             nflxHandler = new NotHandlingActionHandler();
@@ -212,7 +205,7 @@ public final class NflxHandlerFactory
         if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
             clientLogging.getCustomerEventLogging().reportMdpFromDeepLinking(s);
         }
-        final boolean contains = s.contains("?s=a");
+        final boolean contains = s.contains("source=android");
         if (contains) {
             UIViewLogUtils.reportUIViewCommandStarted((Context)netflixActivity, UIViewLogging$UIViewCommandName.shareOpenSheet, IClientLogging$ModalView.movieDetails, null, null);
             UserActionLogUtils.reportShareSheetOpenActionStarted(s, (Context)netflixActivity, null, IClientLogging$ModalView.movieDetails);

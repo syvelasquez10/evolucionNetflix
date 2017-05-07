@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.pushnotification;
 
-import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsActivity;
 import com.netflix.mediaclient.ui.details.ShowDetailsActivity;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
 import com.netflix.mediaclient.ui.details.MovieDetailsActivity;
@@ -23,9 +22,9 @@ public final class NotificationReceiver extends BroadcastReceiver
         final Intent intent2 = new Intent(s);
         intent2.setClass(context, (Class)NetflixService.class);
         intent2.addCategory("com.netflix.mediaclient.intent.category.PUSH");
-        final String stringExtra = intent.getStringExtra("swiped_social_notification_id");
+        final String stringExtra = intent.getStringExtra("swiped_notification_id");
         if (!StringUtils.isEmpty(stringExtra)) {
-            intent2.putExtra("swiped_social_notification_id", stringExtra);
+            intent2.putExtra("swiped_notification_id", stringExtra);
         }
         MessageData.addMessageDataToIntent(intent2, MessageData.createInstance(intent));
         return intent2;
@@ -67,25 +66,10 @@ public final class NotificationReceiver extends BroadcastReceiver
         context.startActivity(intent);
     }
     
-    private void handleSayThankYou(final Context context, final Intent intent) {
-        Log.d("nf_push", "received Say Thank You from notificaton");
-        markSocialNotificationAsRead(context, intent);
-        intent.setClass(context, (Class)NetflixService.class);
-        intent.addCategory("com.netflix.mediaclient.intent.category.PUSH");
-        context.startService(intent);
-    }
-    
     private void handleSdp(final Context context, final Intent intent) {
         Log.d("nf_push", "received show SDP from notificaton");
         markSocialNotificationAsRead(context, intent);
         intent.setClass(context, (Class)ShowDetailsActivity.class);
-        intent.addFlags(872415232);
-        context.startActivity(intent);
-    }
-    
-    private void handleSocial(final Context context, final Intent intent) {
-        Log.d("nf_push", "received a request to open social notifications list from notificaton");
-        intent.setClass(context, (Class)SocialNotificationsActivity.class);
         intent.addFlags(872415232);
         context.startActivity(intent);
     }
@@ -119,12 +103,6 @@ public final class NotificationReceiver extends BroadcastReceiver
             }
             case "com.netflix.mediaclient.intent.action.NOTIFICATION_BROWSER_REDIRECT": {
                 this.handleBrowserRedirectNotification(context, intent);
-            }
-            case "com.netflix.mediaclient.intent.action.NOTIFICATION_SAY_THANKS": {
-                this.handleSayThankYou(context, intent);
-            }
-            case "com.netflix.mediaclient.intent.action.NOTIFICATION_SOCIAL": {
-                this.handleSocial(context, intent);
             }
             case "com.netflix.mediaclient.intent.action.NOTIFICATION_MOVIE_DETAILS": {
                 this.handleMdp(context, intent);

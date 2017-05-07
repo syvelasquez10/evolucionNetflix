@@ -18,6 +18,6 @@ class EpisodesFrag$1 implements RecyclerViewHeaderAdapter$IViewCreator
     
     @Override
     public View createItemView() {
-        return (View)new EpisodesFrag$EpisodeView(this.this$0, (Context)this.this$0.getActivity(), 2130903105);
+        return (View)new EpisodesFrag$EpisodeView(this.this$0, (Context)this.this$0.getActivity(), 2130903092);
     }
 }

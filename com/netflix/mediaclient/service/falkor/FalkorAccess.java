@@ -4,12 +4,10 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import android.content.Intent;
-import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.servicemgr.Asset;
 import java.util.List;
-import com.netflix.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.IrisNotificationSummary;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
@@ -181,12 +179,12 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void markNotificationAsRead(final SocialNotificationSummary socialNotificationSummary) {
-        this.mBrowseAgent.markNotificationAsRead(socialNotificationSummary);
+    public void markNotificationAsRead(final IrisNotificationSummary irisNotificationSummary) {
+        this.mBrowseAgent.markNotificationAsRead(irisNotificationSummary);
     }
     
     @Override
-    public void markNotificationsAsRead(final List<SocialNotificationSummary> list) {
+    public void markNotificationsAsRead(final List<IrisNotificationSummary> list) {
         this.mBrowseAgent.markNotificationsAsRead(list);
     }
     
@@ -198,11 +196,6 @@ public class FalkorAccess implements IBrowseInterface
     @Override
     public void prefetchLoLoMo(final int n, final int n2, final int n3, final int n4, final int n5, final int n6, final boolean b, final boolean b2, final boolean b3, final int n7, final int n8) {
         this.mBrowseAgent.prefetchLoLoMo(n, n2, n3, n4, n5, n6, b, b2, b3, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n7, n8)));
-    }
-    
-    @Override
-    public void refreshAll() {
-        this.mBrowseAgent.refreshAll();
     }
     
     @Override
@@ -221,8 +214,13 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void refreshSocialNotifications(final boolean b, final boolean b2, final MessageData messageData) {
+    public void refreshIrisNotifications(final boolean b, final boolean b2, final MessageData messageData) {
         this.mBrowseAgent.refreshSocialNotifications(b, b2, messageData);
+    }
+    
+    @Override
+    public void refreshLolomo() {
+        this.mBrowseAgent.refreshLolomo();
     }
     
     @Override
@@ -233,19 +231,6 @@ public class FalkorAccess implements IBrowseInterface
     @Override
     public void searchNetflix(final String s, final int n, final int n2) {
         this.mBrowseAgent.searchNetflix(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
-    }
-    
-    @Override
-    public void sendThanksToSocialNotification(final SocialNotificationSummary socialNotificationSummary, final int n, final int n2) {
-        this.mBrowseAgent.sendThanksToSocialNotification(socialNotificationSummary, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
-    }
-    
-    @Override
-    public void sendThanksToSocialNotificationFromService(final SocialNotificationSummary socialNotificationSummary, final NetflixService netflixService, final boolean b) {
-        if (b) {
-            netflixService.getApplicationContext().sendBroadcast(new Intent("android.intent.action.CLOSE_SYSTEM_DIALOGS"));
-        }
-        this.mBrowseAgent.sendThanksToSocialNotification(socialNotificationSummary, new FalkorAccess$1SentThanksCallback(this, netflixService));
     }
     
     @Override

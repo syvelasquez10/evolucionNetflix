@@ -6,7 +6,7 @@ package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import java.util.List;
-import com.netflix.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.IrisNotificationSummary;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
@@ -619,17 +619,17 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public void markNotificationAsRead(final SocialNotificationSummary socialNotificationSummary) {
+    public void markNotificationAsRead(final IrisNotificationSummary irisNotificationSummary) {
         final INetflixService service = this.mgr.getService();
         if (service != null) {
-            service.getBrowse().markNotificationAsRead(socialNotificationSummary);
+            service.getBrowse().markNotificationAsRead(irisNotificationSummary);
             return;
         }
         Log.w("ServiceManagerBrowse", "markNotificationAsRead:: service is not available");
     }
     
     @Override
-    public void markNotificationsAsRead(final List<SocialNotificationSummary> list) {
+    public void markNotificationsAsRead(final List<IrisNotificationSummary> list) {
         final INetflixService service = this.mgr.getService();
         if (service != null) {
             service.getBrowse().markNotificationsAsRead(list);
@@ -675,16 +675,6 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public void refreshAll() {
-        final INetflixService service = this.mgr.getService();
-        if (service != null) {
-            service.getBrowse().refreshAll();
-            return;
-        }
-        Log.w("ServiceManagerBrowse", "refreshAll:: service is not available");
-    }
-    
-    @Override
     public void refreshCw() {
         final INetflixService service = this.mgr.getService();
         if (service != null) {
@@ -705,13 +695,23 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public void refreshSocialNotifications(final boolean b) {
+    public void refreshIrisNotifications(final boolean b) {
         final INetflixService service = this.mgr.getService();
         if (service != null) {
-            service.getBrowse().refreshSocialNotifications(b, false, null);
+            service.getBrowse().refreshIrisNotifications(b, false, null);
             return;
         }
-        Log.w("ServiceManagerBrowse", "refreshSocialNotifications:: service is not available");
+        Log.w("ServiceManagerBrowse", "refreshIrisNotifications:: service is not available");
+    }
+    
+    @Override
+    public void refreshLolomo() {
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            service.getBrowse().refreshLolomo();
+            return;
+        }
+        Log.w("ServiceManagerBrowse", "refreshLolomo:: service is not available");
     }
     
     @Override
@@ -751,20 +751,6 @@ public final class BrowseManager implements IBrowseManager
             }
             return b;
         }
-    }
-    
-    @Override
-    public void sendThanksToSocialNotification(final SocialNotificationSummary socialNotificationSummary, final ManagerCallback managerCallback) {
-        final int requestId = this.mgr.getRequestId(managerCallback);
-        if (Log.isLoggable()) {
-            Log.d("ServiceManagerBrowse", "sendThanksToSocialNotification requestId=" + requestId);
-        }
-        final INetflixService service = this.mgr.getService();
-        if (service != null) {
-            service.getBrowse().sendThanksToSocialNotification(socialNotificationSummary, this.mgr.getClientId(), requestId);
-            return;
-        }
-        Log.w("ServiceManagerBrowse", "sendThanksToSocialNotification:: service is not available");
     }
     
     @Override

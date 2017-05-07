@@ -4,9 +4,10 @@
 
 package com.netflix.mediaclient.service.falkor;
 
+import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.service.NetflixService;
@@ -22,13 +23,12 @@ import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.NetflixApplication;
 import java.util.Iterator;
 import java.util.List;
-import com.netflix.mediaclient.ui.social.notifications.KubrickSlidingMenuNotificationsFrag;
-import com.netflix.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
+import com.netflix.mediaclient.ui.iris.notifications.SlidingMenuNotificationsFrag;
+import com.netflix.model.leafs.social.IrisNotificationSummary;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.falkor.CachedModelProxy;
 import com.netflix.model.Root;
 import java.util.concurrent.atomic.AtomicBoolean;

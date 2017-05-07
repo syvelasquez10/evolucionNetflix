@@ -140,6 +140,7 @@ class PlayerFragment$19 implements AbsEpisodeView$EpisodeRowListener
             this.this$0.doUnpause();
             return;
         }
+        this.this$0.doUnpause();
         this.this$0.resetCurrentPlayback();
         this.this$0.notifyOthersOfPlayStop();
         this.this$0.mScreen.changeActionState(false);

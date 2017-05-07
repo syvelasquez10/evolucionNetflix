@@ -27,10 +27,10 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.interface
     private static final String FIELD_IS_PRIMARY = "isPrimaryProfile";
     private static final String FIELD_LANGUAGES = "languages";
     private static final String FIELD_LAST_NAME = "lastName";
+    private static final String FIELD_MATURITY_LEVEL = "maturityLevel";
     private static final String FIELD_PROFILE_GUID = "profileId";
     private static final String FIELD_PROFILE_NAME = "profileName";
     private static final String FIELD_PROFILE_TOKEN = "userId";
-    private static final String FIELD_SOCIAL_STATUS = "socialStatus";
     private static final String TAG = "UserProfile";
     public UserProfile$Operation operation;
     public SubtitlePreference subtitlePreference;
@@ -44,7 +44,6 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.interface
         final SubtitlePreference subtitlePreference = null;
         this.summary = new UserProfile$Summary(this);
         this.summary.languages = new ArrayList<UserProfile$Language>();
-        this.summary.social = new UserProfile$Social(this);
         this.operation = new UserProfile$Operation(this);
         JSONObject jsonObject;
         try {
@@ -60,11 +59,11 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.interface
             this.summary.firstName = JsonUtils.getString(jsonObject, "firstName", null);
             this.summary.lastName = JsonUtils.getString(jsonObject, "lastName", null);
             this.summary.email = JsonUtils.getString(jsonObject, "email", null);
+            this.summary.maturityLevel = JsonUtils.getInt(jsonObject, "maturityLevel", -1);
             this.summary.isIqEnabled = JsonUtils.getBoolean(jsonObject, "isIqEnabled", false);
             this.summary.isPrimaryProfile = JsonUtils.getBoolean(jsonObject, "isPrimaryProfile", false);
             this.summary.isAutoPlayEnabled = JsonUtils.getBoolean(jsonObject, "autoPlayOn", false);
             this.summary.experienceType = JsonUtils.getString(jsonObject, "experienceType", null);
-            this.summary.social.isConnected = JsonUtils.getBoolean(jsonObject, "socialStatus", false);
             this.summary.avatarUrl = JsonUtils.getString(jsonObject, "avatarUrl", null);
             final String string = JsonUtils.getString(jsonObject, "languages", null);
             if (StringUtils.isNotEmpty(string)) {
@@ -172,6 +171,14 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.interface
     }
     
     @Override
+    public int getMaturityLevel() {
+        if (this.summary == null) {
+            return -1;
+        }
+        return this.summary.maturityLevel;
+    }
+    
+    @Override
     public String getProfileGuid() {
         if (this.summary == null) {
             return null;
@@ -239,15 +246,6 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.interface
     }
     
     @Override
-    public boolean isSocialConnected() {
-        return this.summary != null && this.summary.social.isConnected;
-    }
-    
-    public void setFacebookConnectStatus(final boolean isConnected) {
-        this.summary.social.isConnected = isConnected;
-    }
-    
-    @Override
     public String toString() {
         final JSONObject jsonObject = new JSONObject();
         while (true) {
@@ -258,11 +256,11 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.interface
                 jsonObject.put("firstName", (Object)this.getFirstName());
                 jsonObject.put("lastName", (Object)this.getLastName());
                 jsonObject.put("email", (Object)this.getEmail());
+                jsonObject.put("maturityLevel", this.getMaturityLevel());
                 jsonObject.put("isIqEnabled", this.isIQEnabled());
                 jsonObject.put("isPrimaryProfile", this.isPrimaryProfile());
                 jsonObject.put("autoPlayOn", this.isAutoPlayEnabled());
                 jsonObject.put("experienceType", (Object)this.getEperienceType());
-                jsonObject.put("socialStatus", this.isSocialConnected());
                 jsonObject.put("avatarUrl", (Object)this.getAvatarUrl());
                 jsonObject.put("languages", (Object)this.getLanguagesInCsv());
                 if (this.subtitlePreference != null) {

@@ -105,12 +105,12 @@ public final class PostPlayForMovies extends PostPlay
             return;
         }
         this.mVideoWindow = VideoWindowForPostplayFactory.createVideoWindow(this.mPlayerFragment);
-        this.addBoxArt(2131624442, 0);
-        this.addBoxArt(2131624444, 1);
-        this.addBoxArt(2131624446, 2);
-        this.addPlayButton(2131624443, 0);
-        this.addPlayButton(2131624445, 1);
-        this.addPlayButton(2131624447, 2);
+        this.addBoxArt(2131624413, 0);
+        this.addBoxArt(2131624415, 1);
+        this.addBoxArt(2131624417, 2);
+        this.addPlayButton(2131624414, 0);
+        this.addPlayButton(2131624416, 1);
+        this.addPlayButton(2131624418, 2);
     }
     
     private void updateUi(final PostPlayVideo postPlayVideo, final int n) {
@@ -197,10 +197,10 @@ public final class PostPlayForMovies extends PostPlay
     
     @Override
     void findViews() {
-        this.mRatingBar = (NetflixRatingBar)this.mNetflixActivity.findViewById(2131624216);
-        this.mVideoDetails = (TextView)this.mNetflixActivity.findViewById(2131624441);
-        this.mBackgroundContainer = this.mNetflixActivity.findViewById(2131624448);
-        this.mMetadata = this.mNetflixActivity.findViewById(2131624440);
+        this.mRatingBar = (NetflixRatingBar)this.mNetflixActivity.findViewById(2131624190);
+        this.mVideoDetails = (TextView)this.mNetflixActivity.findViewById(2131624412);
+        this.mBackgroundContainer = this.mNetflixActivity.findViewById(2131624419);
+        this.mMetadata = this.mNetflixActivity.findViewById(2131624411);
     }
     
     @Override

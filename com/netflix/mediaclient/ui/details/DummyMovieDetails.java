@@ -102,6 +102,11 @@ public class DummyMovieDetails implements MovieDetails
     }
     
     @Override
+    public int getMaturityLevel() {
+        return 0;
+    }
+    
+    @Override
     public int getNumDirectors() {
         return StringUtils.getCsvCount(this.getDirectors());
     }

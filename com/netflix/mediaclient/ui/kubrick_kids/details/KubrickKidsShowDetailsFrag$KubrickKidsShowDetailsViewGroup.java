@@ -24,6 +24,6 @@ class KubrickKidsShowDetailsFrag$KubrickKidsShowDetailsViewGroup extends Kubrick
     
     @Override
     protected int getlayoutId() {
-        return 2130903130;
+        return 2130903117;
     }
 }

@@ -8,7 +8,6 @@ import android.view.Display;
 import android.util.DisplayMetrics;
 import android.hardware.display.DisplayManager;
 import com.netflix.mediaclient.media.VideoResolutionRange;
-import com.netflix.mediaclient.service.webclient.model.leafs.KubrickKidsConfigData;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
@@ -16,7 +15,10 @@ import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
+import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
+import com.netflix.mediaclient.repository.UserLocale;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
@@ -90,6 +92,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     private boolean mMicrophoneExist;
     private boolean mNeedEsMigration;
     private boolean mNeedLogout;
+    private NflxSupportedLocales mNflxSupportedLocales;
     private final PlaybackConfiguration mPlaybackConfiguration;
     private String mSoftwareVersion;
     private StreamingConfiguration mStreamingConfigOverride;
@@ -184,6 +187,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         }
         this.mDeviceConfigOverride.persistDeviceConfigOverride(configString.getDeviceConfig());
         this.mStreamingConfigOverride.persistStreamingOverride(configString.getStreamingConfig());
+        this.mNflxSupportedLocales.persistNflxSupportedLocales(configString.getNflxSupportedLocales());
         return CommonStatus.OK;
     }
     
@@ -285,6 +289,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         this.mDeviceConfigOverride.persistDeviceConfigOverride(configData.getDeviceConfig());
         this.mStreamingConfigOverride.persistStreamingOverride(configData.getStreamingConfig());
         this.mAccountConfigOverride.persistAccountConfigOverride(configData.getAccountConfig());
+        this.mNflxSupportedLocales.persistNflxSupportedLocales(configData.getNflxSupportedLocales());
         ((VoipAuthorizationTokensUpdater)this.getService().getVoip()).updateAuthorizationData(configData.getCustomerSupportVoipAuthorizations());
         if (this.isDolbyDigitalPlus51Supported()) {
             NativeTransport.enableDolbyDigitalPlus51();
@@ -372,6 +377,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         this.mDeviceConfigOverride = new DeviceConfiguration(this.getContext());
         this.mAccountConfigOverride = new AccountConfiguration(this.getContext());
         this.mStreamingConfigOverride = new StreamingConfiguration(this.getContext());
+        this.mNflxSupportedLocales = new NflxSupportedLocales(this.getContext());
         this.mEndpointRegistry = new EndpointRegistryProvider(this.getContext(), deviceModel, this.isDeviceHd(), this.mDeviceConfigOverride.getImageRepository(), this.computeImageResolutionClass(this.getContext()));
         this.mMicrophoneExist = this.hasMicrophone();
         final Status loadConfigOverridesOnAppStart = this.loadConfigOverridesOnAppStart(this.mEndpointRegistry.getAppStartConfigUrl());
@@ -411,6 +417,29 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public ABTestConfigData getABTestConfiguration_6538() {
+        return this.mAccountConfigOverride.getABTestConfiguration_6538();
+    }
+    
+    @Override
+    public ABTestConfigData getABTestConfiguration_6725() {
+        return this.mAccountConfigOverride.getABTestConfiguration_6725();
+    }
+    
+    @Override
+    public UserLocale getAlertLocale(final String s) {
+        return this.mNflxSupportedLocales.getAlertLocale(s);
+    }
+    
+    @Override
+    public List<UserLocale> getAlertedLocales() {
+        if (this.mNflxSupportedLocales != null) {
+            return this.mNflxSupportedLocales.getAlertedLocales();
+        }
+        return null;
+    }
+    
+    @Override
     public ApiEndpointRegistry getApiEndpointRegistry() {
         return this.mEndpointRegistry;
     }
@@ -427,6 +456,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public int getAppVersionCode() {
         return this.mAppVersionCode;
+    }
+    
+    @Override
+    public DataSaveConfigData getBWSaveConfigData() {
+        return this.mAccountConfigOverride.getBWSaveConfigData();
     }
     
     @Override
@@ -515,13 +549,16 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
-    public KubrickKidsConfigData getKubrickKidsConfiguration() {
-        return this.mAccountConfigOverride.getKubrickKidsConfig();
+    public MdxConfiguration getMdxConfiguration() {
+        return this.mMdxConfiguration;
     }
     
     @Override
-    public MdxConfiguration getMdxConfiguration() {
-        return this.mMdxConfiguration;
+    public List<UserLocale> getNflxSupportedLocales() {
+        if (this.mNflxSupportedLocales != null) {
+            return this.mNflxSupportedLocales.locales;
+        }
+        return null;
     }
     
     @Override
@@ -565,11 +602,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public int getResourceRequestTimeout() {
         return 1000;
-    }
-    
-    @Override
-    public int getShareSheetExperience() {
-        return this.mAccountConfigOverride.getShareSheetExperience();
     }
     
     public SignUpConfiguration getSignUpConfiguration() {
@@ -736,6 +768,14 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public void setAlertLocale(final UserLocale userLocale) {
+        if (userLocale == null) {
+            return;
+        }
+        this.mNflxSupportedLocales.setAlertedLocale(this.getContext(), userLocale);
+    }
+    
+    @Override
     public boolean shouldDisableVoip() {
         final boolean b = !this.mMicrophoneExist || (this.mDeviceConfigOverride.shouldDisableVoip() && this.mAccountConfigOverride.shouldDisableVoip());
         if (Log.isLoggable()) {
@@ -745,6 +785,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             Log.d("nf_configurationagent", "Real disable " + b);
         }
         return b;
+    }
+    
+    @Override
+    public boolean shouldForceBwSettingsInWifi() {
+        return this.mAccountConfigOverride.shouldForceBwSettingsInWifi();
     }
     
     @Override

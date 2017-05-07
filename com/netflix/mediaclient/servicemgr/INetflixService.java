@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
-import java.util.Set;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import android.os.Handler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
@@ -23,7 +21,7 @@ public interface INetflixService
     
     void addProfile(final String p0, final boolean p1, final String p2, final int p3, final int p4);
     
-    void connectWithFacebook(final String p0, final int p1, final int p2);
+    void createAutoLoginToken(final long p0, final int p1, final int p2);
     
     boolean deleteLocalResource(final String p0);
     
@@ -65,8 +63,6 @@ public interface INetflixService
     
     IErrorHandler getErrorHandler();
     
-    void getFriendsForRecommendationList(final String p0, final int p1, final String p2, final int p3, final int p4);
-    
     Handler getHandler();
     
     IMdx getMdx();
@@ -85,7 +81,7 @@ public interface INetflixService
     
     IVoip getVoip();
     
-    boolean isCurrentProfileFacebookConnected();
+    boolean isApkMissingSupportForLocale();
     
     boolean isCurrentProfileIQEnabled();
     
@@ -112,8 +108,6 @@ public interface INetflixService
     void removeProfile(final String p0, final int p1, final int p2);
     
     void selectProfile(final String p0);
-    
-    void sendRecommendationsToFriends(final String p0, final Set<FriendForRecommendation> p1, final String p2, final String p3);
     
     void setCurrentAppLocale(final String p0);
     

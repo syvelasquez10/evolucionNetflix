@@ -84,13 +84,13 @@ class AvatarsGridActivity$ProfileAvatarAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             inflate = this.this$0.getLayoutInflater().inflate(2130903070, viewGroup, false);
-            inflate.setTag((Object)new AvatarsGridActivity$ViewHolder((AdvancedImageView)inflate.findViewById(2131624072), (ImageView)inflate.findViewById(2131624073)));
+            inflate.setTag((Object)new AvatarsGridActivity$ViewHolder((AdvancedImageView)inflate.findViewById(2131624066), (ImageView)inflate.findViewById(2131624067)));
         }
         final AvatarsGridActivity$ViewHolder avatarsGridActivity$ViewHolder = (AvatarsGridActivity$ViewHolder)inflate.getTag();
         final String item = this.getItem(n);
         if (this.this$0.mSelectedIconPos == n) {
             avatarsGridActivity$ViewHolder.topEditImg.setVisibility(0);
-            avatarsGridActivity$ViewHolder.topEditImg.setBackgroundResource(2130837918);
+            avatarsGridActivity$ViewHolder.topEditImg.setBackgroundResource(2130837870);
         }
         else {
             avatarsGridActivity$ViewHolder.topEditImg.setVisibility(8);
@@ -108,8 +108,8 @@ class AvatarsGridActivity$ProfileAvatarAdapter extends BaseAdapter
         final int width = this.this$0.mGridView.getWidth();
         if (width > 0) {
             final Resources resources = this.this$0.getResources();
-            final float dimension = resources.getDimension(2131296612);
-            final float n = resources.getDimension(2131296611) + dimension;
+            final float dimension = resources.getDimension(2131296592);
+            final float n = resources.getDimension(2131296591) + dimension;
             final int numColumns = (int)(width / n);
             this.this$0.mGridView.setNumColumns(numColumns);
             this.adjustGridViewPaddings(width, numColumns, n, dimension);

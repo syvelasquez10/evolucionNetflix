@@ -24,8 +24,8 @@ class DebugMenuItems$9 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        Log.d(this.this$0.logTag, "Making refreshAll() call");
-        this.this$0.activity.getServiceManager().getBrowse().refreshAll();
+        Log.d(this.this$0.logTag, "Making refreshLolomo() call");
+        this.this$0.activity.getServiceManager().getBrowse().refreshLolomo();
         return true;
     }
 }

@@ -24,7 +24,7 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     
     public DiagnosisActivity$ResultsAdapter(final DiagnosisActivity this$0, final Context context) {
         this.this$0 = this$0;
-        super(context, 2130903103, 2131624180);
+        super(context, 2130903090, 2131624154);
         this.context = context;
     }
     
@@ -44,20 +44,20 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     }
     
     public View getView(final int n, View inflate, final ViewGroup viewGroup) {
-        inflate = ((LayoutInflater)this.context.getSystemService("layout_inflater")).inflate(2130903103, viewGroup, false);
-        final TextView textView = (TextView)inflate.findViewById(2131624182);
-        final TextView textView2 = (TextView)inflate.findViewById(2131624183);
-        final ImageView imageView = (ImageView)inflate.findViewById(2131624181);
-        imageView.setImageResource(2130837789);
+        inflate = ((LayoutInflater)this.context.getSystemService("layout_inflater")).inflate(2130903090, viewGroup, false);
+        final TextView textView = (TextView)inflate.findViewById(2131624156);
+        final TextView textView2 = (TextView)inflate.findViewById(2131624157);
+        final ImageView imageView = (ImageView)inflate.findViewById(2131624155);
+        imageView.setImageResource(2130837741);
         final UrlNetworkState urlNetworkState = this.this$0.mUrlList.get(n);
         this.setTitleText(textView, urlNetworkState.getUrl(), n);
         if (urlNetworkState.getStatus().equals(DiagnosisAgent$UrlStatus.COMPLETED)) {
             if (urlNetworkState.getResult() != 0) {
                 textView2.setText((CharSequence)("nw-" + urlNetworkState.getErrorGroup() + "-" + urlNetworkState.getErrorCode()));
-                imageView.setImageResource(2130837788);
+                imageView.setImageResource(2130837740);
                 return inflate;
             }
-            imageView.setImageResource(2130837789);
+            imageView.setImageResource(2130837741);
             textView2.setVisibility(4);
         }
         else {

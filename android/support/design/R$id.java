@@ -6,6 +6,6 @@ package android.support.design;
 
 public final class R$id
 {
-    public static final int snackbar_action = 2131624296;
-    public static final int snackbar_text = 2131624295;
+    public static final int snackbar_action = 2131624270;
+    public static final int snackbar_text = 2131624269;
 }

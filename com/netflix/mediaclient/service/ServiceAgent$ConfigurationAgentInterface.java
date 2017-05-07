@@ -8,7 +8,6 @@ import com.netflix.mediaclient.media.VideoResolutionRange;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.service.configuration.PlaybackConfiguration;
 import com.netflix.mediaclient.service.configuration.MdxConfiguration;
-import com.netflix.mediaclient.service.webclient.model.leafs.KubrickKidsConfigData;
 import com.netflix.mediaclient.service.configuration.KubrickConfiguration;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
@@ -19,7 +18,11 @@ import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
+import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
+import java.util.List;
+import com.netflix.mediaclient.repository.UserLocale;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
 
 public interface ServiceAgent$ConfigurationAgentInterface
@@ -34,11 +37,21 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     void fetchAccountConfigData(final ConfigurationAgentWebCallback p0);
     
+    ABTestConfigData getABTestConfiguration_6538();
+    
+    ABTestConfigData getABTestConfiguration_6725();
+    
+    UserLocale getAlertLocale(final String p0);
+    
+    List<UserLocale> getAlertedLocales();
+    
     ApiEndpointRegistry getApiEndpointRegistry();
     
     int getApmUserSessionDurationInSeconds();
     
     int getAppVersionCode();
+    
+    DataSaveConfigData getBWSaveConfigData();
     
     BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification();
     
@@ -70,9 +83,9 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     KubrickConfiguration getKubrickConfiguration();
     
-    KubrickKidsConfigData getKubrickKidsConfiguration();
-    
     MdxConfiguration getMdxConfiguration();
+    
+    List<UserLocale> getNflxSupportedLocales();
     
     PlaybackConfiguration getPlaybackConfiguration();
     
@@ -89,8 +102,6 @@ public interface ServiceAgent$ConfigurationAgentInterface
     int getResFetcherThreadPoolSize();
     
     int getResourceRequestTimeout();
-    
-    int getShareSheetExperience();
     
     String getSoftwareVersion();
     
@@ -120,7 +131,11 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     boolean isWidevineL3Enabled();
     
+    void setAlertLocale(final UserLocale p0);
+    
     boolean shouldDisableVoip();
+    
+    boolean shouldForceBwSettingsInWifi();
     
     void userAgentLogoutComplete();
 }

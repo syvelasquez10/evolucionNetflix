@@ -105,14 +105,14 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
         super.onCreate(bundle);
         if (DeviceUtils.isTabletByContext((Context)this)) {
             this.setRequestedOrientation(6);
-            this.setContentView(2130903101);
+            this.setContentView(2130903088);
             if (Log.isLoggable("DiagnosisActivity", 3)) {
                 Log.d("DiagnosisActivity", "Setting orientation to landscape");
             }
         }
         else {
             this.setRequestedOrientation(7);
-            this.setContentView(2130903102);
+            this.setContentView(2130903089);
             if (Log.isLoggable("DiagnosisActivity", 3)) {
                 Log.d("DiagnosisActivity", "setting orientation to potrait");
             }

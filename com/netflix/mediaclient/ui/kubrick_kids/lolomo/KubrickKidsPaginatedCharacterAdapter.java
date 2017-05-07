@@ -33,7 +33,7 @@ public class KubrickKidsPaginatedCharacterAdapter extends PaginatedLoMoAdapter
     
     @Override
     public int getRowHeightInPx() {
-        return this.getActivity().getResources().getDimensionPixelSize(2131296533) + MathUtils.divideIntsWithRounding(LoMoViewPager.computeViewPagerWidth(this.activity, true, LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW), this.numItemsPerPage);
+        return this.getActivity().getResources().getDimensionPixelSize(2131296513) + MathUtils.divideIntsWithRounding(LoMoViewPager.computeViewPagerWidth(this.activity, true, LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW), this.numItemsPerPage);
     }
     
     @Override
@@ -41,7 +41,7 @@ public class KubrickKidsPaginatedCharacterAdapter extends PaginatedLoMoAdapter
         KubrickKidsCharacterViewGroup kubrickKidsCharacterViewGroup;
         if ((kubrickKidsCharacterViewGroup = ((ObjectRecycler<KubrickKidsCharacterViewGroup>)objectRecycler$ViewRecycler).pop(KubrickKidsCharacterViewGroup.class)) == null) {
             kubrickKidsCharacterViewGroup = new KubrickKidsCharacterViewGroup((Context)this.getActivity());
-            ViewUtils.setPaddingTop((View)kubrickKidsCharacterViewGroup, this.getActivity().getResources().getDimensionPixelSize(2131296533));
+            ViewUtils.setPaddingTop((View)kubrickKidsCharacterViewGroup, this.getActivity().getResources().getDimensionPixelSize(2131296513));
             kubrickKidsCharacterViewGroup.init(n);
         }
         ((VideoViewGroup<Video, V>)kubrickKidsCharacterViewGroup).updateDataThenViews(list, n, n2, this.getListViewPos(), basicLoMo);

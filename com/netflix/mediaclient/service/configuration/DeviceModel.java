@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.configuration;
 
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.service.configuration.esn.BaseEsnProvider;
 import android.os.Build;
@@ -15,8 +16,9 @@ public class DeviceModel
 {
     private static final String APP_NAME = "samurai";
     int apiLevel;
-    int apkVersion;
     String appType;
+    String appVersion;
+    int appVersionCode;
     String buildPropBoard;
     String buildPropDisplay;
     DeviceCategory category;
@@ -26,7 +28,7 @@ public class DeviceModel
     String manufacturer;
     String model;
     
-    public DeviceModel(final int apkVersion, final Context context) {
+    public DeviceModel(final int appVersionCode, final Context context) {
         this.appType = "";
         this.model = "";
         this.esnModelId = "";
@@ -47,7 +49,8 @@ public class DeviceModel
             this.fingerprint = Build.FINGERPRINT.trim();
         }
         this.apiLevel = AndroidUtils.getAndroidVersion();
-        this.apkVersion = apkVersion;
+        this.appVersionCode = appVersionCode;
+        this.appVersion = AndroidManifestUtils.getVersion(context);
         if (DeviceUtils.isTabletByContext(context)) {
             this.category = DeviceCategory.TABLET;
         }
@@ -69,12 +72,16 @@ public class DeviceModel
         return this.apiLevel;
     }
     
-    public int getApkVer() {
-        return this.apkVersion;
-    }
-    
     public String getAppType() {
         return this.appType;
+    }
+    
+    public String getAppVersion() {
+        return this.appVersion;
+    }
+    
+    public int getAppVersionCode() {
+        return this.appVersionCode;
     }
     
     public String getBuildPropBoard() {

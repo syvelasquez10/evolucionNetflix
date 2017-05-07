@@ -96,19 +96,19 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     private BaseLoLoMoAdapter$RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131624255);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131624229);
         linearLayout.setFocusable(false);
-        final TextView textView = (TextView)view.findViewById(2131624257);
+        final TextView textView = (TextView)view.findViewById(2131624231);
         final Resources resources = this.activity.getResources();
         int n;
         if (BrowseExperience.isKubrickKids()) {
-            n = 2131558460;
+            n = 2131558451;
         }
         else {
-            n = 2131558545;
+            n = 2131558536;
         }
         textView.setTextColor(resources.getColor(n));
-        return this.createHolder(view, linearLayout, this.initTitleView(view), this.createRowContent(linearLayout, (View)textView), view.findViewById(2131624306));
+        return this.createHolder(view, linearLayout, this.initTitleView(view), this.createRowContent(linearLayout, (View)textView), view.findViewById(2131624279));
     }
     
     private void fetchMoreData() {
@@ -254,11 +254,11 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     protected int getViewLayoutId() {
-        return 2130903156;
+        return 2130903143;
     }
     
     protected TextView initTitleView(final View view) {
-        final TextView textView = (TextView)view.findViewById(2131624256);
+        final TextView textView = (TextView)view.findViewById(2131624230);
         if (Log.isLoggable()) {
             Log.v("BaseLoLoMoAdapter", "Manipulating title padding, view: " + textView);
         }

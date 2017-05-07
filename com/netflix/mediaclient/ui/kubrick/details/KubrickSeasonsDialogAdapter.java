@@ -47,10 +47,10 @@ public class KubrickSeasonsDialogAdapter extends RecyclerView$Adapter<KubrickSea
         kubrickSeasonsDialogAdapter$EpisodesViewHolder.text.setText((CharSequence)this.seasons.get(visibility));
         int n2;
         if (this.curSelectedPosition == visibility) {
-            n2 = 2131558527;
+            n2 = 2131558518;
         }
         else {
-            n2 = 2131558545;
+            n2 = 2131558536;
         }
         kubrickSeasonsDialogAdapter$EpisodesViewHolder.text.setTextColor(this.context.getResources().getColor(n2));
         final TextView text = kubrickSeasonsDialogAdapter$EpisodesViewHolder.text;
@@ -74,7 +74,7 @@ public class KubrickSeasonsDialogAdapter extends RecyclerView$Adapter<KubrickSea
     
     @Override
     public KubrickSeasonsDialogAdapter$EpisodesViewHolder onCreateViewHolder(final ViewGroup viewGroup, final int n) {
-        return new KubrickSeasonsDialogAdapter$EpisodesViewHolder(this, LayoutInflater.from(viewGroup.getContext()).inflate(2130903123, viewGroup, false));
+        return new KubrickSeasonsDialogAdapter$EpisodesViewHolder(this, LayoutInflater.from(viewGroup.getContext()).inflate(2130903110, viewGroup, false));
     }
     
     public int updateSeasonData(final List<SeasonDetails> list, final int n) {

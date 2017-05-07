@@ -121,6 +121,11 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
+    public int getMaturityLevel() {
+        return 0;
+    }
+    
+    @Override
     public int getNumOfEpisodes() {
         return -1;
     }

@@ -32,7 +32,7 @@ public class KubrickKidsDetailsActivity extends DetailsActivity implements PlayC
         kubrickKidsDetailActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
         kubrickKidsDetailActionBar.setTitle("");
         kubrickKidsDetailActionBar.setAlpha(0.0f);
-        final View viewById = this.findViewById(2131624049);
+        final View viewById = this.findViewById(2131624043);
         if (viewById != null) {
             viewById.setBackgroundColor(0);
         }
@@ -57,7 +57,7 @@ public class KubrickKidsDetailsActivity extends DetailsActivity implements PlayC
                 return KubrickKidsShowDetailsFrag.create(this.videoId);
             }
             case 3: {
-                return KubrickKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color", 2131558498));
+                return KubrickKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color", 2131558489));
             }
         }
     }

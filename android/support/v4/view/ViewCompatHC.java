@@ -30,6 +30,10 @@ class ViewCompatHC
         return view.getMeasuredState();
     }
     
+    public static int getMeasuredWidthAndState(final View view) {
+        return view.getMeasuredWidthAndState();
+    }
+    
     public static float getTranslationX(final View view) {
         return view.getTranslationX();
     }

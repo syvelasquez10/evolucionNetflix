@@ -82,11 +82,6 @@ public class NotificationCompat$Builder
         return this;
     }
     
-    public NotificationCompat$Builder addAction(final NotificationCompat$Action notificationCompat$Action) {
-        this.mActions.add(notificationCompat$Action);
-        return this;
-    }
-    
     public Notification build() {
         return NotificationCompat.IMPL.build(this, this.getExtender());
     }
@@ -182,6 +177,11 @@ public class NotificationCompat$Builder
     
     public NotificationCompat$Builder setTicker(final CharSequence charSequence) {
         this.mNotification.tickerText = limitCharSequenceLength(charSequence);
+        return this;
+    }
+    
+    public NotificationCompat$Builder setVisibility(final int mVisibility) {
+        this.mVisibility = mVisibility;
         return this;
     }
     

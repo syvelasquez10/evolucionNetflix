@@ -247,7 +247,7 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
     }
     
     private boolean canPlayerBeBackgrounded() {
-        return this.isActivityValid() && this.mState.playerState == PlayerFragment$PlayerFragmentState.ACTIVITY_PLAYER_READY && this.mState.isPlayStarted() && !this.isStalled() && !this.isSeeking() && !this.mIsBufferingOnPause && this.mScreen != null && this.mScreen.getState() != PlayerUiState.PostPlay && PlayerTypeFactory.isJPlayer2(PlayerTypeFactory.getCurrentType(this.getActivity().getBaseContext())) && this.mConfig != null && !this.mConfig.isDeviceLowMem() && this.mConfig.getPlaybackConfiguration().isSuspendPlaybackEnabled();
+        return this.isActivityValid() && this.mState.playerState == PlayerFragment$PlayerFragmentState.ACTIVITY_PLAYER_READY && this.mState.isPlayStarted() && !this.isStalled() && !this.isSeeking() && !this.mIsBufferingOnPause && this.mPlayer.isBufferingCompleted() && this.mScreen != null && this.mScreen.getState() != PlayerUiState.PostPlay && PlayerTypeFactory.isJPlayer2(PlayerTypeFactory.getCurrentType(this.getActivity().getBaseContext())) && this.mConfig != null && !this.mConfig.isDeviceLowMem() && this.mConfig.getPlaybackConfiguration().isSuspendPlaybackEnabled();
     }
     
     private void clearPanel() {
@@ -782,7 +782,7 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
     private void updateUI() {
         final PostPlayFactory$PostPlayType postPlayType = PostPlay.getPostPlayType(this.getNetflixActivity(), this.mAsset);
         this.setFragmentContentView(PlayScreen.resolveContentView(postPlayType));
-        this.getNetflixActivity().setSupportActionBar((Toolbar)this.mRootLayout.findViewById(2131624408));
+        this.getNetflixActivity().setSupportActionBar((Toolbar)this.mRootLayout.findViewById(2131624381));
         final ServiceManager mServiceManager = this.mServiceManager;
         this.mPlayer = mServiceManager.getPlayer();
         this.mConfig = mServiceManager.getConfiguration();
@@ -820,7 +820,7 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
         this.mPlayerSuspendNotification = new PlayerSuspendNotification(this.getNetflixActivity(), mServiceManager);
         this.getNetflixActivity().registerReceiverWithAutoUnregister(this.mPlayerSuspendIntentReceiver, PlayerSuspendNotification.getNotificationIntentFilter());
         if (AndroidUtils.getAndroidVersion() >= 16 && (PlayerTypeFactory.isJPlayerBase(PlayerTypeFactory.getCurrentType((Context)this.getActivity())) || PlayerTypeFactory.isJPlayer(PlayerTypeFactory.getCurrentType((Context)this.getActivity())))) {
-            this.mSurface2 = new SecondSurface((TextureView)this.mRootLayout.findViewById(2131624404));
+            this.mSurface2 = new SecondSurface((TextureView)this.mRootLayout.findViewById(2131624377));
         }
         this.mState.playerState = PlayerFragment$PlayerFragmentState.ACTIVITY_SRVCMNGR_READY;
     }
@@ -1180,6 +1180,12 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
         }
     }
     
+    public void onBandwidthSettingsDone(final ServiceManager serviceManager) {
+        if (this.mScreen != null && this.mScreen.getTopPanel() != null) {
+            this.mScreen.getTopPanel().onBandwidthSettingsDone(serviceManager);
+        }
+    }
+    
     public void onBufferingUpdate(final int n) {
         if (Log.isLoggable()) {
             Log.d("PlayerFragment", "MP onBufferingUpdate " + n + "%");
@@ -1323,10 +1329,10 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
             else if (this.isActivityValid()) {
                 int fragmentContentView;
                 if (DeviceUtils.isTabletByContext(this.getActivity().getBaseContext())) {
-                    fragmentContentView = 2130903194;
+                    fragmentContentView = 2130903181;
                 }
                 else {
-                    fragmentContentView = 2130903190;
+                    fragmentContentView = 2130903177;
                 }
                 this.setFragmentContentView(fragmentContentView);
             }
@@ -1642,13 +1648,6 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
             return;
         }
         Log.d("PlayerFragment", "We failed to change subtitle");
-        Toast.makeText(this.getActivity().getBaseContext(), 2131165501, 1).show();
-        if (this.language != null) {
-            Log.d("PlayerFragment", "Try to restore previous subtitle");
-            this.language.restorePreviousSubtitle();
-            return;
-        }
-        Log.w("PlayerFragment", "Unable to restore previous subtitle, lang is null. This should NOT happen!");
     }
     
     public void onSurface2Visibility(final boolean b) {

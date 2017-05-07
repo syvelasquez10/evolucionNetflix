@@ -50,7 +50,6 @@ public final class R$attr
     public static final int arrowHeadLength = 2130772068;
     public static final int arrowShaftLength = 2130772069;
     public static final int autoCompleteTextViewStyle = 2130772265;
-    public static final int auxiliary_view_position = 2130772320;
     public static final int background = 2130771996;
     public static final int backgroundSplit = 2130771998;
     public static final int backgroundStacked = 2130771997;
@@ -105,7 +104,6 @@ public final class R$attr
     public static final int colorPrimaryDark = 2130772249;
     public static final int colorSwitchThumbNormal = 2130772255;
     public static final int commitIcon = 2130772128;
-    public static final int confirm_logout = 2130772322;
     public static final int contentInsetEnd = 2130772007;
     public static final int contentInsetLeft = 2130772008;
     public static final int contentInsetRight = 2130772009;
@@ -122,8 +120,6 @@ public final class R$attr
     public static final int dividerHorizontal = 2130772223;
     public static final int dividerPadding = 2130772080;
     public static final int dividerVertical = 2130772222;
-    public static final int done_button_background = 2130772332;
-    public static final int done_button_text = 2130772330;
     public static final int dragView = 2130772139;
     public static final int drawableSize = 2130772066;
     public static final int drawerArrowStyle = 2130771969;
@@ -143,13 +139,11 @@ public final class R$attr
     public static final int expandedTitleMarginTop = 2130772048;
     public static final int expandedTitleTextAppearance = 2130772051;
     public static final int externalRouteEnabledDrawable = 2130772099;
-    public static final int extra_fields = 2130772327;
     public static final int fabSize = 2130772073;
     public static final int fadeColor = 2130772137;
     public static final int fadeDelay = 2130772302;
     public static final int fadeLength = 2130772303;
     public static final int fades = 2130772301;
-    public static final int fetch_user_info = 2130772323;
     public static final int fillColor = 2130772039;
     public static final int flingVelocity = 2130772138;
     public static final int footerColor = 2130772276;
@@ -159,7 +153,6 @@ public final class R$attr
     public static final int footerLineHeight = 2130772277;
     public static final int footerPadding = 2130772281;
     public static final int foreground = 2130772093;
-    public static final int foreground_color = 2130772317;
     public static final int gapBetweenBars = 2130772067;
     public static final int gapWidth = 2130772077;
     public static final int goIcon = 2130772124;
@@ -169,7 +162,6 @@ public final class R$attr
     public static final int hintTextAppearance = 2130772166;
     public static final int homeAsUpIndicator = 2130772215;
     public static final int homeLayout = 2130772000;
-    public static final int horizontal_alignment = 2130772321;
     public static final int icon = 2130771993;
     public static final int iconifiedByDefault = 2130772120;
     public static final int imageAspectRatio = 2130772082;
@@ -182,7 +174,6 @@ public final class R$attr
     public static final int innerShadowRadius = 2130772085;
     public static final int insetForeground = 2130772117;
     public static final int isLightTheme = 2130771971;
-    public static final int is_cropped = 2130772338;
     public static final int is_oval = 2130772116;
     public static final int itemBackground = 2130772108;
     public static final int itemIconTint = 2130772106;
@@ -210,10 +201,8 @@ public final class R$attr
     public static final int listPreferredItemHeightSmall = 2130772236;
     public static final int listPreferredItemPaddingLeft = 2130772238;
     public static final int listPreferredItemPaddingRight = 2130772239;
-    public static final int login_text = 2130772324;
     public static final int logo = 2130771994;
     public static final int logoDescription = 2130772298;
-    public static final int logout_text = 2130772325;
     public static final int maxActionInlineWidth = 2130772140;
     public static final int maxButtonHeight = 2130772293;
     public static final int measureBy = 2130772026;
@@ -232,11 +221,9 @@ public final class R$attr
     public static final int mtvStrokeMiter = 2130772096;
     public static final int mtvStrokeWidth = 2130772095;
     public static final int multiChoiceItemLayout = 2130772020;
-    public static final int multi_select = 2130772316;
     public static final int navigationContentDescription = 2130772297;
     public static final int navigationIcon = 2130772296;
     public static final int navigationMode = 2130771988;
-    public static final int object_id = 2130772318;
     public static final int outerShadowColor = 2130772088;
     public static final int outerShadowDx = 2130772090;
     public static final int outerShadowDy = 2130772091;
@@ -252,7 +239,6 @@ public final class R$attr
     public static final int popupTheme = 2130772011;
     public static final int popupWindowStyle = 2130772228;
     public static final int preserveIconSpacing = 2130772104;
-    public static final int preset_size = 2130772337;
     public static final int pressedTranslationZ = 2130772074;
     public static final int progressBarPadding = 2130772003;
     public static final int progressBarStyle = 2130772001;
@@ -260,19 +246,16 @@ public final class R$attr
     public static final int queryHint = 2130772121;
     public static final int radioButtonStyle = 2130772271;
     public static final int radius = 2130772041;
-    public static final int radius_in_meters = 2130772333;
     public static final int ratingBarStyle = 2130772272;
     public static final int relatedResultsTextBackground = 2130771979;
     public static final int relatedResultsTextColor = 2130771980;
     public static final int relatedResultsTitleTextColor = 2130771981;
-    public static final int results_limit = 2130772334;
     public static final int rippleColor = 2130772072;
     public static final int round_background = 2130772115;
     public static final int searchHintIcon = 2130772126;
     public static final int searchIcon = 2130772125;
     public static final int searchTermHighlightTextColor = 2130771982;
     public static final int searchViewStyle = 2130772234;
-    public static final int search_text = 2130772335;
     public static final int selectableItemBackground = 2130772219;
     public static final int selectableItemBackgroundBorderless = 2130772220;
     public static final int selectedBold = 2130772283;
@@ -281,9 +264,6 @@ public final class R$attr
     public static final int showAsAction = 2130772100;
     public static final int showDividers = 2130772079;
     public static final int showText = 2130772149;
-    public static final int show_pictures = 2130772326;
-    public static final int show_search_box = 2130772336;
-    public static final int show_title_bar = 2130772328;
     public static final int simpleStrokeColor = 2130772132;
     public static final int simpleStrokeTextColor = 2130772134;
     public static final int simpleStrokeWidth = 2130772133;
@@ -300,7 +280,6 @@ public final class R$attr
     public static final int strokeWidth = 2130771984;
     public static final int stvStrokeColor = 2130772142;
     public static final int stvStrokeWidth = 2130772141;
-    public static final int style = 2130772319;
     public static final int submitBackground = 2130772131;
     public static final int subtitle = 2130771990;
     public static final int subtitleTextAppearance = 2130772287;
@@ -349,8 +328,6 @@ public final class R$attr
     public static final int titleTextAppearance = 2130772286;
     public static final int titleTextColor = 2130772299;
     public static final int titleTextStyle = 2130771991;
-    public static final int title_bar_background = 2130772331;
-    public static final int title_text = 2130772329;
     public static final int toolbarBackground = 2130771986;
     public static final int toolbarId = 2130772055;
     public static final int toolbarNavigationButtonStyle = 2130772226;

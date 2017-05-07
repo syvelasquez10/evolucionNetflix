@@ -28,7 +28,7 @@ public class KubrickLoMoViewGroup extends VideoViewGroup<KubrickVideo, KubrickVi
     public void init(final int n) {
         super.init(n);
         if (BrowseExperience.isKubrickKids()) {
-            ViewUtils.setPaddingBottom((View)this, this.getResources().getDimensionPixelSize(2131296537));
+            ViewUtils.setPaddingBottom((View)this, this.getResources().getDimensionPixelSize(2131296517));
         }
     }
     

@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.falkor;
 
 public class Falkor$Leafs
 {
+    public static final String BILLBOARD_SUMMARY = "billboardSummary";
     public static final String BOOKMARK = "bookmark";
     public static final String BOOKMARK_STILL = "bookmarkStill";
     public static final String COPYRIGHT = "copyright";
@@ -18,7 +19,5 @@ public class Falkor$Leafs
     public static final String POSTPLAY_CONTEXT = "postplayContext";
     public static final String RATING = "rating";
     public static final String SEARCH_TITLE = "searchTitle";
-    public static final String SOCIAL_BADGE = "socialBadge";
-    public static final String SOCIAL_EVIDENCE = "socialEvidence";
     public static final String SUMMARY = "summary";
 }

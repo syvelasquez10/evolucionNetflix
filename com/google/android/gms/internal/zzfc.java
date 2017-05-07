@@ -314,30 +314,30 @@ public class zzfc extends zzfh
         final int zzb = zzl.zzcF().zzb((Context)this.zzAi, this.zznQ);
         final int zzb2 = zzl.zzcF().zzb((Context)this.zzAi, this.zznR);
         final ViewParent parent = this.zzoM.getView().getParent();
-        RelativeLayout$LayoutParams relativeLayout$LayoutParams = null;
-        String zzAc;
-        int n = 0;
-        Label_0788_Outer:Label_0833_Outer:
+    Label_0911_Outer:
         while (true) {
         Label_0850_Outer:
             while (true) {
-            Label_0911_Outer:
+            Label_0833_Outer:
                 while (true) {
-                Label_0894_Outer:
+                Label_0877_Outer:
                     while (true) {
-                    Label_0877_Outer:
+                    Label_0894_Outer:
                         while (true) {
                         Label_0867_Outer:
                             while (true) {
                                 while (true) {
+                                    RelativeLayout$LayoutParams relativeLayout$LayoutParams = null;
+                                    int n = 0;
                                     Label_1025: {
-                                    Label_0758_Outer:
+                                    Label_0788_Outer:
                                         while (true) {
-                                        Label_0773_Outer:
+                                        Label_0758_Outer:
                                             while (true) {
                                                 while (true) {
-                                                Label_0818_Outer:
+                                                Label_0743_Outer:
                                                     while (true) {
+                                                    Label_0803_Outer:
                                                         while (true) {
                                                             while (true) {
                                                                 Label_0732: {
@@ -366,63 +366,63 @@ public class zzfc extends zzfh
                                                                                 this.zzam("resized");
                                                                                 // monitorexit(o)
                                                                                 return;
+                                                                                relativeLayout$LayoutParams.addRule(12);
+                                                                                relativeLayout$LayoutParams.addRule(11);
+                                                                                continue Label_0911_Outer;
+                                                                                relativeLayout$LayoutParams.addRule(10);
+                                                                                relativeLayout$LayoutParams.addRule(14);
+                                                                                continue Label_0911_Outer;
+                                                                                // iftrue(Label_1023:, !zzAc.equals((Object)"bottom-right"))
                                                                                 // iftrue(Label_1023:, !zzAc.equals((Object)"bottom-left"))
                                                                                 // iftrue(Label_1023:, !zzAc.equals((Object)"top-center"))
                                                                                 // iftrue(Label_1023:, !zzAc.equals((Object)"center"))
-                                                                                // iftrue(Label_1023:, !zzAc.equals((Object)"bottom-center"))
-                                                                                // iftrue(Label_1023:, !zzAc.equals((Object)"bottom-right"))
                                                                                 // iftrue(Label_1023:, !zzAc.equals((Object)"top-left"))
+                                                                                // iftrue(Label_1023:, !zzAc.equals((Object)"bottom-center"))
                                                                                 // monitorexit(o)
-                                                                                Block_22: {
-                                                                                    while (true) {
-                                                                                        Block_18: {
-                                                                                            Block_21: {
-                                                                                                Block_19: {
-                                                                                                    Block_20: {
-                                                                                                        break Block_20;
-                                                                                                        break Block_18;
-                                                                                                        break Block_19;
-                                                                                                        relativeLayout$LayoutParams.addRule(10);
-                                                                                                        relativeLayout$LayoutParams.addRule(9);
-                                                                                                        continue Label_0788_Outer;
-                                                                                                        this.zzAm.dismiss();
-                                                                                                        break;
-                                                                                                    }
-                                                                                                    n = 3;
-                                                                                                    break Label_1025;
-                                                                                                    break Block_21;
-                                                                                                    break Block_22;
-                                                                                                }
-                                                                                                n = 2;
-                                                                                                break Label_1025;
-                                                                                                relativeLayout$LayoutParams.addRule(10);
-                                                                                                relativeLayout$LayoutParams.addRule(14);
-                                                                                                continue Label_0788_Outer;
-                                                                                            }
+                                                                                Block_20: {
+                                                                                    Block_19: {
+                                                                                    Block_17_Outer:
+                                                                                        while (true) {
                                                                                             n = 4;
                                                                                             break Label_1025;
-                                                                                            n = 0;
+                                                                                        Block_22_Outer:
+                                                                                            while (true) {
+                                                                                                n = 0;
+                                                                                                break Label_1025;
+                                                                                                while (true) {
+                                                                                                    n = 5;
+                                                                                                    break Label_1025;
+                                                                                                    relativeLayout$LayoutParams.addRule(10);
+                                                                                                    relativeLayout$LayoutParams.addRule(9);
+                                                                                                    continue Label_0911_Outer;
+                                                                                                    relativeLayout$LayoutParams.addRule(12);
+                                                                                                    relativeLayout$LayoutParams.addRule(9);
+                                                                                                    continue Label_0911_Outer;
+                                                                                                    relativeLayout$LayoutParams.addRule(12);
+                                                                                                    relativeLayout$LayoutParams.addRule(14);
+                                                                                                    continue Label_0911_Outer;
+                                                                                                    continue Label_0833_Outer;
+                                                                                                }
+                                                                                                break Block_20;
+                                                                                                break Block_22_Outer;
+                                                                                                relativeLayout$LayoutParams.addRule(13);
+                                                                                                continue Label_0911_Outer;
+                                                                                                break Block_19;
+                                                                                                continue Block_22_Outer;
+                                                                                            }
+                                                                                            n = 1;
                                                                                             break Label_1025;
-                                                                                            relativeLayout$LayoutParams.addRule(12);
-                                                                                            relativeLayout$LayoutParams.addRule(11);
-                                                                                            continue Label_0788_Outer;
+                                                                                            continue Block_17_Outer;
                                                                                         }
-                                                                                        n = 1;
-                                                                                        break Label_1025;
-                                                                                        relativeLayout$LayoutParams.addRule(12);
-                                                                                        relativeLayout$LayoutParams.addRule(14);
-                                                                                        continue Label_0788_Outer;
-                                                                                        relativeLayout$LayoutParams.addRule(12);
-                                                                                        relativeLayout$LayoutParams.addRule(9);
-                                                                                        continue Label_0788_Outer;
-                                                                                        continue Label_0911_Outer;
+                                                                                        this.zzAm.dismiss();
+                                                                                        break;
+                                                                                        this.zzak("Webview is detached, probably in the middle of a resize or expand.");
+                                                                                        return;
                                                                                     }
-                                                                                    this.zzak("Webview is detached, probably in the middle of a resize or expand.");
-                                                                                    return;
-                                                                                    relativeLayout$LayoutParams.addRule(13);
-                                                                                    continue Label_0788_Outer;
+                                                                                    n = 2;
+                                                                                    break Label_1025;
                                                                                 }
-                                                                                n = 5;
+                                                                                n = 3;
                                                                                 break Label_1025;
                                                                             }
                                                                             catch (RuntimeException ex) {
@@ -436,7 +436,7 @@ public class zzfc extends zzfh
                                                                                 // monitorexit(o)
                                                                                 return;
                                                                             }
-                                                                            break Label_0758_Outer;
+                                                                            break Label_0788_Outer;
                                                                         }
                                                                     }
                                                                 }
@@ -448,25 +448,25 @@ public class zzfc extends zzfh
                                                                 this.zzAn.addView(this.zzoM.getView(), -1, -1);
                                                                 this.zzAk = new LinearLayout((Context)this.zzAi);
                                                                 relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(zzl.zzcF().zzb((Context)this.zzAi, 50), zzl.zzcF().zzb((Context)this.zzAi, 50));
-                                                                zzAc = this.zzAc;
+                                                                final String zzAc = this.zzAc;
                                                                 switch (zzAc.hashCode()) {
                                                                     case -1012429441: {
-                                                                        continue Label_0867_Outer;
+                                                                        continue Label_0803_Outer;
                                                                     }
                                                                     case 1755462605: {
-                                                                        continue Label_0773_Outer;
+                                                                        continue Label_0867_Outer;
                                                                     }
                                                                     case -1364013995: {
-                                                                        continue Label_0833_Outer;
+                                                                        continue Label_0743_Outer;
                                                                     }
                                                                     case -655373719: {
                                                                         continue Label_0758_Outer;
                                                                     }
                                                                     case 1288627767: {
-                                                                        continue Label_0818_Outer;
+                                                                        continue;
                                                                     }
                                                                     case 1163912186: {
-                                                                        continue Label_0850_Outer;
+                                                                        continue Label_0788_Outer;
                                                                     }
                                                                 }
                                                                 break;
@@ -485,27 +485,27 @@ public class zzfc extends zzfh
                                     }
                                     switch (n) {
                                         case 0: {
-                                            continue Label_0850_Outer;
+                                            continue Label_0877_Outer;
                                         }
                                         case 1: {
-                                            continue Label_0911_Outer;
+                                            continue Label_0833_Outer;
                                         }
                                         case 2: {
                                             continue;
                                         }
                                         case 3: {
-                                            continue Label_0867_Outer;
+                                            continue Label_0894_Outer;
                                         }
                                         case 4: {
-                                            continue Label_0877_Outer;
+                                            continue Label_0867_Outer;
                                         }
                                         case 5: {
-                                            continue Label_0894_Outer;
+                                            continue Label_0850_Outer;
                                         }
                                         default: {
                                             relativeLayout$LayoutParams.addRule(10);
                                             relativeLayout$LayoutParams.addRule(11);
-                                            continue Label_0788_Outer;
+                                            continue Label_0911_Outer;
                                         }
                                     }
                                     break;

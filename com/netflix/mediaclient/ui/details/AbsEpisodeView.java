@@ -65,10 +65,10 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     }
     
     protected void findViews() {
-        this.title = (TextView)this.findViewById(2131624187);
-        this.synopsis = (TextView)this.findViewById(2131624189);
-        this.playButton = (ImageView)this.findViewById(2131624185);
-        this.progressBar = (ProgressBar)this.findViewById(2131624188);
+        this.title = (TextView)this.findViewById(2131624161);
+        this.synopsis = (TextView)this.findViewById(2131624163);
+        this.playButton = (ImageView)this.findViewById(2131624159);
+        this.progressBar = (ProgressBar)this.findViewById(2131624162);
     }
     
     protected int getDefaultSynopsisVisibility() {
@@ -143,10 +143,10 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
         final Resources resources = this.getResources();
         int n;
         if (episodeDetails.isAvailableToStream()) {
-            n = 2131558545;
+            n = 2131558536;
         }
         else {
-            n = 2131558560;
+            n = 2131558551;
         }
         title.setTextColor(resources.getColor(n));
         this.title.setClickable(false);

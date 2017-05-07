@@ -26,7 +26,7 @@ class InfoEventHandler$4 implements Runnable
     public void run() {
         Log.i("nf_push_info", "Refreshing socialNotifications via runnable");
         if (InfoEventHandler.mService != null) {
-            InfoEventHandler.mService.getBrowse().refreshSocialNotifications(true, false, null);
+            InfoEventHandler.mService.getBrowse().refreshIrisNotifications(true, false, null);
         }
     }
 }

@@ -13,7 +13,6 @@ public interface Nflx$Action
     public static final String PLAY = "play";
     public static final String PLAY_SHORT = "p";
     public static final String SEARCH = "search";
-    public static final String SEND_THANKS_TO_SOCIAL_NOTIFICATION = "send_thanks";
     public static final String SYNC = "sync";
     public static final String VIEW_DETAILS = "view_details";
     public static final String VIEW_DETAILS_SHORT = "v";

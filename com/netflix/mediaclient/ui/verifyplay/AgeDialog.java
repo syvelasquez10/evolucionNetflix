@@ -128,8 +128,8 @@ public class AgeDialog extends NetflixDialogFrag
         this.mVault = (PlayVerifierVault)this.getArguments().getParcelable(PlayVerifierVault.NAME);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
         final View inflate = this.getActivity().getLayoutInflater().inflate(2130903068, (ViewGroup)null);
-        this.mSpinner = (ProgressBar)inflate.findViewById(2131624068);
-        this.mAgeMessage = (TextView)inflate.findViewById(2131624067);
+        this.mSpinner = (ProgressBar)inflate.findViewById(2131624062);
+        this.mAgeMessage = (TextView)inflate.findViewById(2131624061);
         int mDialogWidthInDp;
         if (DeviceUtils.isTabletByContext((Context)this.getActivity())) {
             mDialogWidthInDp = 400;

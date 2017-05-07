@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
-import java.util.Set;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
@@ -34,10 +32,10 @@ public final class ServiceManager implements IServiceManagerAccess
     public static final String BROWSE_PARAM_CUR_EPISODE_NUMBER = "curEpisodeNumber";
     public static final String BROWSE_PARAM_CUR_SEASON_NUMBER = "curSeasonNumber";
     public static final String DETAIL_PAGE_RELOAD = "com.netflix.mediaclient.intent.action.DETAIL_PAGE_REFRESH";
+    public static final String IRIS_NOTIFICATIONS_LIST_UPDATED = "com.netflix.mediaclient.intent.action.BA_IRIS_NOTIFICATION_LIST_UPDATED";
     public static final String LOCAL_PLAYER_PLAY_START = "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_START";
     public static final String LOCAL_PLAYER_PLAY_STOP = "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP";
     public static final String NOTIFICATIONS_LIST_STATUS = "notifications_list_status";
-    public static final String SOCIAL_NOTIFICATIONS_LIST_UPDATED = "com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED";
     private static final String TAG = "ServiceManager";
     private AddToMyListWrapper addToMyListWrapper;
     private final NetflixActivity mActivity;
@@ -135,15 +133,6 @@ public final class ServiceManager implements IServiceManagerAccess
         return false;
     }
     
-    public boolean connectWithFacebook(final String s, final ManagerCallback managerCallback) {
-        if (this.validateService()) {
-            this.mService.connectWithFacebook(s, this.mClientId, this.addCallback(managerCallback));
-            return true;
-        }
-        Log.w("ServiceManager", "connectWithFacebook:: service is not available");
-        return false;
-    }
-    
     public AddToListData$StateListener createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final VideoType videoType, final int n, final boolean b) {
         return this.addToMyListWrapper.createAddToMyListWrapper(netflixActivity, textView, s, videoType, n, b);
     }
@@ -154,6 +143,15 @@ public final class ServiceManager implements IServiceManagerAccess
     
     public AddToListData$StateListener createAddToMyListWrapper(final DetailsActivity detailsActivity, final TextView textView, final boolean b) {
         return this.addToMyListWrapper.createAddToMyListWrapper(detailsActivity, textView, detailsActivity.getVideoId(), detailsActivity.getVideoType(), detailsActivity.getTrackId(), b);
+    }
+    
+    public boolean createAutoLoginToken(final long n, final ManagerCallback managerCallback) {
+        if (this.validateService()) {
+            this.mService.createAutoLoginToken(n, this.mClientId, this.addCallback(managerCallback));
+            return true;
+        }
+        Log.w("ServiceManager", "createAutoLoginToken:: service is not available");
+        return false;
     }
     
     public void editProfile(final String s, final String s2, final boolean b, final String s3, final ManagerCallback managerCallback) {
@@ -171,16 +169,6 @@ public final class ServiceManager implements IServiceManagerAccess
         }
         Log.w("ServiceManager", "fetchAvailableAvatarsList:: service is not available");
         return false;
-    }
-    
-    public int fetchFriendsForRecommendationList(final String s, final int n, final String s2, final ManagerCallback managerCallback) {
-        if (this.validateService()) {
-            final int addCallback = this.addCallback(managerCallback);
-            this.mService.getFriendsForRecommendationList(s, n, s2, this.mClientId, addCallback);
-            return addCallback;
-        }
-        Log.w("ServiceManager", "fetchFriendsForRecommendationList:: service is not available");
-        return -1;
     }
     
     public boolean fetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ManagerCallback managerCallback) {
@@ -388,11 +376,11 @@ public final class ServiceManager implements IServiceManagerAccess
         return this.addCallback(this.wrapForAddToList(managerCallback, s));
     }
     
-    public boolean isCurrentProfileFacebookConnected() {
+    public boolean isApkMissingSupportForLocale() {
         if (this.validateService()) {
-            return this.mService.isCurrentProfileFacebookConnected();
+            return this.mService.isApkMissingSupportForLocale();
         }
-        Log.w("ServiceManager", "isCurrentProfileFacebookConnected:: service is not available");
+        Log.w("ServiceManager", "isApkMissingSupportForLocale:: service is not available");
         return false;
     }
     
@@ -526,15 +514,6 @@ public final class ServiceManager implements IServiceManagerAccess
             return;
         }
         Log.w("ServiceManager", "selectProfile:: service is not available");
-    }
-    
-    public boolean sendRecommendationsToFriends(final String s, final Set<FriendForRecommendation> set, final String s2, final String s3) {
-        if (this.validateService()) {
-            this.mService.sendRecommendationsToFriends(s, set, s2, s3);
-            return true;
-        }
-        Log.w("ServiceManager", "sendRecommendationsToFriends:: service is not available");
-        return false;
     }
     
     public boolean setCurrentAppLocale(final String currentAppLocale) {

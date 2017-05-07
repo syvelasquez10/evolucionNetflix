@@ -4,10 +4,11 @@
 
 package com.netflix.mediaclient.service.falkor;
 
+import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.service.NetflixService;
@@ -24,14 +25,13 @@ import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.NetflixApplication;
 import java.util.Iterator;
 import java.util.List;
-import com.netflix.mediaclient.ui.social.notifications.KubrickSlidingMenuNotificationsFrag;
+import com.netflix.mediaclient.ui.iris.notifications.SlidingMenuNotificationsFrag;
 import com.netflix.mediaclient.Log;
-import com.netflix.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
+import com.netflix.model.leafs.social.IrisNotificationSummary;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import android.content.BroadcastReceiver;
 import com.netflix.falkor.CachedModelProxy;
 import com.netflix.model.Root;
@@ -76,17 +76,17 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         return FalkorAgent.isCurrentProfileActive.get();
     }
     
-    private SocialNotificationSummary getFirstUnreadNotification(final SocialNotificationsList list) {
-        final List<SocialNotificationSummary> socialNotifications = list.getSocialNotifications();
+    private IrisNotificationSummary getFirstUnreadNotification(final IrisNotificationsList list) {
+        final List<IrisNotificationSummary> socialNotifications = list.getSocialNotifications();
         if (socialNotifications != null) {
-            int currentMaxNotificationsNum = KubrickSlidingMenuNotificationsFrag.getCurrentMaxNotificationsNum();
-            for (final SocialNotificationSummary socialNotificationSummary : socialNotifications) {
+            int currentMaxNotificationsNum = SlidingMenuNotificationsFrag.getCurrentMaxNotificationsNum();
+            for (final IrisNotificationSummary irisNotificationSummary : socialNotifications) {
                 if (currentMaxNotificationsNum == 0) {
                     return null;
                 }
-                final SocialNotificationSummary socialNotificationSummary2 = socialNotificationSummary;
-                if (!socialNotificationSummary.getWasRead()) {
-                    return socialNotificationSummary2;
+                final IrisNotificationSummary irisNotificationSummary2 = irisNotificationSummary;
+                if (!irisNotificationSummary.getWasRead()) {
+                    return irisNotificationSummary2;
                 }
                 --currentMaxNotificationsNum;
             }
@@ -110,8 +110,8 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.getMainHandler().postDelayed(this.refreshNotificationsRunnable, 3600000L);
     }
     
-    private boolean shouldBeNotificationSentToStatusBar(final SocialNotificationSummary socialNotificationSummary) {
-        return socialNotificationSummary != null && !NetflixApplication.isActivityVisible() && SocialUtils.isNotificationsFeatureSupported(this.getService().getCurrentProfile(), this.getContext()) && this.getService().getPushNotification().isOptIn();
+    private boolean shouldBeNotificationSentToStatusBar(final IrisNotificationSummary irisNotificationSummary) {
+        return irisNotificationSummary != null && !NetflixApplication.isActivityVisible() && this.getService().getPushNotification().isOptIn();
     }
     
     public void addToQueue(final String s, final VideoType videoType, final int n, final boolean b, final String s2, final BrowseAgentCallback browseAgentCallback) {
@@ -399,14 +399,14 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.logBillboardActivity(video, billboardInteractionType);
     }
     
-    public void markNotificationAsRead(final SocialNotificationSummary socialNotificationSummary) {
+    public void markNotificationAsRead(final IrisNotificationSummary irisNotificationSummary) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.markNotificationAsRead(socialNotificationSummary, new FalkorAgent$5(this));
+        this.cmp.markNotificationAsRead(irisNotificationSummary, new FalkorAgent$5(this));
     }
     
-    public void markNotificationsAsRead(final List<SocialNotificationSummary> list) {
+    public void markNotificationsAsRead(final List<IrisNotificationSummary> list) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
@@ -427,14 +427,6 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.prefetchLoLoMo(n, n2, n3, n4, n5, n6, b, b2, b3, new FalkorAgent$3(this, browseAgentCallback));
     }
     
-    public void refreshAll() {
-        if (Log.isLoggable()) {
-            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
-        }
-        this.flushCaches();
-        ServiceManager.sendHomeRefreshBrodcast((Context)this.getService());
-    }
-    
     public void refreshCw() {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
@@ -450,7 +442,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
             this.cmp.refreshCw();
             return;
         }
-        this.refreshAll();
+        this.refreshLolomo();
     }
     
     public void refreshIq() {
@@ -460,12 +452,20 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.refreshIq();
     }
     
+    public void refreshLolomo() {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.flushCaches();
+        ServiceManager.sendHomeRefreshBrodcast((Context)this.getService());
+    }
+    
     public void refreshSocialNotifications(final boolean b, final boolean b2, final MessageData messageData) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchNotifications(0, 19, b, new FalkorAgent$7(this, b2, messageData));
-        if (this.getService() != null && this.getService().getCurrentProfile() != null && this.getService().getCurrentProfile().isSocialConnected()) {
+        this.cmp.fetchNotifications(0, IrisUtils.PAGE_NOTIFICATIONS_SIZE - 1, b, new FalkorAgent$7(this, b2, messageData));
+        if (this.getService() != null && this.getService().getCurrentProfile() != null) {
             this.rescheduleNotificationsRefresh();
         }
     }
@@ -482,13 +482,6 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
         this.cmp.searchNetflix(s, browseAgentCallback);
-    }
-    
-    public void sendThanksToSocialNotification(final SocialNotificationSummary socialNotificationSummary, final BrowseAgentCallback browseAgentCallback) {
-        if (Log.isLoggable()) {
-            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
-        }
-        this.cmp.sendThanksToSocialNotification(socialNotificationSummary, browseAgentCallback);
     }
     
     public void setVideoRating(final String s, final VideoType videoType, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {

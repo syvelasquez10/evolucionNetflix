@@ -51,7 +51,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     public SearchResultView(final Context context, final int resId) {
         super(context);
-        this.resId = 2130903217;
+        this.resId = 2130903203;
         this.ignoreClicks = false;
         this.resId = resId;
         this.init();
@@ -59,14 +59,14 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     public SearchResultView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.resId = 2130903217;
+        this.resId = 2130903203;
         this.ignoreClicks = false;
         this.init();
     }
     
     private void findViews() {
-        this.img = (AdvancedImageView)this.findViewById(2131624516);
-        this.title = (TextView)this.findViewById(2131624517);
+        this.img = (AdvancedImageView)this.findViewById(2131624479);
+        this.title = (TextView)this.findViewById(2131624480);
     }
     
     private CharSequence getFormattedYearSpannable(final String s, final String s2) {
@@ -76,8 +76,8 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final SpannableString spannableString = new SpannableString((CharSequence)String.format("%s  (%s)", s, s2));
         final int length = spannableString.length();
         final int n = length - s2.length() - 4;
-        spannableString.setSpan((Object)new AbsoluteSizeSpan(this.getResources().getDimensionPixelSize(2131296333)), n, length, 0);
-        spannableString.setSpan((Object)new ForegroundColorSpan(this.getResources().getColor(2131558560)), n, length, 0);
+        spannableString.setSpan((Object)new AbsoluteSizeSpan(this.getResources().getDimensionPixelSize(2131296332)), n, length, 0);
+        spannableString.setSpan((Object)new ForegroundColorSpan(this.getResources().getColor(2131558551)), n, length, 0);
         return (CharSequence)spannableString;
     }
     
@@ -85,7 +85,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(this.resId, (ViewGroup)this);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        this.setForeground(this.getResources().getDrawable(2130837940));
+        this.setForeground(this.getResources().getDrawable(2130837891));
         this.findViews();
         this.setupViews();
         this.videoClickListener = new VideoDetailsClickListener(netflixActivity, this);

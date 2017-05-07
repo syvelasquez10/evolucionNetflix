@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.kubrick_kids.details;
 
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.ui.details.IHandleBackPress;
 import android.widget.SpinnerAdapter;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter$IViewCreator;
 import android.support.v7.widget.RecyclerView$ItemDecoration;

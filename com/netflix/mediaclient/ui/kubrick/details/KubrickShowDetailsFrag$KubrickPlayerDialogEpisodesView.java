@@ -60,7 +60,7 @@ public class KubrickShowDetailsFrag$KubrickPlayerDialogEpisodesView extends Kubr
     
     public KubrickShowDetailsFrag$KubrickPlayerDialogEpisodesView(final KubrickShowDetailsFrag this$0, final Context context) {
         this.this$0 = this$0;
-        super(this$0, context, 2130903121);
+        super(this$0, context, 2130903108);
     }
     
     @Override
@@ -70,7 +70,7 @@ public class KubrickShowDetailsFrag$KubrickPlayerDialogEpisodesView extends Kubr
     @Override
     protected void findViews() {
         super.findViews();
-        this.nowPlaying = (TextView)this.findViewById(2131624229);
+        this.nowPlaying = (TextView)this.findViewById(2131624203);
     }
     
     @Override

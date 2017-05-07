@@ -11,17 +11,17 @@ public class CustomerSupportCallSession$CallQualitySegment
 {
     private static final String QUALITY = "quality";
     private static final String SEGMENT_DURATION = "segmentDuration";
-    public int duration;
+    public int durationInMs;
     public CustomerServiceLogging$CallQuality quality;
     
-    public CustomerSupportCallSession$CallQualitySegment(final int duration, final CustomerServiceLogging$CallQuality quality) {
-        this.duration = duration;
+    public CustomerSupportCallSession$CallQualitySegment(final int durationInMs, final CustomerServiceLogging$CallQuality quality) {
+        this.durationInMs = durationInMs;
         this.quality = quality;
     }
     
     public JSONObject toJson() {
         final JSONObject jsonObject = new JSONObject();
-        jsonObject.put("segmentDuration", this.duration);
+        jsonObject.put("segmentDuration", this.durationInMs);
         jsonObject.put("quality", (Object)this.quality);
         return jsonObject;
     }

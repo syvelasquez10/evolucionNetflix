@@ -4,13 +4,12 @@
 
 package com.netflix.mediaclient.service.pushnotification;
 
-import com.netflix.mediaclient.util.NflxProtocolUtils;
-import com.netflix.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.IrisNotificationSummary;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.IntentUtils;
 import android.net.Uri;
-import com.netflix.mediaclient.util.SocialUtils;
+import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
 import com.netflix.mediaclient.android.app.BackgroundTask;

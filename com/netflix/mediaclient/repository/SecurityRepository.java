@@ -27,7 +27,6 @@ public final class SecurityRepository
     private static final String BOOTLOADER_WEB_API_VERSION = "2.0";
     private static final int CONSTANT_CRITTERCISM_APP_ID = 2;
     private static final int CONSTANT_DEVICE_ID_TOKEN = 1;
-    private static final int CONSTANT_FACEBOOK_ID = 0;
     public static final String CUSTOMER_SUPPORT_FILE_NAME = "cs.dat";
     private static final String ESN_DELIM = "-";
     private static final String MDXJS_VERSION_VALUE = "1.1.6-android";
@@ -42,7 +41,6 @@ public final class SecurityRepository
     private static String crittercismAppId;
     private static String deviceIdToken;
     private static String esnPrefix;
-    private static String facebookId;
     private static boolean sLoaded;
     
     public static String getBootloaderParameterCertificationVersion() {
@@ -145,10 +143,6 @@ public final class SecurityRepository
         return SecurityRepository.esnPrefix;
     }
     
-    public static String getFacebookId() {
-        return SecurityRepository.facebookId;
-    }
-    
     public static final int getLibraryVersion() {
         return native_getLibraryVersion();
     }
@@ -198,7 +192,6 @@ public final class SecurityRepository
                 if (SecurityRepository.sLoaded) {
                     native_init(new byte[0]);
                     SecurityRepository.deviceIdToken = native_getConstant(1);
-                    SecurityRepository.facebookId = native_getConstant(0);
                     SecurityRepository.crittercismAppId = native_getConstant(2);
                 }
                 sLoaded = SecurityRepository.sLoaded;

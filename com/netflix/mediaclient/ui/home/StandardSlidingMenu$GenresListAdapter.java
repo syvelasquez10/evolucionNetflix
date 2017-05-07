@@ -12,16 +12,18 @@ import android.content.Context;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import android.net.Uri;
+import android.content.Intent;
 import android.os.Build$VERSION;
 import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.ui.social.notifications.NotificationsFrag$NotificationsListStatusListener;
+import com.netflix.mediaclient.ui.iris.notifications.NotificationsFrag$NotificationsListStatusListener;
 import android.view.ViewStub;
 import com.netflix.mediaclient.Log;
 import android.widget.ImageView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.view.View$OnClickListener;
 import android.widget.AdapterView$OnItemClickListener;
-import com.netflix.mediaclient.ui.social.notifications.KubrickSlidingMenuNotificationsFrag;
+import com.netflix.mediaclient.ui.iris.notifications.SlidingMenuNotificationsFrag;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
@@ -64,8 +66,8 @@ class StandardSlidingMenu$GenresListAdapter extends BaseAdapter
     public View getView(final int n, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.activity.getLayoutInflater().inflate(2130903241, (ViewGroup)null);
-            inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder((TextView)inflate.findViewById(2131624385), inflate.findViewById(2131624386)));
+            inflate = this.this$0.activity.getLayoutInflater().inflate(2130903224, (ViewGroup)null);
+            inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder((TextView)inflate.findViewById(2131624358), inflate.findViewById(2131624359)));
         }
         final StandardSlidingMenu$GenreRowHolder standardSlidingMenu$GenreRowHolder = (StandardSlidingMenu$GenreRowHolder)inflate.getTag();
         final GenreList item = this.getItem(n);

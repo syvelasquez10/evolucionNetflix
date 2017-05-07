@@ -65,19 +65,19 @@ class KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup exten
             default: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837577);
             }
-            case 2131558504: {
+            case 2131558495: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837581);
             }
-            case 2131558497: {
+            case 2131558488: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837577);
             }
-            case 2131558499: {
+            case 2131558490: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837578);
             }
-            case 2131558501: {
+            case 2131558492: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837580);
             }
-            case 2131558500: {
+            case 2131558491: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837579);
             }
         }
@@ -93,23 +93,23 @@ class KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup exten
                 imageResource = 2130837586;
                 break;
             }
-            case 2131558504: {
+            case 2131558495: {
                 imageResource = 2130837590;
                 break;
             }
-            case 2131558497: {
+            case 2131558488: {
                 imageResource = 2130837585;
                 break;
             }
-            case 2131558499: {
+            case 2131558490: {
                 imageResource = 2130837587;
                 break;
             }
-            case 2131558501: {
+            case 2131558492: {
                 imageResource = 2130837589;
                 break;
             }
-            case 2131558500: {
+            case 2131558491: {
                 imageResource = 2130837588;
                 break;
             }
@@ -152,13 +152,13 @@ class KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup exten
     @Override
     protected void findViews() {
         super.findViews();
-        this.characterView = (AdvancedImageView)this.findViewById(2131624204);
-        this.playView = (ImageView)this.findViewById(2131624208);
+        this.characterView = (AdvancedImageView)this.findViewById(2131624178);
+        this.playView = (ImageView)this.findViewById(2131624182);
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903114;
+        return 2130903101;
     }
     
     protected void updateBoxart(final KidsCharacterDetails kidsCharacterDetails) {

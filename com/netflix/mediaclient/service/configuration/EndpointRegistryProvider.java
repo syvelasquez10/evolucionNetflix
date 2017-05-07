@@ -20,7 +20,7 @@ import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 public class EndpointRegistryProvider implements ApiEndpointRegistry
 {
     private static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
-    private static final String ANDROID_ENDPOINT_FULL = "/android/3.15/api";
+    private static final String ANDROID_ENDPOINT_FULL = "/android/3.16/api";
     private static final boolean BROWSE_AUTO_REDIRECT_TRUE = true;
     private static final String BROWSE_RESP_AUTO_REDIRECT = "&routing=redirect";
     private static final String BROWSE_RESP_FORMAT = "responseFormat=json&progressive=false";
@@ -33,9 +33,10 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String IMG_PREFERENCE_JPG = "jpg";
     private static final String IMG_PREFERENCE_WEBP = "webp";
     private static final String PARAM_API_LEVEL = "api";
-    private static final String PARAM_APK_VERSION = "appVer";
     private static final String PARAM_APP_INSTALL_STORE = "store";
     private static final String PARAM_APP_TYPE = "appType";
+    private static final String PARAM_APP_VERSION = "appVersion";
+    private static final String PARAM_APP_VERSION_CODE = "appVer";
     private static final String PARAM_BUILD_BOARD = "osBoard";
     private static final String PARAM_BUILD_DEVICE = "osDevice";
     private static final String PARAM_BUILD_DISPLAY = "osDisplay";
@@ -126,7 +127,8 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         sb.append(this.buildUrlParam("osBoard", UriUtil.urlEncodeParam(this.mDeviceModel.getBuildPropBoard())));
         sb.append(this.buildUrlParam("osDevice", UriUtil.urlEncodeParam(this.mDeviceModel.getBuildPropDevice())));
         sb.append(this.buildUrlParam("osDisplay", UriUtil.urlEncodeParam(this.mDeviceModel.getBuildPropDisplay())));
-        sb.append(this.buildUrlParam("appVer", Integer.toString(this.mDeviceModel.getApkVer())));
+        sb.append(this.buildUrlParam("appVer", Integer.toString(this.mDeviceModel.getAppVersionCode())));
+        sb.append(this.buildUrlParam("appVersion", UriUtil.urlEncodeParam(this.mDeviceModel.getAppVersion())));
         sb.append(this.buildUrlParam("mId", UriUtil.urlEncodeParam(this.mDeviceModel.getEsnModelId())));
         sb.append(this.buildUrlParam("api", Integer.toString(this.mDeviceModel.getApiLevel())));
         sb.append(this.buildUrlParam("mnf", UriUtil.urlEncodeParam(this.mDeviceModel.getManufacturer())));
@@ -167,7 +169,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
             sb.append("http://");
         }
         sb.append(this.mEndpointHost);
-        sb.append("/android/3.15/api");
+        sb.append("/android/3.16/api");
         sb.append("?");
         sb.append("responseFormat=json&progressive=false");
         sb.append("&routing=reject");
@@ -182,7 +184,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     }
     
     public String getAppStartConfigUrl() {
-        return this.buildConfigUrl(true) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.deviceConfigPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.streamingQoePqlDefault));
+        return this.buildConfigUrl(true) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.deviceConfigPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.streamingQoePqlDefault)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.netflixSupportedLocales));
     }
     
     @Override

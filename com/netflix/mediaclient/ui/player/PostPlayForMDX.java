@@ -32,7 +32,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     
     PostPlayForMDX(final NetflixActivity netflixActivity) {
         super(netflixActivity);
-        this.mTimerValue = netflixActivity.getResources().getInteger(2131427343);
+        this.mTimerValue = netflixActivity.getResources().getInteger(2131427344);
         this.mOffsetMs = this.mTimerValue * 1000;
     }
     
@@ -91,8 +91,8 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     }
     
     protected void findViews() {
-        this.mTargetNameView = (TextView)this.mNetflixActivity.findViewById(2131624431);
-        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131624429);
+        this.mTargetNameView = (TextView)this.mNetflixActivity.findViewById(2131624402);
+        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131624400);
     }
     
     @Override
@@ -106,7 +106,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     }
     
     public void handleBack() {
-        if (!this.mNetflixActivity.isFinishing()) {
+        if (!this.mNetflixActivity.isFinishing() && this.mNetflixActivity.getServiceManager() != null) {
             this.mNetflixActivity.startService(this.createIntent("com.netflix.mediaclient.intent.action.MDX_STOPPOSTPALY"));
         }
     }

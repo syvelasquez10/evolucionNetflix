@@ -434,14 +434,12 @@ public final class DeviceUtils
                     }
                     System.load(string);
                     return true;
-                    while (true) {
+                    // iftrue(Label_0173:, !Log.isLoggable())
+                    Log.d("nf_device_utils", "Loading library " + s + " leaving to android to find mapping. Preloaded app.");
+                    Label_0173: {
                         System.loadLibrary(s);
-                        return true;
-                        Log.d("nf_device_utils", "Loading library " + s + " leaving to android to find mapping. Preloaded app.");
-                        continue;
                     }
                 }
-                // iftrue(Label_0173:, !Log.isLoggable())
                 catch (Throwable t) {
                     Log.e("nf_device_utils", "Failed to load library from assumed location", t);
                     ErrorLoggingManager.logHandledException(t);

@@ -84,7 +84,7 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
     }
     
     protected void adjustHeight() {
-        this.image.getLayoutParams().height = (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296507) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
+        this.image.getLayoutParams().height = (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296487) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
     }
     
     @Override
@@ -117,10 +117,10 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
     @Override
     protected void findViews() {
         super.findViews();
-        this.image = (AdvancedImageView)this.findViewById(2131624225);
-        this.runtime = (TextView)this.findViewById(2131624228);
-        this.progressBarBackground = this.findViewById(2131624226);
-        this.unavailable = this.findViewById(2131624227);
+        this.image = (AdvancedImageView)this.findViewById(2131624199);
+        this.runtime = (TextView)this.findViewById(2131624202);
+        this.progressBarBackground = this.findViewById(2131624200);
+        this.unavailable = this.findViewById(2131624201);
     }
     
     @Override
@@ -196,7 +196,7 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
         if (this.title == null) {
             return;
         }
-        this.title.setTextColor(this.getResources().getColor(2131558545));
+        this.title.setTextColor(this.getResources().getColor(2131558536));
         this.title.setText(this.createTitleText(episodeDetails));
     }
 }

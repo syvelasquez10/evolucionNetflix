@@ -20,6 +20,7 @@ public interface CommonStatus
     public static final NetflixImmutableStatus INTERNAL_ERROR = new NetflixImmutableStatus(StatusCode.INTERNAL_ERROR);
     public static final NetflixImmutableStatus NETWORK_ERROR = new NetflixImmutableStatus(StatusCode.NETWORK_ERROR);
     public static final NetflixImmutableStatus NON_RECOMMENDED_APP_VERSION = new NetflixImmutableStatus(StatusCode.NON_RECOMMENDED_APP_VERSION);
+    public static final NetflixImmutableStatus NON_SUPPORTED_LOCALE = new NetflixImmutableStatus(StatusCode.NON_SUPPORTED_LOCALE);
     public static final NetflixImmutableStatus NOT_IMPLEMENTED = new NetflixImmutableStatus(StatusCode.NOT_IMPLEMENTED);
     public static final NetflixImmutableStatus NOT_IN_QUEUE = new NetflixImmutableStatus(StatusCode.NOT_IN_QUEUE);
     public static final NetflixImmutableStatus NOT_VALID = new NetflixImmutableStatus(StatusCode.NOT_VALID);

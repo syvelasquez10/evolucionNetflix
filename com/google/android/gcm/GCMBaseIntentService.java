@@ -123,7 +123,7 @@ public abstract class GCMBaseIntentService extends IntentService
         String s;
         int int1;
         final Context context;
-        Label_0386_Outer:Label_0331_Outer:
+        Label_0331_Outer:Block_26_Outer:Block_29_Outer:
         while (true) {
             Label_0265: {
                 try {
@@ -189,42 +189,44 @@ public abstract class GCMBaseIntentService extends IntentService
                             }
                             // monitorexit(intent)
                             break EndFinally_4;
-                            this.mLogger.log(6, "Received unknown special message: %s", s);
-                            continue Label_0386_Outer;
+                            // iftrue(Label_0405:, intent != null && intent.equals((Object)this.getApplicationContext().getPackageName()))
+                            // iftrue(Label_0090:, !s.equals((Object)"com.google.android.gcm.intent.RETRY"))
+                            while (true) {
+                            Label_0386:
+                                while (true) {
+                                    this.mLogger.log(6, "Ignoring retry intent from another package (%s)", intent);
+                                    synchronized (GCMBaseIntentService.LOCK) {
+                                        if (GCMBaseIntentService.sWakeLock != null && GCMBaseIntentService.sWakeLock.isHeld()) {
+                                            GCMBaseIntentService.sWakeLock.release();
+                                            return;
+                                        }
+                                    }
+                                    break Label_0386;
+                                    this.onMessage(context, intent);
+                                    continue Label_0331_Outer;
+                                    intent = (Intent)intent.getPackage();
+                                    continue Block_26_Outer;
+                                }
+                                this.mLogger.log(6, "Wakelock reference is null", new Object[0]);
+                                return;
+                                continue Block_29_Outer;
+                            }
+                            this.mLogger.log(6, "Wakelock reference is null", new Object[0]);
+                            return;
+                            // iftrue(Label_0419:, !GCMRegistrar.isRegistered(context))
+                            while (true) {
+                                GCMRegistrar.internalUnregister(context);
+                                continue Label_0331_Outer;
+                                Label_0405: {
+                                    continue;
+                                }
+                            }
                             Label_0419: {
                                 GCMRegistrar.internalRegister(context, this.getSenderIds(context));
                             }
-                            continue Label_0386_Outer;
-                            this.mLogger.log(6, "Wakelock reference is null", new Object[0]);
-                            return;
-                            // iftrue(Label_0090:, !s.equals((Object)"com.google.android.gcm.intent.RETRY"))
-                            // iftrue(Label_0405:, intent != null && intent.equals((Object)this.getApplicationContext().getPackageName()))
-                            while (true) {
-                                Block_26: {
-                                    while (true) {
-                                        this.mLogger.log(6, "Wakelock reference is null", new Object[0]);
-                                        return;
-                                        this.onMessage(context, intent);
-                                        continue Label_0386_Outer;
-                                        break Block_26;
-                                        this.mLogger.log(6, "Ignoring retry intent from another package (%s)", intent);
-                                        synchronized (GCMBaseIntentService.LOCK) {
-                                            if (GCMBaseIntentService.sWakeLock != null && GCMBaseIntentService.sWakeLock.isHeld()) {
-                                                GCMBaseIntentService.sWakeLock.release();
-                                                return;
-                                            }
-                                        }
-                                        continue Label_0331_Outer;
-                                    }
-                                    GCMRegistrar.internalUnregister(context);
-                                    continue Label_0386_Outer;
-                                }
-                                intent = (Intent)intent.getPackage();
-                                continue;
-                            }
-                            Label_0405:;
+                            continue Label_0331_Outer;
+                            this.mLogger.log(6, "Received unknown special message: %s", s);
                         }
-                        // iftrue(Label_0419:, !GCMRegistrar.isRegistered(context))
                     }
                 }
             }

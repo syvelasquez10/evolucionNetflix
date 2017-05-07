@@ -182,10 +182,10 @@ public abstract class LanguageSelector
     }
     
     protected void initLists(final View view, final Language language) {
-        (this.mAudiosListView = (ListView)view.findViewById(2131624247)).setChoiceMode(1);
+        (this.mAudiosListView = (ListView)view.findViewById(2131624221)).setChoiceMode(1);
         final LanguageSelector$AudioAdapter adapter = new LanguageSelector$AudioAdapter(language, this.mController);
         this.mAudiosListView.setAdapter((ListAdapter)adapter);
-        (this.mSubtitlesListView = (ListView)view.findViewById(2131624249)).setChoiceMode(1);
+        (this.mSubtitlesListView = (ListView)view.findViewById(2131624223)).setChoiceMode(1);
         final LanguageSelector$SubtitleAdapter adapter2 = new LanguageSelector$SubtitleAdapter(language, this.mController);
         this.mSubtitlesListView.setAdapter((ListAdapter)adapter2);
         this.mAudiosListView.setOnItemClickListener((AdapterView$OnItemClickListener)new LanguageSelector$1(this, adapter, language, adapter2));

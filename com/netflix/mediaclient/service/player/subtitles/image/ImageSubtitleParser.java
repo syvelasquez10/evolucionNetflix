@@ -15,12 +15,14 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.io.File;
 import com.netflix.mediaclient.util.FileUtils;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleParser$DownloadFailedCallback;
 import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleData;
+import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.service.player.PlayerAgent;
 import com.netflix.mediaclient.service.player.subtitles.BaseSubtitleParser;
 
@@ -31,8 +33,8 @@ public class ImageSubtitleParser extends BaseSubtitleParser
     private MasterIndex mMasterIndex;
     private SegmentIndex[] mSegmentIndexes;
     
-    public ImageSubtitleParser(final PlayerAgent playerAgent, final SubtitleData subtitleData, final TextStyle textStyle, final TextStyle textStyle2, final float n, final long mLastKnownPosition) {
-        super(playerAgent, subtitleData, textStyle, textStyle2, n);
+    public ImageSubtitleParser(final PlayerAgent playerAgent, final SubtitleUrl subtitleUrl, final TextStyle textStyle, final TextStyle textStyle2, final float n, final long mLastKnownPosition, final SubtitleParser$DownloadFailedCallback subtitleParser$DownloadFailedCallback) {
+        super(playerAgent, subtitleUrl, textStyle, textStyle2, n, subtitleParser$DownloadFailedCallback);
         Log.d("nf_subtitles", "Create image based subtitle parser");
         this.mLastKnownPosition = mLastKnownPosition;
         if (Log.isLoggable()) {
@@ -142,23 +144,25 @@ public class ImageSubtitleParser extends BaseSubtitleParser
     private void handleDownloadMasterIndex() {
         if (this.mSubtitleData == null) {
             Log.e("nf_subtitles", "Subtitle data is null!");
+            this.onError();
+            return;
         }
-        else {
-            if (StringUtils.isEmpty(this.mSubtitleData.getUrl())) {
-                Log.e("nf_subtitles", "Subtitle URL is empty!");
-                return;
-            }
-            if (this.mSubtitleData.getMasterIndexSize() > 0) {
-                if (Log.isLoggable()) {
-                    Log.d("nf_subtitles", "Subtitle data " + this.mSubtitleData);
-                }
-                this.mPlayer.getResourceFetcher().fetchResource(this.mSubtitleData.getUrl(), IClientLogging$AssetType.imageSubtitlesMasterIndex, this.mSubtitleData.getMasterIndexOffset(), this.mSubtitleData.getMasterIndexSize(), new ImageSubtitleParser$1(this));
-                return;
-            }
+        if (StringUtils.isEmpty(this.mSubtitleData.getUrl())) {
+            Log.e("nf_subtitles", "Subtitle URL is empty!");
+            this.mPlayer.reportFailedSubtitle("", this.mSubtitleData, IMedia$SubtitleFailure.download, this.onError());
+            return;
+        }
+        if (this.mSubtitleData.getMasterIndexSize() <= 0) {
             if (Log.isLoggable()) {
                 Log.e("nf_subtitles", "Subtitle master index size is wrong " + this.mSubtitleData.getMasterIndexSize());
             }
+            this.mPlayer.reportFailedSubtitle(this.mSubtitleData.getUrl(), this.mSubtitleData, IMedia$SubtitleFailure.badMasterIndex, this.onError());
+            return;
         }
+        if (Log.isLoggable()) {
+            Log.d("nf_subtitles", "Subtitle data " + this.mSubtitleData);
+        }
+        this.mPlayer.getResourceFetcher().fetchResource(this.mSubtitleData.getUrl(), IClientLogging$AssetType.imageSubtitlesMasterIndex, this.mSubtitleData.getMasterIndexOffset(), this.mSubtitleData.getMasterIndexSize(), new ImageSubtitleParser$1(this));
     }
     
     private void handleDownloadSegmentIndexes() {
@@ -521,7 +525,9 @@ public class ImageSubtitleParser extends BaseSubtitleParser
     public void load() {
         if (!this.handleImport()) {
             this.handleDownloadMasterIndex();
+            return;
         }
+        this.onError();
     }
     
     @Override

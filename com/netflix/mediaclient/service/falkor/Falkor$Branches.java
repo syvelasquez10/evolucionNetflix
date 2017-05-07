@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.falkor;
 
 public class Falkor$Branches
 {
+    public static final String BILLBOARD_DATA = "billboardData";
     public static final String CHARACTERS = "characters";
     public static final String CURRENT = "current";
     public static final String EPISODES = "episodes";

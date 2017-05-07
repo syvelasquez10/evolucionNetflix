@@ -51,16 +51,16 @@ public class DebugMenuItems
         menu.add((CharSequence)"Launch Notifications Activity").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$1(this, activity));
     }
     
-    private void addMakeRefreshAllRemoteCall(final Menu menu) {
-        menu.add((CharSequence)"Make refreshAll Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$9(this));
-    }
-    
     private void addMakeRefreshCwRemoteCall(final Menu menu) {
         menu.add((CharSequence)"Make refreshCw Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$7(this));
     }
     
     private void addMakeRefreshIqRemoteCall(final Menu menu) {
         menu.add((CharSequence)"Make refreshIq Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$8(this));
+    }
+    
+    private void addMakeRefreshLolomoRemoteCall(final Menu menu) {
+        menu.add((CharSequence)"Make refreshLolomo Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$9(this));
     }
     
     private void addSendCwRefreshBroadcast(final Menu menu) {
@@ -99,7 +99,7 @@ public class DebugMenuItems
         this.addSendCwRefreshBroadcast(menu);
         this.addMakeRefreshCwRemoteCall(menu);
         this.addMakeRefreshIqRemoteCall(menu);
-        this.addMakeRefreshAllRemoteCall(menu);
+        this.addMakeRefreshLolomoRemoteCall(menu);
         this.addCreateAutoLoginToken((Context)netflixActivity, menu);
     }
 }

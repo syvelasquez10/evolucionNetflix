@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.kubrick_kids.details;
 
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.ui.details.IHandleBackPress;
 import android.widget.SpinnerAdapter;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter$IViewCreator;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
@@ -58,30 +60,30 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
         if (detailsPageContentWidth > 0) {
             n = (KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) - detailsPageContentWidth) / 2;
         }
-        return n + (int)this.getResources().getDimension(2131296536);
+        return n + (int)this.getResources().getDimension(2131296516);
     }
     
     @SuppressLint({ "ResourceAsColor" })
     @Override
     protected ViewGroup createSeasonsSelectorGroup() {
         final ViewGroup seasonsSelectorGroup = super.createSeasonsSelectorGroup();
-        this.setSpinnerBackground(this.getResources().getColor(2131558498));
+        this.setSpinnerBackground(this.getResources().getColor(2131558489));
         final SeasonsSpinnerAdapter seasonsSpinnerAdapter = (SeasonsSpinnerAdapter)this.spinner.getAdapter();
         if (seasonsSpinnerAdapter != null) {
-            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131558601);
-            seasonsSpinnerAdapter.setDropDownTextColor(2131558498);
+            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131558592);
+            seasonsSpinnerAdapter.setDropDownTextColor(2131558489);
         }
         return seasonsSelectorGroup;
     }
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296521) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296501) * 2;
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903128;
+        return 2130903115;
     }
     
     @Override
@@ -93,7 +95,7 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
     protected void setSpinnerBackground(final int n) {
         final Drawable drawable = this.getResources().getDrawable(2130837592);
         drawable.setColorFilter(n, PorterDuff$Mode.MULTIPLY);
-        final LayerDrawable layerDrawable = (LayerDrawable)this.getResources().getDrawable(2130837824);
+        final LayerDrawable layerDrawable = (LayerDrawable)this.getResources().getDrawable(2130837776);
         final Drawable drawable2 = layerDrawable.getDrawable(1);
         if (drawable2 != null) {
             drawable2.setColorFilter(n, PorterDuff$Mode.MULTIPLY);
@@ -124,7 +126,7 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131296535), this.numColumns, 3));
+        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131296515), this.numColumns, 3));
     }
     
     @Override
@@ -138,7 +140,7 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
     @Override
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new KubrickKidsShowDetailsFrag$3(this));
-        adapter.setItemBackgroundColor(2131558498);
+        adapter.setItemBackgroundColor(2131558489);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     
@@ -147,7 +149,14 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
         if (this.heroSlideshow != null) {
             this.heroSlideshow.start();
         }
-        this.postSetSpinnerSelectionRunnable();
+    }
+    
+    public void showViews() {
+        if (this.showDetails != null && new MaturityValidator(this, this.getNetflixActivity(), this.showDetails).isRestricted()) {
+            this.leWrapper.hide(false);
+            return;
+        }
+        super.showViews();
     }
     
     @Override

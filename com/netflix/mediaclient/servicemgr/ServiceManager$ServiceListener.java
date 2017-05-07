@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import java.util.Set;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
@@ -28,14 +27,13 @@ import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvi
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
-import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
@@ -77,6 +75,20 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             hashCode = -n;
         }
         return hashCode;
+    }
+    
+    @Override
+    public void onAutoLoginTokenCreated(final int n, final String s, final Status status) {
+        this.updateStatusRequestId(status, n);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManager", "onAutoLoginTokenCreated requestId=" + n + " erroCode=" + status.getStatusCode());
+        }
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for onAutoLoginTokenCreated requestId " + n);
+            return;
+        }
+        access$400.onAutoLoginTokenCreated(s, status);
     }
     
     @Override
@@ -124,20 +136,6 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     }
     
     @Override
-    public void onConnectWithFacebookComplete(final int n, final Status status) {
-        this.updateStatusRequestId(status, n);
-        if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onConnectWithFacebookComplete requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
-        }
-        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
-        if (access$400 == null) {
-            Log.d("ServiceManager", "No callback for onConnectWithFacebookComplete requestId " + n);
-            return;
-        }
-        access$400.onConnectWithFacebookComplete(status);
-    }
-    
-    @Override
     public void onEpisodeDetailsFetched(final int n, final EpisodeDetails episodeDetails, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
@@ -165,20 +163,6 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             return;
         }
         access$400.onEpisodesFetched(list, status);
-    }
-    
-    @Override
-    public void onFriendsForRecommendationsListFetched(final int n, final List<FriendForRecommendation> list, final Status status) {
-        this.updateStatusRequestId(status, n);
-        if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onFriendsForRecommendationsListFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-        }
-        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
-        if (access$400 == null) {
-            Log.d("ServiceManager", "No callback for onFriendsForRecommendationsListFetched requestId " + n);
-            return;
-        }
-        access$400.onFriendsForRecommendationsListFetched(list, status);
     }
     
     @Override
@@ -225,6 +209,20 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             return;
         }
         access$400.onGenresFetched(list, status);
+    }
+    
+    @Override
+    public void onIrisNotificationsListFetched(final int n, final IrisNotificationsList list, final Status status) {
+        this.updateStatusRequestId(status, n);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManager", "onIrisNotificationsListFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+        }
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for onIrisNotificationsListFetched requestId " + n);
+            return;
+        }
+        access$400.onNotificationsListFetched(list, status);
     }
     
     @Override
@@ -340,20 +338,6 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             return;
         }
         access$400.onMovieDetailsFetched(movieDetails, status);
-    }
-    
-    @Override
-    public void onNotificationsListFetched(final int n, final SocialNotificationsList list, final Status status) {
-        this.updateStatusRequestId(status, n);
-        if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onNotificationsListFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-        }
-        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
-        if (access$400 == null) {
-            Log.d("ServiceManager", "No callback for onNotificationsListFetched requestId " + n);
-            return;
-        }
-        access$400.onNotificationsListFetched(list, status);
     }
     
     @Override
@@ -550,20 +534,6 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             return;
         }
         access$400.onSimilarVideosFetched(searchVideoListProvider, status);
-    }
-    
-    @Override
-    public void onSocialNotificationWasThanked(final int n, final Status status) {
-        this.updateStatusRequestId(status, n);
-        if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onSocialNotificationWasThanked requestId=" + n + " erroCode=" + status.getStatusCode());
-        }
-        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
-        if (access$400 == null) {
-            Log.d("ServiceManager", "No callback for onSocialNotificationWasThanked requestId " + n);
-            return;
-        }
-        access$400.onSocialNotificationWasThanked(status);
     }
     
     @Override

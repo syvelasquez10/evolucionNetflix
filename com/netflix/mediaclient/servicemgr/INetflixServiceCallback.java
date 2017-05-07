@@ -12,42 +12,41 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
-import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
+import com.netflix.mediaclient.android.app.Status;
 
 public interface INetflixServiceCallback
 {
+    void onAutoLoginTokenCreated(final int p0, final String p1, final Status p2);
+    
     void onAvailableAvatarsListFetched(final int p0, final List<AvatarInfo> p1, final Status p2);
     
     void onBBVideosFetched(final int p0, final List<Billboard> p1, final Status p2);
     
     void onCWVideosFetched(final int p0, final List<CWVideo> p1, final Status p2);
     
-    void onConnectWithFacebookComplete(final int p0, final Status p1);
-    
     void onEpisodeDetailsFetched(final int p0, final EpisodeDetails p1, final Status p2);
     
     void onEpisodesFetched(final int p0, final List<EpisodeDetails> p1, final Status p2);
-    
-    void onFriendsForRecommendationsListFetched(final int p0, final List<FriendForRecommendation> p1, final Status p2);
     
     void onGenreListsFetched(final int p0, final List<GenreList> p1, final Status p2);
     
     void onGenreLoLoMoPrefetched(final int p0, final Status p1);
     
     void onGenresFetched(final int p0, final List<Genre> p1, final Status p2);
+    
+    void onIrisNotificationsListFetched(final int p0, final IrisNotificationsList p1, final Status p2);
     
     void onKidsCharacterDetailsFetched(final int p0, final KidsCharacterDetails p1, final Boolean p2, final Status p3);
     
@@ -62,8 +61,6 @@ public interface INetflixServiceCallback
     void onLogoutComplete(final int p0, final Status p1);
     
     void onMovieDetailsFetched(final int p0, final MovieDetails p1, final Status p2);
-    
-    void onNotificationsListFetched(final int p0, final SocialNotificationsList p1, final Status p2);
     
     void onPostPlayVideosFetched(final int p0, final PostPlayVideosProvider p1, final Status p2);
     
@@ -90,8 +87,6 @@ public interface INetflixServiceCallback
     void onShowDetailsFetched(final int p0, final ShowDetails p1, final Status p2);
     
     void onSimilarVideosFetched(final int p0, final SearchVideoListProvider p1, final Status p2);
-    
-    void onSocialNotificationWasThanked(final int p0, final Status p1);
     
     void onVerified(final int p0, final boolean p1, final Status p2);
     

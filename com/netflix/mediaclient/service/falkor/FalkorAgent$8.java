@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.service.falkor;
 
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.util.SocialUtils;
 
 class FalkorAgent$8 implements Runnable
 {
@@ -17,7 +16,7 @@ class FalkorAgent$8 implements Runnable
     
     @Override
     public void run() {
-        if (this.this$0.getService() != null && SocialUtils.isNotificationsFeatureSupported(this.this$0.getService().getCurrentProfile(), this.this$0.getContext())) {
+        if (this.this$0.getService() != null) {
             this.this$0.refreshSocialNotifications(true, true, null);
         }
     }

@@ -14,7 +14,6 @@ import com.netflix.mediaclient.service.pservice.PDiskData$ImageType;
 import com.netflix.mediaclient.service.resfetcher.LoggingResourceFetcherCallback;
 import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.service.pservice.PVideo;
@@ -22,6 +21,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -48,10 +48,10 @@ class PreAppAgentDataHandler$7$1 implements Runnable
     @Override
     public void run() {
         PDiskDataRepository.clearDiskData(PreAppAgentDataHandler.mContext);
-        final PDiskData access$600 = this.this$1.this$0.mergeData(this.this$1.val$newData, this.val$onDiskData, this.this$1.val$updateType);
-        this.this$1.this$0.clearOldImages(access$600);
+        final PDiskData access$700 = this.this$1.this$0.mergeData(this.this$1.val$newData, this.val$onDiskData, this.this$1.val$updateType);
+        this.this$1.this$0.clearOldImages(access$700);
         Log.d("nf_preappagentdatahandler", "old not needed data on disk cleared - merged data is");
-        access$600.print();
-        this.this$1.this$0.proceedToFetchOfImages(access$600, this.this$1.val$updateType);
+        access$700.print();
+        this.this$1.this$0.proceedToFetchOfImages(access$700, this.this$1.val$updateType);
     }
 }

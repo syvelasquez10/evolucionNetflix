@@ -36,6 +36,8 @@ interface ViewCompat$ViewCompatImpl
     
     int getMeasuredState(final View p0);
     
+    int getMeasuredWidthAndState(final View p0);
+    
     int getMinimumHeight(final View p0);
     
     int getMinimumWidth(final View p0);

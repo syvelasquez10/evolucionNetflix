@@ -27,6 +27,8 @@ public interface VideoDetails extends FeatureEnabledProvider, Ratable, Video
     
     String getHighResolutionPortraitBoxArtUrl();
     
+    int getMaturityLevel();
+    
     Playable getPlayable();
     
     String getQuality();

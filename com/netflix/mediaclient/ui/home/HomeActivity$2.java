@@ -30,11 +30,12 @@ import android.widget.Toast;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.os.Handler;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
+import com.netflix.mediaclient.util.IrisUtils$NotificationsListStatus;
 import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.support.v4.widget.DrawerLayout;
@@ -43,8 +44,6 @@ import java.util.LinkedList;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -67,8 +66,8 @@ class HomeActivity$2 implements ManagerStatusListener
         this.this$0.reportUiViewChanged(this.this$0.getCurrentViewType());
         this.this$0.getPrimaryFrag().onManagerReady(serviceManager, status);
         this.this$0.slidingMenuAdapter.onManagerReady(serviceManager, status);
-        if (serviceManager != null && serviceManager.getBrowse() != null && SocialUtils.isNotificationsFeatureSupported(this.this$0) && this.this$0.slidingMenuAdapter.canLoadNotifications()) {
-            serviceManager.getBrowse().refreshSocialNotifications(false);
+        if (serviceManager != null && serviceManager.getBrowse() != null) {
+            serviceManager.getBrowse().refreshIrisNotifications(false);
         }
         this.this$0.setLoadingStatusCallback(new HomeActivity$2$1(this));
         this.this$0.mDialogManager = new DialogManager(this.this$0);

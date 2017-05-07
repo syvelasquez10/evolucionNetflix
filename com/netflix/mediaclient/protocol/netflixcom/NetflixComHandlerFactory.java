@@ -25,8 +25,8 @@ public class NetflixComHandlerFactory
 {
     protected static final String ADD_TO_MY_LIST_SUFFIX = "add";
     protected static final String BROWSE_SUFFIX = "browse";
-    protected static final String DETAILS_PAGE_SUFFIX = "title";
-    protected static final String EXTRA_SOURCE = "source";
+    public static final String DETAILS_PAGE_SUFFIX = "title";
+    public static final String EXTRA_SOURCE = "source";
     public static final String FUTURE_HANDLER_SCHEME = "https";
     public static final String HANDLER_PREFIX = "www.netflix.com";
     public static final String HANDLER_SCHEME = "http";

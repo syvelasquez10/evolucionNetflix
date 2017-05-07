@@ -39,6 +39,7 @@ public final class R$attr
     public static final int radioButtonStyle = 2130772271;
     public static final int ratingBarStyle = 2130772272;
     public static final int spinnerStyle = 2130772273;
+    public static final int switchStyle = 2130772274;
     public static final int textAllCaps = 2130772025;
     public static final int textColorSearchUrl = 2130772233;
     public static final int toolbarNavigationButtonStyle = 2130772226;

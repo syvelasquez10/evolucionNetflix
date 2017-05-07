@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.service.NetflixService;
@@ -24,7 +24,7 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.NetflixApplication;
 import java.util.Iterator;
 import java.util.List;
-import com.netflix.mediaclient.ui.social.notifications.KubrickSlidingMenuNotificationsFrag;
+import com.netflix.mediaclient.ui.iris.notifications.SlidingMenuNotificationsFrag;
 import com.netflix.mediaclient.Log;
 import android.content.BroadcastReceiver;
 import com.netflix.falkor.CachedModelProxy;
@@ -33,14 +33,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
 import com.netflix.falkor.ServiceProvider;
 import com.netflix.mediaclient.service.ServiceAgent;
-import com.netflix.mediaclient.ui.social.notifications.types.SocialNotification;
+import com.netflix.mediaclient.ui.iris.notifications.type.BaseNotification;
 import android.content.Context;
-import com.netflix.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.ui.social.notifications.NotificationsStaticFactory;
-import com.netflix.mediaclient.util.SocialUtils;
+import com.netflix.model.leafs.social.IrisNotificationSummary;
+import com.netflix.mediaclient.ui.iris.notifications.NotificationsStaticFactory;
+import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
 
@@ -57,18 +57,18 @@ class FalkorAgent$7 extends SimpleBrowseAgentCallback
     }
     
     @Override
-    public void onNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+    public void onNotificationsListFetched(final IrisNotificationsList list, final Status status) {
         boolean b = true;
         if (list != null && status.getStatusCode() == StatusCode.OK) {
-            final SocialNotificationSummary access$400 = this.this$0.getFirstUnreadNotification(list);
+            final IrisNotificationSummary access$400 = this.this$0.getFirstUnreadNotification(list);
             final Context context = this.this$0.getContext();
             final boolean b2 = access$400 != null;
             if (list.getSocialNotifications() == null || list.getSocialNotifications().size() <= 0) {
                 b = false;
             }
-            SocialUtils.notifyOthersOfUnreadNotifications(context, b2, b);
+            IrisUtils.notifyOthersOfUnreadNotifications(context, b2, b);
             if (this.val$sendNotificationToStatusbar && this.this$0.shouldBeNotificationSentToStatusBar(access$400)) {
-                final SocialNotification notificationByType = NotificationsStaticFactory.getNotificationByType(access$400.getType());
+                final BaseNotification notificationByType = NotificationsStaticFactory.getNotificationByType(access$400.getType());
                 if (notificationByType.supportsStatusBar()) {
                     notificationByType.sendNotificationToStatusbar(access$400, list.getSocialNotificationsListSummary(), this.this$0.getService().getImageLoader(), this.val$msg, this.this$0.getContext());
                 }

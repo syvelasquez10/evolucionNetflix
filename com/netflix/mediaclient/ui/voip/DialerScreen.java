@@ -54,16 +54,16 @@ class DialerScreen
         this.mOnTouchListener = (View$OnTouchListener)new DialerScreen$1(this);
         this.onEverySecond = new DialerScreen$2(this);
         this.mOwner = mOwner;
-        this.mCallStatus = (TextView)this.mOwner.findViewById(2131624120);
-        this.mSpeakerIcon = (ImageView)this.mOwner.findViewById(2131624121);
-        this.mSpeakerLabel = (TextView)this.mOwner.findViewById(2131624122);
-        this.mTimer = (TextView)this.mOwner.findViewById(2131624126);
-        this.mMicIcon = (ImageView)this.mOwner.findViewById(2131624124);
-        this.mDivider = this.mOwner.findViewById(2131624123);
-        this.mDialer = this.mOwner.findViewById(2131624118);
-        this.mHeader = this.mOwner.findViewById(2131624117);
-        this.mFab = (FloatingActionButton)this.mOwner.findViewById(2131624152);
-        this.mDialpad = (TableLayout)this.mOwner.findViewById(2131624127);
+        this.mCallStatus = (TextView)this.mOwner.findViewById(2131624094);
+        this.mSpeakerIcon = (ImageView)this.mOwner.findViewById(2131624095);
+        this.mSpeakerLabel = (TextView)this.mOwner.findViewById(2131624096);
+        this.mTimer = (TextView)this.mOwner.findViewById(2131624100);
+        this.mMicIcon = (ImageView)this.mOwner.findViewById(2131624098);
+        this.mDivider = this.mOwner.findViewById(2131624097);
+        this.mDialer = this.mOwner.findViewById(2131624092);
+        this.mHeader = this.mOwner.findViewById(2131624091);
+        this.mFab = (FloatingActionButton)this.mOwner.findViewById(2131624126);
+        this.mDialpad = (TableLayout)this.mOwner.findViewById(2131624101);
         this.mToneGenerator = new ToneGenerator(8, 100);
         this.setupButtons();
         this.setupScreen();
@@ -103,40 +103,40 @@ class DialerScreen
                     Log.w("VoipActivity", "Uknown view, unable to handle: " + view.getId());
                 }
             }
-            case 2131624128: {
+            case 2131624102: {
                 this.handleButtonTounch('1', b, 1);
             }
-            case 2131624130: {
+            case 2131624104: {
                 this.handleButtonTounch('2', b, 2);
             }
-            case 2131624132: {
+            case 2131624106: {
                 this.handleButtonTounch('3', b, 3);
             }
-            case 2131624134: {
+            case 2131624108: {
                 this.handleButtonTounch('4', b, 4);
             }
-            case 2131624136: {
+            case 2131624110: {
                 this.handleButtonTounch('5', b, 5);
             }
-            case 2131624138: {
+            case 2131624112: {
                 this.handleButtonTounch('6', b, 6);
             }
-            case 2131624140: {
+            case 2131624114: {
                 this.handleButtonTounch('7', b, 7);
             }
-            case 2131624142: {
+            case 2131624116: {
                 this.handleButtonTounch('8', b, 8);
             }
-            case 2131624144: {
+            case 2131624118: {
                 this.handleButtonTounch('9', b, 9);
             }
-            case 2131624148: {
+            case 2131624122: {
                 this.handleButtonTounch('0', b, 0);
             }
-            case 2131624146: {
+            case 2131624120: {
                 this.handleButtonTounch('*', b, 10);
             }
-            case 2131624150: {
+            case 2131624124: {
                 this.handleButtonTounch('#', b, 11);
             }
         }
@@ -169,18 +169,18 @@ class DialerScreen
     private void setupButtons() {
         int i = 0;
         final boolean connected = this.mOwner.getServiceManager().getVoip().isConnected();
-        (this.mButtons = new View[12])[0] = this.mOwner.findViewById(2131624148);
-        this.mButtons[1] = this.mOwner.findViewById(2131624128);
-        this.mButtons[2] = this.mOwner.findViewById(2131624130);
-        this.mButtons[3] = this.mOwner.findViewById(2131624132);
-        this.mButtons[4] = this.mOwner.findViewById(2131624134);
-        this.mButtons[5] = this.mOwner.findViewById(2131624136);
-        this.mButtons[6] = this.mOwner.findViewById(2131624138);
-        this.mButtons[7] = this.mOwner.findViewById(2131624140);
-        this.mButtons[8] = this.mOwner.findViewById(2131624142);
-        this.mButtons[9] = this.mOwner.findViewById(2131624144);
-        this.mButtons[10] = this.mOwner.findViewById(2131624146);
-        this.mButtons[11] = this.mOwner.findViewById(2131624150);
+        (this.mButtons = new View[12])[0] = this.mOwner.findViewById(2131624122);
+        this.mButtons[1] = this.mOwner.findViewById(2131624102);
+        this.mButtons[2] = this.mOwner.findViewById(2131624104);
+        this.mButtons[3] = this.mOwner.findViewById(2131624106);
+        this.mButtons[4] = this.mOwner.findViewById(2131624108);
+        this.mButtons[5] = this.mOwner.findViewById(2131624110);
+        this.mButtons[6] = this.mOwner.findViewById(2131624112);
+        this.mButtons[7] = this.mOwner.findViewById(2131624114);
+        this.mButtons[8] = this.mOwner.findViewById(2131624116);
+        this.mButtons[9] = this.mOwner.findViewById(2131624118);
+        this.mButtons[10] = this.mOwner.findViewById(2131624120);
+        this.mButtons[11] = this.mOwner.findViewById(2131624124);
         for (View[] mButtons = this.mButtons; i < mButtons.length; ++i) {
             final View view = mButtons[i];
             view.setOnTouchListener(this.mOnTouchListener);
@@ -272,8 +272,15 @@ class DialerScreen
         else {
             Log.d("VoipActivity", "Mute");
         }
-        this.mOwner.getVoip().setMicrophoneMute(this.mMuted);
         this.mMuted = !this.mMuted;
+        this.mOwner.getVoip().setMicrophoneMute(this.mMuted);
+        if (this.mAudioManager != null) {
+            if (Log.isLoggable()) {
+                Log.d("VoipActivity", "mute " + this.mMuted);
+            }
+            this.mAudioManager.setMode(2);
+            this.mAudioManager.setMicrophoneMute(this.mMuted);
+        }
         this.updateMic();
     }
     
@@ -307,22 +314,24 @@ class DialerScreen
         if (this.mMicIcon == null) {
             return;
         }
+        this.mMuted = this.mAudioManager.isMicrophoneMute();
         if (this.mMuted) {
-            this.mMicIcon.setImageResource(2130837739);
+            this.mMicIcon.setImageResource(2130837691);
             return;
         }
-        this.mMicIcon.setImageResource(2130837738);
+        this.mMicIcon.setImageResource(2130837690);
     }
     
     private void updateSpeaker() {
         if (this.mOwner.isTablet() || this.mSpeakerIcon == null) {
             return;
         }
+        this.mSpeakerOn = this.mAudioManager.isSpeakerphoneOn();
         if (this.mSpeakerOn) {
-            this.mSpeakerIcon.setImageResource(2130837782);
+            this.mSpeakerIcon.setImageResource(2130837734);
             return;
         }
-        this.mSpeakerIcon.setImageResource(2130837783);
+        this.mSpeakerIcon.setImageResource(2130837735);
     }
     
     public void callConnected() {
@@ -352,22 +361,22 @@ class DialerScreen
                 }
                 return false;
             }
-            case 2131624121:
-            case 2131624122: {
+            case 2131624095:
+            case 2131624096: {
                 this.toggleSpeaker();
                 return true;
             }
-            case 2131624124:
-            case 2131624125: {
+            case 2131624098:
+            case 2131624099: {
                 this.toggleMic();
                 return true;
             }
-            case 2131624152: {
+            case 2131624126: {
                 this.cancelCall();
                 return true;
             }
-            case 2131624168:
-            case 2131624169: {
+            case 2131624142:
+            case 2131624143: {
                 Log.d("VoipActivity", "Up action from dial");
                 this.mOwner.performUpAction();
                 return true;

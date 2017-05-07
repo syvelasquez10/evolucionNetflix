@@ -24,15 +24,15 @@ import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import java.util.List;
 import android.os.Handler;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 
 class PostToHandlerCallbackWrapper$26 implements Runnable
 {
     final /* synthetic */ PostToHandlerCallbackWrapper this$0;
-    final /* synthetic */ SocialNotificationsList val$notifications;
+    final /* synthetic */ IrisNotificationsList val$notifications;
     final /* synthetic */ Status val$res;
     
-    PostToHandlerCallbackWrapper$26(final PostToHandlerCallbackWrapper this$0, final SocialNotificationsList val$notifications, final Status val$res) {
+    PostToHandlerCallbackWrapper$26(final PostToHandlerCallbackWrapper this$0, final IrisNotificationsList val$notifications, final Status val$res) {
         this.this$0 = this$0;
         this.val$notifications = val$notifications;
         this.val$res = val$res;

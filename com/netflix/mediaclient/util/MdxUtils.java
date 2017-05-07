@@ -36,10 +36,10 @@ public final class MdxUtils
             Log.w("MdxUtils", "Activity is not valid or MdxFrag is null. Skipping MDX disconnect dialog");
             return null;
         }
-        final View inflate = netflixActivity.getLayoutInflater().inflate(2130903159, (ViewGroup)null);
-        ((TextView)inflate.findViewById(2131624309)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
-        final TextView textView = (TextView)inflate.findViewById(2131624310);
-        final TextView textView2 = (TextView)inflate.findViewById(2131624311);
+        final View inflate = netflixActivity.getLayoutInflater().inflate(2130903146, (ViewGroup)null);
+        ((TextView)inflate.findViewById(2131624282)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
+        final TextView textView = (TextView)inflate.findViewById(2131624283);
+        final TextView textView2 = (TextView)inflate.findViewById(2131624284);
         final Playable playable = mdxUtils$MdxTargetSelectionDialogInterface.getPlayable();
         String string2;
         if (mdxUtils$MdxTargetSelectionDialogInterface.isPlayingRemotely() && playable != null) {

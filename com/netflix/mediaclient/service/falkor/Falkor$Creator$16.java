@@ -6,10 +6,10 @@ package com.netflix.mediaclient.service.falkor;
 
 import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.ModelProxy;
-import com.netflix.model.branches.FalkorSeason;
+import com.netflix.model.branches.FalkorSuggestion;
 import com.netflix.falkor.Func;
 
-final class Falkor$Creator$16 implements Func<FalkorSeason>
+final class Falkor$Creator$16 implements Func<FalkorSuggestion>
 {
     final /* synthetic */ ModelProxy val$proxy;
     
@@ -18,7 +18,7 @@ final class Falkor$Creator$16 implements Func<FalkorSeason>
     }
     
     @Override
-    public FalkorSeason call() {
-        return new FalkorSeason(this.val$proxy);
+    public FalkorSuggestion call() {
+        return new FalkorSuggestion(this.val$proxy);
     }
 }

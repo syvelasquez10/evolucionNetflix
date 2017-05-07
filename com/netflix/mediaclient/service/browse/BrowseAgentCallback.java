@@ -12,7 +12,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -41,6 +41,8 @@ public interface BrowseAgentCallback
     
     void onGenresFetched(final List<Genre> p0, final Status p1);
     
+    void onIrisNotificationsMarkedAsRead(final Status p0);
+    
     void onKidsCharacterDetailsFetched(final KidsCharacterDetails p0, final Boolean p1, final Status p2);
     
     void onLoLoMoPrefetched(final Status p0);
@@ -51,7 +53,7 @@ public interface BrowseAgentCallback
     
     void onMovieDetailsFetched(final MovieDetails p0, final Status p1);
     
-    void onNotificationsListFetched(final SocialNotificationsList p0, final Status p1);
+    void onNotificationsListFetched(final IrisNotificationsList p0, final Status p1);
     
     void onPostPlayVideosFetched(final PostPlayVideosProvider p0, final Status p1);
     
@@ -70,10 +72,6 @@ public interface BrowseAgentCallback
     void onShowDetailsFetched(final ShowDetails p0, final Status p1);
     
     void onSimilarVideosFetched(final SearchVideoListProvider p0, final Status p1);
-    
-    void onSocialNotificationWasThanked(final Status p0);
-    
-    void onSocialNotificationsMarkedAsRead(final Status p0);
     
     void onVideoHide(final Status p0);
     

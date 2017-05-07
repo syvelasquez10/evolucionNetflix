@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
@@ -215,8 +214,8 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.spinner = spinner;
         this.setupSeasonsSpinnerAdapter();
         this.setupSeasonsSpinnerListener();
-        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131558590);
-        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131296623)));
+        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131558581);
+        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131296600)));
         this.spinnerViewGroup.addView((View)this.spinner, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2, 16));
         return this.spinnerViewGroup;
     }
@@ -265,7 +264,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     }
     
     protected int getlayoutId() {
-        return 2130903214;
+        return 2130903200;
     }
     
     protected void initDetailsViewGroup() {
@@ -434,7 +433,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, this.recyclerView.getResources().getColor(2131558586), 0, null);
+                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, this.recyclerView.getResources().getColor(2131558577), 0, null);
                 this.recyclerView.setOnScrollListener(onScrollListener);
                 return onScrollListener;
             }
@@ -473,7 +472,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new EpisodesFrag$4(this));
-        adapter.setItemBackgroundColor(2130837939);
+        adapter.setItemBackgroundColor(2130837887);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     
@@ -567,7 +566,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.detailsViewGroup.updateDetails(showDetails, new ShowDetailsFrag$ShowDetailsStringProvider((Context)this.getActivity(), showDetails));
         this.detailsViewGroup.setCopyright(showDetails);
         if (this.getActivity() instanceof DetailsActivity && this.detailsViewGroup != null) {
-            this.addToListWrapper = SocialUtils.setupVideoDetailsButtons(this.detailsViewGroup, (NetflixActivity)this.getActivity(), this.manager, this.getShowId(), this.showDetails.getTitle(), this.showDetails.getType());
+            this.addToListWrapper = DetailsFrag.addToMyListWrapper(this.detailsViewGroup, (NetflixActivity)this.getActivity(), this.manager, this.getShowId());
         }
     }
 }

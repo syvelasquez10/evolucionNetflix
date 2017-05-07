@@ -58,7 +58,6 @@ public class zzbk extends Thread
                     zzb.zzb("Error in ContentFetchTask", t);
                     this.zzsc.zza(t, true);
                 }
-            Label_0090_Outer:
                 while (true) {
                     final Object o = this.zzpd;
                     synchronized (o) {
@@ -70,15 +69,14 @@ public class zzbk extends Thread
                             catch (InterruptedException ex) {}
                         }
                         continue Label_0050_Outer;
-                        while (true) {
-                            Thread.sleep(this.zzsd * 1000);
-                            continue Label_0090_Outer;
+                        this.zza((Activity)o);
+                        Label_0090: {
+                            break Label_0090;
                             zzb.zzaF("ContentFetchTask: sleeping");
                             this.zzcw();
-                            continue;
-                            this.zza((Activity)o);
-                            continue;
                         }
+                        Thread.sleep(this.zzsd * 1000);
+                        continue;
                     }
                     break;
                 }

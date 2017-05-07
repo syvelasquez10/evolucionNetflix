@@ -6,6 +6,8 @@ package com.netflix.mediaclient.ui.lomo;
 
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFocusHandler;
+import android.widget.ImageView$ScaleType;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.View;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.VideoView;
@@ -19,7 +21,10 @@ public class LoMoViewGroup extends VideoViewGroup<Video, VideoView>
     
     @Override
     protected VideoView createChildView(final Context context) {
-        return new VideoView(context);
+        final VideoView videoView = new VideoView(context);
+        videoView.setIsHorizontal(!BrowseExperience.useLolomoBoxArt());
+        videoView.setScaleType(ImageView$ScaleType.FIT_XY);
+        return videoView;
     }
     
     @Override

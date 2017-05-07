@@ -18,7 +18,7 @@ import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
 
 public interface ApplicationPerformanceMetricsLogging
 {
-    public static final String[] ACTIONS = { "com.netflix.mediaclient.intent.action.LOG_APM_DIALOG_DISPLAYED", "com.netflix.mediaclient.intent.action.LOG_APM_DIALOG_REMOVED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_CHANGED", "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_ADD_WIDGET", "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_DELETE_WIDGET", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_ENDED" };
+    public static final String[] ACTIONS = { "com.netflix.mediaclient.intent.action.LOG_APM_DIALOG_DISPLAYED", "com.netflix.mediaclient.intent.action.LOG_APM_DIALOG_REMOVED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_CHANGED", "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_ADD_WIDGET", "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_DELETE_WIDGET", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_LOCAL_SETTINGS_BW" };
     public static final String ASSET_REQUEST_ENDED = "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_ENDED";
     public static final String ASSET_REQUEST_STARTED = "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_STARTED";
     public static final String DATA_REQUEST_ENDED = "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_ENDED";
@@ -31,11 +31,13 @@ public interface ApplicationPerformanceMetricsLogging
     public static final String EXTRA_ERROR = "error";
     public static final String EXTRA_FALKOR_PATH_RESULTS = "falkorPathResults";
     public static final String EXTRA_HTTP_RESPONSE = "http_response";
+    public static final String EXTRA_LOCAL_SETTING_DATA = "localSettingData";
     public static final String EXTRA_REASON = "reason";
     public static final String EXTRA_REQUEST_ID = "request_id";
     public static final String EXTRA_REQUEST_URL = "url";
     public static final String EXTRA_UUID = "uuid";
     public static final String EXTRA_VIEW = "view";
+    public static final String LOCAL_SETTINGS_CHANGE_BANDWIDTH = "com.netflix.mediaclient.intent.action.LOG_APM_LOCAL_SETTINGS_BW";
     public static final String PREAPP_ADD_WIDGET = "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_ADD_WIDGET";
     public static final String PREAPP_DELETE_WIDGET = "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_DELETE_WIDGET";
     public static final String SHARED_CONTEXT_SESSION_ENDED = "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_ENDED";
@@ -65,6 +67,8 @@ public interface ApplicationPerformanceMetricsLogging
     boolean handleIntent(final Intent p0, final boolean p1);
     
     boolean isUserSessionExist();
+    
+    void localSettingsChange(final String p0);
     
     void preappAddWidget(final String p0, final long p1);
     

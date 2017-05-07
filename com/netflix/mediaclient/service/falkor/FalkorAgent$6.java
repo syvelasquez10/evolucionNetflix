@@ -17,7 +17,7 @@ class FalkorAgent$6 extends SimpleBrowseAgentCallback
     }
     
     @Override
-    public void onSocialNotificationsMarkedAsRead(final Status status) {
+    public void onIrisNotificationsMarkedAsRead(final Status status) {
         if (status.isSucces()) {
             this.this$0.refreshSocialNotifications(false, false, null);
             return;

@@ -379,10 +379,12 @@ public final class ConnectivityUtils
         if (activeNetworkInfo == null) {
             return "";
         }
+        Log.d("nf_net", "networkInfo type: " + activeNetworkInfo.getType());
         switch (activeNetworkInfo.getType()) {
             default: {
                 final TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService("phone");
                 if (telephonyManager != null) {
+                    Log.d("nf_net", "tm type: " + telephonyManager.getPhoneType());
                     switch (telephonyManager.getPhoneType()) {
                         case 2: {
                             return "cdma";
@@ -431,6 +433,25 @@ public final class ConnectivityUtils
             }
         }
         return n;
+    }
+    
+    public static boolean hasCellular(final Context context) {
+        if (context == null) {
+            return false;
+        }
+        final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService("connectivity");
+        if (connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null) {
+            final TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService("phone");
+            if (telephonyManager == null) {
+                return false;
+            }
+            final int simState = telephonyManager.getSimState();
+            if (simState == 5) {
+                return true;
+            }
+            Log.d("nf_net", "tm simState: " + simState);
+        }
+        return false;
     }
     
     public static boolean hasInternet(final Context context) {

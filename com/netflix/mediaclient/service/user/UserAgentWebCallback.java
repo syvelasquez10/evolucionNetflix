@@ -25,10 +25,6 @@ public interface UserAgentWebCallback
     
     void onAvatarsListFetched(final List<AvatarInfo> p0, final Status p1);
     
-    void onConnectWithFacebook(final Status p0);
-    
-    void onDisconnectWithFacebook(final Status p0);
-    
     void onDummyWebCallDone(final Status p0);
     
     void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> p0, final Status p1);

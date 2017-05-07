@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.protocol.nflx;
 
 import android.app.Activity;
-import com.netflix.mediaclient.util.SocialUtils$TinyTypes;
 import com.netflix.mediaclient.util.BaseConverter;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.app.BackgroundTask;
@@ -18,6 +17,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 abstract class BaseNflxHandler implements NflxHandler
 {
+    public static final int BASE_ENCODING_MODULE = 62;
     protected static final String TAG = "NflxHandler";
     protected NetflixActivity mActivity;
     protected Map<String, String> mParamsMap;
@@ -76,7 +76,7 @@ abstract class BaseNflxHandler implements NflxHandler
         while (true) {
             try {
                 value = String.valueOf(BaseConverter.convertFromBaseToInteger(NflxProtocolUtils.getExpandUrl(value), 62));
-                if (SocialUtils$TinyTypes.MOVIE_TYPE != SocialUtils$TinyTypes.ordinalToType(Integer.parseInt(value.substring(0, 1)))) {
+                if (BaseNflxHandler$TinyTypes.MOVIE_TYPE != BaseNflxHandler$TinyTypes.ordinalToType(Integer.parseInt(value.substring(0, 1)))) {
                     b = false;
                 }
                 final String substring = value.substring(1);

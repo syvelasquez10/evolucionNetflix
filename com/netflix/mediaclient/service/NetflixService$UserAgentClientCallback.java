@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service;
 
-import java.util.Set;
 import android.os.Process;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;
@@ -60,13 +59,12 @@ import android.os.IBinder;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;
 import android.app.Service;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
-import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
+import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
+import java.util.List;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
-import java.util.List;
 import com.netflix.mediaclient.service.user.UserAgent$UserAgentCallback;
 
 class NetflixService$UserAgentClientCallback implements UserAgent$UserAgentCallback
@@ -82,6 +80,17 @@ class NetflixService$UserAgentClientCallback implements UserAgent$UserAgentCallb
     }
     
     @Override
+    public void onAutoLoginTokenCreated(final String s, final Status status) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("NetflixService", "No client callback found for onAutoLoginTokenCreated");
+            return;
+        }
+        Log.d("NetflixService", "Notified onAutoLoginTokenCreated");
+        netflixServiceCallback.onAutoLoginTokenCreated(this.requestId, s, status);
+    }
+    
+    @Override
     public void onAvailableAvatarsListFetched(final List<AvatarInfo> list, final Status status) {
         final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
         if (netflixServiceCallback == null) {
@@ -93,25 +102,14 @@ class NetflixService$UserAgentClientCallback implements UserAgent$UserAgentCallb
     }
     
     @Override
-    public void onConnectWithFacebook(final Status status) {
+    public void onIrisNotificationsListFetched(final IrisNotificationsList list, final Status status) {
         final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
         if (netflixServiceCallback == null) {
-            Log.w("NetflixService", "No client callback found for onConnectWithFacebook");
+            Log.w("NetflixService", "No client callback found for onIrisNotificationsListFetched");
             return;
         }
-        Log.d("NetflixService", "Notified onConnectWithFacebook");
-        netflixServiceCallback.onConnectWithFacebookComplete(this.requestId, status);
-    }
-    
-    @Override
-    public void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> list, final Status status) {
-        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
-        if (netflixServiceCallback == null) {
-            Log.w("NetflixService", "No client callback found for onFriendsForRecommendationsListFetched");
-            return;
-        }
-        Log.d("NetflixService", "Notified onFriendsForRecommendationsListFetched");
-        netflixServiceCallback.onFriendsForRecommendationsListFetched(this.requestId, list, status);
+        Log.d("NetflixService", "Notified onIrisNotificationsListFetched");
+        netflixServiceCallback.onIrisNotificationsListFetched(this.requestId, list, status);
     }
     
     @Override
@@ -145,17 +143,6 @@ class NetflixService$UserAgentClientCallback implements UserAgent$UserAgentCallb
         }
         Log.d("NetflixService", "Notified onProfilesListUpdateResult");
         netflixServiceCallback.onProfileListUpdateStatus(this.requestId, status);
-    }
-    
-    @Override
-    public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
-        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
-        if (netflixServiceCallback == null) {
-            Log.w("NetflixService", "No client callback found for onNotificationsListFetched");
-            return;
-        }
-        Log.d("NetflixService", "Notified onNotificationsListFetched");
-        netflixServiceCallback.onNotificationsListFetched(this.requestId, list, status);
     }
     
     @Override

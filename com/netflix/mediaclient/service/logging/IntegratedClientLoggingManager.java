@@ -79,7 +79,6 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
     private SearchLogging mSearchLogging;
     private final AtomicLong mSequence;
     private final NetflixService mService;
-    private SocialLoggingImpl mSocialLogging;
     private SuspendLoggingImpl mSuspendLogging;
     private UIViewLoggingImpl mUIViewLogging;
     private final ServiceAgent$UserAgentInterface mUser;
@@ -366,7 +365,6 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         while (true) {
             try {
                 this.mSuspendLogging.endAllActiveSessions();
-                this.mSocialLogging.endAllActiveSessions();
                 this.mUIViewLogging.endAllActiveSessions();
                 this.mActionLogging.endAllActiveSessions();
                 this.mSearchLogging.endAllActiveSessions();
@@ -419,10 +417,6 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         return this.mSequence.getAndAdd(1L);
     }
     
-    public SocialLoggingImpl getSocialLogging() {
-        return this.mSocialLogging;
-    }
-    
     public UIViewLogging getUiViewLogging() {
         return this.mUIViewLogging;
     }
@@ -458,10 +452,6 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
             Log.d("nf_log", "Handled by suspend logging logger");
             return;
         }
-        if (this.mSocialLogging.handleIntent(intent)) {
-            Log.d("nf_log", "Handled by social logging logger");
-            return;
-        }
         if (this.mCustomerServiceLogging.handleIntent(intent)) {
             Log.d("nf_log", "Handled by customer service logging logger");
             return;
@@ -483,7 +473,6 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         Log.d("nf_log", "Add ICL manager as listener on user input done.");
         this.mSuspendLogging = new SuspendLoggingImpl(this);
         this.mSearchLogging = new SearchLogging(this, this.mOwner.getUser());
-        this.mSocialLogging = new SocialLoggingImpl(this);
         this.mCustomerServiceLogging = new CustomerServiceLoggingImpl(this);
         this.initDataRepository();
         this.registerReceivers();

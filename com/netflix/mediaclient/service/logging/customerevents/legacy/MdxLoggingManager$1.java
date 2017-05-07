@@ -4,9 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.customerevents.legacy;
 
-import org.apache.http.HttpException;
-import org.json.JSONException;
-import java.io.IOException;
 import com.netflix.mediaclient.Log;
 
 class MdxLoggingManager$1 implements Runnable
@@ -24,14 +21,8 @@ class MdxLoggingManager$1 implements Runnable
         try {
             this.val$cevent.execute();
         }
-        catch (IOException ex) {
-            Log.e("nf_mdxMdxLoggingManager", "sendEvent IOException " + ex);
-        }
-        catch (JSONException ex2) {
-            Log.e("nf_mdxMdxLoggingManager", "sendEvent JSONException " + ex2);
-        }
-        catch (HttpException ex3) {
-            Log.e("nf_mdxMdxLoggingManager", "sendEvent HttpException " + ex3);
+        catch (Throwable t) {
+            Log.e("nf_mdxMdxLoggingManager", "sendEvent fails", t);
         }
     }
 }

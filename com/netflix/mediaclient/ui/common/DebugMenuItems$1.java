@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.common;
 
 import android.content.Context;
 import android.content.Intent;
-import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsActivity;
+import com.netflix.mediaclient.ui.iris.notifications.NotificationsActivity;
 import android.view.MenuItem;
 import android.app.Activity;
 import android.view.MenuItem$OnMenuItemClickListener;
@@ -22,7 +22,7 @@ class DebugMenuItems$1 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        this.val$activity.startActivity(new Intent((Context)this.val$activity, (Class)SocialNotificationsActivity.class));
+        this.val$activity.startActivity(new Intent((Context)this.val$activity, (Class)NotificationsActivity.class));
         return true;
     }
 }

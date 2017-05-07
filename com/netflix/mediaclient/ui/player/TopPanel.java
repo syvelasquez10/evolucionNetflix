@@ -4,12 +4,15 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.app.Dialog;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
+import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import android.view.MenuItem$OnMenuItemClickListener;
+import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthSaving;
 import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import android.content.DialogInterface$OnCancelListener;
@@ -25,8 +28,8 @@ import android.view.View;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import com.netflix.mediaclient.ui.common.LanguageSelector;
-import android.view.MenuItem;
 import android.animation.Animator;
+import android.view.MenuItem;
 import android.view.View$OnClickListener;
 import android.support.v7.app.ActionBar;
 
@@ -35,6 +38,7 @@ public final class TopPanel extends PlayerSection
     private static final String TAG = "screen";
     private final ActionBar mActionBar;
     private final View$OnClickListener mBackListener;
+    private MenuItem mBandwidth;
     private Animator mCurrentToolbarAnimation;
     private MenuItem mDebugMetadata;
     private String mDialogLanguageId;
@@ -56,7 +60,7 @@ public final class TopPanel extends PlayerSection
         this.mBackListener = (View$OnClickListener)new TopPanel$1(this);
         this.mListeners = mListeners;
         (this.mActionBar = playerFragment.getNetflixActivity().getSupportActionBar()).setTitle("");
-        this.mTitleLabel = (TextView)playerFragment.getView().findViewById(2131624409);
+        this.mTitleLabel = (TextView)playerFragment.getView().findViewById(2131624382);
     }
     
     private void changeControlsVisibility(final boolean b) {
@@ -85,8 +89,8 @@ public final class TopPanel extends PlayerSection
         mdxTargetSelectionDialog$Builder.setTitle(2131165513);
         mdxTargetSelectionDialog$Builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerFragment.getActivity()));
         mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerFragment.getString(2131165640), this.getCurrentTitle()));
-        mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new TopPanel$8(this, playerFragment, b));
-        mdxTargetSelectionDialog$Builder.setOnCancelListener((DialogInterface$OnCancelListener)new TopPanel$9(this, playerFragment));
+        mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new TopPanel$9(this, playerFragment, b));
+        mdxTargetSelectionDialog$Builder.setOnCancelListener((DialogInterface$OnCancelListener)new TopPanel$10(this, playerFragment));
         return mdxTargetSelectionDialog$Builder.create();
     }
     
@@ -101,35 +105,53 @@ public final class TopPanel extends PlayerSection
         this.mActionBar.setDisplayHomeAsUpEnabled(true);
     }
     
+    private void initBandwidth(final Menu menu) {
+        final DataSaveConfigData bwSaveConfigData = this.playerFragment.getNetflixActivity().getServiceManager().getConfiguration().getBWSaveConfigData();
+        if (!BandwidthSaving.isBWSavingEnabledForPlay((Context)this.playerFragment.getActivity(), bwSaveConfigData, this.playerFragment.getNetflixActivity().getServiceManager().getConfiguration().shouldForceBwSettingsInWifi())) {
+            return;
+        }
+        this.mBandwidth = menu.add(2131165707);
+        int icon;
+        if (BandwidthSaving.isDataSavingEnabled((Context)this.playerFragment.getNetflixActivity(), bwSaveConfigData)) {
+            icon = 2130837648;
+        }
+        else {
+            icon = 2130837647;
+        }
+        this.mBandwidth.setIcon(icon);
+        this.mBandwidth.setShowAsAction(2);
+        this.mBandwidth.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$3(this, bwSaveConfigData));
+    }
+    
     private void initGeneric(final Menu menu) {
         (this.mEpisodeSelector = menu.add(2131165341)).setVisible(this.mEpisodeSelectorEnabled);
-        this.mEpisodeSelector.setIcon(2130837719);
+        this.mEpisodeSelector.setIcon(2130837671);
         this.mEpisodeSelector.setShowAsAction(2);
-        this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$6(this));
-        this.mTopGradient = this.playerFragment.getView().findViewById(2131624406);
-        this.mToolBar = (Toolbar)this.playerFragment.getView().findViewById(2131624408);
+        this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$7(this));
+        this.mTopGradient = this.playerFragment.getView().findViewById(2131624379);
+        this.mToolBar = (Toolbar)this.playerFragment.getView().findViewById(2131624381);
     }
     
     private void initLanguages(final Menu menu) {
-        this.mLanguageSelector = LanguageSelector.createInstance(this.playerFragment.getNetflixActivity(), this.playerFragment.getNetflixActivity().isTablet(), new TopPanel$3(this));
+        this.mLanguageSelector = LanguageSelector.createInstance(this.playerFragment.getNetflixActivity(), this.playerFragment.getNetflixActivity().isTablet(), new TopPanel$4(this));
         (this.mLanguage = menu.add(2131165342)).setVisible(this.showLanguageMenuItem());
-        this.mLanguage.setIcon(2130837786);
+        this.mLanguage.setIcon(2130837738);
         this.mLanguage.setShowAsAction(2);
-        this.mLanguage.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$4(this));
+        this.mLanguage.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$5(this));
     }
     
     private void initMDX(final Menu menu) {
-        (this.mMdxTarget = menu.add(2131165343)).setIcon(2130837701);
+        (this.mMdxTarget = menu.add(2131165343)).setIcon(2130837653);
         this.mMdxTarget.setVisible(this.mMDXSelectorEnabled);
         this.mMdxTarget.setShowAsAction(2);
-        this.mMdxTarget.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$7(this));
+        this.mMdxTarget.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$8(this));
     }
     
     private void initQa(final Menu menu) {
     }
     
     private void initSound(final Menu menu) {
-        (this.mSound = menu.add(2131165360)).setIcon(2130837791);
+        (this.mSound = menu.add(2131165360)).setIcon(2130837743);
         this.mSound.setShowAsAction(2);
         this.mSound.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$2(this));
     }
@@ -259,6 +281,35 @@ public final class TopPanel extends PlayerSection
         }
     }
     
+    public void onBandwidthSettingsDone(final ServiceManager serviceManager) {
+        if (serviceManager == null) {
+            Log.e("screen", "serviceManager null");
+        }
+        else {
+            final DataSaveConfigData bwSaveConfigData = serviceManager.getConfiguration().getBWSaveConfigData();
+            final boolean dataSavingEnabled = BandwidthSaving.isDataSavingEnabled((Context)serviceManager.getActivity(), bwSaveConfigData);
+            int icon;
+            if (dataSavingEnabled) {
+                icon = 2130837648;
+            }
+            else {
+                icon = 2130837647;
+            }
+            Log.d("nf_bw_saving", String.format("onBandwidthSettingsDone called - dataSavingEnabled: %b, icon: %d", dataSavingEnabled, icon));
+            if (this.mBandwidth != null) {
+                this.mBandwidth.setIcon(icon);
+            }
+            final int maxBandwidth = BandwidthSaving.getMaxBandwidth((Context)serviceManager.getActivity(), bwSaveConfigData);
+            final IPlayer player = serviceManager.getPlayer();
+            if (player != null && maxBandwidth > 0) {
+                player.setVideoBitrateRange(0, maxBandwidth);
+            }
+            if (this.playerFragment != null) {
+                this.playerFragment.doUnpause();
+            }
+        }
+    }
+    
     public void onCreateOptionsMenu(final Menu menu) {
         this.initMDX(menu);
         this.initGeneric(menu);
@@ -266,6 +317,7 @@ public final class TopPanel extends PlayerSection
         this.initQa(menu);
         this.initLanguages(menu);
         this.initSound(menu);
+        this.initBandwidth(menu);
     }
     
     public boolean onOptionsItemSelected(final MenuItem menuItem) {
@@ -312,7 +364,7 @@ public final class TopPanel extends PlayerSection
     
     public void setTitle(final String s) {
         if (this.playerFragment.isActivityValid()) {
-            this.playerFragment.runOnUiThread(new TopPanel$10(this, s));
+            this.playerFragment.runOnUiThread(new TopPanel$11(this, s));
         }
     }
     

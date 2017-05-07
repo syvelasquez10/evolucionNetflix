@@ -4,10 +4,11 @@
 
 package com.netflix.mediaclient.service.falkor;
 
+import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.util.StringUtils;
@@ -20,11 +21,10 @@ import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.NetflixApplication;
-import com.netflix.mediaclient.ui.social.notifications.KubrickSlidingMenuNotificationsFrag;
-import com.netflix.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
+import com.netflix.mediaclient.ui.iris.notifications.SlidingMenuNotificationsFrag;
+import com.netflix.model.leafs.social.IrisNotificationSummary;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import android.content.BroadcastReceiver;
 import com.netflix.falkor.CachedModelProxy;
 import com.netflix.model.Root;

@@ -16,7 +16,7 @@ public interface PreferenceKeys
     public static final String PREFERENCE_AD_ID = "advertisement_id";
     public static final String PREFERENCE_AD_ID_OPTED_IN = "advertisement_id_opted_in";
     public static final String PREFERENCE_AD_ID_TIMESTAMP = "advertisement_id_ts";
-    public static final String PREFERENCE_ALLOW_SEND_VIA_FACEBOOK_PREF = "user_send_recommendation_via_facebook_approved";
+    public static final String PREFERENCE_ALERTED_LANGUAGES = "alertedLanguages";
     public static final String PREFERENCE_APM_USER_SESSION_TIMEOUT_OVERRIDE = "apm_user_session_timeout_duration_override";
     public static final String PREFERENCE_BREADCRUMB_LOGGING_CONFIGURATION = "breadcrumb_log_configuration";
     public static final String PREFERENCE_CL_CONFIGURATION = "cl_configuration";
@@ -47,6 +47,7 @@ public interface PreferenceKeys
     public static final String PREFERENCE_MDX_SELECTED_UUID = "mdx_selected_uuid";
     public static final String PREFERENCE_MDX_TARGET_LASTACTIVE = "mdx_target_lastactive";
     public static final String PREFERENCE_MDX_TARGET_UUID = "mdx_target_uuid";
+    public static final String PREFERENCE_NFLX_LANGUAGES = "nflxLanguages";
     public static final String PREFERENCE_NOTIFICATION_ID_DELETED_FROM_STATUSBAR = "notification_id_deleted_from_statusbar";
     public static final String PREFERENCE_NOTIFICATION_SETTINGS = "notification_settings";
     public static final String PREFERENCE_NRM_NETFLIXID = "nrm_netflix_id";
@@ -66,6 +67,9 @@ public interface PreferenceKeys
     public static final String PREFERENCE_SUPPORTED_AUDIOFORMAT = "supported_audio_format";
     public static final String PREFERENCE_USERAGENT_ESNMIGRATION_FLAGS = "useragent_esnmigration_flags";
     public static final String PREFERENCE_USERAGENT_PROFILE_MAP = "useragent_profilemap";
+    public static final String PREFERENCE_USER_BW_HD_SETTING = "user_bw_hd_override";
+    public static final String PREFERENCE_USER_BW_QUICK_ACTION_SHOWN = "user_bw_quick_action_shown";
+    public static final String PREFERENCE_USER_BW_SETTING = "user_bw_override";
     public static final String PREFERENCE_USER_LOGGED_IN = "nf_user_status_loggedin";
     public static final String PREFERENCE_USER_SELECTED_A_PROFILE = "user_profile_was_selected";
     public static final String PREFERENCE_VIDEO_RESOLUTION_OVERRIDE = "video_resolution_override";

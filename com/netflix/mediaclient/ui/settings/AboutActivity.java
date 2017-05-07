@@ -32,7 +32,7 @@ public class AboutActivity extends FragmentHostActivity
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903111;
+        return 2130903098;
     }
     
     @Override

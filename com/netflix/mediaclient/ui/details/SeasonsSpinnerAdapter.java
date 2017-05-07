@@ -88,13 +88,13 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         textView.setTag((Object)item.getSeasonNumber());
         textView.setText((CharSequence)item.getSeasonNumberTitle(this.context));
         if (viewGroup instanceof SeasonsSpinner) {
-            itemBackgroundResource = 2131558590;
+            itemBackgroundResource = 2131558581;
         }
         else {
             itemBackgroundResource = this.itemBackgroundResource;
         }
         textView.setBackgroundResource(itemBackgroundResource);
-        textView.setTextColor(ContextCompat.getColor(viewGroup.getContext(), 2131558559));
+        textView.setTextColor(ContextCompat.getColor(viewGroup.getContext(), 2131558550));
         return (View)textView;
     }
     

@@ -59,7 +59,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
     }
     
     protected int getContentLayoutId() {
-        return 2130903109;
+        return 2130903096;
     }
     
     public Fragment getPrimaryFrag() {
@@ -95,19 +95,19 @@ public abstract class FragmentHostActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.setContentView(this.getContentLayoutId());
-        this.contentHost = (LinearLayout)this.findViewById(2131624199);
-        this.primaryFragContainer = (ViewGroup)this.findViewById(2131624200);
+        this.contentHost = (LinearLayout)this.findViewById(2131624173);
+        this.primaryFragContainer = (ViewGroup)this.findViewById(2131624174);
         if (!this.hasEmbeddedToolbar()) {
             ((LinearLayout$LayoutParams)this.primaryFragContainer.getLayoutParams()).topMargin = 0;
         }
-        this.secondaryFragContainer = (ViewGroup)this.findViewById(2131624201);
+        this.secondaryFragContainer = (ViewGroup)this.findViewById(2131624175);
         if (bundle == null) {
             this.primaryFrag = this.createPrimaryFrag();
             this.secondaryFrag = this.createSecondaryFrag();
             final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
-            beginTransaction.add(2131624200, this.primaryFrag, "primary");
+            beginTransaction.add(2131624174, this.primaryFrag, "primary");
             if (this.secondaryFrag != null) {
-                beginTransaction.add(2131624201, this.secondaryFrag, "secondary");
+                beginTransaction.add(2131624175, this.secondaryFrag, "secondary");
             }
             beginTransaction.commit();
         }

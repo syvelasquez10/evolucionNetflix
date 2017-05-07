@@ -29,6 +29,7 @@ import java.util.Iterator;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.ui.common.DebugMenuItems;
 import android.view.Menu;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.os.Bundle;
@@ -172,13 +173,13 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
             Log.w("NetflixActivity", "FAB anchor is NULL!");
             return;
         }
-        LayoutInflater.from((Context)this).inflate(2130903094, (ViewGroup)this.mFabAnchor, true);
-        final FloatingActionButton mBackToCustomerSupportCallFAB = (FloatingActionButton)this.mFabAnchor.findViewById(2131624170);
+        LayoutInflater.from((Context)this).inflate(2130903081, (ViewGroup)this.mFabAnchor, true);
+        final FloatingActionButton mBackToCustomerSupportCallFAB = (FloatingActionButton)this.mFabAnchor.findViewById(2131624144);
         if (mBackToCustomerSupportCallFAB == null) {
             Log.e("NetflixActivity", "Fab is not found in root layout! This should NOT happen!");
         }
         final CoordinatorLayout$LayoutParams layoutParams = (CoordinatorLayout$LayoutParams)mBackToCustomerSupportCallFAB.getLayoutParams();
-        layoutParams.setAnchorId(2131624176);
+        layoutParams.setAnchorId(2131624150);
         mBackToCustomerSupportCallFAB.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
         mBackToCustomerSupportCallFAB.setOnClickListener((View$OnClickListener)new NetflixActivity$2(this));
         mBackToCustomerSupportCallFAB.show();
@@ -278,7 +279,7 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
     }
     
     private void initBackToCallInProgressFABVisibility() {
-        this.mFabAnchor = (CoordinatorLayout)this.findViewById(2131624176);
+        this.mFabAnchor = (CoordinatorLayout)this.findViewById(2131624150);
         if (this.mFabAnchor != null && this.isCustomerSupportCallInProgress()) {
             this.addFab();
         }
@@ -310,6 +311,15 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
         this.mBackToCustomerSupportCallFAB.hide();
         this.mFabAnchor.removeView((View)this.mBackToCustomerSupportCallFAB);
         this.mBackToCustomerSupportCallFAB = null;
+    }
+    
+    private void setAssistBlocked(final View view, final boolean b) {
+        try {
+            View.class.getMethod("setAssistBlocked", Boolean.TYPE).invoke(view, b);
+        }
+        catch (Exception ex) {
+            Log.e("NetflixActivity", "Couldn't execute setAssistBlocked method. Got exception: " + ex);
+        }
     }
     
     private void setInstanceStateSaved(final boolean b) {
@@ -471,8 +481,8 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
                         continue;
                     }
                 }
-                // iftrue(Label_0144:, !Log.isLoggable())
                 // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
+                // iftrue(Label_0144:, !Log.isLoggable())
                 finally {
                 }
                 // monitorexit(visibleDialogLock)
@@ -778,7 +788,7 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
             Log.v("NetflixActivity", "Creating activity: " + this.getClass().getSimpleName() + ", hash: " + this.hashCode());
         }
         if (this.shouldShowKidsBackground()) {
-            this.getWindow().setBackgroundDrawableResource(2131558601);
+            this.getWindow().setBackgroundDrawableResource(2131558592);
         }
         boolean shouldExpandMiniPlayer = b;
         if (bundle != null) {
@@ -800,6 +810,9 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
         this.registerReceiverLocallyWithAutoUnregister(this.localBroadcastReceiver, intentFilter);
         this.setupServicemanager();
         this.handler = new Handler();
+        if (AndroidUtils.getAndroidVersion() >= 23) {
+            this.setAssistBlocked(this.findViewById(16908290), true);
+        }
     }
     
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
@@ -954,12 +967,12 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
     protected void onStart() {
         super.onStart();
         UserActionLogUtils.reportNavigationActionStarted((Context)this, null, this.getUiScreen());
-        this.mdxFrag = (MdxMiniPlayerFrag)this.getFragmentManager().findFragmentById(2131624323);
-        this.slidingPanel = (SlidingUpPanelLayout)this.findViewById(2131624198);
+        this.mdxFrag = (MdxMiniPlayerFrag)this.getFragmentManager().findFragmentById(2131624296);
+        this.slidingPanel = (SlidingUpPanelLayout)this.findViewById(2131624172);
         if (this.slidingPanel != null) {
             this.slidingPanel.setDragView(this.mdxFrag.getSlidingPanelDragView());
-            this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131296291));
-            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837946));
+            this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131296290));
+            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837896));
             this.slidingPanel.setPanelSlideListener(this.panelSlideListener);
             if (this.shouldApplyPaddingToSlidingPanel()) {
                 final View child = this.slidingPanel.getChildAt(0);
@@ -1167,6 +1180,10 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
     }
     
     public boolean showAboutInMenu() {
+        return this.canApplyBrowseExperience() && !BrowseExperience.isKubrickKids();
+    }
+    
+    public boolean showAccountInMenu() {
         return this.canApplyBrowseExperience() && !BrowseExperience.isKubrickKids();
     }
     

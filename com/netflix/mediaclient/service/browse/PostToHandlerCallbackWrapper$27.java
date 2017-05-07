@@ -12,7 +12,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -38,6 +38,6 @@ class PostToHandlerCallbackWrapper$27 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.callback.onSocialNotificationsMarkedAsRead(this.val$res);
+        this.this$0.callback.onIrisNotificationsMarkedAsRead(this.val$res);
     }
 }

@@ -35,6 +35,11 @@ class ViewCompat$HCViewCompatImpl extends ViewCompat$GBViewCompatImpl
     }
     
     @Override
+    public int getMeasuredWidthAndState(final View view) {
+        return ViewCompatHC.getMeasuredWidthAndState(view);
+    }
+    
+    @Override
     public float getTranslationX(final View view) {
         return ViewCompatHC.getTranslationX(view);
     }

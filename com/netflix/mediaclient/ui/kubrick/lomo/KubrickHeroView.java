@@ -82,26 +82,26 @@ public class KubrickHeroView extends RelativeLayout implements VideoViewGroup$IV
     }
     
     private void findViews() {
-        this.heroImg = (TopCropImageView)this.findViewById(2131624235);
-        this.title = (TextView)this.findViewById(2131624238);
-        this.titleImg = (AdvancedImageView)this.findViewById(2131624209);
-        this.rating = (NetflixRatingBar)this.findViewById(2131624216);
-        this.year = (TextView)this.findViewById(2131624217);
-        this.certification = (TextView)this.findViewById(2131624218);
-        this.durationInfo = (TextView)this.findViewById(2131624219);
-        this.hdIcon = this.findViewById(2131624220);
-        this.synopsis = (TextView)this.findViewById(2131624240);
-        this.infoGroup = this.findViewById(2131624237);
-        this.shadow = this.findViewById(2131624236);
+        this.heroImg = (TopCropImageView)this.findViewById(2131624209);
+        this.title = (TextView)this.findViewById(2131624212);
+        this.titleImg = (AdvancedImageView)this.findViewById(2131624183);
+        this.rating = (NetflixRatingBar)this.findViewById(2131624190);
+        this.year = (TextView)this.findViewById(2131624191);
+        this.certification = (TextView)this.findViewById(2131624192);
+        this.durationInfo = (TextView)this.findViewById(2131624193);
+        this.hdIcon = this.findViewById(2131624194);
+        this.synopsis = (TextView)this.findViewById(2131624214);
+        this.infoGroup = this.findViewById(2131624211);
+        this.shadow = this.findViewById(2131624210);
     }
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837941);
-        ViewUtils.setPaddingBottom((View)this, this.getResources().getDimensionPixelOffset(2131296643));
+        this.setBackgroundResource(2130837892);
+        ViewUtils.setPaddingBottom((View)this, this.getResources().getDimensionPixelOffset(2131296620));
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        netflixActivity.getLayoutInflater().inflate(2130903124, (ViewGroup)this);
+        netflixActivity.getLayoutInflater().inflate(2130903111, (ViewGroup)this);
         this.findViews();
         this.heroImg.setCropPointYOffsetPx(0);
         ((RelativeLayout$LayoutParams)this.heroImg.getLayoutParams()).height = (int)(DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) * 0.5625f);

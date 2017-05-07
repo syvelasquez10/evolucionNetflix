@@ -12,7 +12,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -56,6 +56,10 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     }
     
     @Override
+    public void onIrisNotificationsMarkedAsRead(final Status status) {
+    }
+    
+    @Override
     public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
     }
     
@@ -76,7 +80,7 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     }
     
     @Override
-    public void onNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+    public void onNotificationsListFetched(final IrisNotificationsList list, final Status status) {
     }
     
     @Override
@@ -113,14 +117,6 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     
     @Override
     public void onSimilarVideosFetched(final SearchVideoListProvider searchVideoListProvider, final Status status) {
-    }
-    
-    @Override
-    public void onSocialNotificationWasThanked(final Status status) {
-    }
-    
-    @Override
-    public void onSocialNotificationsMarkedAsRead(final Status status) {
     }
     
     @Override

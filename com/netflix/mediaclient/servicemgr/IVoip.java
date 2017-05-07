@@ -34,6 +34,8 @@ public interface IVoip
     
     void setOutputVolume(final float p0);
     
+    void setSpeakerOn(final boolean p0);
+    
     boolean start();
     
     void startDTMF(final char p0);

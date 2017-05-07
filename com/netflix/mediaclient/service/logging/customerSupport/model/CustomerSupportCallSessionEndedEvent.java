@@ -20,14 +20,14 @@ public class CustomerSupportCallSessionEndedEvent extends SessionEndedEvent
     public static final String CONNECTION_TIME = "connectionTime";
     public static final String ERROR = "error";
     public static final String REASON = "reason";
-    private static final String SESSION_NAME = "helpRequest";
+    private static final String SESSION_NAME = "customerSupportCall";
     private IClientLogging$CompletionReason mCompletionReason;
     private int mConnectionTime;
     private Error mError;
     private List<CustomerSupportCallSession$CallQualitySegment> mStates;
     
     public CustomerSupportCallSessionEndedEvent(final CustomerSupportCallSession customerSupportCallSession, final int mConnectionTime, final IClientLogging$CompletionReason mCompletionReason, final Error mError) {
-        super("helpRequest", customerSupportCallSession.getId(), System.currentTimeMillis() - customerSupportCallSession.getStarted());
+        super("customerSupportCall", customerSupportCallSession.getId(), System.currentTimeMillis() - customerSupportCallSession.getStarted());
         this.mCompletionReason = mCompletionReason;
         this.mError = mError;
         this.category = customerSupportCallSession.getCategory();

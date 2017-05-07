@@ -4,13 +4,12 @@
 
 package com.netflix.mediaclient.service.pushnotification;
 
-import com.netflix.mediaclient.util.NflxProtocolUtils;
-import com.netflix.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.IrisNotificationSummary;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.IntentUtils;
 import android.net.Uri;
-import com.netflix.mediaclient.util.SocialUtils;
+import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
 import com.netflix.mediaclient.android.app.BackgroundTask;
@@ -218,7 +217,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
                 }
                 this.saveSettings();
                 this.mCurrentUserSettings = null;
-                SocialUtils.removeSocialNotificationsFromStatusBar(this.getContext());
+                IrisUtils.removeNotificationsFromStatusBar(this.getContext());
             }
         }
     }
@@ -254,7 +253,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
     }
     
     private void onNotificationCanceled(final Intent intent) {
-        SocialUtils.ifSocialNotificationWasCanceledUpdateItsStatus(this.getContext(), intent, "nf_push");
+        IrisUtils.ifNotificationWasCanceledUpdateItsStatus(this.getContext(), intent, "nf_push");
         final MessageData instance = MessageData.createInstance(intent);
         if (instance == null) {
             Log.e("nf_push", "Unable to report canceled notification since message data are missing!");
@@ -412,10 +411,6 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             Log.d("nf_push", "Handle notification browser redirect");
             this.onNotificationBrowserRedirect(intent);
         }
-        else if ("com.netflix.mediaclient.intent.action.NOTIFICATION_SAY_THANKS".equals(intent.getAction())) {
-            Log.d("nf_push", "Handle notification respond thanks redirect");
-            this.sayThanks(intent);
-        }
         else {
             if (!"com.netflix.mediaclient.intent.action.NOTIFICATION_MARK_AS_READ".equals(intent.getAction())) {
                 Log.e("nf_push", "Uknown command!");
@@ -454,7 +449,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
     
     public void markAsRead(final Intent intent) {
         Log.d("nf_push", "markAsRead", intent);
-        this.getService().getBrowse().markNotificationAsRead(new SocialNotificationSummary(intent.getStringExtra("g"), null));
+        this.getService().getBrowse().markNotificationAsRead(new IrisNotificationSummary(intent.getStringExtra("g"), null));
     }
     
     @Override
@@ -465,12 +460,6 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         }
         Log.d("nf_push", "Stopping NetflixService in 30000");
         this.getService().requestServiceShutdownAfterDelay(30000L);
-    }
-    
-    public void sayThanks(final Intent intent) {
-        Log.d("nf_push", "sayThanks", intent);
-        this.getService().getBrowse().sendThanksToSocialNotificationFromService(new SocialNotificationSummary(intent.getStringExtra("g"), intent.getStringExtra("story_id")), this.getService(), intent.getBooleanExtra("close_system_dialogs_needed", false));
-        NflxProtocolUtils.reportUserOpenedNotification(this.getService(), intent);
     }
     
     public void verifyGCM() {

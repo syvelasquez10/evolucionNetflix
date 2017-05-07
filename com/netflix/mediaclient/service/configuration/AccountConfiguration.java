@@ -5,9 +5,10 @@
 package com.netflix.mediaclient.service.configuration;
 
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.webclient.model.leafs.KubrickKidsConfigData;
 import org.json.JSONObject;
 import org.json.JSONArray;
+import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.AccountConfigData;
@@ -29,6 +30,8 @@ public class AccountConfiguration
     
     public void clear() {
         PreferenceUtils.putStringPref(this.mContext, "accountConfig", null);
+        PreferenceUtils.putIntPref(this.mContext, "user_bw_override", -1);
+        PreferenceUtils.putIntPref(this.mContext, "user_bw_hd_override", -1);
     }
     
     public boolean enableHTTPSAuth() {
@@ -41,6 +44,27 @@ public class AccountConfiguration
     
     public boolean enableWidevineL3ABTest() {
         return this.mAccountConfigData != null && this.mAccountConfigData.enableWidevineL3ABTest();
+    }
+    
+    public ABTestConfigData getABTestConfiguration_6538() {
+        if (this.mAccountConfigData == null) {
+            return null;
+        }
+        return this.mAccountConfigData.getABTestConfiguration_6538();
+    }
+    
+    public ABTestConfigData getABTestConfiguration_6725() {
+        if (this.mAccountConfigData == null) {
+            return null;
+        }
+        return this.mAccountConfigData.getABTestConfiguration_6725();
+    }
+    
+    public DataSaveConfigData getBWSaveConfigData() {
+        if (this.mAccountConfigData == null) {
+            return null;
+        }
+        return this.mAccountConfigData.getBWSaveConfigData();
     }
     
     public boolean getCastEnabled() {
@@ -68,13 +92,6 @@ public class AccountConfiguration
         return this.mAccountConfigData.getKubrickConfig();
     }
     
-    public KubrickKidsConfigData getKubrickKidsConfig() {
-        if (this.mAccountConfigData == null) {
-            return null;
-        }
-        return this.mAccountConfigData.getKubrickKidsConfig();
-    }
-    
     public JSONArray getMdxBlacklist() {
         if (this.mAccountConfigData == null) {
             return null;
@@ -94,13 +111,6 @@ public class AccountConfiguration
             return null;
         }
         return this.mAccountConfigData.getPreAppWidgetExperience();
-    }
-    
-    public int getShareSheetExperience() {
-        if (this.mAccountConfigData == null) {
-            return 1;
-        }
-        return this.mAccountConfigData.getShareSheetExperience();
     }
     
     public int getVideoBufferSize() {
@@ -124,6 +134,10 @@ public class AccountConfiguration
     
     public boolean shouldDisableVoip() {
         return this.mAccountConfigData == null || !this.mAccountConfigData.isVoipEnabledOnAccount();
+    }
+    
+    public boolean shouldForceBwSettingsInWifi() {
+        return this.mAccountConfigData != null && this.mAccountConfigData.forceBwSettingsInWifi;
     }
     
     public boolean toDisableMcQueenV2() {

@@ -8,12 +8,15 @@ import java.util.StringTokenizer;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import java.util.Locale;
+import com.google.gson.annotations.SerializedName;
 
 public final class UserLocale
 {
     private static final String RAW_DELIMITER = "-";
     private static final String TAG = "nf_user_locale";
+    @SerializedName("language")
     private String language;
+    @SerializedName("languageDescription")
     private String languageDescription;
     private Locale locale;
     private String raw;

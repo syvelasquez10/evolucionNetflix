@@ -13,7 +13,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 import java.io.Serializable;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -24,10 +24,10 @@ import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.app.Status;
 
 public class LoggingManagerCallback implements ManagerCallback
 {
@@ -35,6 +35,13 @@ public class LoggingManagerCallback implements ManagerCallback
     
     public LoggingManagerCallback(final String tag) {
         this.tag = tag;
+    }
+    
+    @Override
+    public void onAutoLoginTokenCreated(final String s, final Status status) {
+        if (Log.isLoggable()) {
+            Log.v(this.tag, String.format("onAutoLoginTokenCreated, status: %d", status.getStatusCode().getValue()));
+        }
     }
     
     @Override
@@ -237,9 +244,9 @@ public class LoggingManagerCallback implements ManagerCallback
     }
     
     @Override
-    public void onNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+    public void onNotificationsListFetched(final IrisNotificationsList list, final Status status) {
         if (Log.isLoggable()) {
-            Log.v(this.tag, String.format("onNotificationsListFetched, status: %d", status.getStatusCode().getValue()));
+            Log.v(this.tag, String.format("onIrisNotificationsListFetched, status: %d", status.getStatusCode().getValue()));
             final String tag = this.tag;
             final StringBuilder append = new StringBuilder().append("Notifications count: ");
             Serializable value;

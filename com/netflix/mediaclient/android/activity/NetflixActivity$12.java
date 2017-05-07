@@ -29,6 +29,7 @@ import java.util.Iterator;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.ui.common.DebugMenuItems;
 import android.view.Menu;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.os.Bundle;

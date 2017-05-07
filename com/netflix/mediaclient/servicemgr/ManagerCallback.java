@@ -12,7 +12,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -23,12 +23,14 @@ import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
+import com.netflix.mediaclient.android.app.Status;
 
 public interface ManagerCallback
 {
+    void onAutoLoginTokenCreated(final String p0, final Status p1);
+    
     void onAvailableAvatarsListFetched(final List<AvatarInfo> p0, final Status p1);
     
     void onBBVideosFetched(final List<Billboard> p0, final Status p1);
@@ -63,7 +65,7 @@ public interface ManagerCallback
     
     void onMovieDetailsFetched(final MovieDetails p0, final Status p1);
     
-    void onNotificationsListFetched(final SocialNotificationsList p0, final Status p1);
+    void onNotificationsListFetched(final IrisNotificationsList p0, final Status p1);
     
     void onPostPlayVideosFetched(final PostPlayVideosProvider p0, final Status p1);
     

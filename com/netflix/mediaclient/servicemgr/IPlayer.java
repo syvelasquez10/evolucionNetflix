@@ -92,5 +92,7 @@ public interface IPlayer
     
     void setSurfaceHolder(final SurfaceHolder p0);
     
+    void setVideoBitrateRange(final int p0, final int p1);
+    
     void unpause();
 }

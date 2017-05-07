@@ -26,7 +26,7 @@ class InfoEventHandler$3 implements Runnable
     public void run() {
         Log.i("nf_push_info", "Refreshing ALL lolomo via runnable");
         if (InfoEventHandler.mService != null) {
-            InfoEventHandler.mService.getBrowse().refreshAll();
+            InfoEventHandler.mService.getBrowse().refreshLolomo();
         }
     }
 }

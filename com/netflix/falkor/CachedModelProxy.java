@@ -6,7 +6,7 @@ package com.netflix.falkor;
 
 import com.netflix.model.leafs.Video$Bookmark;
 import com.netflix.mediaclient.servicemgr.Asset;
-import com.netflix.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.IrisNotificationSummary;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.service.NetflixService;
@@ -74,6 +74,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     private static final int MAX_VIDEO_DETAILS_SIMILARS_COUNT = 12;
     private static final String MS_SUFFIX = "ms";
     private static final String NEWLINE = "\n";
+    private static final boolean ORIGINALS_BILLBOARDS_ENABLED = false;
     private static final int PREFETCH_BILLBOARD_VIDEO_INDEX = 9;
     private static final String REQUEST_PARAM_KEY = "param";
     private static final String REQUEST_PATH_SUFFIX_KEY = "pathSuffix";
@@ -108,9 +109,8 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     }
     
     private static void buildBillboardPql(final List<PQL> list, final int n, final int n2) {
-        list.add(CachedModelProxy.BB_VIDEO_LEAF_PQL.prepend(PQL.create("lolomo", PQL.array("billboard", "postcard"), "videoEvidence", PQL.range(n, n2))));
-        list.add(CachedModelProxy.BB_CURR_EPISODE_PQL.prepend(PQL.create("lolomo", PQL.array("billboard", "postcard"), "videoEvidence", PQL.range(n, n2))));
-        list.add(PQL.create("lolomo", PQL.array("billboard", "postcard"), "socialEvidence", "0", "socialBadge"));
+        list.add(CachedModelProxy.BB_VIDEO_LEAF_PQL.prepend(PQL.create("lolomo", "billboard", "videoEvidence", PQL.range(n, n2))));
+        list.add(CachedModelProxy.BB_CURR_EPISODE_PQL.prepend(PQL.create("lolomo", "billboard", "videoEvidence", PQL.range(n, n2))));
     }
     
     private static void buildCwPql(final List<PQL> list, final int n, final int n2) {
@@ -151,23 +151,30 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     private void doDumpCacheToDiskRecursive(final StringBuilder sb, final BranchNode branchNode, final int n, final boolean b) {
         final StringBuilder sb2 = new StringBuilder();
         for (int i = 0; i < n; ++i) {
-            sb2.append(" |-");
+            String s;
+            if (i == n - 1) {
+                s = " |-";
+            }
+            else {
+                s = " | ";
+            }
+            sb2.append(s);
         }
         final String string = sb2.toString();
         final ArrayList<Object> list = new ArrayList<Object>(branchNode.getKeys());
         if (b) {
             Collections.sort(list, (Comparator<? super Object>)new AlphanumComparator());
         }
-        for (final String s : list) {
-            final Object value = branchNode.get(s);
+        for (final String s2 : list) {
+            final Object value = branchNode.get(s2);
             if (value instanceof Ref) {
-                sb.append(string).append(s).append(" -> ").append(((Ref)value).getRefPath()).append("\n");
+                sb.append(string).append(s2).append(" -> ").append(((Ref)value).getRefPath()).append("\n");
             }
             else if (value instanceof Sentinel) {
-                sb.append(string).append(s).append(" -> [sentinel]").append("\n");
+                sb.append(string).append(s2).append(" -> [sentinel]").append("\n");
             }
             else {
-                sb.append(string).append(s).append("\n");
+                sb.append(string).append(s2).append("\n");
             }
             if (value instanceof BranchNode) {
                 this.doDumpCacheToDiskRecursive(sb, (BranchNode)value, n + 1, true);
@@ -2248,81 +2255,84 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
             while (true) {
                 while (true) {
                     int n = 0;
-                    Label_0313: {
+                    Label_0335: {
+                        Object o2;
                         try {
-                            Object root;
+                            Object o;
                             if (pql.isEmpty()) {
                                 if (Log.isLoggable()) {
                                     Log.w("CachedModelProxy", "Empty pql - leaving getValue() early");
                                 }
-                                root = null;
+                                o = null;
                             }
                             else {
                                 if (Falkor.ENABLE_VERBOSE_LOGGING) {
                                     Log.v("CachedModelProxy", "getValue() pql: " + pql);
                                 }
-                                root = this.root;
-                                if (root instanceof BranchNode) {
-                                    Object append = root;
-                                    final List<Object> keySegments = pql.getKeySegments();
-                                    final int size = keySegments.size();
-                                    n = 0;
-                                    final BranchNode branchNode = (BranchNode)root;
-                                    root = branchNode;
-                                    if (n < size) {
-                                        final String value = keySegments.get(n);
-                                        if (value == null) {
-                                            break Label_0313;
+                                o2 = this.root;
+                                if (!(o2 instanceof BranchNode)) {
+                                    return o2;
+                                }
+                                final BranchNode branchNode = (BranchNode)o2;
+                                final List<Object> keySegments = pql.getKeySegments();
+                                final int size = keySegments.size();
+                                n = 0;
+                                o = o2;
+                                if (n < size) {
+                                    final String value = keySegments.get(n);
+                                    if (value == null) {
+                                        break Label_0335;
+                                    }
+                                    final Object o3 = o2 = branchNode.get(value);
+                                    if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                                        o2 = new StringBuilder().append("getValue() for key: ").append(value.toString()).append(" currentValue: ");
+                                        String simpleName;
+                                        if (o3 == null) {
+                                            simpleName = "null";
                                         }
-                                        Object o2;
-                                        final Object o = o2 = ((BranchNode)append).get(value);
-                                        if (Falkor.ENABLE_VERBOSE_LOGGING) {
-                                            append = new StringBuilder().append("getValue() currentValue: ");
-                                            String simpleName;
-                                            if (o == null) {
-                                                simpleName = "null";
-                                            }
-                                            else {
-                                                simpleName = ((BranchNode)o).getClass().getSimpleName();
-                                            }
-                                            Log.v("CachedModelProxy", ((StringBuilder)append).append(simpleName).toString());
-                                            o2 = o;
+                                        else {
+                                            simpleName = ((BranchNode)o3).getClass().getSimpleName();
                                         }
-                                        while (o2 instanceof Ref) {
-                                            final Ref ref = (Ref)(root = o2);
-                                            if (n == size - 1) {
-                                                return root;
-                                            }
-                                            o2 = ref.getValue(this);
+                                        Log.v("CachedModelProxy", ((StringBuilder)o2).append(simpleName).toString());
+                                        o2 = o3;
+                                    }
+                                    while (o2 instanceof Ref) {
+                                        o2 = (o = o2);
+                                        if (n == size - 1) {
+                                            return o;
                                         }
-                                        if (o2 instanceof FalkorObject) {
-                                            root = o2;
-                                            if (n >= size - 2) {
-                                                return root;
-                                            }
+                                        o2 = ((Ref)o2).getValue(this);
+                                    }
+                                    if (o2 instanceof FalkorObject) {
+                                        o = o2;
+                                        if (n >= size - 2) {
+                                            return o;
                                         }
-                                        if (o2 instanceof BranchNode) {
-                                            append = o2;
-                                            break Label_0313;
-                                        }
-                                        root = o2;
-                                        if (!(o2 instanceof Exception)) {
-                                            final boolean b = o2 instanceof Undefined;
-                                            root = o2;
-                                            if (b) {
-                                                root = o2;
-                                            }
+                                    }
+                                    if (o2 instanceof BranchNode) {
+                                        final BranchNode branchNode2 = (BranchNode)o2;
+                                        break Label_0335;
+                                    }
+                                    o = o2;
+                                    if (!(o2 instanceof Exception)) {
+                                        final boolean b = o2 instanceof Undefined;
+                                        o = o2;
+                                        if (b) {
+                                            o = o2;
                                         }
                                     }
                                 }
                             }
-                            return root;
+                            return o;
                         }
                         finally {
                         }
                         // monitorexit(this)
+                        return o2;
                     }
                     ++n;
+                    final BranchNode branchNode3;
+                    final BranchNode branchNode = branchNode3;
                     continue;
                 }
             }
@@ -2396,7 +2406,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public void markNotificationAsRead(final SocialNotificationSummary p0, final BrowseAgentCallback p1) {
+    public void markNotificationAsRead(final IrisNotificationSummary p0, final BrowseAgentCallback p1) {
         // 
         // This method could not be decompiled.
         // 
@@ -2459,7 +2469,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public void markNotificationsAsRead(final List<SocialNotificationSummary> p0, final BrowseAgentCallback p1) {
+    public void markNotificationsAsRead(final List<IrisNotificationSummary> p0, final BrowseAgentCallback p1) {
         // 
         // This method could not be decompiled.
         // 
@@ -2475,7 +2485,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //    11: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
         //    14: return         
         //    Signature:
-        //  (Ljava/util/List<Lcom/netflix/model/leafs/social/SocialNotificationSummary;>;Lcom/netflix/mediaclient/service/browse/BrowseAgentCallback;)V
+        //  (Ljava/util/List<Lcom/netflix/model/leafs/social/IrisNotificationSummary;>;Lcom/netflix/mediaclient/service/browse/BrowseAgentCallback;)V
         // 
         // The error that occurred was:
         // 
@@ -3036,69 +3046,6 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     }
     
     public void searchNetflix(final String p0, final BrowseAgentCallback p1) {
-        // 
-        // This method could not be decompiled.
-        // 
-        // Original Bytecode:
-        // 
-        //     0: aload_0        
-        //     1: new             new            !!! ERROR
-        //     4: dup            
-        //     5: aload_0        
-        //     6: aload_1        
-        //     7: aload_2        
-        //     8: invokespecial   invokespecial  !!! ERROR
-        //    11: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
-        //    14: return         
-        // 
-        // The error that occurred was:
-        // 
-        // java.lang.IllegalArgumentException: Argument 'typeArguments' must not have any null elements.
-        //     at com.strobel.core.VerifyArgument.noNullElementsAndNotEmpty(VerifyArgument.java:145)
-        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.makeGenericType(CoreMetadataFactory.java:570)
-        //     at com.strobel.assembler.metadata.CoreMetadataFactory.makeParameterizedType(CoreMetadataFactory.java:156)
-        //     at com.strobel.assembler.metadata.signatures.Reifier.visitClassTypeSignature(Reifier.java:125)
-        //     at com.strobel.assembler.metadata.signatures.ClassTypeSignature.accept(ClassTypeSignature.java:46)
-        //     at com.strobel.assembler.metadata.MetadataParser.parseClassSignature(MetadataParser.java:394)
-        //     at com.strobel.assembler.metadata.ClassFileReader.populateBaseTypes(ClassFileReader.java:665)
-        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:438)
-        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:366)
-        //     at com.strobel.assembler.metadata.MetadataSystem.resolveType(MetadataSystem.java:124)
-        //     at com.strobel.decompiler.NoRetryMetadataSystem.resolveType(DecompilerDriver.java:463)
-        //     at com.strobel.assembler.metadata.MetadataSystem.resolveCore(MetadataSystem.java:76)
-        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:104)
-        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:589)
-        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:128)
-        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:599)
-        //     at com.strobel.assembler.metadata.MethodReference.resolve(MethodReference.java:172)
-        //     at com.strobel.decompiler.ast.TypeAnalysis.inferCall(TypeAnalysis.java:2428)
-        //     at com.strobel.decompiler.ast.TypeAnalysis.doInferTypeForExpression(TypeAnalysis.java:1029)
-        //     at com.strobel.decompiler.ast.TypeAnalysis.inferTypeForExpression(TypeAnalysis.java:803)
-        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:672)
-        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:655)
-        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:365)
-        //     at com.strobel.decompiler.ast.TypeAnalysis.run(TypeAnalysis.java:96)
-        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:109)
-        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
-        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
-        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
-        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
-        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
-        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
-        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
-        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
-        // 
-        throw new IllegalStateException("An error occurred while decompiling this method.");
-    }
-    
-    public void sendThanksToSocialNotification(final SocialNotificationSummary p0, final BrowseAgentCallback p1) {
         // 
         // This method could not be decompiled.
         // 

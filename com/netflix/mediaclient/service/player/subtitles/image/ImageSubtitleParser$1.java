@@ -18,10 +18,12 @@ import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleParser$DownloadFailedCallback;
 import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleData;
+import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.service.player.PlayerAgent;
 import com.netflix.mediaclient.service.player.subtitles.BaseSubtitleParser;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.resfetcher.LoggingResourceFetcherCallback;
@@ -41,10 +43,13 @@ class ImageSubtitleParser$1 extends LoggingResourceFetcherCallback
             if (Log.isLoggable()) {
                 Log.e("nf_subtitles", "Failed to download master index " + status);
             }
-            this.this$0.mPlayer.reportFailedToDownloadSubtitleMetadata(s);
+            this.this$0.mPlayer.reportFailedSubtitle(s, this.this$0.mSubtitleData, IMedia$SubtitleFailure.download, this.this$0.onError());
+            return;
         }
-        else if (this.this$0.parseMasterIndex(array)) {
+        if (this.this$0.parseMasterIndex(array)) {
             this.this$0.handleDownloadSegmentIndexes();
+            return;
         }
+        this.this$0.mPlayer.reportFailedSubtitle(s, this.this$0.mSubtitleData, IMedia$SubtitleFailure.parsing, this.this$0.onError());
     }
 }

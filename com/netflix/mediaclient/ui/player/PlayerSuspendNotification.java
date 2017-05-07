@@ -81,35 +81,35 @@ public final class PlayerSuspendNotification
         RemoteViews remoteViews;
         if (b) {
             if (notEmpty) {
-                remoteViews = new RemoteViews(packageName, 2130903237);
+                remoteViews = new RemoteViews(packageName, 2130903220);
             }
             else {
-                remoteViews = new RemoteViews(packageName, 2130903239);
+                remoteViews = new RemoteViews(packageName, 2130903222);
             }
         }
         else if (notEmpty) {
-            remoteViews = new RemoteViews(packageName, 2130903236);
+            remoteViews = new RemoteViews(packageName, 2130903219);
         }
         else {
-            remoteViews = new RemoteViews(packageName, 2130903238);
+            remoteViews = new RemoteViews(packageName, 2130903221);
         }
         if (bitmap != null) {
-            remoteViews.setImageViewBitmap(2131624542, bitmap);
+            remoteViews.setImageViewBitmap(2131624502, bitmap);
         }
         if (StringUtils.isNotEmpty(s)) {
-            remoteViews.setTextViewText(2131624543, (CharSequence)s);
+            remoteViews.setTextViewText(2131624503, (CharSequence)s);
         }
         else {
-            remoteViews.setTextViewText(2131624543, (CharSequence)"");
+            remoteViews.setTextViewText(2131624503, (CharSequence)"");
         }
         if (notEmpty) {
-            remoteViews.setTextViewText(2131624544, (CharSequence)s2);
+            remoteViews.setTextViewText(2131624504, (CharSequence)s2);
         }
         return remoteViews;
     }
     
     private Bitmap getDefaultBoxArt() {
-        return BitmapFactory.decodeResource(this.mActivity.getResources(), 2130837740);
+        return BitmapFactory.decodeResource(this.mActivity.getResources(), 2130837692);
     }
     
     public static IntentFilter getNotificationIntentFilter() {
@@ -132,16 +132,16 @@ public final class PlayerSuspendNotification
             if ((defaultBoxArt = largeIcon) == null) {
                 defaultBoxArt = this.getDefaultBoxArt();
             }
-            final Notification notification = notification2 = new NotificationCompat$Builder((Context)this.mActivity).setOngoing(0 != 0).setOnlyAlertOnce(1 != 0).setSmallIcon(2130837771).setTicker(this.mTitle).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setContent(this.getContentView(this.mTitle, this.mSecondaryTitle, defaultBoxArt, (boolean)(0 != 0))).setWhen(System.currentTimeMillis()).build();
+            final Notification notification = notification2 = new NotificationCompat$Builder((Context)this.mActivity).setOngoing(0 != 0).setOnlyAlertOnce(1 != 0).setSmallIcon(2130837723).setTicker(this.mTitle).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setContent(this.getContentView(this.mTitle, this.mSecondaryTitle, defaultBoxArt, (boolean)(0 != 0))).setWhen(System.currentTimeMillis()).build();
             if (AndroidUtils.getAndroidVersion() >= 16) {
                 notification.bigContentView = this.getContentView(this.mTitle, this.mSecondaryTitle, defaultBoxArt, true);
                 notification2 = notification;
             }
         }
         else {
-            final int color = this.mActivity.getResources().getColor(2131558527);
+            final int color = this.mActivity.getResources().getColor(2131558518);
             final String string = this.mActivity.getResources().getString(2131165615);
-            final Notification$Builder setVisibility = new Notification$Builder((Context)this.mActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837771).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
+            final Notification$Builder setVisibility = new Notification$Builder((Context)this.mActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837723).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
             if (largeIcon != null) {
                 setVisibility.setLargeIcon(largeIcon);
             }

@@ -96,6 +96,10 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
         this.checkForAutoDial(intent);
     }
     
+    private void clearWindowFlags() {
+        this.getWindow().clearFlags(this.getFlags());
+    }
+    
     private CustomerServiceLogging$EntryPoint createEntryPoint() {
         if (this.mEntry != null) {
             Log.d("VoipActivity", "Entry field is known, use it");
@@ -144,6 +148,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
         }
         Log.d("VoipActivity", "Record audio permission has already been granted. Start dialing.");
         Log.d("VoipActivity", "startDial:: To dialer");
+        this.setWindowFlags();
         this.mFlipper.showNext();
         this.mDialerOnTop = true;
         CustomerServiceLogUtils.reportHelpRequestSessionEnded((Context)this, CustomerServiceLogging$Action.dial, null, IClientLogging$CompletionReason.success, null);
@@ -161,18 +166,23 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
         }
     }
     
+    private int getFlags() {
+        return 4718592;
+    }
+    
     private void goToLandingPage() {
+        this.clearWindowFlags();
         this.mFlipper.showPrevious();
         this.mDialerOnTop = false;
     }
     
     private void initUI() {
-        this.setContentView(2130903087);
+        this.setContentView(2130903074);
         this.getSupportActionBar().hide();
-        this.mFlipper = (ViewFlipper)this.findViewById(2131624114);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131624088);
         this.mLandingPage = new LandingPageScreen(this);
         this.mDialerScreen = new DialerScreen(this);
-        this.mDialButton = (FloatingActionButton)this.findViewById(2131624162);
+        this.mDialButton = (FloatingActionButton)this.findViewById(2131624136);
         if (this.mVoip.isEnabled()) {
             Log.d("VoipActivity", "VOIP is enabled, show dial button on landing page!");
             this.mDialButton.setVisibility(0);
@@ -185,6 +195,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
         this.mDialerScreen.update(this.mServiceManager.getVoip().isConnected());
         if (this.mVoip.isCallInProgress()) {
             Log.d("VoipActivity", "Call is in progress, move to dialer");
+            this.setWindowFlags();
             this.mFlipper.showNext();
             this.mDialerOnTop = true;
             return;
@@ -217,6 +228,10 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
             return;
         }
         ActivityCompat.requestPermissions(this, ContactUsActivity.PERMISSIONS_AUDIO, 0);
+    }
+    
+    private void setWindowFlags() {
+        this.getWindow().addFlags(this.getFlags());
     }
     
     @Override

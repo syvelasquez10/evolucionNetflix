@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.search;
 
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
@@ -67,6 +66,7 @@ public class SearchResultsFrag extends NetflixFrag
     private StaticGridView gridViewVideos;
     private int imgHeightPeople;
     private int imgHeightVideo;
+    private int imgWidthVideo;
     private TextView labelPeople;
     private TextView labelSuggestions;
     private TextView labelVideos;
@@ -170,18 +170,18 @@ public class SearchResultsFrag extends NetflixFrag
     }
     
     private void findViews(final View view) {
-        this.gridViewSuggestions = (StaticGridView)view.findViewById(2131624524);
-        this.layoutSuggestions = (FlowLayout)view.findViewById(2131624525);
-        this.gridViewVideos = (StaticGridView)view.findViewById(2131624520);
-        this.gridViewPeople = (StaticGridView)view.findViewById(2131624522);
-        this.labelSuggestions = (TextView)view.findViewById(2131624523);
-        this.scrollView2 = (LoggingScrollView)view.findViewById(2131624527);
-        this.layoutPeople = (FlowLayout)view.findViewById(2131624526);
-        this.scrollView = (LoggingScrollView)view.findViewById(2131624518);
-        this.relatedlabel = (TextView)view.findViewById(2131624212);
-        this.labelVideos = (TextView)view.findViewById(2131624519);
-        this.labelPeople = (TextView)view.findViewById(2131624521);
-        this.progressBar = (ProgressBar)view.findViewById(2131624195);
+        this.gridViewSuggestions = (StaticGridView)view.findViewById(2131624487);
+        this.layoutSuggestions = (FlowLayout)view.findViewById(2131624488);
+        this.gridViewVideos = (StaticGridView)view.findViewById(2131624483);
+        this.gridViewPeople = (StaticGridView)view.findViewById(2131624485);
+        this.labelSuggestions = (TextView)view.findViewById(2131624486);
+        this.scrollView2 = (LoggingScrollView)view.findViewById(2131624490);
+        this.layoutPeople = (FlowLayout)view.findViewById(2131624489);
+        this.scrollView = (LoggingScrollView)view.findViewById(2131624481);
+        this.relatedlabel = (TextView)view.findViewById(2131624186);
+        this.labelVideos = (TextView)view.findViewById(2131624482);
+        this.labelPeople = (TextView)view.findViewById(2131624484);
+        this.progressBar = (ProgressBar)view.findViewById(2131624169);
     }
     
     public static Object getItem(final ISearchResults searchResults, final SearchResultsFrag$SearchCategory searchResultsFrag$SearchCategory, final int n) {
@@ -343,6 +343,32 @@ public class SearchResultsFrag extends NetflixFrag
     
     private void setupGridViewObserverForTitles(final StaticGridView staticGridView) {
         staticGridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new SearchResultsFrag$4(this, staticGridView));
+    }
+    
+    private void setupImageDimensions() {
+        if (this.getActivity() != null) {
+            final int screenWidthInPixels = DeviceUtils.getScreenWidthInPixels((Context)this.getActivity());
+            int width;
+            if (this.scrollView.getVisibility() == 0 && this.scrollView.getWidth() != DeviceUtils.getScreenWidthInPixels((Context)this.getActivity())) {
+                width = this.scrollView.getWidth();
+            }
+            else {
+                width = 0;
+            }
+            final int n = screenWidthInPixels - width;
+            final int numVideoGridCols = SearchUtils.getNumVideoGridCols((Context)this.getActivity());
+            if (numVideoGridCols > 0) {
+                this.imgWidthVideo = n / numVideoGridCols;
+                this.imgHeightVideo = (int)(n / numVideoGridCols * SearchUtils.getVideoImageAspectRatio() + 0.5);
+                Log.v("SearchResultsFrag", "imgHeight: " + this.imgHeightVideo);
+            }
+            final int numPeopleGridCols = SearchUtils.getNumPeopleGridCols((Context)this.getActivity());
+            if (SearchUtils.getSearchExperience() == SearchUtils$SearchExperience.PHONE && numPeopleGridCols > 0) {
+                this.imgHeightPeople = (int)(n / numPeopleGridCols * SearchUtils.getPeopleImageAspectRatio() + 0.5);
+                this.imgHeightPeople += (int)this.getActivity().getResources().getDimension(2131296599);
+                Log.v("SearchResultsFrag", "imgHeightPeople: " + this.imgHeightPeople);
+            }
+        }
     }
     
     private void setupLabels() {
@@ -648,7 +674,7 @@ public class SearchResultsFrag extends NetflixFrag
     public void update(final ISearchResults results, final String query) {
         Log.v("SearchResultsFrag", "Updating...");
         this.results = results;
-        if (BrowseExperience.isKubrickKids() && DeviceUtils.isLandscape((Context)this.getActivity())) {
+        if (SearchUtils.getSearchExperience() == SearchUtils$SearchExperience.TABLET && DeviceUtils.isLandscape((Context)this.getActivity())) {
             ViewUtils.setVisibleOrGone((View)this.scrollView, this.results.getNumResultsPeople() > 0 || this.results.getNumResultsSuggestions() > 0);
         }
         this.secondarySearch = SearchResultsFrag$SearchCategory.VIDEOS;
@@ -662,6 +688,7 @@ public class SearchResultsFrag extends NetflixFrag
         if (this.relatedlabel != null) {
             this.relatedlabel.setVisibility(8);
         }
+        this.setupImageDimensions();
         this.updateMaxResults();
         this.updateLabelVisibilty();
         this.resetGridViews();

@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.Video;

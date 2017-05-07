@@ -12,9 +12,6 @@ public enum VideoType
     SEASON("seasons"), 
     SERIES("series"), 
     SHOW("shows"), 
-    SOCIAL_FRIEND("SocialFriend"), 
-    SOCIAL_GROUP("SocialGroup"), 
-    SOCIAL_POPULAR("socialPopular"), 
     UNAVAILABLE("unavailable"), 
     UNKNOWN("");
     

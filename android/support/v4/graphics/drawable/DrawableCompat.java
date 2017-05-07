@@ -78,6 +78,14 @@ public class DrawableCompat
         DrawableCompat.IMPL.setTintMode(drawable, porterDuff$Mode);
     }
     
+    public static <T extends Drawable> T unwrap(final Drawable drawable) {
+        Drawable wrappedDrawable = drawable;
+        if (drawable instanceof DrawableWrapper) {
+            wrappedDrawable = ((DrawableWrapper)drawable).getWrappedDrawable();
+        }
+        return (T)wrappedDrawable;
+    }
+    
     public static Drawable wrap(final Drawable drawable) {
         return DrawableCompat.IMPL.wrap(drawable);
     }

@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.voip;
 
 import com.netflix.mediaclient.Log;
+import android.app.Service;
 import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
@@ -44,7 +45,8 @@ class CallNotificationManager
         else {
             contentText = this.mContext.getString(2131165470);
         }
-        final Notification build = new NotificationCompat$Builder(this.mContext).setOngoing(true).setOnlyAlertOnce(true).setCategory("call").setSmallIcon(2130837785).setLargeIcon(this.getLargeIcon()).setPriority(2).setContentTitle(string).setContentText(contentText).setTicker(string).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).addAction(2130837700, string2, this.createNotificationPendingIntentDelete()).setAutoCancel(false).setWhen(System.currentTimeMillis()).build();
+        final Notification build = new NotificationCompat$Builder(this.mContext).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setCategory("call").setSmallIcon(2130837737).setLargeIcon(this.getLargeIcon()).setPriority(2).setContentTitle(string).setContentText(contentText).setTicker(string).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).addAction(2130837652, string2, this.createNotificationPendingIntentDelete()).setAutoCancel(false).setWhen(System.currentTimeMillis()).build();
+        build.flags |= 0x40;
         this.mNotificationManager.notify(20, build);
         return build;
     }
@@ -58,7 +60,7 @@ class CallNotificationManager
     }
     
     private Bitmap getLargeIcon() {
-        return BitmapFactory.decodeResource(this.mContext.getResources(), 2130837742);
+        return BitmapFactory.decodeResource(this.mContext.getResources(), 2130837694);
     }
     
     public static IntentFilter getNotificationIntentFilter() {
@@ -73,19 +75,19 @@ class CallNotificationManager
         return "com.netflix.mediaclient.intent.action.CALL_CANCEL".equalsIgnoreCase(s);
     }
     
-    void cancelNotification() {
+    void cancelNotification(final Service service) {
         Log.d("nf_voip", "Cancel notification");
         this.mShowNotification.set(false);
-        this.mNotificationManager.cancel(20);
+        service.stopForeground(true);
     }
     
-    void showCallinglNotification() {
+    void showCallingNotification(final Service service) {
         this.mShowNotification.set(true);
-        this.mNotificationManager.notify(20, this.createNotification(false));
+        service.startForeground(20, this.createNotification(false));
     }
     
-    void updateConnectedNotification() {
+    void updateConnectedNotification(final Service service) {
         this.mShowNotification.set(true);
-        this.mNotificationManager.notify(20, this.createNotification(true));
+        service.startForeground(20, this.createNotification(true));
     }
 }

@@ -100,6 +100,10 @@ public class ViewCompat
         return ViewCompat.IMPL.getMeasuredState(view);
     }
     
+    public static int getMeasuredWidthAndState(final View view) {
+        return ViewCompat.IMPL.getMeasuredWidthAndState(view);
+    }
+    
     public static int getMinimumHeight(final View view) {
         return ViewCompat.IMPL.getMinimumHeight(view);
     }

@@ -24,7 +24,6 @@ import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.model.leafs.Video$Evidence;
 import com.netflix.model.leafs.Video$Summary;
-import com.netflix.model.leafs.SocialBadge;
 import com.netflix.model.leafs.TrackableListSummary;
 import com.netflix.model.leafs.Video$SearchTitle;
 import com.netflix.model.leafs.Video$UserRating;
@@ -36,6 +35,7 @@ import com.netflix.falkor.BranchMap;
 import com.netflix.model.leafs.Video$Detail;
 import com.netflix.model.leafs.Video$BookmarkStill;
 import com.netflix.model.leafs.Video$Bookmark;
+import com.netflix.model.leafs.originals.BillboardSummary;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
@@ -54,6 +54,7 @@ import com.netflix.model.BaseFalkorObject;
 public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboard, CWVideo, KubrickVideo, Playable, UserRating, Video, KubrickShowDetails, MovieDetails, PostPlayVideo, PostPlayVideosProvider, ShowDetails, SearchVideo, FalkorObject
 {
     private static final String TAG = "FalkorVideo";
+    private BillboardSummary billboardSummary;
     protected Video$Bookmark bookmark;
     private Video$BookmarkStill bookmarkStill;
     private Video$Detail detail;
@@ -66,7 +67,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     private Video$SearchTitle searchTitle;
     private BranchMap<Ref> seasons;
     private SummarizedList<Ref, TrackableListSummary> sims;
-    private SocialBadge socialBadge;
     private Video$Summary summary;
     private Video$Evidence videoEvidence;
     
@@ -237,6 +237,11 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             return null;
         }
         return detail.bifUrl;
+    }
+    
+    @Override
+    public BillboardSummary getBillboardSummary() {
+        return this.billboardSummary;
     }
     
     public Video$Bookmark getBookmark() {
@@ -534,6 +539,15 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     }
     
     @Override
+    public int getMaturityLevel() {
+        final Video$Detail detail = this.getDetail();
+        if (detail == null) {
+            return -1;
+        }
+        return detail.maturityLevel;
+    }
+    
+    @Override
     public String getNarrative() {
         final Video$Detail detail = this.getDetail();
         if (detail != null) {
@@ -776,11 +790,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             return 0;
         }
         return similarsSummary.getTrackId();
-    }
-    
-    @Override
-    public SocialBadge getSocialBadge() {
-        return this.socialBadge;
     }
     
     @Override
@@ -1059,9 +1068,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             case "bookmarkStill": {
                 this.bookmarkStill = (Video$BookmarkStill)o;
             }
-            case "socialBadge": {
-                this.socialBadge = (SocialBadge)o;
-            }
             case "searchTitle": {
                 this.searchTitle = (Video$SearchTitle)o;
             }
@@ -1070,6 +1076,9 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             }
             case "heroImgs": {
                 this.heroImages = (Video$HeroImages)o;
+            }
+            case "billboardSummary": {
+                this.billboardSummary = (BillboardSummary)o;
             }
             case "similars": {
                 this.sims = (SummarizedList<Ref, TrackableListSummary>)o;

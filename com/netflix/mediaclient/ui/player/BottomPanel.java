@@ -55,16 +55,16 @@ public final class BottomPanel extends PlayerSection
     
     private void init(final PlayScreen$Listeners playScreen$Listeners) {
         final View view = this.playerFragment.getView();
-        this.durationLabel = (TextView)view.findViewById(2131624414);
-        this.bottomPanel = view.findViewById(2131624410);
-        this.bottomGradient = view.findViewById(2131624407);
-        this.timeline = (TimelineSeekBar)view.findViewById(2131624413);
+        this.durationLabel = (TextView)view.findViewById(2131624387);
+        this.bottomPanel = view.findViewById(2131624383);
+        this.bottomGradient = view.findViewById(2131624380);
+        this.timeline = (TimelineSeekBar)view.findViewById(2131624386);
         this.videoPositionListener = playScreen$Listeners.videoPositionListener;
         this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.playerFragment.getNetflixActivity(), this.playerFragment.getUiResources().timelineThumbOffsetInDip));
-        (this.media = (ImageButton)view.findViewById(2131624411)).setOnClickListener(playScreen$Listeners.playPauseListener);
-        (this.skipBack = (ImageButton)view.findViewById(2131624412)).setOnClickListener(playScreen$Listeners.skipBackListener);
-        (this.zoom = (ImageButton)view.findViewById(2131624415)).setOnClickListener(playScreen$Listeners.zoomListener);
-        this.extraSeekbarHandler = view.findViewById(2131624424);
+        (this.media = (ImageButton)view.findViewById(2131624384)).setOnClickListener(playScreen$Listeners.playPauseListener);
+        (this.skipBack = (ImageButton)view.findViewById(2131624385)).setOnClickListener(playScreen$Listeners.skipBackListener);
+        (this.zoom = (ImageButton)view.findViewById(2131624388)).setOnClickListener(playScreen$Listeners.zoomListener);
+        this.extraSeekbarHandler = view.findViewById(2131624395);
         this.currentTime = CurrentTime.newInstance(this.playerFragment);
     }
     
@@ -86,10 +86,10 @@ public final class BottomPanel extends PlayerSection
         }
         int n;
         if (enabled) {
-            n = 2131558601;
+            n = 2131558592;
         }
         else {
-            n = 2131558474;
+            n = 2131558465;
         }
         this.durationLabel.setTextColor(this.playerFragment.getResources().getColor(n));
     }

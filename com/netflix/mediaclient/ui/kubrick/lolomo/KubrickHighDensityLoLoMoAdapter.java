@@ -19,7 +19,7 @@ public class KubrickHighDensityLoLoMoAdapter extends LoLoMoAdapter
     @Override
     protected TextView initTitleView(final View view) {
         final TextView initTitleView = super.initTitleView(view);
-        ViewUtils.setTextViewSizeByRes(initTitleView, 2131296638);
+        ViewUtils.setTextViewSizeByRes(initTitleView, 2131296615);
         return initTitleView;
     }
 }

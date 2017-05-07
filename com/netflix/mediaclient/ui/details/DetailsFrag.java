@@ -5,8 +5,6 @@
 package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.util.SocialUtils;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
@@ -15,6 +13,8 @@ import com.netflix.mediaclient.Log;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.widget.TextView;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
@@ -30,7 +30,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     public VideoDetailsViewGroup detailsViewGroup;
     protected final ErrorWrapper$Callback errorCallback;
     protected LoadingAndErrorWrapper leWrapper;
-    private T mVideoDetails;
+    protected T mVideoDetails;
     private ServiceManager manager;
     protected View primaryView;
     
@@ -38,10 +38,27 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         this.errorCallback = new DetailsFrag$1(this);
     }
     
+    protected static AddToListData$StateListener addToMyListWrapper(final VideoDetailsViewGroup videoDetailsViewGroup, final NetflixActivity netflixActivity, final ServiceManager serviceManager, final String s) {
+        final AddToListData$StateListener addToListData$StateListener = null;
+        final TextView addToMyListButton = videoDetailsViewGroup.getAddToMyListButton();
+        AddToListData$StateListener addToMyListWrapper = addToListData$StateListener;
+        if (serviceManager != null) {
+            addToMyListWrapper = addToListData$StateListener;
+            if (netflixActivity != null) {
+                addToMyListWrapper = addToListData$StateListener;
+                if (addToMyListButton != null) {
+                    addToMyListWrapper = serviceManager.createAddToMyListWrapper((DetailsActivity)netflixActivity, addToMyListButton, videoDetailsViewGroup.getAddToMyListButtonLabel(), false);
+                    serviceManager.registerAddToMyListListener(s, addToMyListWrapper);
+                }
+            }
+        }
+        return addToMyListWrapper;
+    }
+    
     protected abstract VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final T p0);
     
     protected int getLayoutId() {
-        return 2130903247;
+        return 2130903230;
     }
     
     protected ServiceManager getServiceManager() {
@@ -69,7 +86,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         final View inflate = layoutInflater.inflate(this.getLayoutId(), (ViewGroup)null, false);
         this.initDetailsViewGroup(inflate);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
-        this.primaryView = inflate.findViewById(2131624565);
+        this.primaryView = inflate.findViewById(2131624524);
         if (this.primaryView != null) {
             this.primaryView.setVerticalScrollBarEnabled(false);
         }
@@ -131,7 +148,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         }
         ServiceManagerUtils.cacheManifestIfEnabled(this.getServiceManager(), this.mVideoDetails.getPlayable(), playContext);
         this.detailsViewGroup.updateDetails(mVideoDetails, this.getDetailsStringProvider(mVideoDetails));
-        this.addToListWrapper = SocialUtils.setupVideoDetailsButtons(this.detailsViewGroup, (NetflixActivity)this.getActivity(), this.manager, this.getVideoId(), this.mVideoDetails.getTitle(), this.mVideoDetails.getType());
+        this.addToListWrapper = addToMyListWrapper(this.detailsViewGroup, (NetflixActivity)this.getActivity(), this.manager, this.getVideoId());
     }
     
     protected void showErrorView() {

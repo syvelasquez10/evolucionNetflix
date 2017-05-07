@@ -12,6 +12,7 @@ import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$U
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionStartedEvent;
 import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent;
 import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent$WidgetInstallAction;
+import com.netflix.mediaclient.service.logging.android.settings.model.LocalSettingsChangeEvent;
 import android.content.Context;
 import com.netflix.mediaclient.service.logging.apm.model.UserSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIStartupSessionEndedEvent;

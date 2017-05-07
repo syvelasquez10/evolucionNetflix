@@ -22,7 +22,7 @@ public class SearchUtils
         numRelatedColumnsTable = new SparseArray(2);
         numPeopleColumnsTable = new SparseArray(2);
         numVideoColumnsTable = new SparseArray(2);
-        setSearchExperience(SearchUtils$SearchExperience.KUBRICK);
+        setSearchExperience(SearchUtils$SearchExperience.TABLET);
     }
     
     private static int computeMaxResultsForPeople(final Context context) {
@@ -125,13 +125,17 @@ public class SearchUtils
         }
     }
     
+    public static SearchUtils$SearchExperience getSearchExperience() {
+        return SearchUtils.currentExperience;
+    }
+    
     public static int getSearchFragLayout() {
         switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
-                return 2130903221;
+                return 2130903207;
             }
             case 1: {
-                return 2130903222;
+                return 2130903208;
             }
         }
     }
@@ -139,10 +143,10 @@ public class SearchUtils
     public static int getSearchViewLayoutPeople() {
         switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
-                return 2130903218;
+                return 2130903204;
             }
             case 1: {
-                return 2130903220;
+                return 2130903206;
             }
         }
     }
@@ -150,10 +154,10 @@ public class SearchUtils
     public static int getSearchViewLayoutRelated() {
         switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
-                return 2130903219;
+                return 2130903205;
             }
             case 1: {
-                return 2130903220;
+                return 2130903206;
             }
         }
     }
@@ -175,59 +179,17 @@ public class SearchUtils
         }
         switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
-                intColumnTableStandardLandscape();
-                intColumnTableStandardPortrait();
+                intColumnTablePhoneLandscape();
+                intColumnTablePhonePortrait();
             }
             case 1: {
-                intColumnTableKubrickLandscape();
-                intColumnTableKubrickPortrait();
+                intColumnTableTabletLandscape();
+                intColumnTableTabletPortrait();
             }
         }
     }
     
-    private static void intColumnTableKubrickLandscape() {
-        final SparseIntArray sparseIntArray = new SparseIntArray();
-        final SparseIntArray sparseIntArray2 = new SparseIntArray();
-        final SparseIntArray sparseIntArray3 = new SparseIntArray();
-        sparseIntArray.put(1, 2);
-        sparseIntArray2.put(1, 4);
-        sparseIntArray3.put(1, 1);
-        sparseIntArray.put(2, 3);
-        sparseIntArray2.put(2, 6);
-        sparseIntArray3.put(2, 1);
-        sparseIntArray.put(3, 3);
-        sparseIntArray2.put(3, 1);
-        sparseIntArray3.put(3, 1);
-        sparseIntArray.put(4, 3);
-        sparseIntArray2.put(4, 1);
-        sparseIntArray3.put(4, 1);
-        SearchUtils.numVideoColumnsTable.put(2, (Object)sparseIntArray);
-        SearchUtils.numPeopleColumnsTable.put(2, (Object)sparseIntArray2);
-        SearchUtils.numRelatedColumnsTable.put(2, (Object)sparseIntArray3);
-    }
-    
-    private static void intColumnTableKubrickPortrait() {
-        final SparseIntArray sparseIntArray = new SparseIntArray();
-        final SparseIntArray sparseIntArray2 = new SparseIntArray();
-        final SparseIntArray sparseIntArray3 = new SparseIntArray();
-        sparseIntArray.put(1, 3);
-        sparseIntArray2.put(1, 4);
-        sparseIntArray3.put(1, 3);
-        sparseIntArray.put(2, 2);
-        sparseIntArray2.put(2, 4);
-        sparseIntArray3.put(2, 3);
-        sparseIntArray.put(3, 2);
-        sparseIntArray2.put(3, 3);
-        sparseIntArray3.put(3, 3);
-        sparseIntArray.put(4, 3);
-        sparseIntArray2.put(4, 3);
-        sparseIntArray3.put(4, 3);
-        SearchUtils.numVideoColumnsTable.put(1, (Object)sparseIntArray);
-        SearchUtils.numPeopleColumnsTable.put(1, (Object)sparseIntArray2);
-        SearchUtils.numRelatedColumnsTable.put(1, (Object)sparseIntArray3);
-    }
-    
-    private static void intColumnTableStandardLandscape() {
+    private static void intColumnTablePhoneLandscape() {
         final SparseIntArray sparseIntArray = new SparseIntArray();
         final SparseIntArray sparseIntArray2 = new SparseIntArray();
         final SparseIntArray sparseIntArray3 = new SparseIntArray();
@@ -248,7 +210,7 @@ public class SearchUtils
         SearchUtils.numRelatedColumnsTable.put(2, (Object)sparseIntArray3);
     }
     
-    private static void intColumnTableStandardPortrait() {
+    private static void intColumnTablePhonePortrait() {
         final SparseIntArray sparseIntArray = new SparseIntArray();
         final SparseIntArray sparseIntArray2 = new SparseIntArray();
         final SparseIntArray sparseIntArray3 = new SparseIntArray();
@@ -264,6 +226,48 @@ public class SearchUtils
         sparseIntArray.put(4, 4);
         sparseIntArray2.put(4, 4);
         sparseIntArray3.put(4, 1);
+        SearchUtils.numVideoColumnsTable.put(1, (Object)sparseIntArray);
+        SearchUtils.numPeopleColumnsTable.put(1, (Object)sparseIntArray2);
+        SearchUtils.numRelatedColumnsTable.put(1, (Object)sparseIntArray3);
+    }
+    
+    private static void intColumnTableTabletLandscape() {
+        final SparseIntArray sparseIntArray = new SparseIntArray();
+        final SparseIntArray sparseIntArray2 = new SparseIntArray();
+        final SparseIntArray sparseIntArray3 = new SparseIntArray();
+        sparseIntArray.put(1, 2);
+        sparseIntArray2.put(1, 4);
+        sparseIntArray3.put(1, 1);
+        sparseIntArray.put(2, 3);
+        sparseIntArray2.put(2, 6);
+        sparseIntArray3.put(2, 1);
+        sparseIntArray.put(3, 3);
+        sparseIntArray2.put(3, 1);
+        sparseIntArray3.put(3, 1);
+        sparseIntArray.put(4, 3);
+        sparseIntArray2.put(4, 1);
+        sparseIntArray3.put(4, 1);
+        SearchUtils.numVideoColumnsTable.put(2, (Object)sparseIntArray);
+        SearchUtils.numPeopleColumnsTable.put(2, (Object)sparseIntArray2);
+        SearchUtils.numRelatedColumnsTable.put(2, (Object)sparseIntArray3);
+    }
+    
+    private static void intColumnTableTabletPortrait() {
+        final SparseIntArray sparseIntArray = new SparseIntArray();
+        final SparseIntArray sparseIntArray2 = new SparseIntArray();
+        final SparseIntArray sparseIntArray3 = new SparseIntArray();
+        sparseIntArray.put(1, 3);
+        sparseIntArray2.put(1, 4);
+        sparseIntArray3.put(1, 3);
+        sparseIntArray.put(2, 2);
+        sparseIntArray2.put(2, 4);
+        sparseIntArray3.put(2, 3);
+        sparseIntArray.put(3, 2);
+        sparseIntArray2.put(3, 3);
+        sparseIntArray3.put(3, 3);
+        sparseIntArray.put(4, 3);
+        sparseIntArray2.put(4, 3);
+        sparseIntArray3.put(4, 3);
         SearchUtils.numVideoColumnsTable.put(1, (Object)sparseIntArray);
         SearchUtils.numPeopleColumnsTable.put(1, (Object)sparseIntArray2);
         SearchUtils.numRelatedColumnsTable.put(1, (Object)sparseIntArray3);

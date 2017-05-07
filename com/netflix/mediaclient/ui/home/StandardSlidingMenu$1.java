@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.home;
 
 import com.netflix.mediaclient.Log;
 import android.view.ViewStub;
-import com.netflix.mediaclient.ui.social.notifications.NotificationsFrag$NotificationsListStatusListener;
+import com.netflix.mediaclient.ui.iris.notifications.NotificationsFrag$NotificationsListStatusListener;
 
 class StandardSlidingMenu$1 implements NotificationsFrag$NotificationsListStatusListener
 {
