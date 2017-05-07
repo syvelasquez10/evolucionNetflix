@@ -122,11 +122,11 @@ public class SignupActivity extends AccountActivity
         this.mSignupOngoing = false;
         Log.d("SignupActivity", "Login Complete - Status: " + n + " DisplayMsg: " + string);
         if (n == 0 || n == -41) {
-            this.showToast(2131493215);
+            this.showToast(2131493216);
             this.clearCookies();
         }
         else {
-            this.provideDialog(this.getString(2131493273) + " (" + n + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131493274) + " (" + n + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 string = "javascript:" + this.mErrHandler + "('" + n + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -140,7 +140,7 @@ public class SignupActivity extends AccountActivity
         this.runOnUiThread((Runnable)new Runnable() {
             @Override
             public void run() {
-                SignupActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)SignupActivity.this, SignupActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, SignupActivity.this.getString(2131493133), SignupActivity.this.getString(17039370), null)));
+                SignupActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)SignupActivity.this, SignupActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, SignupActivity.this.getString(2131493134), SignupActivity.this.getString(17039370), null)));
             }
         });
     }
@@ -154,9 +154,9 @@ public class SignupActivity extends AccountActivity
     }
     
     private void setUpSignInView(final ServiceManager serviceManager) {
-        this.setContentView(2130903166);
-        this.mWebView = (WebView)this.findViewById(2131165587);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131165507);
+        this.setContentView(2130903165);
+        this.mWebView = (WebView)this.findViewById(2131165593);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131165513);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
         this.mSoftwareVersion = serviceManager.getSoftwareVersion();
@@ -267,7 +267,7 @@ public class SignupActivity extends AccountActivity
             this.mWebView.goBack();
             return;
         }
-        this.provideTwoButtonDialog(this.getString(2131493274), new Runnable() {
+        this.provideTwoButtonDialog(this.getString(2131493275), new Runnable() {
             @Override
             public void run() {
                 SignupActivity.this.reloadSignUp(false);
@@ -286,7 +286,7 @@ public class SignupActivity extends AccountActivity
     public boolean onCreateOptionsMenu(final Menu menu) {
         MenuItem menuItem;
         if (this.mSignupMenuItem) {
-            menuItem = menu.add((CharSequence)this.getString(2131493183));
+            menuItem = menu.add((CharSequence)this.getString(2131493184));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
                 public boolean onMenuItemClick(final MenuItem menuItem) {
@@ -298,7 +298,7 @@ public class SignupActivity extends AccountActivity
             });
         }
         else {
-            menuItem = menu.add((CharSequence)this.getString(2131493184));
+            menuItem = menu.add((CharSequence)this.getString(2131493185));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
                 public boolean onMenuItemClick(final MenuItem menuItem) {
@@ -443,7 +443,7 @@ public class SignupActivity extends AccountActivity
                 Log.e("SignupActivity", "Failed to LoginToApp");
                 ex.printStackTrace();
                 SignupActivity.this.mSignupOngoing = false;
-                SignupActivity.this.provideDialog(SignupActivity.this.getString(2131493273), SignupActivity.this.mHandleError);
+                SignupActivity.this.provideDialog(SignupActivity.this.getString(2131493274), SignupActivity.this.mHandleError);
                 return;
             }
             Log.d("SignupActivity", "loginToApp, invalid state to Login, bailing out");

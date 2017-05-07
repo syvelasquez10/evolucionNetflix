@@ -50,6 +50,7 @@ public interface StatusCode
     public static final int SERVER_ERROR_MAP_CACHE_MISS = -64;
     public static final int SET_FAILED = -6;
     public static final int UNKNOWN = -1;
+    public static final int USER_FB_CONNECT_FAILURE = -56;
     public static final int USER_FB_CONNECT_ID_ALREADY_IN_USE = -52;
     public static final int USER_FB_CONNECT_INVALID_CREDENTIALS = -51;
     public static final int USER_FB_CONNECT_MISSING_PARAMS = -50;

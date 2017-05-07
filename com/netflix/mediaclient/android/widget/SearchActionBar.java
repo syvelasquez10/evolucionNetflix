@@ -20,8 +20,8 @@ public class SearchActionBar extends NetflixActionBar
     private final ProgressBar progressSpinner;
     protected final SearchView searchView;
     
-    public SearchActionBar(final NetflixActivity netflixActivity, final boolean b) {
-        super(netflixActivity, b);
+    public SearchActionBar(final NetflixActivity netflixActivity) {
+        super(netflixActivity, true);
         this.progressSpinner = (ProgressBar)this.getContentView().findViewById(2131165284);
         (this.searchView = (SearchView)this.getContentView().findViewById(2131165283)).setIconified(false);
         this.searchView.setIconifiedByDefault(false);
@@ -38,14 +38,14 @@ public class SearchActionBar extends NetflixActionBar
     private void configureSearchViewIcon() {
         final ImageView imageView = (ImageView)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_mag_icon", (String)null, (String)null));
         if (imageView != null) {
-            imageView.setImageResource(2130837718);
+            imageView.setImageResource(2130837719);
         }
     }
     
     private void configureSearchViewTextView() {
         final TextView textView = (TextView)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_src_text", (String)null, (String)null));
         if (textView != null) {
-            textView.setHintTextColor(this.searchView.getResources().getColor(2131296315));
+            textView.setHintTextColor(this.searchView.getResources().getColor(2131296314));
             textView.setImeOptions(33554432);
         }
     }
@@ -60,8 +60,8 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     private void replaceBackgroundDrawables() {
-        this.replaceBackgroundDrawable("android:id/search_plate", 2130837844);
-        this.replaceBackgroundDrawable("android:id/submit_area", 2130837845);
+        this.replaceBackgroundDrawable("android:id/search_plate", 2130837848);
+        this.replaceBackgroundDrawable("android:id/submit_area", 2130837849);
     }
     
     public void clearFocus() {

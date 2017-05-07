@@ -12,6 +12,7 @@ import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.os.Bundle;
 import com.netflix.mediaclient.ui.RelaunchActivity;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.util.LogUtils;
@@ -45,6 +46,7 @@ public class ProfileSelectionActivity extends NetflixActivity
     private static final String EXTRA_KIDS_DOOR_NAME = "extra_kids_door_name";
     private static final String EXTRA_START_KIDS_BOOL = "extra_start_kids_bool";
     private static final String EXTRA_STOP_KIDS_BOOL = "extra_stop_kids_bool";
+    private static final boolean HANG_ON_KIDS_LOADING_SCREEN = false;
     private static final String KEY_IS_LOADING = "is_loading";
     private static final String KEY_IS_SHOWING_KIDS_LOADING_SCREEN = "is_showing_kids_loading_screen";
     private static final String TAG = "ProfileSelectionActivity";
@@ -139,7 +141,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                     Log.d("ProfileSelectionActivity", "Only one user profile, showing loading view");
                 }
                 final UserProfile userProfile = (UserProfile)allProfiles.get(0);
-                this.showLoadingView(this.isLoading = true, this.shouldShowKidsLoadingScreen && userProfile.isKidsProfile());
+                this.showLoadingViews(this.isLoading = true, this.shouldShowKidsLoadingScreen && userProfile.isKidsProfile());
                 if (b) {
                     if (Log.isLoggable("ProfileSelectionActivity", 3)) {
                         Log.d("ProfileSelectionActivity", "Auto-selecting profile: " + userProfile.getFirstName() + ", id: " + userProfile.getProfileId());
@@ -159,7 +161,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                     if (Log.isLoggable("ProfileSelectionActivity", 3)) {
                         Log.d("ProfileSelectionActivity", "We're in loading state - showing loading view");
                     }
-                    this.showLoadingView(false, this.shouldShowKidsLoadingScreen && this.isShowingKidsLoadingScreen);
+                    this.showLoadingViews(false, this.shouldShowKidsLoadingScreen && this.isShowingKidsLoadingScreen);
                 }
             }
             Log.v("ProfileSelectionActivity", String.format("shouldAutoSelectProfile: %s, shouldStartKids: %s, isInKoPEnabled: %s", b, this.shouldStartKids, this.manager.getConfiguration().getKidsOnPhoneConfiguration().isKidsOnPhoneEnabled()));
@@ -219,11 +221,13 @@ public class ProfileSelectionActivity extends NetflixActivity
             AnimationUtils.showView(this.content, false);
         }
         if (this.kidsLoadingScreen.getVisibility() == 0) {
+            this.setRequestedOrientation(-1);
             AnimationUtils.hideView(this.kidsLoadingScreen, true);
+            this.getNetflixActionBar().setLogoType(NetflixActionBar.LogoType.FULL_SIZE);
         }
     }
     
-    private void showLoadingView(final boolean b, final boolean b2) {
+    private void showLoadingViews(final boolean b, final boolean b2) {
         Log.v("ProfileSelectionActivity", "Showing loading view...");
         this.leWrapper.showLoadingView(false);
         this.content.setEnabled(false);
@@ -234,7 +238,9 @@ public class ProfileSelectionActivity extends NetflixActivity
             this.content.setAlpha(0.2f);
         }
         if (b2) {
+            this.setRequestedOrientation(1);
             AnimationUtils.showView(this.kidsLoadingScreen, false);
+            this.getNetflixActionBar().setLogoType(NetflixActionBar.LogoType.GONE);
         }
     }
     
@@ -289,7 +295,6 @@ public class ProfileSelectionActivity extends NetflixActivity
     protected void handleProfileSelectionResult(final int n, final String s) {
         if (n == 0) {
             Log.v("ProfileSelectionActivity", "Profile selection was successful.  Parent class should finish this activity in a moment...");
-            this.isLoading = false;
             return;
         }
         this.handleUserAgentErrors(this, n, s);
@@ -307,17 +312,17 @@ public class ProfileSelectionActivity extends NetflixActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.columnWidth = this.getResources().getDimensionPixelSize(2131361864);
-        this.setContentView(2130903156);
-        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165568), this.errorCallback);
-        this.content = this.findViewById(2131165569);
-        (this.gridView = (StaticGridView)this.findViewById(2131165571)).setOnItemClickListener(this.onAvatarClickListener);
+        this.columnWidth = this.getResources().getDimensionPixelSize(2131361866);
+        this.setContentView(2130903155);
+        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165574), this.errorCallback);
+        this.content = this.findViewById(2131165575);
+        (this.gridView = (StaticGridView)this.findViewById(2131165577)).setOnItemClickListener(this.onAvatarClickListener);
         this.gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 ProfileSelectionActivity.this.adjustGridViewMargins();
             }
         });
-        this.kidsLoadingScreen = this.findViewById(2131165396);
+        this.kidsLoadingScreen = this.findViewById(2131165395);
         if (bundle == null) {
             this.logKidsEntryExit(this.getIntent());
             this.shouldStartKids = this.getIntent().getBooleanExtra("extra_start_kids_bool", false);
@@ -354,7 +359,7 @@ public class ProfileSelectionActivity extends NetflixActivity
             this.finish();
             return;
         }
-        this.showLoadingView(this.isLoading = true, this.shouldShowKidsLoadingScreen && userProfile.isKidsProfile());
+        this.showLoadingViews(this.isLoading = true, this.shouldShowKidsLoadingScreen && userProfile.isKidsProfile());
         this.manager.selectProfile(userProfile.getProfileId());
     }
     
@@ -387,8 +392,8 @@ public class ProfileSelectionActivity extends NetflixActivity
         public View getView(final int n, final View view, final ViewGroup viewGroup) {
             View inflate = view;
             if (view == null) {
-                inflate = ProfileSelectionActivity.this.getLayoutInflater().inflate(2130903157, (ViewGroup)null, false);
-                inflate.setTag((Object)new Holder((AdvancedImageView)inflate.findViewById(2131165573), (TextView)inflate.findViewById(2131165574)));
+                inflate = ProfileSelectionActivity.this.getLayoutInflater().inflate(2130903156, (ViewGroup)null, false);
+                inflate.setTag((Object)new Holder((AdvancedImageView)inflate.findViewById(2131165579), (TextView)inflate.findViewById(2131165580)));
             }
             final Holder holder = (Holder)inflate.getTag();
             final UserProfile item = this.getItem(n);

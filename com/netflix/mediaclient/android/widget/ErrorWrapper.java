@@ -54,11 +54,11 @@ public class ErrorWrapper
         ViewUtils.setTextViewSizeByRes(this.errorMsg, 2131361838);
         ViewUtils.setTextViewToBold(this.errorMsg);
         final ViewGroup$LayoutParams layoutParams = this.retryBtn.getLayoutParams();
-        layoutParams.height = resources.getDimensionPixelSize(2131361912);
-        layoutParams.width = resources.getDimensionPixelSize(2131361911);
-        this.retryBtn.setBackgroundResource(2130837737);
-        this.retryBtn.setTextColor(resources.getColor(2131296310));
-        ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131361841);
+        layoutParams.height = resources.getDimensionPixelSize(2131361914);
+        layoutParams.width = resources.getDimensionPixelSize(2131361913);
+        this.retryBtn.setBackgroundResource(2130837741);
+        this.retryBtn.setTextColor(resources.getColor(2131296309));
+        ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131361843);
         ViewUtils.setTextViewToBold((TextView)this.retryBtn);
     }
     

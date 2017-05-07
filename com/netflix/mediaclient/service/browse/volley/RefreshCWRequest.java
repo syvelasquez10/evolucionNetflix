@@ -9,7 +9,9 @@ import com.google.gson.JsonParser;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import java.util.Arrays;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.browse.cache.BrowseCache;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.CWVideo;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
@@ -118,9 +120,9 @@ public class RefreshCWRequest extends FalcorVolleyWebClientRequest<String>
         }
         list.clear();
         final String buildBrowseCacheKey = BrowseAgent.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_CW_VIDEOS, "continueWatching", String.valueOf(n), String.valueOf(n2));
-        final HardCache hardCache2;
-        hardCache2.remove(buildBrowseCacheKey);
-        BrowseAgent.putInBrowseCache(hardCache2, buildBrowseCacheKey, list2);
+        final BrowseCache browseCache;
+        browseCache.remove(buildBrowseCacheKey);
+        BrowseAgent.putInBrowseCache(browseCache, buildBrowseCacheKey, list2);
     }
     // monitorexit(RefreshCWRequest.class)
     
@@ -155,8 +157,8 @@ public class RefreshCWRequest extends FalcorVolleyWebClientRequest<String>
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery);
     }
     
     @Override

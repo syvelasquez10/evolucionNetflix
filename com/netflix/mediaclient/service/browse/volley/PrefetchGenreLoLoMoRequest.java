@@ -4,13 +4,15 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import java.util.List;
 import com.netflix.mediaclient.servicemgr.LoMoType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
+import java.util.Arrays;
+import java.util.List;
+import com.netflix.mediaclient.service.browse.cache.BrowseCache;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.google.gson.JsonObject;
@@ -96,14 +98,11 @@ public class PrefetchGenreLoLoMoRequest extends FalcorVolleyWebClientRequest<Str
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        final String pqlQuery = this.pqlQuery;
-        final String pqlQuery2 = this.pqlQuery2;
-        final String pqlKop = this.pqlKop;
+    protected List<String> getPQLQueries() {
         if (this.mIsKopExp) {
-            return new String[] { pqlKop };
+            return Arrays.asList(this.pqlKop);
         }
-        return new String[] { pqlQuery, pqlQuery2 };
+        return Arrays.asList(this.pqlQuery, this.pqlQuery2);
     }
     
     @Override
@@ -133,18 +132,18 @@ public class PrefetchGenreLoLoMoRequest extends FalcorVolleyWebClientRequest<Str
         if (FalcorParseUtils.isEmpty(dataObj)) {
             throw new FalcorParseException("GenreLoLoMoPrefetch empty!!!");
         }
-        Label_0272: {
+        Label_0273: {
             if (!this.mIsKopExp) {
-                break Label_0272;
+                break Label_0273;
             }
             String s2 = "flatGenre";
-        Label_0240_Outer:
+        Label_0241_Outer:
             while (true) {
                 JsonObject asJsonObject = null;
-                Label_0453: {
-                Label_0326:
+                Label_0454: {
+                Label_0327:
                     while (true) {
-                        Label_0320: {
+                        Label_0321: {
                             try {
                                 asJsonObject = dataObj.getAsJsonObject(s2).getAsJsonObject(this.mGenreId);
                                 if (!this.mIsKopExp) {
@@ -162,17 +161,17 @@ public class PrefetchGenreLoLoMoRequest extends FalcorVolleyWebClientRequest<Str
                                             final int mFromVideo = this.mFromVideo;
                                             final int mToVideo = this.mToVideo;
                                             if (listOfMoviesSummary.isBillboard()) {
-                                                break Label_0320;
+                                                break Label_0321;
                                             }
                                             final boolean b = true;
                                             this.putGenreLoMoInBrowseCache(listOfMoviesSummary.getId(), FetchVideosRequest.buildVideoList(type, asJsonObject2, mFromVideo, mToVideo, b));
                                         }
                                     }
-                                    break Label_0326;
+                                    break Label_0327;
                                 }
-                                break Label_0453;
+                                break Label_0454;
                                 s2 = "topGenre";
-                                continue Label_0240_Outer;
+                                continue Label_0241_Outer;
                             }
                             catch (Exception ex) {
                                 Log.v("nf_service_browse_prefetchgenrelolomorequest", "String response to parse = " + s);

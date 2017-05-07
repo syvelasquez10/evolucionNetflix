@@ -8,10 +8,11 @@ import android.widget.BaseAdapter;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.servicemgr.UserProfile;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
-import android.content.Context;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import android.content.Context;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
 import android.view.ViewStub;
@@ -86,14 +87,15 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             }
         };
         this.activity = activity;
-        (this.content = drawerLayout.findViewById(2131165370)).setOnClickListener((View$OnClickListener)null);
+        (this.content = drawerLayout.findViewById(2131165370)).setPadding(this.content.getPaddingLeft(), activity.getActionBarHeight(), this.content.getPaddingRight(), this.content.getPaddingBottom());
+        this.content.setOnClickListener((View$OnClickListener)null);
         this.leWrapper = new LoadingAndErrorWrapper(this.content, this.errorCallback);
         (this.profilesGroup = this.content.findViewById(2131165371)).setOnClickListener(this.onSwitchProfileClickListener);
         this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131165372);
         this.profileName = (TextView)this.content.findViewById(2131165374);
         (this.profileImg = (AdvancedImageView)this.content.findViewById(2131165373)).setPressedStateHandlerEnabled(false);
         final View inflate = activity.getLayoutInflater().inflate(2130903089, (ViewGroup)null);
-        (this.home = (TextView)inflate.findViewById(2131165377)).setText(2131493180);
+        (this.home = (TextView)inflate.findViewById(2131165377)).setText(2131493181);
         this.home.setOnClickListener(this.onHomeClickListener);
         (this.list = (ListView)this.content.findViewById(2131165376)).setFocusable(false);
         this.list.addHeaderView(inflate, (Object)null, false);
@@ -127,10 +129,10 @@ public class SlidingMenuAdapter implements ManagerStatusListener
         }
         Log.v("SlidingMenuAdapter", "Showing 'switch to kids' menu item in sliding menu");
         final TextView textView = (TextView)((ViewStub)this.content.findViewById(2131165375)).inflate().findViewById(2131165377);
-        textView.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361883)));
-        textView.setBackgroundResource(2130837841);
-        textView.setCompoundDrawablePadding(this.activity.getResources().getDimensionPixelSize(2131361835));
-        textView.setCompoundDrawablesWithIntrinsicBounds(2130837743, 0, 0, 0);
+        textView.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361886)));
+        textView.setBackgroundResource(2130837845);
+        textView.setCompoundDrawablesWithIntrinsicBounds(2130837725, 0, 0, 0);
+        textView.setCompoundDrawablePadding(AndroidUtils.dipToPixels((Context)this.activity, 12));
         textView.setText(2131492948);
         textView.setOnClickListener((View$OnClickListener)new KidsUtils.OnSwitchToKidsClickListener(this.activity, UIViewLogging.UIViewCommandName.slidingMenuKidsEntry));
     }

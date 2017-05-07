@@ -8,6 +8,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.Playable;
+import com.netflix.mediaclient.util.ParcelUtils;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -16,7 +17,6 @@ import android.os.Parcelable;
 public class Asset implements Parcelable, PlayContext
 {
     public static final Parcelable$Creator<Asset> CREATOR;
-    private static final String NULL = "=NULL=";
     public static final String PARAM_DURATION = "duration";
     public static final String PARAM_ENDTIME = "endtime";
     public static final String PARAM_EP_BOOKMARK = "playback_bookmark";
@@ -79,28 +79,28 @@ public class Asset implements Parcelable, PlayContext
     }
     
     private Asset(final Parcel parcel) {
-        this.mPlayableId = readString(parcel);
-        this.mParentId = readString(parcel);
-        this.mTrackId = readInt(parcel);
-        this.mIsEpisode = readBoolean(parcel);
-        this.mTitle = readString(parcel);
-        this.mParentTitle = readString(parcel);
-        this.mWatchedDate = readLong(parcel);
-        this.mPlaybackBookmark = readInt(parcel);
-        this.mNflx = readString(parcel);
-        this.mSocialDoNotShareVisible = readBoolean(parcel);
-        this.mSeasonNumber = readInt(parcel);
-        this.mEpisodeNumber = readInt(parcel);
-        this.mDuration = readInt(parcel);
-        this.mReqId = readString(parcel);
-        this.mListPos = readInt(parcel);
-        this.mVideoPos = readInt(parcel);
-        this.mEndtime = readInt(parcel);
-        this.mIsAutoPlayEnabled = readBoolean(parcel);
-        this.mIsNextPlayableEpisode = readBoolean(parcel);
-        this.mPostPlayVideoPlayed = readInt(parcel);
-        this.mIsPinProtected = readBoolean(parcel);
-        this.mIsPinVerified = readBoolean(parcel);
+        this.mPlayableId = ParcelUtils.readString(parcel);
+        this.mParentId = ParcelUtils.readString(parcel);
+        this.mTrackId = ParcelUtils.readInt(parcel);
+        this.mIsEpisode = ParcelUtils.readBoolean(parcel);
+        this.mTitle = ParcelUtils.readString(parcel);
+        this.mParentTitle = ParcelUtils.readString(parcel);
+        this.mWatchedDate = ParcelUtils.readLong(parcel);
+        this.mPlaybackBookmark = ParcelUtils.readInt(parcel);
+        this.mNflx = ParcelUtils.readString(parcel);
+        this.mSocialDoNotShareVisible = ParcelUtils.readBoolean(parcel);
+        this.mSeasonNumber = ParcelUtils.readInt(parcel);
+        this.mEpisodeNumber = ParcelUtils.readInt(parcel);
+        this.mDuration = ParcelUtils.readInt(parcel);
+        this.mReqId = ParcelUtils.readString(parcel);
+        this.mListPos = ParcelUtils.readInt(parcel);
+        this.mVideoPos = ParcelUtils.readInt(parcel);
+        this.mEndtime = ParcelUtils.readInt(parcel);
+        this.mIsAutoPlayEnabled = ParcelUtils.readBoolean(parcel);
+        this.mIsNextPlayableEpisode = ParcelUtils.readBoolean(parcel);
+        this.mPostPlayVideoPlayed = ParcelUtils.readInt(parcel);
+        this.mIsPinProtected = ParcelUtils.readBoolean(parcel);
+        this.mIsPinVerified = ParcelUtils.readBoolean(parcel);
     }
     
     public static Asset create(final Playable playable, final PlayContext playContext, final boolean mIsPinVerified) {
@@ -146,118 +146,29 @@ public class Asset implements Parcelable, PlayContext
     
     public static Asset fromIntent(final Intent intent) {
         final Asset asset = new Asset();
-        asset.mPlayableId = readString(intent, "playableid");
-        asset.mParentId = readString(intent, "parentid");
-        asset.mIsEpisode = readBoolean(intent, "isEpisode");
-        asset.mTrackId = readInt(intent, "trkid");
-        asset.mTitle = readString(intent, "title");
-        asset.mParentTitle = readString(intent, "parent_title");
-        asset.mNflx = readString(intent, "nflx");
-        asset.mPlaybackBookmark = readInt(intent, "playback_bookmark");
-        asset.mWatchedDate = readLong(intent, "watched_date");
-        asset.mSocialDoNotShareVisible = readBoolean(intent, "fb_dontsharebtn");
-        asset.mSeasonNumber = readInt(intent, "seasonNumber");
-        asset.mEpisodeNumber = readInt(intent, "episodeNumber");
-        asset.mDuration = readInt(intent, "duration");
-        asset.mEndtime = readInt(intent, "endtime");
-        asset.mIsAutoPlayEnabled = readBoolean(intent, "isAutoPlayEnabled");
-        asset.mIsNextPlayableEpisode = readBoolean(intent, "isNextPlayableEpisode");
-        asset.mReqId = readString(intent, "reqid");
-        asset.mListPos = readInt(intent, "listpos");
-        asset.mVideoPos = readInt(intent, "videopos");
-        asset.mPostPlayVideoPlayed = readInt(intent, "postPlayCount");
-        asset.mIsPinProtected = readBoolean(intent, "isPinProtected");
-        asset.mIsPinVerified = readBoolean(intent, "isPinVerified");
+        asset.mPlayableId = ParcelUtils.readString(intent, "playableid");
+        asset.mParentId = ParcelUtils.readString(intent, "parentid");
+        asset.mIsEpisode = ParcelUtils.readBoolean(intent, "isEpisode");
+        asset.mTrackId = ParcelUtils.readInt(intent, "trkid");
+        asset.mTitle = ParcelUtils.readString(intent, "title");
+        asset.mParentTitle = ParcelUtils.readString(intent, "parent_title");
+        asset.mNflx = ParcelUtils.readString(intent, "nflx");
+        asset.mPlaybackBookmark = ParcelUtils.readInt(intent, "playback_bookmark");
+        asset.mWatchedDate = ParcelUtils.readLong(intent, "watched_date");
+        asset.mSocialDoNotShareVisible = ParcelUtils.readBoolean(intent, "fb_dontsharebtn");
+        asset.mSeasonNumber = ParcelUtils.readInt(intent, "seasonNumber");
+        asset.mEpisodeNumber = ParcelUtils.readInt(intent, "episodeNumber");
+        asset.mDuration = ParcelUtils.readInt(intent, "duration");
+        asset.mEndtime = ParcelUtils.readInt(intent, "endtime");
+        asset.mIsAutoPlayEnabled = ParcelUtils.readBoolean(intent, "isAutoPlayEnabled");
+        asset.mIsNextPlayableEpisode = ParcelUtils.readBoolean(intent, "isNextPlayableEpisode");
+        asset.mReqId = ParcelUtils.readString(intent, "reqid");
+        asset.mListPos = ParcelUtils.readInt(intent, "listpos");
+        asset.mVideoPos = ParcelUtils.readInt(intent, "videopos");
+        asset.mPostPlayVideoPlayed = ParcelUtils.readInt(intent, "postPlayCount");
+        asset.mIsPinProtected = ParcelUtils.readBoolean(intent, "isPinProtected");
+        asset.mIsPinVerified = ParcelUtils.readBoolean(intent, "isPinVerified");
         return asset;
-    }
-    
-    private static boolean readBoolean(final Intent intent, final String s) {
-        return intent.getBooleanExtra(s, false);
-    }
-    
-    private static boolean readBoolean(final Parcel parcel) {
-        return "true".equals(parcel.readString());
-    }
-    
-    private static int readInt(final Intent intent, final String s) {
-        return intent.getIntExtra(s, 0);
-    }
-    
-    private static int readInt(final Parcel parcel) {
-        return readInt(parcel.readString());
-    }
-    
-    private static int readInt(final String s) {
-        if ("=NULL=".equals(s)) {
-            return 0;
-        }
-        try {
-            return Integer.parseInt(s);
-        }
-        catch (Throwable t) {
-            Log.e("mdxui", "Failed to parse string to int ", t);
-            return 0;
-        }
-    }
-    
-    private static long readLong(final Intent intent, final String s) {
-        return intent.getLongExtra(s, 0L);
-    }
-    
-    private static long readLong(final Parcel parcel) {
-        return readLong(parcel.readString());
-    }
-    
-    private static long readLong(final String s) {
-        if ("=NULL=".equals(s)) {
-            return 0L;
-        }
-        try {
-            return Long.parseLong(s);
-        }
-        catch (Throwable t) {
-            Log.e("mdxui", "Failed to parse string to int ", t);
-            return 0L;
-        }
-    }
-    
-    private static String readString(final Intent intent, final String s) {
-        return readString(intent.getStringExtra(s));
-    }
-    
-    private static String readString(final Parcel parcel) {
-        return readString(parcel.readString());
-    }
-    
-    private static String readString(final String s) {
-        String s2 = s;
-        if ("=NULL=".equals(s)) {
-            s2 = null;
-        }
-        return s2;
-    }
-    
-    private static String validateString(final String s) {
-        if (s != null) {
-            return s;
-        }
-        return "=NULL=";
-    }
-    
-    private static void writeBoolean(final Parcel parcel, final boolean b) {
-        parcel.writeString(String.valueOf(b));
-    }
-    
-    private static void writeInt(final Parcel parcel, final int n) {
-        parcel.writeString(String.valueOf(n));
-    }
-    
-    private static void writeLong(final Parcel parcel, final long n) {
-        parcel.writeString(String.valueOf(n));
-    }
-    
-    private static void writeString(final Parcel parcel, final String s) {
-        parcel.writeString(validateString(s));
     }
     
     public int describeContents() {
@@ -364,15 +275,15 @@ public class Asset implements Parcelable, PlayContext
         if (intent == null) {
             throw new IllegalArgumentException("Intent can not be null!");
         }
-        intent.putExtra("playableid", validateString(this.mPlayableId));
-        intent.putExtra("parentid", validateString(this.mParentId));
+        intent.putExtra("playableid", ParcelUtils.validateString(this.mPlayableId));
+        intent.putExtra("parentid", ParcelUtils.validateString(this.mParentId));
         intent.putExtra("isEpisode", this.mIsEpisode);
         intent.putExtra("trkid", this.mTrackId);
-        intent.putExtra("title", validateString(this.mTitle));
-        intent.putExtra("parent_title", validateString(this.mParentTitle));
+        intent.putExtra("title", ParcelUtils.validateString(this.mTitle));
+        intent.putExtra("parent_title", ParcelUtils.validateString(this.mParentTitle));
         intent.putExtra("watched_date", this.mWatchedDate);
         intent.putExtra("playback_bookmark", this.mPlaybackBookmark);
-        intent.putExtra("nflx", validateString(this.mNflx));
+        intent.putExtra("nflx", ParcelUtils.validateString(this.mNflx));
         intent.putExtra("fb_dontsharebtn", this.mSocialDoNotShareVisible);
         intent.putExtra("seasonNumber", this.mSeasonNumber);
         intent.putExtra("episodeNumber", this.mEpisodeNumber);
@@ -380,7 +291,7 @@ public class Asset implements Parcelable, PlayContext
         intent.putExtra("endtime", this.mEndtime);
         intent.putExtra("isAutoPlayEnabled", this.mIsAutoPlayEnabled);
         intent.putExtra("isNextPlayableEpisode", this.mIsNextPlayableEpisode);
-        intent.putExtra("reqid", validateString(this.mReqId));
+        intent.putExtra("reqid", ParcelUtils.validateString(this.mReqId));
         intent.putExtra("listpos", this.mListPos);
         intent.putExtra("videopos", this.mVideoPos);
         intent.putExtra("postPlayCount", this.mPostPlayVideoPlayed);
@@ -391,31 +302,31 @@ public class Asset implements Parcelable, PlayContext
     
     @Override
     public String toString() {
-        return "Asset [mPlayableId=" + this.mPlayableId + ", mParentId=" + this.mParentId + this.mIsAutoPlayEnabled + ", mIsNextPlayableEpisode=" + this.mIsNextPlayableEpisode + ", mTrackId=" + this.mTrackId + ", mReqId=" + this.mReqId + ", mListPos=" + this.mListPos + ", mVideoPos=" + this.mVideoPos + ", mTitle=" + this.mTitle + ", mParentTitle=" + this.mParentTitle + ", mWatchedDate=" + this.mWatchedDate + ", mPlaybackBookmark=" + this.mPlaybackBookmark + ", mNflx=" + this.mNflx + ", mDuration=" + this.mDuration + ", mEndtime=" + this.mEndtime + ", mIsPinProtected=" + this.mIsPinProtected + ", mIsPinVerified=" + this.mIsPinVerified + ", mSocialDoNotShareVisible=" + this.mSocialDoNotShareVisible + ", mSeasonNumber=" + this.mSeasonNumber + ", mEpisodeNumber=" + this.mEpisodeNumber + ", mPostPlayVideoPlayed=" + this.mPostPlayVideoPlayed + "]";
+        return "Asset [mPlayableId=" + this.mPlayableId + ", mParentId=" + this.mParentId + ", mIsEpisode=" + this.mIsEpisode + ", mIsAutoPlayEnabled=" + this.mIsAutoPlayEnabled + ", mIsNextPlayableEpisode=" + this.mIsNextPlayableEpisode + ", mTrackId=" + this.mTrackId + ", mReqId=" + this.mReqId + ", mListPos=" + this.mListPos + ", mVideoPos=" + this.mVideoPos + ", mTitle=" + this.mTitle + ", mParentTitle=" + this.mParentTitle + ", mWatchedDate=" + this.mWatchedDate + ", mPlaybackBookmark=" + this.mPlaybackBookmark + ", mNflx=" + this.mNflx + ", mDuration=" + this.mDuration + ", mEndtime=" + this.mEndtime + ", mIsPinProtected=" + this.mIsPinProtected + ", mIsPinVerified=" + this.mIsPinVerified + ", mSocialDoNotShareVisible=" + this.mSocialDoNotShareVisible + ", mSeasonNumber=" + this.mSeasonNumber + ", mEpisodeNumber=" + this.mEpisodeNumber + ", mPostPlayVideoPlayed=" + this.mPostPlayVideoPlayed + "]";
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        writeString(parcel, this.mPlayableId);
-        writeString(parcel, this.mParentId);
-        writeInt(parcel, this.mTrackId);
-        writeBoolean(parcel, this.mIsEpisode);
-        writeString(parcel, this.mTitle);
-        writeString(parcel, this.mParentTitle);
-        writeLong(parcel, this.mWatchedDate);
-        writeInt(parcel, this.mPlaybackBookmark);
-        writeString(parcel, this.mNflx);
-        writeBoolean(parcel, this.mSocialDoNotShareVisible);
-        writeInt(parcel, this.mSeasonNumber);
-        writeInt(parcel, this.mEpisodeNumber);
-        writeInt(parcel, this.mDuration);
-        writeString(parcel, this.mReqId);
-        writeInt(parcel, this.mListPos);
-        writeInt(parcel, this.mVideoPos);
-        writeInt(parcel, this.mEndtime);
-        writeBoolean(parcel, this.mIsAutoPlayEnabled);
-        writeBoolean(parcel, this.mIsNextPlayableEpisode);
-        writeInt(parcel, this.mPostPlayVideoPlayed);
-        writeBoolean(parcel, this.mIsPinProtected);
-        writeBoolean(parcel, this.mIsPinVerified);
+        ParcelUtils.writeString(parcel, this.mPlayableId);
+        ParcelUtils.writeString(parcel, this.mParentId);
+        ParcelUtils.writeInt(parcel, this.mTrackId);
+        ParcelUtils.writeBoolean(parcel, this.mIsEpisode);
+        ParcelUtils.writeString(parcel, this.mTitle);
+        ParcelUtils.writeString(parcel, this.mParentTitle);
+        ParcelUtils.writeLong(parcel, this.mWatchedDate);
+        ParcelUtils.writeInt(parcel, this.mPlaybackBookmark);
+        ParcelUtils.writeString(parcel, this.mNflx);
+        ParcelUtils.writeBoolean(parcel, this.mSocialDoNotShareVisible);
+        ParcelUtils.writeInt(parcel, this.mSeasonNumber);
+        ParcelUtils.writeInt(parcel, this.mEpisodeNumber);
+        ParcelUtils.writeInt(parcel, this.mDuration);
+        ParcelUtils.writeString(parcel, this.mReqId);
+        ParcelUtils.writeInt(parcel, this.mListPos);
+        ParcelUtils.writeInt(parcel, this.mVideoPos);
+        ParcelUtils.writeInt(parcel, this.mEndtime);
+        ParcelUtils.writeBoolean(parcel, this.mIsAutoPlayEnabled);
+        ParcelUtils.writeBoolean(parcel, this.mIsNextPlayableEpisode);
+        ParcelUtils.writeInt(parcel, this.mPostPlayVideoPlayed);
+        ParcelUtils.writeBoolean(parcel, this.mIsPinProtected);
+        ParcelUtils.writeBoolean(parcel, this.mIsPinVerified);
     }
 }

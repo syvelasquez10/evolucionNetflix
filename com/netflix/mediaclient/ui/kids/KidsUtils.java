@@ -4,16 +4,25 @@
 
 package com.netflix.mediaclient.ui.kids;
 
-import android.view.View;
 import android.view.View$OnClickListener;
 import java.io.Serializable;
 import com.netflix.mediaclient.service.ServiceAgent;
 import android.view.MenuItem;
 import android.view.Menu;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
+import android.view.ViewConfiguration;
+import android.graphics.drawable.Drawable;
+import android.widget.ListView;
+import android.content.res.Resources;
+import android.content.Context;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration;
 import com.netflix.mediaclient.ui.lomo.BasePaginatedAdapter;
+import android.view.ViewGroup$LayoutParams;
+import android.widget.AbsListView$LayoutParams;
+import android.view.View;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.UserProfile;
 import com.netflix.mediaclient.Log;
@@ -24,6 +33,10 @@ import android.app.Activity;
 
 public class KidsUtils
 {
+    private static final float LIST_VIEW_FRICTION_SCALE_FACTOR = 7.5f;
+    public static final int MAX_NUM_CW_VIDEOS = 3;
+    public static final int NUM_LOMOS_TO_FETCH_PER_BATCH = 20;
+    public static final int NUM_VIDEOS_PER_BATCH = 5;
     private static final String TAG = "KidsUtils";
     
     private static boolean accountHasKidsProfile(final NetflixActivity netflixActivity) {
@@ -49,6 +62,18 @@ public class KidsUtils
         return false;
     }
     
+    public static void addListViewSpacerIfNoHeaders(final StickyListHeadersListView stickyListHeadersListView) {
+        if (stickyListHeadersListView.getHeaderViewsCount() == 0) {
+            final View view = new View(stickyListHeadersListView.getContext());
+            view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, stickyListHeadersListView.getResources().getDimensionPixelSize(2131361920)));
+            stickyListHeadersListView.addHeaderView(view);
+        }
+    }
+    
+    public static int computeCharacterViewSize(final NetflixActivity netflixActivity, final boolean b) {
+        return BasePaginatedAdapter.computeViewPagerWidth(netflixActivity, b) / 2;
+    }
+    
     public static int computeHorizontalRowHeight(final NetflixActivity netflixActivity, final boolean b) {
         return (int)(BasePaginatedAdapter.computeViewPagerWidth(netflixActivity, b) * 0.5625f);
     }
@@ -71,12 +96,53 @@ public class KidsUtils
         return n2;
     }
     
+    public static int computeSkidmarkCharacterViewSize(final NetflixActivity netflixActivity) {
+        final Resources resources = netflixActivity.getResources();
+        return resources.getDimensionPixelSize(2131361919) + ((DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) - resources.getDimensionPixelSize(2131361918)) / 2 - resources.getDimensionPixelSize(2131361918));
+    }
+    
+    public static int computeSkidmarkRowHeight(final NetflixActivity netflixActivity, int n, int n2, int n3, final int n4, final boolean b) {
+        n3 = (n = DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) - n - n3 + n2 + n4);
+        final ServiceManager serviceManager = netflixActivity.getServiceManager();
+        if (serviceManager == null) {
+            Log.w("KidsUtils", "Null service manager in computeRowHeight()");
+            return n;
+        }
+        Label_0069: {
+            if (!b) {
+                n2 = n;
+                if (serviceManager.getConfiguration().getKidsOnPhoneConfiguration().getLolomoImageType() != KidsOnPhoneConfiguration.LolomoImageType.HORIZONTAL) {
+                    break Label_0069;
+                }
+            }
+            n2 = (int)(n * 0.5625f);
+        }
+        if (Log.isLoggable("KidsUtils", 2)) {
+            Log.v("KidsUtils", "Computed row height (with margins) as: " + n2 + ", from width of: " + n3);
+        }
+        return n2;
+    }
+    
+    public static void configureListViewForKids(final NetflixActivity netflixActivity, final ListView listView) {
+        if (netflixActivity.isForKids()) {
+            listView.setDivider((Drawable)null);
+            listView.setFriction(ViewConfiguration.getScrollFriction() * 7.5f);
+        }
+    }
+    
+    public static void configureListViewForKids(final NetflixActivity netflixActivity, final StickyListHeadersListView stickyListHeadersListView) {
+        if (netflixActivity.isForKids()) {
+            stickyListHeadersListView.setDivider(null);
+        }
+        configureListViewForKids(netflixActivity, stickyListHeadersListView.getWrappedList());
+    }
+    
     public static Intent createExitKidsIntent(final Activity activity, final UIViewLogging.UIViewCommandName uiViewCommandName) {
         return ProfileSelectionActivity.createSwitchFromKidsIntent(activity, uiViewCommandName);
     }
     
     public static MenuItem createKidsMenuItem(final NetflixActivity netflixActivity, final Menu menu) {
-        final MenuItem add = menu.add(0, 2131165242, 0, 2131492962);
+        final MenuItem add = menu.add(0, 2131165242, 0, 2131492963);
         updateKidsMenuItem(netflixActivity, add);
         return add;
     }
@@ -99,6 +165,10 @@ public class KidsUtils
     
     public static boolean isUserInKopExperience(final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface) {
         return configurationAgentInterface != null && configurationAgentInterface.getKidsOnPhoneConfiguration() != null && configurationAgentInterface.getKidsOnPhoneConfiguration().isKidsOnPhoneEnabled();
+    }
+    
+    public static boolean shouldShowBackNavigationAffordance(final NetflixActivity netflixActivity) {
+        return netflixActivity.isForKids() && netflixActivity.getServiceManager().getConfiguration().getKidsOnPhoneConfiguration().getActionBarNavType() == KidsOnPhoneConfiguration.ActionBarNavType.BACK;
     }
     
     public static boolean shouldShowHorizontalImages(final NetflixActivity netflixActivity) {
@@ -161,10 +231,10 @@ public class KidsUtils
         }
         menuItem.setVisible(true).setEnabled(true);
         if (netflixActivity.isForKids()) {
-            menuItem.setTitle(2131492967).setIcon(2130837694).setIntent(createExitKidsIntent(netflixActivity, UIViewLogging.UIViewCommandName.actionBarKidsExit)).setShowAsAction(2);
+            menuItem.setTitle(2131492968).setIcon(2130837694).setIntent(createExitKidsIntent(netflixActivity, UIViewLogging.UIViewCommandName.actionBarKidsExit)).setShowAsAction(2);
             return;
         }
-        menuItem.setTitle(2131492948).setIcon(2130837732).setIntent(createSwitchToKidsIntent(netflixActivity, UIViewLogging.UIViewCommandName.actionBarKidsEntry)).setShowAsAction(2);
+        menuItem.setTitle(2131492948).setIcon(2130837725).setIntent(createSwitchToKidsIntent(netflixActivity, UIViewLogging.UIViewCommandName.actionBarKidsEntry)).setShowAsAction(2);
     }
     
     public static class OnSwitchToKidsClickListener implements View$OnClickListener

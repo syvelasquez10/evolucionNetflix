@@ -583,7 +583,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
         this.log("Updating metadata: " + this.currentVideo + ", hash: " + this.currentVideo.hashCode());
         if (this.currentVideo.getType() == VideoType.EPISODE) {
             this.views.updateTitleText(this.currentVideo.getParentTitle());
-            this.views.updateSubtitleText(this.activity.getString(2131493248, new Object[] { this.currentVideo.getSeasonNumber(), this.currentVideo.getEpisodeNumber(), this.currentVideo.getTitle() }));
+            this.views.updateSubtitleText(this.activity.getString(2131493249, new Object[] { this.currentVideo.getSeasonNumber(), this.currentVideo.getEpisodeNumber(), this.currentVideo.getTitle() }));
         }
         else {
             this.views.updateTitleText(this.currentVideo.getTitle());

@@ -566,6 +566,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                                 Log.e(WidevineDrmManager.TAG, "We failed to update key response..." + t.getMessage() + ": ", t);
                                 this.mediaDrmFailure(false);
                             }
+                            return b;
                         }
                     }
                     if (array4 != null && array2 != null && array3 != null) {

@@ -4,22 +4,27 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
+import android.text.TextUtils;
+import com.netflix.mediaclient.servicemgr.PostPlayVideo;
+import java.util.List;
+import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import android.content.IntentFilter;
-import com.netflix.mediaclient.ui.common.PinVerifier;
-import com.netflix.mediaclient.util.WebApiUtils;
-import com.netflix.mediaclient.ui.player.MDXControllerActivity;
+import com.netflix.mediaclient.ui.pin.PinDialogVault;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.servicemgr.MdxPostplayState;
 import com.netflix.mediaclient.util.StringUtils;
-import android.content.Context;
 import android.content.Intent;
+import com.netflix.mediaclient.util.WebApiUtils;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.servicemgr.MdxPostplayState;
+import com.netflix.mediaclient.ui.player.MDXControllerActivity;
+import android.content.Context;
+import com.netflix.mediaclient.ui.pin.PinVerifier;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.BroadcastReceiver;
 
 public final class MdxReceiver extends BroadcastReceiver
 {
-    private static final String PIN_TAG = "nf_pin_mdx";
     private static final String TAG = "nf_mdx";
     private final NetflixActivity mActivity;
     
@@ -29,7 +34,18 @@ public final class MdxReceiver extends BroadcastReceiver
     }
     
     private void cancelPin() {
-        this.mActivity.removeVisibleDialog();
+        PinVerifier.getInstance().dismissPinVerification();
+    }
+    
+    private void hideMdxController(final Context context) {
+        MDXControllerActivity.finishMDXController((NetflixActivity)context);
+    }
+    
+    private void showFirstEpisodeInNextSeries(final MdxPostplayState mdxPostplayState) {
+        final WebApiUtils.VideoIds videoIds = this.mActivity.getServiceManager().getMdx().getVideoIds();
+        if (videoIds != null && videoIds.episodeId > 0) {
+            this.mActivity.getServiceManager().fetchPostPlayVideos(String.valueOf(videoIds.episodeId), new FetchVideoDetailsForMdxCallback("nf_mdx", this.mActivity));
+        }
     }
     
     private void showMdxController(final Intent intent, final Context context) {
@@ -37,36 +53,23 @@ public final class MdxReceiver extends BroadcastReceiver
         if (!StringUtils.isEmpty(string)) {
             final MdxPostplayState mdxPostplayState = new MdxPostplayState(string);
             if (mdxPostplayState.isInCountdown()) {
-                final MdxPostplayState.PostplayTitle[] postplayTitle = mdxPostplayState.getPostplayTitle();
-                if (postplayTitle.length > 0 && postplayTitle[0].isEpisode() && postplayTitle[0].getId() > 0) {
-                    final WebApiUtils.VideoIds videoIds = this.mActivity.getServiceManager().getMdx().getVideoIds();
-                    if (videoIds != null && videoIds.episodeId > 0) {
-                        MDXControllerActivity.showMDXController(this.mActivity, videoIds.episodeId, PlayContext.DFLT_MDX_CONTEXT);
-                    }
-                }
+                this.showNextEpisodeInSeries(mdxPostplayState);
+            }
+            else if (mdxPostplayState.isInPrompt()) {
+                this.showFirstEpisodeInNextSeries(mdxPostplayState);
             }
         }
     }
     
+    private void showNextEpisodeInSeries(final MdxPostplayState mdxPostplayState) {
+        final WebApiUtils.VideoIds videoIds = this.mActivity.getServiceManager().getMdx().getVideoIds();
+        if (videoIds != null && videoIds.episodeId > 0) {
+            MDXControllerActivity.showMDXController(this.mActivity, videoIds.episodeId, PlayContext.DFLT_MDX_CONTEXT);
+        }
+    }
+    
     private void verifyPinAndNotify(final Intent intent) {
-        PinVerifier.getInstance().verify(this.mActivity, true, (PinVerifier.PinVerificationCallback)new PinVerifier.PinVerificationCallback() {
-            final /* synthetic */ String val$uuid = intent.getExtras().getString("uuid");
-            
-            @Override
-            public void onPinCancelled() {
-                Log.d("nf_pin_mdx", "pinVerification skipped - notify target");
-                MdxReceiver.this.mActivity.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDX_PINCANCELLED").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", this.val$uuid));
-            }
-            
-            @Override
-            public void onPinVerification(final boolean b) {
-                Log.d("nf_pin_mdx", String.format("onPinVerification %b", b));
-                if (b) {
-                    Log.d("nf_pin_mdx", "notifying target");
-                    MdxReceiver.this.mActivity.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDX_PINCONFIRMED").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", this.val$uuid));
-                }
-            }
-        });
+        PinVerifier.getInstance().verify(this.mActivity, true, new PinDialogVault(PinDialogVault.PinInvokedFrom.MDX.getValue(), intent.getExtras().getString("uuid")));
     }
     
     public IntentFilter getFilter() {
@@ -77,8 +80,7 @@ public final class MdxReceiver extends BroadcastReceiver
         intentFilter.addAction("com.netflix.mediaclient.intent.action.PIN_VERIFICATION_SHOW");
         intentFilter.addAction("com.netflix.mediaclient.intent.action.PIN_VERIFICATION_NOT_REQUIRED");
         intentFilter.addAction("com.netflix.mediaclient.intent.action.MDXUPDATE_POSTPLAY");
-        intentFilter.addAction("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND");
-        intentFilter.addAction("com.netflix.mediaclient.intent.action.MDXUPDATE_STATE");
+        intentFilter.addAction("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART");
         intentFilter.addCategory("com.netflix.mediaclient.intent.category.MDX");
         return intentFilter;
     }
@@ -123,9 +125,29 @@ public final class MdxReceiver extends BroadcastReceiver
                     this.showMdxController(intent, context);
                     return;
                 }
-                if ("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND".equals(action) || "com.netflix.mediaclient.intent.action.MDXUPDATE_STATE".equals(action)) {
-                    Log.d("nf_mdx", "MDX playback end/state event");
-                    PinVerifier.getInstance().registerPlayStopEvent();
+                if (intent.getAction().equals("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART")) {
+                    this.hideMdxController(context);
+                }
+            }
+        }
+    }
+    
+    private static class FetchVideoDetailsForMdxCallback extends LoggingManagerCallback
+    {
+        private final NetflixActivity mActivity;
+        
+        public FetchVideoDetailsForMdxCallback(final String s, final NetflixActivity mActivity) {
+            super(s);
+            this.mActivity = mActivity;
+        }
+        
+        @Override
+        public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final int n) {
+            super.onPostPlayVideosFetched(list, n);
+            if (this.mActivity != null && n == 0 && list.size() > 0) {
+                final String id = list.get(0).getId();
+                if (!TextUtils.isEmpty((CharSequence)id)) {
+                    MDXControllerActivity.showMDXController(this.mActivity, id, PlayContext.DFLT_MDX_CONTEXT);
                 }
             }
         }

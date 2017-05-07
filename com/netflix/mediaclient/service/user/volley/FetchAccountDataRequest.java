@@ -6,7 +6,6 @@ package com.netflix.mediaclient.service.user.volley;
 
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonObject;
-import java.util.List;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.webclient.model.leafs.SubtitlePreference;
 import com.netflix.mediaclient.util.StringUtils;
@@ -15,6 +14,8 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListSummary;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import java.util.Arrays;
+import java.util.List;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
@@ -47,8 +48,8 @@ public class FetchAccountDataRequest extends FalcorVolleyWebClientRequest<Accoun
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery1, this.pqlQuery2, this.pqlQuery3 };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery1, this.pqlQuery2, this.pqlQuery3);
     }
     
     @Override

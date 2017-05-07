@@ -42,7 +42,7 @@ public class GenreLoLoMoAdapter extends BasePaginatedLoLoMoAdapter<Genre>
             Log.w("GenreLoLoMoAdapter", "Service man is null");
             return;
         }
-        serviceManager.prefetchGenreLoLoMo(this.getGenreId(), 0, 19, 0, PaginatedLoMoAdapter.computeNumVideosToFetchPerBatch(DeviceUtils.getScreenSizeCategory((Context)this.getActivity())) - 1, false, new LoggingManagerCallback("GenreLoLoMoAdapter") {
+        serviceManager.prefetchGenreLoLoMo(this.getGenreId(), 0, 19, 0, PaginatedLoMoAdapter.computeNumVideosToFetchPerBatch(this.activity, DeviceUtils.getScreenSizeCategory((Context)this.activity)) - 1, false, new LoggingManagerCallback("GenreLoLoMoAdapter") {
             @Override
             public void onGenreLoLoMoPrefetched(final int n) {
                 super.onGenreLoLoMoPrefetched(n);

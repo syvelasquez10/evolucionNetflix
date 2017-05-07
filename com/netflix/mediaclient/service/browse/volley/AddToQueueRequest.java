@@ -9,6 +9,8 @@ import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import java.util.Arrays;
+import com.netflix.mediaclient.service.browse.cache.BrowseCache;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.Video;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
@@ -104,9 +106,9 @@ public class AddToQueueRequest extends FalcorVolleyWebClientRequest<String>
         }
         list.clear();
         final String buildBrowseCacheKey = BrowseAgent.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_IQ_VIDEOS, "queue", String.valueOf(n), String.valueOf(n2));
-        final HardCache hardCache2;
-        hardCache2.remove(buildBrowseCacheKey);
-        BrowseAgent.putInBrowseCache(hardCache2, buildBrowseCacheKey, list2);
+        final BrowseCache browseCache;
+        browseCache.remove(buildBrowseCacheKey);
+        BrowseAgent.putInBrowseCache(browseCache, buildBrowseCacheKey, list2);
     }
     // monitorexit(AddToQueueRequest.class)
     
@@ -136,8 +138,8 @@ public class AddToQueueRequest extends FalcorVolleyWebClientRequest<String>
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery);
     }
     
     @Override

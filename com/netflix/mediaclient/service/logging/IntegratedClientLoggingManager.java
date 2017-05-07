@@ -204,16 +204,16 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     private boolean isKids() {
         final ServiceAgent.UserAgentInterface mUser = this.mUser;
         if (mUser == null) {
-            Log.w("nf_log", "getUiMode:: getUserAgent is null! Return non member");
+            Log.w("nf_log", "getUiMode:: getUserAgent is null! isKids() = false");
             return false;
         }
         if (!mUser.isUserLoggedIn()) {
-            Log.d("nf_log", "getUiMode:: user is NOT logged in. Return non member");
+            Log.d("nf_log", "getUiMode:: user is NOT logged in. isKids() = false");
             return false;
         }
         final UserProfile currentProfile = mUser.getCurrentProfile();
         if (currentProfile == null) {
-            Log.w("nf_log", "getUiMode:: user is logged in, but profile is null. Return member");
+            Log.w("nf_log", "getUiMode:: user is logged in, but profile is null. isKids() = false");
             return false;
         }
         return currentProfile.isKidsProfile();
@@ -354,6 +354,10 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         return this.mOwner.getNrdController().getNrdp().getLog().getSessionId();
     }
     
+    public void handleConnectivityChange(final Intent intent) {
+        this.mApmLogging.handleConnectivityChange(this.mContext);
+    }
+    
     void handleIntent(final Intent intent) {
         final boolean portrait = DeviceUtils.isPortrait(this.mContext);
         if (this.mApmLogging.handleIntent(intent, portrait)) {
@@ -377,13 +381,14 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         Log.d("nf_log", "ClientLoggingAgent::init web client start ");
         this.mClientLoggingWebClient = ClientLoggingWebClientFactory.create(this.mOwner.getResourceFetcher().getApiNextWebClient());
         Log.d("nf_log", "ClientLoggingAgent::init web client done ");
-        this.mApmLogging = new ApmLoggingImpl(this, this.mService.getConfiguration());
+        this.mApmLogging = new ApmLoggingImpl(this);
         this.mActionLogging = new UserActionLoggingImpl(this);
         this.mUIViewLogging = new UIViewLoggingImpl(this);
         Log.d("nf_log", "Add ICL manager as listener on user input...");
         this.mOwner.getApplication().getUserInput().addListener(this);
         Log.d("nf_log", "Add ICL manager as listener on user input done.");
         this.initDataRepository();
+        this.mApmLogging.handleConnectivityChange(this.mContext);
     }
     
     public boolean isConsolidatedLoggingSessionEnabled(String sessionLookupKey, final String s) {

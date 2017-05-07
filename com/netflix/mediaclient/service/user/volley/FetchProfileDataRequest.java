@@ -10,6 +10,8 @@ import com.netflix.mediaclient.service.webclient.model.leafs.SubtitlePreference;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import java.util.Arrays;
+import java.util.List;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
@@ -36,8 +38,8 @@ public class FetchProfileDataRequest extends FalcorVolleyWebClientRequest<UserPr
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery1 };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery1);
     }
     
     @Override

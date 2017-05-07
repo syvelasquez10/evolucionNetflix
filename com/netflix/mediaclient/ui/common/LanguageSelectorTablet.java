@@ -17,12 +17,12 @@ final class LanguageSelectorTablet extends LanguageSelector
     @Override
     protected int calculateListViewHeight() {
         Log.d("nf_language_selector", "Tablet calculate height");
-        final int n = (int)this.mController.getResources().getDimension(2131361862);
-        final int n2 = (int)this.mController.getResources().getDimension(2131361861);
-        final int n3 = (int)this.mController.getResources().getDimension(2131361885);
+        final int n = (int)this.mController.getResources().getDimension(2131361864);
+        final int n2 = (int)this.mController.getResources().getDimension(2131361863);
+        final int n3 = (int)this.mController.getResources().getDimension(2131361888);
         int intrinsicHeight;
-        if ((intrinsicHeight = this.mController.getResources().getDrawable(2130837750).getIntrinsicHeight()) == -1) {
-            intrinsicHeight = (int)this.mController.getResources().getDimension(2131361886);
+        if ((intrinsicHeight = this.mController.getResources().getDrawable(2130837754).getIntrinsicHeight()) == -1) {
+            intrinsicHeight = (int)this.mController.getResources().getDimension(2131361889);
         }
         final Language language = this.getLanguage();
         int n4;
@@ -47,6 +47,6 @@ final class LanguageSelectorTablet extends LanguageSelector
     @Override
     protected int getDialogLayoutId() {
         Log.d("nf_language_selector", "R.layout.language_selector_tablet_dialog");
-        return 2130903108;
+        return 2130903107;
     }
 }

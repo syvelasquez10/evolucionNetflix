@@ -11,12 +11,14 @@ import com.netflix.mediaclient.android.widget.SearchActionBar;
 
 public class KidsSearchActionBar extends SearchActionBar
 {
-    public KidsSearchActionBar(final NetflixActivity netflixActivity, final boolean b) {
-        super(netflixActivity, b);
-        this.systemActionBar.setBackgroundDrawable((Drawable)new ColorDrawable(netflixActivity.getResources().getColor(2131296359)));
-        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131493205));
-        if (b) {
-            this.configureBackButtonIfNecessary();
-        }
+    public KidsSearchActionBar(final NetflixActivity netflixActivity) {
+        super(netflixActivity);
+        this.systemActionBar.setBackgroundDrawable((Drawable)new ColorDrawable(netflixActivity.getResources().getColor(2131296358)));
+        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131493206));
+    }
+    
+    @Override
+    public void onManagerReady() {
+        this.configureBackButtonIfNecessary(true);
     }
 }

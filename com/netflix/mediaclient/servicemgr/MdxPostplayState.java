@@ -17,7 +17,6 @@ public class MdxPostplayState
     private static final String POSTPLAYSTATE_COUNTDOWN = "POST_PLAY_COUNTDOWN";
     private static final String POSTPLAYSTATE_PROMPT = "POST_PLAY_PROMPT";
     private static final String TITLE_TYPE_EPISODE = "episode";
-    private static final String TITLE_TYPE_EPISODES = "episodes";
     private PostplayTitle[] mPostplatTitleArray;
     private String mState;
     

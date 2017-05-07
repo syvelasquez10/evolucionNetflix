@@ -202,8 +202,8 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     }
     
     @Override
-    public void prefetchLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final int n5, final int n6, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new PrefetchHomeLoLoMoRequest(this.service.getApplicationContext(), this.service.getConfiguration(), this.hardCache, this.softCache, this.weakSeasonsCache, n, n2, n3, n4, n5, n6, 50, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
+    public void prefetchLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final int n5, final int n6, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+        this.webclient.sendRequest(new PrefetchHomeLoLoMoRequest(this.service.getApplicationContext(), this.service.getConfiguration(), this.hardCache, this.softCache, this.weakSeasonsCache, n, n2, n3, n4, n5, n6, 50, b, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
     }
     
     @Override

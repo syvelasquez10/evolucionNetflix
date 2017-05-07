@@ -34,9 +34,9 @@ public class ServiceErrorsHandler
         final UpdateDialog.Builder builder = new UpdateDialog.Builder((Context)activity);
         builder.setTitle("");
         if (!b) {
-            builder.setMessage(2131492980);
+            builder.setMessage(2131492981);
             builder.setCancelable(false);
-            builder.setNegativeButton(2131493120, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+            builder.setNegativeButton(2131493121, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
                 public void onClick(final DialogInterface dialogInterface, int intPref) {
                     intPref = PreferenceUtils.getIntPref((Context)activity, "config_recommended_version", -1);
                     if (Log.isLoggable("ServiceErrorsHandler", 4)) {
@@ -49,9 +49,9 @@ public class ServiceErrorsHandler
             });
         }
         else {
-            builder.setMessage(2131492981);
+            builder.setMessage(2131492982);
         }
-        builder.setPositiveButton(2131492976, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        builder.setPositiveButton(2131492977, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 Log.i("ServiceErrorsHandler", "User clicked Ok on prompt to update");
                 final Intent updateSourceIntent = AppStoreHelper.getUpdateSourceIntent((Context)activity);
@@ -79,7 +79,7 @@ public class ServiceErrorsHandler
         Log.v("ServiceErrorsHandler", "Handling manager response, code: " + n + " [" + activity.getClass().toString() + "]");
         switch (n) {
             default: {
-                provideDialog(activity, activity.getString(2131493270) + " (" + n + ")");
+                provideDialog(activity, activity.getString(2131493271) + " (" + n + ")");
                 b = true;
                 return b;
             }
@@ -93,25 +93,25 @@ public class ServiceErrorsHandler
                 return handleAppUpdateNeeded(activity, true);
             }
             case -11: {
-                provideDialog(activity, activity.getString(2131493133));
+                provideDialog(activity, activity.getString(2131493134));
                 return true;
             }
             case -101:
             case -100: {
-                provideDialog(activity, activity.getString(2131493243));
+                provideDialog(activity, activity.getString(2131493244));
                 return true;
             }
             case -122:
             case -121:
             case -120: {
-                provideDialog(activity, activity.getString(2131493269) + " (" + n + ")");
+                provideDialog(activity, activity.getString(2131493270) + " (" + n + ")");
                 return true;
             }
         }
     }
     
     private static void provideDialog(final Activity activity, final String message) {
-        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131492976, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131492977, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 activity.finish();
             }

@@ -117,9 +117,10 @@ public abstract class Event implements JsonSerializer
     
     protected JSONObject getData() throws JSONException {
         JSONObject jsonObject = null;
-        if (this.getCustomData() != null) {
+        final JSONObject customData = this.getCustomData();
+        if (customData != null) {
             jsonObject = new JSONObject();
-            jsonObject.put("custom", (Object)this.getCustomData());
+            jsonObject.put("custom", (Object)customData);
         }
         return jsonObject;
     }

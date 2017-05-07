@@ -26,7 +26,7 @@ public class KidsCwViewGroup<V extends View> extends VideoViewGroup<CWVideo, V>
     
     @Override
     protected boolean shouldApplyPaddingToChildren() {
-        return true;
+        return this.shouldIncludePeekDimen;
     }
     
     @Override

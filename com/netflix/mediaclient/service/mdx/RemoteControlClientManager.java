@@ -4,11 +4,13 @@
 
 package com.netflix.mediaclient.service.mdx;
 
-import android.annotation.TargetApi;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.media.RemoteControlClient$MetadataEditor;
 import com.netflix.mediaclient.util.StringUtils;
+import android.annotation.TargetApi;
+import android.app.PendingIntent;
+import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.VideoDetails;
 import com.netflix.mediaclient.Log;
 import android.media.RemoteControlClient;
 import android.content.ComponentName;
@@ -26,6 +28,8 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
     private final Context mContext;
     private boolean mInTransition;
     private final ComponentName mIntentReceiverComponent;
+    private final ComponentName mIntentReceiverComponentPostPlay;
+    private boolean mIsInPostPlay;
     private boolean mPaused;
     private RemoteControlClient mRemoteControlClient;
     private String mTitle;
@@ -34,7 +38,38 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
         Log.d("nf_mdx_RemoteClient", "RemoteControlClientManager");
         this.mContext = mContext;
         this.mIntentReceiverComponent = new ComponentName(this.mContext, (Class)MediaButtonIntentReceiver.class);
+        this.mIntentReceiverComponentPostPlay = new ComponentName(this.mContext, (Class)PostPlayMediaButtonIntentReceiver.class);
         this.mAudioManager = (AudioManager)this.mContext.getSystemService("audio");
+    }
+    
+    private void setupButtonIntent(final boolean b, final VideoDetails videoDetails, final String s) {
+        if (b && videoDetails != null) {
+            this.mAudioManager.registerMediaButtonEventReceiver(this.mIntentReceiverComponentPostPlay);
+            final Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
+            intent.setComponent(this.mIntentReceiverComponentPostPlay);
+            if (videoDetails instanceof EpisodeDetails) {
+                intent.putExtra("catalogId", Integer.parseInt(videoDetails.getParentId()));
+                intent.putExtra("episodeId", Integer.parseInt(((EpisodeDetails)videoDetails).getNextEpisodeId()));
+            }
+            intent.putExtra("uuid", s);
+            this.mRemoteControlClient = new RemoteControlClient(PendingIntent.getBroadcast(this.mContext, 0, intent, 134217728));
+            return;
+        }
+        this.mAudioManager.registerMediaButtonEventReceiver(this.mIntentReceiverComponent);
+        final Intent intent2 = new Intent("android.intent.action.MEDIA_BUTTON");
+        intent2.setComponent(this.mIntentReceiverComponent);
+        this.mRemoteControlClient = new RemoteControlClient(PendingIntent.getBroadcast(this.mContext, 0, intent2, 0));
+    }
+    
+    @TargetApi(18)
+    private void setupButtons(final boolean b) {
+        if (b) {
+            this.mRemoteControlClient.setTransportControlFlags(308);
+            this.mRemoteControlClient.setPlaybackState(2);
+            return;
+        }
+        this.mRemoteControlClient.setTransportControlFlags(308);
+        this.mRemoteControlClient.setPlaybackState(3);
     }
     
     private void updateMatadata() {
@@ -80,12 +115,13 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
         this.updateMatadata();
     }
     
-    public void setState(final boolean mPaused, final boolean mInTransition) {
+    public void setState(final boolean mPaused, final boolean mInTransition, final boolean mIsInPostPlay) {
         Log.d("nf_mdx_RemoteClient", "RemoteControlClientManager setState " + mPaused + ", " + mInTransition);
         this.mPaused = mPaused;
         this.mInTransition = mInTransition;
+        this.mIsInPostPlay = mIsInPostPlay;
         if (this.mRemoteControlClient != null) {
-            if (!this.mPaused) {
+            if (!this.mPaused && !this.mIsInPostPlay) {
                 this.mRemoteControlClient.setPlaybackState(3);
                 return;
             }
@@ -99,19 +135,14 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
         this.updateMatadata();
     }
     
-    @TargetApi(18)
-    public void start() {
+    public void start(final boolean b, final VideoDetails videoDetails, final String s) {
         Log.d("nf_mdx_RemoteClient", "RemoteControlClientManager start");
         if (1 != this.mAudioManager.requestAudioFocus((AudioManager$OnAudioFocusChangeListener)this, 3, 1)) {
             Log.e("nf_mdx_RemoteClient", "can't gain audio focus");
         }
-        this.mAudioManager.registerMediaButtonEventReceiver(this.mIntentReceiverComponent);
-        final Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
-        intent.setComponent(this.mIntentReceiverComponent);
-        this.mRemoteControlClient = new RemoteControlClient(PendingIntent.getBroadcast(this.mContext, 0, intent, 0));
+        this.setupButtonIntent(b, videoDetails, s);
         this.mAudioManager.registerRemoteControlClient(this.mRemoteControlClient);
-        this.mRemoteControlClient.setPlaybackState(3);
-        this.mRemoteControlClient.setTransportControlFlags(308);
+        this.setupButtons(b);
     }
     
     public void stop() {

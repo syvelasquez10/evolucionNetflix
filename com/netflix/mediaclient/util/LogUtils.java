@@ -25,6 +25,9 @@ import org.json.JSONException;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.support.v4.content.LocalBroadcastManager;
+import android.graphics.Point;
+import android.view.WindowManager;
+import com.netflix.mediaclient.service.logging.apm.model.Display;
 import android.content.Context;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.client.model.FalcorPathResult;
@@ -58,6 +61,27 @@ public final class LogUtils
     
     public static String createSessionLookupKey(final String s, final String s2) {
         return "" + s + "." + s2;
+    }
+    
+    public static Display getDisplay(final Context context) {
+        if (context != null) {
+            final WindowManager windowManager = (WindowManager)context.getSystemService("window");
+            if (windowManager != null) {
+                final android.view.Display defaultDisplay = windowManager.getDefaultDisplay();
+                final float refreshRate = defaultDisplay.getRefreshRate();
+                if (Log.isLoggable("nf_log", 3)) {
+                    Log.d("nf_log", "Refresh rate: " + refreshRate);
+                }
+                float n = refreshRate;
+                if (refreshRate < 10.0f) {
+                    n = 60.0f;
+                }
+                final Point point = new Point();
+                defaultDisplay.getSize(point);
+                return new Display(Display.Connector.internal, null, point.x, point.y, (int)n, null);
+            }
+        }
+        return null;
     }
     
     public static void pauseReporting(final Context context) {
@@ -169,7 +193,7 @@ public final class LogUtils
         intent.putExtra("reason", completionReason.name());
         while (true) {
             if (uiError == null) {
-                break Label_0058;
+                break Label_0059;
             }
             try {
                 intent.putExtra("error", uiError.toJSONObject().toString());
@@ -207,7 +231,7 @@ public final class LogUtils
         intent.putExtra("reason", completionReason.name());
         while (true) {
             if (uiError == null) {
-                break Label_0079;
+                break Label_0080;
             }
             try {
                 intent.putExtra("error", uiError.toJSONObject().toString());
@@ -243,7 +267,7 @@ public final class LogUtils
         intent.putExtra("reason", completionReason.name());
         while (true) {
             if (uiError == null) {
-                break Label_0062;
+                break Label_0063;
             }
             try {
                 intent.putExtra("error", uiError.toJSONObject().toString());
@@ -411,6 +435,11 @@ public final class LogUtils
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.ONSIGNUP");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
+    public static void reportUIViewCommand(final Context context, final UIViewLogging.UIViewCommandName uiViewCommandName, final IClientLogging.ModalView modalView, final DataContext dataContext) {
+        reportUIViewCommandStarted(context, uiViewCommandName, modalView, dataContext);
+        reportUIViewCommandEnded(context);
     }
     
     public static void reportUIViewCommandEnded(final Context context) {

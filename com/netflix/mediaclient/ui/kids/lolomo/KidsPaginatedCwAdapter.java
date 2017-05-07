@@ -26,6 +26,11 @@ public class KidsPaginatedCwAdapter extends PaginatedCwAdapter
     }
     
     @Override
+    public int getCount() {
+        return Math.min(super.getCount(), 3);
+    }
+    
+    @Override
     public int getRowHeightInPx() {
         return KidsUtils.computeHorizontalRowHeight(this.activity, true);
     }

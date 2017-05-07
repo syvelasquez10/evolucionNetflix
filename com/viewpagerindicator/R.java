@@ -92,13 +92,13 @@ public final class R
     
     public static final class drawable
     {
-        public static final int vpi__tab_indicator = 2130837874;
-        public static final int vpi__tab_selected_focused_holo = 2130837875;
-        public static final int vpi__tab_selected_holo = 2130837876;
-        public static final int vpi__tab_selected_pressed_holo = 2130837877;
-        public static final int vpi__tab_unselected_focused_holo = 2130837878;
-        public static final int vpi__tab_unselected_holo = 2130837879;
-        public static final int vpi__tab_unselected_pressed_holo = 2130837880;
+        public static final int vpi__tab_indicator = 2130837878;
+        public static final int vpi__tab_selected_focused_holo = 2130837879;
+        public static final int vpi__tab_selected_holo = 2130837880;
+        public static final int vpi__tab_selected_pressed_holo = 2130837881;
+        public static final int vpi__tab_unselected_focused_holo = 2130837882;
+        public static final int vpi__tab_unselected_holo = 2130837883;
+        public static final int vpi__tab_unselected_pressed_holo = 2130837884;
     }
     
     public static final class id

@@ -73,7 +73,7 @@ public class PlayScreen implements Screen
         this.listeners = listeners;
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
-        this.mSurface = (TappableSurfaceView)mController.findViewById(2131165505);
+        this.mSurface = (TappableSurfaceView)mController.findViewById(2131165511);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -82,10 +82,10 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)mController.findViewById(2131165507);
-        this.mBackground = (RelativeLayout)mController.findViewById(2131165433);
-        this.mBufferingOverlay = mController.findViewById(2131165536);
-        this.mBif = (ImageView)mController.findViewById(2131165506);
+        this.mFlipper = (ViewFlipper)mController.findViewById(2131165513);
+        this.mBackground = (RelativeLayout)mController.findViewById(2131165439);
+        this.mBufferingOverlay = mController.findViewById(2131165542);
+        this.mBif = (ImageView)mController.findViewById(2131165512);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayType);
         this.moveToState(PlayerUiState.Loading);
     }
@@ -185,18 +185,18 @@ public class PlayScreen implements Screen
     static int resolveContentView(final PostPlayFactory.PostPlayType postPlayType) {
         if (postPlayType == PostPlayFactory.PostPlayType.EpisodesForPhone) {
             Log.d("screen", "playout_phone_episode");
-            return 2130903142;
+            return 2130903141;
         }
         if (postPlayType == PostPlayFactory.PostPlayType.EpisodesForTablet) {
             Log.d("screen", "playout_tablet_episode");
-            return 2130903147;
+            return 2130903146;
         }
         if (postPlayType == PostPlayFactory.PostPlayType.RecommendationForTablet) {
             Log.d("screen", "playout_tablet_movie");
-            return 2130903148;
+            return 2130903147;
         }
         Log.d("screen", "playout_phone_movie");
-        return 2130903143;
+        return 2130903142;
     }
     
     public boolean canExitPlaybackEndOfPlay() {

@@ -37,6 +37,11 @@ public class KidsLomoWrapper implements LoMo
     }
     
     @Override
+    public List<String> getMoreImages() {
+        return null;
+    }
+    
+    @Override
     public int getNumVideos() {
         return -1;
     }

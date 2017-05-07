@@ -86,20 +86,20 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private void init() {
-        LayoutInflater.from(this.getContext()).inflate(2130903176, (ViewGroup)this, true);
+        LayoutInflater.from(this.getContext()).inflate(2130903175, (ViewGroup)this, true);
         this.setOrientation(1);
         this.addView(this.actionBarDummyView = ViewUtils.createActionBarDummyView((NetflixActivity)this.getContext()), 0);
-        this.imgGroup = (ViewGroup)this.findViewById(2131165604);
-        this.horzDispImg = (AdvancedImageView)this.findViewById(2131165597);
-        this.ratingBar = (NetflixRatingBar)this.findViewById(2131165560);
-        this.title = (TextView)this.findViewById(2131165606);
-        this.basicInfo = (TextView)this.findViewById(2131165559);
-        this.synopsis = (TextView)this.findViewById(2131165601);
-        this.starring = (TextView)this.findViewById(2131165602);
-        this.creators = (TextView)this.findViewById(2131165603);
-        (this.addToMyList = (Button)this.findViewById(2131165598)).setEnabled(false);
-        this.socialGroup = (LinearLayout)this.findViewById(2131165600);
-        this.socialTitle = (TextView)this.findViewById(2131165599);
+        this.imgGroup = (ViewGroup)this.findViewById(2131165608);
+        this.horzDispImg = (AdvancedImageView)this.findViewById(2131165601);
+        this.ratingBar = (NetflixRatingBar)this.findViewById(2131165566);
+        this.title = (TextView)this.findViewById(2131165610);
+        this.basicInfo = (TextView)this.findViewById(2131165565);
+        this.synopsis = (TextView)this.findViewById(2131165605);
+        this.starring = (TextView)this.findViewById(2131165606);
+        this.creators = (TextView)this.findViewById(2131165607);
+        (this.addToMyList = (Button)this.findViewById(2131165602)).setEnabled(false);
+        this.socialGroup = (LinearLayout)this.findViewById(2131165604);
+        this.socialTitle = (TextView)this.findViewById(2131165603);
         this.hdDrawablePadding = this.getHdDrawablePadding();
         this.setImgLayoutListener();
     }
@@ -157,9 +157,9 @@ public class VideoDetailsViewGroup extends LinearLayout
         }
         else {
             this.socialTitle.setText((CharSequence)this.getResources().getQuantityString(2131623937, facebookFriends.size(), new Object[] { facebookFriends.size() }));
-            final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361874);
+            final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361877);
             final LinearLayout$LayoutParams linearLayout$LayoutParams = new LinearLayout$LayoutParams(dimensionPixelOffset, dimensionPixelOffset);
-            final int dimensionPixelOffset2 = this.getResources().getDimensionPixelOffset(2131361875);
+            final int dimensionPixelOffset2 = this.getResources().getDimensionPixelOffset(2131361878);
             linearLayout$LayoutParams.topMargin = dimensionPixelOffset2;
             linearLayout$LayoutParams.bottomMargin = dimensionPixelOffset2;
             final int n = dimensionPixelOffset2 / 2;
@@ -197,7 +197,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     public void updateDetails(final VideoDetails details, final DetailsStringProvider detailsStringProvider) {
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        NetflixActivity.getImageLoader((Context)netflixActivity).showImg(this.horzDispImg, details.getHorzDispUrl(), IClientLogging.AssetType.boxArt, String.format(this.getResources().getString(2131493186), details.getTitle()), true, true);
+        NetflixActivity.getImageLoader((Context)netflixActivity).showImg(this.horzDispImg, details.getHorzDispUrl(), IClientLogging.AssetType.boxArt, String.format(this.getResources().getString(2131493187), details.getTitle()), true, true);
         this.horzDispImg.requestFocus();
         this.horzDispImg.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {

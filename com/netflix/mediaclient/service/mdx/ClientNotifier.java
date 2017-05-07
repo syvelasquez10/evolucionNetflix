@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.mdx;
 
+import android.text.TextUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
 import java.util.HashMap;
@@ -101,14 +102,18 @@ public final class ClientNotifier implements NotifierInterface
     }
     
     @Override
-    public void playbackEnd(final String s) {
+    public void playbackEnd(final String s, final String s2) {
         synchronized (this.mSharedStateMap) {
             if (this.mSharedStateMap.get(s) != null) {
                 this.mSharedStateMap.get(s).notifyPlaybackEnd();
                 this.mSharedStateMap.remove(s);
             }
             // monitorexit(this.mSharedStateMap)
-            this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s));
+            final Intent putExtra = new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s);
+            if (!TextUtils.isEmpty((CharSequence)s2)) {
+                putExtra.putExtra("postplayState", s2);
+            }
+            this.mContext.sendBroadcast(putExtra);
             Log.v("nf_mdx", "Intent MDXUPDATE_PLAYBACKEND sent");
         }
     }
@@ -141,8 +146,8 @@ public final class ClientNotifier implements NotifierInterface
     }
     
     @Override
-    public void simplePlaybackState(final String s, final boolean b, final boolean b2) {
-        this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_SIMPLE_PLAYBACKSTATE").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s).putExtra("paused", b).putExtra("transitioning", b2));
+    public void simplePlaybackState(final String s, final boolean b, final boolean b2, final String s2) {
+        this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_SIMPLE_PLAYBACKSTATE").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s).putExtra("paused", b).putExtra("transitioning", b2).putExtra("postplayState", s2));
     }
     
     @Override

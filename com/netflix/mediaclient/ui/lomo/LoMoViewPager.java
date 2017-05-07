@@ -28,6 +28,7 @@ import com.netflix.mediaclient.android.fragment.CustomViewPager;
 @SuppressLint({ "ViewConstructor" })
 public class LoMoViewPager extends CustomViewPager implements LoMoRowContent
 {
+    private static final float KIDS_TOUCH_SLOP_SCALE_FACTOR = 0.75f;
     private static final long ROTATE_TO_NEXT_VIEW_DELAY_MS;
     private static final String TAG = "LoMoViewPager";
     private final LoMoViewPagerAdapter adapter;
@@ -67,6 +68,9 @@ public class LoMoViewPager extends CustomViewPager implements LoMoRowContent
         this.handler = new Handler();
         this.pageIndicator = pageIndicator;
         this.setAdapter(this.adapter = new LoMoViewPagerAdapter(this, serviceManager, viewRecycler, view, b));
+        if (loLoMoFrag.getNetflixActivity().isForKids()) {
+            this.setTouchSlop((int)(this.getTouchSlop() * 0.75f));
+        }
     }
     
     private NetflixActivity getActivity() {
@@ -217,26 +221,15 @@ public class LoMoViewPager extends CustomViewPager implements LoMoRowContent
         ThreadUtils.assertOnMain();
         this.setPagesToOverlap(basicLoMo.getType() != LoMoType.BILLBOARD);
         this.updateAutoPagination(this.shouldAutoPaginate = (basicLoMo.getType() == LoMoType.BILLBOARD && b));
-        LoMoViewPagerAdapter.Type type;
-        if (basicLoMo.getType() == LoMoType.BILLBOARD) {
-            type = LoMoViewPagerAdapter.Type.BILLBOARD;
+        if (Log.isLoggable("LoMoViewPager", 2)) {
+            Log.v("LoMoViewPager", "Setting layout params for: " + basicLoMo.getType());
         }
-        else if (basicLoMo.getType() == LoMoType.CONTINUE_WATCHING) {
-            type = LoMoViewPagerAdapter.Type.CW;
-        }
-        else if (basicLoMo.getType() == LoMoType.INSTANT_QUEUE) {
-            type = LoMoViewPagerAdapter.Type.IQ;
-        }
-        else {
-            type = LoMoViewPagerAdapter.Type.STANDARD;
-        }
-        Log.v("LoMoViewPager", "Setting layout params for: " + type);
-        this.setLayoutParams((ViewGroup$LayoutParams)this.adapter.getLayoutParams(type));
+        this.setLayoutParams((ViewGroup$LayoutParams)this.adapter.getLayoutParams(basicLoMo.getType()));
         if (this.restoreState(basicLoMo.getId())) {
             this.adapter.trackPresentation(this.state.currPage);
             return;
         }
-        this.adapter.refresh(type, basicLoMo, n);
+        this.adapter.refresh(basicLoMo, n);
         this.updatePageIndicatorVisibility();
     }
     

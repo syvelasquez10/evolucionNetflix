@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import java.util.Collections;
+import java.util.Arrays;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
@@ -43,8 +44,8 @@ public class FetchGenreListsRequest extends FalcorVolleyWebClientRequest<List<Ge
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery);
     }
     
     @Override

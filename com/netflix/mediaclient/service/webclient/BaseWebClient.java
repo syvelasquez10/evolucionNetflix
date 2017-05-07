@@ -16,23 +16,23 @@ public abstract class BaseWebClient
     }
     
     public static int getFBConnectStatusCode(final String s) {
-        if (!s.equals("202") && !s.equals("200")) {
-            if (s.equals("400")) {
+        if (!s.contains("202") && !s.contains("200")) {
+            if (s.contains("400")) {
                 return -50;
             }
-            if (s.equals("401")) {
+            if (s.contains("401")) {
                 return -51;
             }
-            if (s.equals("403") || s.equals("405")) {
+            if (s.contains("403") || s.contains("405")) {
                 return -52;
             }
-            if (s.equals("406")) {
+            if (s.contains("406")) {
                 return -53;
             }
-            if (s.equals("500")) {
+            if (s.contains("500")) {
                 return -54;
             }
-            if (s.equals("503")) {
+            if (s.contains("503")) {
                 return -55;
             }
         }

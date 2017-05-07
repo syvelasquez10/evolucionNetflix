@@ -26,7 +26,7 @@ public interface NotifierInterface
     
     void notready();
     
-    void playbackEnd(final String p0);
+    void playbackEnd(final String p0, final String p1);
     
     void playbackStart(final String p0);
     
@@ -36,7 +36,7 @@ public interface NotifierInterface
     
     void requestPinVerification(final String p0, final String p1, final int p2, final int p3, final String p4);
     
-    void simplePlaybackState(final String p0, final boolean p1, final boolean p2);
+    void simplePlaybackState(final String p0, final boolean p1, final boolean p2, final String p3);
     
     void state(final String p0, final String p1, final int p2, final int p3);
     

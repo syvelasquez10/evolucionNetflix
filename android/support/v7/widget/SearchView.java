@@ -334,15 +334,16 @@ public class SearchView extends LinearLayout implements CollapsibleActionView
     }
     
     private Intent createIntentFromSuggestion(final Cursor cursor, int position, final String ex) {
+        String s = null;
+        String s2;
+        String s3;
+        Uri parse;
+        String columnString;
+        String string = null;
+        Label_0118_Outer:Label_0147_Outer:
         while (true) {
-            String s = null;
-            String string = null;
-            Uri parse;
-            String s2;
-            String s3;
-            String columnString;
-            Block_7_Outer:Label_0030_Outer:Label_0118_Outer:
             while (true) {
+            Label_0030_Outer:
                 while (true) {
                     Label_0223: {
                         while (true) {
@@ -352,25 +353,25 @@ public class SearchView extends LinearLayout implements CollapsibleActionView
                                         s = this.mSearchable.getSuggestIntentAction();
                                     }
                                     break Label_0206;
-                                    parse = Uri.parse(string);
-                                    return this.createIntent(s2, parse, SuggestionsAdapter.getColumnString(cursor, "suggest_intent_extra_data"), SuggestionsAdapter.getColumnString(cursor, "suggest_intent_query"), position, (String)ex);
-                                    // iftrue(Label_0223:, string = s3 == null)
-                                    // iftrue(Label_0057:, s3 = SuggestionsAdapter.getColumnString(cursor, "suggest_intent_data") != null)
                                     // iftrue(Label_0223:, columnString == null)
+                                    // iftrue(Label_0057:, s2 = SuggestionsAdapter.getColumnString(cursor, "suggest_intent_data") != null)
+                                    // iftrue(Label_0223:, string = s2 == null)
                                     while (true) {
-                                    Block_6:
+                                    Label_0057:
                                         while (true) {
-                                            break Block_6;
-                                            string = s3 + "/" + Uri.encode(columnString);
+                                            s2 = this.mSearchable.getSuggestIntentData();
+                                            break Label_0057;
+                                            return this.createIntent(s3, parse, SuggestionsAdapter.getColumnString(cursor, "suggest_intent_extra_data"), SuggestionsAdapter.getColumnString(cursor, "suggest_intent_query"), position, (String)ex);
+                                            columnString = SuggestionsAdapter.getColumnString(cursor, "suggest_intent_data_id");
+                                            string = s2;
+                                            string = s2 + "/" + Uri.encode(columnString);
                                             break Label_0223;
-                                            s3 = this.mSearchable.getSuggestIntentData();
-                                            continue Block_7_Outer;
+                                            continue Label_0118_Outer;
                                         }
-                                        columnString = SuggestionsAdapter.getColumnString(cursor, "suggest_intent_data_id");
-                                        string = s3;
                                         continue Label_0030_Outer;
                                     }
-                                    return this.createIntent(s2, parse, SuggestionsAdapter.getColumnString(cursor, "suggest_intent_extra_data"), SuggestionsAdapter.getColumnString(cursor, "suggest_intent_query"), position, (String)ex);
+                                    parse = Uri.parse(string);
+                                    return this.createIntent(s3, parse, SuggestionsAdapter.getColumnString(cursor, "suggest_intent_extra_data"), SuggestionsAdapter.getColumnString(cursor, "suggest_intent_query"), position, (String)ex);
                                 }
                                 catch (RuntimeException ex) {
                                     try {
@@ -383,20 +384,20 @@ public class SearchView extends LinearLayout implements CollapsibleActionView
                                     }
                                 }
                             }
-                            if ((s2 = s) == null) {
-                                s2 = "android.intent.action.SEARCH";
-                                continue Label_0118_Outer;
+                            if ((s3 = s) == null) {
+                                s3 = "android.intent.action.SEARCH";
+                                continue Label_0147_Outer;
                             }
-                            continue Label_0118_Outer;
+                            continue Label_0147_Outer;
                         }
                     }
                     if (string == null) {
                         parse = null;
-                        continue;
+                        continue Label_0147_Outer;
                     }
                     break;
                 }
-                continue Label_0118_Outer;
+                continue;
             }
         }
     }

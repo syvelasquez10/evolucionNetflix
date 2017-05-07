@@ -17,11 +17,13 @@ import android.widget.ImageView$ScaleType;
 import android.widget.RelativeLayout$LayoutParams;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.widget.ProgressBar;
+import com.netflix.mediaclient.service.logging.apm.model.Display;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.ui.login.LoginActivity;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
+import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.app.Activity;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -123,14 +125,14 @@ public class LaunchActivity extends NetflixActivity
     }
     
     private void createContentView() {
-        this.setContentView(2130903169);
-        final ImageView imageView = (ImageView)this.findViewById(2131165592);
+        this.setContentView(2130903168);
+        final ImageView imageView = (ImageView)this.findViewById(2131165598);
         int imageResource;
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            imageResource = 2130837865;
+            imageResource = 2130837869;
         }
         else {
-            imageResource = 2130837864;
+            imageResource = 2130837868;
         }
         imageView.setImageResource(imageResource);
         if (DeviceUtils.getScreenResolutionDpi(this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
@@ -146,18 +148,19 @@ public class LaunchActivity extends NetflixActivity
             Log.d("LaunchActivity", "Splash screen was displayed, reporting");
             applicationPerformanceMetricsLogging.uiViewChanged(DeviceUtils.isPortrait((Context)this), IClientLogging.ModalView.appLoading, this.mSplashScreenStarted);
         }
+        final Display display = LogUtils.getDisplay((Context)this);
         if (!userLoggedIn) {
             if (signUpEnabled && !this.getNetflixApplication().hasSignedUpOnce()) {
                 Log.d("LaunchActivity", "User has not signed up, redirect to Signup screen");
                 if (this.shouldCreateUiSessions()) {
-                    applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.signupPrompt, this.mStarted);
+                    applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.signupPrompt, this.mStarted, display);
                 }
                 this.startNextActivity(SignupActivity.createStartIntent((Context)this, this.getIntent()));
             }
             else {
                 Log.d("LaunchActivity", "User is NOT logged in, redirect to Login screen");
                 if (this.shouldCreateUiSessions()) {
-                    applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.login, this.mStarted);
+                    applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.login, this.mStarted, display);
                 }
                 this.startNextActivity(LoginActivity.createStartIntent((Context)this));
             }
@@ -182,7 +185,7 @@ public class LaunchActivity extends NetflixActivity
         }
         if (serviceManager.getCurrentProfile() == null) {
             if (this.shouldCreateUiSessions()) {
-                applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.profilesGate, this.mStarted);
+                applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.profilesGate, this.mStarted, display);
                 applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
             }
             this.startNextActivity(ProfileSelectionActivity.createStartIntent(this));
@@ -192,17 +195,17 @@ public class LaunchActivity extends NetflixActivity
         Log.d("LaunchActivity", String.format("Redirect to home with profile %s, %s", serviceManager.getCurrentProfile().getProfileName(), serviceManager.getCurrentProfile().getProfileId()));
         this.startNextActivity(HomeActivity.createStartIntent(this));
         if (this.shouldCreateUiSessions()) {
-            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.homeScreen, this.mStarted);
+            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.homeScreen, this.mStarted, display);
             applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
         }
         this.finish();
     }
     
     private void manipulateSplashBackground() {
-        final ImageView imageView = (ImageView)this.findViewById(2131165592);
+        final ImageView imageView = (ImageView)this.findViewById(2131165598);
         imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
-            final /* synthetic */ ImageView val$logo = (ImageView)LaunchActivity.this.findViewById(2131165593);
-            final /* synthetic */ ProgressBar val$progress = (ProgressBar)LaunchActivity.this.findViewById(2131165594);
+            final /* synthetic */ ImageView val$logo = (ImageView)LaunchActivity.this.findViewById(2131165396);
+            final /* synthetic */ ProgressBar val$progress = (ProgressBar)LaunchActivity.this.findViewById(2131165397);
             
             public void onGlobalLayout() {
                 if (imageView.getWidth() <= 0) {

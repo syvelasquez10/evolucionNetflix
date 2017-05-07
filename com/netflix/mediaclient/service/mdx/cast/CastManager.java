@@ -34,6 +34,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     private Handler mMainHandler;
     private MediaRouteSelector mMediaRouteSelector;
     private MediaRouter mMediaRouter;
+    private String mMyUuid;
     private MdxCastApplication mSelectedMdxCastApp;
     private RouteInfo mSelectedRoute;
     private String mTargetId;
@@ -44,12 +45,16 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
         TAG = CastManager.class.getSimpleName();
     }
     
-    public CastManager(final Context mContext, final Handler mMainHandler, final Handler mWorkerHandler) {
+    public CastManager(final Context mContext, final Handler mMainHandler, final Handler mWorkerHandler, final String mMyUuid) {
         this.mApplicationId = "CA5E8412";
         this.mListOfRoutes = new ArrayList<RouteInfo>();
+        if (mMyUuid == null) {
+            throw new IllegalArgumentException("ESN can not be null!");
+        }
         this.mContext = mContext;
         this.mMainHandler = mMainHandler;
         this.mWorkerHandler = mWorkerHandler;
+        this.mMyUuid = mMyUuid;
         this.nativeInit();
     }
     
@@ -73,7 +78,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
             return jsonObject.toString();
         }
         catch (JSONException ex) {
-            Log.e(CastManager.TAG, "createCastHandShakeMessage failedme");
+            Log.e(CastManager.TAG, "createCastHandShakeMessage failed, e");
             return null;
         }
     }
@@ -147,12 +152,14 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     
     private void logCastDevice(final RouteInfo routeInfo) {
         final CastDevice fromBundle = CastDevice.getFromBundle(routeInfo.getExtras());
-        Log.d(CastManager.TAG, "Id: " + fromBundle.getDeviceId());
-        Log.d(CastManager.TAG, "Version: " + fromBundle.getDeviceVersion());
-        Log.d(CastManager.TAG, "FriendlyName: " + fromBundle.getFriendlyName());
-        Log.d(CastManager.TAG, "IpAddress: " + fromBundle.getIpAddress());
-        Log.d(CastManager.TAG, "ModelName: " + fromBundle.getModelName());
-        Log.d(CastManager.TAG, "ServicePort: " + fromBundle.getServicePort());
+        if (Log.isLoggable(CastManager.TAG, 3)) {
+            Log.d(CastManager.TAG, "Id: " + fromBundle.getDeviceId());
+            Log.d(CastManager.TAG, "Version: " + fromBundle.getDeviceVersion());
+            Log.d(CastManager.TAG, "FriendlyName: " + fromBundle.getFriendlyName());
+            Log.d(CastManager.TAG, "IpAddress: " + fromBundle.getIpAddress());
+            Log.d(CastManager.TAG, "ModelName: " + fromBundle.getModelName());
+            Log.d(CastManager.TAG, "ServicePort: " + fromBundle.getServicePort());
+        }
     }
     
     private synchronized native void nativeDeviceFound(final String p0, final String p1, final String p2);
@@ -296,10 +303,9 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
         Log.d(CastManager.TAG, "onFailToLaunch");
         if (this.mSelectedRoute != null) {
             this.nativeLaunchResultWrapper(false, this.getUuid(this.mSelectedRoute.getId()));
+            return;
         }
-        else if (Log.isLoggable(CastManager.TAG, 3)) {
-            Log.d(CastManager.TAG, "onFailToLaunch, no selected route");
-        }
+        Log.d(CastManager.TAG, "onFailToLaunch, no selected route");
     }
     
     @Override
@@ -317,43 +323,38 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
         Log.d(CastManager.TAG, "onLaunched");
         if (this.mSelectedRoute != null) {
             this.sendCastMessage(this.createCastHandShakeMessage(this.getUuid(this.mSelectedRoute.getId()), this.mSelectedRoute.getName()));
+            return;
         }
-        else if (Log.isLoggable(CastManager.TAG, 3)) {
-            Log.d(CastManager.TAG, "onLaunched, no selected route");
-        }
+        Log.d(CastManager.TAG, "onLaunched, no selected route");
     }
     
     @Override
     public void onMessageReceived(String s) {
-        while (true) {
-            String optString;
-            try {
-                final JSONObject jsonObject = new JSONObject(s);
-                optString = jsonObject.optString("body");
-                s = jsonObject.optString("url");
-                if (s.indexOf("/") >= 0) {
-                    s = s.substring(s.lastIndexOf("/"));
-                }
-                if (jsonObject.optString("type").equals("castHandShakeAck")) {
-                    this.nativeLaunchResultWrapper(true, this.getUuid(this.mSelectedRoute.getId()));
-                    return;
-                }
+        String optString;
+        try {
+            final JSONObject jsonObject = new JSONObject(s);
+            optString = jsonObject.optString("body");
+            s = jsonObject.optString("url");
+            if (s.indexOf("/") >= 0) {
+                s = s.substring(s.lastIndexOf("/"));
             }
-            catch (JSONException ex) {
-                Log.e(CastManager.TAG, "error onMessageReceived " + ex);
+            if (jsonObject.optString("type").equals("castHandShakeAck")) {
+                this.nativeLaunchResultWrapper(true, this.getUuid(this.mSelectedRoute.getId()));
                 return;
-            }
-            if (Log.isLoggable(CastManager.TAG, 3)) {
-                Log.d(CastManager.TAG, "onMessageReceived @" + s + ", body:" + optString);
-            }
-            if (this.mSelectedRoute != null) {
-                this.nativeMessageReceivedWrapper(optString, this.getUuid(this.mSelectedRoute.getId()), s);
-                return;
-            }
-            if (Log.isLoggable(CastManager.TAG, 3)) {
-                Log.d(CastManager.TAG, "onMessageReceived, no selected route");
             }
         }
+        catch (JSONException ex) {
+            Log.e(CastManager.TAG, "error onMessageReceived ", (Throwable)ex);
+            return;
+        }
+        if (Log.isLoggable(CastManager.TAG, 3)) {
+            Log.d(CastManager.TAG, "onMessageReceived @" + s + ", body:" + optString);
+        }
+        if (this.mSelectedRoute != null) {
+            this.nativeMessageReceivedWrapper(optString, this.getUuid(this.mSelectedRoute.getId()), s);
+            return;
+        }
+        Log.d(CastManager.TAG, "onMessageReceived, no selected route");
     }
     
     @Override

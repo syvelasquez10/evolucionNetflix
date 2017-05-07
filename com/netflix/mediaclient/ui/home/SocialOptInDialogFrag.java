@@ -38,7 +38,7 @@ public class SocialOptInDialogFrag extends NetflixDialogFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903138, viewGroup);
+        final View inflate = layoutInflater.inflate(2130903137, viewGroup);
         final Button button = (Button)inflate.findViewById(2131165286);
         final Button button2 = (Button)inflate.findViewById(2131165290);
         button2.requestFocus();

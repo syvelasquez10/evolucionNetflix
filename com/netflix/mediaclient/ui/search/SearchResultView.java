@@ -63,13 +63,13 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     private void init() {
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        netflixActivity.getLayoutInflater().inflate(2130903160, (ViewGroup)this);
+        netflixActivity.getLayoutInflater().inflate(2130903159, (ViewGroup)this);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        this.setForeground(this.getResources().getDrawable(2130837851));
-        (this.img = (AdvancedImageView)this.findViewById(2131165579)).setPressedStateHandlerEnabled(false);
-        this.title = (TextView)this.findViewById(2131165580);
-        this.verticalDivider = this.findViewById(2131165582);
-        (this.rating = (TextView)this.findViewById(2131165581)).setVisibility(8);
+        this.setForeground(this.getResources().getDrawable(2130837855));
+        (this.img = (AdvancedImageView)this.findViewById(2131165585)).setPressedStateHandlerEnabled(false);
+        this.title = (TextView)this.findViewById(2131165586);
+        this.verticalDivider = this.findViewById(2131165588);
+        (this.rating = (TextView)this.findViewById(2131165587)).setVisibility(8);
         this.videoClickListener = new VideoDetailsClickListener(netflixActivity, this);
     }
     
@@ -89,7 +89,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final String imgUrl = searchPerson.getImgUrl();
         NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, imgUrl, IClientLogging.AssetType.heroImage, name, false, false);
         if (StringUtils.isEmpty(imgUrl)) {
-            this.img.setImageResource(2130837872);
+            this.img.setImageResource(2130837876);
         }
         this.videoClickListener.remove((View)this);
         this.setOnClickListener((View$OnClickListener)new PersonClickListener(searchPerson.getId(), searchPerson.getName()));
@@ -111,7 +111,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     }
     
     protected int getYearColorResId() {
-        return 2131296316;
+        return 2131296315;
     }
     
     public void update(final Object o, final PlayContext playContext) {
@@ -143,8 +143,8 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     private enum ImgSizeType
     {
-        BOXART(2131361860), 
-        SQUARE(2131361859);
+        BOXART(2131361862), 
+        SQUARE(2131361861);
         
         private final int heightDimenId;
         

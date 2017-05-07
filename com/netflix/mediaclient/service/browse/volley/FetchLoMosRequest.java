@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import java.util.Collections;
+import java.util.Arrays;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.service.ServiceAgent;
@@ -55,8 +56,8 @@ public class FetchLoMosRequest extends FalcorVolleyWebClientRequest<List<LoMo>>
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery);
     }
     
     @Override

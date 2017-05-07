@@ -301,28 +301,35 @@ public final class ServiceManager
     }
     
     public boolean fetchGenres(final String s, final int n, final int n2, final ManagerCallback managerCallback) {
-        synchronized (this) {
-            if (StringUtils.isEmpty(s)) {
-                throw new IllegalArgumentException("Parameter cannot be null");
+        while (true) {
+            boolean b = false;
+            final INetflixService validateService;
+            Label_0099: {
+                synchronized (this) {
+                    validateService = this.validateService();
+                    if (validateService == null) {
+                        Log.w("ServiceManager", "fetchGenres:: service is not available");
+                    }
+                    else {
+                        final String stackTraceString = android.util.Log.getStackTraceString((Throwable)new Exception("Parameter cannot be null"));
+                        Log.w("ServiceManager", String.format("fetchGenres:: stack:%s", stackTraceString));
+                        if (!StringUtils.isEmpty(s)) {
+                            break Label_0099;
+                        }
+                        validateService.getClientLogging().getErrorLogging().logHandledException(stackTraceString);
+                    }
+                    return b;
+                }
             }
-        }
-        final int addCallback = this.addCallback(managerCallback);
-        final String s2;
-        if (Log.isLoggable("ServiceManager", 3)) {
-            Log.d("ServiceManager", "fetchGenres requestId=" + addCallback + " id=" + s2);
-        }
-        final INetflixService validateService = this.validateService();
-        boolean b;
-        if (validateService != null) {
+            final int addCallback = this.addCallback(managerCallback);
+            final String s2;
+            if (Log.isLoggable("ServiceManager", 3)) {
+                Log.d("ServiceManager", "fetchGenres requestId=" + addCallback + " id=" + s2);
+            }
             validateService.fetchGenres(s2, n, n2, this.mClientId, addCallback);
             b = true;
+            return b;
         }
-        else {
-            Log.w("ServiceManager", "fetchGenres:: service is not available");
-            b = false;
-        }
-        // monitorexit(this)
-        return b;
     }
     
     public boolean fetchIQVideos(final int n, final int n2, final ManagerCallback managerCallback) {
@@ -905,14 +912,14 @@ public final class ServiceManager
         }
     }
     
-    public boolean prefetchLoLoMo(final int n, final int n2, final int n3, final int n4, final int n5, final int n6, final boolean b, final ManagerCallback managerCallback) {
+    public boolean prefetchLoLoMo(final int n, final int n2, final int n3, final int n4, final int n5, final int n6, final boolean b, final boolean b2, final ManagerCallback managerCallback) {
         final int addCallback = this.addCallback(managerCallback);
         if (Log.isLoggable("ServiceManager", 3)) {
-            Log.d("ServiceManager", "prefetchLoLoMo requestId=" + addCallback + " fromLoMo=" + n + " toLoMo=" + n2 + " fromVideo=" + n3 + " toVideo=" + n4 + " fromCWVideo=" + n5 + " toCWVideo=" + n6 + "includeBoxshots=" + b);
+            Log.d("ServiceManager", "prefetchLoLoMo requestId=" + addCallback + " fromLoMo=" + n + " toLoMo=" + n2 + " fromVideo=" + n3 + " toVideo=" + n4 + " fromCWVideo=" + n5 + " toCWVideo=" + n6 + " includeExtraCharacters=" + b + "includeBoxshots=" + b2);
         }
         final INetflixService validateService = this.validateService();
         if (validateService != null) {
-            validateService.prefetchLoLoMo(n, n2, n3, n4, n5, n6, b, this.mClientId, addCallback);
+            validateService.prefetchLoLoMo(n, n2, n3, n4, n5, n6, b, b2, this.mClientId, addCallback);
             return true;
         }
         Log.w("ServiceManager", "prefetchLoLoMo:: service is not available");

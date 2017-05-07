@@ -31,7 +31,7 @@ public class LogoutActivity extends AccountActivity
     
     private void handleLogoutComplete() {
         Log.i("LogoutActivity", "Handling logout completion...");
-        Toast.makeText(this.getApplicationContext(), 2131493214, 1).show();
+        Toast.makeText(this.getApplicationContext(), 2131493215, 1).show();
         relaunchApp(this, "handleLogoutComplete()");
     }
     
@@ -45,7 +45,7 @@ public class LogoutActivity extends AccountActivity
     }
     
     public static void showLogoutDialog(final Activity activity) {
-        new AlertDialog$Builder((Context)activity).setMessage(2131493212).setNegativeButton(2131493120, (DialogInterface$OnClickListener)null).setPositiveButton(2131493184, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        new AlertDialog$Builder((Context)activity).setMessage(2131493213).setNegativeButton(2131493121, (DialogInterface$OnClickListener)null).setPositiveButton(2131493185, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 activity.startActivity(LogoutActivity.create((Context)activity));
                 activity.finish();
@@ -91,7 +91,7 @@ public class LogoutActivity extends AccountActivity
                 return;
             }
             Log.e("LogoutActivity", "Could not log user out - status code: " + n);
-            Toast.makeText(LogoutActivity.this.getApplicationContext(), 2131493213, 1).show();
+            Toast.makeText(LogoutActivity.this.getApplicationContext(), 2131493214, 1).show();
             LogoutActivity.this.finish();
         }
     }

@@ -18,7 +18,7 @@ import android.annotation.TargetApi;
 @TargetApi(4)
 public final class ErrorLoggingManager
 {
-    private static final String CRITTER_VERSION_NAME = "3.7.0";
+    private static final String CRITTER_VERSION_NAME = "3.7.1";
     private static final boolean ENABLE_CRITTERCISM = true;
     private static final String TAG = "nf_log";
     private static boolean sCrittercismReady;
@@ -28,7 +28,7 @@ public final class ErrorLoggingManager
             Log.d("nf_log", "Crittercism init starts...");
             final CrittercismConfig crittercismConfig = new CrittercismConfig();
             crittercismConfig.setNdkCrashReportingEnabled(true);
-            crittercismConfig.setCustomVersionName("3.7.0");
+            crittercismConfig.setCustomVersionName("3.7.1");
             try {
                 Crittercism.initialize(application.getApplicationContext(), SecurityRepository.getCrittercismAppId(), crittercismConfig);
                 final JSONObject metadata = new JSONObject();

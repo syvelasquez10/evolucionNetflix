@@ -92,7 +92,7 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
         Object o = view;
         if (view == null) {
             o = new VideoView((Context)this.activity);
-            final int dimensionPixelOffset = this.activity.getResources().getDimensionPixelOffset(2131361870);
+            final int dimensionPixelOffset = this.activity.getResources().getDimensionPixelOffset(2131361873);
             ((VideoView)o).setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
             ((VideoView)o).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.imgHeight));
             ((VideoView)o).setAdjustViewBounds(true);

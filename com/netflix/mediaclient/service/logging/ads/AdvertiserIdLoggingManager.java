@@ -65,7 +65,18 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
     }
     
     private void doSendAdvertiserId(final String s, final Boolean b, final EventType eventType) {
-        this.mLoggingWebClient.sendLoggingEvent(new AdvertiserIdRequest(s, b, eventType).toJson(), new AdvertiserIdLoggingCallback() {
+        String deviceModel;
+        final String s2 = deviceModel = null;
+        if (this.mOwner != null) {
+            deviceModel = s2;
+            if (this.mOwner.getConfigurationAgent() != null) {
+                deviceModel = s2;
+                if (this.mOwner.getConfigurationAgent().getEsnProvider() != null) {
+                    deviceModel = this.mOwner.getConfigurationAgent().getEsnProvider().getDeviceModel();
+                }
+            }
+        }
+        this.mLoggingWebClient.sendLoggingEvent(new AdvertiserIdRequest(s, b, eventType, deviceModel).toJson(), new AdvertiserIdLoggingCallback() {
             @Override
             public void onFailure() {
                 Log.d("nf_adv_id", "Advertiser ID failed to be delivered");
@@ -187,9 +198,9 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
         while (true) {
             String id = null;
             boolean b = false;
-        Label_0133:
+        Label_0135:
             while (true) {
-                Label_0128: {
+                Label_0130: {
                     synchronized (this) {
                         if (this.mAdvertisingIdProvider == null) {
                             Log.d("nf_adv_id", "User is logged in, but ADV ID provider is not readu, postpone sending ID");
@@ -200,14 +211,14 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
                             Log.d("nf_adv_id", "Ad ID provider is ready and request to send AD ID exist, execute.");
                             id = this.mAdvertisingIdProvider.getId();
                             if (this.mAdvertisingIdProvider.isLimitAdTrackingEnabled()) {
-                                break Label_0128;
+                                break Label_0130;
                             }
                             b = true;
                             if (Log.isLoggable("nf_adv_id", 3)) {
                                 Log.d("nf_adv_id", "Ad ID provider exist, if we need to send ID " + id + ", opted in " + b);
                             }
                             if (id != null) {
-                                break Label_0133;
+                                break Label_0135;
                             }
                             Log.e("nf_adv_id", "Ad id can not be null!");
                         }

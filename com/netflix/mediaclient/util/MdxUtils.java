@@ -51,13 +51,13 @@ public final class MdxUtils
         targetSelection.setTarget(devicePositionByUUID);
         final MdxTargetSelectionDialog.Builder builder = new MdxTargetSelectionDialog.Builder(netflixActivity);
         builder.setCancelable(true);
-        builder.setTitle(2131493149);
+        builder.setTitle(2131493150);
         builder.setAdapterData(targetSelection.getTargets((Context)netflixActivity));
         String format = "";
         if (mdxTargetSelectionDialogInterface.getVideoDetails() != null) {
             format = format;
             if (StringUtils.isNotEmpty(mdxTargetSelectionDialogInterface.getVideoDetails().getTitle())) {
-                format = String.format(netflixActivity.getString(2131493241), mdxTargetSelectionDialogInterface.getVideoDetails().getTitle());
+                format = String.format(netflixActivity.getString(2131493242), mdxTargetSelectionDialogInterface.getVideoDetails().getTitle());
             }
         }
         builder.setSelection(devicePositionByUUID, format);
@@ -320,14 +320,14 @@ public final class MdxUtils
             }
             if (n != 0) {
                 Log.w("MdxUtils", "Invalid status code failed");
-                Toast.makeText((Context)this.activity, 2131493199, 1).show();
+                Toast.makeText((Context)this.activity, 2131493200, 1).show();
                 Log.d("MdxUtils", "Report rate action ended");
                 final LogUtils.LogReportErrorArgs logReportErrorArgs = new LogUtils.LogReportErrorArgs(n, ActionOnUIError.displayedError, "", null);
                 LogUtils.reportRateActionEnded((Context)this.activity, logReportErrorArgs.getReason(), logReportErrorArgs.getError(), null, (int)this.rating);
                 return;
             }
             Log.v("MdxUtils", "Rating has been updated ok");
-            Toast.makeText((Context)this.activity, 2131493200, 1).show();
+            Toast.makeText((Context)this.activity, 2131493201, 1).show();
             LogUtils.reportRateActionEnded((Context)this.activity, IClientLogging.CompletionReason.success, null, null, (int)this.rating);
         }
     }

@@ -36,7 +36,7 @@ public class OpenSourceLicensesActivity extends NetflixActivity
     }
     
     private String createHeaderText(final String s) {
-        return String.format(this.getString(2131493202), s);
+        return String.format(this.getString(2131493203), s);
     }
     
     private void createOslInfo() {
@@ -60,7 +60,7 @@ public class OpenSourceLicensesActivity extends NetflixActivity
         this.createOslInfo();
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
-            netflixActionBar.setTitle(this.getString(2131493201));
+            netflixActionBar.setTitle(this.getString(2131493202));
         }
         final ListView contentView = new ListView((Context)this);
         contentView.setAdapter((ListAdapter)new OslAdapter());
@@ -105,8 +105,8 @@ public class OpenSourceLicensesActivity extends NetflixActivity
         public View getView(final int n, final View view, final ViewGroup viewGroup) {
             View inflate = view;
             if (view == null) {
-                inflate = OpenSourceLicensesActivity.this.getLayoutInflater().inflate(2130903137, (ViewGroup)null);
-                inflate.setTag((Object)new Holder((TextView)inflate.findViewById(2131165490), (TextView)inflate.findViewById(2131165491)));
+                inflate = OpenSourceLicensesActivity.this.getLayoutInflater().inflate(2130903136, (ViewGroup)null);
+                inflate.setTag((Object)new Holder((TextView)inflate.findViewById(2131165496), (TextView)inflate.findViewById(2131165497)));
             }
             final Holder holder = (Holder)inflate.getTag();
             final OslInfo item = this.getItem(n);

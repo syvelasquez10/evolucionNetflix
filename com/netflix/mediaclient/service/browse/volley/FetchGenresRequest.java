@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import java.util.Collections;
+import java.util.Arrays;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.service.browse.cache.SoftCache;
@@ -57,8 +58,8 @@ public class FetchGenresRequest extends FalcorVolleyWebClientRequest<List<Genre>
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery);
     }
     
     @Override

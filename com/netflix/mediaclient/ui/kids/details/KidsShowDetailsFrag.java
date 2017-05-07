@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.kids.details;
 
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.android.widget.ErrorWrapper;
-import android.graphics.drawable.Drawable;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.content.IntentFilter;
@@ -162,8 +162,9 @@ public class KidsShowDetailsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        this.content = layoutInflater.inflate(2130903109, (ViewGroup)null);
-        (this.listView = (StickyListHeadersListView)this.content.findViewById(16908298)).setDivider(null);
+        this.content = layoutInflater.inflate(2130903108, (ViewGroup)null);
+        this.listView = (StickyListHeadersListView)this.content.findViewById(16908298);
+        KidsUtils.configureListViewForKids(this.getNetflixActivity(), this.listView);
         this.detailsViewGroup = new KidsDetailsViewGroup((Context)this.getActivity());
         this.listView.addHeaderView((View)this.detailsViewGroup, null, false);
         this.leWrapper = new LoadingAndErrorWrapper(this.content, new ErrorWrapper.Callback() {

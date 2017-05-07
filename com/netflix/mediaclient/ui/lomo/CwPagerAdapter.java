@@ -20,7 +20,20 @@ public class CwPagerAdapter extends ProgressiveCwPagerAdapter
     
     @Override
     protected void fetchMoreData(final int n, final int n2) {
-        Log.v("BaseProgressivePagerAdapter", "fetching for continue watching, start: " + n + ", end: " + n2);
-        this.getManager().fetchCWVideos(n, n2, new FetchVideosHandler<Object>("BaseProgressivePagerAdapter", (FetchVideosHandler.FetchCallback<?>)this, "CW", n, n2));
+        int n3 = n2;
+        if (this.getManager() != null) {
+            n3 = n2;
+            if (this.getManager().getActivity() != null) {
+                n3 = n2;
+                if (this.getManager().getActivity().isForKids()) {
+                    Log.d("BaseProgressivePagerAdapter", "limiting index for Kids CW row, max: " + 2);
+                    if ((n3 = n2) > 2) {
+                        n3 = 2;
+                    }
+                }
+            }
+        }
+        Log.v("BaseProgressivePagerAdapter", "fetching for continue watching, start: " + n + ", end: " + n3);
+        this.getManager().fetchCWVideos(n, n3, new FetchVideosHandler<Object>("BaseProgressivePagerAdapter", (FetchVideosHandler.FetchCallback<Object>)this, "CW", n, n3));
     }
 }

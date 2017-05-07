@@ -47,14 +47,20 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
             final ServiceManager serviceManager = this.mContext.getServiceManager();
             if (serviceManager != null && ServiceManagerUtils.isMdxAgentAvailable(serviceManager)) {
                 this.mTargetNameView.setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(serviceManager));
+                if (this.mTargetNameView != null) {
+                    this.mTargetNameView.setVisibility(0);
+                }
+                if (this.mBackground != null) {
+                    this.mBackground.setVisibility(0);
+                }
             }
         }
     }
     
     @Override
     protected void findViews() {
-        this.mTargetNameView = (TextView)this.mContext.findViewById(2131165547);
-        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165545);
+        this.mTargetNameView = (TextView)this.mContext.findViewById(2131165553);
+        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165551);
     }
     
     public void handleInfoButtonPress() {
@@ -109,16 +115,10 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void initInfoContainer() {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493310));
+            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493311));
         }
         if (this.mTimerView != null) {
             this.mTimerView.setVisibility(8);
-        }
-        if (this.mTargetNameView != null) {
-            this.mTargetNameView.setVisibility(0);
-        }
-        if (this.mBackground != null) {
-            this.mBackground.setVisibility(0);
         }
     }
     

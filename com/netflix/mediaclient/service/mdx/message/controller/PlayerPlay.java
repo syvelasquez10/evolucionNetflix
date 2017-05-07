@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.mdx.message.controller;
 
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.pin.PinVerifier;
 import com.netflix.mediaclient.service.mdx.message.MdxMessage;
 
 public final class PlayerPlay extends MdxMessage
@@ -70,7 +71,10 @@ public final class PlayerPlay extends MdxMessage
             this.mJson.put("trackId", this.mTrackId);
             this.mJson.put("esn", (Object)this.mEsn);
             this.mJson.put("enablePostPlay", true);
-            this.mJson.put("isPinVerified", true);
+            if (PinVerifier.isPinSessionActive()) {
+                Log.d("nf_mdx", "nf_pin  sessionActive adding isPInVerified to true");
+                this.mJson.put("isPinVerified", true);
+            }
             if (this.mEpisodeId != null) {
                 this.mJson.put("episodeId", (Object)this.mEpisodeId);
             }

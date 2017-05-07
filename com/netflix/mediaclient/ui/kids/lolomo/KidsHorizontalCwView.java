@@ -41,12 +41,10 @@ public class KidsHorizontalCwView extends RelativeLayout implements IVideoView<C
         super(context);
         this.setFocusable(true);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeHorizontalRowHeight((NetflixActivity)this.getContext(), b)));
-        final int dimensionPixelSize = this.getResources().getDimensionPixelSize(2131361836);
-        this.setPadding(dimensionPixelSize, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         ((Activity)this.getContext()).getLayoutInflater().inflate(2130903094, (ViewGroup)this);
-        this.title = (TextView)this.findViewById(2131165394);
-        (this.img = (AdvancedImageView)this.findViewById(2131165391)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361905));
+        this.title = (TextView)this.findViewById(2131165393);
+        (this.img = (AdvancedImageView)this.findViewById(2131165391)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361909));
     }
     
     public PlayContext getPlayContext() {
@@ -64,10 +62,10 @@ public class KidsHorizontalCwView extends RelativeLayout implements IVideoView<C
         }
         this.playContext = new PlayContextImp(trackable, n);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493186), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131493187), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.title.setText((CharSequence)this.getContext().getString(2131493249, new Object[] { cwVideo.getTitle(), cwVideo.getCurrentSeasonNumber(), cwVideo.getCurrentEpisodeNumber() }));
+            this.title.setText((CharSequence)this.getContext().getString(2131493250, new Object[] { cwVideo.getTitle(), cwVideo.getCurrentSeasonNumber(), cwVideo.getCurrentEpisodeNumber() }));
         }
         else {
             this.title.setText((CharSequence)cwVideo.getTitle());

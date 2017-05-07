@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.lomo;
 
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
-interface RowAdapterCallbacks
+public interface RowAdapterCallbacks
 {
     NetflixActivity getActivity();
     

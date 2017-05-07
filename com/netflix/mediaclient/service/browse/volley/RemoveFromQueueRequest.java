@@ -11,6 +11,7 @@ import com.netflix.mediaclient.servicemgr.Video;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import java.util.Arrays;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
@@ -87,8 +88,8 @@ public class RemoveFromQueueRequest extends FalcorVolleyWebClientRequest<String>
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery);
     }
     
     @Override

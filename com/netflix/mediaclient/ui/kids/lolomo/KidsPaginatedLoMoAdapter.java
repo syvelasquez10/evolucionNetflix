@@ -4,10 +4,7 @@
 
 package com.netflix.mediaclient.ui.kids.lolomo;
 
-import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
-import android.widget.LinearLayout;
 import com.netflix.mediaclient.servicemgr.Trackable;
-import com.netflix.mediaclient.servicemgr.LoMoType;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.BasicLoMo;
 import com.netflix.mediaclient.servicemgr.Video;
@@ -35,18 +32,12 @@ public class KidsPaginatedLoMoAdapter extends PaginatedLoMoAdapter
     
     @Override
     protected View getView(final ViewRecycler viewRecycler, final List<Video> list, final int n, final int n2, final BasicLoMo basicLoMo) {
-        LinearLayout linearLayout;
-        if (basicLoMo.getType() == LoMoType.CHARACTERS) {
-            if ((linearLayout = (KidsCharacterViewGroup)viewRecycler.pop(KidsCharacterViewGroup.class)) == null) {
-                linearLayout = new KidsCharacterViewGroup((Context)this.getActivity(), true);
-                ((VideoViewGroup)linearLayout).init(n);
-            }
+        KidsLoMoViewGroup kidsLoMoViewGroup;
+        if ((kidsLoMoViewGroup = (KidsLoMoViewGroup)viewRecycler.pop(KidsLoMoViewGroup.class)) == null) {
+            kidsLoMoViewGroup = new KidsLoMoViewGroup((Context)this.getActivity(), true);
+            kidsLoMoViewGroup.init(n);
         }
-        else if ((linearLayout = (KidsLoMoViewGroup)viewRecycler.pop(KidsLoMoViewGroup.class)) == null) {
-            linearLayout = new KidsLoMoViewGroup((Context)this.getActivity(), true);
-            ((VideoViewGroup)linearLayout).init(n);
-        }
-        ((VideoViewGroup<Video, V>)linearLayout).updateDataThenViews(list, n, n2, this.getListViewPos(), basicLoMo);
-        return (View)linearLayout;
+        kidsLoMoViewGroup.updateDataThenViews(list, n, n2, this.getListViewPos(), basicLoMo);
+        return (View)kidsLoMoViewGroup;
     }
 }

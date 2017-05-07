@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.ui.kids.details;
 
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
+import android.view.ViewGroup$LayoutParams;
+import android.widget.AbsListView$LayoutParams;
 import android.content.Context;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsOneToOneVideoView;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsHorizontalVideoView;
@@ -53,8 +55,10 @@ public class KidsMovieDetailsAdapter extends BaseAdapter
             else {
                 videoView = new KidsOneToOneVideoView((Context)this.activity, false);
             }
-            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361835);
-            ((View)videoView).setPadding(dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize);
+            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361918);
+            final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361919);
+            ((View)videoView).setPadding(dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2);
+            ((View)videoView).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeSkidmarkRowHeight(this.activity, dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2, false)));
             o = videoView;
         }
         ((VideoViewGroup.IVideoView<Video>)o).update(this.getItem(n), this.trackable, n, false);

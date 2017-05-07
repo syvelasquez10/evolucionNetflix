@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
@@ -13,6 +12,8 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
@@ -49,8 +50,8 @@ public class FetchMovieDetailsRequest extends FalcorVolleyWebClientRequest<Movie
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery, this.pqlQuery2, this.pqlQuery3 };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery, this.pqlQuery2, this.pqlQuery3);
     }
     
     @Override

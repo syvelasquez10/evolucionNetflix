@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import java.util.Collections;
+import java.util.Arrays;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.service.webclient.model.BillboardDetails;
@@ -128,8 +129,8 @@ public class FetchVideosRequest extends FalcorVolleyWebClientRequest<List<Video>
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery);
     }
     
     @Override

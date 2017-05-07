@@ -24,6 +24,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String BROWSE_RESP_MANUAL_REDIRECT = "&routing=reject";
     private static final String CLIENT_LOGGING_ENDPOINT = "ichnaea.netflix.com";
     private static final String CLIENT_LOGGING_PATH = "/log";
+    private static final String ENDPOINT_REVISION_LATEST = "&revision=latest";
     protected static final String HTTP = "http://";
     protected static final String HTTPS = "https://";
     public static final String IMG_PREFERENCE_JPG = "jpg";

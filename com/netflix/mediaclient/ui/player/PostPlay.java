@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import android.animation.TimeInterpolator;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.View$OnClickListener;
@@ -22,6 +23,7 @@ import com.netflix.mediaclient.Log;
 import android.widget.TextView;
 import com.netflix.mediaclient.servicemgr.PostPlayVideo;
 import java.util.List;
+import android.view.animation.DecelerateInterpolator;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 
@@ -31,8 +33,8 @@ public abstract class PostPlay
     private static final int DEFAULT_OFFSET = 10000;
     protected static final int INTERRUPTER_COUNT = 3;
     private static final int INTERRUPTER_VALUE_IN_MS = 120000;
-    private static final double SEVENTY_FIVE_PERCENT = 0.75;
     private static final double SIXTEEN_NINE_RATIO = 1.77;
+    private static final double SIXTY_PERCENT = 0.6;
     protected static final String TAG = "nf_postplay";
     protected AdvancedImageView mBackground;
     protected PlayerActivity mContext;
@@ -44,6 +46,7 @@ public abstract class PostPlay
     protected View mInterrupterStop;
     protected View mMoreButton;
     protected int mOffset;
+    private DecelerateInterpolator mPanAnimationInterpolator;
     protected View mPlayButton;
     protected View mPostPlay;
     protected boolean mPostPlayDataExist;
@@ -57,6 +60,7 @@ public abstract class PostPlay
     private final Runnable onInterrupterStart;
     
     protected PostPlay(final PlayerActivity mContext) {
+        this.mPanAnimationInterpolator = new DecelerateInterpolator();
         this.mOffset = 10000;
         this.mInterrputerTimeoutOffset = 3600000;
         this.onInterrupterStart = new Runnable() {
@@ -209,18 +213,18 @@ public abstract class PostPlay
     abstract void findViews();
     
     protected void findViewsCommon() {
-        this.mInterrupterPlayFromStart = this.mContext.findViewById(2131165503);
-        this.mInterrupterContinue = this.mContext.findViewById(2131165502);
-        this.mBackground = (AdvancedImageView)this.mContext.findViewById(2131165555);
-        this.mSynopsis = (TextView)this.mContext.findViewById(2131165553);
-        this.mInterrupterStop = this.mContext.findViewById(2131165504);
-        this.mPostPlayIgnoreTap = this.mContext.findViewById(2131165551);
-        this.mMoreButton = this.mContext.findViewById(2131165543);
-        this.mPlayButton = this.mContext.findViewById(2131165541);
-        this.mStopButton = this.mContext.findViewById(2131165542);
-        this.mTitle = (TextView)this.mContext.findViewById(2131165552);
-        this.mInterrupter = this.mContext.findViewById(2131165501);
-        this.mPostPlay = this.mContext.findViewById(2131165548);
+        this.mInterrupterPlayFromStart = this.mContext.findViewById(2131165509);
+        this.mInterrupterContinue = this.mContext.findViewById(2131165508);
+        this.mBackground = (AdvancedImageView)this.mContext.findViewById(2131165561);
+        this.mSynopsis = (TextView)this.mContext.findViewById(2131165559);
+        this.mInterrupterStop = this.mContext.findViewById(2131165510);
+        this.mPostPlayIgnoreTap = this.mContext.findViewById(2131165557);
+        this.mMoreButton = this.mContext.findViewById(2131165549);
+        this.mPlayButton = this.mContext.findViewById(2131165547);
+        this.mStopButton = this.mContext.findViewById(2131165548);
+        this.mTitle = (TextView)this.mContext.findViewById(2131165558);
+        this.mInterrupter = this.mContext.findViewById(2131165507);
+        this.mPostPlay = this.mContext.findViewById(2131165554);
     }
     
     protected abstract void handlePlayNow(final boolean p0);
@@ -365,9 +369,9 @@ public abstract class PostPlay
     
     public void startBackgroundAutoPan() {
         if (this.mBackground != null && !DeviceUtils.isLandscape((Context)this.mContext) && this.mBackground.getMeasuredWidth() == 0) {
-            this.mBackground.getLayoutParams().height = (int)(DeviceUtils.getScreenHeightInPixels((Context)this.mContext) * 0.75);
+            this.mBackground.getLayoutParams().height = (int)(DeviceUtils.getScreenHeightInPixels((Context)this.mContext) * 0.6);
             this.mBackground.getLayoutParams().width = (int)(this.mBackground.getLayoutParams().height * 1.77);
-            this.mBackground.animate().setDuration((long)this.mOffset).x((float)(this.mBackground.getLayoutParams().height - this.mBackground.getLayoutParams().width));
+            this.mBackground.animate().setDuration((long)this.mOffset).x((float)(this.mBackground.getLayoutParams().height - this.mBackground.getLayoutParams().width)).setInterpolator((TimeInterpolator)this.mPanAnimationInterpolator);
         }
     }
     

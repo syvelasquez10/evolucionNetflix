@@ -25,6 +25,7 @@ import android.app.Notification;
 import android.util.Pair;
 import java.nio.ByteBuffer;
 import com.netflix.mediaclient.javabridge.ui.mdxcontroller.TransactionId;
+import com.netflix.mediaclient.servicemgr.VideoType;
 import android.content.IntentFilter;
 import android.annotation.SuppressLint;
 import android.os.PowerManager;
@@ -39,13 +40,11 @@ import android.app.PendingIntent;
 import com.netflix.mediaclient.javabridge.ui.Mdx;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
+import android.content.Context;
+import com.netflix.mediaclient.servicemgr.MdxPostplayState;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
-import android.content.Context;
-import android.text.TextUtils;
-import com.netflix.mediaclient.servicemgr.VideoType;
-import com.netflix.mediaclient.servicemgr.MdxPostplayState;
 import android.net.wifi.WifiManager$WifiLock;
 import com.netflix.mediaclient.util.WebApiUtils;
 import com.netflix.mediaclient.servicemgr.VideoDetails;
@@ -120,6 +119,104 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
         this.mStateEventListener = new StateEventListener();
         this.mDiscoveryEventListener = new DiscoveryEventListener();
         this.mStartStopErrorReceiver = new BroadcastReceiver() {
+            private void doMDXPlayBackEnd(final Intent intent) {
+                if (!Utils.isInPostPlay(intent)) {
+                    Log.d("nf_mdx_agent", "MdxAgent: receive MDXUPDATE_PLAYBACKEND");
+                    MdxAgent.this.mMdxSessionWatchDog.stop();
+                    MdxAgent.this.clearVideoDetails();
+                    this.stopAllNotifications();
+                    MdxAgent.this.releaseWiFi();
+                    if (MdxAgent.this.mTargetSelector != null) {
+                        MdxAgent.this.mTargetSelector.targetBecomeInactive(MdxAgent.this.mCurrentTargetUuid);
+                    }
+                    if (MdxAgent.this.mSwitchTarget != null) {
+                        MdxAgent.this.mSwitchTarget.targetPlaybackStopped(MdxAgent.this.mCurrentTargetUuid);
+                    }
+                }
+            }
+            
+            private void doMDXPlaybackStart() {
+                Log.d("nf_mdx_agent", "MdxAgent: receive MDXUPDATE_PLAYBACKSTART");
+                MdxAgent.this.mMdxSessionWatchDog.start();
+                MdxAgent.this.lockWiFi();
+                if (MdxAgent.this.mRemoteControlClientManager != null) {
+                    MdxAgent.this.mRemoteControlClientManager.start(false, null, MdxAgent.this.mCurrentTargetUuid);
+                    if (MdxAgent.this.mBoxartBitmap != null) {
+                        MdxAgent.this.mRemoteControlClientManager.setState(false, false, false);
+                        MdxAgent.this.mRemoteControlClientManager.setBoxart(MdxAgent.this.mBoxartBitmap);
+                        MdxAgent.this.mMdxNotificationManager.setPauseStateNotify(false, false, false);
+                    }
+                    MdxAgent.this.updateMdxRemoteClient(false, true);
+                }
+                if (MdxAgent.this.mMdxNotificationManager != null) {
+                    MdxAgent.this.mMdxNotificationManager.setBoxartNotify(MdxAgent.this.mBoxartBitmap);
+                }
+                if (MdxAgent.this.mTargetSelector != null) {
+                    MdxAgent.this.mTargetSelector.targetBecomeActive(MdxAgent.this.mCurrentTargetUuid);
+                }
+            }
+            
+            private void doMDXPostPlay(final Intent intent) {
+                final String string = intent.getExtras().getString("postplayState");
+                if (!StringUtils.isEmpty(string)) {
+                    final MdxPostplayState mdxPostplayState = new MdxPostplayState(string);
+                    if (mdxPostplayState.isInCountdown()) {
+                        this.doMDXPostPlayCountdownStart(intent, string);
+                    }
+                    else if (mdxPostplayState.isInPrompt()) {
+                        this.doMDXPostPlaySeriesEnd(intent);
+                    }
+                }
+            }
+            
+            private void doMDXPostPlayCountdownStart(final Intent intent, final String s) {
+                if (MdxAgent.this.mRemoteControlClientManager != null) {
+                    MdxAgent.this.mRemoteControlClientManager.start(true, MdxAgent.this.mVideoDetails, MdxAgent.this.mCurrentTargetUuid);
+                    MdxAgent.this.updateMdxRemoteClient(true, true);
+                }
+                this.updateMdxNotificationController(s);
+                if (MdxAgent.this.mRemoteControlClientManager != null) {
+                    MdxAgent.this.mRemoteControlClientManager.setState(false, false, true);
+                    if (MdxAgent.this.mMdxNotificationManager == null) {
+                        MdxAgent.this.mMdxNotificationManager = new MdxNotificationManager(MdxAgent.this.getContext(), true, MdxAgent.this);
+                    }
+                    MdxAgent.this.mMdxNotificationManager.setUpNextStateNotify(false, false, true);
+                }
+            }
+            
+            private void doMDXPostPlaySeriesEnd(final Intent intent) {
+                final String string = intent.getExtras().getString("postplayState");
+                if (!StringUtils.isEmpty(string) && new MdxPostplayState(string).isInPrompt() && MdxAgent.this.mRemoteControlClientManager != null) {
+                    this.stopAllNotifications();
+                }
+            }
+            
+            private void dpMDXSimplePlaybackState(final Intent intent) {
+                final boolean booleanExtra = intent.getBooleanExtra("paused", false);
+                final boolean booleanExtra2 = intent.getBooleanExtra("transitioning", false);
+                final boolean inPostPlay = Utils.isInPostPlay(intent);
+                if (Log.isLoggable("nf_mdx_agent", 3)) {
+                    Log.d("nf_mdx_agent", "MdxAgent: simplePlaybackState : paused " + booleanExtra + ", transitioning " + booleanExtra2);
+                }
+                if (MdxAgent.this.mRemoteControlClientManager != null) {
+                    MdxAgent.this.mRemoteControlClientManager.setState(booleanExtra, booleanExtra2, inPostPlay);
+                    if (MdxAgent.this.mMdxNotificationManager != null) {
+                        MdxAgent.this.mMdxNotificationManager.setPauseStateNotify(booleanExtra, booleanExtra2, inPostPlay);
+                    }
+                }
+            }
+            
+            private void stopAllNotifications() {
+                if (MdxAgent.this.mRemoteControlClientManager != null) {
+                    MdxAgent.this.mRemoteControlClientManager.stop();
+                }
+                if (MdxAgent.this.mMdxNotificationManager != null) {
+                    MdxAgent.this.mMdxNotificationManager.cancelNotification();
+                    MdxAgent.this.mMdxNotificationManager = null;
+                    MdxAgent.this.mBoxartBitmap = null;
+                }
+            }
+            
             private void updateMdxNotificationController(final String s) {
                 final MdxPostplayState mdxPostplayState = new MdxPostplayState(s);
                 if (mdxPostplayState.isInCountdown()) {
@@ -133,95 +230,37 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
                 }
             }
             
-            private void updateMdxRemoteClient(String parentTitle) {
-                if (MdxAgent.this.mVideoDetails != null) {
-                    if (MdxAgent.this.mVideoDetails.getType() != VideoType.EPISODE) {
-                        MdxAgent.this.mRemoteControlClientManager.setTitles(MdxAgent.this.mVideoDetails.getTitle(), null);
-                        return;
-                    }
-                    final String string = MdxAgent.this.getContext().getString(2131493248, new Object[] { MdxAgent.this.mVideoDetails.getSeasonNumber(), MdxAgent.this.mVideoDetails.getEpisodeNumber(), MdxAgent.this.mVideoDetails.getTitle() });
-                    if (TextUtils.isEmpty((CharSequence)parentTitle)) {
-                        parentTitle = MdxAgent.this.mVideoDetails.getParentTitle();
-                    }
-                    MdxAgent.this.mRemoteControlClientManager.setTitles(string, parentTitle);
-                }
-            }
-            
             public void onReceive(final Context context, final Intent intent) {
                 if (intent.hasCategory("com.netflix.mediaclient.intent.category.MDX")) {
                     if (intent.getAction().equals("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND")) {
-                        Log.d("nf_mdx_agent", "MdxAgent: receive MDXUPDATE_PLAYBACKEND");
-                        MdxAgent.this.mMdxSessionWatchDog.stop();
-                        MdxAgent.this.clearVideoDetails();
-                        if (MdxAgent.this.mRemoteControlClientManager != null) {
-                            MdxAgent.this.mRemoteControlClientManager.stop();
-                        }
-                        if (MdxAgent.this.mMdxNotificationManager != null) {
-                            MdxAgent.this.mMdxNotificationManager.cancelNotification();
-                            MdxAgent.this.mMdxNotificationManager = null;
-                            MdxAgent.this.mBoxartBitmap = null;
-                        }
-                        MdxAgent.this.releaseWiFi();
-                        if (MdxAgent.this.mTargetSelector != null) {
-                            MdxAgent.this.mTargetSelector.targetBecomeInactive(MdxAgent.this.mCurrentTargetUuid);
-                        }
-                        if (MdxAgent.this.mSwitchTarget != null) {
-                            MdxAgent.this.mSwitchTarget.targetPlaybackStopped(MdxAgent.this.mCurrentTargetUuid);
-                        }
+                        this.doMDXPlayBackEnd(intent);
                     }
-                    else if (intent.getAction().equals("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART")) {
-                        Log.d("nf_mdx_agent", "MdxAgent: receive MDXUPDATE_PLAYBACKSTART");
-                        MdxAgent.this.mMdxSessionWatchDog.start();
-                        MdxAgent.this.lockWiFi();
-                        if (MdxAgent.this.mRemoteControlClientManager != null) {
-                            MdxAgent.this.mRemoteControlClientManager.start();
-                            if (MdxAgent.this.mBoxartBitmap != null) {
-                                MdxAgent.this.mRemoteControlClientManager.setBoxart(MdxAgent.this.mBoxartBitmap);
-                            }
-                            this.updateMdxRemoteClient(null);
+                    else {
+                        if (intent.getAction().equals("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART")) {
+                            this.doMDXPlaybackStart();
+                            return;
                         }
-                        if (MdxAgent.this.mMdxNotificationManager != null) {
-                            MdxAgent.this.mMdxNotificationManager.setBoxartNotify(MdxAgent.this.mBoxartBitmap);
+                        if ("com.netflix.mediaclient.intent.action.MDXUPDATE_POSTPLAY".equals(intent.getAction())) {
+                            this.doMDXPostPlay(intent);
+                            return;
                         }
-                        if (MdxAgent.this.mTargetSelector != null) {
-                            MdxAgent.this.mTargetSelector.targetBecomeActive(MdxAgent.this.mCurrentTargetUuid);
+                        if (intent.getAction().equals("com.netflix.mediaclient.intent.action.MDXUPDATE_SIMPLE_PLAYBACKSTATE")) {
+                            this.dpMDXSimplePlaybackState(intent);
+                            return;
                         }
-                    }
-                    else if ("com.netflix.mediaclient.intent.action.MDXUPDATE_POSTPLAY".equals(intent.getAction())) {
-                        final String string = intent.getExtras().getString("postplayState");
-                        if (!StringUtils.isEmpty(string)) {
-                            this.updateMdxNotificationController(string);
-                            this.updateMdxRemoteClient(MdxAgent.this.getContext().getString(2131493240));
-                            if (MdxAgent.this.mMdxNotificationManager != null) {
-                                MdxAgent.this.mMdxNotificationManager.showSkipBack(false);
-                            }
-                        }
-                    }
-                    else if (intent.getAction().equals("com.netflix.mediaclient.intent.action.MDXUPDATE_SIMPLE_PLAYBACKSTATE")) {
-                        final boolean booleanExtra = intent.getBooleanExtra("paused", false);
-                        final boolean booleanExtra2 = intent.getBooleanExtra("transitioning", false);
-                        if (Log.isLoggable("nf_mdx_agent", 3)) {
-                            Log.d("nf_mdx_agent", "MdxAgent: simplePlaybackState : paused " + booleanExtra + ", transitioning " + booleanExtra2);
-                        }
-                        if (MdxAgent.this.mRemoteControlClientManager != null) {
-                            MdxAgent.this.mRemoteControlClientManager.setState(booleanExtra, booleanExtra2);
-                        }
-                        if (MdxAgent.this.mMdxNotificationManager != null) {
-                            MdxAgent.this.mMdxNotificationManager.setPauseStateNotify(booleanExtra, booleanExtra2);
-                        }
-                    }
-                    else if (intent.getAction().equals("com.netflix.mediaclient.intent.action.MDXUPDATE_ERROR")) {
-                        final int intExtra = intent.getIntExtra("errorCode", 0);
-                        if (MdxAgent.this.mNotifier != null) {
-                            final MdxSharedState sharedState = MdxAgent.this.mNotifier.getSharedState(MdxAgent.this.mCurrentTargetUuid);
-                            if (sharedState != null) {
-                                boolean b = false;
-                                if (IMdxSharedState.MdxPlaybackState.Loading == sharedState.getMdxPlaybackState() || IMdxSharedState.MdxPlaybackState.Transitioning == sharedState.getMdxPlaybackState()) {
-                                    b = true;
-                                }
-                                if (intExtra >= 100 && intExtra < 200 && b) {
-                                    Log.d("nf_mdx_agent", "MdxAgent: received error, clear video detail");
-                                    MdxAgent.this.clearVideoDetails();
+                        if (intent.getAction().equals("com.netflix.mediaclient.intent.action.MDXUPDATE_ERROR")) {
+                            final int intExtra = intent.getIntExtra("errorCode", 0);
+                            if (MdxAgent.this.mNotifier != null) {
+                                final MdxSharedState sharedState = MdxAgent.this.mNotifier.getSharedState(MdxAgent.this.mCurrentTargetUuid);
+                                if (sharedState != null) {
+                                    boolean b = false;
+                                    if (IMdxSharedState.MdxPlaybackState.Loading == sharedState.getMdxPlaybackState() || IMdxSharedState.MdxPlaybackState.Transitioning == sharedState.getMdxPlaybackState()) {
+                                        b = true;
+                                    }
+                                    if (intExtra >= 100 && intExtra < 200 && b) {
+                                        Log.d("nf_mdx_agent", "MdxAgent: received error, clear video detail");
+                                        MdxAgent.this.clearVideoDetails();
+                                    }
                                 }
                             }
                         }
@@ -327,13 +366,14 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
                             MdxAgent.this.mTargetManager.playerPlay(MdxAgent.this.mCurrentTargetUuid, MdxAgent.this.mVideoIds.catalogIdUrl, MdxAgent.this.mTrackId, MdxAgent.this.mVideoIds.episodeIdUrl, MdxAgent.this.mStartTime);
                             MdxAgent.this.logPlaystart(false);
                         }
-                        final String string = MdxAgent.this.getContext().getString(2131493248, new Object[] { MdxAgent.this.mVideoDetails.getSeasonNumber(), MdxAgent.this.mVideoDetails.getEpisodeNumber(), MdxAgent.this.mVideoDetails.getTitle() });
+                        MdxAgent.this.updateMdxRemoteClient(b2, false);
+                        final String string = MdxAgent.this.getContext().getString(2131493249, new Object[] { MdxAgent.this.mVideoDetails.getSeasonNumber(), MdxAgent.this.mVideoDetails.getEpisodeNumber(), MdxAgent.this.mVideoDetails.getTitle() });
                         final Resources resources = MdxAgent.this.getContext().getResources();
                         if (b2) {
-                            n = 2131493240;
+                            n = 2131493241;
                         }
                         else {
-                            n = 2131493239;
+                            n = 2131493240;
                         }
                         MdxAgent.this.updateMdxNotification(true, MdxAgent.this.mVideoDetails.getParentTitle(), string, resources.getString(n));
                     }
@@ -362,15 +402,22 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
                     }
                     final Resources resources = MdxAgent.this.getContext().getResources();
                     if (false) {
-                        n = 2131493240;
+                        n = 2131493241;
                     }
                     else {
-                        n = 2131493239;
+                        n = 2131493240;
                     }
                     MdxAgent.this.updateMdxNotification(false, MdxAgent.this.mVideoDetails.getTitle(), null, resources.getString(n));
                 }
             }
         });
+    }
+    
+    private String getCurrentEpisodeTitle() {
+        if (this.mVideoDetails == null) {
+            return null;
+        }
+        return this.getContext().getString(2131493249, new Object[] { this.mVideoDetails.getSeasonNumber(), this.mVideoDetails.getEpisodeNumber(), this.mVideoDetails.getTitle() });
     }
     
     private RemoteDevice getDeviceFromUuid(final String s) {
@@ -405,11 +452,19 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
         }
     }
     
+    private String getNextEpisodeTitle() {
+        if (this.mVideoDetails == null) {
+            return null;
+        }
+        final EpisodeDetails episodeDetails = (EpisodeDetails)this.mVideoDetails;
+        return this.getContext().getString(2131493249, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber() + 1, episodeDetails.getNextEpisodeTitle() });
+    }
+    
     private void handleAccountConfig() {
         this.mDisableWebSocket = this.getConfigurationAgent().isDisableWebsocket();
         this.mEnableCast = this.getConfigurationAgent().isEnableCast();
         if (this.mEnableCast) {
-            (this.mCastManager = new CastManager(this.getContext(), this.getMainHandler(), this.mMdxAgentWorkerHandler)).setCastWhiteList(this.getConfigurationAgent().getCastWhiteList());
+            (this.mCastManager = new CastManager(this.getContext(), this.getMainHandler(), this.mMdxAgentWorkerHandler, this.getConfigurationAgent().getEsnProvider().getEsn())).setCastWhiteList(this.getConfigurationAgent().getCastWhiteList());
             if (StringUtils.isNotEmpty(this.mCurrentTargetUuid)) {
                 this.mCastManager.setTargetId(this.mCurrentTargetUuid);
             }
@@ -592,7 +647,7 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
             this.mTargetManager.targetGone(this.mCurrentTargetUuid);
         }
         this.mNotifier.error(this.mCurrentTargetUuid, 201, "stop connecting to target");
-        this.mNotifier.playbackEnd(this.mCurrentTargetUuid);
+        this.mNotifier.playbackEnd(this.mCurrentTargetUuid, null);
     }
     
     private void unregisterStartStopReceiver() {
@@ -605,14 +660,34 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
     }
     
     private void updateMdxNotification(final boolean b, final String s, final String s2, final String s3) {
-        if (this.mRemoteControlClientManager != null) {
+        if (this.mMdxNotificationManager != null) {
+            synchronized (this.mMdxNotificationManager) {
+                this.mMdxNotificationManager.setTitlesNotify(b, s, s2, s3);
+            }
+        }
+    }
+    
+    private void updateMdxRemoteClient(final boolean b, final boolean b2) {
+        if (this.mVideoDetails != null) {
+            if (this.mVideoDetails.getType() != VideoType.EPISODE) {
+                this.mRemoteControlClientManager.setTitles(this.mVideoDetails.getTitle(), null);
+                return;
+            }
+            String s;
+            if (b) {
+                s = this.getContext().getString(2131493241);
+            }
+            else {
+                s = this.mVideoDetails.getParentTitle();
+            }
+            String s2;
+            if (b2 && this.mVideoDetails instanceof EpisodeDetails) {
+                s2 = this.getNextEpisodeTitle();
+            }
+            else {
+                s2 = this.getCurrentEpisodeTitle();
+            }
             this.mRemoteControlClientManager.setTitles(s, s2);
-        }
-        if (this.mMdxNotificationManager == null) {
-            return;
-        }
-        synchronized (this.mMdxNotificationManager) {
-            this.mMdxNotificationManager.setTitlesNotify(b, s, s2, s3);
         }
     }
     
@@ -740,14 +815,14 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
                 final Resources resources = this.getContext().getResources();
                 int n;
                 if (b) {
-                    n = 2131493240;
+                    n = 2131493241;
                 }
                 else {
-                    n = 2131493239;
+                    n = 2131493240;
                 }
                 final String string = resources.getString(n);
                 if (this.mVideoIds.episode) {
-                    this.mMdxNotificationManager.setTitlesNotify(true, this.mVideoDetails.getParentTitle(), this.getContext().getString(2131493248, new Object[] { this.mVideoDetails.getSeasonNumber(), this.mVideoDetails.getEpisodeNumber(), this.mVideoDetails.getTitle() }), string);
+                    this.mMdxNotificationManager.setTitlesNotify(true, this.mVideoDetails.getParentTitle(), this.getContext().getString(2131493249, new Object[] { this.mVideoDetails.getSeasonNumber(), this.mVideoDetails.getEpisodeNumber(), this.mVideoDetails.getTitle() }), string);
                 }
                 else {
                     this.mMdxNotificationManager.setTitlesNotify(false, this.mVideoDetails.getTitle(), null, string);
@@ -771,6 +846,18 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
     @Override
     public PendingIntent getPauseIntent() {
         return this.createNotificationButtonIntent(new Intent("com.netflix.mediaclient.intent.action.MDX_PAUSE"));
+    }
+    
+    @Override
+    public PendingIntent getPlayNextIntent() {
+        if (this.mVideoDetails != null && this.mVideoDetails instanceof EpisodeDetails) {
+            final EpisodeDetails episodeDetails = (EpisodeDetails)this.mVideoDetails;
+            final Intent intent = new Intent("com.netflix.mediaclient.intent.action.MDX_PLAY_VIDEOIDS");
+            intent.putExtra("episodeId", Integer.parseInt(episodeDetails.getNextEpisodeId()));
+            intent.putExtra("catalogId", Integer.parseInt(this.mVideoDetails.getParentId()));
+            return this.createNotificationButtonIntent(intent);
+        }
+        return null;
     }
     
     @Override
@@ -1044,7 +1131,7 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
     @Override
     public void onSessionWatchDogExpired() {
         if (this.mNotifier != null) {
-            this.mNotifier.playbackEnd(this.mCurrentTargetUuid);
+            this.mNotifier.playbackEnd(this.mCurrentTargetUuid, null);
         }
     }
     
@@ -1254,6 +1341,19 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
             intent.addCategory("com.netflix.mediaclient.intent.category.MDX");
             intent.putExtra("uuid", s2);
             return intent;
+        }
+        
+        public static boolean isInPostPlay(final Intent intent) {
+            if (intent.hasExtra("postplayState")) {
+                final String string = intent.getExtras().getString("postplayState");
+                if (!StringUtils.isEmpty(string)) {
+                    final MdxPostplayState mdxPostplayState = new MdxPostplayState(string);
+                    if (mdxPostplayState.isInCountdown() || mdxPostplayState.isInPrompt()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
         
         private static boolean isSameAsCurrentlyPlaying(final String s, final String s2, final WebApiUtils.VideoIds videoIds) {

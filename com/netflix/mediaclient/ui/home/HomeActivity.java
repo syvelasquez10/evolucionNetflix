@@ -19,6 +19,8 @@ import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import android.app.Fragment;
 import android.os.Parcelable;
 import android.widget.Toast;
@@ -76,6 +78,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
             public void onManagerReady(final ServiceManager serviceManager, final int n) {
                 Log.v("HomeActivity", "ServiceManager ready");
                 HomeActivity.this.manager = serviceManager;
+                HomeActivity.this.showProfileToast();
                 HomeActivity.this.reportUiViewChanged(HomeActivity.this.getCurrentViewType());
                 HomeActivity.this.getPrimaryFrag().onManagerReady(serviceManager, n);
                 HomeActivity.this.slidingMenuAdapter.onManagerReady(serviceManager, n);
@@ -195,7 +198,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     }
     
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131493229, 1).show();
+        Toast.makeText((Context)this, 2131493230, 1).show();
         this.clearAllStateAndRefresh();
     }
     
@@ -241,9 +244,11 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     
     private void toggleDrawer() {
         if (this.drawerLayout.isDrawerOpen(3)) {
+            LogUtils.reportUIViewCommand((Context)this, UIViewLogging.UIViewCommandName.slidingMenuClosed, this.getUiScreen(), this.getDataContext());
             this.drawerLayout.closeDrawers();
             return;
         }
+        LogUtils.reportUIViewCommand((Context)this, UIViewLogging.UIViewCommandName.slidingMenuOpened, this.getUiScreen(), this.getDataContext());
         this.drawerLayout.openDrawer(3);
     }
     
@@ -370,7 +375,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
             slidingMenuAdapter = new SlidingMenuAdapter(this, this.drawerLayout);
         }
         this.slidingMenuAdapter = slidingMenuAdapter;
-        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2130837692, 2131493190, 2131493190);
+        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2130837692, 2131493191, 2131493191);
         this.drawerLayout.setDrawerListener((DrawerLayout.DrawerListener)this.drawerToggler);
         this.drawerLayout.setFocusable(false);
         this.updateActionBar();
@@ -444,7 +449,6 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     protected void onResume() {
         super.onResume();
         this.slidingMenuAdapter.onActivityResume();
-        this.showProfileToast();
         if (SystemClock.elapsedRealtime() - this.pauseTimeMs > 28800000L) {
             Log.d("HomeActivity", "Activity resume timeout reached");
             this.onResumeAfterTimeout();

@@ -47,7 +47,7 @@ public class LoLoMoAdapter extends BasePaginatedLoLoMoAdapter<LoMo>
         Log.v("BasePaginatedLoLoMoAdapter", "Prefetching lolomo...");
         final int screenSizeCategory = DeviceUtils.getScreenSizeCategory((Context)this.getActivity());
         this.requestId = System.nanoTime();
-        serviceManager.prefetchLoLoMo(0, 19, 0, PaginatedLoMoAdapter.computeNumVideosToFetchPerBatch(screenSizeCategory) - 1, 0, PaginatedCwAdapter.computeNumVideosToFetchPerBatch(screenSizeCategory) - 1, false, new LoggingManagerCallback("BasePaginatedLoLoMoAdapter") {
+        serviceManager.prefetchLoLoMo(0, 19, 0, PaginatedLoMoAdapter.computeNumVideosToFetchPerBatch(this.activity, screenSizeCategory) - 1, 0, PaginatedCwAdapter.computeNumVideosToFetchPerBatch(this.activity, screenSizeCategory) - 1, this.activity.isForKids(), false, new LoggingManagerCallback("BasePaginatedLoLoMoAdapter") {
             final /* synthetic */ long val$requestIdClone = LoLoMoAdapter.this.requestId;
             
             @Override

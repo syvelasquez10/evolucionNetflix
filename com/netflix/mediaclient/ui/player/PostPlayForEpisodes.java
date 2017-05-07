@@ -95,10 +95,10 @@ public class PostPlayForEpisodes extends PostPlay
     }
     
     protected void findViews() {
-        this.mPlayButtonImage = (AdvancedImageView)this.mContext.findViewById(2131165556);
-        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165545);
-        this.mAutoPlayView = this.mContext.findViewById(2131165544);
-        this.mTimerView = (TextView)this.mContext.findViewById(2131165546);
+        this.mPlayButtonImage = (AdvancedImageView)this.mContext.findViewById(2131165562);
+        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165551);
+        this.mAutoPlayView = this.mContext.findViewById(2131165550);
+        this.mTimerView = (TextView)this.mContext.findViewById(2131165552);
     }
     
     @Override
@@ -129,7 +129,7 @@ public class PostPlayForEpisodes extends PostPlay
     
     protected void initInfoContainer() {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493309));
+            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493310));
         }
         if (this.mTimerView != null) {
             this.mTimerView.setVisibility(0);
@@ -189,7 +189,7 @@ public class PostPlayForEpisodes extends PostPlay
         }
         final String storyUrl = interestingVideoDetails.getStoryUrl();
         final String interestingUrl = interestingVideoDetails.getInterestingUrl();
-        final String string = this.mContext.getResources().getString(2131493312, new Object[] { title });
+        final String string = this.mContext.getResources().getString(2131493313, new Object[] { title });
         if (this.mBackground != null) {
             if (!StringUtils.isEmpty(storyUrl) && this.mContext.isTablet()) {
                 NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, storyUrl, IClientLogging.AssetType.merchStill, string, true, true, 1);
@@ -201,7 +201,7 @@ public class PostPlayForEpisodes extends PostPlay
         if (!StringUtils.isEmpty(interestingUrl) && this.mPlayButtonImage != null) {
             NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mPlayButtonImage, interestingUrl, IClientLogging.AssetType.merchStill, string, true, true, 1);
         }
-        final String string2 = this.mContext.getResources().getString(2131493315, new Object[] { interestingVideoDetails.getSeasonNumber(), interestingVideoDetails.getEpisodeNumber(), title });
+        final String string2 = this.mContext.getResources().getString(2131493316, new Object[] { interestingVideoDetails.getSeasonNumber(), interestingVideoDetails.getEpisodeNumber(), title });
         if (Log.isLoggable("nf_postplay", 3)) {
             Log.d("nf_postplay", "Title: " + string2);
         }

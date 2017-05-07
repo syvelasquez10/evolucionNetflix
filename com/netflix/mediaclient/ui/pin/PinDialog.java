@@ -2,13 +2,11 @@
 // Decompiled by Procyon v0.5.30
 // 
 
-package com.netflix.mediaclient.ui.common;
+package com.netflix.mediaclient.ui.pin;
 
 import android.graphics.drawable.Drawable;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
-import android.app.FragmentManager;
-import android.app.Fragment;
 import android.app.AlertDialog;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.View$OnClickListener;
@@ -21,8 +19,6 @@ import android.view.View$OnKeyListener;
 import android.widget.TextView$OnEditorActionListener;
 import android.view.ViewGroup;
 import android.app.Dialog;
-import android.os.Bundle;
-import android.app.DialogFragment;
 import android.view.View;
 import android.content.DialogInterface;
 import android.content.DialogInterface$OnClickListener;
@@ -31,47 +27,53 @@ import android.app.AlertDialog$Builder;
 import android.util.TypedValue;
 import android.view.WindowManager$LayoutParams;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import android.app.Activity;
+import com.netflix.mediaclient.ui.common.PlaybackLauncher;
+import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.Log;
 import android.view.inputmethod.InputMethodManager;
+import android.os.Parcelable;
+import android.os.Bundle;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ProgressBar;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.TextView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.annotation.TargetApi;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 
+@TargetApi(14)
 public class PinDialog extends NetflixDialogFrag
 {
-    private static final String DATA_FRAG_TAG = "PIN_DATA";
     private static final int PIN_DIALOG_WIDTH_PHONE_DP = 320;
     private static final int PIN_DIALOG_WIDTH_TABLET_DP = 400;
     private static final Integer PIN_LENGTH;
     private static final String TAG = "nf_pin";
-    private PinDialogCallback mCallback;
-    private DataFragment mDataFragment;
     private int mDialogWidthInDp;
     private ImageView mErrorIcon;
     private EditText mPinEditText;
     private TextView mPinForgotView;
     private TextView mPinMessage;
-    private ServiceManager mServiceMan;
     private ProgressBar mSpinner;
+    private PinDialogVault mVault;
     
     static {
         PIN_LENGTH = 4;
     }
     
-    public static PinDialog createPinDialog(final ServiceManager serviceManager, final PinDialogCallback callback) {
+    protected static PinDialog createPinDialog(final NetflixActivity netflixActivity, final PinDialogVault pinDialogVault) {
         final PinDialog pinDialog = new PinDialog();
+        final Bundle arguments = new Bundle();
+        arguments.putParcelable(PinDialogVault.NAME, (Parcelable)pinDialogVault);
+        pinDialog.setArguments(arguments);
         pinDialog.setStyle(1, 2131558603);
-        pinDialog.setServiceManager(serviceManager);
-        pinDialog.setCallback(callback);
         return pinDialog;
     }
     
-    private void dismissDialog() {
-        this.dismissAllowingStateLoss();
+    private void dismissAndNotifyCallers() {
+        this.dismissDialog();
+        this.notifyCallerPinCancelled();
     }
     
     private InputMethodManager getIMM(final ServiceManager serviceManager) {
@@ -82,7 +84,7 @@ public class PinDialog extends NetflixDialogFrag
     }
     
     private ServiceManager getServiceManager() {
-        return this.mServiceMan;
+        return ((NetflixActivity)this.getActivity()).getServiceManager();
     }
     
     private void hideSoftKeyboard(final ServiceManager serviceManager, final EditText editText) {
@@ -93,16 +95,32 @@ public class PinDialog extends NetflixDialogFrag
     }
     
     private void notifyCallerPinCancelled() {
-        if (this.mCallback != null) {
-            this.mCallback.pinCancelled();
-            this.mCallback = null;
+        Log.d("nf_pin", String.format("%s onPinCancelled vault: %s", NetflixActivity.class.getSimpleName(), this.mVault));
+        if (this.mVault == null) {
+            Log.d("nf_pin", "mValut is null - cannot start playback");
+        }
+        else if (PinDialogVault.PinInvokedFrom.MDX.getValue().equals(this.mVault.getInvokeLocation())) {
+            this.getActivity().startService(MdxAgent.Utils.createIntent(this.getActivity(), "com.netflix.mediaclient.intent.action.MDX_PINCANCELLED", this.mVault.getUuid()));
         }
     }
     
-    private void notifyCallerPinVerified(final boolean b) {
-        if (this.mCallback != null) {
-            this.mCallback.pinVerified(b);
-            this.mCallback = null;
+    protected static void notifyCallerPinVerified(final NetflixActivity netflixActivity, final PinDialogVault pinDialogVault) {
+        if (pinDialogVault == null) {
+            Log.d("nf_pin", "mValut is null - cannot start playback");
+        }
+        else {
+            Log.d("nf_pin", String.format("%s onPinVerified  , vault: %s", NetflixActivity.class.getSimpleName(), pinDialogVault));
+            if (PinDialogVault.PinInvokedFrom.PLAY_LAUNCHER.getValue().equals(pinDialogVault.getInvokeLocation())) {
+                PlaybackLauncher.startPlaybackOnPINSuccess(netflixActivity, pinDialogVault.getAsset(), pinDialogVault.isRemotePlayback());
+                return;
+            }
+            if (PinDialogVault.PinInvokedFrom.MDX.getValue().equals(pinDialogVault.getInvokeLocation())) {
+                netflixActivity.startService(MdxAgent.Utils.createIntent(netflixActivity, "com.netflix.mediaclient.intent.action.MDX_PINCONFIRMED", pinDialogVault.getUuid()));
+                return;
+            }
+            if (PinDialogVault.PinInvokedFrom.PLAYER.getValue().equals(pinDialogVault.getInvokeLocation())) {
+                netflixActivity.onPinVerified(pinDialogVault);
+            }
         }
     }
     
@@ -114,10 +132,6 @@ public class PinDialog extends NetflixDialogFrag
         this.getServiceManager().verifyPin(s, new OnPinVerifiedCallback());
     }
     
-    private void setCallback(final PinDialogCallback mCallback) {
-        this.mCallback = mCallback;
-    }
-    
     private void setDialogWindowSize() {
         final WindowManager$LayoutParams attributes = new WindowManager$LayoutParams();
         attributes.copyFrom(this.getDialog().getWindow().getAttributes());
@@ -125,12 +139,8 @@ public class PinDialog extends NetflixDialogFrag
         this.getDialog().getWindow().setAttributes(attributes);
     }
     
-    private void setServiceManager(final ServiceManager mServiceMan) {
-        this.mServiceMan = mServiceMan;
-    }
-    
     private static void showConnectivityErrorDialog(final NetflixActivity netflixActivity, final int n) {
-        new AlertDialog$Builder((Context)netflixActivity).setCancelable(false).setMessage((CharSequence)String.format("%s (%d)", netflixActivity.getString(2131493270), n)).setPositiveButton(2131492976, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        new AlertDialog$Builder((Context)netflixActivity).setCancelable(false).setMessage((CharSequence)String.format("%s (%d)", netflixActivity.getString(2131493271), n)).setPositiveButton(2131492977, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 dialogInterface.dismiss();
             }
@@ -179,7 +189,7 @@ public class PinDialog extends NetflixDialogFrag
         }
         mPinForgotView.setVisibility(visibility3);
         if (b) {
-            this.mPinMessage.setText(2131493324);
+            this.mPinMessage.setText(2131493325);
         }
     }
     
@@ -196,8 +206,15 @@ public class PinDialog extends NetflixDialogFrag
         }
     }
     
-    protected static void showVerifyPinDialog(final NetflixActivity netflixActivity, final PinDialogCallback pinDialogCallback) {
-        netflixActivity.showDialog(createPinDialog(netflixActivity.getServiceManager(), pinDialogCallback));
+    protected void dismissDialog() {
+        Log.d("nf_pin", "dismissing dialog");
+        try {
+            this.dismissAllowingStateLoss();
+            PinVerifier.getInstance().pinDialogDismissed();
+        }
+        catch (Exception ex) {
+            Log.d("nf_pin", "app in backgound. cannot dismiss - retry on next start");
+        }
     }
     
     public void onCancel(final DialogInterface dialogInterface) {
@@ -208,22 +225,22 @@ public class PinDialog extends NetflixDialogFrag
     
     public Dialog onCreateDialog(final Bundle bundle) {
         super.onCreate(bundle);
-        Log.d("nf_pin", " onCreateDialog ");
+        this.mVault = (PinDialogVault)this.getArguments().getParcelable(PinDialogVault.NAME);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903139, (ViewGroup)null);
-        this.mSpinner = (ProgressBar)inflate.findViewById(2131165496);
-        (this.mPinEditText = (EditText)inflate.findViewById(2131165493)).setOnEditorActionListener((TextView$OnEditorActionListener)new PinDialogOnDone());
+        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903138, (ViewGroup)null);
+        this.mSpinner = (ProgressBar)inflate.findViewById(2131165502);
+        (this.mPinEditText = (EditText)inflate.findViewById(2131165499)).setOnEditorActionListener((TextView$OnEditorActionListener)new PinDialogOnDone());
         this.mPinEditText.setOnKeyListener((View$OnKeyListener)new PinDialogOnKeyPress());
-        this.mPinMessage = (TextView)inflate.findViewById(2131165492);
-        (this.mPinForgotView = (TextView)inflate.findViewById(2131165495)).setMovementMethod((MovementMethod)new LinkMovementMethod() {
+        this.mPinMessage = (TextView)inflate.findViewById(2131165498);
+        (this.mPinForgotView = (TextView)inflate.findViewById(2131165501)).setMovementMethod((MovementMethod)new LinkMovementMethod() {
             public boolean onTouchEvent(final TextView textView, final Spannable spannable, final MotionEvent motionEvent) {
                 PinDialog.this.mPinForgotView.setLinkTextColor(PinDialog.this.getResources().getColor(2131296383));
                 return super.onTouchEvent(textView, spannable, motionEvent);
             }
         });
         this.mPinForgotView.setFocusable(false);
-        ((Button)inflate.findViewById(2131165497)).setOnClickListener((View$OnClickListener)new PinDialogOnCancel());
-        this.mErrorIcon = (ImageView)inflate.findViewById(2131165494);
+        ((Button)inflate.findViewById(2131165503)).setOnClickListener((View$OnClickListener)new PinDialogOnCancel());
+        this.mErrorIcon = (ImageView)inflate.findViewById(2131165500);
         this.showErrorIcon(false);
         int mDialogWidthInDp;
         if (DeviceUtils.isTabletByContext((Context)this.getActivity())) {
@@ -237,14 +254,7 @@ public class PinDialog extends NetflixDialogFrag
         alertDialog$Builder.setView(inflate);
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);
-        this.saveDialogData();
         return (Dialog)create;
-    }
-    
-    @Override
-    public void onManagerReady(final ServiceManager serviceManager, final int n) {
-        super.onManagerReady(serviceManager, n);
-        this.setServiceManager(serviceManager);
     }
     
     public void onResume() {
@@ -254,41 +264,19 @@ public class PinDialog extends NetflixDialogFrag
         this.showSoftKeyboardOnStart();
     }
     
+    public void onStart() {
+        super.onStart();
+        if (PinVerifier.getInstance().toDismissDialog()) {
+            Log.d("nf_pin", "onStart - dismissOnForeground");
+            this.dismissAndNotifyCallers();
+        }
+    }
+    
     public void retryOnPinFailure() {
-        this.mPinMessage.setText(2131493327);
+        this.mPinMessage.setText(2131493328);
         this.mPinEditText.getText().clear();
         this.showErrorIcon(true);
         this.showSoftKeyboard(this.getServiceManager(), this.mPinEditText);
-    }
-    
-    public void saveDialogData() {
-        final FragmentManager fragmentManager = this.getFragmentManager();
-        this.mDataFragment = (DataFragment)fragmentManager.findFragmentByTag("PIN_DATA");
-        if (this.mDataFragment == null) {
-            this.mDataFragment = new DataFragment();
-            fragmentManager.beginTransaction().add((Fragment)this.mDataFragment, "PIN_DATA").commit();
-            this.mDataFragment.setData(this.mCallback);
-            return;
-        }
-        this.setCallback(this.mDataFragment.getData());
-    }
-    
-    public class DataFragment extends Fragment
-    {
-        private PinDialogCallback _callback;
-        
-        public PinDialogCallback getData() {
-            return this._callback;
-        }
-        
-        public void onCreate(final Bundle bundle) {
-            super.onCreate(bundle);
-            this.setRetainInstance(true);
-        }
-        
-        public void setData(final PinDialogCallback callback) {
-            this._callback = callback;
-        }
     }
     
     private class OnPinVerifiedCallback extends LoggingManagerCallback
@@ -304,18 +292,15 @@ public class PinDialog extends NetflixDialogFrag
             Log.d("nf_pin", String.format("onPinVerified isPinValid:%b, statusCode:%d", b, n));
             if (n == 0 && !b) {
                 PinDialog.this.retryOnPinFailure();
+                return;
             }
-            else {
-                PinDialog.this.dismissDialog();
-                if (PinDialog.this.mCallback != null) {
-                    if (n == 0) {
-                        PinDialog.this.notifyCallerPinVerified(b);
-                        return;
-                    }
-                    PinDialog.this.notifyCallerPinCancelled();
-                    showConnectivityErrorDialog(PinDialog.this.getServiceManager().getActivity(), n);
-                }
+            PinDialog.this.dismissDialog();
+            if (n == 0) {
+                PinVerifier.getInstance().registerPinVerifyEvent();
+                PinDialog.notifyCallerPinVerified((NetflixActivity)PinDialog.this.getActivity(), PinDialog.this.mVault);
+                return;
             }
+            showConnectivityErrorDialog((NetflixActivity)PinDialog.this.getActivity(), n);
         }
     }
     
@@ -329,24 +314,25 @@ public class PinDialog extends NetflixDialogFrag
     private class PinDialogOnCancel implements View$OnClickListener
     {
         public void onClick(final View view) {
-            PinDialog.this.dismissDialog();
-            PinDialog.this.notifyCallerPinCancelled();
+            PinDialog.this.dismissAndNotifyCallers();
         }
     }
     
     private class PinDialogOnDone implements TextView$OnEditorActionListener
     {
         public boolean onEditorAction(final TextView textView, final int n, final KeyEvent keyEvent) {
-            if (n == 6) {
-                final String string = textView.getText().toString();
-                if (string.length() < PinDialog.PIN_LENGTH) {
-                    return true;
-                }
-                if (PinDialog.this.getServiceManager() != null) {
-                    PinDialog.this.processUserInputPin(string);
-                    return false;
-                }
+            if (n != 6) {
+                return false;
             }
+            final String string = textView.getText().toString();
+            if (string.length() < PinDialog.PIN_LENGTH) {
+                return true;
+            }
+            if (PinDialog.this.getServiceManager() == null) {
+                Log.d("nf_pin", "serviceManager is null");
+                return false;
+            }
+            PinDialog.this.processUserInputPin(string);
             return false;
         }
     }
@@ -358,7 +344,11 @@ public class PinDialog extends NetflixDialogFrag
                 PinDialog.this.mPinEditText.setError((CharSequence)null, (Drawable)null);
                 PinDialog.this.showErrorIcon(false);
                 final String string = ((EditText)view).getText().toString();
-                if (string.length() >= PinDialog.PIN_LENGTH && PinDialog.this.getServiceManager() != null) {
+                if (string.length() >= PinDialog.PIN_LENGTH) {
+                    if (PinDialog.this.getServiceManager() == null) {
+                        Log.d("nf_pin", "serviceManager is null");
+                        return false;
+                    }
                     PinDialog.this.processUserInputPin(string);
                     return false;
                 }

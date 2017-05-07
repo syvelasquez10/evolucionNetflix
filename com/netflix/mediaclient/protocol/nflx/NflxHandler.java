@@ -15,7 +15,6 @@ import android.net.Uri;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.service.pushnotification.UserFeedbackOnReceivedPushNotification;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -27,6 +26,8 @@ import java.util.HashMap;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.util.MdxUtils;
 import com.netflix.mediaclient.ui.search.SearchActivity;
+import android.content.Context;
+import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import java.util.Locale;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
@@ -411,49 +412,55 @@ public class NflxHandler
             else {
                 Log.w("NflxHandler", "Client logging is null. Unable to report deep linking start!");
             }
-            Enum<IClientLogging.ModalView> enum1;
+            Enum<IClientLogging.ModalView> homeScreen;
             Response response;
             if ("home".equalsIgnoreCase(lowerCase)) {
                 Log.v("NflxHandler", "handleHomeAction starts...");
                 n2 = 1;
-                enum1 = IClientLogging.ModalView.homeScreen;
+                homeScreen = IClientLogging.ModalView.homeScreen;
                 response = this.handleHomeAction(netflixActivity);
             }
             else if ("play".equalsIgnoreCase(lowerCase)) {
                 final IClientLogging.ModalView playback = IClientLogging.ModalView.playback;
                 response = this.handlePlayAction(netflixActivity, mdx, map);
-                enum1 = playback;
+                homeScreen = playback;
             }
             else if ("view_details".equalsIgnoreCase(lowerCase)) {
                 if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
                     clientLogging.getCustomerEventLogging().reportMdpFromDeepLinking(map.toString());
                 }
-                enum1 = IClientLogging.ModalView.movieDetails;
-                response = this.handleViewDetailsAction(netflixActivity, map);
+                final IClientLogging.ModalView movieDetails = IClientLogging.ModalView.movieDetails;
+                final Response handleViewDetailsAction = this.handleViewDetailsAction(netflixActivity, map);
+                homeScreen = movieDetails;
+                response = handleViewDetailsAction;
             }
             else if ("g".equalsIgnoreCase(lowerCase)) {
                 n2 = 1;
-                enum1 = IClientLogging.ModalView.browseTitles;
-                response = this.handleViewGenreAction(netflixActivity, map);
+                final IClientLogging.ModalView browseTitles = IClientLogging.ModalView.browseTitles;
+                final Response handleViewGenreAction = this.handleViewGenreAction(netflixActivity, map);
+                homeScreen = browseTitles;
+                response = handleViewGenreAction;
             }
             else if ("search".equalsIgnoreCase(lowerCase)) {
-                enum1 = IClientLogging.ModalView.search;
-                response = this.handleSearchAction(netflixActivity, map);
+                final IClientLogging.ModalView search = IClientLogging.ModalView.search;
+                final Response handleSearchAction = this.handleSearchAction(netflixActivity, map);
+                homeScreen = search;
+                response = handleSearchAction;
             }
             else if ("sync".equalsIgnoreCase(lowerCase)) {
                 n2 = 1;
-                final IClientLogging.ModalView homeScreen = IClientLogging.ModalView.homeScreen;
+                final IClientLogging.ModalView homeScreen2 = IClientLogging.ModalView.homeScreen;
                 response = this.handleSyncAction(netflixActivity, mdx, map);
-                enum1 = homeScreen;
+                homeScreen = homeScreen2;
             }
             else {
                 Log.w("NflxHandler", "Unknown Nflx action: " + lowerCase);
-                enum1 = modalView;
+                homeScreen = modalView;
                 response = not_HANDLING2;
             }
             not_HANDLING = response;
             if (clientLogging != null && (response == Response.HANDLING || (not_HANDLING = response) == Response.HANDLING_WITH_DELAY)) {
-                clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.externalControlProtocol, (IClientLogging.ModalView)enum1, n);
+                clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.externalControlProtocol, (IClientLogging.ModalView)homeScreen, n, LogUtils.getDisplay((Context)netflixActivity));
                 not_HANDLING = response;
                 if (n2 != 0) {
                     clientLogging.getApplicationPerformanceMetricsLogging().startUiBrowseStartupSession(n);

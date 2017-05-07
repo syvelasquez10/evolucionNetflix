@@ -203,7 +203,7 @@ public class BillboardView extends RelativeLayout implements IVideoView<Billboar
             Log.v("BillboardView", "updating billboard, title: " + billboardDetails.getTitle() + ", story url: " + billboardDetails.getStoryUrl());
         }
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493186), billboardDetails.getTitle());
+        final String format = String.format(this.getResources().getString(2131493187), billboardDetails.getTitle());
         this.setContentDescription((CharSequence)format);
         if (this.showArtworkOnly) {
             this.storyArt.setPressedStateHandlerEnabled(true);

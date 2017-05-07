@@ -9,6 +9,8 @@ import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.branches.Season;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import java.util.Arrays;
+import java.util.List;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
@@ -35,8 +37,8 @@ public class FetchSeasonDetailsRequest extends FalcorVolleyWebClientRequest<Seas
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery);
     }
     
     @Override

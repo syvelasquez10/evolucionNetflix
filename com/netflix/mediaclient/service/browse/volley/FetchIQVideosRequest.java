@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import java.util.Collections;
+import java.util.Arrays;
 import com.netflix.mediaclient.service.webclient.model.ShowDetails;
 import com.netflix.mediaclient.service.webclient.model.MovieDetails;
 import com.netflix.mediaclient.Log;
@@ -99,8 +100,8 @@ public class FetchIQVideosRequest extends FalcorVolleyWebClientRequest<List<Vide
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery);
     }
     
     @Override
@@ -128,16 +129,16 @@ public class FetchIQVideosRequest extends FalcorVolleyWebClientRequest<List<Vide
                 while (true) {
                     int n = 0;
                     String string = null;
-                Label_0293:
+                Label_0294:
                     while (true) {
-                        Label_0242: {
+                        Label_0243: {
                             try {
                                 if (this.iqInCache) {
                                     asJsonObject = dataObj.getAsJsonObject("lists").getAsJsonObject(this.iqId);
                                 }
                                 else {
                                     if (!this.lolomoIdInCache) {
-                                        break Label_0242;
+                                        break Label_0243;
                                     }
                                     final JsonObject asJsonObject2 = dataObj.getAsJsonObject("lolomos").getAsJsonObject(this.lolomoId).getAsJsonObject("queue");
                                     BrowseAgent.putIQLoMoId(this.hardCache, FalcorParseUtils.getIdFromPath("nf_service_browse_fetchiqvideosrequest", asJsonObject2));
@@ -148,7 +149,7 @@ public class FetchIQVideosRequest extends FalcorVolleyWebClientRequest<List<Vide
                                 for (int i = this.toVideo; i >= this.fromVideo; --i, n = n2) {
                                     string = Integer.toString(i);
                                     if (!((JsonObject)asJsonObject).has(string)) {
-                                        break Label_0293;
+                                        break Label_0294;
                                     }
                                     n2 = 1;
                                     final com.netflix.mediaclient.service.webclient.model.branches.Video.Summary summary = FalcorParseUtils.getPropertyObject(((JsonObject)asJsonObject).getAsJsonObject(string), "summary", com.netflix.mediaclient.service.webclient.model.branches.Video.Summary.class);

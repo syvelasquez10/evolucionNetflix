@@ -11,6 +11,7 @@ import java.util.List;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Context;
 import android.util.SparseIntArray;
 import android.util.SparseArray;
@@ -41,7 +42,10 @@ public class PaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
         super(context);
     }
     
-    public static int computeNumVideosToFetchPerBatch(final int n) {
+    public static int computeNumVideosToFetchPerBatch(final NetflixActivity netflixActivity, final int n) {
+        if (netflixActivity.isForKids()) {
+            return 3;
+        }
         return Math.max(((SparseIntArray)PaginatedCwAdapter.numVideosPerPageTable.get(1)).get(n) * ((SparseIntArray)PaginatedCwAdapter.numVideosPerPageTable.get(2)).get(n), 4);
     }
     
@@ -52,12 +56,12 @@ public class PaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
     
     @Override
     protected int computeNumVideosToFetchPerBatch(final Context context) {
-        return computeNumVideosToFetchPerBatch(DeviceUtils.getScreenSizeCategory(context));
+        return computeNumVideosToFetchPerBatch(this.activity, DeviceUtils.getScreenSizeCategory(context));
     }
     
     @Override
     public int getRowHeightInPx() {
-        final int n = (int)(BasePaginatedAdapter.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage(DeviceUtils.getBasicScreenOrientation((Context)this.activity), DeviceUtils.getScreenSizeCategory((Context)this.activity)) * 0.5625f + 0.5f) + this.activity.getResources().getDimensionPixelOffset(2131361879);
+        final int n = (int)(BasePaginatedAdapter.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage(DeviceUtils.getBasicScreenOrientation((Context)this.activity), DeviceUtils.getScreenSizeCategory((Context)this.activity)) * 0.5625f + 0.5f) + this.activity.getResources().getDimensionPixelOffset(2131361882);
         Log.v("PaginatedCwAdapter", "Computed view height: " + n);
         return n;
     }

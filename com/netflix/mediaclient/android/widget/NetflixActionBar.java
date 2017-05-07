@@ -4,9 +4,13 @@
 
 package com.netflix.mediaclient.android.widget;
 
-import android.view.View$OnClickListener;
 import android.view.MenuItem;
+import android.view.ViewGroup$LayoutParams;
+import android.view.View$OnClickListener;
 import android.app.Activity;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.ui.home.HomeActivity;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.graphics.drawable.Drawable;
 import android.graphics.Shader$TileMode;
 import android.graphics.drawable.BitmapDrawable;
@@ -30,12 +34,13 @@ public class NetflixActionBar
     protected final NetflixActivity activity;
     protected final View content;
     private final ViewTreeObserver$OnGlobalLayoutListener globalLayoutListener;
+    protected final boolean hasUpAction;
     private View homeView;
     protected final ImageView logo;
     protected final ActionBar systemActionBar;
     protected final TextView title;
     
-    public NetflixActionBar(final NetflixActivity activity, final boolean displayHomeAsUpEnabled) {
+    public NetflixActionBar(final NetflixActivity activity, final boolean b) {
         this.globalLayoutListener = (ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
             private void applyUpButtonTouchDelegate() {
                 final View homeView = this.getHomeView((View)NetflixActionBar.this.content.getParent());
@@ -88,11 +93,12 @@ public class NetflixActionBar
         };
         this.activity = activity;
         this.systemActionBar = activity.getActionBar();
+        this.hasUpAction = b;
         if (this.systemActionBar == null) {
             throw new InvalidParameterException("ActionBar is null");
         }
         this.systemActionBar.setCustomView(this.getLayoutId());
-        this.systemActionBar.setDisplayHomeAsUpEnabled(displayHomeAsUpEnabled);
+        this.systemActionBar.setDisplayHomeAsUpEnabled(b);
         this.systemActionBar.setDisplayShowCustomEnabled(true);
         this.systemActionBar.setDisplayShowHomeEnabled(true);
         this.systemActionBar.setDisplayShowTitleEnabled(true);
@@ -107,7 +113,7 @@ public class NetflixActionBar
         this.fixBackgroundRepeat(this.content);
         this.setupFocusability();
         this.setLogoType(LogoType.FULL_SIZE);
-        if (displayHomeAsUpEnabled) {
+        if (b) {
             this.content.getViewTreeObserver().addOnGlobalLayoutListener(this.globalLayoutListener);
         }
     }
@@ -140,7 +146,26 @@ public class NetflixActionBar
         }
     }
     
-    protected void configureBackButtonIfNecessary() {
+    protected void configureBackButtonIfNecessary(final boolean b) {
+        if (KidsUtils.shouldShowBackNavigationAffordance(this.activity) && !(this.activity instanceof HomeActivity)) {
+            final ActionBar actionBar = this.activity.getActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(false);
+            if (!b || DeviceUtils.getScreenResolutionDpi(this.activity) >= 320) {
+                Log.v("NetflixActionBar", "Configuring action bar 'up' affordance for back behavior");
+                final View viewById = this.content.findViewById(2131165280);
+                final ViewGroup$LayoutParams layoutParams = viewById.getLayoutParams();
+                final int actionBarHeight = this.activity.getActionBarHeight();
+                layoutParams.width = actionBarHeight;
+                if (b) {
+                    layoutParams.width *= (int)0.75f;
+                    viewById.setPadding(viewById.getPaddingLeft() / 2, viewById.getPaddingTop(), viewById.getPaddingRight() / 2, viewById.getPaddingBottom());
+                }
+                layoutParams.height = actionBarHeight;
+                viewById.setVisibility(0);
+                viewById.setOnClickListener((View$OnClickListener)new PerformUpActionOnClickListener(this.activity));
+            }
+        }
     }
     
     protected Activity getActivity() {
@@ -170,6 +195,9 @@ public class NetflixActionBar
     
     public void hide() {
         this.content.setVisibility(8);
+    }
+    
+    public void onManagerReady() {
     }
     
     public void setBackgroundResource(final int n) {

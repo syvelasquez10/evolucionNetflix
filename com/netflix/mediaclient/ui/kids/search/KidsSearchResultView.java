@@ -31,7 +31,7 @@ public class KidsSearchResultView extends SearchResultView
     
     @Override
     protected int getYearColorResId() {
-        return 2131296308;
+        return 2131296307;
     }
     
     @Override

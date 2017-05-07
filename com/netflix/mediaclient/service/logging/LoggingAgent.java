@@ -257,6 +257,12 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
         return false;
     }
     
+    public void handleConnectivityChange(final Intent intent) {
+        if (this.mIntegratedClientLoggingManager != null) {
+            this.mIntegratedClientLoggingManager.handleConnectivityChange(intent);
+        }
+    }
+    
     @Override
     public boolean isReady() {
         return true;

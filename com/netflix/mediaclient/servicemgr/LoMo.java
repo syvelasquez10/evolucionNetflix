@@ -11,6 +11,8 @@ public interface LoMo extends BasicLoMo, Parcelable
 {
     List<FriendProfile> getFacebookFriends();
     
+    List<String> getMoreImages();
+    
     int getNumVideos();
     
     boolean isBillboard();

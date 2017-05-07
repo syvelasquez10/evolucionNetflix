@@ -9,6 +9,8 @@ import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.LoLoMoSummary;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import java.util.Arrays;
+import java.util.List;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.service.browse.cache.HardCache;
@@ -47,8 +49,8 @@ public class FetchLoLoMoSummaryRequest extends FalcorVolleyWebClientRequest<LoLo
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery);
     }
     
     @Override

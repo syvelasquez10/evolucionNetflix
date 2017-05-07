@@ -344,18 +344,19 @@ public class NativeTransport implements Transport
             string = "nrdp";
             try {
                 // iftrue(Label_0093:, !string.startsWith("nrdp"))
+            Block_4_Outer:
                 while (true) {
+                    this.native_setProperty(string, s, s2);
+                    return;
                     while (true) {
-                        this.native_setProperty(string, s, s2);
-                        return;
-                        Label_0093: {
-                            string = "nrdp." + string;
-                        }
-                        continue;
                         Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                        continue Block_4_Outer;
                         continue;
                     }
-                    continue;
+                    Label_0093: {
+                        string = "nrdp." + string;
+                    }
+                    continue Block_4_Outer;
                 }
             }
             catch (Throwable t) {

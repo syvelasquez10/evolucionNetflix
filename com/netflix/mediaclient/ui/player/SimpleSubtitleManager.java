@@ -27,8 +27,8 @@ public final class SimpleSubtitleManager implements SubtitleManager
         if (this.mScreen == null) {
             throw new IllegalArgumentException("Player screen is not initialized!");
         }
-        this.mSubtitleArea = mActivity.findViewById(2131165513);
-        this.mSubtitleLabel = (TextView)mActivity.findViewById(2131165413);
+        this.mSubtitleArea = mActivity.findViewById(2131165519);
+        this.mSubtitleLabel = (TextView)mActivity.findViewById(2131165419);
     }
     
     @Override

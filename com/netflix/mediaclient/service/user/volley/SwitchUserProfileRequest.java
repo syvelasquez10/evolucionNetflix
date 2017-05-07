@@ -7,6 +7,8 @@ package com.netflix.mediaclient.service.user.volley;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import java.util.Arrays;
+import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.ServiceAgent;
@@ -46,8 +48,8 @@ public class SwitchUserProfileRequest extends FalcorVolleyWebClientRequest<UserB
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery);
     }
     
     @Override

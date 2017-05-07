@@ -37,13 +37,12 @@ import com.netflix.mediaclient.service.ServiceAgent;
 public class ConfigurationAgent extends ServiceAgent implements ConfigurationAgentInterface
 {
     private static final int APM_USER_SESSION_TIMEOUT_SEC = 1800;
-    public static final boolean CAN_SHOW_BACK_BUTTON_IN_ACTION_BAR = false;
     private static final long CONFIG_REFRESH_DELAY_MS = 28800000L;
     private static final int DATA_REQUEST_TIMEOUT_MS = 10000;
     private static final float DISK_CACHE_SIZE_AS_PERCENTAGE_OF_AVLBLMEM = 0.25f;
+    private static final KidsOnPhoneConfiguration DUMMY_KIDS_CONFIG;
     private static final int HIGH_MEM_THREAD_COUNT = 4;
     private static final float IMAGE_CACHE_SIZE_AS_PERCENTAGE_OF_MAX_HEAP = 0.5f;
-    private static final KidsOnPhoneConfiguration KIDS_CONFIG_OVERRIDE;
     private static final String LEVEL_HIGH = "high";
     private static final String LEVEL_LOW = "low";
     private static final long LOW_MEMORY_CONFIG_THRESHOLD_IN_BYTES = 33554432L;
@@ -51,10 +50,11 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     private static final int MAX_DISK_CACHE_SIZE_IN_BYTES = 26214400;
     private static final int MAX_VIDEO_BUFFERSIZE = 33554432;
     private static final long MILLISECONDS_PER_DAY = 86400000L;
-    private static final long MINIMUM_IMAGE_CACHE_TTL = 1209600000L;
+    public static final long MINIMUM_IMAGE_CACHE_TTL = 1209600000L;
     private static final int MIN_DISK_CACHE_SIZE_IN_BYTES = 5242880;
     private static final int MIN_VIDEO_BUFFERSIZE = 4194304;
-    private static final int RESOURCE_REQUEST_TIMEOUT_MS = 1000;
+    private static final boolean OVERRIDE_SERVER_CONFIG_FOR_KIDS_ON_PHONE = false;
+    public static final int RESOURCE_REQUEST_TIMEOUT_MS = 1000;
     private static final String TAG = "nf_configurationagent";
     private static final String VIDEO_PLAYREADY_H264_BPL30_DASH = "playready-h264bpl30-dash";
     private static final String VIDEO_PLAYREADY_H264_MPL30_DASH = "playready-h264mpl30-dash";
@@ -79,7 +79,12 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     private final Runnable refreshRunnable;
     
     static {
-        KIDS_CONFIG_OVERRIDE = new KidsOnPhoneConfiguration() {
+        DUMMY_KIDS_CONFIG = new KidsOnPhoneConfiguration() {
+            @Override
+            public ActionBarNavType getActionBarNavType() {
+                return ActionBarNavType.UP;
+            }
+            
             @Override
             public LolomoImageType getLolomoImageType() {
                 return LolomoImageType.HORIZONTAL;
@@ -87,27 +92,27 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
             
             @Override
             public ScrollBehavior getScrollBehavior() {
-                return ScrollBehavior.UP_DOWN;
+                return ScrollBehavior.LRUD;
             }
             
             @Override
             public boolean isKidsOnPhoneEnabled() {
-                return false;
+                return true;
             }
             
             @Override
             public boolean shouldShowKidsEntryInActionBar() {
-                return false;
+                return true;
             }
             
             @Override
             public boolean shouldShowKidsEntryInGenreLomo() {
-                return false;
+                return true;
             }
             
             @Override
             public boolean shouldShowKidsEntryInMenu() {
-                return false;
+                return true;
             }
         };
         sMemLevel = getMemLevel();
@@ -482,7 +487,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     
     @Override
     public KidsOnPhoneConfiguration getKidsOnPhoneConfiguration() {
-        return ConfigurationAgent.KIDS_CONFIG_OVERRIDE;
+        return this.mAccountConfigOverride.getKidsOnPhoneConfiguration();
     }
     
     @Override

@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.browse.volley;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import java.util.Collections;
+import java.util.Arrays;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.model.ShowDetails;
 import com.netflix.mediaclient.service.webclient.model.MovieDetails;
@@ -285,8 +286,8 @@ public class FetchCWVideosRequest extends FalcorVolleyWebClientRequest<List<CWVi
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery, this.pqlQuery2, this.pqlQuery3, this.pqlQuery4 };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery, this.pqlQuery2, this.pqlQuery3, this.pqlQuery4);
     }
     
     @Override

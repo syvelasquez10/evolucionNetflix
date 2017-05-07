@@ -10,6 +10,8 @@ import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration;
 public class KidsOnPhoneConfigData implements KidsOnPhoneConfiguration
 {
     public static final KidsOnPhoneConfigData DEFAULT_KIDS_CONFIG;
+    @SerializedName("abNav")
+    private ActionBarNavType actionBarNavType;
     @SerializedName("imageType")
     private LolomoImageType imageType;
     @SerializedName("isEntryInActionBar")
@@ -30,6 +32,12 @@ public class KidsOnPhoneConfigData implements KidsOnPhoneConfiguration
     public KidsOnPhoneConfigData() {
         this.scrollBehavior = ScrollBehavior.LRUD;
         this.imageType = LolomoImageType.HORIZONTAL;
+        this.actionBarNavType = ActionBarNavType.UP;
+    }
+    
+    @Override
+    public ActionBarNavType getActionBarNavType() {
+        return this.actionBarNavType;
     }
     
     @Override

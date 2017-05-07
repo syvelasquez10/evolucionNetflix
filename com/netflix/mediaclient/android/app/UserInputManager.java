@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.common.PinVerifier;
+import com.netflix.mediaclient.ui.pin.PinVerifier;
 import java.util.concurrent.Executors;
 import java.util.Collections;
 import java.util.ArrayList;

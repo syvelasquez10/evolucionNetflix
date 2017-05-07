@@ -17,7 +17,6 @@ import com.netflix.mediaclient.servicemgr.PostPlayVideo;
 import com.netflix.mediaclient.servicemgr.LoLoMo;
 import com.netflix.mediaclient.servicemgr.Genre;
 import com.netflix.mediaclient.servicemgr.GenreList;
-import com.netflix.mediaclient.service.browse.cache.BrowseCache;
 import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
@@ -33,7 +32,11 @@ import android.content.IntentFilter;
 import com.netflix.mediaclient.service.webclient.model.MovieDetails;
 import com.netflix.mediaclient.ui.Asset;
 import java.util.Iterator;
+import com.netflix.mediaclient.service.browse.cache.BrowseCache;
 import com.netflix.mediaclient.android.app.BackgroundTask;
+import java.util.ArrayList;
+import com.netflix.mediaclient.service.browse.cache.HardBrowseCache;
+import com.netflix.mediaclient.service.browse.cache.SoftBrowseCache;
 import java.lang.ref.WeakReference;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
 import java.util.Random;
@@ -43,9 +46,6 @@ import com.netflix.mediaclient.servicemgr.ShowDetails;
 import com.netflix.mediaclient.servicemgr.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.SeasonDetails;
 import android.os.Handler;
-import java.util.ArrayList;
-import com.netflix.mediaclient.service.browse.cache.HardBrowseCache;
-import com.netflix.mediaclient.service.browse.cache.SoftBrowseCache;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
@@ -68,16 +68,17 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     public static final String CACHE_KEY_IQ_LOMO_SUMMARY = "iq_lomo_summary";
     public static final String CACHE_KEY_LOLOMO_ID = "lolomo_id";
     public static final String CACHE_KEY_PREFIX_CW_VIDEOS;
-    public static final String CACHE_KEY_PREFIX_EPISODES;
     public static final String CACHE_KEY_PREFIX_EPISODE_DETAILS;
     public static final String CACHE_KEY_PREFIX_GENRE_LOMO;
     public static final String CACHE_KEY_PREFIX_GENRE_VIDEOS;
     public static final String CACHE_KEY_PREFIX_IQ_VIDEOS;
-    public static final String CACHE_KEY_PREFIX_KIDS_CDP;
+    private static final String CACHE_KEY_PREFIX_KIDS_CDP;
     public static final String CACHE_KEY_PREFIX_LOMO;
     public static final String CACHE_KEY_PREFIX_MDP;
     public static final String CACHE_KEY_PREFIX_SDP;
+    private static final String CACHE_KEY_PREFIX_SEASON_DETAILS;
     public static final String CACHE_KEY_PREFIX_VIDEOS;
+    public static final String CHARACTERS_KEY = "characters";
     public static final String CONTINUE_WATCHING_KEY = "continueWatching";
     public static final String GENRE_LIST_KEY = "genreList";
     public static final String INSTANT_QUEUE_KEY = "queue";
@@ -95,16 +96,16 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     private static int mPrefetchFromVideo;
     private static int mPrefetchToCWVideo;
     private static int mPrefetchToVideo;
-    private final List<String> cwKeysCache;
+    private List<String> cwKeysCache;
     private DataDumper dataDumper;
-    private final HardCache hardCache;
-    private final List<String> iqKeysCache;
+    private HardCache hardCache;
+    private List<String> iqKeysCache;
     private BrowseWebClient mBrowseWebClient;
     private final PlayReceiver mPlayReceiver;
     public final BroadcastReceiver mUserAgentIntentReceiver;
-    private final SoftCache softCache;
-    private final SoftCache weakEpisodesCache;
-    private final SoftCache weakSeasonsCache;
+    private SoftCache softCache;
+    private SoftCache weakEpisodesCache;
+    private SoftCache weakSeasonsCache;
     
     static {
         final int n = 300;
@@ -132,17 +133,18 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         CACHE_KEY_PREFIX_LOMO = getCacheKeyFromClassName(FetchLoMosTask.class);
         CACHE_KEY_PREFIX_MDP = getCacheKeyFromClassName(FetchMovieDetailsTask.class);
         CACHE_KEY_PREFIX_SDP = getCacheKeyFromClassName(FetchShowDetailsTask.class);
-        CACHE_KEY_PREFIX_KIDS_CDP = getCacheKeyFromClassName(FetchKidsCharacterDetailsTask.class);
-        CACHE_KEY_PREFIX_EPISODES = getCacheKeyFromClassName(FetchEpisodesTask.class);
         CACHE_KEY_PREFIX_EPISODE_DETAILS = getCacheKeyFromClassName(FetchEpisodeDetailsTask.class);
         CACHE_KEY_PREFIX_GENRE_LOMO = getCacheKeyFromClassName(FetchGenresTask.class);
         CACHE_KEY_PREFIX_CW_VIDEOS = getCacheKeyFromClassName(FetchCWVideosTask.class);
         CACHE_KEY_PREFIX_IQ_VIDEOS = getCacheKeyFromClassName(FetchIQVideosTask.class);
         CACHE_KEY_PREFIX_VIDEOS = getCacheKeyFromClassName(FetchVideosTask.class);
         CACHE_KEY_PREFIX_GENRE_VIDEOS = getCacheKeyFromClassName(FetchGenreVideosTask.class);
+        CACHE_KEY_PREFIX_KIDS_CDP = getCacheKeyFromClassName(FetchKidsCharacterDetailsTask.class);
+        CACHE_KEY_PREFIX_SEASON_DETAILS = getCacheKeyFromClassName(FetchSeasonDetailsTask.class);
     }
     
     public BrowseAgent() {
+        this.mPlayReceiver = new PlayReceiver();
         this.mUserAgentIntentReceiver = new BroadcastReceiver() {
             public void onReceive(final Context context, final Intent intent) {
                 if (intent != null) {
@@ -158,13 +160,6 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                 }
             }
         };
-        this.softCache = new SoftBrowseCache(BrowseAgent.MAX_NUM_SOFTCACHE_ITEMS);
-        this.hardCache = new HardBrowseCache();
-        this.cwKeysCache = new ArrayList<String>();
-        this.iqKeysCache = new ArrayList<String>();
-        this.weakSeasonsCache = new SoftBrowseCache(BrowseAgent.MAX_NUM_SEASONS_ITEMS);
-        this.weakEpisodesCache = new SoftBrowseCache(BrowseAgent.MAX_NUM_EPISODES_ITEMS);
-        this.mPlayReceiver = new PlayReceiver();
     }
     
     public static boolean areIqIdsInCache(final HardCache hardCache) {
@@ -191,12 +186,12 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         return buildBrowseCacheKey("genre_lolomo_id", s, "0", "0");
     }
     
-    private static String buildEpisodeCacheKey(final String s) {
-        return buildBrowseCacheKey(s, s, "0", "0");
+    private static String buildEpisodeDetailsCacheKey(final String s) {
+        return buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_EPISODE_DETAILS, s, "0", "0");
     }
     
-    private static String buildSeasonCacheKey(final String s) {
-        return buildBrowseCacheKey(s, s, "0", "0");
+    private static String buildSeasonDetailsCacheKey(final String s) {
+        return buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_SEASON_DETAILS, s, "0", "0");
     }
     
     public static String buildStillUrlFromPos(final String s, final int n, final int n2) {
@@ -311,11 +306,11 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         if (computePlayPos(episodeDetails.getBookmarkPosition(), episodeDetails.getEndtime(), episodeDetails.getRuntime()) == episodeDetails.getBookmarkPosition()) {
             return episodeDetails;
         }
-        final String buildEpisodeCacheKey = buildEpisodeCacheKey(episodeDetails.getNextEpisodeId());
+        final String buildEpisodeDetailsCacheKey = buildEpisodeDetailsCacheKey(episodeDetails.getNextEpisodeId());
         if (Log.isLoggable("nf_service_browseagent", 3)) {
-            Log.d("nf_bookmark", "looking for episode with key: " + buildEpisodeCacheKey);
+            Log.d("nf_bookmark", "looking for episode with key: " + buildEpisodeDetailsCacheKey);
         }
-        final WeakReference weakReference = (WeakReference)this.weakEpisodesCache.get(buildEpisodeCacheKey);
+        final WeakReference weakReference = (WeakReference)this.weakEpisodesCache.get(buildEpisodeDetailsCacheKey);
         if (weakReference != null) {
             final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails2 = weakReference.get();
             episodeDetails2.bookmark.setLastModified(lastModified);
@@ -344,13 +339,33 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         BrowseAgent.isCurrentProfileActive = false;
     }
     
+    private void initCaches() {
+        this.softCache = new SoftBrowseCache(BrowseAgent.MAX_NUM_SOFTCACHE_ITEMS);
+        this.hardCache = new HardBrowseCache();
+        this.weakSeasonsCache = new SoftBrowseCache(BrowseAgent.MAX_NUM_SEASONS_ITEMS);
+        this.weakEpisodesCache = new SoftBrowseCache(BrowseAgent.MAX_NUM_EPISODES_ITEMS);
+        this.cwKeysCache = new ArrayList<String>();
+        this.iqKeysCache = new ArrayList<String>();
+        this.mBrowseWebClient = BrowseWebClientFactory.create(this.hardCache, this.softCache, this.weakSeasonsCache, this.cwKeysCache, this.iqKeysCache, this.getService(), this.getResourceFetcher().getApiNextWebClient());
+    }
+    
     private Boolean isKidsCharacterDetailsNew(final KidsCharacterDetails kidsCharacterDetails, final KidsCharacterDetails kidsCharacterDetails2) {
-        boolean b = true;
-        Log.d("nf_service_browseagent", String.format("charId: %s, cachePlayableId:%s, newPlayableId:%s", kidsCharacterDetails.getCharacterId(), kidsCharacterDetails.getPlayableId(), kidsCharacterDetails2.getPlayableId()));
-        if (StringUtils.safeEquals(kidsCharacterDetails.getPlayableId(), kidsCharacterDetails2.getPlayableId())) {
-            b = false;
+        if (Log.isLoggable("nf_service_browseagent", 3)) {
+            final String characterId = kidsCharacterDetails.getCharacterId();
+            final String playableId = kidsCharacterDetails.getPlayableId();
+            String playableId2;
+            if (kidsCharacterDetails2 == null) {
+                playableId2 = "n/a";
+            }
+            else {
+                playableId2 = kidsCharacterDetails2.getPlayableId();
+            }
+            Log.d("nf_service_browseagent", String.format("charId: %s, cachePlayableId:%s, newPlayableId:%s", characterId, playableId, playableId2));
         }
-        return b;
+        if (kidsCharacterDetails2 == null) {
+            return false;
+        }
+        return !StringUtils.safeEquals(kidsCharacterDetails.getPlayableId(), kidsCharacterDetails2.getPlayableId());
     }
     
     private void launchTask(final Runnable runnable) {
@@ -396,20 +411,16 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         hardCache.put("iq_lomo_summary", o);
     }
     
-    public static void putInBrowseCache(final HardCache hardCache, final String s, final Object o) {
-        hardCache.put(s, o);
-    }
-    
-    public static void putInBrowseCache(final SoftCache softCache, final String s, final Object o) {
-        softCache.put(s, o);
+    public static void putInBrowseCache(final BrowseCache browseCache, final String s, final Object o) {
+        browseCache.put(s, o);
     }
     
     private void putInWeakEpisodesCache(final EpisodeDetails episodeDetails) {
-        final String buildEpisodeCacheKey = buildEpisodeCacheKey(episodeDetails.getId());
+        final String buildEpisodeDetailsCacheKey = buildEpisodeDetailsCacheKey(episodeDetails.getId());
         if (Log.isLoggable("nf_service_browseagent", 3)) {
-            Log.d("nf_bookmark", "putting episode in weakEpisodesCache: " + episodeDetails.getTitle() + ", cache key: " + buildEpisodeCacheKey);
+            Log.d("nf_bookmark", "putting episode in weakEpisodesCache: " + episodeDetails.getTitle() + ", cache key: " + buildEpisodeDetailsCacheKey);
         }
-        putInBrowseCache(this.weakEpisodesCache, buildEpisodeCacheKey, new WeakReference(episodeDetails));
+        putInBrowseCache(this.weakEpisodesCache, buildEpisodeDetailsCacheKey, new WeakReference(episodeDetails));
     }
     
     private void putInWeakEpisodesCache(final List<EpisodeDetails> list) {
@@ -421,7 +432,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     
     private void putInWeakSeasonsCache(final List<SeasonDetails> list) {
         for (final SeasonDetails seasonDetails : list) {
-            putInBrowseCache(this.weakSeasonsCache, buildSeasonCacheKey(seasonDetails.getId()), new WeakReference(seasonDetails));
+            putInBrowseCache(this.weakSeasonsCache, buildSeasonDetailsCacheKey(seasonDetails.getId()), new WeakReference(seasonDetails));
         }
     }
     
@@ -464,11 +475,11 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                         if (showDetails == null) {
                             return;
                         }
-                        final String buildEpisodeCacheKey = buildEpisodeCacheKey(playableId);
+                        final String buildEpisodeDetailsCacheKey = buildEpisodeDetailsCacheKey(playableId);
                         if (Log.isLoggable("nf_service_browseagent", 3)) {
-                            Log.d("nf_bookmark", "looking for episode with key: " + buildEpisodeCacheKey);
+                            Log.d("nf_bookmark", "looking for episode with key: " + buildEpisodeDetailsCacheKey);
                         }
-                        final WeakReference weakReference = (WeakReference)this.weakEpisodesCache.get(buildEpisodeCacheKey);
+                        final WeakReference weakReference = (WeakReference)this.weakEpisodesCache.get(buildEpisodeDetailsCacheKey);
                         if (weakReference != null) {
                             episodeDetails = weakReference.get();
                         }
@@ -654,7 +665,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     }
     
     public static void updateSeasonsInformation(final SoftCache softCache, final String s, final int currentEpisodeNumber) {
-        final WeakReference weakReference = (WeakReference)softCache.get(buildSeasonCacheKey(s));
+        final WeakReference weakReference = (WeakReference)softCache.get(buildSeasonDetailsCacheKey(s));
         if (weakReference != null) {
             final com.netflix.mediaclient.service.webclient.model.SeasonDetails seasonDetails = weakReference.get();
             seasonDetails.detail.currentEpisodeNumber = currentEpisodeNumber;
@@ -685,7 +696,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     }
     
     public void doInit() {
-        this.mBrowseWebClient = BrowseWebClientFactory.create(this.hardCache, this.softCache, this.weakSeasonsCache, this.cwKeysCache, this.iqKeysCache, this.getService(), this.getResourceFetcher().getApiNextWebClient());
+        this.initCaches();
         BrowseAgent.isCurrentProfileActive = false;
         this.registerUserAgentIntentReceiver();
         this.registerPlayReceiver();
@@ -782,12 +793,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     }
     
     public void flushCaches() {
-        this.softCache.flush();
-        this.hardCache.flush();
-        this.weakSeasonsCache.flush();
-        this.weakEpisodesCache.flush();
-        this.iqKeysCache.clear();
-        this.cwKeysCache.clear();
+        this.initCaches();
     }
     
     public void hideVideo(final String s, final BrowseAgentCallback browseAgentCallback) {
@@ -809,7 +815,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         this.launchTask(new PrefetchGenreLoLoMoTask(s, n, n2, n3, n4, b, browseAgentCallback));
     }
     
-    public void prefetchLoLoMo(final int n, final int n2, final int mPrefetchFromVideo, final int mPrefetchToVideo, final int mPrefetchFromCWVideo, final int mPrefetchToCWVideo, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+    public void prefetchLoLoMo(final int n, final int n2, final int mPrefetchFromVideo, final int mPrefetchToVideo, final int mPrefetchFromCWVideo, final int mPrefetchToCWVideo, final boolean b, final boolean b2, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable("nf_service_browseagent", 4)) {
             Log.i("nf_service_browseagent", "Request to prefetch LoLoMo");
         }
@@ -821,7 +827,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         BrowseAgent.mPrefetchFromCWVideo = mPrefetchFromCWVideo;
         BrowseAgent.mPrefetchToVideo = mPrefetchToVideo;
         BrowseAgent.mPrefetchFromVideo = mPrefetchFromVideo;
-        this.launchTask(new PrefetchLoLoMoTask(n, n2, mPrefetchFromVideo, mPrefetchToVideo, mPrefetchFromCWVideo, mPrefetchToCWVideo, b, browseAgentCallback));
+        this.launchTask(new PrefetchLoLoMoTask(n, n2, mPrefetchFromVideo, mPrefetchToVideo, mPrefetchFromCWVideo, mPrefetchToCWVideo, b, b2, browseAgentCallback));
     }
     
     public void refreshCW() {
@@ -1112,7 +1118,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                 this.webClientCallback.onEpisodeDetailsFetched(episodeDetails, 0);
                 return;
             }
-            final String access$2300 = buildEpisodeCacheKey(((FetchTask)this).getCategory());
+            final String access$2300 = buildEpisodeDetailsCacheKey(((FetchTask)this).getCategory());
             if (Log.isLoggable("nf_service_browseagent", 3)) {
                 Log.d("nf_bookmark", "looking for episode with key: " + access$2300);
             }
@@ -1471,7 +1477,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                 this.webClientCallback.onSeasonDetailsFetched(seasonDetails, 0);
                 return;
             }
-            final WeakReference weakReference = (WeakReference)BrowseAgent.this.weakSeasonsCache.get(buildSeasonCacheKey(((FetchTask)this).getCategory()));
+            final WeakReference weakReference = (WeakReference)BrowseAgent.this.weakSeasonsCache.get(buildSeasonDetailsCacheKey(((FetchTask)this).getCategory()));
             if (weakReference != null && weakReference.get() != null) {
                 this.webClientCallback.onSeasonDetailsFetched(weakReference.get(), 0);
                 return;
@@ -1785,11 +1791,12 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         final int mFromCWVideo;
         final int mFromLoMo;
         final boolean mIncludeBoxshots;
+        final boolean mIncludeExtraCharacters;
         final int mToCWVideo;
         final int mToLoMo;
         private final BrowseAgentCallback webClientCallback;
         
-        public PrefetchLoLoMoTask(final int mFromLoMo, final int mToLoMo, final int n, final int n2, final int mFromCWVideo, final int mToCWVideo, final boolean mIncludeBoxshots, final BrowseAgentCallback browseAgentCallback) {
+        public PrefetchLoLoMoTask(final int mFromLoMo, final int mToLoMo, final int n, final int n2, final int mFromCWVideo, final int mToCWVideo, final boolean mIncludeExtraCharacters, final boolean mIncludeBoxshots, final BrowseAgentCallback browseAgentCallback) {
             super("lolomo", n, n2, browseAgentCallback);
             this.webClientCallback = new SimpleBrowseAgentCallback() {
                 @Override
@@ -1810,11 +1817,12 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
             this.mFromCWVideo = mFromCWVideo;
             this.mToCWVideo = mToCWVideo;
             this.mIncludeBoxshots = mIncludeBoxshots;
+            this.mIncludeExtraCharacters = mIncludeExtraCharacters;
         }
         
         @Override
         public void run() {
-            BrowseAgent.this.mBrowseWebClient.prefetchLoLoMo(((FetchTask)this).getCategory(), this.mFromLoMo, this.mToLoMo, ((FetchTask)this).getFromIndex(), ((FetchTask)this).getToIndex(), this.mFromCWVideo, this.mToCWVideo, this.webClientCallback);
+            BrowseAgent.this.mBrowseWebClient.prefetchLoLoMo(((FetchTask)this).getCategory(), this.mFromLoMo, this.mToLoMo, ((FetchTask)this).getFromIndex(), ((FetchTask)this).getToIndex(), this.mFromCWVideo, this.mToCWVideo, this.mIncludeExtraCharacters, this.webClientCallback);
         }
     }
     
@@ -1853,6 +1861,10 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                 @Override
                 public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final int n) {
                     final com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails kidsCharacterDetailsFromCache = BrowseAgent.getKidsCharacterDetailsFromCache(RefreshKidsCharacterDetailsTask.this.mCharacterId, BrowseAgent.this.hardCache, BrowseAgent.this.softCache);
+                    if (kidsCharacterDetailsFromCache == null) {
+                        Log.w("nf_service_browseagent", "Cached character details are null, can't refresh - charId: " + RefreshKidsCharacterDetailsTask.this.mCharacterId);
+                        return;
+                    }
                     final com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails kidsCharacterDetails2 = (com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails)kidsCharacterDetails;
                     final Boolean access$2000 = BrowseAgent.this.isKidsCharacterDetailsNew(kidsCharacterDetailsFromCache, kidsCharacterDetails);
                     if (b && kidsCharacterDetailsFromCache != null) {

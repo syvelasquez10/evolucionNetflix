@@ -19,6 +19,7 @@ import com.android.volley.Cache;
 import com.android.volley.toolbox.BasicNetwork;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.util.gfx.BitmapLruCache;
+import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.HttpStack;
 import com.netflix.mediaclient.Log;
@@ -33,6 +34,8 @@ import com.netflix.mediaclient.service.ServiceAgent;
 public class ResourceFetcher extends ServiceAgent
 {
     private static final String DOWNLOADS_CACHE_DIR = "downloads";
+    private static final long MINIMUM_IMAGE_CACHE_TTL = 1209600000L;
+    private static final int RESOURCE_REQUEST_TIMEOUT_MS = 1000;
     private static final String SELECTED_WEBCLIENT = "volley";
     private static final String TAG = "nf_service_resourcefetcher";
     private static final String VOLLEY_CACHE_DIR = "volley";
@@ -62,12 +65,24 @@ public class ResourceFetcher extends ServiceAgent
     
     private ImageLoader createImageLoader() {
         Log.d("nf_service_resourcefetcher", "ResourceFetcher creating ImageLoader");
-        final int resourceRequestTimeout = this.getConfigurationAgent().getResourceRequestTimeout();
-        final long imageCacheMinimumTtl = this.getConfigurationAgent().getImageCacheMinimumTtl();
+        final ConfigurationAgentInterface configurationAgent = this.getConfigurationAgent();
+        long imageCacheMinimumTtl = 1209600000L;
+        int resourceRequestTimeout = 1000;
+        if (configurationAgent != null) {
+            resourceRequestTimeout = configurationAgent.getResourceRequestTimeout();
+            imageCacheMinimumTtl = configurationAgent.getImageCacheMinimumTtl();
+        }
         if (Log.isLoggable("nf_service_resourcefetcher", 3)) {
             Log.d("nf_service_resourcefetcher", "Received request to create new ImageLoader with socketTimeout = " + resourceRequestTimeout + " and minimumTtl = " + imageCacheMinimumTtl + "ms");
         }
-        return new ImageLoader(this.mRequestQueue, this.getImageCache(), resourceRequestTimeout, imageCacheMinimumTtl, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging(), this.getConfigurationAgent());
+        ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = null;
+        if (this.getService() != null) {
+            applicationPerformanceMetricsLogging = applicationPerformanceMetricsLogging;
+            if (this.getService().getClientLogging() != null) {
+                applicationPerformanceMetricsLogging = this.getService().getClientLogging().getApplicationPerformanceMetricsLogging();
+            }
+        }
+        return new ImageLoader(this.mRequestQueue, this.getImageCache(), resourceRequestTimeout, imageCacheMinimumTtl, applicationPerformanceMetricsLogging, configurationAgent);
     }
     
     private static FalcorVolleyWebClient createWebClient() {

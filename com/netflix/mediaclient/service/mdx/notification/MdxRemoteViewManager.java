@@ -18,6 +18,7 @@ public final class MdxRemoteViewManager
     private boolean mInTransition;
     private final MdxNotificationManager.MdxNotificationIntentRetriever mIntentRetriever;
     private boolean mIsEpisode;
+    private boolean mIsInPostPlay;
     private final boolean mIsLegacy;
     private String mMainTitle;
     RemoteViews mNormalRemoteView;
@@ -36,25 +37,25 @@ public final class MdxRemoteViewManager
         RemoteViews remoteViews;
         if (this.mIsLegacy) {
             if (this.mIsEpisode) {
-                remoteViews = new RemoteViews(this.mPackageName, 2130903128);
+                remoteViews = new RemoteViews(this.mPackageName, 2130903127);
             }
             else {
-                remoteViews = new RemoteViews(this.mPackageName, 2130903131);
+                remoteViews = new RemoteViews(this.mPackageName, 2130903130);
             }
         }
         else if (this.mIsEpisode) {
             if (b) {
-                remoteViews = new RemoteViews(this.mPackageName, 2130903127);
+                remoteViews = new RemoteViews(this.mPackageName, 2130903126);
             }
             else {
-                remoteViews = new RemoteViews(this.mPackageName, 2130903126);
+                remoteViews = new RemoteViews(this.mPackageName, 2130903125);
             }
         }
         else if (b) {
-            remoteViews = new RemoteViews(this.mPackageName, 2130903130);
+            remoteViews = new RemoteViews(this.mPackageName, 2130903129);
         }
         else {
-            remoteViews = new RemoteViews(this.mPackageName, 2130903129);
+            remoteViews = new RemoteViews(this.mPackageName, 2130903128);
         }
         this.updateBoxart(remoteViews);
         this.updateTitles(remoteViews);
@@ -62,9 +63,54 @@ public final class MdxRemoteViewManager
         return remoteViews;
     }
     
+    private void setPauseActive(final RemoteViews remoteViews) {
+        remoteViews.setImageViewResource(2131165483, 2130837798);
+        remoteViews.setOnClickPendingIntent(2131165483, this.mIntentRetriever.getPauseIntent());
+    }
+    
+    private void setPauseInactive(final RemoteViews remoteViews) {
+        remoteViews.setImageViewResource(2131165483, 2130837799);
+        remoteViews.setOnClickPendingIntent(2131165483, this.mIntentRetriever.getNoActionIntent());
+    }
+    
+    private void setPlayActiveWithGetNext(final RemoteViews remoteViews) {
+        remoteViews.setImageViewResource(2131165483, 2130837800);
+        remoteViews.setOnClickPendingIntent(2131165483, this.mIntentRetriever.getPlayNextIntent());
+    }
+    
+    private void setPlayActiveWithResume(final RemoteViews remoteViews) {
+        remoteViews.setImageViewResource(2131165483, 2130837800);
+        remoteViews.setOnClickPendingIntent(2131165483, this.mIntentRetriever.getResumeIntent());
+    }
+    
+    private void setPlayInactive(final RemoteViews remoteViews) {
+        remoteViews.setImageViewResource(2131165483, 2130837801);
+        remoteViews.setOnClickPendingIntent(2131165483, this.mIntentRetriever.getNoActionIntent());
+    }
+    
+    private void setSkipActive(final RemoteViews remoteViews) {
+        remoteViews.setImageViewResource(2131165482, 2130837796);
+        remoteViews.setOnClickPendingIntent(2131165482, this.mIntentRetriever.getSkipbackIntent(-30));
+    }
+    
+    private void setSkipInactive(final RemoteViews remoteViews) {
+        remoteViews.setImageViewResource(2131165482, 2130837797);
+        remoteViews.setOnClickPendingIntent(2131165482, this.mIntentRetriever.getNoActionIntent());
+    }
+    
+    private void setStopActive(final RemoteViews remoteViews) {
+        remoteViews.setImageViewResource(2131165484, 2130837802);
+        remoteViews.setOnClickPendingIntent(2131165484, this.mIntentRetriever.getStopIntent());
+    }
+    
+    private void setStopInactive(final RemoteViews remoteViews) {
+        remoteViews.setImageViewResource(2131165484, 2130837803);
+        remoteViews.setOnClickPendingIntent(2131165484, this.mIntentRetriever.getNoActionIntent());
+    }
+    
     private void updateBoxart(final RemoteViews remoteViews) {
         if (this.mBoxart != null) {
-            remoteViews.setImageViewBitmap(2131165473, this.mBoxart);
+            remoteViews.setImageViewBitmap(2131165479, this.mBoxart);
         }
     }
     
@@ -73,52 +119,57 @@ public final class MdxRemoteViewManager
             return;
         }
         if (!this.mInTransition) {
-            remoteViews.setImageViewResource(2131165476, 2130837792);
-            remoteViews.setOnClickPendingIntent(2131165476, this.mIntentRetriever.getSkipbackIntent(-30));
-            remoteViews.setImageViewResource(2131165478, 2130837798);
-            remoteViews.setOnClickPendingIntent(2131165478, this.mIntentRetriever.getStopIntent());
-            if (this.mPaused) {
-                remoteViews.setImageViewResource(2131165477, 2130837796);
-                remoteViews.setOnClickPendingIntent(2131165477, this.mIntentRetriever.getResumeIntent());
+            this.setSkipActive(remoteViews);
+            this.setStopActive(remoteViews);
+            if (this.mIsInPostPlay) {
+                this.setPlayActiveWithGetNext(remoteViews);
+                this.showSkipBack(false);
                 return;
             }
-            remoteViews.setImageViewResource(2131165477, 2130837794);
-            remoteViews.setOnClickPendingIntent(2131165477, this.mIntentRetriever.getPauseIntent());
+            if (this.mPaused) {
+                this.setPlayActiveWithResume(remoteViews);
+                this.showSkipBack(true);
+                return;
+            }
+            this.setPauseActive(remoteViews);
+            this.showSkipBack(true);
         }
         else {
-            remoteViews.setImageViewResource(2131165476, 2130837793);
-            remoteViews.setOnClickPendingIntent(2131165476, this.mIntentRetriever.getNoActionIntent());
-            remoteViews.setImageViewResource(2131165478, 2130837799);
-            remoteViews.setOnClickPendingIntent(2131165478, this.mIntentRetriever.getNoActionIntent());
+            this.setSkipInactive(remoteViews);
+            this.setStopInactive(remoteViews);
+            if (this.mIsInPostPlay) {
+                this.setPlayInactive(remoteViews);
+                this.showSkipBack(false);
+            }
             if (this.mPaused) {
-                remoteViews.setImageViewResource(2131165477, 2130837797);
-                remoteViews.setOnClickPendingIntent(2131165477, this.mIntentRetriever.getNoActionIntent());
+                this.setPlayInactive(remoteViews);
+                this.showSkipBack(true);
                 return;
             }
-            remoteViews.setImageViewResource(2131165477, 2130837795);
-            remoteViews.setOnClickPendingIntent(2131165477, this.mIntentRetriever.getNoActionIntent());
+            this.setPauseInactive(remoteViews);
+            this.showSkipBack(true);
         }
     }
     
     private void updateTitles(final RemoteViews remoteViews) {
         if (StringUtils.isNotEmpty(this.mMainTitle)) {
-            remoteViews.setTextViewText(2131165474, (CharSequence)this.mMainTitle);
-        }
-        else {
-            remoteViews.setTextViewText(2131165474, (CharSequence)"");
-        }
-        if (StringUtils.isNotEmpty(this.mHeaderTitle)) {
-            remoteViews.setTextViewText(2131165480, (CharSequence)this.mHeaderTitle);
+            remoteViews.setTextViewText(2131165480, (CharSequence)this.mMainTitle);
         }
         else {
             remoteViews.setTextViewText(2131165480, (CharSequence)"");
         }
+        if (StringUtils.isNotEmpty(this.mHeaderTitle)) {
+            remoteViews.setTextViewText(2131165486, (CharSequence)this.mHeaderTitle);
+        }
+        else {
+            remoteViews.setTextViewText(2131165486, (CharSequence)"");
+        }
         if (this.mIsEpisode) {
             if (!StringUtils.isNotEmpty(this.mSubTitle)) {
-                remoteViews.setTextViewText(2131165475, (CharSequence)"");
+                remoteViews.setTextViewText(2131165481, (CharSequence)"");
                 return;
             }
-            remoteViews.setTextViewText(2131165475, (CharSequence)this.mSubTitle);
+            remoteViews.setTextViewText(2131165481, (CharSequence)this.mSubTitle);
         }
     }
     
@@ -147,14 +198,34 @@ public final class MdxRemoteViewManager
         }
     }
     
-    public void setPauseState(final boolean mPaused, final boolean mInTransition) {
+    public void setPauseState(final boolean mPaused, final boolean mInTransition, final boolean mIsInPostPlay) {
         this.mPaused = mPaused;
         this.mInTransition = mInTransition;
+        this.mIsInPostPlay = mIsInPostPlay;
         if (this.mNormalRemoteView != null) {
             this.updateControl(this.mNormalRemoteView);
         }
         if (this.mExpandedRemoteView != null) {
             this.updateControl(this.mExpandedRemoteView);
+        }
+    }
+    
+    public void setPlayNextState() {
+        if (this.mExpandedRemoteView != null) {
+            this.mExpandedRemoteView.setImageViewResource(2131165483, 2130837800);
+            if (this.mIntentRetriever.getPlayNextIntent() != null) {
+                this.mExpandedRemoteView.setOnClickPendingIntent(2131165483, this.mIntentRetriever.getPlayNextIntent());
+            }
+            this.mExpandedRemoteView.setImageViewResource(2131165484, 2130837802);
+            this.mExpandedRemoteView.setOnClickPendingIntent(2131165484, this.mIntentRetriever.getStopIntent());
+        }
+        if (this.mNormalRemoteView != null) {
+            this.mNormalRemoteView.setImageViewResource(2131165483, 2130837800);
+            if (this.mIntentRetriever.getPlayNextIntent() != null) {
+                this.mNormalRemoteView.setOnClickPendingIntent(2131165483, this.mIntentRetriever.getPlayNextIntent());
+            }
+            this.mNormalRemoteView.setImageViewResource(2131165484, 2130837802);
+            this.mNormalRemoteView.setOnClickPendingIntent(2131165484, this.mIntentRetriever.getStopIntent());
         }
     }
     
@@ -178,20 +249,21 @@ public final class MdxRemoteViewManager
     }
     
     public void showSkipBack(final boolean b) {
-        RemoteViews remoteViews;
-        if (this.mExpandedRemoteView != null) {
-            remoteViews = this.mExpandedRemoteView;
+        if (b) {
+            if (this.mExpandedRemoteView != null) {
+                this.mExpandedRemoteView.setViewVisibility(2131165482, 0);
+            }
+            if (this.mNormalRemoteView != null) {
+                this.mNormalRemoteView.setViewVisibility(2131165482, 0);
+            }
         }
         else {
-            remoteViews = this.mNormalRemoteView;
+            if (this.mExpandedRemoteView != null) {
+                this.mExpandedRemoteView.setViewVisibility(2131165482, 8);
+            }
+            if (this.mNormalRemoteView != null) {
+                this.mNormalRemoteView.setViewVisibility(2131165482, 8);
+            }
         }
-        if (remoteViews == null) {
-            return;
-        }
-        if (b) {
-            remoteViews.setViewVisibility(2131165476, 0);
-            return;
-        }
-        remoteViews.setViewVisibility(2131165476, 8);
     }
 }

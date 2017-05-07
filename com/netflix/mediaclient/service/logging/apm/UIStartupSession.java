@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.logging.apm;
 import com.netflix.mediaclient.service.logging.apm.model.UIStartupSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
+import com.netflix.mediaclient.service.logging.apm.model.Display;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import java.util.Map;
 
@@ -15,21 +16,24 @@ public final class UIStartupSession extends BaseApmSession
     public static final String NAME = "uiStartup";
     private Map<String, Integer> mActiveABTests;
     private IClientLogging.ModalView mDestination;
+    private Display mDisplay;
     private String mSearchTerm;
     private int mTrackId;
     private ApplicationPerformanceMetricsLogging.UiStartupTrigger mTrigger;
     
-    public UIStartupSession(final ApplicationPerformanceMetricsLogging.UiStartupTrigger mTrigger, final IClientLogging.ModalView mDestination) {
-        this.mTrigger = mTrigger;
-        this.mDestination = mDestination;
-    }
-    
-    public UIStartupSession(final ApplicationPerformanceMetricsLogging.UiStartupTrigger mTrigger, final IClientLogging.ModalView mDestination, final int mTrackId, final String mSearchTerm, final Map<String, Integer> mActiveABTests) {
+    public UIStartupSession(final ApplicationPerformanceMetricsLogging.UiStartupTrigger mTrigger, final IClientLogging.ModalView mDestination, final int mTrackId, final String mSearchTerm, final Map<String, Integer> mActiveABTests, final Display mDisplay) {
         this.mTrigger = mTrigger;
         this.mDestination = mDestination;
         this.mTrackId = mTrackId;
         this.mSearchTerm = mSearchTerm;
         this.mActiveABTests = mActiveABTests;
+        this.mDisplay = mDisplay;
+    }
+    
+    public UIStartupSession(final ApplicationPerformanceMetricsLogging.UiStartupTrigger mTrigger, final IClientLogging.ModalView mDestination, final Display mDisplay) {
+        this.mTrigger = mTrigger;
+        this.mDestination = mDestination;
+        this.mDisplay = mDisplay;
     }
     
     public UIStartupSessionEndedEvent createEndedEvent(final boolean b, final UIError error) {
@@ -39,6 +43,7 @@ public final class UIStartupSession extends BaseApmSession
         uiStartupSessionEndedEvent.setActiveABTests(this.mActiveABTests);
         uiStartupSessionEndedEvent.setSearchTerm(this.mSearchTerm);
         uiStartupSessionEndedEvent.setError(error);
+        uiStartupSessionEndedEvent.setDisplay(this.mDisplay);
         return uiStartupSessionEndedEvent;
     }
     

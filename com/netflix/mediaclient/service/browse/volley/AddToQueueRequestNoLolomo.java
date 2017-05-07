@@ -9,6 +9,8 @@ import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.google.gson.JsonParser;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import java.util.Arrays;
+import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.ServiceAgent;
@@ -56,8 +58,8 @@ public class AddToQueueRequestNoLolomo extends FalcorVolleyWebClientRequest<Stri
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery);
     }
     
     @Override

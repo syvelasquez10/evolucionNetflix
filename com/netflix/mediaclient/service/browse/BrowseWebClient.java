@@ -56,7 +56,7 @@ public interface BrowseWebClient
     
     void prefetchGenreLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final BrowseAgentCallback p5);
     
-    void prefetchLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final int p5, final int p6, final BrowseAgentCallback p7);
+    void prefetchLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final int p5, final int p6, final boolean p7, final BrowseAgentCallback p8);
     
     void refreshCWList(final int p0, final int p1, final BrowseAgentCallback p2);
     

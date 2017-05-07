@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.browse.volley;
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
 import com.netflix.mediaclient.service.webclient.model.branches.KidsCharacter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
@@ -100,8 +101,8 @@ public class FetchKidsCharacterDetailsRequest extends FalcorVolleyWebClientReque
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery1, this.pqlQuery2, this.pqlQuery3, this.pqlQuery4 };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery1, this.pqlQuery2, this.pqlQuery3, this.pqlQuery4);
     }
     
     @Override

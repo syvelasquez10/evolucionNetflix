@@ -10,6 +10,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.android.volley.AuthFailureError;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Iterator;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import java.util.List;
@@ -138,15 +139,16 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
             httpResponse.setResponseTime((int)this.mDurationTimeInMs);
             httpResponse.setMimeType("text/x-json");
             httpResponse.setContentLength(this.mResponseSizeInBytes);
-            final String[] pqlQueries = this.getPQLQueries();
-            int length = 0;
+            final List<String> pqlQueries = this.getPQLQueries();
+            int size = 0;
             if (pqlQueries != null) {
-                length = pqlQueries.length;
+                size = pqlQueries.size();
             }
-            final ArrayList list = new ArrayList<FalcorPathResult>(length);
+            final ArrayList list = new ArrayList<FalcorPathResult>(size);
             if (pqlQueries != null) {
-                for (int length2 = pqlQueries.length, i = 0; i < length2; ++i) {
-                    list.add(new FalcorPathResult(pqlQueries[i], false, null));
+                final Iterator<String> iterator = pqlQueries.iterator();
+                while (iterator.hasNext()) {
+                    list.add(new FalcorPathResult(iterator.next(), false, null));
                 }
             }
             LogUtils.reportDataRequestEnded(this.mContext, String.valueOf(this.mUuid), IClientLogging.CompletionReason.failed, (List<FalcorPathResult>)list, error, httpResponse);
@@ -167,15 +169,16 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
             httpResponse.setContentLength(this.mResponseSizeInBytes);
             httpResponse.setApiScriptExecutionTime((int)this.mApiScriptExecTimeInMs);
             httpResponse.setEndpointRevision(this.mEndpointRevision);
-            final String[] pqlQueries = this.getPQLQueries();
-            int length = 0;
+            final List<String> pqlQueries = this.getPQLQueries();
+            int size = 0;
             if (pqlQueries != null) {
-                length = pqlQueries.length;
+                size = pqlQueries.size();
             }
-            final ArrayList list = new ArrayList<FalcorPathResult>(length);
+            final ArrayList list = new ArrayList<FalcorPathResult>(size);
             if (pqlQueries != null) {
-                for (int length2 = pqlQueries.length, i = 0; i < length2; ++i) {
-                    list.add(new FalcorPathResult(pqlQueries[i], true, null));
+                final Iterator<String> iterator = pqlQueries.iterator();
+                while (iterator.hasNext()) {
+                    list.add(new FalcorPathResult(iterator.next(), true, null));
                 }
             }
             LogUtils.reportDataRequestEnded(this.mContext, String.valueOf(this.mUuid), IClientLogging.CompletionReason.success, (List<FalcorPathResult>)list, null, httpResponse);
@@ -205,7 +208,7 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
         return FalcorParseUtils.getMethodNameGet();
     }
     
-    protected abstract String[] getPQLQueries();
+    protected abstract List<String> getPQLQueries();
     
     protected String getQueryPathName() {
         if (StringUtils.safeEquals(FalcorParseUtils.getMethodNameGet(), this.getMethodType())) {
@@ -215,13 +218,14 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
     }
     
     protected String getRawPQLQuery() {
-        final String[] pqlQueries = this.getPQLQueries();
+        final List<String> pqlQueries = this.getPQLQueries();
         if (pqlQueries == null) {
             throw new IllegalArgumentException("List of queries is null!");
         }
         final StringBuilder sb = new StringBuilder();
-        for (int length = pqlQueries.length, i = 0; i < length; ++i) {
-            sb.append(urlEncodPQLParam(this.getQueryPathName(), pqlQueries[i]));
+        final Iterator<String> iterator = pqlQueries.iterator();
+        while (iterator.hasNext()) {
+            sb.append(urlEncodPQLParam(this.getQueryPathName(), iterator.next()));
         }
         return sb.toString();
     }

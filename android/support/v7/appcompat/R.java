@@ -350,7 +350,7 @@ public final class R
         public static final int abc_popup_menu_item_layout = 2130903060;
         public static final int abc_search_dropdown_item_icons_2line = 2130903061;
         public static final int abc_search_view = 2130903062;
-        public static final int support_simple_spinner_dropdown_item = 2130903170;
+        public static final int support_simple_spinner_dropdown_item = 2130903169;
     }
     
     public static final class string

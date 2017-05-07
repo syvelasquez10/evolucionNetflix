@@ -43,7 +43,7 @@ public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.
         if (VideoType.EPISODE.equals(this.getType())) {
             return this.watchNextEpisodeDetail;
         }
-        throw new IllegalStateException("Invalid details type for watch next: " + this.getType());
+        return null;
     }
     
     private String getWatchNextSquareUrl() {
@@ -117,14 +117,10 @@ public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.
     @Override
     public int getEndtime() {
         final com.netflix.mediaclient.service.webclient.model.branches.Video.Detail watchNextDetails = this.getWatchNextDetails();
-        Integer value;
         if (watchNextDetails == null) {
-            value = null;
+            return -1;
         }
-        else {
-            value = watchNextDetails.endtime;
-        }
-        return value;
+        return watchNextDetails.endtime;
     }
     
     @Override
@@ -256,14 +252,10 @@ public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.
     @Override
     public int getRuntime() {
         final com.netflix.mediaclient.service.webclient.model.branches.Video.Detail watchNextDetails = this.getWatchNextDetails();
-        Integer value;
         if (watchNextDetails == null) {
-            value = null;
+            return -1;
         }
-        else {
-            value = watchNextDetails.runtime;
-        }
-        return value;
+        return watchNextDetails.runtime;
     }
     
     @Override
@@ -332,12 +324,14 @@ public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.
     
     @Override
     public boolean isAutoPlayEnabled() {
-        return false;
+        final com.netflix.mediaclient.service.webclient.model.branches.Video.Detail watchNextDetails = this.getWatchNextDetails();
+        return watchNextDetails != null && watchNextDetails.isAutoPlayEnabled;
     }
     
     @Override
     public boolean isNextPlayableEpisode() {
-        return false;
+        final com.netflix.mediaclient.service.webclient.model.branches.Video.Detail watchNextDetails = this.getWatchNextDetails();
+        return watchNextDetails != null && watchNextDetails.isNextPlayableEpisode;
     }
     
     @Override

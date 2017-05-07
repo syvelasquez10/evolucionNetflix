@@ -1160,6 +1160,10 @@ public class ViewPager extends ViewGroup
         return this.mPageMargin;
     }
     
+    public int getTouchSlop() {
+        return this.mTouchSlop;
+    }
+    
     ItemInfo infoForAnyChild(View view) {
         while (true) {
             final ViewParent parent = view.getParent();
@@ -2244,6 +2248,10 @@ public class ViewPager extends ViewGroup
         if (n != 0) {
             this.populate();
         }
+    }
+    
+    public void setTouchSlop(final int mTouchSlop) {
+        this.mTouchSlop = mTouchSlop;
     }
     
     void smoothScrollTo(final int n, final int n2) {

@@ -8,6 +8,8 @@ import com.google.gson.annotations.SerializedName;
 
 public interface KidsOnPhoneConfiguration
 {
+    ActionBarNavType getActionBarNavType();
+    
     LolomoImageType getLolomoImageType();
     
     ScrollBehavior getScrollBehavior();
@@ -19,6 +21,12 @@ public interface KidsOnPhoneConfiguration
     boolean shouldShowKidsEntryInGenreLomo();
     
     boolean shouldShowKidsEntryInMenu();
+    
+    public enum ActionBarNavType
+    {
+        BACK, 
+        UP;
+    }
     
     public enum LolomoImageType
     {

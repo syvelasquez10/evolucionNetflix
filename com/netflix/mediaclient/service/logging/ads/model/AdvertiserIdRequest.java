@@ -15,6 +15,8 @@ public final class AdvertiserIdRequest
 {
     protected static final String DATA = "data";
     protected static final String DATA_APP_NAME = "appName";
+    protected static final String DATA_DEVICE = "device";
+    protected static final String DATA_DEVICE_HEADER = "deviceModelHeader";
     protected static final String DATA_EVENTS = "events";
     protected static final String DATA_EVENT_TYPE = "event_type";
     protected static final String DATA_ID = "advdevtag_id";
@@ -29,13 +31,15 @@ public final class AdvertiserIdRequest
     protected static final String VALUE_OPT_IN = "opt-in";
     protected static final String VALUE_OPT_OUT = "opt-out";
     private String mAdvertiserId;
+    private String mDeviceModel;
     private AdvertiserIdLogging.EventType mEventType;
     private boolean mOptedIn;
     
-    public AdvertiserIdRequest(final String mAdvertiserId, final boolean mOptedIn, final AdvertiserIdLogging.EventType mEventType) {
+    public AdvertiserIdRequest(final String mAdvertiserId, final boolean mOptedIn, final AdvertiserIdLogging.EventType mEventType, final String mDeviceModel) {
         this.mAdvertiserId = mAdvertiserId;
         this.mOptedIn = mOptedIn;
         this.mEventType = mEventType;
+        this.mDeviceModel = mDeviceModel;
         if (mEventType == null) {
             throw new IllegalArgumentException("Event type can not be null!");
         }
@@ -45,16 +49,21 @@ public final class AdvertiserIdRequest
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("appName", (Object)"android");
         jsonObject.put("time", (Object)("" + System.currentTimeMillis()));
+        if (this.mDeviceModel != null) {
+            final JSONObject jsonObject2 = new JSONObject();
+            jsonObject.put("device", (Object)jsonObject2);
+            jsonObject2.put("deviceModelHeader", (Object)this.mDeviceModel);
+        }
         final JSONArray jsonArray = new JSONArray();
         jsonObject.put("events", (Object)jsonArray);
-        final JSONObject jsonObject2 = new JSONObject();
-        jsonArray.put((Object)jsonObject2);
-        jsonObject2.put("name", (Object)"advdevtag");
         final JSONObject jsonObject3 = new JSONObject();
-        jsonObject2.put("data", (Object)jsonObject3);
-        jsonObject3.put("advdevtag_type", (Object)"android");
+        jsonArray.put((Object)jsonObject3);
+        jsonObject3.put("name", (Object)"advdevtag");
+        final JSONObject jsonObject4 = new JSONObject();
+        jsonObject3.put("data", (Object)jsonObject4);
+        jsonObject4.put("advdevtag_type", (Object)"android");
         if (this.mAdvertiserId != null) {
-            jsonObject3.put("advdevtag_id", (Object)this.mAdvertiserId);
+            jsonObject4.put("advdevtag_id", (Object)this.mAdvertiserId);
         }
         String s;
         if (this.mOptedIn) {
@@ -63,12 +72,12 @@ public final class AdvertiserIdRequest
         else {
             s = "opt-out";
         }
-        jsonObject3.put("ad_tracking_preference", (Object)s);
-        jsonObject3.put("event_type", (Object)this.mEventType.name());
-        jsonObject3.put("os_version", (Object)Build$VERSION.RELEASE);
+        jsonObject4.put("ad_tracking_preference", (Object)s);
+        jsonObject4.put("event_type", (Object)this.mEventType.name());
+        jsonObject4.put("os_version", (Object)Build$VERSION.RELEASE);
         final String property = System.getProperty("http.agent");
         if (StringUtils.isNotEmpty(property)) {
-            jsonObject3.put("user_agent", (Object)property);
+            jsonObject4.put("user_agent", (Object)property);
         }
         return jsonObject;
     }

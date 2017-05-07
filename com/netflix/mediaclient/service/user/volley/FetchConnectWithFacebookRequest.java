@@ -10,6 +10,8 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.BaseWebClient;
+import java.util.Arrays;
+import java.util.List;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
@@ -35,8 +37,8 @@ public class FetchConnectWithFacebookRequest extends FalcorVolleyWebClientReques
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery);
     }
     
     @Override
@@ -55,7 +57,9 @@ public class FetchConnectWithFacebookRequest extends FalcorVolleyWebClientReques
     
     @Override
     protected String parseFalcorResponse(String s) throws FalcorParseException, FalcorServerException {
-        if (Log.isLoggable("nf_service_user_fetchwebuserrequest", 2)) {}
+        if (Log.isLoggable("nf_service_user_fetchwebuserrequest", 2)) {
+            Log.v("nf_service_user_fetchwebuserrequest", "String response to parse = " + s);
+        }
         final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_user_fetchwebuserrequest", s);
         if (FalcorParseUtils.isEmpty(dataObj)) {
             throw new FalcorParseException("UserConnectWith empty!!!");
@@ -63,14 +67,14 @@ public class FetchConnectWithFacebookRequest extends FalcorVolleyWebClientReques
         try {
             s = (String)FalcorParseUtils.getPropertyObject(dataObj.getAsJsonObject("user"), "operation", UserProfile.Operation.class);
             if (s != null) {
-                return ((UserProfile.Operation)s).msg;
+                return ((UserProfile.Operation)s).status;
             }
         }
         catch (Exception ex) {
             Log.v("nf_service_user_fetchwebuserrequest", "String response to parse = " + s);
             throw new FalcorParseException("response missing user json objects", ex);
         }
-        return new String("unknown error");
+        return new String("400");
     }
     
     @Override

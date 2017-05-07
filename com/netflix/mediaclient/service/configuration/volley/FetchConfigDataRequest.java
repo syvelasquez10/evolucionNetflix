@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.configuration.volley;
 
+import java.util.Arrays;
+import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.google.gson.JsonElement;
@@ -26,13 +28,13 @@ public class FetchConfigDataRequest extends FalcorVolleyWebClientRequest<ConfigD
     private static final String TAG = "nf_config_data";
     private static final String accountConfigPql;
     public static final String deviceConfigPql;
-    private static final String steamingqoePql;
+    private static final String streamingQoePql;
     private final ConfigurationAgentWebCallback responseCallback;
     
     static {
         deviceConfigPql = String.format("['%s']", "deviceConfig");
         accountConfigPql = String.format("['%s']", "accountConfig");
-        steamingqoePql = String.format("['%s']", "streamingqoe");
+        streamingQoePql = String.format("['%s']", "streamingqoe");
     }
     
     public FetchConfigDataRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final ConfigurationAgentWebCallback responseCallback) {
@@ -41,7 +43,7 @@ public class FetchConfigDataRequest extends FalcorVolleyWebClientRequest<ConfigD
         if (Log.isLoggable("nf_config_data", 2)) {
             Log.v("nf_config_data", "deviceConfigPql = " + FetchConfigDataRequest.deviceConfigPql);
             Log.v("nf_config_data", "accountConfigPql = " + FetchConfigDataRequest.accountConfigPql);
-            Log.v("nf_config_data", "steamingqoePql = " + FetchConfigDataRequest.steamingqoePql);
+            Log.v("nf_config_data", "steamingqoePql = " + FetchConfigDataRequest.streamingQoePql);
         }
     }
     
@@ -74,8 +76,8 @@ public class FetchConfigDataRequest extends FalcorVolleyWebClientRequest<ConfigD
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { FetchConfigDataRequest.deviceConfigPql, FetchConfigDataRequest.accountConfigPql, FetchConfigDataRequest.steamingqoePql };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(FetchConfigDataRequest.deviceConfigPql, FetchConfigDataRequest.accountConfigPql, FetchConfigDataRequest.streamingQoePql);
     }
     
     @Override

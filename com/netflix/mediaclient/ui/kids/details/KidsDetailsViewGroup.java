@@ -16,6 +16,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.VideoDetails;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.LayoutInflater;
 import android.util.AttributeSet;
@@ -56,10 +57,10 @@ public class KidsDetailsViewGroup extends LinearLayout
     private void init() {
         LayoutInflater.from(this.getContext()).inflate(2130903091, (ViewGroup)this, true);
         this.setOrientation(1);
-        this.setBackgroundColor(this.getContext().getResources().getColor(2131296372));
-        this.imgGroup = (ViewGroup)this.findViewById(2131165380);
+        this.setBackgroundColor(this.getContext().getResources().getColor(2131296371));
+        this.imgGroup = (ViewGroup)this.findViewById(2131165379);
         this.imgGroup.getLayoutParams().height = DeviceUtils.getScreenWidthInPixels(this.getContext());
-        (this.img = (AdvancedImageView)this.findViewById(2131165381)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361905));
+        (this.img = (AdvancedImageView)this.findViewById(2131165381)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361909));
         this.imgOverlay = this.findViewById(2131165382);
         this.imgTitle = (TextView)this.findViewById(2131165383);
         this.infoGroup = (ViewGroup)this.findViewById(2131165384);
@@ -68,13 +69,25 @@ public class KidsDetailsViewGroup extends LinearLayout
         this.synopsis = (TextView)this.findViewById(2131165387);
     }
     
+    private static void setTextAndVisibility(final TextView textView, final String text) {
+        textView.setText((CharSequence)text);
+        int visibility;
+        if (StringUtils.isEmpty(text)) {
+            visibility = 8;
+        }
+        else {
+            visibility = 0;
+        }
+        textView.setVisibility(visibility);
+    }
+    
     private void updateSharedDetails(final VideoDetails videoDetails) {
         Log.v("KidsDetailsViewGroup", "Updating details for video: " + videoDetails.getTitle());
         this.infoGroup.setVisibility(0);
         this.imgOverlay.setVisibility(8);
         this.imgTitle.setVisibility(8);
         this.rating.setText((CharSequence)videoDetails.getCertification());
-        this.synopsis.setText((CharSequence)videoDetails.getSynopsis());
+        setTextAndVisibility(this.synopsis, videoDetails.getSynopsis());
         NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, videoDetails.getSquareUrl(), IClientLogging.AssetType.boxArt, videoDetails.getTitle(), false, true);
         this.img.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
@@ -90,7 +103,7 @@ public class KidsDetailsViewGroup extends LinearLayout
         this.imgOverlay.setVisibility(0);
         this.imgTitle.setVisibility(0);
         this.imgTitle.setText((CharSequence)kidsCharacterDetails.getPlayableTitle());
-        this.synopsis.setText((CharSequence)kidsCharacterDetails.getCharacterSynopsis());
+        setTextAndVisibility(this.synopsis, kidsCharacterDetails.getCharacterSynopsis());
         NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, kidsCharacterDetails.getWatchNextDispUrl(), IClientLogging.AssetType.boxArt, kidsCharacterDetails.getTitle(), false, true);
         this.img.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {

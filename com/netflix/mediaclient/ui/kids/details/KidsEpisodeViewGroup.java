@@ -41,14 +41,12 @@ public class KidsEpisodeViewGroup extends RelativeLayout
     
     private void init() {
         LayoutInflater.from(this.getContext()).inflate(2130903092, (ViewGroup)this, true);
-        final int dimensionPixelSize = this.getResources().getDimensionPixelSize(2131361835);
-        this.setPadding(dimensionPixelSize, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
-        (this.img = (AdvancedImageView)this.findViewById(2131165388)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361905));
+        (this.img = (AdvancedImageView)this.findViewById(2131165388)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361909));
         this.title = (TextView)this.findViewById(2131165389);
     }
     
     public void update(final EpisodeDetails episodeDetails) {
-        final String string = this.getResources().getString(2131493248, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        final String string = this.getResources().getString(2131493249, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
         this.title.setText((CharSequence)string);
         NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, episodeDetails.getHorzDispUrl(), IClientLogging.AssetType.boxArt, string, false, true);
         this.setOnClickListener((View$OnClickListener)new View$OnClickListener() {

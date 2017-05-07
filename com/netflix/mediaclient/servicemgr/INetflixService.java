@@ -128,7 +128,7 @@ public interface INetflixService
     
     void prefetchGenreLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final boolean p5, final int p6, final int p7);
     
-    void prefetchLoLoMo(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final boolean p6, final int p7, final int p8);
+    void prefetchLoLoMo(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final boolean p6, final boolean p7, final int p8, final int p9);
     
     void refreshProfileSwitchingStatus();
     

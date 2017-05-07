@@ -14,13 +14,16 @@ public interface UIViewLogging
     
     public enum UIViewCommandName
     {
+        actionBarBackButton, 
         actionBarKidsEntry, 
         actionBarKidsExit, 
+        backButton, 
         genreKidsEntry, 
         moreButton, 
         slidingMenuClosed, 
         slidingMenuKidsEntry, 
         slidingMenuKidsExit, 
-        slidingMenuOpened;
+        slidingMenuOpened, 
+        upButton;
     }
 }

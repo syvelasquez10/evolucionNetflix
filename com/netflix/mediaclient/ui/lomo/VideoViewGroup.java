@@ -34,13 +34,23 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
     
     protected abstract V createChildView(final Context p0);
     
+    protected int getChildPaddingDimenResId() {
+        return 2131361873;
+    }
+    
     public void init(final int n) {
         final LinearLayout$LayoutParams linearLayout$LayoutParams = new LinearLayout$LayoutParams(-1, -1, 1.0f);
+        final boolean forKids = ((NetflixActivity)this.getContext()).isForKids();
+        final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(this.getChildPaddingDimenResId());
         for (int i = 0; i < n; ++i) {
             final View childView = this.createChildView(this.getContext());
             if (this.shouldApplyPaddingToChildren()) {
-                final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361870);
-                childView.setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
+                if (forKids) {
+                    childView.setPadding(dimensionPixelOffset, dimensionPixelOffset / 2, dimensionPixelOffset, dimensionPixelOffset / 2);
+                }
+                else {
+                    childView.setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
+                }
             }
             this.addView(childView, (ViewGroup$LayoutParams)linearLayout$LayoutParams);
         }

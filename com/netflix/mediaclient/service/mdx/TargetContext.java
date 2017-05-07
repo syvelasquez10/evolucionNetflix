@@ -175,9 +175,9 @@ public class TargetContext implements TargetStateManagerListener
         }
     }
     
-    private void playbackEnd(final String s) {
+    private void playbackEnd(final String s, final String s2) {
         Log.d("nf_mdx", "TargetContext: playbackEnd");
-        this.mNotifier.playbackEnd(s);
+        this.mNotifier.playbackEnd(s, s2);
     }
     
     private void playbackStart(final String s) {
@@ -653,19 +653,25 @@ public class TargetContext implements TargetStateManagerListener
     }
     
     public void sessionEnd() {
-        String s;
-        if (StringUtils.isNotEmpty(this.mDialUuid)) {
-            s = this.mDialUuid;
+        Label_0079: {
+            if (!StringUtils.isNotEmpty(this.mDialUuid)) {
+                break Label_0079;
+            }
+            final String mDialUuid = this.mDialUuid;
+            while (true) {
+                synchronized (this.mPlayerStateManager) {
+                    this.mPlayerStateManager.forceToEndPlayback(mDialUuid, null);
+                    // monitorexit(this.mPlayerStateManager)
+                    this.mNotifier.error(mDialUuid, 200, "session ended");
+                    final Message message = new Message();
+                    message.what = 1;
+                    message.obj = TargetContextEvent.SessionEnd;
+                    this.mTargetContextHandler.sendMessage(message);
+                    return;
+                    final String mUuid = this.mUuid;
+                }
+            }
         }
-        else {
-            s = this.mUuid;
-        }
-        this.playbackEnd(s);
-        this.mNotifier.error(s, 200, "session ended");
-        final Message message = new Message();
-        message.what = 1;
-        message.obj = TargetContextEvent.SessionEnd;
-        this.mTargetContextHandler.sendMessage(message);
     }
     
     public void sessionStarted(final int mSessionId) {
@@ -878,17 +884,18 @@ public class TargetContext implements TargetStateManagerListener
                     Log.e("nf_mdx", "TargetContext: changeState, new state is null");
                     return;
                 }
+                final String postplayState = playerState.getPostplayState();
                 if ("PLAYING".equals(currentState) && !"PAUSE".equals(this.mCurrentState) && !"prepause".equals(this.mCurrentState) && !"preseek".equals(this.mCurrentState) && !"PLAYING".equals(this.mCurrentState)) {
                     TargetContext.this.playbackStart(s);
                 }
                 else if ("STOP".equals(currentState) || "END_PLAYBACK".equals(currentState) || "FATAL_ERROR".equals(currentState)) {
-                    TargetContext.this.playbackEnd(s);
+                    TargetContext.this.playbackEnd(s, postplayState);
                 }
                 if ("PLAYING".equals(currentState) && !currentState.equals(this.mCurrentState)) {
-                    TargetContext.this.mNotifier.simplePlaybackState(s, false, false);
+                    TargetContext.this.mNotifier.simplePlaybackState(s, false, false, postplayState);
                 }
                 else if ("PAUSE".equals(currentState) && !currentState.equals(this.mCurrentState)) {
-                    TargetContext.this.mNotifier.simplePlaybackState(s, true, false);
+                    TargetContext.this.mNotifier.simplePlaybackState(s, true, false, postplayState);
                 }
                 if ("PLAY".equals(currentState)) {
                     TargetContext.this.mNotifier.state(s, "preplay", this.mTime, this.mVolume);
@@ -905,6 +912,11 @@ public class TargetContext implements TargetStateManagerListener
                     Log.d("nf_mdx", "TargetContext: PlayerStateManager state changed to " + this.mCurrentState);
                 }
             }
+        }
+        
+        public void forceToEndPlayback(final String s, final String s2) {
+            this.mCurrentState = "END_PLAYBACK";
+            TargetContext.this.playbackEnd(s, s2);
         }
         
         public String getCatalogId() {
@@ -936,25 +948,25 @@ public class TargetContext implements TargetStateManagerListener
                 this.mTime = -1;
                 this.mVolume = -1;
                 this.mDuration = -1;
-                TargetContext.this.mNotifier.simplePlaybackState(s2, false, true);
+                TargetContext.this.mNotifier.simplePlaybackState(s2, false, true, null);
             }
             else if ("PLAYER_RESUME".equals(s)) {
                 this.mTimeMarked4StateTransition = System.currentTimeMillis();
                 this.mTargetStateTransitionStarted = false;
                 this.mCurrentState = "preplay";
-                TargetContext.this.mNotifier.simplePlaybackState(s2, false, true);
+                TargetContext.this.mNotifier.simplePlaybackState(s2, false, true, null);
             }
             else if ("PLAYER_PAUSE".endsWith(s)) {
                 this.mTimeMarked4StateTransition = System.currentTimeMillis();
                 this.mTargetStateTransitionStarted = true;
                 this.mCurrentState = "prepause";
-                TargetContext.this.mNotifier.simplePlaybackState(s2, true, true);
+                TargetContext.this.mNotifier.simplePlaybackState(s2, true, true, null);
             }
             else if ("PLAYER_SKIP".equals(s) || "PLAYER_SET_CURRENT_TIME".equals(s)) {
                 this.mTimeMarked4StateTransition = System.currentTimeMillis();
                 this.mTargetStateTransitionStarted = false;
                 this.mCurrentState = "preseek";
-                TargetContext.this.mNotifier.simplePlaybackState(s2, false, true);
+                TargetContext.this.mNotifier.simplePlaybackState(s2, false, true, null);
             }
             else {
                 if (!"PLAYER_GET_CURRENT_STATE".equals(s)) {
@@ -987,6 +999,7 @@ public class TargetContext implements TargetStateManagerListener
                 Log.e("nf_mdx", "TargetContext: updateState, new state is null");
                 return;
             }
+            final String postplayState = playerState.getPostplayState();
             int n;
             if (System.currentTimeMillis() - this.mTimeMarked4StateTransition >= 30000L) {
                 n = 1;
@@ -1017,11 +1030,11 @@ public class TargetContext implements TargetStateManagerListener
             }
             if ("PLAYING".equals(currentState) && !currentState.equals(this.mCurrentState)) {
                 TargetContext.this.playbackStart(s);
-                TargetContext.this.mNotifier.simplePlaybackState(s, false, false);
+                TargetContext.this.mNotifier.simplePlaybackState(s, false, false, postplayState);
             }
             else if ("PAUSE".equals(currentState) && !currentState.equals(this.mCurrentState)) {
                 TargetContext.this.playbackStart(s);
-                TargetContext.this.mNotifier.simplePlaybackState(s, true, false);
+                TargetContext.this.mNotifier.simplePlaybackState(s, true, false, postplayState);
             }
             if (StringUtils.isEmpty(this.mCurrentState)) {
                 this.mCurrentState = currentState;

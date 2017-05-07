@@ -8,8 +8,11 @@ import com.netflix.mediaclient.servicemgr.ShowDetails;
 import com.netflix.mediaclient.servicemgr.MovieDetails;
 import android.widget.Toast;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import com.netflix.mediaclient.ui.pin.PinDialogVault;
+import com.netflix.mediaclient.ui.pin.PinVerifier;
 import android.os.Handler;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
+import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.servicemgr.Playable;
 import com.netflix.mediaclient.util.StringUtils;
 import android.util.Pair;
@@ -23,7 +26,6 @@ import android.content.Context;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.model.BillboardDetails;
-import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public final class PlaybackLauncher
@@ -120,7 +122,7 @@ public final class PlaybackLauncher
         verifyPinAndPlay(netflixActivity, asset, true);
     }
     
-    private static void startPlaybackInternal(final NetflixActivity netflixActivity, final Asset asset, final boolean b) {
+    public static void startPlaybackOnPINSuccess(final NetflixActivity netflixActivity, final Asset asset, final boolean b) {
         if (!b) {
             Log.d("nf_play", "Start local playback");
             PlayerActivity.playVideo(netflixActivity, asset);
@@ -142,21 +144,7 @@ public final class PlaybackLauncher
     
     private static void verifyPinAndPlay(final NetflixActivity netflixActivity, final Asset asset, final boolean b) {
         Log.d("nf_play", String.format("nf_pin verifyPinAndPlay - %s protected:%b", asset.getPlayableId(), asset.isPinProtected()));
-        PinVerifier.getInstance().verify(netflixActivity, asset.isPinProtected(), (PinVerifier.PinVerificationCallback)new PinVerifier.PinVerificationCallback() {
-            @Override
-            public void onPinCancelled() {
-                Log.d("nf_play", "nf_pin pinVerification skipped - not starting playback");
-            }
-            
-            @Override
-            public void onPinVerification(final boolean b) {
-                if (!b) {
-                    Log.d("nf_play", "nf_pin pinVerification failed - not starting playback");
-                    return;
-                }
-                startPlaybackInternal(netflixActivity, asset, b);
-            }
-        });
+        PinVerifier.getInstance().verify(netflixActivity, asset.isPinProtected(), new PinDialogVault(PinDialogVault.PinInvokedFrom.PLAY_LAUNCHER.getValue(), asset, b));
     }
     
     private static class FetchVideoDetailsForMdxCallback extends LoggingManagerCallback
@@ -176,7 +164,7 @@ public final class PlaybackLauncher
             }
             if (n != 0 || videoDetails == null) {
                 Log.w("nf_play", "Error loading video details for MDX launch - hiding mini player");
-                Toast.makeText((Context)this.activity, 2131493117, 1).show();
+                Toast.makeText((Context)this.activity, 2131493118, 1).show();
                 this.activity.hideMdxMiniPlayer();
                 return;
             }

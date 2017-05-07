@@ -99,12 +99,12 @@ public final class R
         public static final int common_signin_btn_text_normal_light = 2130837667;
         public static final int common_signin_btn_text_pressed_dark = 2130837668;
         public static final int common_signin_btn_text_pressed_light = 2130837669;
-        public static final int ic_plusone_medium_off_client = 2130837701;
-        public static final int ic_plusone_small_off_client = 2130837702;
-        public static final int ic_plusone_standard_off_client = 2130837703;
-        public static final int ic_plusone_tall_off_client = 2130837704;
-        public static final int powered_by_google_dark = 2130837839;
-        public static final int powered_by_google_light = 2130837840;
+        public static final int ic_plusone_medium_off_client = 2130837702;
+        public static final int ic_plusone_small_off_client = 2130837703;
+        public static final int ic_plusone_standard_off_client = 2130837704;
+        public static final int ic_plusone_tall_off_client = 2130837705;
+        public static final int powered_by_google_dark = 2130837843;
+        public static final int powered_by_google_light = 2130837844;
     }
     
     public static final class id

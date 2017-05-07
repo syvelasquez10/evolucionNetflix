@@ -8,6 +8,7 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonArray;
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import java.util.List;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.netflix.mediaclient.service.webclient.model.SearchVideo;
 import com.netflix.mediaclient.service.webclient.model.SearchSuggestion;
@@ -86,8 +87,8 @@ public class FetchSearchRequest extends FalcorVolleyWebClientRequest<SearchResul
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery, this.pqlQuery1 };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery, this.pqlQuery1);
     }
     
     @Override

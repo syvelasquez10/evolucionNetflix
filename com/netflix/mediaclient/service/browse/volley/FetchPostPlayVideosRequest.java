@@ -15,6 +15,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import java.util.Collections;
+import java.util.Arrays;
 import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
@@ -47,8 +48,8 @@ public class FetchPostPlayVideosRequest extends FalcorVolleyWebClientRequest<Lis
     }
     
     @Override
-    protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery1, this.pqlQuery2, this.pqlQuery3 };
+    protected List<String> getPQLQueries() {
+        return Arrays.asList(this.pqlQuery1, this.pqlQuery2, this.pqlQuery3);
     }
     
     @Override

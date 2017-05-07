@@ -11,13 +11,10 @@ import com.netflix.mediaclient.media.AudioSource;
 import android.media.AudioManager;
 import android.widget.SeekBar$OnSeekBarChangeListener;
 import android.widget.ImageView;
-import android.view.View$OnClickListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.Dialog;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.Log;
-import android.view.MotionEvent;
-import android.view.View$OnTouchListener;
 import com.netflix.mediaclient.media.Language;
 import android.app.Activity;
 import android.widget.TextView;
@@ -27,10 +24,12 @@ import com.netflix.mediaclient.ui.common.LanguageSelector;
 import android.widget.ImageButton;
 import android.widget.Button;
 import android.view.View;
+import android.view.View$OnClickListener;
 
 public final class TopPanel extends PlayerSection
 {
     private static final String TAG = "screen";
+    View$OnClickListener backListener;
     private View mBackArrow;
     private View mBackPadding;
     private Button mBtnLog;
@@ -47,6 +46,12 @@ public final class TopPanel extends PlayerSection
     
     public TopPanel(final PlayerActivity playerActivity, final PlayScreen.Listeners listeners) {
         super(playerActivity);
+        this.backListener = (View$OnClickListener)new View$OnClickListener() {
+            public void onClick(final View view) {
+                TopPanel.this.context.performUpAction();
+                TopPanel.this.context.cleanupAndExit();
+            }
+        };
         this.mSocial = new Social(playerActivity, playerActivity.getSocialProviderCallback());
         this.initGeneric(listeners);
         this.initBack();
@@ -56,30 +61,26 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initBack() {
-        final View$OnTouchListener view$OnTouchListener = (View$OnTouchListener)new View$OnTouchListener() {
-            public boolean onTouch(final View view, final MotionEvent motionEvent) {
-                TopPanel.this.context.performUpAction();
-                TopPanel.this.context.cleanupAndExit();
-                return true;
-            }
-        };
-        this.mBackArrow = this.context.findViewById(2131165515);
+        this.mBackArrow = this.context.findViewById(2131165521);
         if (this.mBackArrow != null) {
-            this.mBackArrow.setOnTouchListener((View$OnTouchListener)view$OnTouchListener);
+            this.mBackArrow.setOnClickListener(this.backListener);
         }
-        this.mBackPadding = this.context.findViewById(2131165516);
+        this.mBackPadding = this.context.findViewById(2131165522);
         if (this.mBackPadding != null) {
-            this.mBackPadding.setOnTouchListener((View$OnTouchListener)view$OnTouchListener);
+            this.mBackPadding.setOnClickListener(this.backListener);
         }
     }
     
     private void initGeneric(final PlayScreen.Listeners listeners) {
-        this.mTopPanel = this.context.findViewById(2131165514);
+        this.mTopPanel = this.context.findViewById(2131165520);
         if (this.mTopPanel == null) {
             Log.e("screen", "========>top null!");
         }
-        this.mTitleLabel = (TextView)this.context.findViewById(2131165517);
-        this.mEpisodeSelector = (ImageButton)this.context.findViewById(2131165522);
+        this.mTitleLabel = (TextView)this.context.findViewById(2131165523);
+        if (this.context.isForKids()) {
+            this.mTitleLabel.setOnClickListener(this.backListener);
+        }
+        this.mEpisodeSelector = (ImageButton)this.context.findViewById(2131165528);
         if (this.mEpisodeSelector != null) {
             this.mEpisodeSelector.setOnClickListener(listeners.episodeSelectorListener);
         }
@@ -127,7 +128,7 @@ public final class TopPanel extends PlayerSection
                 TopPanel.this.mDialogLanguageId = TopPanel.this.context.reportUiModelessViewSessionStart(IClientLogging.ModalView.audioSubtitlesSelector);
             }
         };
-        final View viewById = this.context.findViewById(2131165523);
+        final View viewById = this.context.findViewById(2131165529);
         if (viewById instanceof ImageView) {
             Log.d("screen", "Add language button");
             (this.mLanguage = (ImageButton)viewById).setOnClickListener((View$OnClickListener)onClickListener);
@@ -139,7 +140,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initSound(final SeekBar$OnSeekBarChangeListener onSeekBarChangeListener) {
-        this.mSound = (SeekBar)this.context.findViewById(2131165524);
+        this.mSound = (SeekBar)this.context.findViewById(2131165530);
         if (this.mSound == null) {
             Log.e("screen", "Sound seekbar was NOT found!");
             return;
@@ -240,13 +241,16 @@ public final class TopPanel extends PlayerSection
             }
             this.mSocial.destroy();
             if (this.mBackArrow != null) {
-                this.mBackArrow.setOnTouchListener((View$OnTouchListener)null);
+                this.mBackArrow.setOnClickListener((View$OnClickListener)null);
             }
             if (this.mBackPadding != null) {
-                this.mBackPadding.setOnTouchListener((View$OnTouchListener)null);
+                this.mBackPadding.setOnClickListener((View$OnClickListener)null);
             }
             if (this.mEpisodeSelector != null) {
-                this.mEpisodeSelector.setOnTouchListener((View$OnTouchListener)null);
+                this.mEpisodeSelector.setOnClickListener((View$OnClickListener)null);
+            }
+            if (this.mTitleLabel != null) {
+                this.mTitleLabel.setOnClickListener((View$OnClickListener)null);
             }
         }
     }

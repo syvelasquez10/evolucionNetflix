@@ -87,10 +87,10 @@ public class CwView extends RelativeLayout implements IVideoView<CWVideo>
         }
         this.playContext = new PlayContextImp(trackable, progress);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493186), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131493187), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.title.setText((CharSequence)this.getContext().getString(2131493249, new Object[] { cwVideo.getTitle(), cwVideo.getCurrentSeasonNumber(), cwVideo.getCurrentEpisodeNumber() }));
+            this.title.setText((CharSequence)this.getContext().getString(2131493250, new Object[] { cwVideo.getTitle(), cwVideo.getCurrentSeasonNumber(), cwVideo.getCurrentEpisodeNumber() }));
         }
         else {
             this.title.setText((CharSequence)cwVideo.getTitle());
@@ -118,7 +118,7 @@ public class CwView extends RelativeLayout implements IVideoView<CWVideo>
                 PlaybackLauncher.startPlaybackAfterPIN((NetflixActivity)CwView.this.getContext(), cwVideo, CwView.this.playContext);
             }
         });
-        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493228), cwVideo.getTitle()));
+        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493229), cwVideo.getTitle()));
         this.clicker.update((View)this.info, cwVideo);
     }
 }

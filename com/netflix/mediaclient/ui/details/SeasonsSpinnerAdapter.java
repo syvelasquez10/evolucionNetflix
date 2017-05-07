@@ -31,10 +31,10 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         this.inflater = (LayoutInflater)this.context.getSystemService("layout_inflater");
         int itemBgDrawableId;
         if (context.isForKids()) {
-            itemBgDrawableId = 2130837740;
+            itemBgDrawableId = 2130837744;
         }
         else {
-            itemBgDrawableId = 2130837850;
+            itemBgDrawableId = 2130837854;
         }
         this.itemBgDrawableId = itemBgDrawableId;
     }
@@ -72,7 +72,7 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
     public View getView(int itemBgDrawableId, final View view, final ViewGroup viewGroup) {
         TextView textView;
         if ((textView = (TextView)view) == null) {
-            textView = (TextView)this.inflater.inflate(2130903164, (ViewGroup)null, false);
+            textView = (TextView)this.inflater.inflate(2130903163, (ViewGroup)null, false);
         }
         final SeasonDetails item = this.getItem(itemBgDrawableId);
         textView.setTag((Object)item.getSeasonNumber());

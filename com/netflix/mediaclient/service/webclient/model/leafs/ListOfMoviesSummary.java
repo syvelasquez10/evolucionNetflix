@@ -6,8 +6,8 @@ package com.netflix.mediaclient.service.webclient.model.leafs;
 
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.FriendProfile;
-import java.util.List;
 import android.os.Parcel;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.LoMoType;
 import android.os.Parcelable$Creator;
 import com.netflix.mediaclient.servicemgr.Genre;
@@ -19,6 +19,7 @@ public class ListOfMoviesSummary extends TrackableListSummary implements LoMo, G
     private String displayName;
     private LoMoType enumType;
     private String id;
+    private List<String> moreImgs;
     private SocialEvidence socialEvidence;
     private String type;
     
@@ -55,6 +56,11 @@ public class ListOfMoviesSummary extends TrackableListSummary implements LoMo, G
     
     public String getId() {
         return this.id;
+    }
+    
+    @Override
+    public List<String> getMoreImages() {
+        return this.moreImgs;
     }
     
     @Override

@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.lomo;
 import android.widget.LinearLayout$LayoutParams;
 import android.view.ViewGroup;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.ui.kids.lolomo.KidsCharacterPagerAdapter;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.Log;
@@ -17,14 +18,18 @@ import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.BasicLoMo;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.LoMoType;
+import java.util.EnumMap;
 import android.support.v4.view.PagerAdapter;
 
 public class LoMoViewPagerAdapter extends PagerAdapter
 {
+    private static final EnumMap<LoMoType, Type> LOMO_TYPE_TABLE;
     private static final String TAG = "LoMoViewPagerAdapter";
     private final NetflixActivity activity;
     private final RowAdapter billboard;
     private final BroadcastReceiver browseReceiver;
+    private final RowAdapter character;
     private RowAdapter currentAdapter;
     private final RowAdapter cw;
     private final RowAdapter error;
@@ -41,6 +46,22 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     private final RowAdapter standard;
     private Type state;
     private final ViewRecycler viewRecycler;
+    
+    static {
+        LOMO_TYPE_TABLE = new EnumMap<LoMoType, Type>(LoMoType.class) {
+            {
+                this.put(LoMoType.BILLBOARD, Type.BILLBOARD);
+                this.put(LoMoType.CHARACTERS, Type.CHARACTER);
+                this.put(LoMoType.CONTINUE_WATCHING, Type.CW);
+                this.put(LoMoType.INSTANT_QUEUE, Type.IQ);
+                this.put(LoMoType.FLAT_GENRE, Type.STANDARD);
+                this.put(LoMoType.SOCIAL_FRIEND, Type.STANDARD);
+                this.put(LoMoType.SOCIAL_GROUP, Type.STANDARD);
+                this.put(LoMoType.SOCIAL_POPULAR, Type.STANDARD);
+                this.put(LoMoType.STANDARD, Type.STANDARD);
+            }
+        };
+    }
     
     public LoMoViewPagerAdapter(final LoMoViewPager pager, final ServiceManager serviceManager, final ViewRecycler viewRecycler, final View reloadView, final boolean b) {
         this.onReloadClickListener = (View$OnClickListener)new View$OnClickListener() {
@@ -95,7 +116,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
                     if ("com.netflix.mediaclient.intent.action.BA_CW_REFRESH".equals(action)) {
                         if (Type.CW.equals(LoMoViewPagerAdapter.this.state)) {
                             Log.v("LoMoViewPagerAdapter", "Reloading cw row ");
-                            LoMoViewPagerAdapter.this.refresh(Type.CW, LoMoViewPagerAdapter.this.loMo, LoMoViewPagerAdapter.this.listViewPos);
+                            LoMoViewPagerAdapter.this.refresh(LoMoViewPagerAdapter.this.loMo, LoMoViewPagerAdapter.this.listViewPos);
                         }
                         LoMoViewPagerAdapter.this.pager.invalidateCwCache();
                         return;
@@ -103,7 +124,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
                     if ("com.netflix.mediaclient.intent.action.BA_IQ_REFRESH".equals(action)) {
                         if (Type.IQ.equals(LoMoViewPagerAdapter.this.state)) {
                             Log.v("LoMoViewPagerAdapter", "Reloading iq row ");
-                            LoMoViewPagerAdapter.this.refresh(Type.IQ, LoMoViewPagerAdapter.this.loMo, LoMoViewPagerAdapter.this.listViewPos);
+                            LoMoViewPagerAdapter.this.refresh(LoMoViewPagerAdapter.this.loMo, LoMoViewPagerAdapter.this.listViewPos);
                         }
                         LoMoViewPagerAdapter.this.pager.invalidateIqCache();
                     }
@@ -116,6 +137,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         this.reloadView = reloadView;
         this.registerBrowseNotificationReceiver();
         reloadView.setOnClickListener(this.onReloadClickListener);
+        this.character = new KidsCharacterPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
         this.billboard = new BillboardPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
         this.cw = new CwPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
         this.iq = new IqPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
@@ -187,6 +209,9 @@ public class LoMoViewPagerAdapter extends PagerAdapter
             case BILLBOARD: {
                 this.currentAdapter = this.billboard;
             }
+            case CHARACTER: {
+                this.currentAdapter = this.character;
+            }
         }
     }
     
@@ -241,9 +266,9 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         return -2;
     }
     
-    public LinearLayout$LayoutParams getLayoutParams(final Type type) {
+    public LinearLayout$LayoutParams getLayoutParams(final LoMoType loMoType) {
         int n = 0;
-        switch (type) {
+        switch (loMoType) {
             default: {
                 n = this.standard.getRowHeightInPx();
                 break;
@@ -252,8 +277,12 @@ public class LoMoViewPagerAdapter extends PagerAdapter
                 n = this.billboard.getRowHeightInPx();
                 break;
             }
-            case CW: {
+            case CONTINUE_WATCHING: {
                 n = this.cw.getRowHeightInPx();
+                break;
+            }
+            case CHARACTERS: {
+                n = this.character.getRowHeightInPx();
                 break;
             }
         }
@@ -292,7 +321,8 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         return view == o;
     }
     
-    public void refresh(final Type state, final BasicLoMo loMo, final int listViewPos) {
+    public void refresh(final BasicLoMo loMo, final int listViewPos) {
+        final Type state = LoMoViewPagerAdapter.LOMO_TYPE_TABLE.get(loMo.getType());
         if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
             final StringBuilder append = new StringBuilder().append("refreshing: ").append(listViewPos).append(", ");
             String title;
@@ -388,9 +418,10 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         }
     }
     
-    public enum Type
+    private enum Type
     {
         BILLBOARD, 
+        CHARACTER, 
         CW, 
         ERROR, 
         IQ, 

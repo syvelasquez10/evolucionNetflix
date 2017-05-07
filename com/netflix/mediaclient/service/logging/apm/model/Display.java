@@ -139,7 +139,7 @@ public class Display
     
     public enum ScanMode
     {
-        nterlaced, 
+        interlaced, 
         progressive;
     }
 }

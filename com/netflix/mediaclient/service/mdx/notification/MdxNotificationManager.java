@@ -24,6 +24,7 @@ public final class MdxNotificationManager
     Context mContext;
     private boolean mInTransition;
     private boolean mIsEpisode;
+    private boolean mIsInPostPlay;
     private boolean mIsLegacy;
     Notification mLegacyNotification;
     MdxAgent mMdxAgent;
@@ -51,7 +52,7 @@ public final class MdxNotificationManager
         }
         this.mRemoteViews = new MdxRemoteViewManager(this.mContext.getPackageName(), this.mIsEpisode, this.mIsLegacy, mMdxAgent);
         if (this.mIsLegacy) {
-            this.mLegacyNotification = new Notification(2130837757, (CharSequence)"", System.currentTimeMillis());
+            this.mLegacyNotification = new Notification(2130837761, (CharSequence)"", System.currentTimeMillis());
             this.mLegacyNotification.contentView = this.mRemoteViews.getRemoteView();
             final Notification mLegacyNotification = this.mLegacyNotification;
             mLegacyNotification.flags |= 0x2;
@@ -60,7 +61,7 @@ public final class MdxNotificationManager
             this.mLegacyNotification.contentIntent = this.createNotificationPendingIntent();
             return;
         }
-        this.mBuilder = new NotificationCompat.Builder(this.mContext).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837757).setWhen(System.currentTimeMillis());
+        this.mBuilder = new NotificationCompat.Builder(this.mContext).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837761).setWhen(System.currentTimeMillis());
     }
     
     private PendingIntent createNotificationPendingIntent() {
@@ -102,13 +103,16 @@ public final class MdxNotificationManager
         this.updateNotification();
     }
     
-    public void setPauseStateNotify(final boolean mPaused, final boolean mInTransition) {
-        if (this.mPaused != mPaused || this.mInTransition != mInTransition) {
-            this.mPaused = mPaused;
-            this.mInTransition = mInTransition;
-            this.mRemoteViews.setPauseState(mPaused, mInTransition);
-            this.updateNotification();
-        }
+    public void setPauseStateNotify(final boolean mPaused, final boolean mInTransition, final boolean mIsInPostPlay) {
+        this.mPaused = mPaused;
+        this.mInTransition = mInTransition;
+        this.mIsInPostPlay = mIsInPostPlay;
+        this.mRemoteViews.setPauseState(mPaused, mInTransition, mIsInPostPlay);
+        this.updateNotification();
+    }
+    
+    public void setPlayNextState() {
+        this.mRemoteViews.setPlayNextState();
     }
     
     public void setTitlesNotify(final boolean mIsEpisode, final String s, final String s2, final String s3) {
@@ -138,6 +142,16 @@ public final class MdxNotificationManager
         this.updateNotification();
     }
     
+    public void setUpNextStateNotify(final boolean mPaused, final boolean mInTransition, final boolean mIsInPostPlay) {
+        if (mIsInPostPlay) {
+            this.mPaused = mPaused;
+            this.mInTransition = mInTransition;
+            this.mIsInPostPlay = mIsInPostPlay;
+            this.mRemoteViews.setPauseState(mPaused, mInTransition, mIsInPostPlay);
+            this.updateNotification();
+        }
+    }
+    
     public void showSkipBack(final boolean b) {
         this.mRemoteViews.showSkipBack(b);
     }
@@ -147,6 +161,8 @@ public final class MdxNotificationManager
         PendingIntent getNoActionIntent();
         
         PendingIntent getPauseIntent();
+        
+        PendingIntent getPlayNextIntent();
         
         PendingIntent getResumeIntent();
         

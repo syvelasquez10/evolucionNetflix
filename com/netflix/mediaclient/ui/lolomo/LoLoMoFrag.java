@@ -51,7 +51,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     private View kidsEntryHeader;
     private final ErrorWrapper.Callback leCallback;
     private LoadingAndErrorWrapper leWrapper;
-    private StickyListHeadersListView listView;
+    protected StickyListHeadersListView listView;
     private ServiceManager manager;
     private final AbsListView$RecyclerListener recycleListener;
     private final Map<String, Object> stateMap;
@@ -128,6 +128,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         }
         else if (this.getNetflixActivity().isForKids()) {
             if (this.isGenreList) {
+                KidsUtils.addListViewSpacerIfNoHeaders(this.listView);
                 return (ILoLoMoAdapter)new KidsLomoDetailAdapter(this, this.genre);
             }
             if (KidsUtils.isKidsWithUpDownScrolling(this.getNetflixActivity())) {
@@ -190,15 +191,19 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("LoLoMoFrag", "Creating frag view");
-        final View inflate = layoutInflater.inflate(2130903109, (ViewGroup)null);
-        (this.listView = (StickyListHeadersListView)inflate.findViewById(16908298)).setRecyclerListener(this.recycleListener);
-        this.listView.setDivider(null);
+        final View inflate = layoutInflater.inflate(2130903108, (ViewGroup)null);
+        (this.listView = (StickyListHeadersListView)inflate.findViewById(16908298)).setDivider(null);
         this.listView.setFocusable(false);
+        this.listView.setRecyclerListener(this.recycleListener);
+        KidsUtils.configureListViewForKids(this.getNetflixActivity(), this.listView);
         if (!this.getNetflixActivity().shouldApplyPaddingToSlidingPanel()) {
             ViewUtils.addActionBarPaddingView(this.listView);
         }
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.leCallback);
         return inflate;
+    }
+    
+    public void onDataLoadSuccess() {
     }
     
     public void onDestroyView() {

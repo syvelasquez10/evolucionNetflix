@@ -10,11 +10,10 @@ import com.netflix.mediaclient.servicemgr.Trackable;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ImageView$ScaleType;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
-import com.netflix.mediaclient.ui.kids.KidsUtils;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.ViewGroup;
 import android.app.Activity;
 import android.content.Context;
@@ -36,9 +35,9 @@ public class KidsOneToOneVideoView extends RelativeLayout implements IVideoView<
     
     public KidsOneToOneVideoView(final Context context, final boolean b) {
         super(context);
-        ((Activity)context).getLayoutInflater().inflate(2130903099, (ViewGroup)this);
-        this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeRowHeight((NetflixActivity)this.getContext(), b)));
-        (this.mainImage = (AdvancedImageView)this.findViewById(2131165399)).setCornerRadius(context.getResources().getDimensionPixelSize(2131361905));
+        ((Activity)context).getLayoutInflater().inflate(2130903097, (ViewGroup)this);
+        this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -1));
+        (this.mainImage = (AdvancedImageView)this.findViewById(2131165399)).setCornerRadius(context.getResources().getDimensionPixelSize(2131361909));
         this.mainImage.setScaleType(ImageView$ScaleType.CENTER_CROP);
         (this.tvCard = (AdvancedImageView)this.findViewById(2131165401)).setPressedStateHandlerEnabled(false);
         this.mainImage.setFocusable(true);

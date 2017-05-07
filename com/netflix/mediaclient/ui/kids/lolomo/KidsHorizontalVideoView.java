@@ -13,7 +13,6 @@ import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import android.view.ViewGroup;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
-import com.netflix.mediaclient.ui.lomo.BasePaginatedAdapter;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -34,10 +33,10 @@ public class KidsHorizontalVideoView extends RelativeLayout implements IVideoVie
     public KidsHorizontalVideoView(final NetflixActivity netflixActivity, final boolean b) {
         super((Context)netflixActivity);
         this.setFocusable(true);
-        this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)(BasePaginatedAdapter.computeViewPagerWidth(netflixActivity, b) * 0.5625f)));
+        this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -1));
         this.playContext = PlayContext.EMPTY_CONTEXT;
         netflixActivity.getLayoutInflater().inflate(2130903095, (ViewGroup)this);
-        (this.img = (AdvancedImageView)this.findViewById(2131165395)).setCornerRadius(netflixActivity.getResources().getDimensionPixelSize(2131361905));
+        (this.img = (AdvancedImageView)this.findViewById(2131165394)).setCornerRadius(netflixActivity.getResources().getDimensionPixelSize(2131361909));
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
     }
     
