@@ -214,20 +214,21 @@ public final class PlayerTypeFactory
                 try {
                     Log.w("nf-playertypefactory", "Type is null, do nothing!");
                     return;
-                    // iftrue(Label_0053:, !Log.isLoggable("nf-playertypefactory", 3))
-                    // iftrue(Label_0077:, isValidPlayerType(currentType))
-                Block_7:
+                Block_6_Outer:
                     while (true) {
-                        Block_6: {
-                            break Block_6;
-                            break Block_7;
+                        Log.e("nf-playertypefactory", "Invalid player type for this device. We should never be here!");
+                        return;
+                    Label_0053:
+                        while (true) {
+                            Log.d("nf-playertypefactory", "Updating player type " + currentType);
+                            break Label_0053;
+                            continue;
                         }
-                        Log.d("nf-playertypefactory", "Updating player type " + currentType);
-                        continue;
+                        continue Block_6_Outer;
                     }
-                    Log.e("nf-playertypefactory", "Invalid player type for this device. We should never be here!");
-                    return;
                 }
+                // iftrue(Label_0053:, !Log.isLoggable("nf-playertypefactory", 3))
+                // iftrue(Label_0077:, isValidPlayerType(currentType))
                 finally {
                 }
                 // monitorexit(PlayerTypeFactory.class)

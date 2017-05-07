@@ -112,7 +112,10 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     }
     
     protected ILoLoMoAdapter createAdapter() {
-        if (this.getNetflixActivity().isForKids()) {
+        if (this.getNetflixActivity() == null) {
+            Log.w("LoLoMoFrag", "createAdapter(): activity is null - should not happen");
+        }
+        else if (this.getNetflixActivity().isForKids()) {
             if (this.isGenreList) {
                 return (ILoLoMoAdapter)new KidsLomoDetailAdapter(this, new KidsGenreWrapper(this.genreId));
             }

@@ -114,12 +114,16 @@ public class KidsUtils
     }
     
     public static boolean shouldShowKidsExperience(final NetflixActivity netflixActivity) {
+        if (netflixActivity == null) {
+            Log.w("KidsUtils", "Activity is null - should not happen");
+            return false;
+        }
         if (netflixActivity.isForKids()) {
             Log.v("KidsUtils", "Should show kids experience because we're in a kids activity");
             return true;
         }
         final ServiceManager serviceManager = netflixActivity.getServiceManager();
-        final boolean b = serviceManager != null && serviceManager.getCurrentProfile().isKidsProfile() && serviceManager.getConfiguration() != null && serviceManager.getConfiguration().getKidsOnPhoneConfiguration().isKidsOnPhoneEnabled();
+        final boolean b = serviceManager != null && serviceManager.getCurrentProfile() != null && serviceManager.getCurrentProfile().isKidsProfile() && serviceManager.getConfiguration() != null && serviceManager.getConfiguration().getKidsOnPhoneConfiguration() != null && serviceManager.getConfiguration().getKidsOnPhoneConfiguration().isKidsOnPhoneEnabled();
         if (Log.isLoggable("KidsUtils", 2)) {
             Serializable value;
             if (serviceManager == null) {

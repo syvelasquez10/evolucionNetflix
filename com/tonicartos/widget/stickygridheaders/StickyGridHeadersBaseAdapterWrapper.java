@@ -58,20 +58,30 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
     }
     
     private FillerView getFillerView(final View view, final ViewGroup viewGroup, final View measureTarget) {
-        FillerView fillerView;
-        if ((fillerView = (FillerView)view) == null) {
-            fillerView = new FillerView(this.mContext);
+        View view2 = null;
+        Label_0026: {
+            if (view != null) {
+                view2 = view;
+                if (view instanceof FillerView) {
+                    break Label_0026;
+                }
+            }
+            view2 = new FillerView(this.mContext);
         }
+        final FillerView fillerView = (FillerView)view2;
         fillerView.setMeasureTarget(measureTarget);
         return fillerView;
     }
     
     private HeaderFillerView getHeaderFillerView(final int n, final View view, final ViewGroup viewGroup) {
-        HeaderFillerView headerFillerView;
-        if ((headerFillerView = (HeaderFillerView)view) == null) {
-            headerFillerView = new HeaderFillerView(this.mContext);
+        if (view != null) {
+            final Object o = view;
+            if (view instanceof HeaderFillerView) {
+                return (HeaderFillerView)o;
+            }
         }
-        return headerFillerView;
+        final Object o = new HeaderFillerView(this.mContext);
+        return (HeaderFillerView)o;
     }
     
     private int unFilledSpacesInHeaderGroup(int n) {

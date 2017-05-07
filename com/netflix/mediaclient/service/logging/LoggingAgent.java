@@ -43,7 +43,7 @@ import com.netflix.mediaclient.service.ServiceAgent;
 
 public final class LoggingAgent extends ServiceAgent implements IClientLogging
 {
-    private static final String CRITTER_VERSION_NAME = "3.6.0";
+    private static final String CRITTER_VERSION_NAME = "3.6.1";
     private static final boolean ENABLE_CRITTERCISM = true;
     private static final long EVENT_POST_TIMEOUT_MS = 60000L;
     static final String ICL_REPOSITORY_DIR = "iclevents";
@@ -110,7 +110,7 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
         Log.d("nf_log", "Crittercism init starts...");
         final CrittercismConfig crittercismConfig = new CrittercismConfig();
         crittercismConfig.setNdkCrashReportingEnabled(true);
-        crittercismConfig.setCustomVersionName("3.6.0");
+        crittercismConfig.setCustomVersionName("3.6.1");
         Crittercism.initialize(this.getService().getApplicationContext(), SecurityRepository.getCrittercismAppId(), crittercismConfig);
         final JSONObject metadata = new JSONObject();
         try {

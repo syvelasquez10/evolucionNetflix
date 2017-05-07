@@ -108,8 +108,8 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
     }
     
     private void init() {
-        this.netflixStars = this.tileify(this.getResources().getDrawable(2130837846), true);
-        this.userStars = this.tileify(this.getResources().getDrawable(2130837847), true);
+        this.netflixStars = this.tileify(this.getResources().getDrawable(2130837847), true);
+        this.userStars = this.tileify(this.getResources().getDrawable(2130837848), true);
         this.setOnRatingBarChangeListener((RatingBar$OnRatingBarChangeListener)this);
         final Context context = this.getContext();
         if (context instanceof VideoDetailsProvider) {

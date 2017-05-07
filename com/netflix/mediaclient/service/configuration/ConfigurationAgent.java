@@ -25,8 +25,8 @@ import com.netflix.mediaclient.util.api.Api19Util;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
 import com.netflix.mediaclient.service.NetflixService;
-import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
 import com.netflix.mediaclient.Log;
 import android.os.Handler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
@@ -141,7 +141,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
                     Log.e("nf_configurationagent", "AD logger is not available!");
                     return;
                 }
-                advertiserIdLogging.sendAdvertiserId();
+                advertiserIdLogging.sendAdvertiserId(AdvertiserIdLogging.EventType.check_in);
             }
         };
     }

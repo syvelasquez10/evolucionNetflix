@@ -788,7 +788,11 @@ final class EnhancedSubtitleManager implements SubtitleManager
                 Log.v("nf_subtitles_render", "Region w/h " + width + "/" + height + " known, set them");
             }
             if (this.mDisplayArea != null) {
-                if (height < this.mDisplayArea.getHeight() / 2) {
+                final int n = this.mDisplayArea.getHeight() / 4;
+                if (Log.isLoggable("nf_subtitles_render", 2)) {
+                    Log.d("nf_subtitles_render", "h: " + height + ", maxHeight: " + n);
+                }
+                if (height < n) {
                     Log.d("nf_subtitles_render", "Use wrap content for height");
                     relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(width, -2);
                 }
@@ -805,12 +809,12 @@ final class EnhancedSubtitleManager implements SubtitleManager
         if (doubleLength2 != null && doubleLength2.isValid() && doubleLength != null && doubleLength.isValid()) {
             final int left = regionForRectangle.left;
             final int top = regionForRectangle.top;
-            final int n = this.mDisplayArea.getWidth() - regionForRectangle.right;
-            final int n2 = this.mDisplayArea.getHeight() - regionForRectangle.bottom;
+            final int n2 = this.mDisplayArea.getWidth() - regionForRectangle.right;
+            final int n3 = this.mDisplayArea.getHeight() - regionForRectangle.bottom;
             if (Log.isLoggable("nf_subtitles_render", 3)) {
-                Log.d("nf_subtitles_render", "Margins, left: " + left + ", top: " + top + ", right: " + n + ", bottom: " + n2);
+                Log.d("nf_subtitles_render", "Margins, left: " + left + ", top: " + top + ", right: " + n2 + ", bottom: " + n3);
             }
-            relativeLayout$LayoutParams.setMargins(left, top, n, n2);
+            relativeLayout$LayoutParams.setMargins(left, top, n2, n3);
         }
         return relativeLayout$LayoutParams;
     }

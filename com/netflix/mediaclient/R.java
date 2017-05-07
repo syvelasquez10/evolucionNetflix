@@ -875,22 +875,23 @@ public final class R
         public static final int spinner_bg_disabled = 2130837839;
         public static final int spinner_bg_focused = 2130837840;
         public static final int spinner_bg_pressed = 2130837841;
-        public static final int splash_lighting = 2130837842;
-        public static final int splash_spinner = 2130837843;
-        public static final int star_netflix_rated = 2130837844;
-        public static final int star_no_selection = 2130837845;
-        public static final int star_rating_netflix = 2130837846;
-        public static final int star_rating_user = 2130837847;
-        public static final int star_user_rated = 2130837848;
-        public static final int unavailable_person = 2130837849;
-        public static final int vertical_list_div = 2130837850;
-        public static final int vpi__tab_indicator = 2130837851;
-        public static final int vpi__tab_selected_focused_holo = 2130837852;
-        public static final int vpi__tab_selected_holo = 2130837853;
-        public static final int vpi__tab_selected_pressed_holo = 2130837854;
-        public static final int vpi__tab_unselected_focused_holo = 2130837855;
-        public static final int vpi__tab_unselected_holo = 2130837856;
-        public static final int vpi__tab_unselected_pressed_holo = 2130837857;
+        public static final int splash_lighting_phone = 2130837842;
+        public static final int splash_lighting_tablet = 2130837843;
+        public static final int splash_spinner = 2130837844;
+        public static final int star_netflix_rated = 2130837845;
+        public static final int star_no_selection = 2130837846;
+        public static final int star_rating_netflix = 2130837847;
+        public static final int star_rating_user = 2130837848;
+        public static final int star_user_rated = 2130837849;
+        public static final int unavailable_person = 2130837850;
+        public static final int vertical_list_div = 2130837851;
+        public static final int vpi__tab_indicator = 2130837852;
+        public static final int vpi__tab_selected_focused_holo = 2130837853;
+        public static final int vpi__tab_selected_holo = 2130837854;
+        public static final int vpi__tab_selected_pressed_holo = 2130837855;
+        public static final int vpi__tab_unselected_focused_holo = 2130837856;
+        public static final int vpi__tab_unselected_holo = 2130837857;
+        public static final int vpi__tab_unselected_pressed_holo = 2130837858;
     }
     
     public static final class id

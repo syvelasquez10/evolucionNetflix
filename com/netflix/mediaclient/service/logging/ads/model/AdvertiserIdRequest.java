@@ -5,29 +5,40 @@
 package com.netflix.mediaclient.service.logging.ads.model;
 
 import org.json.JSONException;
+import com.netflix.mediaclient.util.StringUtils;
+import android.os.Build$VERSION;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
 
 public final class AdvertiserIdRequest
 {
     protected static final String DATA = "data";
     protected static final String DATA_APP_NAME = "appName";
     protected static final String DATA_EVENTS = "events";
+    protected static final String DATA_EVENT_TYPE = "event_type";
     protected static final String DATA_ID = "advdevtag_id";
     protected static final String DATA_NAME = "name";
     protected static final String DATA_OPTED_FOR_ADS = "ad_tracking_preference";
+    protected static final String DATA_OS_VERSION = "os_version";
     protected static final String DATA_TIME = "time";
     protected static final String DATA_TYPE = "advdevtag_type";
+    protected static final String DATA_USER_AGENT = "user_agent";
     protected static final String EVENT_NAME = "advdevtag";
     protected static final String VALUE_APP_NAME = "android";
     protected static final String VALUE_OPT_IN = "opt-in";
     protected static final String VALUE_OPT_OUT = "opt-out";
     private String mAdvertiserId;
+    private AdvertiserIdLogging.EventType mEventType;
     private boolean mOptedIn;
     
-    public AdvertiserIdRequest(final String mAdvertiserId, final boolean mOptedIn) {
+    public AdvertiserIdRequest(final String mAdvertiserId, final boolean mOptedIn, final AdvertiserIdLogging.EventType mEventType) {
         this.mAdvertiserId = mAdvertiserId;
         this.mOptedIn = mOptedIn;
+        this.mEventType = mEventType;
+        if (mEventType == null) {
+            throw new IllegalArgumentException("Event type can not be null!");
+        }
     }
     
     private JSONObject getEvent() throws JSONException {
@@ -53,6 +64,12 @@ public final class AdvertiserIdRequest
             s = "opt-out";
         }
         jsonObject3.put("ad_tracking_preference", (Object)s);
+        jsonObject3.put("event_type", (Object)this.mEventType.name());
+        jsonObject3.put("os_version", (Object)Build$VERSION.RELEASE);
+        final String property = System.getProperty("http.agent");
+        if (StringUtils.isNotEmpty(property)) {
+            jsonObject3.put("user_agent", (Object)property);
+        }
         return jsonObject;
     }
     

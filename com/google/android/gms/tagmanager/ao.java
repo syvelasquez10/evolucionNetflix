@@ -72,8 +72,6 @@ class ao extends aj
                                 return dh.r(com.google.android.gms.tagmanager.j.d(this.c((String)i, array)));
                                 i = dh.j((d.a)i);
                                 continue Label_0073_Outer;
-                                k = dh.j(a2);
-                                continue Block_6_Outer;
                                 Label_0135: {
                                     bh.w("Hash: unknown input format: " + k);
                                 }
@@ -81,6 +79,8 @@ class ao extends aj
                                 while (true) {
                                     array = com.google.android.gms.tagmanager.j.bm(j);
                                     return dh.r(com.google.android.gms.tagmanager.j.d(this.c((String)i, array)));
+                                    k = dh.j(a2);
+                                    continue Block_6_Outer;
                                     continue;
                                 }
                             }

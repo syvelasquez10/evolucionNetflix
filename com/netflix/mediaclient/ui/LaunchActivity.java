@@ -17,7 +17,6 @@ import android.widget.ImageView$ScaleType;
 import android.widget.RelativeLayout$LayoutParams;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.widget.ProgressBar;
-import android.widget.ImageView;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.ui.login.LoginActivity;
@@ -26,6 +25,7 @@ import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.app.Activity;
 import com.netflix.mediaclient.util.DeviceUtils;
+import android.widget.ImageView;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
@@ -120,6 +120,15 @@ public class LaunchActivity extends NetflixActivity
     
     private void createContentView() {
         this.setContentView(2130903161);
+        final ImageView imageView = (ImageView)this.findViewById(2131165567);
+        int imageResource;
+        if (DeviceUtils.isTabletByContext((Context)this)) {
+            imageResource = 2130837843;
+        }
+        else {
+            imageResource = 2130837842;
+        }
+        imageView.setImageResource(imageResource);
         if (DeviceUtils.getScreenResolutionDpi(this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
             this.manipulateSplashBackground();
         }

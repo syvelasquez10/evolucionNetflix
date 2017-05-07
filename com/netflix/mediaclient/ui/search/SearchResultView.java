@@ -89,7 +89,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final String imgUrl = searchPerson.getImgUrl();
         NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, imgUrl, IClientLogging.AssetType.heroImage, name, false, false);
         if (StringUtils.isEmpty(imgUrl)) {
-            this.img.setImageResource(2130837849);
+            this.img.setImageResource(2130837850);
         }
         this.videoClickListener.remove((View)this);
         this.setOnClickListener((View$OnClickListener)new PersonClickListener(searchPerson.getId(), searchPerson.getName()));

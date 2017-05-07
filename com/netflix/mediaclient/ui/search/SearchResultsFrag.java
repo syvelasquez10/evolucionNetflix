@@ -130,8 +130,14 @@ public class SearchResultsFrag extends NetflixFrag
         }
         
         public View getView(final int n, final View view, final ViewGroup viewGroup) {
-            Object o = view;
-            if (view == null) {
+            Object o = null;
+            Label_0040: {
+                if (view != null) {
+                    o = view;
+                    if (view instanceof SearchResultView) {
+                        break Label_0040;
+                    }
+                }
                 final NetflixActivity netflixActivity = (NetflixActivity)SearchResultsFrag.this.getActivity();
                 if (netflixActivity.isForKids()) {
                     o = new KidsSearchResultView((Context)netflixActivity);

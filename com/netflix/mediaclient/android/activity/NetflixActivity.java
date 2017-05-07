@@ -447,21 +447,15 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
                     }
                     this.displayDialog(dialog);
                     return;
-                Block_9_Outer:
                     while (true) {
                         this.displayDialog(dialog);
                         return;
-                    Block_10:
-                        while (true) {
-                            break Block_10;
-                            continue;
-                        }
                         Log.d("NetflixActivity", "displayUserAgentDialog " + s);
-                        continue Block_9_Outer;
+                        continue;
                     }
                 }
-                // iftrue(Label_0150:, !Log.isLoggable("NetflixActivity", 3))
                 // iftrue(Label_0165:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
+                // iftrue(Label_0150:, !Log.isLoggable("NetflixActivity", 3))
                 finally {
                 }
                 // monitorexit(visibleDialogLock)

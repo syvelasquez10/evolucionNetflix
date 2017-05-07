@@ -28,6 +28,7 @@ public interface PreferenceKeys
     public static final String PREFERENCE_DRM_KCE_KEY_ID = "nf_drm_kce_key_id";
     public static final String PREFERENCE_DRM_KCH_KEY_ID = "nf_drm_kch_key_id";
     public static final String PREFERENCE_DRM_SYSTEM_ID = "nf_drm_system_id";
+    public static final String PREFERENCE_FIRST_APPLICATION_START_AFTER_INSTALLATION = "nf_first_start_after_install";
     public static final String PREFERENCE_HARDWARE_ACCELERATION = "nflx_hardwarer_acc";
     public static final String PREFERENCE_IMAGE_PREF = "image_pref";
     public static final String PREFERENCE_IP_CONNECTIVITY_POLICY_OVERRIDE = "ip_connectivity_policy_overide";

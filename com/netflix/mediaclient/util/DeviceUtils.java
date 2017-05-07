@@ -12,6 +12,7 @@ import android.util.DisplayMetrics;
 import android.app.Activity;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class DeviceUtils
 {
@@ -20,6 +21,7 @@ public final class DeviceUtils
     public static final int SCREEN_SIZE_SMALL = 1;
     public static final int SCREEN_SIZE_XLARGE = 4;
     private static final String TAG = "nf_device_utils";
+    private static AtomicBoolean sFirstStartAfterInstall;
     
     public static int getBasicScreenOrientation(final Context context) {
         return context.getResources().getConfiguration().orientation;
@@ -39,6 +41,26 @@ public final class DeviceUtils
             Log.d("nf_device_utils", "CV: " + substring);
         }
         return substring;
+    }
+    
+    public static long getFirstStartTime(final Context context) {
+        final long n = -1L;
+        // monitorenter(DeviceUtils.class)
+        long longPref = n;
+        try {
+            if (DeviceUtils.sFirstStartAfterInstall != null) {
+                if (DeviceUtils.sFirstStartAfterInstall.get()) {
+                    longPref = n;
+                }
+                else {
+                    longPref = PreferenceUtils.getLongPref(context, "nf_first_start_after_install", -1L);
+                }
+            }
+            return longPref;
+        }
+        finally {
+        }
+        // monitorexit(DeviceUtils.class)
     }
     
     public static int getScreenHeightInPixels(final Context context) {
@@ -130,13 +152,30 @@ public final class DeviceUtils
     public static boolean hasHardwareNavigationKeys() {
         final boolean deviceHasKey = KeyCharacterMap.deviceHasKey(4);
         final boolean deviceHasKey2 = KeyCharacterMap.deviceHasKey(3);
-        Log.d("@@@", "Back " + deviceHasKey);
-        Log.d("@@@", "Home " + deviceHasKey2);
         return deviceHasKey && deviceHasKey2;
     }
     
     public static void hideSoftKeyboard(final Activity activity) {
         activity.getWindow().setSoftInputMode(2);
+    }
+    
+    public static boolean isFirstApplicationStartAfterInstallation(final Context context) {
+        Label_0059: {
+            if (DeviceUtils.sFirstStartAfterInstall != null) {
+                break Label_0059;
+            }
+            synchronized (DeviceUtils.class) {
+                if (DeviceUtils.sFirstStartAfterInstall == null) {
+                    final boolean b = PreferenceUtils.getLongPref(context, "nf_first_start_after_install", -1L) < 0L;
+                    DeviceUtils.sFirstStartAfterInstall = new AtomicBoolean(b);
+                    if (b) {
+                        PreferenceUtils.putLongPref(context, "nf_first_start_after_install", System.currentTimeMillis());
+                    }
+                }
+                // monitorexit(DeviceUtils.class)
+                return DeviceUtils.sFirstStartAfterInstall.get();
+            }
+        }
     }
     
     public static boolean isLandscape(final Context context) {
