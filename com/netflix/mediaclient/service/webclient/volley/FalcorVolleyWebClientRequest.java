@@ -40,6 +40,7 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
     public static final String ENDPOINT_REVISION = "X-Netflix.api-script-revision";
     public static final String NETFLIX_API_SCRIPT_EXECUTION_TIME_HEADER = "X-Netflix.api-script-execution-time";
     public static final String NETFLIX_SERVER_EXECUTION_TIME_HEADER = "X-Netflix.execution-time";
+    public static final String PARAM_NAME_SIGNATURE = "signature";
     private static final String TAG = "FalcorVolleyWebClientRequest";
     protected ApiEndpointRegistry mApiEndpointRegistry;
     protected long mApiScriptExecTimeInMs;

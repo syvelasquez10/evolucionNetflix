@@ -252,6 +252,8 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                                                     return Response.error(new ParseException((String)networkResponse));
                                                 }
                                                 break Label_0385;
+                                                responseValid = true;
+                                                continue Label_0112_Outer;
                                                 ++n;
                                                 s2 = s4;
                                                 s3 = s5;
@@ -260,8 +262,6 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                                                     s5 = split2[1];
                                                     s4 = s2;
                                                     continue Label_0269_Outer;
-                                                    responseValid = true;
-                                                    continue Label_0112_Outer;
                                                     s4 = s2;
                                                     s5 = s3;
                                                     continue;

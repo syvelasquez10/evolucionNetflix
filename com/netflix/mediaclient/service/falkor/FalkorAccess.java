@@ -45,8 +45,8 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void addToQueue(final String s, final int n, final int n2, final int n3) {
-        this.mBrowseAgent.addToQueue(s, n, this.wrapCallback(new BrowseAgentClientCallback(n2, n3)));
+    public void addToQueue(final String s, final int n, final String s2, final int n2, final int n3) {
+        this.mBrowseAgent.addToQueue(s, n, s2, this.wrapCallback(new BrowseAgentClientCallback(n2, n3)));
     }
     
     @Override
@@ -190,8 +190,8 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void removeFromQueue(final String s, final int n, final int n2) {
-        this.mBrowseAgent.removeFromQueue(s, this.wrapCallback(new BrowseAgentClientCallback(n, n2)));
+    public void removeFromQueue(final String s, final String s2, final int n, final int n2) {
+        this.mBrowseAgent.removeFromQueue(s, s2, this.wrapCallback(new BrowseAgentClientCallback(n, n2)));
     }
     
     @Override

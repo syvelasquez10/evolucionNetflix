@@ -452,7 +452,21 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     public void onRouteChanged(final MediaRouter mediaRouter, final RouteInfo routeInfo) {
         if (Log.isLoggable(CastManager.TAG, 3)) {
             Log.d(CastManager.TAG, "onRouteChanged " + routeInfo);
+            this.logCastDevice(routeInfo);
         }
+        final CastDevice fromBundle = CastDevice.getFromBundle(routeInfo.getExtras());
+        if (fromBundle == null || !this.isCastDeviceWhiteListed(fromBundle)) {
+            Log.d(CastManager.TAG, "device is not whitelisted");
+            return;
+        }
+        String s;
+        if (StringUtils.isEmpty(this.mCastPrefix)) {
+            s = routeInfo.getName();
+        }
+        else {
+            s = this.mCastPrefix + routeInfo.getName();
+        }
+        this.nativeDeviceFoundWrapper(this.getUuid(routeInfo.getId()), this.getIpAddress(routeInfo), s);
     }
     
     @Override

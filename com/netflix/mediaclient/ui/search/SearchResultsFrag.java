@@ -13,10 +13,9 @@ import java.util.List;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
-import android.os.Parcelable;
 import android.os.Handler;
+import android.os.Parcelable;
 import java.util.Collection;
-import java.util.Arrays;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
@@ -761,9 +760,15 @@ public class SearchResultsFrag extends NetflixFrag
     {
         private void restoreClickHistory(final Bundle bundle) {
             if (bundle != null && bundle.containsKey("instance_state__click_history")) {
-                final SearchItemClick[] array = (SearchItemClick[])bundle.getParcelableArray("instance_state__click_history");
-                if (array != null && array.length > 0) {
-                    SearchResultsFrag.this.clickPresseHistory.addAll(new ArrayList(Arrays.asList(array)));
+                final Parcelable[] parcelableArray = bundle.getParcelableArray("instance_state__click_history");
+                if (parcelableArray != null && parcelableArray.length != 0) {
+                    final ArrayList list = new ArrayList<SearchItemClick>(parcelableArray.length);
+                    for (int length = parcelableArray.length, i = 0; i < length; ++i) {
+                        list.add((SearchItemClick)parcelableArray[i]);
+                    }
+                    if (list.size() > 0 && SearchResultsFrag.this.clickPresseHistory != null) {
+                        SearchResultsFrag.this.clickPresseHistory.addAll(list);
+                    }
                 }
             }
         }
@@ -835,7 +840,10 @@ public class SearchResultsFrag extends NetflixFrag
         
         private void saveClickHistoryState(final Bundle bundle) {
             if (SearchResultsFrag.this.clickPresseHistory.size() > 0) {
-                bundle.putParcelableArray("instance_state__click_history", (Parcelable[])SearchResultsFrag.this.clickPresseHistory.toArray(new SearchItemClick[SearchResultsFrag.this.clickPresseHistory.size()]));
+                final SearchItemClick[] array = (SearchItemClick[])SearchResultsFrag.this.clickPresseHistory.toArray(new SearchItemClick[SearchResultsFrag.this.clickPresseHistory.size()]);
+                if (array != null && array.length > 0) {
+                    bundle.putParcelableArray("instance_state__click_history", (Parcelable[])array);
+                }
             }
         }
         

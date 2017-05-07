@@ -21,7 +21,7 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public boolean addToQueue(final String s, final int n, final ManagerCallback managerCallback) {
+    public boolean addToQueue(final String s, final int n, final String s2, final ManagerCallback managerCallback) {
         if (StringUtils.isEmpty(s)) {
             throw new IllegalArgumentException("Parameter cannot be null");
         }
@@ -31,7 +31,7 @@ public final class BrowseManager implements IBrowseManager
         }
         final INetflixService service = this.mgr.getService();
         if (service != null) {
-            service.getBrowse().addToQueue(s, n, this.mgr.getClientId(), wrappedRequestId);
+            service.getBrowse().addToQueue(s, n, s2, this.mgr.getClientId(), wrappedRequestId);
             return true;
         }
         Log.w("ServiceManagerBrowse", "addToQueue:: service is not available");
@@ -589,7 +589,7 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public boolean removeFromQueue(final String s, final ManagerCallback managerCallback) {
+    public boolean removeFromQueue(final String s, final String s2, final ManagerCallback managerCallback) {
         if (StringUtils.isEmpty(s)) {
             throw new IllegalArgumentException("Parameter cannot be null");
         }
@@ -599,7 +599,7 @@ public final class BrowseManager implements IBrowseManager
         }
         final INetflixService service = this.mgr.getService();
         if (service != null) {
-            service.getBrowse().removeFromQueue(s, this.mgr.getClientId(), wrappedRequestId);
+            service.getBrowse().removeFromQueue(s, s2, this.mgr.getClientId(), wrappedRequestId);
             return true;
         }
         Log.w("ServiceManagerBrowse", "removeFromQueue:: service is not available");

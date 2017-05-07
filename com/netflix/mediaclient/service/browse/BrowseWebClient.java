@@ -10,7 +10,7 @@ import com.netflix.mediaclient.servicemgr.model.LoMo;
 
 public interface BrowseWebClient
 {
-    void addToQueue(final String p0, final int p1, final int p2, final int p3, final boolean p4, final BrowseAgentCallback p5);
+    void addToQueue(final String p0, final int p1, final int p2, final int p3, final boolean p4, final String p5, final BrowseAgentCallback p6);
     
     void fetchBBVideos(final LoMo p0, final int p1, final int p2, final BrowseAgentCallback p3);
     
@@ -66,7 +66,7 @@ public interface BrowseWebClient
     
     void refreshKidsCharacterDetils(final String p0, final BrowseAgentCallback p1);
     
-    void removeFromQueue(final String p0, final int p1, final int p2, final boolean p3, final BrowseAgentCallback p4);
+    void removeFromQueue(final String p0, final int p1, final int p2, final boolean p3, final String p4, final BrowseAgentCallback p5);
     
     void searchNetflix(final String p0, final ProfileType p1, final BrowseAgentCallback p2);
     

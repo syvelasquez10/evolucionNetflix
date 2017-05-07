@@ -57,12 +57,12 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     }
     
     @Override
-    public void addToQueue(final String s, final int n, final int n2, final int n3, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+    public void addToQueue(final String s, final int n, final int n2, final int n3, final boolean b, final String s2, final BrowseAgentCallback browseAgentCallback) {
         if (!b) {
-            this.webclient.sendRequest(new AddToQueueRequestNoLolomo(this.service.getApplicationContext(), this.browseCache, s, n3, browseAgentCallback));
+            this.webclient.sendRequest(new AddToQueueRequestNoLolomo(this.service.getApplicationContext(), this.browseCache, s, n3, s2, browseAgentCallback));
             return;
         }
-        final AddToQueueRequest addToQueueRequest = new AddToQueueRequest(this.service.getApplicationContext(), this.browseCache, s, n, n2, n3, browseAgentCallback);
+        final AddToQueueRequest addToQueueRequest = new AddToQueueRequest(this.service.getApplicationContext(), this.browseCache, s, n, n2, n3, s2, browseAgentCallback);
         if (addToQueueRequest.canProceed()) {
             this.webclient.sendRequest(addToQueueRequest);
             return;
@@ -229,12 +229,12 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     }
     
     @Override
-    public void removeFromQueue(final String s, final int n, final int n2, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+    public void removeFromQueue(final String s, final int n, final int n2, final boolean b, final String s2, final BrowseAgentCallback browseAgentCallback) {
         if (!b) {
-            this.webclient.sendRequest(new RemoveFromQueueRequestNoLolomo(this.service.getApplicationContext(), this.browseCache, s, browseAgentCallback));
+            this.webclient.sendRequest(new RemoveFromQueueRequestNoLolomo(this.service.getApplicationContext(), this.browseCache, s, s2, browseAgentCallback));
             return;
         }
-        final RemoveFromQueueRequest removeFromQueueRequest = new RemoveFromQueueRequest(this.service.getApplicationContext(), this.browseCache, s, n, n2, browseAgentCallback);
+        final RemoveFromQueueRequest removeFromQueueRequest = new RemoveFromQueueRequest(this.service.getApplicationContext(), this.browseCache, s, n, n2, s2, browseAgentCallback);
         if (removeFromQueueRequest.canProceed()) {
             this.webclient.sendRequest(removeFromQueueRequest);
             return;

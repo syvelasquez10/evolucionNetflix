@@ -36,13 +36,13 @@ public interface Nflx
         public static final String EPISODE_ID = "episodeid";
         public static final String EPISODE_ID_URI_PATH_KEY = "programs/";
         public static final String GENRE_ID = "genreid";
+        public static final String MESSAGE_TOKEN = "msg_token";
         public static final String MODE = "mode";
         public static final String MOVIE_ID = "movieid";
         public static final String MOVIE_ID_MOVIE_URI_PATH_KEY = "movies/";
         public static final String MOVIE_ID_SERIES_URI_PATH_KEY = "series/";
         public static final String POST_ACTION = "post_action";
         public static final String PROFILE_GATE = "profileGate";
-        public static final String PROFILE_ID = "msg_token";
         public static final String PROMO_CODE = "promoCode";
         public static final String QUERY = "query";
         public static final String RESPONSE = "response";

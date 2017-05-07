@@ -34,7 +34,12 @@ public final class NflxHandlerFactory
                 Log.w("NflxHandler", "No params found for: " + s2);
             }
             else {
-                hashMap.put(s2.substring(0, index), s2.substring(index + 1));
+                final String substring = s2.substring(0, index);
+                final String substring2 = s2.substring(index + 1);
+                if (Log.isLoggable("NflxHandler", 3)) {
+                    Log.d("NflxHandler", "Param name: " + substring + ", value: " + substring2);
+                }
+                hashMap.put(substring, substring2);
             }
         }
         return handleNflxParams(netflixActivity, hashMap, n);

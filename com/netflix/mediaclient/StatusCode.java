@@ -27,6 +27,7 @@ public enum StatusCode
     NON_RECOMMENDED_APP_VERSION(1), 
     NOT_IMPLEMENTED(-10), 
     NOT_IN_QUEUE(11), 
+    NOT_VALID(12), 
     NO_CONNECTIVITY(-11), 
     NRD_ERROR(-4), 
     NRD_INVALID_SW_VERSION(-20), 

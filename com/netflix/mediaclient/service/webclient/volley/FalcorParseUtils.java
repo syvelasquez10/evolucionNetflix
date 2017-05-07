@@ -211,4 +211,8 @@ public class FalcorParseUtils
     public static boolean isWrongState(final String s) {
         return s.contains("wrong state");
     }
+    
+    public static boolean wasRequestNotValid(final String s) {
+        return s != null && s.contains("NotValidRequest");
+    }
 }

@@ -14,6 +14,7 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
@@ -26,14 +27,16 @@ public class RemoveFromQueueRequestNoLolomo extends FalcorVolleyWebClientRequest
     public static final String TAG = "nf_service_browse_removefromqueuerequest";
     private final BrowseWebClientCache browseCache;
     private final String mVideoId;
+    private final String messageToken;
     private final String pqlQuery;
     private final BrowseAgentCallback responseCallback;
     
-    public RemoveFromQueueRequestNoLolomo(final Context context, final BrowseWebClientCache browseCache, final String mVideoId, final BrowseAgentCallback responseCallback) {
+    public RemoveFromQueueRequestNoLolomo(final Context context, final BrowseWebClientCache browseCache, final String mVideoId, final String messageToken, final BrowseAgentCallback responseCallback) {
         super(context);
         this.responseCallback = responseCallback;
         this.mVideoId = mVideoId;
         this.browseCache = browseCache;
+        this.messageToken = messageToken;
         this.pqlQuery = String.format("['videos', '%s', 'removeFromQueue']", mVideoId);
         if (Log.isLoggable("nf_service_browse_removefromqueuerequest", 2)) {
             Log.v("nf_service_browse_removefromqueuerequest", "PQL = " + this.pqlQuery);
@@ -43,6 +46,19 @@ public class RemoveFromQueueRequestNoLolomo extends FalcorVolleyWebClientRequest
     @Override
     protected String getMethodType() {
         return FalcorParseUtils.getMethodNameCall();
+    }
+    
+    @Override
+    protected String getOptionalParams() {
+        if (StringUtils.isEmpty(this.messageToken)) {
+            return null;
+        }
+        final StringBuilder sb = new StringBuilder();
+        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("signature", this.messageToken));
+        if (Log.isLoggable("nf_service_browse_removefromqueuerequest", 3)) {
+            Log.d("nf_service_browse_removefromqueuerequest", " getOptionalParams: " + sb.toString());
+        }
+        return sb.toString();
     }
     
     @Override

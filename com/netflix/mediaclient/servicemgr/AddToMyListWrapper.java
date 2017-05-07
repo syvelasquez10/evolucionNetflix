@@ -27,12 +27,12 @@ public class AddToMyListWrapper
         this.serviceMan = serviceMan;
     }
     
-    private void addVideoToMyList(final String s, final int n) {
-        this.serviceMan.getBrowse().addToQueue(s, n, new LoggingManagerCallback("AddToMyListWrapper"));
+    private void addVideoToMyList(final String s, final int n, final String s2) {
+        this.serviceMan.getBrowse().addToQueue(s, n, s2, new LoggingManagerCallback("AddToMyListWrapper"));
     }
     
-    private void removeVideoFromMyList(final String s) {
-        this.serviceMan.getBrowse().removeFromQueue(s, new LoggingManagerCallback("AddToMyListWrapper"));
+    private void removeVideoFromMyList(final String s, final String s2) {
+        this.serviceMan.getBrowse().removeFromQueue(s, s2, new LoggingManagerCallback("AddToMyListWrapper"));
     }
     
     private void update(final String s, final AddToListData.AddToListState stateAndNotify) {
@@ -135,7 +135,7 @@ public class AddToMyListWrapper
                     this.textView.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
                         public void onClick(final View view) {
                             LogUtils.reportRemoveFromQueueActionStarted((Context)TextViewWrapper.this.activity, null, TextViewWrapper.this.activity.getUiScreen());
-                            AddToMyListWrapper.this.removeVideoFromMyList(TextViewWrapper.this.activity.getVideoId());
+                            AddToMyListWrapper.this.removeVideoFromMyList(TextViewWrapper.this.activity.getVideoId(), TextViewWrapper.this.activity.getActionToken());
                         }
                     });
                     break;
@@ -152,7 +152,7 @@ public class AddToMyListWrapper
                                 trackId = playContext.getTrackId();
                             }
                             LogUtils.reportAddToQueueActionStarted((Context)TextViewWrapper.this.activity, null, TextViewWrapper.this.activity.getUiScreen());
-                            AddToMyListWrapper.this.addVideoToMyList(TextViewWrapper.this.activity.getVideoId(), trackId);
+                            AddToMyListWrapper.this.addVideoToMyList(TextViewWrapper.this.activity.getVideoId(), trackId, TextViewWrapper.this.activity.getActionToken());
                         }
                     });
                     break;

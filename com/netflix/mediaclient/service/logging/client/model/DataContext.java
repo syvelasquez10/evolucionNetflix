@@ -7,8 +7,9 @@ package com.netflix.mediaclient.service.logging.client.model;
 import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.util.NumberUtils;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import com.google.gson.annotations.Since;
@@ -59,6 +60,27 @@ public class DataContext
         this.setVideoId(NumberUtils.toIntegerSafely(s, null));
     }
     
+    public DataContext(final Asset asset) {
+        int videoPos;
+        if (asset == null) {
+            videoPos = 0;
+        }
+        else {
+            videoPos = asset.getVideoPos();
+        }
+        String playableId;
+        if (asset == null) {
+            playableId = null;
+        }
+        else {
+            playableId = asset.getPlayableId();
+        }
+        this(asset, videoPos, playableId);
+        if (asset == null && Log.isLoggable("DataContext", 5)) {
+            Log.w("DataContext", "Asset is null!");
+        }
+    }
+    
     public DataContext(final PlayContext playContext, final String s) {
         int videoPos;
         if (playContext == null) {
@@ -68,7 +90,7 @@ public class DataContext
             videoPos = playContext.getVideoPos();
         }
         this(playContext, videoPos, s);
-        if (Log.isLoggable("DataContext", 5) && playContext == null) {
+        if (playContext == null && Log.isLoggable("DataContext", 5)) {
             Log.w("DataContext", "playContext is null!");
         }
     }

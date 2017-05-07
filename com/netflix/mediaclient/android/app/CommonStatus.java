@@ -8,7 +8,7 @@ import com.netflix.mediaclient.StatusCode;
 
 public interface CommonStatus
 {
-    public static final NetflixImmutableStatus ALREAD_IN_QUEUE = new NetflixImmutableStatus(StatusCode.ALREADY_IN_QUEUE);
+    public static final NetflixImmutableStatus ALREADY_IN_QUEUE = new NetflixImmutableStatus(StatusCode.ALREADY_IN_QUEUE);
     public static final NetflixImmutableStatus CONFIG_DOWNLOAD_FAILED = new NetflixImmutableStatus(StatusCode.CONFIG_DOWNLOAD_FAILED);
     public static final NetflixImmutableStatus DRM_FAILURE_CDM = new NetflixImmutableStatus(StatusCode.DRM_FAILURE_CDM);
     public static final NetflixImmutableStatus DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED = new NetflixImmutableStatus(StatusCode.DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED);
@@ -22,6 +22,7 @@ public interface CommonStatus
     public static final NetflixImmutableStatus NON_RECOMMENDED_APP_VERSION = new NetflixImmutableStatus(StatusCode.NON_RECOMMENDED_APP_VERSION);
     public static final NetflixImmutableStatus NOT_IMPLEMENTED = new NetflixImmutableStatus(StatusCode.NOT_IMPLEMENTED);
     public static final NetflixImmutableStatus NOT_IN_QUEUE = new NetflixImmutableStatus(StatusCode.NOT_IN_QUEUE);
+    public static final NetflixImmutableStatus NOT_VALID = new NetflixImmutableStatus(StatusCode.NOT_VALID);
     public static final NetflixImmutableStatus NO_CONNECTIVITY = new NetflixImmutableStatus(StatusCode.NO_CONNECTIVITY);
     public static final NetflixImmutableStatus NRD_ERROR = new NetflixImmutableStatus(StatusCode.NRD_ERROR);
     public static final NetflixImmutableStatus OBSOLETE_APP_VERSION = new NetflixImmutableStatus(StatusCode.OBSOLETE_APP_VERSION);

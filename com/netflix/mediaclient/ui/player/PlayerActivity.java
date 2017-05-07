@@ -1400,7 +1400,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         if (Log.isLoggable("PlayerActivity", 5) && this.mAsset == null) {
             Log.w("PlayerActivity", "trying to create data context when mAsset is null!");
         }
-        return new DataContext(this.mAsset, null);
+        return new DataContext(this.mAsset);
     }
     
     public DialogCanceledListener getDialogCanceledListener() {

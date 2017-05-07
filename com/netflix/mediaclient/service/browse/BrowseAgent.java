@@ -509,8 +509,8 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         showDetails.currentEpisodeBookmark.deepCopy(episodeDetails.bookmark);
     }
     
-    public void addToQueue(final String s, final int n, final BrowseAgentCallback browseAgentCallback) {
-        this.launchTask(new AddToQueueTask(s, n, browseAgentCallback));
+    public void addToQueue(final String s, final int n, final String s2, final BrowseAgentCallback browseAgentCallback) {
+        this.launchTask(new AddToQueueTask(s, n, s2, browseAgentCallback));
     }
     
     @Override
@@ -707,8 +707,8 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         this.launchTask(new RefreshIQTask());
     }
     
-    public void removeFromQueue(final String s, final BrowseAgentCallback browseAgentCallback) {
-        this.launchTask(new RemoveFromQueueTask(s, browseAgentCallback));
+    public void removeFromQueue(final String s, final String s2, final BrowseAgentCallback browseAgentCallback) {
+        this.launchTask(new RemoveFromQueueTask(s, s2, browseAgentCallback));
     }
     
     public void searchNetflix(final String s, final BrowseAgentCallback browseAgentCallback) {
@@ -757,10 +757,11 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     private class AddToQueueTask extends FetchTask<Void>
     {
         private final boolean iqInCache;
+        private final String messageToken;
         private final int trackId;
         private final BrowseAgentCallback webClientCallback;
         
-        public AddToQueueTask(final String s, final int trackId, final BrowseAgentCallback browseAgentCallback) {
+        public AddToQueueTask(final String s, final int trackId, final String messageToken, final BrowseAgentCallback browseAgentCallback) {
             super(s, BrowseAgent.mPrefetchFromVideo, BrowseAgent.mPrefetchToVideo, browseAgentCallback);
             this.webClientCallback = new SimpleBrowseAgentCallback() {
                 @Override
@@ -784,11 +785,12 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
             };
             this.trackId = trackId;
             this.iqInCache = BrowseAgent.this.mCache.areIqIdsInCache();
+            this.messageToken = messageToken;
         }
         
         @Override
         public void run() {
-            BrowseAgent.this.mBrowseWebClient.addToQueue(((FetchTask)this).getCategory(), ((FetchTask)this).getFromIndex(), ((FetchTask)this).getToIndex(), this.trackId, this.iqInCache, this.webClientCallback);
+            BrowseAgent.this.mBrowseWebClient.addToQueue(((FetchTask)this).getCategory(), ((FetchTask)this).getFromIndex(), ((FetchTask)this).getToIndex(), this.trackId, this.iqInCache, this.messageToken, this.webClientCallback);
         }
     }
     
@@ -1766,9 +1768,10 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     private class RemoveFromQueueTask extends FetchTask<Void>
     {
         private final boolean iqInCache;
+        private final String messageToken;
         private final BrowseAgentCallback webClientCallback;
         
-        public RemoveFromQueueTask(final String s, final BrowseAgentCallback browseAgentCallback) {
+        public RemoveFromQueueTask(final String s, final String messageToken, final BrowseAgentCallback browseAgentCallback) {
             super(s, BrowseAgent.mPrefetchFromVideo, BrowseAgent.mPrefetchToVideo, browseAgentCallback);
             this.webClientCallback = new SimpleBrowseAgentCallback() {
                 @Override
@@ -1791,11 +1794,12 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                 }
             };
             this.iqInCache = BrowseAgent.this.mCache.areIqIdsInCache();
+            this.messageToken = messageToken;
         }
         
         @Override
         public void run() {
-            BrowseAgent.this.mBrowseWebClient.removeFromQueue(((FetchTask)this).getCategory(), ((FetchTask)this).getFromIndex(), ((FetchTask)this).getToIndex(), this.iqInCache, this.webClientCallback);
+            BrowseAgent.this.mBrowseWebClient.removeFromQueue(((FetchTask)this).getCategory(), ((FetchTask)this).getFromIndex(), ((FetchTask)this).getToIndex(), this.iqInCache, this.messageToken, this.webClientCallback);
         }
     }
     

@@ -10,7 +10,7 @@ import com.netflix.mediaclient.servicemgr.model.LoMo;
 
 public interface IBrowseInterface
 {
-    void addToQueue(final String p0, final int p1, final int p2, final int p3);
+    void addToQueue(final String p0, final int p1, final String p2, final int p3, final int p4);
     
     void dumpHomeLoLoMosAndVideos(final String p0, final String p1);
     
@@ -68,7 +68,7 @@ public interface IBrowseInterface
     
     void refreshIQ();
     
-    void removeFromQueue(final String p0, final int p1, final int p2);
+    void removeFromQueue(final String p0, final String p1, final int p2, final int p3);
     
     void searchNetflix(final String p0, final int p1, final int p2);
     

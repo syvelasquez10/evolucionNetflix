@@ -63,7 +63,7 @@ public class FalkorAgent extends ServiceAgent implements BrowseAgentInterface
         }
     }
     
-    public void addToQueue(final String s, final int n, final BrowseAgentCallback browseAgentCallback) {
+    public void addToQueue(final String s, final int n, final String s2, final BrowseAgentCallback browseAgentCallback) {
         this.logVerbose(LogUtils.getCurrMethodName());
     }
     
@@ -208,7 +208,7 @@ public class FalkorAgent extends ServiceAgent implements BrowseAgentInterface
         this.logVerbose(LogUtils.getCurrMethodName());
     }
     
-    public void removeFromQueue(final String s, final BrowseAgentCallback browseAgentCallback) {
+    public void removeFromQueue(final String s, final String s2, final BrowseAgentCallback browseAgentCallback) {
         this.logVerbose(LogUtils.getCurrMethodName());
     }
     

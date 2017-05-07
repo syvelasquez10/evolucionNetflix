@@ -10,7 +10,7 @@ import com.netflix.mediaclient.servicemgr.model.LoMo;
 
 public interface IBrowseManager
 {
-    boolean addToQueue(final String p0, final int p1, final ManagerCallback p2);
+    boolean addToQueue(final String p0, final int p1, final String p2, final ManagerCallback p3);
     
     boolean dumpHomeLoLoMosAndVideos(final String p0, final String p1);
     
@@ -64,7 +64,7 @@ public interface IBrowseManager
     
     boolean prefetchLoLoMo(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final boolean p6, final boolean p7, final ManagerCallback p8);
     
-    boolean removeFromQueue(final String p0, final ManagerCallback p1);
+    boolean removeFromQueue(final String p0, final String p1, final ManagerCallback p2);
     
     boolean searchNetflix(final String p0, final ManagerCallback p1);
     

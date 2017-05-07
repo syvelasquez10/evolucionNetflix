@@ -14,6 +14,7 @@ import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import android.annotation.SuppressLint;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
@@ -32,11 +33,12 @@ public class RemoveFromQueueRequest extends FalcorVolleyWebClientRequest<String>
     private final String iqLoMoIndex;
     private final String lolomoId;
     private final String mVideoId;
+    private final String messageToken;
     private final String pqlQuery;
     private final BrowseAgentCallback responseCallback;
     private final int toVideo;
     
-    public RemoveFromQueueRequest(final Context context, final BrowseWebClientCache browseCache, final String mVideoId, final int fromVideo, final int toVideo, final BrowseAgentCallback responseCallback) {
+    public RemoveFromQueueRequest(final Context context, final BrowseWebClientCache browseCache, final String mVideoId, final int fromVideo, final int toVideo, final String messageToken, final BrowseAgentCallback responseCallback) {
         super(context);
         this.canMakeRequest = true;
         this.responseCallback = responseCallback;
@@ -44,6 +46,7 @@ public class RemoveFromQueueRequest extends FalcorVolleyWebClientRequest<String>
         this.toVideo = toVideo;
         this.mVideoId = mVideoId;
         this.browseCache = browseCache;
+        this.messageToken = messageToken;
         if (!(this.canMakeRequest = browseCache.areIqIdsInCache())) {}
         this.lolomoId = browseCache.getLoLoMoId();
         this.iqLoMoIndex = browseCache.getIQLoMoIndex();
@@ -73,7 +76,12 @@ public class RemoveFromQueueRequest extends FalcorVolleyWebClientRequest<String>
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), format));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", format2));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", "['summary']"));
-        Log.d("nf_service_browse_removefromqueuerequest", " getOptionalParams: " + sb.toString());
+        if (StringUtils.isNotEmpty(this.messageToken)) {
+            sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("signature", this.messageToken));
+        }
+        if (Log.isLoggable("nf_service_browse_removefromqueuerequest", 3)) {
+            Log.d("nf_service_browse_removefromqueuerequest", " getOptionalParams: " + sb.toString());
+        }
         return sb.toString();
     }
     

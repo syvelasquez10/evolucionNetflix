@@ -29,7 +29,7 @@ public abstract class Event implements JsonSerializer
     public static final String NAME = "name";
     public static final String SEQUENCE = "sequence";
     public static final String SEVERITY = "severity";
-    public static final String TIME = "eventTime";
+    public static final String TIME = "time";
     public static final String TYPE = "type";
     public static final String UPTIME = "uptime";
     @SerializedName("activeSessions")
@@ -82,7 +82,7 @@ public abstract class Event implements JsonSerializer
         }
         this.category = JsonUtils.getString(jsonObject, "category", null);
         this.name = JsonUtils.getString(jsonObject, "name", null);
-        this.time = JsonUtils.getLong(jsonObject, "eventTime", 0L);
+        this.time = JsonUtils.getLong(jsonObject, "time", 0L);
         this.sequence = JsonUtils.getLong(jsonObject, "sequence", 0L);
         this.uptime = JsonUtils.getLong(jsonObject, "uptime", 0L);
         this.dataContext = DataContext.createInstance(JsonUtils.getJSONObject(jsonObject, "dataContext", null));
@@ -210,7 +210,7 @@ public abstract class Event implements JsonSerializer
         if (data != null) {
             jsonObject.put("data", (Object)data);
         }
-        jsonObject.put("eventTime", this.time);
+        jsonObject.put("time", this.time);
         jsonObject.put("sequence", this.sequence);
         jsonObject.put("uptime", this.uptime);
         jsonObject.put("kids", this.kids);

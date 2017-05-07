@@ -53,13 +53,10 @@ public abstract class NativeNrdObject extends BaseNrdObject
                         Log.w("nf_object", "Do not add! Listener is null for event type " + s);
                     }
                     return;
-                    while (true) {
-                        Log.e("nf_object", "Event type is null. Do not add event listener! It should NOT happen!");
-                        return;
-                        continue;
-                    }
+                    // iftrue(Label_0063:, s != null)
+                    Log.e("nf_object", "Event type is null. Do not add event listener! It should NOT happen!");
+                    return;
                 }
-                // iftrue(Label_0063:, s != null)
                 finally {
                 }
                 // monitorexit(this)
@@ -173,13 +170,10 @@ public abstract class NativeNrdObject extends BaseNrdObject
                         Log.w("nf_object", "Do not remove! Listener is null for event type " + s);
                     }
                     return;
-                    while (true) {
-                        Log.e("nf_object", "Event type is null. Can not remove event listener! It should NOT happen!");
-                        return;
-                        continue;
-                    }
+                    // iftrue(Label_0063:, s != null)
+                    Log.e("nf_object", "Event type is null. Can not remove event listener! It should NOT happen!");
+                    return;
                 }
-                // iftrue(Label_0063:, s != null)
                 finally {
                 }
                 // monitorexit(this)
