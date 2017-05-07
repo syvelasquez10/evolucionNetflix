@@ -42,10 +42,10 @@ public class LanguageSelector$AudioAdapter extends BaseAdapter
             Log.d("nf_language_selector", "Audio create row " + n);
             int n2;
             if (BrowseExperience.isKubrick()) {
-                n2 = 2130903112;
+                n2 = 2130903132;
             }
             else {
-                n2 = 2130903125;
+                n2 = 2130903145;
             }
             inflate = this.activity.getLayoutInflater().inflate(n2, viewGroup, false);
             inflate.setTag((Object)new LanguageSelector$RowHolder(inflate));
@@ -53,7 +53,7 @@ public class LanguageSelector$AudioAdapter extends BaseAdapter
         final LanguageSelector$RowHolder languageSelector$RowHolder = (LanguageSelector$RowHolder)inflate.getTag();
         final AudioSource item = this.getItem(n);
         final boolean equals = item.equals(this.language.getSelectedAudio());
-        languageSelector$RowHolder.name.setText((CharSequence)item.getLanguageDescription());
+        languageSelector$RowHolder.name.setText((CharSequence)item.getLanguageDescriptionDisplayLabel());
         languageSelector$RowHolder.choice.setChecked(equals);
         if (equals) {
             if (Log.isLoggable()) {

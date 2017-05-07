@@ -23,6 +23,9 @@ class ViewPropertyAnimatorCompat$BaseViewPropertyAnimatorCompatImpl$Starter impl
     
     @Override
     public void run() {
-        this.this$0.startAnimation(this.mVpa, this.mViewRef.get());
+        final View view = this.mViewRef.get();
+        if (view != null) {
+            this.this$0.startAnimation(this.mVpa, view);
+        }
     }
 }

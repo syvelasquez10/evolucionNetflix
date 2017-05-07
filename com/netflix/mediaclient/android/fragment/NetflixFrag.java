@@ -26,6 +26,11 @@ public abstract class NetflixFrag extends Fragment implements LoadingStatus, Man
         return (NetflixActivity)this.getActivity();
     }
     
+    public boolean isActivityValid() {
+        final Activity activity = this.getActivity();
+        return activity != null && !activity.isFinishing();
+    }
+    
     protected boolean isDestroyed() {
         return this.isDestroyed;
     }

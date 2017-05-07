@@ -194,6 +194,10 @@ abstract class CachedModelProxy$CmpTask implements Runnable
         return false;
     }
     
+    protected boolean shouldUseAuthorization() {
+        return true;
+    }
+    
     protected boolean shouldUseCacheOnly() {
         return false;
     }

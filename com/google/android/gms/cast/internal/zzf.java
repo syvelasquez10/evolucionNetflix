@@ -10,14 +10,10 @@ import java.util.regex.Pattern;
 
 public final class zzf
 {
-    private static final Pattern zzUO;
+    private static final Pattern zzXr;
     
     static {
-        zzUO = Pattern.compile("urn:x-cast:[-A-Za-z0-9_]+(\\.[-A-Za-z0-9_]+)*");
-    }
-    
-    private static boolean zza(final char c) {
-        return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_' || c == '-';
+        zzXr = Pattern.compile("urn:x-cast:[-A-Za-z0-9_]+(\\.[-A-Za-z0-9_]+)*");
     }
     
     public static <T> boolean zza(final T t, final T t2) {
@@ -38,7 +34,11 @@ public final class zzf
         return sb.toString();
     }
     
-    public static void zzbD(final String s) {
+    private static boolean zzb(final char c) {
+        return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_' || c == '-';
+    }
+    
+    public static void zzbL(final String s) {
         if (TextUtils.isEmpty((CharSequence)s)) {
             throw new IllegalArgumentException("Namespace cannot be null or empty");
         }
@@ -53,18 +53,18 @@ public final class zzf
         }
     }
     
-    public static String zzbE(final String s) {
+    public static String zzbM(final String s) {
         return "urn:x-cast:" + s;
     }
     
-    public static String zzbF(final String s) {
-        if (zzf.zzUO.matcher(s).matches()) {
+    public static String zzbN(final String s) {
+        if (zzf.zzXr.matcher(s).matches()) {
             return s;
         }
         final StringBuilder sb = new StringBuilder(s.length());
         for (int i = 0; i < s.length(); ++i) {
             final char char1 = s.charAt(i);
-            if (zza(char1) || char1 == '.' || char1 == ':') {
+            if (zzb(char1) || char1 == '.' || char1 == ':') {
                 sb.append(char1);
             }
             else {

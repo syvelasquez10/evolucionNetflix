@@ -5,32 +5,32 @@
 package com.google.android.gms.auth.api.proxy;
 
 import android.os.Parcel;
-import android.app.PendingIntent;
 import android.os.Bundle;
+import android.app.PendingIntent;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public class ProxyResponse implements SafeParcelable
 {
     public static final Parcelable$Creator<ProxyResponse> CREATOR;
+    public final byte[] body;
+    public final int googlePlayServicesStatusCode;
+    public final PendingIntent recoveryAction;
+    public final int statusCode;
     final int versionCode;
-    public final byte[] zzPr;
-    final Bundle zzPs;
-    public final int zzPt;
-    public final PendingIntent zzPu;
-    public final int zzPv;
+    final Bundle zzRE;
     
     static {
         CREATOR = (Parcelable$Creator)new zzc();
     }
     
-    ProxyResponse(final int versionCode, final int zzPt, final PendingIntent zzPu, final int zzPv, final Bundle zzPs, final byte[] zzPr) {
+    ProxyResponse(final int versionCode, final int googlePlayServicesStatusCode, final PendingIntent recoveryAction, final int statusCode, final Bundle zzRE, final byte[] body) {
         this.versionCode = versionCode;
-        this.zzPt = zzPt;
-        this.zzPv = zzPv;
-        this.zzPs = zzPs;
-        this.zzPr = zzPr;
-        this.zzPu = zzPu;
+        this.googlePlayServicesStatusCode = googlePlayServicesStatusCode;
+        this.statusCode = statusCode;
+        this.zzRE = zzRE;
+        this.body = body;
+        this.recoveryAction = recoveryAction;
     }
     
     public int describeContents() {

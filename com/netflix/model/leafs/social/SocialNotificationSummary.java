@@ -30,25 +30,31 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
     private boolean bWasRead;
     @SerializedName("isThanked")
     private boolean bWasThanked;
+    @SerializedName("body")
+    private String bodyText;
     @SerializedName("fromUser")
     private FriendProfile friendProfile;
+    @SerializedName("header")
+    private String headerText;
     @SerializedName("id")
     private String id;
+    @SerializedName("imageAltText")
+    private String imageAltText;
+    @SerializedName("imageTarget")
+    private String imageTarget;
+    @SerializedName("imageUrl")
+    private String imageUrl;
     private boolean inQueue;
     @SerializedName("msgString")
     private String messageString;
-    @SerializedName("nsaBoxartUrl")
-    private String nsaBoxartUrl;
-    @SerializedName("nsaSeasonIndex")
-    private int nsaSeasonIndex;
-    @SerializedName("nsaSeasonsCount")
-    private int nsaSeasonsCount;
-    @SerializedName("nsaTimestamp")
-    private long nsaTimestamp;
+    @SerializedName("showTimestamp")
+    private boolean showTimestamp;
     @SerializedName("showType")
-    private SocialNotificationSummary$ShowTypes showType;
+    private VideoType showType;
     @SerializedName("storyId")
     private String storyId;
+    @SerializedName("textTarget")
+    private String textTarget;
     @SerializedName("timestamp")
     private long timestamp;
     private String tvCardUrl;
@@ -66,7 +72,7 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
     }
     
     protected SocialNotificationSummary(final Parcel parcel) {
-        final String[] array = new String[21];
+        final String[] array = new String[24];
         parcel.readStringArray(array);
         this.bWasRead = Boolean.valueOf(array[0]);
         this.bWasThanked = Boolean.valueOf(array[1]);
@@ -80,18 +86,21 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         this.type = SocialNotificationSummary$NotificationTypes.valueOf(array[8]);
         this.messageString = array[9];
         this.timestamp = Long.valueOf(array[10]);
-        this.nsaTimestamp = Long.valueOf(array[11]);
-        this.nsaSeasonIndex = Integer.valueOf(array[12]);
-        this.nsaSeasonsCount = Integer.valueOf(array[13]);
-        this.nsaBoxartUrl = array[14];
+        this.imageAltText = array[11];
+        this.showTimestamp = Boolean.valueOf(array[12]);
+        this.headerText = array[13];
+        this.imageUrl = array[14];
         this.videoId = array[15];
         this.videoType = VideoType.create(array[16]);
         this.videoTitle = array[17];
         this.tvCardUrl = array[18];
         this.inQueue = Boolean.valueOf(array[19]);
         if (StringUtils.isNotEmpty(array[20])) {
-            this.showType = SocialNotificationSummary$ShowTypes.valueOf(array[20]);
+            this.showType = VideoType.valueOf(array[20]);
         }
+        this.bodyText = array[21];
+        this.imageTarget = array[22];
+        this.textTarget = array[23];
     }
     
     public SocialNotificationSummary(final String id, final String storyId) {
@@ -100,26 +109,27 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
     }
     
     public static SocialNotificationSummary$NotificationTypes getNotificationType(final String s) {
-        switch (s) {
+        final String lowerCase = s.toLowerCase();
+        switch (lowerCase) {
             default: {
                 if (Log.isLoggable()) {
                     Log.w("SocialNotificationSummary", "Couldn't resolve the following notification type: " + s + "; returning default one: VIDEO_RECOMMENDATION");
                 }
+                return SocialNotificationSummary$NotificationTypes.NEW_SEASON_ALERT;
+            }
+            case "videorecommendation": {
                 return SocialNotificationSummary$NotificationTypes.VIDEO_RECOMMENDATION;
             }
-            case "VideoRecommendation": {
-                return SocialNotificationSummary$NotificationTypes.VIDEO_RECOMMENDATION;
-            }
-            case "ImplicitVideoRecommendationFeedback": {
+            case "implicitvideorecommendationfeedback": {
                 return SocialNotificationSummary$NotificationTypes.IMPLICIT_FEEDBACK;
             }
-            case "AddToVideoPlaylist": {
+            case "addtovideoplaylist": {
                 return SocialNotificationSummary$NotificationTypes.ADDED_TO_VIDEO_PLAYLIST;
             }
-            case "SendThanks": {
+            case "sendthanks": {
                 return SocialNotificationSummary$NotificationTypes.THANKS_SENT;
             }
-            case "NewSeasonAlert": {
+            case "new_season_alert": {
                 return SocialNotificationSummary$NotificationTypes.NEW_SEASON_ALERT;
             }
         }
@@ -172,12 +182,28 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         this.inQueue = ((Video$InQueue)falkorVideo.get("inQueue")).inQueue;
     }
     
+    public String getBodyText() {
+        return this.bodyText;
+    }
+    
     public FriendProfile getFriendProfile() {
         return this.friendProfile;
     }
     
+    public String getHeaderText() {
+        return this.headerText;
+    }
+    
     public String getId() {
         return this.id;
+    }
+    
+    public String getImageAltText() {
+        return this.imageAltText;
+    }
+    
+    public String getImageTarget() {
+        return this.imageTarget;
     }
     
     public boolean getInQueueValue() {
@@ -188,19 +214,11 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         return this.messageString;
     }
     
-    public int getNSASeasonIndex() {
-        return this.nsaSeasonIndex;
+    public boolean getShowTimestamp() {
+        return this.showTimestamp;
     }
     
-    public int getNSASeasonsCount() {
-        return this.nsaSeasonsCount;
-    }
-    
-    public long getNSATimestamp() {
-        return this.nsaTimestamp;
-    }
-    
-    public SocialNotificationSummary$ShowTypes getShowType() {
+    public VideoType getShowType() {
         return this.showType;
     }
     
@@ -212,7 +230,11 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         if (StringUtils.isNotEmpty(this.tvCardUrl)) {
             return this.tvCardUrl;
         }
-        return this.nsaBoxartUrl;
+        return this.imageUrl;
+    }
+    
+    public String getTextTarget() {
+        return this.textTarget;
     }
     
     public long getTimestamp() {
@@ -248,14 +270,14 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         return this.getId().hashCode();
     }
     
-    public void populate(final JsonElement jsonElement) {
+    public void populate(JsonElement jsonElement) {
         final JsonObject asJsonObject = jsonElement.getAsJsonObject();
         if (Falkor.ENABLE_VERBOSE_LOGGING) {
             Log.v("SocialNotificationSummary", "Populating with: " + asJsonObject);
         }
         for (final Map.Entry<String, JsonElement> entry : asJsonObject.entrySet()) {
-            final JsonElement jsonElement2 = entry.getValue();
-            if (jsonElement2.isJsonNull()) {
+            jsonElement = entry.getValue();
+            if (jsonElement.isJsonNull()) {
                 if (!Log.isLoggable()) {
                     continue;
                 }
@@ -264,96 +286,117 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
             else {
                 final String s = entry.getKey();
                 int n = 0;
-                Label_0262: {
+                Label_0286: {
                     switch (s.hashCode()) {
                         case 3355: {
                             if (s.equals("id")) {
                                 n = 0;
-                                break Label_0262;
+                                break Label_0286;
                             }
                             break;
                         }
                         case -1884251920: {
                             if (s.equals("storyId")) {
                                 n = 1;
-                                break Label_0262;
+                                break Label_0286;
                             }
                             break;
                         }
                         case 1343750747: {
                             if (s.equals("msgType")) {
                                 n = 2;
-                                break Label_0262;
+                                break Label_0286;
                             }
                             break;
                         }
                         case -1473868046: {
                             if (s.equals("msgString")) {
                                 n = 3;
-                                break Label_0262;
+                                break Label_0286;
                             }
                             break;
                         }
                         case -1244622187: {
                             if (s.equals("fromUser")) {
                                 n = 4;
-                                break Label_0262;
+                                break Label_0286;
                             }
                             break;
                         }
                         case 55126294: {
                             if (s.equals("timestamp")) {
                                 n = 5;
-                                break Label_0262;
+                                break Label_0286;
                             }
                             break;
                         }
-                        case 1000374586: {
-                            if (s.equals("nsaTimestamp")) {
+                        case -306513765: {
+                            if (s.equals("imageAltText")) {
                                 n = 6;
-                                break Label_0262;
+                                break Label_0286;
                             }
                             break;
                         }
-                        case 1265500883: {
-                            if (s.equals("nsaSeasonIndex")) {
+                        case -2108533044: {
+                            if (s.equals("imageTarget")) {
                                 n = 7;
-                                break Label_0262;
+                                break Label_0286;
                             }
                             break;
                         }
-                        case 1738877531: {
-                            if (s.equals("nsaSeasonsCount")) {
+                        case -586188135: {
+                            if (s.equals("showTimestamp")) {
                                 n = 8;
-                                break Label_0262;
+                                break Label_0286;
                             }
                             break;
                         }
-                        case 2098898363: {
-                            if (s.equals("nsaBoxartUrl")) {
+                        case -1221270899: {
+                            if (s.equals("header")) {
                                 n = 9;
-                                break Label_0262;
+                                break Label_0286;
+                            }
+                            break;
+                        }
+                        case 3029410: {
+                            if (s.equals("body")) {
+                                n = 10;
+                                break Label_0286;
+                            }
+                            break;
+                        }
+                        case 1862946078: {
+                            if (s.equals("textTarget")) {
+                                n = 11;
+                                break Label_0286;
+                            }
+                            break;
+                        }
+                        case -859610604: {
+                            if (s.equals("imageUrl")) {
+                                n = 12;
+                                break Label_0286;
                             }
                             break;
                         }
                         case -1180158496: {
                             if (s.equals("isRead")) {
-                                n = 10;
-                                break Label_0262;
+                                n = 13;
+                                break Label_0286;
                             }
                             break;
                         }
                         case -1933137793: {
                             if (s.equals("isThanked")) {
-                                n = 11;
-                                break Label_0262;
+                                n = 14;
+                                break Label_0286;
                             }
                             break;
                         }
                         case -338815017: {
                             if (s.equals("showType")) {
-                                n = 12;
-                                break Label_0262;
+                                n = 15;
+                                break Label_0286;
                             }
                             break;
                         }
@@ -365,55 +408,74 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
                         continue;
                     }
                     case 0: {
-                        this.id = jsonElement2.getAsString();
+                        this.id = jsonElement.getAsString();
                         continue;
                     }
                     case 1: {
-                        this.storyId = jsonElement2.getAsString();
+                        this.storyId = jsonElement.getAsString();
                         continue;
                     }
                     case 2: {
-                        this.type = getNotificationType(jsonElement2.getAsString());
+                        this.type = getNotificationType(jsonElement.getAsString());
                         continue;
                     }
                     case 3: {
-                        this.messageString = jsonElement2.getAsString();
+                        this.messageString = jsonElement.getAsString();
                         continue;
                     }
                     case 4: {
-                        (this.friendProfile = new FriendProfile()).populate(jsonElement2.getAsJsonObject());
+                        (this.friendProfile = new FriendProfile()).populate(jsonElement.getAsJsonObject());
                         continue;
                     }
                     case 5: {
-                        this.timestamp = jsonElement2.getAsLong();
+                        this.timestamp = jsonElement.getAsLong();
                         continue;
                     }
                     case 6: {
-                        this.nsaTimestamp = jsonElement2.getAsLong();
+                        this.imageAltText = jsonElement.getAsString();
                         continue;
                     }
                     case 7: {
-                        this.nsaSeasonIndex = jsonElement2.getAsInt();
+                        this.imageTarget = jsonElement.getAsString();
                         continue;
                     }
                     case 8: {
-                        this.nsaSeasonsCount = jsonElement2.getAsInt();
+                        this.showTimestamp = jsonElement.getAsBoolean();
                         continue;
                     }
                     case 9: {
-                        this.nsaBoxartUrl = jsonElement2.getAsString();
+                        this.headerText = jsonElement.getAsString();
                         continue;
                     }
                     case 10: {
-                        this.bWasRead = jsonElement2.getAsBoolean();
+                        this.bodyText = jsonElement.getAsString();
                         continue;
                     }
                     case 11: {
-                        this.bWasThanked = jsonElement2.getAsBoolean();
+                        this.textTarget = jsonElement.getAsString();
                         continue;
                     }
                     case 12: {
-                        this.showType = SocialNotificationSummary$ShowTypes.getType(jsonElement2.getAsString());
+                        this.imageUrl = jsonElement.getAsString();
+                        continue;
+                    }
+                    case 13: {
+                        this.bWasRead = jsonElement.getAsBoolean();
+                        continue;
+                    }
+                    case 14: {
+                        this.bWasThanked = jsonElement.getAsBoolean();
+                        continue;
+                    }
+                    case 15: {
+                        VideoType showType;
+                        if ("movie".equalsIgnoreCase(jsonElement.getAsString())) {
+                            showType = VideoType.MOVIE;
+                        }
+                        else {
+                            showType = VideoType.SHOW;
+                        }
+                        this.showType = showType;
                         continue;
                     }
                 }
@@ -435,7 +497,7 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        final String[] array = new String[21];
+        final String[] array = new String[24];
         array[0] = String.valueOf(this.bWasRead);
         array[1] = String.valueOf(this.bWasThanked);
         if (this.friendProfile != null) {
@@ -449,10 +511,10 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         array[8] = this.type.name();
         array[9] = this.messageString;
         array[10] = String.valueOf(this.timestamp);
-        array[11] = String.valueOf(this.nsaTimestamp);
-        array[12] = String.valueOf(this.nsaSeasonIndex);
-        array[13] = String.valueOf(this.nsaSeasonsCount);
-        array[14] = this.nsaBoxartUrl;
+        array[11] = this.imageAltText;
+        array[12] = String.valueOf(this.showTimestamp);
+        array[13] = this.headerText;
+        array[14] = this.imageUrl;
         array[15] = this.videoId;
         array[16] = this.videoType.getValue();
         array[17] = this.videoTitle;
@@ -461,6 +523,9 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         if (this.showType != null) {
             array[20] = this.showType.name();
         }
+        array[21] = this.bodyText;
+        array[22] = this.imageTarget;
+        array[23] = this.textTarget;
         parcel.writeStringArray(array);
     }
 }

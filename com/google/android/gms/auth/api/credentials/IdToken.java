@@ -11,18 +11,18 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class IdToken implements SafeParcelable
 {
     public static final Parcelable$Creator<IdToken> CREATOR;
-    final int zzCY;
-    private final String zzOW;
-    private final String zzOZ;
+    final int mVersionCode;
+    private final String zzRf;
+    private final String zzRn;
     
     static {
-        CREATOR = (Parcelable$Creator)new zzc();
+        CREATOR = (Parcelable$Creator)new zzd();
     }
     
-    IdToken(final int zzCY, final String zzOW, final String zzOZ) {
-        this.zzCY = zzCY;
-        this.zzOW = zzOW;
-        this.zzOZ = zzOZ;
+    IdToken(final int mVersionCode, final String zzRf, final String zzRn) {
+        this.mVersionCode = mVersionCode;
+        this.zzRf = zzRf;
+        this.zzRn = zzRn;
     }
     
     public int describeContents() {
@@ -30,14 +30,14 @@ public final class IdToken implements SafeParcelable
     }
     
     public String getAccountType() {
-        return this.zzOW;
-    }
-    
-    public String getIdToken() {
-        return this.zzOZ;
+        return this.zzRf;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        zzc.zza(this, parcel, n);
+        zzd.zza(this, parcel, n);
+    }
+    
+    public String zzlv() {
+        return this.zzRn;
     }
 }

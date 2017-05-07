@@ -20,9 +20,9 @@ public class CurrentTimeTablet extends CurrentTime
     private CurrentTimeAnimation endAnimation;
     private CurrentTimeAnimation startAnimation;
     
-    CurrentTimeTablet(final PlayerActivity playerActivity) {
-        super(playerActivity);
-        this.bottomMarginInPx = AndroidUtils.dipToPixels((Context)playerActivity, 40);
+    CurrentTimeTablet(final PlayerFragment playerFragment) {
+        super(playerFragment);
+        this.bottomMarginInPx = AndroidUtils.dipToPixels((Context)playerFragment.getActivity(), 40);
     }
     
     private void startStartAnimation(final ByteBuffer byteBuffer) {
@@ -30,7 +30,7 @@ public class CurrentTimeTablet extends CurrentTime
         if (this.startAnimation == null) {
             (this.startAnimation = new CurrentTimeAnimation(this.currentTime, 0, -this.bottomMarginInPx)).addListener((Animator$AnimatorListener)new CurrentTimeTablet$1(this, byteBuffer));
         }
-        this.context.getScreen().showBif(byteBuffer);
+        this.playerFragment.getScreen().showBif(byteBuffer);
         this.startAnimation.start();
     }
     
@@ -40,7 +40,7 @@ public class CurrentTimeTablet extends CurrentTime
             (this.endAnimation = new CurrentTimeAnimation(this.currentTime, -this.bottomMarginInPx, 0)).addListener((Animator$AnimatorListener)new CurrentTimeTablet$2(this, b));
         }
         this.endAnimation.start();
-        this.context.getScreen().stopBif();
+        this.playerFragment.getScreen().stopBif();
     }
     
     @Override
@@ -49,7 +49,7 @@ public class CurrentTimeTablet extends CurrentTime
             Log.d("CurrentTimeTablet", "start: bb " + byteBuffer);
         }
         this.mBifDownloaded.set(byteBuffer != null);
-        if (this.context == null || this.currentTime == null) {
+        if (this.playerFragment == null || this.currentTime == null) {
             return;
         }
         this.updateCurrentTime();
@@ -60,13 +60,13 @@ public class CurrentTimeTablet extends CurrentTime
     @Override
     public void stop(final boolean b) {
         Log.d("CurrentTimeTablet", "stop");
-        if (this.context == null || this.currentTime == null) {
+        if (this.playerFragment == null || this.currentTime == null) {
             return;
         }
         if (this.startAnimation != null && this.startAnimation.isRunning()) {
             Log.d("CurrentTimeTablet", "Start animation is not completed yet - cancelling it");
             this.startAnimation.cancel();
-            this.context.getScreen().stopBif();
+            this.playerFragment.getScreen().stopBif();
             this.currentTime.setTranslationY(0.0f);
         }
         else {
@@ -81,10 +81,10 @@ public class CurrentTimeTablet extends CurrentTime
     @Override
     public void updateTimeMargins() {
         Log.i("CurrentTimeTablet", "doUpdateTimeMargins");
-        if (this.context == null || this.currentTime == null) {
+        if (!this.playerFragment.isActivityValid() || this.currentTime == null) {
             return;
         }
-        final BottomPanel bottomPanel = this.context.getScreen().getBottomPanel();
+        final BottomPanel bottomPanel = this.playerFragment.getScreen().getBottomPanel();
         final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)this.currentTime.getLayoutParams();
         layoutParams.setMargins(bottomPanel.getTimeXAndUpdateHandler(this.currentTime), 0, 0, layoutParams.bottomMargin);
         this.currentTime.setLayoutParams((ViewGroup$LayoutParams)layoutParams);

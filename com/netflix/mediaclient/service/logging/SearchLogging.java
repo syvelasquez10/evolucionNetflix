@@ -9,6 +9,7 @@ import com.netflix.mediaclient.service.logging.search.model.SearchFocusSessionSt
 import com.netflix.mediaclient.service.logging.search.model.SearchImpressionEvent;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.search.model.SearchEditEvent;
+import com.netflix.mediaclient.servicemgr.ISearchLogging$InputMode;
 import android.content.Intent;
 import java.util.Iterator;
 import java.util.Collection;
@@ -122,13 +123,29 @@ public class SearchLogging implements ISearchLogging
     @Override
     public void fireEditEvent(final Intent intent) {
         if (this.mEventHandler != null) {
-            final SearchEditEvent searchEditEvent = new SearchEditEvent(this.validateSearchQueryForPrivacy(intent.getStringExtra("query")));
-            this.mEventHandler.post(searchEditEvent);
-            if (Log.isLoggable()) {
-                try {
-                    Log.d("nf_log_search", "Search Edit Event fired" + searchEditEvent.toJSONObject().toString(5));
+            final String validateSearchQueryForPrivacy = this.validateSearchQueryForPrivacy(intent.getStringExtra("query"));
+            final String stringExtra = intent.getStringExtra("input_mode");
+            while (true) {
+                Label_0099: {
+                    if (!StringUtils.isNotEmpty(stringExtra)) {
+                        break Label_0099;
+                    }
+                    final ISearchLogging$InputMode searchLogging$InputMode = ISearchLogging$InputMode.valueOf(stringExtra);
+                    final SearchEditEvent searchEditEvent = new SearchEditEvent(validateSearchQueryForPrivacy, searchLogging$InputMode);
+                    this.mEventHandler.post(searchEditEvent);
+                    if (!Log.isLoggable()) {
+                        return;
+                    }
+                    try {
+                        Log.d("nf_log_search", "Search Edit Event fired" + searchEditEvent.toJSONObject().toString(5));
+                        return;
+                    }
+                    catch (JSONException ex) {
+                        return;
+                    }
                 }
-                catch (JSONException ex) {}
+                final ISearchLogging$InputMode searchLogging$InputMode = ISearchLogging$InputMode.keyboard;
+                continue;
             }
         }
     }

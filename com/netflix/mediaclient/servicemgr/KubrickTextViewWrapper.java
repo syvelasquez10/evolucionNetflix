@@ -30,14 +30,14 @@ public class KubrickTextViewWrapper extends TextViewWrapper
     @Override
     protected void setAsInList() {
         if (this.textView != null) {
-            this.textView.setText(2131492966);
+            this.textView.setText(2131165713);
         }
     }
     
     @Override
     protected void setAsNotInList() {
         if (this.textView != null) {
-            this.textView.setText(2131492965);
+            this.textView.setText(2131165703);
         }
     }
     

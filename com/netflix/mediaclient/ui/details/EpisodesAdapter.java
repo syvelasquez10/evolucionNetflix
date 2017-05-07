@@ -16,8 +16,8 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
@@ -34,8 +34,8 @@ public class EpisodesAdapter extends RecyclerViewHeaderAdapter implements Adapte
     protected SeasonDetails currSeasonDetails;
     protected final EpisodesFrag episodeListFrag;
     protected int episodeStartIndex;
-    private boolean hasMoreData;
-    private boolean isLoading;
+    protected boolean hasMoreData;
+    protected boolean isLoading;
     protected LoadingStatus$LoadingStatusCallback mLoadingStatusCallback;
     protected long requestId;
     
@@ -45,15 +45,6 @@ public class EpisodesAdapter extends RecyclerViewHeaderAdapter implements Adapte
         this.activity = activity;
         this.episodeListFrag = episodeListFrag;
         this.initToLoadingState();
-    }
-    
-    private void initToLoadingState() {
-        Log.v("EpisodesAdapter", "initToLoadingState");
-        this.isLoading = true;
-        this.hasMoreData = true;
-        this.requestId = -1L;
-        this.episodeStartIndex = 0;
-        this.fetchMoreData();
     }
     
     private void logEmptySeasonId(final SeasonDetails seasonDetails) {
@@ -97,6 +88,15 @@ public class EpisodesAdapter extends RecyclerViewHeaderAdapter implements Adapte
     
     public long getItemId(final int n) {
         return n;
+    }
+    
+    protected void initToLoadingState() {
+        Log.v("EpisodesAdapter", "initToLoadingState");
+        this.isLoading = true;
+        this.hasMoreData = true;
+        this.requestId = -1L;
+        this.episodeStartIndex = 0;
+        this.fetchMoreData();
     }
     
     public boolean isLoadingData() {

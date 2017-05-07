@@ -57,39 +57,41 @@ public final class ApmLogUtils extends ConsolidatedLoggingUtils
     }
     
     public static void reportDataRequestEnded(final Context context, final String s, final IClientLogging$CompletionReason clientLogging$CompletionReason, final List<FalkorPathResult> list, final Error error, final HttpResponse httpResponse) {
-        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
-        ConsolidatedLoggingUtils.validateArgument(s, "Request ID can not be null!");
-        ConsolidatedLoggingUtils.validateArgument(clientLogging$CompletionReason, "Completion reason can not be null!");
-        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_ENDED");
-        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("request_id", s);
-        intent.putExtra("reason", clientLogging$CompletionReason.name());
-        ConsolidatedLoggingUtils.addToIntent(intent, "error", error);
-        ConsolidatedLoggingUtils.addToIntent(intent, "http_response", httpResponse);
-        ConsolidatedLoggingUtils.addToIntent(intent, "falkorPathResults", list);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        if (!ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") && !ConsolidatedLoggingUtils.isNull(s, "Request ID can not be null!") && !ConsolidatedLoggingUtils.isNull(clientLogging$CompletionReason, "Completion reason can not be null!")) {
+            final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_ENDED");
+            intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+            intent.putExtra("request_id", s);
+            intent.putExtra("reason", clientLogging$CompletionReason.name());
+            ConsolidatedLoggingUtils.addToIntent(intent, "error", error);
+            ConsolidatedLoggingUtils.addToIntent(intent, "http_response", httpResponse);
+            ConsolidatedLoggingUtils.addToIntent(intent, "falkorPathResults", list);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        }
     }
     
     public static void reportDataRequestStarted(final Context context, final String s, final String s2) {
-        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
-        ConsolidatedLoggingUtils.validateArgument(s, "Request ID can not be null!");
-        ConsolidatedLoggingUtils.validateArgument(s2, "Request URL can not be null!");
-        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_STARTED");
-        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("request_id", s);
-        intent.putExtra("url", s2);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        if (!ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") && !ConsolidatedLoggingUtils.isNull(s, "Request ID can not be null!") && !ConsolidatedLoggingUtils.isNull(s2, "Request URL can not be null!")) {
+            final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_STARTED");
+            intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+            intent.putExtra("request_id", s);
+            intent.putExtra("url", s2);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        }
     }
     
     public static void reportEndSharedContext(final Context context) {
-        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
+            return;
+        }
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_ENDED");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
     public static void reportPreappAddWidget(final Context context, final String s, final long n) {
-        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
+            return;
+        }
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_ADD_WIDGET");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intent.putExtra("widgetData", s);
@@ -98,7 +100,9 @@ public final class ApmLogUtils extends ConsolidatedLoggingUtils
     }
     
     public static void reportPreappDeleteWidget(final Context context, final String s, final long n) {
-        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
+            return;
+        }
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_DELETE_WIDGET");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intent.putExtra("widgetData", s);
@@ -107,20 +111,20 @@ public final class ApmLogUtils extends ConsolidatedLoggingUtils
     }
     
     public static void reportStartSharedContext(final Context context, final String s) {
-        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
-        ConsolidatedLoggingUtils.validateArgument(s, "UUID can not be null");
-        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_STARTED");
-        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("uuid", s);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        if (!ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") && !ConsolidatedLoggingUtils.isNull(s, "UUID can not be null")) {
+            final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_STARTED");
+            intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+            intent.putExtra("uuid", s);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        }
     }
     
     public static void reportUiModalViewChanged(final Context context, final IClientLogging$ModalView clientLogging$ModalView) {
-        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
-        ConsolidatedLoggingUtils.validateArgument(clientLogging$ModalView, "View can not be null!");
-        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_CHANGED");
-        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("view", clientLogging$ModalView.name());
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        if (!ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") && !ConsolidatedLoggingUtils.isNull(clientLogging$ModalView, "View can not be null!")) {
+            final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_CHANGED");
+            intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+            intent.putExtra("view", clientLogging$ModalView.name());
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        }
     }
 }

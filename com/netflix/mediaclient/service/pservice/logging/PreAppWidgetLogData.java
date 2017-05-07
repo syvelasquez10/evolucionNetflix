@@ -14,6 +14,7 @@ import com.google.gson.annotations.SerializedName;
 public final class PreAppWidgetLogData
 {
     public static final String EXTRA_WIDGET_LOG_DATA = "logData";
+    public static final boolean PRINT_LOG_DATA = false;
     private static final String TAG = "nf_preapp_widgetLogData";
     @SerializedName("deviceType")
     private String deviceCategroy;
@@ -52,9 +53,7 @@ public final class PreAppWidgetLogData
     
     public String toJsonString() {
         final String json = FalkorParseUtils.getGson().toJson(this);
-        if (Log.isLoggable()) {
-            Log.d("nf_preapp_widgetLogData", "PreAppWidgetLogData as json: " + json);
-        }
+        if (Log.isLoggable()) {}
         return json;
     }
 }

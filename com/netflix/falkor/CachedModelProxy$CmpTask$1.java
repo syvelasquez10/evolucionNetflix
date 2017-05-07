@@ -71,6 +71,7 @@ class CachedModelProxy$CmpTask$1 extends FalkorVolleyWebClientRequest<Void>
     private final List<String> pqls;
     private final long requestStartTime;
     final /* synthetic */ CachedModelProxy$CmpTask this$1;
+    private final boolean useAuthorization;
     private final boolean useCallMethod;
     final /* synthetic */ List val$requestPql;
     
@@ -81,6 +82,7 @@ class CachedModelProxy$CmpTask$1 extends FalkorVolleyWebClientRequest<Void>
         this.notOnMain = ThreadUtils.assertNotOnMain();
         this.pqls = DataUtil.createStringListFromList(this.val$requestPql);
         this.useCallMethod = this.this$1.shouldUseCallMethod();
+        this.useAuthorization = this.this$1.shouldUseAuthorization();
         this.optionalRequestParams = this.this$1.getOptionalRequestParams();
         this.requestStartTime = -1L;
     }
@@ -120,6 +122,11 @@ class CachedModelProxy$CmpTask$1 extends FalkorVolleyWebClientRequest<Void>
     }
     
     @Override
+    protected boolean isAuthorizationRequired() {
+        return this.useAuthorization;
+    }
+    
+    @Override
     protected void onFailure(final Status status) {
         ThreadUtils.assertOnMain();
         this.this$1.handleFailure(this.this$1.callback, status);
@@ -141,7 +148,7 @@ class CachedModelProxy$CmpTask$1 extends FalkorVolleyWebClientRequest<Void>
         if (FalkorParseUtils.hasErrors(asJsonObject)) {
             if (Log.isLoggable()) {
                 Log.d("CachedModelProxy", "Found errors in json response: " + asJsonObject);
-                Log.d("CachedModelProxy", "Error msg: " + FalkorParseUtils.getErrorMessage(asJsonObject));
+                Log.d("CachedModelProxy", "Error msg: " + FalkorParseUtils.getErrorMessage(asJsonObject, "CachedModelProxy"));
             }
             throw this.this$1.handleJsonError(asJsonObject);
         }

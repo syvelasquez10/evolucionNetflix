@@ -6,8 +6,8 @@ package com.netflix.mediaclient.media.JPlayer;
 
 import android.util.Pair;
 import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import android.media.MediaFormat;
+import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import com.netflix.mediaclient.Log;
 import java.nio.ByteBuffer;
 import android.view.Surface;
@@ -28,6 +28,7 @@ public class JPlayer2
     private MediaDecoderBase mAudioPipe;
     private MediaCrypto mCrypto;
     private JPlayer2$DecoderListener mDecoderListener;
+    private boolean mDolbyDigitalPlusDecoderPresent;
     private VideoResolutionRange mMaxVideoRes;
     private long mNativePlayer;
     private volatile int mState;
@@ -36,6 +37,7 @@ public class JPlayer2
     
     public JPlayer2(final Surface mSurface) {
         this.mState = -1;
+        this.mDolbyDigitalPlusDecoderPresent = DolbyDigitalHelper.isEAC3supported();
         this.mDecoderListener = new JPlayer2$DecoderListener(this);
         this.mSurface = mSurface;
     }
@@ -47,13 +49,7 @@ public class JPlayer2
     
     private void configureAudioPipe() {
         Log.d("NF_JPlayer2", "configureAudioPipe");
-        final MediaFormat mediaFormat = new MediaFormat();
-        mediaFormat.setString("mime", "audio/mp4a-latm");
-        mediaFormat.setInteger("max-input-size", 1536);
-        mediaFormat.setInteger("channel-count", 2);
-        mediaFormat.setInteger("sample-rate", 48000);
-        mediaFormat.setInteger("is-adts", 1);
-        this.mAudioPipe = new MediaDecoder2Audio(new JPlayer2$MediaDataSource(this, true), "audio/mp4a-latm", mediaFormat, this.mDecoderListener);
+        this.createAACDecoder();
     }
     
     private void configureVideoPipe() {
@@ -96,6 +92,30 @@ public class JPlayer2
         Log.d("NF_JPlayer2", "video pipe is not ready, wait...");
     }
     
+    private void createAACDecoder() {
+        Log.d("NF_JPlayer2", "createAACDecoder");
+        final MediaFormat mediaFormat = new MediaFormat();
+        mediaFormat.setString("mime", "audio/mp4a-latm");
+        mediaFormat.setInteger("max-input-size", 1536);
+        mediaFormat.setInteger("channel-count", 2);
+        mediaFormat.setInteger("sample-rate", 48000);
+        mediaFormat.setInteger("is-adts", 1);
+        this.mAudioPipe = new MediaDecoder2Audio(new JPlayer2$MediaDataSource(this, true), "audio/mp4a-latm", mediaFormat, this.mDecoderListener);
+        Log.d("NF_JPlayer2", "createAACDecoder done");
+    }
+    
+    private void createDDPlusDecoder() {
+        Log.d("NF_JPlayer2", "createDDPlusDecoder");
+        this.mAudioPipe = new MediaDecoder2Audio(new JPlayer2$MediaDataSource(this, true), "audio/eac3", DolbyDigitalHelper.getMediaFormatEAC3(), this.mDecoderListener);
+        Log.d("NF_JPlayer2", "createDDPlusDecoder done");
+    }
+    
+    private void createDDPlusPassthrough() {
+        Log.d("NF_JPlayer2", "createDDPlusPassthrought");
+        this.mAudioPipe = null;
+        Log.d("NF_JPlayer2", "createDDPlusPassthrough, not supported");
+    }
+    
     private void getBuffer(final byte[] array, final boolean b, final MediaDecoderBase$InputDataSource$BufferMeta mediaDecoderBase$InputDataSource$BufferMeta) {
         synchronized (this) {
             if (this.mState != 0) {
@@ -110,6 +130,35 @@ public class JPlayer2
                 this.nativeGetBufferDirect(byteBuffer, b, mediaDecoderBase$InputDataSource$BufferMeta);
             }
         }
+    }
+    
+    private boolean isAudioPipeNeedReconfig(final String s) {
+        final boolean contains = s.contains("ec-3");
+        boolean b;
+        if (this.mAudioPipe != null && "audio/eac3".equals(this.mAudioPipe.getMime())) {
+            b = true;
+        }
+        else {
+            b = false;
+        }
+        final boolean b2 = this.mAudioPipe != null && "audio/mp4a-latm".equals(this.mAudioPipe.getMime());
+        if (contains) {
+            if (!this.isDDPlocal() || !b) {
+                return true;
+            }
+        }
+        else if (!b2) {
+            return true;
+        }
+        return false;
+    }
+    
+    private boolean isDDPlocal() {
+        return this.mDolbyDigitalPlusDecoderPresent;
+    }
+    
+    private boolean isDDPpassthrough() {
+        return false;
     }
     
     private native void nativeGetBuffer(final byte[] p0, final boolean p1, final MediaDecoderBase$InputDataSource$BufferMeta p2);
@@ -142,6 +191,25 @@ public class JPlayer2
                 this.nativeNotifyReady();
             }
         }
+    }
+    
+    private boolean reconfigureAudioPipe(final boolean b) {
+        Log.d("NF_JPlayer2", "reconfigureAudioPipe");
+        if (b) {
+            if (this.isDDPpassthrough()) {
+                this.createDDPlusPassthrough();
+            }
+            else {
+                if (!this.isDDPlocal()) {
+                    return false;
+                }
+                this.createDDPlusDecoder();
+            }
+        }
+        else {
+            this.createAACDecoder();
+        }
+        return true;
     }
     
     private void updatePosition(final boolean b, final long n) {
@@ -228,6 +296,7 @@ public class JPlayer2
                 if (this.mAudioPipe != null) {
                     this.mAudioPipe.setReferenceClock(this.mAudioPipe.getClock());
                     this.mAudioPipe.start();
+                    this.mAudioPipe.unpause();
                 }
                 else {
                     Log.e("NF_JPlayer2", "mAudioPipe is null");
@@ -251,6 +320,7 @@ public class JPlayer2
             case 3: {
                 if (this.mAudioPipe != null) {
                     this.mAudioPipe.restart();
+                    this.mAudioPipe.unpause();
                 }
                 if (this.mVideoPipe != null) {
                     this.mVideoPipe.restart();
@@ -306,6 +376,14 @@ public class JPlayer2
     
     public long getNativePlayer() {
         return this.mNativePlayer = this.nativeGetPlayer();
+    }
+    
+    public boolean isDDPsupported() {
+        final boolean b = this.isDDPpassthrough() || this.isDDPlocal();
+        if (Log.isLoggable()) {
+            Log.d("NF_JPlayer2", "dd+ support is " + b);
+        }
+        return b;
     }
     
     public void release() {

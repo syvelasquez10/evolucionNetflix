@@ -31,9 +31,9 @@ public final class UriUtil
         if (StringUtils.isEmpty(s)) {
             return cwVideo.getInterestingUrl();
         }
-        if (playableBookmarkPosition < 10) {
+        if (playableBookmarkPosition < cwVideo.getLogicalStart() + 10) {
             if (Log.isLoggable()) {
-                Log.v("UriUtils", String.format("%s bookmark < threshold(%d), using interesting url %s ", cwVideo.getId(), 10, cwVideo.getInterestingUrl()));
+                Log.v("UriUtils", String.format("%s bookmark < threshold(%d) logicalStart %d, using interesting url %s ", cwVideo.getId(), 10, cwVideo.getLogicalStart(), cwVideo.getInterestingUrl()));
             }
             return cwVideo.getInterestingUrl();
         }

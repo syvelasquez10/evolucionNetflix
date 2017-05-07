@@ -24,6 +24,21 @@ public class zza
         return stringArray;
     }
     
+    public static ArrayList<Integer> zzB(final Parcel parcel, int i) {
+        final int zza = zza(parcel, i);
+        final int dataPosition = parcel.dataPosition();
+        if (zza == 0) {
+            return null;
+        }
+        final ArrayList<Integer> list = new ArrayList<Integer>();
+        int int1;
+        for (int1 = parcel.readInt(), i = 0; i < int1; ++i) {
+            list.add(parcel.readInt());
+        }
+        parcel.setDataPosition(dataPosition + zza);
+        return list;
+    }
+    
     public static ArrayList<String> zzC(final Parcel parcel, int zza) {
         zza = zza(parcel, zza);
         final int dataPosition = parcel.dataPosition();
@@ -60,16 +75,16 @@ public class zza
         }
     }
     
-    public static int zzaa(final Parcel parcel) {
+    public static int zzai(final Parcel parcel) {
         return parcel.readInt();
     }
     
-    public static int zzab(final Parcel parcel) {
-        final int zzaa = zzaa(parcel);
-        final int zza = zza(parcel, zzaa);
+    public static int zzaj(final Parcel parcel) {
+        final int zzai = zzai(parcel);
+        final int zza = zza(parcel, zzai);
         final int dataPosition = parcel.dataPosition();
-        if (zzbA(zzaa) != 20293) {
-            throw new zza$zza("Expected object header. Got 0x" + Integer.toHexString(zzaa), parcel);
+        if (zzbH(zzai) != 20293) {
+            throw new zza$zza("Expected object header. Got 0x" + Integer.toHexString(zzai), parcel);
         }
         final int n = dataPosition + zza;
         if (n < dataPosition || n > parcel.dataSize()) {
@@ -93,7 +108,7 @@ public class zza
         return (T[])typedArray;
     }
     
-    public static int zzbA(final int n) {
+    public static int zzbH(final int n) {
         return 0xFFFF & n;
     }
     
@@ -121,6 +136,11 @@ public class zza
     public static long zzi(final Parcel parcel, final int n) {
         zza(parcel, n, 8);
         return parcel.readLong();
+    }
+    
+    public static float zzl(final Parcel parcel, final int n) {
+        zza(parcel, n, 4);
+        return parcel.readFloat();
     }
     
     public static double zzm(final Parcel parcel, final int n) {

@@ -10,26 +10,26 @@ import com.google.android.gms.cast.Cast$ApplicationConnectionResult;
 
 final class zze$zza implements Cast$ApplicationConnectionResult
 {
-    private final String zzFE;
-    private final Status zzOt;
-    private final ApplicationMetadata zzUE;
-    private final String zzUF;
-    private final boolean zzUG;
+    private final String zzGY;
+    private final Status zzQA;
+    private final ApplicationMetadata zzXh;
+    private final String zzXi;
+    private final boolean zzXj;
     
     public zze$zza(final Status status) {
         this(status, null, null, null, false);
     }
     
-    public zze$zza(final Status zzOt, final ApplicationMetadata zzUE, final String zzUF, final String zzFE, final boolean zzUG) {
-        this.zzOt = zzOt;
-        this.zzUE = zzUE;
-        this.zzUF = zzUF;
-        this.zzFE = zzFE;
-        this.zzUG = zzUG;
+    public zze$zza(final Status zzQA, final ApplicationMetadata zzXh, final String zzXi, final String zzGY, final boolean zzXj) {
+        this.zzQA = zzQA;
+        this.zzXh = zzXh;
+        this.zzXi = zzXi;
+        this.zzGY = zzGY;
+        this.zzXj = zzXj;
     }
     
     @Override
     public Status getStatus() {
-        return this.zzOt;
+        return this.zzQA;
     }
 }

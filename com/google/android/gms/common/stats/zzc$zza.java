@@ -4,23 +4,23 @@
 
 package com.google.android.gms.common.stats;
 
-import com.google.android.gms.internal.zzkf;
+import com.google.android.gms.internal.zzkq;
 
 public final class zzc$zza
 {
-    public static zzkf<Integer> zzacs;
-    public static zzkf<String> zzact;
-    public static zzkf<String> zzacu;
-    public static zzkf<String> zzacv;
-    public static zzkf<String> zzacw;
-    public static zzkf<Long> zzacx;
+    public static zzkq<Integer> zzafD;
+    public static zzkq<String> zzafE;
+    public static zzkq<String> zzafF;
+    public static zzkq<String> zzafG;
+    public static zzkq<String> zzafH;
+    public static zzkq<Long> zzafI;
     
     static {
-        zzc$zza.zzacs = zzkf.zza("gms:common:stats:connections:level", Integer.valueOf(zzd.zzacy));
-        zzc$zza.zzact = zzkf.zzs("gms:common:stats:connections:ignored_calling_processes", "");
-        zzc$zza.zzacu = zzkf.zzs("gms:common:stats:connections:ignored_calling_services", "");
-        zzc$zza.zzacv = zzkf.zzs("gms:common:stats:connections:ignored_target_processes", "");
-        zzc$zza.zzacw = zzkf.zzs("gms:common:stats:connections:ignored_target_services", "com.google.android.gms.auth.GetToken");
-        zzc$zza.zzacx = zzkf.zza("gms:common:stats:connections:time_out_duration", Long.valueOf(600000L));
+        zzc$zza.zzafD = zzkq.zza("gms:common:stats:connections:level", Integer.valueOf(zzd.LOG_LEVEL_OFF));
+        zzc$zza.zzafE = zzkq.zzu("gms:common:stats:connections:ignored_calling_processes", "");
+        zzc$zza.zzafF = zzkq.zzu("gms:common:stats:connections:ignored_calling_services", "");
+        zzc$zza.zzafG = zzkq.zzu("gms:common:stats:connections:ignored_target_processes", "");
+        zzc$zza.zzafH = zzkq.zzu("gms:common:stats:connections:ignored_target_services", "com.google.android.gms.auth.GetToken");
+        zzc$zza.zzafI = zzkq.zza("gms:common:stats:connections:time_out_duration", Long.valueOf(600000L));
     }
 }

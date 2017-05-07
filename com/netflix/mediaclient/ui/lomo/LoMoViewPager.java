@@ -159,7 +159,7 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         final LoMoUtils$LoMoWidthType standard = LoMoUtils$LoMoWidthType.STANDARD;
         LoMoUtils$LoMoWidthType loMoUtils$LoMoWidthType;
-        if (loMoViewPagerAdapter$Type == LoMoViewPagerAdapter$Type.KUBRICK_KIDS_TOP_TEN) {
+        if (loMoViewPagerAdapter$Type == LoMoViewPagerAdapter$Type.KUBRICK_KIDS_TOP_TEN && BrowseExperience.shouldShowLargePeakForKidsTopTen()) {
             loMoUtils$LoMoWidthType = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_TOP_TEN_ROW;
         }
         else if (BrowseExperience.isKubrickKids() && loMoType == LoMoType.CHARACTERS) {

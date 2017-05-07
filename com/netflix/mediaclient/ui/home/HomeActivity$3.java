@@ -14,6 +14,7 @@ import android.os.SystemClock;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
+import com.netflix.mediaclient.ui.lolomo.KidsGenresLoMoFrag;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickHomeActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;

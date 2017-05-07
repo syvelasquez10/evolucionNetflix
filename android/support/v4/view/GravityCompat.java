@@ -4,6 +4,7 @@
 
 package android.support.v4.view;
 
+import android.graphics.Rect;
 import android.os.Build$VERSION;
 
 public class GravityCompat
@@ -16,6 +17,10 @@ public class GravityCompat
             return;
         }
         IMPL = new GravityCompat$GravityCompatImplBase();
+    }
+    
+    public static void apply(final int n, final int n2, final int n3, final Rect rect, final Rect rect2, final int n4) {
+        GravityCompat.IMPL.apply(n, n2, n3, rect, rect2, n4);
     }
     
     public static int getAbsoluteGravity(final int n, final int n2) {

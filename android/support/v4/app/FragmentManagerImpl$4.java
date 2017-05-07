@@ -18,6 +18,6 @@ class FragmentManagerImpl$4 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.popBackStackState(this.this$0.mActivity.mHandler, null, this.val$id, this.val$flags);
+        this.this$0.popBackStackState(this.this$0.mHost.getHandler(), null, this.val$id, this.val$flags);
     }
 }

@@ -10,6 +10,7 @@ import android.os.Build$VERSION;
 import android.content.res.Configuration;
 import android.view.MenuItem;
 import android.support.v7.internal.view.menu.m;
+import android.graphics.drawable.Drawable;
 import android.support.v7.internal.view.menu.x;
 import android.view.Menu;
 import android.view.accessibility.AccessibilityEvent;
@@ -18,9 +19,9 @@ import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.view.View$MeasureSpec;
 import android.view.View;
 import android.util.AttributeSet;
+import android.content.Context;
 import android.support.v7.internal.view.menu.j;
 import android.support.v7.internal.view.menu.i;
-import android.content.Context;
 import android.support.v7.internal.view.menu.y;
 import android.support.v7.internal.view.menu.z;
 import android.support.v7.internal.view.menu.k;
@@ -28,7 +29,6 @@ import android.support.v7.internal.view.menu.k;
 public class ActionMenuView extends LinearLayoutCompat implements k, z
 {
     private y mActionMenuPresenterCallback;
-    private Context mContext;
     private boolean mFormatItems;
     private int mFormatItemsWidth;
     private int mGeneratedItemPadding;
@@ -45,14 +45,13 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
         this(context, null);
     }
     
-    public ActionMenuView(final Context context, final AttributeSet set) {
-        super(context, set);
-        this.mContext = context;
+    public ActionMenuView(final Context mPopupContext, final AttributeSet set) {
+        super(mPopupContext, set);
         this.setBaselineAligned(false);
-        final float density = context.getResources().getDisplayMetrics().density;
+        final float density = mPopupContext.getResources().getDisplayMetrics().density;
         this.mMinCellSize = (int)(56.0f * density);
         this.mGeneratedItemPadding = (int)(density * 4.0f);
-        this.mPopupContext = context;
+        this.mPopupContext = mPopupContext;
         this.mPopupTheme = 0;
     }
     
@@ -67,7 +66,7 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
         else {
             actionMenuItemView = null;
         }
-        if (actionMenuItemView != null && actionMenuItemView.b()) {
+        if (actionMenuItemView != null && actionMenuItemView.a()) {
             n3 = 1;
         }
         else {
@@ -145,7 +144,7 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
                 actionMenuView$LayoutParams.expandable = false;
                 actionMenuView$LayoutParams.leftMargin = 0;
                 actionMenuView$LayoutParams.rightMargin = 0;
-                actionMenuView$LayoutParams.preventEdgeOffset = (b && ((ActionMenuItemView)child).b());
+                actionMenuView$LayoutParams.preventEdgeOffset = (b && ((ActionMenuItemView)child).a());
                 if (actionMenuView$LayoutParams.isOverflowButton) {
                     n = 1;
                 }
@@ -423,6 +422,11 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
         return (Menu)this.mMenu;
     }
     
+    public Drawable getOverflowIcon() {
+        this.getMenu();
+        return this.mPresenter.getOverflowIcon();
+    }
+    
     public int getPopupTheme() {
         return this.mPopupTheme;
     }
@@ -481,10 +485,12 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
         if (Build$VERSION.SDK_INT >= 8) {
             super.onConfigurationChanged(configuration);
         }
-        this.mPresenter.updateMenuView(false);
-        if (this.mPresenter != null && this.mPresenter.isOverflowMenuShowing()) {
-            this.mPresenter.hideOverflowMenu();
-            this.mPresenter.showOverflowMenu();
+        if (this.mPresenter != null) {
+            this.mPresenter.updateMenuView(false);
+            if (this.mPresenter.isOverflowMenuShowing()) {
+                this.mPresenter.hideOverflowMenu();
+                this.mPresenter.showOverflowMenu();
+            }
         }
     }
     
@@ -500,7 +506,7 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
         }
         else {
             final int childCount = this.getChildCount();
-            final int n2 = (i + n) / 2;
+            final int n2 = (n - i) / 2;
             final int dividerWidth = this.getDividerWidth();
             n = 0;
             i = 0;
@@ -680,6 +686,11 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
         this.mOnMenuItemClickListener = mOnMenuItemClickListener;
     }
     
+    public void setOverflowIcon(final Drawable overflowIcon) {
+        this.getMenu();
+        this.mPresenter.setOverflowIcon(overflowIcon);
+    }
+    
     public void setOverflowReserved(final boolean mReserveOverflow) {
         this.mReserveOverflow = mReserveOverflow;
     }
@@ -687,10 +698,10 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
     public void setPopupTheme(final int mPopupTheme) {
         if (this.mPopupTheme != mPopupTheme) {
             if ((this.mPopupTheme = mPopupTheme) != 0) {
-                this.mPopupContext = (Context)new ContextThemeWrapper(this.mContext, mPopupTheme);
+                this.mPopupContext = (Context)new ContextThemeWrapper(this.getContext(), mPopupTheme);
                 return;
             }
-            this.mPopupContext = this.mContext;
+            this.mPopupContext = this.getContext();
         }
     }
     

@@ -204,6 +204,10 @@ public class MediaDecoder2Video extends MediaDecoderPipe2
     }
     
     @Override
+    void terminateRenderer() {
+    }
+    
+    @Override
     void unpauseRenderer() {
         this.mPaused = false;
         if (this.mHandler != null && MediaDecoder2Video.USE_ANDROID_L_API) {

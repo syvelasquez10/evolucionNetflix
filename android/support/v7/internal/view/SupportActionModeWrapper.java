@@ -4,23 +4,24 @@
 
 package android.support.v7.internal.view;
 
+import android.view.MenuInflater;
 import android.support.v7.internal.view.menu.ab;
+import android.support.v4.internal.view.SupportMenu;
 import android.view.Menu;
 import android.view.View;
 import android.content.Context;
-import android.view.MenuInflater;
 import android.annotation.TargetApi;
 import android.view.ActionMode;
 
 @TargetApi(11)
 public class SupportActionModeWrapper extends ActionMode
 {
-    final MenuInflater mInflater;
+    final Context mContext;
     final android.support.v7.view.ActionMode mWrappedObject;
     
-    public SupportActionModeWrapper(final Context context, final android.support.v7.view.ActionMode mWrappedObject) {
+    public SupportActionModeWrapper(final Context mContext, final android.support.v7.view.ActionMode mWrappedObject) {
+        this.mContext = mContext;
         this.mWrappedObject = mWrappedObject;
-        this.mInflater = new SupportMenuInflater(context);
     }
     
     public void finish() {
@@ -32,11 +33,11 @@ public class SupportActionModeWrapper extends ActionMode
     }
     
     public Menu getMenu() {
-        return ab.a(this.mWrappedObject.getMenu());
+        return ab.a(this.mContext, (SupportMenu)this.mWrappedObject.getMenu());
     }
     
     public MenuInflater getMenuInflater() {
-        return this.mInflater;
+        return this.mWrappedObject.getMenuInflater();
     }
     
     public CharSequence getSubtitle() {

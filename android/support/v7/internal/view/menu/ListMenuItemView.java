@@ -55,15 +55,15 @@ public class ListMenuItemView extends LinearLayout implements aa
         obtainStyledAttributes.recycle();
     }
     
-    private void b() {
+    private void a() {
         this.addView((View)(this.b = (ImageView)this.getInflater().inflate(R$layout.abc_list_menu_item_icon, (ViewGroup)this, false)), 0);
     }
     
-    private void c() {
+    private void b() {
         this.addView((View)(this.c = (RadioButton)this.getInflater().inflate(R$layout.abc_list_menu_item_radio, (ViewGroup)this, false)));
     }
     
-    private void d() {
+    private void c() {
         this.addView((View)(this.e = (CheckBox)this.getInflater().inflate(R$layout.abc_list_menu_item_checkbox, (ViewGroup)this, false)));
     }
     
@@ -72,23 +72,6 @@ public class ListMenuItemView extends LinearLayout implements aa
             this.m = LayoutInflater.from(this.l);
         }
         return this.m;
-    }
-    
-    public void a(final m a, int n) {
-        this.a = a;
-        this.k = n;
-        if (a.isVisible()) {
-            n = 0;
-        }
-        else {
-            n = 8;
-        }
-        this.setVisibility(n);
-        this.setTitle(a.a(this));
-        this.setCheckable(a.isCheckable());
-        this.a(a.e(), a.c());
-        this.setIcon(a.getIcon());
-        this.setEnabled(a.isEnabled());
     }
     
     public void a(final boolean b, final char c) {
@@ -107,12 +90,25 @@ public class ListMenuItemView extends LinearLayout implements aa
         }
     }
     
-    public boolean a() {
-        return false;
-    }
-    
     public m getItemData() {
         return this.a;
+    }
+    
+    public void initialize(final m a, int n) {
+        this.a = a;
+        this.k = n;
+        if (a.isVisible()) {
+            n = 0;
+        }
+        else {
+            n = 8;
+        }
+        this.setVisibility(n);
+        this.setTitle(a.a(this));
+        this.setCheckable(a.isCheckable());
+        this.a(a.e(), a.c());
+        this.setIcon(a.getIcon());
+        this.setEnabled(a.isEnabled());
     }
     
     protected void onFinishInflate() {
@@ -136,20 +132,24 @@ public class ListMenuItemView extends LinearLayout implements aa
         super.onMeasure(n, n2);
     }
     
+    public boolean prefersCondensedTitle() {
+        return false;
+    }
+    
     public void setCheckable(final boolean b) {
         if (b || this.c != null || this.e != null) {
             Object o;
             Object o2;
             if (this.a.f()) {
                 if (this.c == null) {
-                    this.c();
+                    this.b();
                 }
                 o = this.c;
                 o2 = this.e;
             }
             else {
                 if (this.e == null) {
-                    this.d();
+                    this.c();
                 }
                 o = this.e;
                 o2 = this.c;
@@ -185,13 +185,13 @@ public class ListMenuItemView extends LinearLayout implements aa
         Object o;
         if (this.a.f()) {
             if (this.c == null) {
-                this.c();
+                this.b();
             }
             o = this.c;
         }
         else {
             if (this.e == null) {
-                this.d();
+                this.c();
             }
             o = this.e;
         }
@@ -213,7 +213,7 @@ public class ListMenuItemView extends LinearLayout implements aa
         }
         if ((b || this.j) && (this.b != null || imageDrawable != null || this.j)) {
             if (this.b == null) {
-                this.b();
+                this.a();
             }
             if (imageDrawable == null && !this.j) {
                 this.b.setVisibility(8);

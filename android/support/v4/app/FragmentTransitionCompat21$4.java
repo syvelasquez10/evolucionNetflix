@@ -25,10 +25,9 @@ final class FragmentTransitionCompat21$4 implements ViewTreeObserver$OnPreDrawLi
     final /* synthetic */ ArrayList val$sharedElementTargets;
     final /* synthetic */ Transition val$sharedElementTransition;
     
-    FragmentTransitionCompat21$4(final View val$sceneRoot, final Transition val$enterTransition, final View val$nonExistentView, final ArrayList val$enteringViews, final Transition val$exitTransition, final ArrayList val$exitingViews, final Transition val$sharedElementTransition, final ArrayList val$sharedElementTargets, final Map val$renamedViews, final ArrayList val$hiddenViews, final Transition val$overallTransition) {
+    FragmentTransitionCompat21$4(final View val$sceneRoot, final Transition val$enterTransition, final ArrayList val$enteringViews, final Transition val$exitTransition, final ArrayList val$exitingViews, final Transition val$sharedElementTransition, final ArrayList val$sharedElementTargets, final Map val$renamedViews, final ArrayList val$hiddenViews, final Transition val$overallTransition, final View val$nonExistentView) {
         this.val$sceneRoot = val$sceneRoot;
         this.val$enterTransition = val$enterTransition;
-        this.val$nonExistentView = val$nonExistentView;
         this.val$enteringViews = val$enteringViews;
         this.val$exitTransition = val$exitTransition;
         this.val$exitingViews = val$exitingViews;
@@ -37,12 +36,12 @@ final class FragmentTransitionCompat21$4 implements ViewTreeObserver$OnPreDrawLi
         this.val$renamedViews = val$renamedViews;
         this.val$hiddenViews = val$hiddenViews;
         this.val$overallTransition = val$overallTransition;
+        this.val$nonExistentView = val$nonExistentView;
     }
     
     public boolean onPreDraw() {
         this.val$sceneRoot.getViewTreeObserver().removeOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)this);
         if (this.val$enterTransition != null) {
-            this.val$enterTransition.removeTarget(this.val$nonExistentView);
             FragmentTransitionCompat21.removeTargets(this.val$enterTransition, this.val$enteringViews);
         }
         if (this.val$exitTransition != null) {

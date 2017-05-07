@@ -75,29 +75,31 @@ public abstract class AudioSource implements Comparable<AudioSource>
     
     @Override
     public int compareTo(final AudioSource audioSource) {
-        final int n = -1;
-        int compare;
-        if (audioSource == null) {
-            compare = n;
-        }
-        else {
+        final boolean b = true;
+        if (audioSource != null) {
             if (this.trackType > audioSource.trackType) {
                 return 1;
             }
-            compare = n;
-            if (this.trackType >= audioSource.trackType) {
-                compare = n;
-                if (this.languageDescription != null) {
-                    if (audioSource.languageDescription == null) {
-                        return 1;
+            if (this.trackType >= audioSource.trackType && this.languageDescription != null) {
+                if (audioSource.languageDescription == null) {
+                    return 1;
+                }
+                int n;
+                if ((n = String.CASE_INSENSITIVE_ORDER.compare(this.languageDescription, audioSource.languageDescription)) == 0 && (n = this.languageDescription.compareTo(audioSource.languageDescription)) == 0) {
+                    if (this.numChannels < audioSource.numChannels) {
+                        n = (b ? 1 : 0);
                     }
-                    if ((compare = String.CASE_INSENSITIVE_ORDER.compare(this.languageDescription, audioSource.languageDescription)) == 0) {
-                        return this.languageDescription.compareTo(audioSource.languageDescription);
+                    else if (this.numChannels == audioSource.numChannels) {
+                        n = 0;
+                    }
+                    else {
+                        n = -1;
                     }
                 }
+                return n;
             }
         }
-        return compare;
+        return -1;
     }
     
     @Override
@@ -137,6 +139,13 @@ public abstract class AudioSource implements Comparable<AudioSource>
     }
     
     public String getLanguageDescription() {
+        return this.languageDescription;
+    }
+    
+    public String getLanguageDescriptionDisplayLabel() {
+        if (this.numChannels == 6) {
+            return this.languageDescription + " (5.1)";
+        }
         return this.languageDescription;
     }
     

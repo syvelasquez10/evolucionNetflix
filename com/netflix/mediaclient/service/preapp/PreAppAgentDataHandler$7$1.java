@@ -8,39 +8,50 @@ import java.util.HashSet;
 import com.netflix.mediaclient.util.data.DataRepository$DataSavedCallback;
 import android.content.Intent;
 import com.netflix.mediaclient.service.pservice.PService;
-import java.util.Map;
-import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.service.pservice.PDiskDataRepository$LoadCallback;
-import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
-import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import com.netflix.mediaclient.service.pservice.PServiceWidgetAgent;
+import com.netflix.mediaclient.service.pservice.PDiskData$ImageType;
 import com.netflix.mediaclient.service.resfetcher.LoggingResourceFetcherCallback;
 import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
-import java.util.Iterator;
+import java.util.Map;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.service.pservice.PVideo;
-import com.netflix.mediaclient.Log;
+import java.util.Iterator;
+import java.util.ArrayList;
+import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
-import com.netflix.mediaclient.service.pservice.PDiskData$ListName;
+import com.netflix.mediaclient.service.pservice.PDiskData$ListType;
 import java.util.Set;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import java.util.List;
-import com.netflix.mediaclient.service.pservice.PDiskData;
 import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.pservice.PDiskDataRepository;
+import com.netflix.mediaclient.service.pservice.PDiskData;
 
 class PreAppAgentDataHandler$7$1 implements Runnable
 {
     final /* synthetic */ PreAppAgentDataHandler$7 this$1;
+    final /* synthetic */ PDiskData val$onDiskData;
     
-    PreAppAgentDataHandler$7$1(final PreAppAgentDataHandler$7 this$1) {
+    PreAppAgentDataHandler$7$1(final PreAppAgentDataHandler$7 this$1, final PDiskData val$onDiskData) {
         this.this$1 = this$1;
+        this.val$onDiskData = val$onDiskData;
     }
     
     @Override
     public void run() {
-        this.this$1.this$0.notifyOthers(PreAppAgentDataHandler.mContext, this.this$1.val$updateType);
+        PDiskDataRepository.clearDiskData(PreAppAgentDataHandler.mContext);
+        final PDiskData access$600 = this.this$1.this$0.mergeData(this.this$1.val$newData, this.val$onDiskData, this.this$1.val$updateType);
+        this.this$1.this$0.clearOldImages(access$600);
+        Log.d("nf_preappagentdatahandler", "old not needed data on disk cleared - merged data is");
+        access$600.print();
+        this.this$1.this$0.proceedToFetchOfImages(access$600, this.this$1.val$updateType);
     }
 }

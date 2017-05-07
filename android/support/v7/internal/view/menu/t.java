@@ -4,17 +4,20 @@
 
 package android.support.v7.internal.view.menu;
 
-import android.support.v4.view.ActionProvider;
-import android.view.MenuItem;
+import android.view.ActionProvider;
+import android.support.v4.internal.view.SupportMenuItem;
+import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class t extends o
 {
-    t(final MenuItem menuItem) {
-        super(menuItem, false);
+    t(final Context context, final SupportMenuItem supportMenuItem) {
+        super(context, supportMenuItem);
     }
     
     @Override
     p a(final ActionProvider actionProvider) {
-        return new u(this, actionProvider);
+        return new u(this, this.a, actionProvider);
     }
 }

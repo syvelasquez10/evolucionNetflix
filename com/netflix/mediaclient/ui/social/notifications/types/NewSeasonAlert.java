@@ -4,12 +4,12 @@
 
 package com.netflix.mediaclient.ui.social.notifications.types;
 
-import com.netflix.mediaclient.Log;
-import android.text.Html;
 import android.text.format.DateUtils;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.text.Html;
+import com.netflix.mediaclient.util.StringUtils;
 import android.view.View;
 import com.netflix.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import android.widget.TextView;
@@ -44,8 +44,10 @@ public class NewSeasonAlert extends SocialNotification
     public void initView(final NotificationViewHolder notificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         notificationViewHolder.getNSAArtImage().setPressedStateHandlerEnabled(false);
         notificationViewHolder.getMovieArtImage().setPressedStateHandlerEnabled(false);
-        notificationViewHolder.getTopTextView().setVisibility(0);
-        notificationViewHolder.getTopTextView().setText(2131493373);
+        if (StringUtils.isNotEmpty(socialNotificationSummary.getHeaderText())) {
+            notificationViewHolder.getTopTextView().setVisibility(0);
+            notificationViewHolder.getTopTextView().setText((CharSequence)Html.fromHtml(socialNotificationSummary.getHeaderText()));
+        }
         if (notificationViewHolder.getFriendImage() != null) {
             notificationViewHolder.getFriendImage().setVisibility(8);
         }
@@ -62,13 +64,13 @@ public class NewSeasonAlert extends SocialNotification
         }
         notificationViewHolder.getMovieArtImage().setVisibility(8);
         notificationViewHolder.getNSAArtImage().setVisibility(0);
-        NetflixActivity.getImageLoader(context).showImg(notificationViewHolder.getNSAArtImage(), socialNotificationSummary.getTVCardUrl(), IClientLogging$AssetType.boxArt, socialNotificationSummary.getVideoTitle(), ImageLoader$StaticImgConfig.DARK, true);
+        NetflixActivity.getImageLoader(context).showImg(notificationViewHolder.getNSAArtImage(), socialNotificationSummary.getTVCardUrl(), IClientLogging$AssetType.boxArt, socialNotificationSummary.getImageAltText(), ImageLoader$StaticImgConfig.DARK, true);
         if (notificationViewHolder.getBottomTextView() != null) {
             notificationViewHolder.getBottomTextView().setVisibility(8);
         }
-        if (notificationViewHolder.getTimeStampView() != null) {
+        if (notificationViewHolder.getTimeStampView() != null && socialNotificationSummary.getShowTimestamp()) {
             notificationViewHolder.getTimeStampView().setVisibility(0);
-            notificationViewHolder.getTimeStampView().setText(DateUtils.getRelativeTimeSpanString(context, socialNotificationSummary.getNSATimestamp()));
+            notificationViewHolder.getTimeStampView().setText(DateUtils.getRelativeTimeSpanString(context, socialNotificationSummary.getTimestamp()));
         }
         if (notificationViewHolder.getPlayButton() != null) {
             notificationViewHolder.getPlayButton().setVisibility(8);
@@ -76,18 +78,9 @@ public class NewSeasonAlert extends SocialNotification
         if (notificationViewHolder.getNSAPlayButton() != null) {
             notificationViewHolder.getNSAPlayButton().setVisibility(0);
         }
-        final int resourceStringId = socialNotificationSummary.getShowType().getResourceStringId();
-        notificationViewHolder.getMiddleTextView().setGravity(3);
-        String s;
-        if (socialNotificationSummary.getNSASeasonsCount() > 1) {
-            s = context.getResources().getQuantityString(resourceStringId, socialNotificationSummary.getNSASeasonsCount(), new Object[] { socialNotificationSummary.getNSASeasonsCount() });
-        }
-        else {
-            s = context.getResources().getQuantityString(resourceStringId, 1, new Object[] { socialNotificationSummary.getNSASeasonIndex() });
-        }
-        notificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(s));
-        if (Log.isLoggable()) {
-            Log.v(NewSeasonAlert.TAG, "Set middle text to: " + (Object)notificationViewHolder.getMiddleTextView().getText());
+        if (StringUtils.isNotEmpty(socialNotificationSummary.getBodyText())) {
+            notificationViewHolder.getMiddleTextView().setGravity(3);
+            notificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(socialNotificationSummary.getBodyText()));
         }
         if (notificationViewHolder.getRightButton() != null) {
             notificationViewHolder.getRightButton().setVisibility(0);

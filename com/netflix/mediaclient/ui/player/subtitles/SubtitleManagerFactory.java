@@ -5,32 +5,36 @@
 package com.netflix.mediaclient.ui.player.subtitles;
 
 import android.content.Context;
-import com.netflix.mediaclient.ui.player.PlayerActivity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.player.PlayerFragment;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 
 public final class SubtitleManagerFactory
 {
-    public static SubtitleManager createInstance(final IMedia$SubtitleProfile media$SubtitleProfile, final PlayerActivity playerActivity) {
-        if (playerActivity == null) {
-            throw new IllegalArgumentException("Player activity is null!");
+    public static SubtitleManager createInstance(final IMedia$SubtitleProfile media$SubtitleProfile, final PlayerFragment playerFragment) {
+        if (playerFragment == null) {
+            throw new IllegalArgumentException("Player fragment is null!");
+        }
+        if (playerFragment.getActivity() == null) {
+            throw new IllegalArgumentException("Player fragment's activity is null!");
         }
         if (media$SubtitleProfile == null) {
             throw new IllegalArgumentException("Subtitle profile can not be null!");
         }
         if (IMedia$SubtitleProfile.IMAGE.equals(media$SubtitleProfile)) {
-            return new ImageBasedSubtitleManager(playerActivity);
+            return new ImageBasedSubtitleManager(playerFragment);
         }
-        return new EnhancedSubtitleManager(playerActivity);
+        return new EnhancedSubtitleManager(playerFragment);
     }
     
     public static String getSubtitleManagerLabel(final SubtitleManager subtitleManager) {
         String string = "";
-        final Context context = subtitleManager.getContext();
+        final NetflixActivity context = subtitleManager.getContext();
         if (subtitleManager instanceof EnhancedSubtitleManager) {
-            string = context.getString(2131493410);
+            string = ((Context)context).getString(2131165780);
         }
         else if (subtitleManager instanceof ImageBasedSubtitleManager) {
-            return context.getString(2131493411);
+            return ((Context)context).getString(2131165779);
         }
         return string;
     }

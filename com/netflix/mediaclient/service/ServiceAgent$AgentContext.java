@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service;
 
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
+import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import com.netflix.mediaclient.NetflixApplication;
 
 public interface ServiceAgent$AgentContext
@@ -14,6 +15,8 @@ public interface ServiceAgent$AgentContext
     ServiceAgent$BrowseAgentInterface getBrowseAgent();
     
     ServiceAgent$ConfigurationAgentInterface getConfigurationAgent();
+    
+    IErrorHandler getErrorHandler();
     
     NrdController getNrdController();
     

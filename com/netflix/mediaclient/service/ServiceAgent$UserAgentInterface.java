@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service;
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
+import com.netflix.mediaclient.repository.UserLocale;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 
 public interface ServiceAgent$UserAgentInterface
@@ -18,6 +19,8 @@ public interface ServiceAgent$UserAgentInterface
     public static final String EXTRA_EXPIRATION = "expiration";
     
     void doDummyWebCall(final UserAgentWebCallback p0);
+    
+    UserLocale getCurrentAppLocale();
     
     UserProfile getCurrentProfile();
     

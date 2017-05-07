@@ -6,24 +6,24 @@ package android.support.v7.internal.view.menu;
 
 import android.view.View;
 import android.view.MenuItem;
-import android.support.v4.view.ActionProvider;
-import android.support.v4.view.ActionProvider$VisibilityListener;
+import android.view.ActionProvider;
+import android.content.Context;
+import android.view.ActionProvider$VisibilityListener;
 
 class u extends p implements ActionProvider$VisibilityListener
 {
-    android.view.ActionProvider$VisibilityListener c;
+    android.support.v4.view.ActionProvider$VisibilityListener c;
     final /* synthetic */ t d;
     
-    public u(final t d, final ActionProvider actionProvider) {
+    public u(final t d, final Context context, final android.view.ActionProvider actionProvider) {
         this.d = d;
-        super(d, actionProvider);
+        super(d, context, actionProvider);
     }
     
     public boolean isVisible() {
         return this.a.isVisible();
     }
     
-    @Override
     public void onActionProviderVisibilityChanged(final boolean b) {
         if (this.c != null) {
             this.c.onActionProviderVisibilityChanged(b);
@@ -38,20 +38,16 @@ class u extends p implements ActionProvider$VisibilityListener
         return this.a.overridesItemVisibility();
     }
     
-    public void refreshVisibility() {
-        this.a.refreshVisibility();
-    }
-    
-    public void setVisibilityListener(final android.view.ActionProvider$VisibilityListener c) {
+    public void setVisibilityListener(final android.support.v4.view.ActionProvider$VisibilityListener c) {
         this.c = c;
-        final ActionProvider a = this.a;
-        u visibilityListener;
+        final android.view.ActionProvider a = this.a;
+        Object visibilityListener;
         if (c != null) {
             visibilityListener = this;
         }
         else {
             visibilityListener = null;
         }
-        a.setVisibilityListener(visibilityListener);
+        a.setVisibilityListener((ActionProvider$VisibilityListener)visibilityListener);
     }
 }

@@ -4,50 +4,38 @@
 
 package android.support.v7.internal.view.menu;
 
-import android.view.MenuItem$OnMenuItemClickListener;
-import android.view.MenuItem$OnActionExpandListener;
-import android.support.v7.view.CollapsibleActionView;
-import android.view.ContextMenu$ContextMenuInfo;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
-import java.lang.reflect.Method;
-import android.support.v4.internal.view.SupportMenuItem;
-import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.support.v4.view.ActionProvider$VisibilityListener;
-import android.view.ActionProvider;
+import android.content.Context;
+import android.support.v4.view.ActionProvider;
 
 class p extends ActionProvider
 {
-    final android.support.v4.view.ActionProvider a;
+    final android.view.ActionProvider a;
     final /* synthetic */ o b;
     
-    public p(final o b, final android.support.v4.view.ActionProvider a) {
+    public p(final o b, final Context context, final android.view.ActionProvider a) {
         this.b = b;
-        super(a.getContext());
+        super(context);
         this.a = a;
-        if (b.b) {
-            this.a.setVisibilityListener(new q(this, b));
-        }
     }
     
+    @Override
     public boolean hasSubMenu() {
         return this.a.hasSubMenu();
     }
     
+    @Override
     public View onCreateActionView() {
-        if (this.b.b) {
-            this.b.c();
-        }
         return this.a.onCreateActionView();
     }
     
+    @Override
     public boolean onPerformDefaultAction() {
         return this.a.onPerformDefaultAction();
     }
     
+    @Override
     public void onPrepareSubMenu(final SubMenu subMenu) {
         this.a.onPrepareSubMenu(this.b.a(subMenu));
     }

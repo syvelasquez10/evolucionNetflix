@@ -11,11 +11,10 @@ import android.view.MenuItem;
 import android.content.DialogInterface;
 import android.view.WindowManager$LayoutParams;
 import android.view.View;
-import android.support.v7.appcompat.R$style;
 import android.support.v7.appcompat.R$layout;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import android.os.IBinder;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.content.DialogInterface$OnKeyListener;
 import android.content.DialogInterface$OnDismissListener;
 import android.content.DialogInterface$OnClickListener;
@@ -40,7 +39,7 @@ public class l implements DialogInterface$OnClickListener, DialogInterface$OnDis
     public void a(final IBinder token) {
         final i b = this.b;
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(b.e());
-        (this.a = new g(R$layout.abc_list_menu_item_layout, R$style.Theme_AppCompat_CompactMenu)).a(this);
+        (this.a = new g(alertDialog$Builder.getContext(), R$layout.abc_list_menu_item_layout)).a(this);
         this.b.a(this.a);
         alertDialog$Builder.setAdapter(this.a.a(), (DialogInterface$OnClickListener)this);
         final View o = b.o();

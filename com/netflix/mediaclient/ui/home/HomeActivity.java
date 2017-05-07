@@ -14,6 +14,7 @@ import android.os.SystemClock;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
+import com.netflix.mediaclient.ui.lolomo.KidsGenresLoMoFrag;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickHomeActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
@@ -57,6 +58,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     public static final String REFRESH_HOME_LOLOMO = "com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO";
     static final int REQUEST_RESOLVE_ERROR = 1001;
     private static final String TAG = "HomeActivity";
+    private boolean bWasHamburgerClicked;
     private final LinkedList<Intent> backStackIntents;
     private DrawerLayout drawerLayout;
     private GenreList genre;
@@ -171,7 +173,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131493212, 1).show();
+        Toast.makeText((Context)this, 2131165521, 1).show();
         this.clearAllStateAndRefresh();
     }
     
@@ -189,14 +191,14 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void setupViews() {
-        (this.drawerLayout = (DrawerLayout)this.findViewById(2131427528)).setDrawerListener(new HomeActivity$1(this));
+        (this.drawerLayout = (DrawerLayout)this.findViewById(2131624202)).setDrawerListener(new HomeActivity$1(this));
         this.unlockSlidingDrawerIfPossible();
         this.slidingMenuAdapter = BrowseExperience.get().createSlidingMenuAdapter(this, this.drawerLayout);
         if (Log.isLoggable()) {
             Log.v("HomeActivity", "Created sliding menu adapter of type: " + this.slidingMenuAdapter.getClass());
         }
         this.drawerLayout.setFocusable(false);
-        this.drawerLayout.setScrimColor(this.getResources().getColor(2131230866));
+        this.drawerLayout.setScrimColor(this.getResources().getColor(2131558477));
         this.updateActionBar();
         this.updateSlidingDrawer();
     }
@@ -209,7 +211,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.updateActionBar();
         this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131427526, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131624200, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, CommonStatus.OK);
     }
@@ -223,13 +225,10 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         }
         UIViewLogUtils.reportUIViewCommand((Context)this, UIViewLogging$UIViewCommandName.slidingMenuOpened, this.getUiScreen(), this.getDataContext());
         this.drawerLayout.openDrawer(3);
+        this.bWasHamburgerClicked = true;
     }
     
     private void unlockSlidingDrawerIfPossible() {
-        if (BrowseExperience.isKubrickKids()) {
-            this.lockSlidingDrawer();
-            return;
-        }
         this.drawerLayout.setDrawerLockMode(0);
     }
     
@@ -281,6 +280,9 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     @Override
     protected NetflixFrag createPrimaryFrag() {
+        if (!"lolomo".equals(this.genreId) && BrowseExperience.useKidsGenresLoMo()) {
+            return KidsGenresLoMoFrag.create(this.genreId, this.genre);
+        }
         return LoLoMoFrag.create(this.genreId, this.genre);
     }
     
@@ -291,15 +293,12 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     @Override
     public int getActionBarParentViewId() {
-        if (!BrowseExperience.isKubrickKids()) {
-            return 2131427523;
-        }
-        return super.getActionBarParentViewId();
+        return 2131624197;
     }
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903098;
+        return 2130903113;
     }
     
     public GenreList getGenre() {

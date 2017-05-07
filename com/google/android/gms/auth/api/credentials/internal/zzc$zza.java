@@ -5,18 +5,18 @@
 package com.google.android.gms.auth.api.credentials.internal;
 
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.zza$zzb;
+import com.google.android.gms.common.api.zzc$zzb;
 
 class zzc$zza extends zza
 {
-    private zza$zzb<Status> zzPf;
+    private zzc$zzb<Status> zzRC;
     
-    zzc$zza(final zza$zzb<Status> zzPf) {
-        this.zzPf = zzPf;
+    zzc$zza(final zzc$zzb<Status> zzRC) {
+        this.zzRC = zzRC;
     }
     
     @Override
-    public void onStatusResult(final Status status) {
-        this.zzPf.zzm(status);
+    public void zzl(final Status status) {
+        this.zzRC.zzn(status);
     }
 }

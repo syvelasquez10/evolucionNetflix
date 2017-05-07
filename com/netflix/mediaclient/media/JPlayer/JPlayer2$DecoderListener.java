@@ -6,8 +6,8 @@ package com.netflix.mediaclient.media.JPlayer;
 
 import android.util.Pair;
 import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import android.media.MediaFormat;
+import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import java.nio.ByteBuffer;
 import android.view.Surface;
 import com.netflix.mediaclient.media.VideoResolutionRange;
@@ -53,7 +53,6 @@ public class JPlayer2$DecoderListener implements MediaDecoderBase$EventListener
                 Log.d("NF_JPlayer2", "AUDIO ready");
                 return;
                 Log.d("NF_JPlayer2", "VIDEO ready");
-                this.this$0.mAudioPipe.unpause();
                 this.this$0.mVideoPipe.unpause();
             }
             finally {

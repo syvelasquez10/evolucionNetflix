@@ -21,6 +21,7 @@ import com.netflix.model.leafs.LoLoMoSummary;
 import com.netflix.model.leafs.ListOfMoviesSummary;
 import com.netflix.model.branches.SummarizedList;
 import com.netflix.model.leafs.ListOfListOfGenres;
+import com.netflix.model.branches.UnsummarizedList;
 import com.netflix.falkor.Ref;
 import com.netflix.model.branches.FalkorEvidenceList;
 import com.netflix.model.branches.FalkorEpisode;
@@ -35,11 +36,13 @@ public class Root implements BranchNode, Flushable
     private BranchMap<FalkorKidsCharacter> characters;
     private BranchMap<FalkorEpisode> episodes;
     private BranchMap<FalkorEvidenceList<Ref>> evidenceLists;
+    private BranchMap<UnsummarizedList<Ref>> flatGenres;
     private ListOfListOfGenres genreList;
     private BranchMap<SummarizedList<Ref, ListOfMoviesSummary>> lists;
     private Ref lolomo;
     private BranchMap<SummarizedList<Ref, LoLoMoSummary>> lolomos;
     private BranchMap<FalkorVideo> movies;
+    private BranchMap<Ref> nonMemberVideos;
     private BranchMap<FalkorSocialNotification> notifications;
     private SummarizedList<Ref, SocialNotificationsListSummary> notificationsList;
     private BranchMap<FalkorPerson> people;
@@ -76,6 +79,9 @@ public class Root implements BranchNode, Flushable
             }
             case "lists": {
                 return this.lists;
+            }
+            case "flatGenre": {
+                return this.flatGenres;
             }
             case "evidenceLists": {
                 return this.evidenceLists;
@@ -119,6 +125,9 @@ public class Root implements BranchNode, Flushable
             case "notificationsList": {
                 return this.notificationsList;
             }
+            case "nonMemberVideos": {
+                return this.nonMemberVideos;
+            }
         }
     }
     
@@ -133,6 +142,9 @@ public class Root implements BranchNode, Flushable
         }
         if (this.lists != null) {
             set.add("lists");
+        }
+        if (this.flatGenres != null) {
+            set.add("flatGenre");
         }
         if (this.evidenceLists != null) {
             set.add("evidenceLists");
@@ -176,6 +188,9 @@ public class Root implements BranchNode, Flushable
         if (this.notificationsList != null) {
             set.add("notificationsList");
         }
+        if (this.nonMemberVideos != null) {
+            set.add("nonMemberVideos");
+        }
         return set;
     }
     
@@ -197,6 +212,9 @@ public class Root implements BranchNode, Flushable
             }
             case "lists": {
                 return this.lists = new BranchMap<SummarizedList<Ref, ListOfMoviesSummary>>(Falkor$Creator.SummarizedListOfMovieRefs);
+            }
+            case "flatGenre": {
+                return this.flatGenres = new BranchMap<UnsummarizedList<Ref>>(Falkor$Creator.UnsummarizedListOfRef);
             }
             case "evidenceLists": {
                 return this.evidenceLists = new BranchMap<FalkorEvidenceList<Ref>>(Falkor$Creator.FalkorEvidenceList());
@@ -240,6 +258,9 @@ public class Root implements BranchNode, Flushable
             case "notificationsList": {
                 return this.notificationsList = Falkor$Creator.FalkorSocialNotificationsList(this.proxy);
             }
+            case "nonMemberVideos": {
+                return this.nonMemberVideos = new BranchMap<Ref>(Falkor$Creator.Ref);
+            }
         }
     }
     
@@ -262,6 +283,9 @@ public class Root implements BranchNode, Flushable
             }
             case "lists": {
                 this.lists = (BranchMap<SummarizedList<Ref, ListOfMoviesSummary>>)o;
+            }
+            case "flatGenre": {
+                this.flatGenres = (BranchMap<UnsummarizedList<Ref>>)o;
             }
             case "evidenceLists": {
                 this.evidenceLists = (BranchMap<FalkorEvidenceList<Ref>>)o;
@@ -299,6 +323,9 @@ public class Root implements BranchNode, Flushable
             case "characters": {
                 this.characters = (BranchMap<FalkorKidsCharacter>)o;
             }
+            case "nonMemberVideos": {
+                this.nonMemberVideos = (BranchMap<Ref>)o;
+            }
             case "notifications": {
                 this.notifications = (BranchMap<FalkorSocialNotification>)o;
             }
@@ -314,6 +341,6 @@ public class Root implements BranchNode, Flushable
     
     @Override
     public String toString() {
-        return "Root [lolomo=" + this.lolomo + ", lolomos=" + this.lolomos + ", lists=" + this.lists + ", evidenceLists=" + this.evidenceLists + ", genreList=" + this.genreList + ", topGenres=" + this.topGenres + ", videos=" + this.videos + ", movies=" + this.movies + ", shows=" + this.shows + ", episodes=" + this.episodes + ", seasons=" + this.seasons + ", people=" + this.people + ", suggestions=" + this.suggestions + ", characters=" + this.characters + ", search=" + this.search + ", notifications=" + this.notifications + ", notificationsList=" + this.notificationsList + ", proxy=" + this.proxy + "]";
+        return "Root{lolomo=" + this.lolomo + ", lolomos=" + this.lolomos + ", lists=" + this.lists + ", flastGenres=" + this.flatGenres + ", evidenceLists=" + this.evidenceLists + ", genreList=" + this.genreList + ", topGenres=" + this.topGenres + ", videos=" + this.videos + ", movies=" + this.movies + ", shows=" + this.shows + ", episodes=" + this.episodes + ", seasons=" + this.seasons + ", people=" + this.people + ", suggestions=" + this.suggestions + ", characters=" + this.characters + ", search=" + this.search + ", notifications=" + this.notifications + ", notificationsList=" + this.notificationsList + ", nonMemberVideos=" + this.nonMemberVideos + ", proxy=" + this.proxy + '}';
     }
 }

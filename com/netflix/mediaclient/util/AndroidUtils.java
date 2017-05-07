@@ -427,6 +427,12 @@ public final class AndroidUtils
         }
     }
     
+    public static void setWindowSecureFlag(final Activity activity) {
+        if (activity != null && getAndroidVersion() > 18) {
+            activity.getWindow().addFlags(8192);
+        }
+    }
+    
     private static void unmuteAudio(final Context context) {
         final AudioManager audioManager = (AudioManager)context.getSystemService("audio");
         if (audioManager != null) {

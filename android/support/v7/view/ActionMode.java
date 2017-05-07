@@ -4,6 +4,7 @@
 
 package android.support.v7.view;
 
+import android.view.MenuInflater;
 import android.view.Menu;
 import android.view.View;
 
@@ -17,6 +18,8 @@ public abstract class ActionMode
     public abstract View getCustomView();
     
     public abstract Menu getMenu();
+    
+    public abstract MenuInflater getMenuInflater();
     
     public abstract CharSequence getSubtitle();
     

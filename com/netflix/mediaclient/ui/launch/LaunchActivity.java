@@ -81,7 +81,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     private NflxHandler$Response canHandleIntent() {
         final Intent intent = this.getIntent();
         if (NetflixComHandlerFactory.canHandle(intent)) {
-            return NetflixComHandlerFactory.handle(this, intent.getData());
+            return NetflixComHandlerFactory.handle(this, intent);
         }
         try {
             final NflxHandler$Response handle = NflxHandlerFactory.getHandlerForIntent(this, intent, this.mStarted).handle();
@@ -95,14 +95,14 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void createContentView() {
-        this.setContentView(2130903199);
-        final ImageView imageView = (ImageView)this.findViewById(2131427827);
+        this.setContentView(2130903235);
+        final ImageView imageView = (ImageView)this.findViewById(2131624541);
         int imageResource;
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            imageResource = 2130837913;
+            imageResource = 2130837956;
         }
         else {
-            imageResource = 2130837912;
+            imageResource = 2130837955;
         }
         imageView.setImageResource(imageResource);
         if (DeviceUtils.getScreenResolutionDpi((Context)this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
@@ -116,7 +116,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         this.setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showDebugToast(this.getString(2131493203));
+            this.showDebugToast(this.getString(2131165535));
             return;
         }
         Log.e("LaunchActivity", "Login failed, redirect to LoginActivity with credential and status");
@@ -249,8 +249,8 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void manipulateSplashBackground() {
-        final ImageView imageView = (ImageView)this.findViewById(2131427827);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$1(this, imageView, (ImageView)this.findViewById(2131427540), (ProgressBar)this.findViewById(2131427541)));
+        final ImageView imageView = (ImageView)this.findViewById(2131624541);
+        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$1(this, imageView, (ImageView)this.findViewById(2131624214), (ProgressBar)this.findViewById(2131624215)));
     }
     
     private void onCredentialRetrieved(final Credential credential) {

@@ -8,6 +8,7 @@ import com.netflix.mediaclient.ui.mdx.MdxMenu;
 import com.netflix.mediaclient.ui.common.DebugMenuItems;
 import android.view.Menu;
 import android.os.Bundle;
+import com.netflix.mediaclient.ui.details.IHandleBackPress;
 import android.app.Fragment;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
@@ -27,6 +28,11 @@ public class KubrickMovieDetailsActivity extends MovieDetailsActivity
     @Override
     protected Fragment createPrimaryFrag() {
         return KubrickMovieDetailsFrag.create(this.getVideoId());
+    }
+    
+    @Override
+    protected boolean handleBackPressed() {
+        return ((IHandleBackPress)this.getPrimaryFrag()).handleBackPressed();
     }
     
     @Override

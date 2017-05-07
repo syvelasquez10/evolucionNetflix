@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.servicemgr.interface_.FeatureEnabledProvider;

@@ -20,8 +20,15 @@ public class LoMoUtils
         view.setPadding(getLomoFragOffsetLeftPx(netflixActivity), 0, getLomoFragOffsetRightPx(netflixActivity, loMoUtils$LoMoWidthType), 0);
     }
     
+    public static int getKidsLomoGenreNumColumns(final Activity activity) {
+        if (BrowseExperience.useLolomoVerticalArt()) {
+            return activity.getResources().getInteger(2131427330);
+        }
+        return activity.getResources().getInteger(2131427329);
+    }
+    
     public static int getLomoFragImageOffsetLeftPx(final NetflixActivity netflixActivity) {
-        return getLomoFragOffsetLeftPx(netflixActivity) + netflixActivity.getResources().getDimensionPixelOffset(2131296384);
+        return getLomoFragOffsetLeftPx(netflixActivity) + netflixActivity.getResources().getDimensionPixelOffset(2131296555);
     }
     
     public static int getLomoFragOffsetLeftPx(final Activity activity) {
@@ -39,19 +46,19 @@ public class LoMoUtils
                 break;
             }
             case 1: {
-                lomoFragOffsetRightDimenId = 2131296474;
+                lomoFragOffsetRightDimenId = 2131296534;
                 break;
             }
             case 2: {
                 if (DeviceUtils.isLandscape((Context)netflixActivity)) {
-                    lomoFragOffsetRightDimenId = 2131296475;
+                    lomoFragOffsetRightDimenId = 2131296538;
                     break;
                 }
-                lomoFragOffsetRightDimenId = 2131296444;
+                lomoFragOffsetRightDimenId = 2131296544;
                 break;
             }
             case 3: {
-                lomoFragOffsetRightDimenId = 2131296451;
+                lomoFragOffsetRightDimenId = 2131296509;
                 break;
             }
         }

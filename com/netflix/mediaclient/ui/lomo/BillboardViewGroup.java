@@ -14,7 +14,7 @@ public class BillboardViewGroup extends VideoViewGroup<Billboard, BillboardView>
 {
     public BillboardViewGroup(final Context context) {
         super(context, false);
-        this.setId(2131427341);
+        this.setId(2131623942);
     }
     
     @Override

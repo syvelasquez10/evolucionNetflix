@@ -11,6 +11,8 @@ public class MediaDecoderPipe2$LocalStateNotifier
     private static final int STATE_PAUSED = 1;
     private static final int STATE_PAUSING = 2;
     private static final int STATE_PLAYING = 3;
+    private static final int STATE_STOPPED = 7;
+    private static final int STATE_STOPPING = 6;
     private int mState;
     final /* synthetic */ MediaDecoderPipe2 this$0;
     
@@ -80,6 +82,18 @@ public class MediaDecoderPipe2$LocalStateNotifier
     void onPlaying() {
         synchronized (this) {
             this.mState = 3;
+        }
+    }
+    
+    void onStopped() {
+        synchronized (this) {
+            this.mState = 7;
+        }
+    }
+    
+    void onStopping() {
+        synchronized (this) {
+            this.mState = 6;
         }
     }
 }

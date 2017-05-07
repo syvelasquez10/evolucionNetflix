@@ -17,30 +17,28 @@ import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
-import android.content.IntentFilter;
+import com.netflix.mediaclient.ui.signup.SignupActivity;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
-import android.view.View;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
-import android.view.MenuItem;
 import com.netflix.mediaclient.util.DeviceUtils;
 import java.util.Iterator;
 import android.support.v4.content.LocalBroadcastManager;
-import com.netflix.mediaclient.ui.settings.SettingsActivity;
 import com.netflix.mediaclient.ui.common.DebugMenuItems;
+import android.view.Menu;
+import android.content.IntentFilter;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import android.app.Activity;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
-import android.app.Activity;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.ui.login.LogoutActivity;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
@@ -49,10 +47,7 @@ import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import java.io.Serializable;
-import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
-import com.netflix.mediaclient.android.widget.UpdateDialog;
-import com.netflix.mediaclient.android.widget.UpdateDialog$Builder;
 import android.app.AlertDialog;
 import android.app.AlertDialog$Builder;
 import android.view.MotionEvent;
@@ -61,16 +56,24 @@ import android.view.KeyEvent;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.ui.kubrick_kids.KubrickKidsActionBar;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import android.view.View;
+import com.netflix.mediaclient.ui.voip.ContactUsActivity;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
-import android.content.Context;
+import com.netflix.mediaclient.android.widget.UpdateDialog;
+import com.netflix.mediaclient.android.widget.UpdateDialog$Builder;
+import com.netflix.mediaclient.service.error.ErrorDescriptor;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import com.netflix.mediaclient.ui.mdx.MdxReceiver;
+import android.view.View$OnClickListener;
+import android.view.ViewGroup$LayoutParams;
+import android.support.design.widget.CoordinatorLayout$LayoutParams;
+import android.view.ViewGroup;
+import android.content.Context;
+import android.view.LayoutInflater;
 import com.netflix.mediaclient.Log;
-import android.view.MenuItem$OnMenuItemClickListener;
-import android.view.Menu;
 import android.content.Intent;
-import android.net.Uri;
-import com.netflix.mediaclient.StatusCode;
 import java.util.HashSet;
 import android.app.Dialog;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -79,7 +82,10 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout$PanelSlideListener;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
+import android.view.MenuItem;
+import android.support.design.widget.CoordinatorLayout;
 import java.util.concurrent.atomic.AtomicLong;
+import android.support.design.widget.FloatingActionButton;
 import java.util.concurrent.atomic.AtomicBoolean;
 import android.os.Handler;
 import android.content.BroadcastReceiver;
@@ -89,12 +95,14 @@ import com.netflix.mediaclient.ui.verifyplay.PlayVerifier$PlayVerifyCallback;
 import com.netflix.mediaclient.ui.mdx.ShowMessageDialogFrag$MessageResponseProvider;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListenerProvider;
 import com.netflix.mediaclient.android.app.LoadingStatus;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 @SuppressLint({ "DefaultLocale" })
-public abstract class NetflixActivity extends ActionBarActivity implements LoadingStatus, AbsEpisodeView$EpisodeRowListenerProvider, ShowMessageDialogFrag$MessageResponseProvider, PlayVerifier$PlayVerifyCallback
+public abstract class NetflixActivity extends AppCompatActivity implements LoadingStatus, AbsEpisodeView$EpisodeRowListenerProvider, ShowMessageDialogFrag$MessageResponseProvider, PlayVerifier$PlayVerifyCallback
 {
     private static final long ACTION_BAR_VISIBILITY_CHECK_DELAY_MS = 1000L;
+    public static final String ACTION_CS_CALL_ENDED = "com.netflix.mediaclient.ui.cs.ACTION_CALL_ENDED";
+    public static final String ACTION_CS_CALL_STARTED = "com.netflix.mediaclient.ui.cs.ACTION_CALL_STARTED";
     public static final String ACTION_DISPLAY_ERROR = "com.netflix.mediaclient.ui.error.ACTION_DISPLAY_ERROR";
     private static final String ACTION_FINISH_ALL_ACTIVITIES = "com.netflix.mediaclient.ui.login.ACTION_FINISH_ALL_ACTIVITIES";
     public static final long EXPAND_MINI_PLAYER_DELAY_MS = 400L;
@@ -110,15 +118,19 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     private final Set<BroadcastReceiver> autoUnregisterLocalReceivers;
     private final Set<BroadcastReceiver> autoUnregisterReceivers;
     private final BroadcastReceiver autokillReceiver;
-    private final BroadcastReceiver displayErrorReceiver;
     private final BroadcastReceiver expandMdxMiniPlayerReceiver;
     protected Handler handler;
     protected AtomicBoolean instanceStateSaved;
     private boolean isDestroyed;
     private boolean isVisible;
+    private final BroadcastReceiver localBroadcastReceiver;
+    private FloatingActionButton mBackToCustomerSupportCallFAB;
     private boolean mConnectingToTarget;
     protected AtomicLong mDialogCount;
     private NetflixActivity$DismissingDialogConfig mDismissingDialogConfiguration;
+    private String mErrorDialogId;
+    private CoordinatorLayout mFabAnchor;
+    protected MenuItem mHelpMenuItem;
     protected boolean mIsTablet;
     protected LoadingStatus$LoadingStatusCallback mLoadingStatusCallback;
     private MdxMiniPlayerFrag mdxFrag;
@@ -142,17 +154,31 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
         this.mDialogCount = new AtomicLong(1L);
         this.mIsTablet = false;
         this.mConnectingToTarget = false;
-        this.autokillReceiver = new NetflixActivity$4(this);
-        this.expandMdxMiniPlayerReceiver = new NetflixActivity$5(this);
-        this.printLoadingStatusRunnable = new NetflixActivity$6(this);
-        this.userAgentUpdateReceiver = new NetflixActivity$8(this);
-        this.panelSlideListener = new NetflixActivity$9(this);
-        this.updateActionBarVisibilityRunnable = new NetflixActivity$10(this);
-        this.displayErrorReceiver = new NetflixActivity$13(this);
+        this.autokillReceiver = new NetflixActivity$3(this);
+        this.expandMdxMiniPlayerReceiver = new NetflixActivity$4(this);
+        this.printLoadingStatusRunnable = new NetflixActivity$5(this);
+        this.userAgentUpdateReceiver = new NetflixActivity$7(this);
+        this.panelSlideListener = new NetflixActivity$8(this);
+        this.updateActionBarVisibilityRunnable = new NetflixActivity$9(this);
+        this.localBroadcastReceiver = new NetflixActivity$12(this);
     }
     
-    private void addAboutMenu(final Menu menu) {
-        menu.add(2131493018).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new NetflixActivity$3(this));
+    private void addFab() {
+        if (this.mFabAnchor == null) {
+            Log.w("NetflixActivity", "FAB anchor is NULL!");
+            return;
+        }
+        LayoutInflater.from((Context)this).inflate(2130903094, (ViewGroup)this.mFabAnchor, true);
+        final FloatingActionButton mBackToCustomerSupportCallFAB = (FloatingActionButton)this.mFabAnchor.findViewById(2131624170);
+        if (mBackToCustomerSupportCallFAB == null) {
+            Log.e("NetflixActivity", "Fab is not found in root layout! This should NOT happen!");
+        }
+        final CoordinatorLayout$LayoutParams layoutParams = (CoordinatorLayout$LayoutParams)mBackToCustomerSupportCallFAB.getLayoutParams();
+        layoutParams.setAnchorId(2131624176);
+        mBackToCustomerSupportCallFAB.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
+        mBackToCustomerSupportCallFAB.setOnClickListener((View$OnClickListener)new NetflixActivity$2(this));
+        mBackToCustomerSupportCallFAB.show();
+        this.mBackToCustomerSupportCallFAB = mBackToCustomerSupportCallFAB;
     }
     
     private void addMdxReceiver() {
@@ -184,6 +210,35 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
         }
     }
     
+    private void displayErrorDialogIfExist() {
+        final ServiceManager serviceManager = this.getServiceManager();
+        if (serviceManager != null) {
+            final ErrorDescriptor currentError = serviceManager.getErrorHandler().getCurrentError();
+            if (currentError != null) {
+                if (currentError.getData() != null) {
+                    Log.d("NetflixActivity", "Display error dialog");
+                    AlertDialogFactory.createDialog((Context)this, this.handler, currentError.getData(), new NetflixActivity$13(this, serviceManager, currentError));
+                    this.mErrorDialogId = this.reportUiModelessViewSessionStart(IClientLogging$ModalView.errorDialog);
+                    synchronized (this.visibleDialogLock) {
+                        if (this.destroyed()) {
+                            return;
+                        }
+                    }
+                    if (this.visibleDialog != null) {
+                        this.visibleDialog.dismiss();
+                    }
+                    final UpdateDialog$Builder updateDialog$Builder;
+                    final UpdateDialog create = updateDialog$Builder.create();
+                    ((Dialog)create).show();
+                    this.visibleDialog = (Dialog)create;
+                    // monitorexit(o)
+                    return;
+                }
+                Log.e("NetflixActivity", "Unable to display an error dialog, data not found!");
+            }
+        }
+    }
+    
     public static void finishAllActivities(final Context context) {
         context.sendBroadcast(new Intent("com.netflix.mediaclient.ui.login.ACTION_FINISH_ALL_ACTIVITIES"));
     }
@@ -192,35 +247,46 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
         return ((NetflixActivity)context).serviceManager.getImageLoader();
     }
     
-    private String getMessage(final int n, final StatusCode statusCode) {
-        String string;
-        if (n == Integer.MAX_VALUE) {
-            string = this.getString(2131493377);
+    private void handleCustomerSupportCallEnded() {
+        if (Log.isLoggable()) {
+            Log.d("NetflixActivity", "Customer support call ended, remove FAB" + this.hashCode());
         }
-        else {
-            String s;
-            if (statusCode != null) {
-                s = this.getString(n, new Object[] { statusCode.getValue() });
-            }
-            else {
-                s = this.getString(n);
-            }
-            string = s;
-            if (s == null) {
-                return this.getString(2131493377);
-            }
-        }
-        return string;
+        this.removeFab();
     }
     
-    private Uri getUri(final String s) {
-        if (s == null) {
-            return null;
+    private void handleCustomerSupportCallStarted() {
+        if (Log.isLoggable()) {
+            Log.d("NetflixActivity", "Customer support call started, make FAB visible " + this.hashCode());
         }
-        return Uri.parse(s);
+        this.addFab();
     }
     
     private void handleDisplayToken(final Intent intent) {
+    }
+    
+    private void handleErrorDialog() {
+        if (this.isVisible) {
+            Log.d("NetflixActivity", "Display error dialog");
+            this.displayErrorDialogIfExist();
+            return;
+        }
+        Log.d("NetflixActivity", "Not visible, can not display error dialog");
+    }
+    
+    private void initBackToCallInProgressFABVisibility() {
+        this.mFabAnchor = (CoordinatorLayout)this.findViewById(2131624176);
+        if (this.mFabAnchor != null && this.isCustomerSupportCallInProgress()) {
+            this.addFab();
+        }
+    }
+    
+    private boolean isCustomerSupportCallInProgress() {
+        if (this.serviceManager != null && this.serviceManager.getVoip() != null && this.serviceManager.getVoip().isCallInProgress() && !(this instanceof ContactUsActivity)) {
+            Log.d("NetflixActivity", "Call is in progress and we are NOT on caller screen, display FAB");
+            return true;
+        }
+        Log.d("NetflixActivity", "No call, FAB should not be there");
+        return false;
     }
     
     private void onFromBackground() {
@@ -233,6 +299,15 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
         this.handler.postDelayed(this.updateActionBarVisibilityRunnable, 1000L);
     }
     
+    private void removeFab() {
+        if (this.mFabAnchor == null || this.mBackToCustomerSupportCallFAB == null) {
+            return;
+        }
+        this.mBackToCustomerSupportCallFAB.hide();
+        this.mFabAnchor.removeView((View)this.mBackToCustomerSupportCallFAB);
+        this.mBackToCustomerSupportCallFAB = null;
+    }
+    
     private void setInstanceStateSaved(final boolean b) {
         if (Log.isLoggable()) {
             Log.v("NetflixActivity_instanceState", this.getClass().getSimpleName() + " instanceStateSaved: " + b);
@@ -243,13 +318,12 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     }
     
     private boolean shouldDismissVisibleDialog() {
-        boolean b = false;
-        final boolean b2 = this.visibleDialog != null;
-        if (this.mDismissingDialogConfiguration == null) {
-            this.mDismissingDialogConfiguration = NetflixActivity$DismissingDialogConfig.dismissOnStop;
-            b = b2;
-        }
-        else {
+        if (this.mErrorDialogId == null) {
+            final boolean b = this.visibleDialog != null;
+            if (this.mDismissingDialogConfiguration == null) {
+                this.mDismissingDialogConfiguration = NetflixActivity$DismissingDialogConfig.dismissOnStop;
+                return b;
+            }
             switch (NetflixActivity$14.$SwitchMap$com$netflix$mediaclient$android$activity$NetflixActivity$DismissingDialogConfig[this.mDismissingDialogConfiguration.ordinal()]) {
                 case 2: {
                     break;
@@ -258,7 +332,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
                     return false;
                 }
                 case 1: {
-                    return b2;
+                    return b;
                 }
                 case 3: {
                     this.mDismissingDialogConfiguration = NetflixActivity$DismissingDialogConfig.dismissOnStop;
@@ -266,7 +340,13 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
                 }
             }
         }
-        return b;
+        return false;
+    }
+    
+    private void updateHelpInMenuStatus() {
+        if (this.mHelpMenuItem != null) {
+            this.mHelpMenuItem.setVisible(this.getServiceManager().getVoip().isEnabled());
+        }
     }
     
     protected boolean canApplyBrowseExperience() {
@@ -334,6 +414,11 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
                 return;
             }
         }
+        if (this.mErrorDialogId != null) {
+            Log.w("NetflixActivity", "Error dualog is displayed, do not remove it!");
+            // monitorexit(o)
+            return;
+        }
         if (this.visibleDialog != null) {
             this.visibleDialog.dismiss();
         }
@@ -343,12 +428,20 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     }
     // monitorexit(o)
     
-    protected void displayErrorDialog(final String s, final int n) {
-        this.displayUserAgentDialog(String.format("%s ( %d )", s, n), new NetflixActivity$12(this), true);
+    protected void displayErrorDialog(final String s, final int n, final boolean b) {
+        final String format = String.format("%s ( %d )", s, n);
+        NetflixActivity$11 netflixActivity$11;
+        if (b) {
+            netflixActivity$11 = new NetflixActivity$11(this);
+        }
+        else {
+            netflixActivity$11 = null;
+        }
+        this.displayUserAgentDialog(format, netflixActivity$11, true);
     }
     
     protected void displayUserAgentDialog(final String s, Runnable visibleDialogLock, final boolean b) {
-        final UpdateDialog$Builder dialog = AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131493003), visibleDialogLock));
+        final UpdateDialog$Builder dialog = AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131165485), visibleDialogLock));
         if (this.destroyed()) {
             return;
         }
@@ -358,6 +451,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             if (!b) {
                 break Label_0095;
             }
+        Block_9_Outer:
             while (true) {
                 try {
                     if (Log.isLoggable()) {
@@ -366,16 +460,19 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
                     this.displayDialog(dialog);
                     return;
                     // iftrue(Label_0144:, !Log.isLoggable())
-                    // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
-                Label_0144:
                     while (true) {
-                        Log.d("NetflixActivity", "displayUserAgentDialog " + s);
-                        break Label_0144;
+                    Label_0144:
+                        while (true) {
+                            Log.d("NetflixActivity", "displayUserAgentDialog " + s);
+                            break Label_0144;
+                            continue Block_9_Outer;
+                        }
+                        this.displayDialog(dialog);
+                        return;
                         continue;
                     }
-                    this.displayDialog(dialog);
-                    return;
                 }
+                // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
                 finally {
                 }
                 // monitorexit(visibleDialogLock)
@@ -470,6 +567,10 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
         return this.mdxFrag;
     }
     
+    public Handler getHandler() {
+        return this.handler;
+    }
+    
     public MdxMiniPlayerFrag getMdxMiniPlayerFrag() {
         return this.mdxFrag;
     }
@@ -529,30 +630,33 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     protected void handleProfilesListUpdated() {
     }
     
-    @SuppressLint({ "DefaultLocale" })
-    protected String handleUserAgentErrors(final Activity activity, final Status status) {
+    protected String handleUserAgentErrors(final Status status) {
+        return this.handleUserAgentErrors(status, true);
+    }
+    
+    protected String handleUserAgentErrors(final Status status, final boolean b) {
         String message = status.getMessage();
         if (message == null) {
             message = "";
         }
         switch (NetflixActivity$14.$SwitchMap$com$netflix$mediaclient$StatusCode[status.getStatusCode().ordinal()]) {
             default: {
-                final String string = this.getString(2131493258);
-                this.displayErrorDialog(this.getString(2131493258), status.getStatusCode().getValue());
+                final String string = this.getString(2131165577);
+                this.displayErrorDialog(this.getString(2131165577), status.getStatusCode().getValue(), b);
                 return string;
             }
             case 1: {
                 String format = message;
                 if (message.isEmpty()) {
-                    format = String.format("%s ( %d )", this.getString(2131493255), status.getStatusCode().getValue());
+                    format = String.format("%s ( %d )", this.getString(2131165570), status.getStatusCode().getValue());
                 }
                 this.displayUserAgentDialog(format, null, false);
                 return format;
             }
             case 2:
             case 3: {
-                final String format2 = String.format("%s ( %d )", this.getString(2131493262), status.getStatusCode().getValue());
-                this.displayUserAgentDialog(format2, new NetflixActivity$11(this), true);
+                final String format2 = String.format("%s ( %d )", this.getString(2131165377), status.getStatusCode().getValue());
+                this.displayUserAgentDialog(format2, new NetflixActivity$10(this), true);
                 return format2;
             }
             case 4: {
@@ -567,15 +671,15 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             case 10:
             case 11:
             case 12: {
-                final String format3 = String.format("%s ( %d )", this.getString(2131493255), status.getStatusCode().getValue());
+                final String format3 = String.format("%s ( %d )", this.getString(2131165570), status.getStatusCode().getValue());
                 this.displayUserAgentDialog(format3, null, false);
                 return format3;
             }
             case 13:
             case 14:
             case 15: {
-                final String string2 = this.getString(2131493257);
-                this.displayErrorDialog(string2, status.getStatusCode().getValue());
+                final String string2 = this.getString(2131165571);
+                this.displayErrorDialog(string2, status.getStatusCode().getValue(), b);
                 return string2;
             }
         }
@@ -637,7 +741,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     }
     
     public void notifyMdxShowDetailsRequest() {
-        this.handler.postDelayed((Runnable)new NetflixActivity$7(this), 250L);
+        this.handler.postDelayed((Runnable)new NetflixActivity$6(this), 250L);
     }
     
     @Override
@@ -670,7 +774,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             Log.v("NetflixActivity", "Creating activity: " + this.getClass().getSimpleName() + ", hash: " + this.hashCode());
         }
         if (this.shouldShowKidsBackground()) {
-            this.getWindow().setBackgroundDrawableResource(2131230826);
+            this.getWindow().setBackgroundDrawableResource(2131558601);
         }
         boolean shouldExpandMiniPlayer = b;
         if (bundle != null) {
@@ -685,7 +789,11 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
         }
         this.registerFinishReceiverWithAutoUnregister("com.netflix.mediaclient.ui.login.ACTION_FINISH_ALL_ACTIVITIES");
         this.registerReceiverWithAutoUnregister(this.expandMdxMiniPlayerReceiver, "com.netflix.mediaclient.service.ACTION_EXPAND_MDX_MINI_PLAYER");
-        this.registerReceiverLocallyWithAutoUnregister(this.displayErrorReceiver, "com.netflix.mediaclient.ui.error.ACTION_DISPLAY_ERROR");
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.netflix.mediaclient.ui.error.ACTION_DISPLAY_ERROR");
+        intentFilter.addAction("com.netflix.mediaclient.ui.cs.ACTION_CALL_ENDED");
+        intentFilter.addAction("com.netflix.mediaclient.ui.cs.ACTION_CALL_STARTED");
+        this.registerReceiverLocallyWithAutoUnregister(this.localBroadcastReceiver, intentFilter);
         this.setupServicemanager();
         this.handler = new Handler();
     }
@@ -694,14 +802,12 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
         if (menu2 != null) {
             new DebugMenuItems("NetflixActivity", this).addItems(this, menu2);
         }
-        if (this.showSettingsInMenu()) {
-            menu.add(2131493135).setIcon(2130837733).setIntent(SettingsActivity.createStartIntent(this));
-        }
-        if (this.showAboutInMenu()) {
-            this.addAboutMenu(menu);
-        }
-        if (this.showSignOutInMenu()) {
-            menu.add(2131493172).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new NetflixActivity$2(this));
+        if (this.showHelpInMenu()) {
+            (this.mHelpMenuItem = menu.add((CharSequence)this.getString(2131165760))).setShowAsAction(1);
+            this.mHelpMenuItem.setIntent(ContactUsActivity.createStartIntent((Context)this));
+            if (this.getServiceManager() != null && this.getServiceManager().getVoip() != null) {
+                this.mHelpMenuItem.setVisible(this.getServiceManager().getVoip().isEnabled());
+            }
         }
     }
     
@@ -774,6 +880,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
         throw new IllegalStateException(String.format("onPlayVerified vault: %s", playVerifierVault));
     }
     
+    @Override
     protected void onPostCreate(final Bundle bundle) {
         super.onPostCreate(bundle);
         if (Log.isLoggable()) {
@@ -835,12 +942,12 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     protected void onStart() {
         super.onStart();
         UserActionLogUtils.reportNavigationActionStarted((Context)this, null, this.getUiScreen());
-        this.mdxFrag = (MdxMiniPlayerFrag)this.getFragmentManager().findFragmentById(2131427643);
-        this.slidingPanel = (SlidingUpPanelLayout)this.findViewById(2131427524);
+        this.mdxFrag = (MdxMiniPlayerFrag)this.getFragmentManager().findFragmentById(2131624323);
+        this.slidingPanel = (SlidingUpPanelLayout)this.findViewById(2131624198);
         if (this.slidingPanel != null) {
             this.slidingPanel.setDragView(this.mdxFrag.getSlidingPanelDragView());
-            this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131296357));
-            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837904));
+            this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131296291));
+            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837946));
             this.slidingPanel.setPanelSlideListener(this.panelSlideListener);
             if (this.shouldApplyPaddingToSlidingPanel()) {
                 final View child = this.slidingPanel.getChildAt(0);
@@ -854,7 +961,8 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
         if (this.shouldReportNavigationActionEndedOnStop()) {
             UserActionLogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging$CompletionReason.success, null);
         }
-        synchronized (this.visibleDialogLock) {
+        Object o = this.visibleDialogLock;
+        synchronized (o) {
             Label_0047: {
                 if (!this.shouldDismissVisibleDialog()) {
                     break Label_0047;
@@ -862,7 +970,13 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
                 try {
                     this.visibleDialog.dismiss();
                     this.visibleDialog = null;
-                    // monitorexit(this.visibleDialogLock)
+                    // monitorexit(o)
+                    o = this.mErrorDialogId;
+                    if (o != null) {
+                        Log.d("NetflixActivity", "Report end of error dialog ended");
+                        this.reportUiModelessViewSessionEnded(IClientLogging$ModalView.errorDialog, (String)o);
+                        this.mErrorDialogId = null;
+                    }
                     super.onStop();
                 }
                 catch (Throwable t) {
@@ -874,7 +988,11 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     
     public void performUpAction() {
         UIViewLogUtils.reportUIViewCommand((Context)this, UIViewLogging$UIViewCommandName.upButton, this.getUiScreen(), this.getDataContext());
-        this.startActivity(HomeActivity.createShowIntent(this));
+        if (this.getServiceManager() != null && this.getServiceManager().isUserLoggedIn()) {
+            this.startActivity(HomeActivity.createShowIntent(this));
+            return;
+        }
+        this.startActivity(SignupActivity.createShowIntent((Context)this));
     }
     
     protected void registerFinishReceiverWithAutoUnregister(final String s) {
@@ -1036,7 +1154,15 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
         return this.canApplyBrowseExperience() && BrowseExperience.isKubrickKids();
     }
     
-    protected boolean showAboutInMenu() {
+    public boolean showAboutInMenu() {
+        return this.canApplyBrowseExperience() && !BrowseExperience.isKubrickKids();
+    }
+    
+    protected boolean showCallInProgressFloatingActionButton() {
+        return true;
+    }
+    
+    public boolean showContactUsInSlidingMenu() {
         return this.canApplyBrowseExperience() && !BrowseExperience.isKubrickKids();
     }
     
@@ -1081,6 +1207,10 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     public void showFetchErrorsToast() {
     }
     
+    protected boolean showHelpInMenu() {
+        return false;
+    }
+    
     protected void showMDXPostPlayOnResume() {
         while (true) {
             Label_0085: {
@@ -1111,11 +1241,11 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
         return true;
     }
     
-    protected boolean showSettingsInMenu() {
+    public boolean showSettingsInMenu() {
         return this.canApplyBrowseExperience() && !BrowseExperience.isKubrickKids();
     }
     
-    protected boolean showSignOutInMenu() {
+    public boolean showSignOutInMenu() {
         return this.canApplyBrowseExperience() && !BrowseExperience.isKubrickKids();
     }
     

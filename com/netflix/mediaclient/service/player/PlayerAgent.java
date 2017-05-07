@@ -646,6 +646,9 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.toCancelOpen = false;
         this.toPlayAfterStop = false;
         if (this.toOpenAfterClose) {
+            if (this.mHelper != null) {
+                this.mHelper.release();
+            }
             this.toOpenAfterClose = false;
             this.mState = 5;
             if (this.mStartPlayTimeoutTask != null) {
@@ -1195,8 +1198,12 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.mPlayerListenerManager.removePlayerListener(player$PlayerListener);
     }
     
-    public void reportFailedToDownloadSubtitleMetadata() {
+    public void reportFailedToDownloadSubtitleMetadata(final String s) {
+        if (Log.isLoggable()) {
+            Log.e(PlayerAgent.TAG, "Failed to download subtitles metadata from " + s);
+        }
         this.getService().getClientLogging().getErrorLogging().logHandledException("Failed to download subtitle metadata");
+        this.mMedia.reportFailedSubtitleDownload(s);
         this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleFailedHandler(), new Object[0]);
     }
     

@@ -9,7 +9,7 @@ import android.app.Notification;
 class NotificationCompat$NotificationCompatImplBase implements NotificationCompat$NotificationCompatImpl
 {
     @Override
-    public Notification build(final NotificationCompat$Builder notificationCompat$Builder) {
+    public Notification build(final NotificationCompat$Builder notificationCompat$Builder, final NotificationCompat$BuilderExtender notificationCompat$BuilderExtender) {
         final Notification mNotification = notificationCompat$Builder.mNotification;
         mNotification.setLatestEventInfo(notificationCompat$Builder.mContext, notificationCompat$Builder.mContentTitle, notificationCompat$Builder.mContentText, notificationCompat$Builder.mContentIntent);
         if (notificationCompat$Builder.mPriority > 0) {

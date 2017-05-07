@@ -27,7 +27,7 @@ public class TintImageView extends ImageView
     
     public TintImageView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, set, TintImageView.TINT_ATTRS, n, 0);
+        final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(this.getContext(), set, TintImageView.TINT_ATTRS, n, 0);
         if (obtainStyledAttributes.length() > 0) {
             if (obtainStyledAttributes.hasValue(0)) {
                 this.setBackgroundDrawable(obtainStyledAttributes.getDrawable(0));

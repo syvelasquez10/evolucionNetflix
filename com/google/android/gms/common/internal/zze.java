@@ -4,117 +4,90 @@
 
 package com.google.android.gms.common.internal;
 
-import java.util.Iterator;
-import java.util.HashSet;
-import java.util.Collections;
-import java.util.Collection;
-import com.google.android.gms.internal.zzpt;
-import com.google.android.gms.common.api.Api;
-import java.util.Map;
-import android.view.View;
-import com.google.android.gms.common.api.Scope;
-import java.util.Set;
-import android.accounts.Account;
+import java.util.Arrays;
 
-public final class zze
+public abstract class zze
 {
-    private final Account zzMY;
-    private final String zzOd;
-    private final String zzOe;
-    private final Set<Scope> zzWu;
-    private final int zzWv;
-    private final View zzWw;
-    private final Set<Scope> zzZR;
-    private final Map<Api<?>, zze$zza> zzZS;
-    private final zzpt zzZT;
-    private Integer zzZU;
+    public static final zze zzacG;
+    public static final zze zzacH;
+    public static final zze zzacI;
+    public static final zze zzacJ;
+    public static final zze zzacK;
+    public static final zze zzacL;
+    public static final zze zzacM;
+    public static final zze zzacN;
+    public static final zze zzacO;
+    public static final zze zzacP;
+    public static final zze zzacQ;
+    public static final zze zzacR;
+    public static final zze zzacS;
+    public static final zze zzacT;
+    public static final zze zzacU;
     
-    public zze(final Account zzMY, final Collection<Scope> collection, final Map<Api<?>, zze$zza> map, final int zzWv, final View zzWw, final String zzOe, final String zzOd, final zzpt zzZT) {
-        this.zzMY = zzMY;
-        Set<Scope> zzWu;
-        if (collection == null) {
-            zzWu = (Set<Scope>)Collections.EMPTY_SET;
+    static {
+        zzacG = zza("\t\n\u000b\f\r \u0085\u1680\u2028\u2029\u205f\u3000 \u180e\u202f").zza(zza('\u2000', '\u200a'));
+        zzacH = zza("\t\n\u000b\f\r \u0085\u1680\u2028\u2029\u205f\u3000").zza(zza('\u2000', '\u2006')).zza(zza('\u2008', '\u200a'));
+        zzacI = zza('\0', '\u007f');
+        zze zzacJ2 = zza('0', '9');
+        final char[] charArray = "\u0660\u06f0\u07c0\u0966\u09e6\u0a66\u0ae6\u0b66\u0be6\u0c66\u0ce6\u0d66\u0e50\u0ed0\u0f20\u1040\u1090\u17e0\u1810\u1946\u19d0\u1b50\u1bb0\u1c40\u1c50\ua620\ua8d0\ua900\uaa50\uff10".toCharArray();
+        for (int length = charArray.length, i = 0; i < length; ++i) {
+            final char c = charArray[i];
+            zzacJ2 = zzacJ2.zza(zza(c, (char)(c + '\t')));
         }
-        else {
-            zzWu = Collections.unmodifiableSet((Set<? extends Scope>)new HashSet<Scope>(collection));
+        zzacJ = zzacJ2;
+        zzacK = zza('\t', '\r').zza(zza('\u001c', ' ')).zza(zzc('\u1680')).zza(zzc('\u180e')).zza(zza('\u2000', '\u2006')).zza(zza('\u2008', '\u200b')).zza(zza('\u2028', '\u2029')).zza(zzc('\u205f')).zza(zzc('\u3000'));
+        zzacL = new zze$1();
+        zzacM = new zze$5();
+        zzacN = new zze$6();
+        zzacO = new zze$7();
+        zzacP = new zze$8();
+        zzacQ = zza('\0', '\u001f').zza(zza('\u007f', '\u009f'));
+        zzacR = zza('\0', ' ').zza(zza('\u007f', ' ')).zza(zzc('\u00ad')).zza(zza('\u0600', '\u0603')).zza(zza("\u06dd\u070f\u1680\u17b4\u17b5\u180e")).zza(zza('\u2000', '\u200f')).zza(zza('\u2028', '\u202f')).zza(zza('\u205f', '\u2064')).zza(zza('\u206a', '\u206f')).zza(zzc('\u3000')).zza(zza('\ud800', '\uf8ff')).zza(zza("\ufeff\ufff9\ufffa\ufffb"));
+        zzacS = zza('\0', '\u04f9').zza(zzc('\u05be')).zza(zza('\u05d0', '\u05ea')).zza(zzc('\u05f3')).zza(zzc('\u05f4')).zza(zza('\u0600', '\u06ff')).zza(zza('\u0750', '\u077f')).zza(zza('\u0e00', '\u0e7f')).zza(zza('\u1e00', '\u20af')).zza(zza('\u2100', '\u213a')).zza(zza('\ufb50', '\ufdff')).zza(zza('\ufe70', '\ufeff')).zza(zza('\uff61', '\uffdc'));
+        zzacT = new zze$9();
+        zzacU = new zze$10();
+    }
+    
+    public static zze zza(final char c, final char c2) {
+        zzx.zzZ(c2 >= c);
+        return new zze$4(c, c2);
+    }
+    
+    public static zze zza(final CharSequence charSequence) {
+        switch (charSequence.length()) {
+            default: {
+                final char[] charArray = charSequence.toString().toCharArray();
+                Arrays.sort(charArray);
+                return new zze$3(charArray);
+            }
+            case 0: {
+                return zze.zzacU;
+            }
+            case 1: {
+                return zzc(charSequence.charAt(0));
+            }
+            case 2: {
+                return new zze$2(charSequence.charAt(0), charSequence.charAt(1));
+            }
         }
-        this.zzWu = zzWu;
-        Map<Api<?>, zze$zza> empty_MAP = map;
-        if (map == null) {
-            empty_MAP = (Map<Api<?>, zze$zza>)Collections.EMPTY_MAP;
+    }
+    
+    public static zze zzc(final char c) {
+        return new zze$11(c);
+    }
+    
+    public zze zza(final zze zze) {
+        return new zze$zza(Arrays.asList(this, zzx.zzv(zze)));
+    }
+    
+    public boolean zzb(final CharSequence charSequence) {
+        for (int i = charSequence.length() - 1; i >= 0; --i) {
+            if (!this.zzd(charSequence.charAt(i))) {
+                return false;
+            }
         }
-        this.zzZS = empty_MAP;
-        this.zzWw = zzWw;
-        this.zzWv = zzWv;
-        this.zzOe = zzOe;
-        this.zzOd = zzOd;
-        this.zzZT = zzZT;
-        final HashSet<Scope> set = new HashSet<Scope>(this.zzWu);
-        final Iterator<zze$zza> iterator = this.zzZS.values().iterator();
-        while (iterator.hasNext()) {
-            set.addAll((Collection<?>)iterator.next().zzWI);
-        }
-        this.zzZR = (Set<Scope>)Collections.unmodifiableSet((Set<?>)set);
+        return true;
     }
     
-    public Account getAccount() {
-        return this.zzMY;
-    }
-    
-    @Deprecated
-    public String getAccountName() {
-        if (this.zzMY != null) {
-            return this.zzMY.name;
-        }
-        return null;
-    }
-    
-    public void zza(final Integer zzZU) {
-        this.zzZU = zzZU;
-    }
-    
-    public Set<Scope> zzb(final Api<?> api) {
-        final zze$zza zze$zza = this.zzZS.get(api);
-        if (zze$zza == null || zze$zza.zzWI.isEmpty()) {
-            return this.zzWu;
-        }
-        final HashSet<Object> set = (HashSet<Object>)new HashSet<Scope>(this.zzWu);
-        set.addAll(zze$zza.zzWI);
-        return (Set<Scope>)set;
-    }
-    
-    public Integer zznA() {
-        return this.zzZU;
-    }
-    
-    public Account zznr() {
-        if (this.zzMY != null) {
-            return this.zzMY;
-        }
-        return new Account("<<default account>>", "com.google");
-    }
-    
-    public Set<Scope> zznt() {
-        return this.zzWu;
-    }
-    
-    public Set<Scope> zznu() {
-        return this.zzZR;
-    }
-    
-    public Map<Api<?>, zze$zza> zznv() {
-        return this.zzZS;
-    }
-    
-    public String zznw() {
-        return this.zzOe;
-    }
-    
-    public String zznx() {
-        return this.zzOd;
-    }
-    
-    public zzpt zznz() {
-        return this.zzZT;
-    }
+    public abstract boolean zzd(final char p0);
 }

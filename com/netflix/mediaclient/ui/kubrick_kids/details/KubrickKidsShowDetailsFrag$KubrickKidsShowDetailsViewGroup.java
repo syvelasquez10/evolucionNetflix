@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.kubrick_kids.details;
 
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickVideoDetailsViewGroup;
 
@@ -17,7 +18,12 @@ class KubrickKidsShowDetailsFrag$KubrickKidsShowDetailsViewGroup extends Kubrick
     }
     
     @Override
+    protected int calculateImageHeight() {
+        return (int)(KidsUtils.getDetailsPageContentWidth(this.getContext()) * 0.5625f);
+    }
+    
+    @Override
     protected int getlayoutId() {
-        return 2130903110;
+        return 2130903130;
     }
 }

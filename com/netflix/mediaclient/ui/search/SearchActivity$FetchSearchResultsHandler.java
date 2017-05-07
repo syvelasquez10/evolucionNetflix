@@ -15,9 +15,11 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View$OnFocusChangeListener;
 import android.app.Activity;
+import java.util.Iterator;
 import android.content.Intent;
 import android.annotation.SuppressLint;
 import android.view.View$OnTouchListener;
+import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.SearchView$OnQueryTextListener;
 import com.netflix.mediaclient.android.widget.SearchActionBar;
@@ -63,7 +65,7 @@ class SearchActivity$FetchSearchResultsHandler extends LoggingManagerCallback
         if (status.isError()) {
             Log.w("SearchActivity", "Invalid status code");
             this.this$0.showError();
-            UserActionLogUtils.reportSearchActionEnded(this.requestId, (Context)this.this$0, IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getString(2131493204), ActionOnUIError.displayedError));
+            UserActionLogUtils.reportSearchActionEnded(this.requestId, (Context)this.this$0, IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getString(2131165414), ActionOnUIError.displayedError));
             return;
         }
         if (searchResults == null || !searchResults.hasResults()) {

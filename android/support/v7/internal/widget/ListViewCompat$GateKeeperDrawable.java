@@ -6,6 +6,7 @@ package android.support.v7.internal.widget;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.support.v7.graphics.drawable.DrawableWrapper;
 
 class ListViewCompat$GateKeeperDrawable extends DrawableWrapper
 {

@@ -4,19 +4,21 @@
 
 package com.netflix.mediaclient.service.logging.uiview.model;
 
-import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 
 public class ImpressionSessionEndedEvent extends BaseUIViewSessionEndedEvent
 {
     protected static final String ERROR = "error";
     protected static final String GUID = "originatingRequestGuid";
+    protected static final String MODEL = "model";
     private static final String SESSION_NAME = "impression";
     protected static final String SUCCESS = "success";
     protected static final String VIEW = "view";
     private Error mError;
+    private JSONObject mModel;
     private String mOriginatingRequestGuid;
     private boolean mSuccess;
     private IClientLogging$ModalView mView;
@@ -44,7 +46,14 @@ public class ImpressionSessionEndedEvent extends BaseUIViewSessionEndedEvent
         if (this.mOriginatingRequestGuid != null) {
             data.put("originatingRequestGuid", (Object)this.mOriginatingRequestGuid);
         }
+        if (this.mModel != null) {
+            data.put("model", (Object)this.mModel);
+        }
         data.put("success", this.mSuccess);
         return data;
+    }
+    
+    public void setModel(final JSONObject mModel) {
+        this.mModel = mModel;
     }
 }

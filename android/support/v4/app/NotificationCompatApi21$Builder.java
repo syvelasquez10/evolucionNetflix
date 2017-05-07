@@ -31,6 +31,7 @@ public class NotificationCompatApi21$Builder implements NotificationBuilderWithA
         NotificationCompatApi20.addAction(this.b, notificationCompatBase$Action);
     }
     
+    @Override
     public Notification build() {
         return this.b.build();
     }

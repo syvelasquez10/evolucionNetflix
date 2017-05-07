@@ -11,7 +11,6 @@ import android.content.res.Configuration;
 import android.view.ContextThemeWrapper;
 import android.util.TypedValue;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
-import android.view.animation.AnimationUtils;
 import android.support.v4.view.ViewCompat;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
@@ -20,42 +19,49 @@ import android.support.v7.appcompat.R$styleable;
 import android.support.v7.internal.view.ActionBarPolicy;
 import android.support.v7.appcompat.R$id;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Build$VERSION;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.support.v4.view.ViewPropertyAnimatorUpdateListener;
 import android.support.v7.internal.widget.ScrollingTabContainerView;
 import android.support.v7.internal.widget.ActionBarOverlayLayout;
 import android.support.v7.app.ActionBar$OnMenuVisibilityListener;
 import java.util.ArrayList;
 import android.support.v4.view.ViewPropertyAnimatorListener;
+import android.app.Dialog;
 import android.support.v7.internal.widget.DecorToolbar;
 import android.support.v7.internal.view.ViewPropertyAnimatorCompatSet;
 import android.support.v7.internal.widget.ActionBarContextView;
-import android.content.Context;
 import android.support.v7.internal.widget.ActionBarContainer;
-import android.support.v4.app.FragmentActivity;
+import android.app.Activity;
+import android.view.animation.Interpolator;
 import android.support.v7.internal.widget.ActionBarOverlayLayout$ActionBarVisibilityCallback;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.support.v7.internal.view.SupportMenuInflater;
+import android.view.MenuInflater;
 import android.view.Menu;
 import android.support.v7.internal.view.menu.i;
 import android.view.View;
 import java.lang.ref.WeakReference;
 import android.support.v7.view.ActionMode$Callback;
+import android.content.Context;
 import android.support.v7.internal.view.menu.j;
 import android.support.v7.view.ActionMode;
 
 public class WindowDecorActionBar$ActionModeImpl extends ActionMode implements j
 {
+    private final Context mActionModeContext;
     private ActionMode$Callback mCallback;
     private WeakReference<View> mCustomView;
-    private i mMenu;
+    private final i mMenu;
     final /* synthetic */ WindowDecorActionBar this$0;
     
-    public WindowDecorActionBar$ActionModeImpl(final WindowDecorActionBar this$0, final ActionMode$Callback mCallback) {
+    public WindowDecorActionBar$ActionModeImpl(final WindowDecorActionBar this$0, final Context mActionModeContext, final ActionMode$Callback mCallback) {
         this.this$0 = this$0;
+        this.mActionModeContext = mActionModeContext;
         this.mCallback = mCallback;
-        (this.mMenu = new i(this$0.getThemedContext()).a(1)).a(this);
+        (this.mMenu = new i(mActionModeContext).a(1)).a(this);
     }
     
     public boolean dispatchOnCreate() {
@@ -102,6 +108,11 @@ public class WindowDecorActionBar$ActionModeImpl extends ActionMode implements j
     }
     
     @Override
+    public MenuInflater getMenuInflater() {
+        return new SupportMenuInflater(this.mActionModeContext);
+    }
+    
+    @Override
     public CharSequence getSubtitle() {
         return this.this$0.mContextView.getSubtitle();
     }
@@ -113,6 +124,9 @@ public class WindowDecorActionBar$ActionModeImpl extends ActionMode implements j
     
     @Override
     public void invalidate() {
+        if (this.this$0.mActionMode != this) {
+            return;
+        }
         this.mMenu.g();
         try {
             this.mCallback.onPrepareActionMode(this, (Menu)this.mMenu);

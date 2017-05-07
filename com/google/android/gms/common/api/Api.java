@@ -4,56 +4,46 @@
 
 package com.google.android.gms.common.api;
 
-import java.util.List;
-import java.util.Collection;
-import java.util.Arrays;
-import com.google.android.gms.common.internal.zzu;
-import java.util.ArrayList;
+import com.google.android.gms.common.internal.zzx;
 
 public final class Api<O extends Api$ApiOptions>
 {
     private final String mName;
-    private final Api$ClientKey<?> zzVt;
-    private final Api$zza<?, O> zzWh;
-    private final Api$zzc<?, O> zzWi;
-    private final Api$zzd<?> zzWj;
-    private final ArrayList<Scope> zzWk;
+    private final Api$zzc<?> zzXW;
+    private final Api$zza<?, O> zzYL;
+    private final Api$zze<?, O> zzYM;
+    private final Api$zzf<?> zzYN;
     
-    public Api(final String mName, final Api$zza<C, O> zzWh, final Api$ClientKey<C> zzVt, final Scope... array) {
-        zzu.zzb(zzWh, "Cannot construct an Api with a null ClientBuilder");
-        zzu.zzb(zzVt, "Cannot construct an Api with a null ClientKey");
+    public Api(final String mName, final Api$zza<C, O> zzYL, final Api$zzc<C> zzXW) {
+        zzx.zzb(zzYL, "Cannot construct an Api with a null ClientBuilder");
+        zzx.zzb(zzXW, "Cannot construct an Api with a null ClientKey");
         this.mName = mName;
-        this.zzWh = zzWh;
-        this.zzWi = null;
-        this.zzVt = zzVt;
-        this.zzWj = null;
-        this.zzWk = new ArrayList<Scope>(Arrays.asList(array));
+        this.zzYL = zzYL;
+        this.zzYM = null;
+        this.zzXW = zzXW;
+        this.zzYN = null;
     }
     
     public String getName() {
         return this.mName;
     }
     
-    public Api$zza<?, O> zzmn() {
-        zzu.zza(this.zzWh != null, "This API was constructed with a SimpleClientBuilder. Use getSimpleClientBuilder");
-        return this.zzWh;
+    public Api$zza<?, O> zznb() {
+        zzx.zza(this.zzYL != null, "This API was constructed with a SimpleClientBuilder. Use getSimpleClientBuilder");
+        return this.zzYL;
     }
     
-    public Api$zzc<?, O> zzmo() {
-        zzu.zza(this.zzWi != null, "This API was constructed with a ClientBuilder. Use getClientBuilder");
-        return this.zzWi;
+    public Api$zze<?, O> zznc() {
+        zzx.zza(this.zzYM != null, "This API was constructed with a ClientBuilder. Use getClientBuilder");
+        return this.zzYM;
     }
     
-    public List<Scope> zzmp() {
-        return this.zzWk;
+    public Api$zzc<?> zznd() {
+        zzx.zza(this.zzXW != null, "This API was constructed with a SimpleClientKey. Use getSimpleClientKey");
+        return this.zzXW;
     }
     
-    public Api$ClientKey<?> zzmq() {
-        zzu.zza(this.zzVt != null, "This API was constructed with a SimpleClientKey. Use getSimpleClientKey");
-        return this.zzVt;
-    }
-    
-    public boolean zzmr() {
-        return this.zzWj != null;
+    public boolean zzne() {
+        return this.zzYN != null;
     }
 }

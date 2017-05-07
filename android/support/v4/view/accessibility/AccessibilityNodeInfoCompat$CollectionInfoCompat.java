@@ -4,6 +4,7 @@
 
 package android.support.v4.view.accessibility;
 
+import android.os.Bundle;
 import android.graphics.Rect;
 import android.view.View;
 import android.os.Build$VERSION;

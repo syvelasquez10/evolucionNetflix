@@ -118,15 +118,15 @@ public class SendAsFacebookMessageDialog extends NetflixDialogFrag
         int n = 0;
         while (iterator.hasNext()) {
             final FriendForRecommendation friendForRecommendation = iterator.next();
-            final ViewGroup viewGroup = (ViewGroup)this.mLayoutInflater.inflate(2130903193, (ViewGroup)null);
+            final ViewGroup viewGroup = (ViewGroup)this.mLayoutInflater.inflate(2130903229, (ViewGroup)null);
             this.mFriendsAvatarLayout.addView((View)viewGroup, 0);
-            NetflixActivity.getImageLoader((Context)this.getActivity()).showImg((AdvancedImageView)viewGroup.findViewById(2131427793), friendForRecommendation.getFriendProfile().getImageUrl(), IClientLogging$AssetType.profileAvatar, friendForRecommendation.getFriendProfile().getFullName(), ImageLoader$StaticImgConfig.DARK, true);
+            NetflixActivity.getImageLoader((Context)this.getActivity()).showImg((AdvancedImageView)viewGroup.findViewById(2131624507), friendForRecommendation.getFriendProfile().getImageUrl(), IClientLogging$AssetType.profileAvatar, friendForRecommendation.getFriendProfile().getFullName(), ImageLoader$StaticImgConfig.DARK, true);
             ++n;
             if (n == 3) {
                 break;
             }
         }
-        this.mDlgBodyTextView.setText((CharSequence)Html.fromHtml(this.getActivity().getResources().getQuantityString(2131623939, firstFacebookProfile.size(), new Object[] { firstFacebookProfile.size() - 1, firstFacebookProfile.get(0).getFriendProfile().getFirstName() })));
+        this.mDlgBodyTextView.setText((CharSequence)Html.fromHtml(this.getActivity().getResources().getQuantityString(2131230720, firstFacebookProfile.size(), new Object[] { firstFacebookProfile.size() - 1, firstFacebookProfile.get(0).getFriendProfile().getFirstName() })));
         this.mUIWasUpdated = true;
     }
     
@@ -154,12 +154,12 @@ public class SendAsFacebookMessageDialog extends NetflixDialogFrag
     
     public Dialog onCreateDialog(final Bundle bundle) {
         this.mLayoutInflater = this.getActivity().getLayoutInflater();
-        final View inflate = this.mLayoutInflater.inflate(2130903192, (ViewGroup)null);
-        this.mFriendsAvatarLayout = (ViewGroup)inflate.findViewById(2131427815);
-        this.mDlgBodyTextView = (TextView)inflate.findViewById(2131427816);
-        (this.mDontaskCheckBox = (CheckBox)inflate.findViewById(2131427817)).setOnCheckedChangeListener((CompoundButton$OnCheckedChangeListener)new SendAsFacebookMessageDialog$1(this));
+        final View inflate = this.mLayoutInflater.inflate(2130903228, (ViewGroup)null);
+        this.mFriendsAvatarLayout = (ViewGroup)inflate.findViewById(2131624529);
+        this.mDlgBodyTextView = (TextView)inflate.findViewById(2131624530);
+        (this.mDontaskCheckBox = (CheckBox)inflate.findViewById(2131624531)).setOnCheckedChangeListener((CompoundButton$OnCheckedChangeListener)new SendAsFacebookMessageDialog$1(this));
         this.tryUpdateUI();
-        return (Dialog)new AlertDialog$Builder((Context)this.getActivity()).setPositiveButton(2131493003, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$3(this)).setNegativeButton(2131493356, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$2(this)).setView(inflate).setCancelable(false).create();
+        return (Dialog)new AlertDialog$Builder((Context)this.getActivity()).setPositiveButton(2131165485, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$3(this)).setNegativeButton(2131165373, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$2(this)).setView(inflate).setCancelable(false).create();
     }
     
     @Override

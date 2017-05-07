@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.view.ViewPropertyAnimator;
+import android.app.Activity;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import android.widget.TextView;
@@ -22,7 +23,6 @@ import java.util.Iterator;
 import android.widget.Toast;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.os.Handler;
-import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$Profile;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
@@ -67,7 +67,7 @@ class ProfileDetailsActivity$5 implements View$OnClickListener
             return;
         }
         if (this.this$0.mServiceManager.getCurrentProfile() != null && this.this$0.mInputProfile.getProfileGuid().equals(this.this$0.mServiceManager.getCurrentProfile().getProfileGuid())) {
-            this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131493316), this.this$0.getString(2131493003), null)));
+            this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131165588), this.this$0.getString(2131165485), null)));
             return;
         }
         UserActionLogUtils.reportEditProfileActionEnded((Context)this.this$0, IClientLogging$CompletionReason.canceled, this.this$0.getUiScreen(), null, this.this$0.getProfileForLogging());

@@ -48,16 +48,21 @@ class ActionMenuPresenter$OverflowMenuButton extends TintImageView implements Ac
         return true;
     }
     
-    protected boolean setFrame(int n, final int n2, final int n3, final int n4) {
-        final boolean setFrame = super.setFrame(n, n2, n3, n4);
+    protected boolean setFrame(int n, int height, int paddingTop, int paddingBottom) {
+        final boolean setFrame = super.setFrame(n, height, paddingTop, paddingBottom);
         final Drawable drawable = this.getDrawable();
         final Drawable background = this.getBackground();
         if (drawable != null && background != null) {
-            final float[] mTempPts = this.mTempPts;
-            mTempPts[0] = drawable.getBounds().centerX();
-            this.getImageMatrix().mapPoints(mTempPts);
-            n = (int)mTempPts[0] - this.getWidth() / 2;
-            DrawableCompat.setHotspotBounds(background, n, 0, this.getWidth() + n, this.getHeight());
+            final int width = this.getWidth();
+            height = this.getHeight();
+            n = Math.max(width, height) / 2;
+            final int paddingLeft = this.getPaddingLeft();
+            final int paddingRight = this.getPaddingRight();
+            paddingTop = this.getPaddingTop();
+            paddingBottom = this.getPaddingBottom();
+            final int n2 = (width + (paddingLeft - paddingRight)) / 2;
+            height = (height + (paddingTop - paddingBottom)) / 2;
+            DrawableCompat.setHotspotBounds(background, n2 - n, height - n, n2 + n, height + n);
         }
         return setFrame;
     }

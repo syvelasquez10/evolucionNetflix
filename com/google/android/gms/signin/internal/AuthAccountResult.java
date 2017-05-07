@@ -11,7 +11,7 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class AuthAccountResult implements SafeParcelable
 {
     public static final Parcelable$Creator<AuthAccountResult> CREATOR;
-    final int zzCY;
+    final int mVersionCode;
     
     static {
         CREATOR = (Parcelable$Creator)new zza();
@@ -21,8 +21,8 @@ public class AuthAccountResult implements SafeParcelable
         this(1);
     }
     
-    AuthAccountResult(final int zzCY) {
-        this.zzCY = zzCY;
+    AuthAccountResult(final int mVersionCode) {
+        this.mVersionCode = mVersionCode;
     }
     
     public int describeContents() {

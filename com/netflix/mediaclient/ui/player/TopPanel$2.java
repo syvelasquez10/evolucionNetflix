@@ -17,7 +17,7 @@ class TopPanel$2 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        ((AudioManager)this.this$0.context.getSystemService("audio")).adjustStreamVolume(3, 0, 1);
+        ((AudioManager)this.this$0.playerFragment.getActivity().getSystemService("audio")).adjustStreamVolume(3, 0, 1);
         return true;
     }
 }

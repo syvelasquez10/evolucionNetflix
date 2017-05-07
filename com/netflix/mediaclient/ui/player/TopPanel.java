@@ -9,14 +9,12 @@ import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import android.content.DialogInterface$OnCancelListener;
 import android.widget.AdapterView$OnItemClickListener;
 import android.content.Context;
-import android.app.Activity;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog$Builder;
 import android.app.AlertDialog;
 import com.netflix.mediaclient.util.ViewUtils;
@@ -53,12 +51,12 @@ public final class TopPanel extends PlayerSection
     private View mTopGradient;
     protected MdxTargetSelection mdxTargetSelector;
     
-    public TopPanel(final PlayerActivity playerActivity, final PlayScreen$Listeners mListeners) {
-        super(playerActivity);
+    public TopPanel(final PlayerFragment playerFragment, final PlayScreen$Listeners mListeners) {
+        super(playerFragment);
         this.mBackListener = (View$OnClickListener)new TopPanel$1(this);
         this.mListeners = mListeners;
-        (this.mActionBar = playerActivity.getSupportActionBar()).setTitle("");
-        this.mTitleLabel = (TextView)playerActivity.findViewById(2131427714);
+        (this.mActionBar = playerFragment.getNetflixActivity().getSupportActionBar()).setTitle("");
+        this.mTitleLabel = (TextView)playerFragment.getView().findViewById(2131624409);
     }
     
     private void changeControlsVisibility(final boolean b) {
@@ -77,18 +75,18 @@ public final class TopPanel extends PlayerSection
         AnimationUtils.startViewAppearanceAnimation(this.mTopGradient, b);
     }
     
-    private AlertDialog createMdxTargetSelectionDialog(final PlayerActivity playerActivity) {
-        final IPlayer player = playerActivity.getPlayer();
+    private AlertDialog createMdxTargetSelectionDialog(final PlayerFragment playerFragment) {
+        final IPlayer player = playerFragment.getPlayer();
         final boolean b = player != null && player.isPlaying();
         final int localDevicePosition = this.mdxTargetSelector.getLocalDevicePosition();
         this.mdxTargetSelector.setTarget(localDevicePosition);
-        final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(playerActivity);
+        final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(playerFragment.getActivity());
         mdxTargetSelectionDialog$Builder.setCancelable(false);
-        mdxTargetSelectionDialog$Builder.setTitle(2131493145);
-        mdxTargetSelectionDialog$Builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerActivity));
-        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerActivity.getString(2131493231), this.getCurrentTitle()));
-        mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new TopPanel$8(this, playerActivity, b));
-        mdxTargetSelectionDialog$Builder.setOnCancelListener((DialogInterface$OnCancelListener)new TopPanel$9(this, playerActivity));
+        mdxTargetSelectionDialog$Builder.setTitle(2131165455);
+        mdxTargetSelectionDialog$Builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerFragment.getActivity()));
+        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerFragment.getString(2131165580), this.getCurrentTitle()));
+        mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new TopPanel$8(this, playerFragment, b));
+        mdxTargetSelectionDialog$Builder.setOnCancelListener((DialogInterface$OnCancelListener)new TopPanel$9(this, playerFragment));
         return mdxTargetSelectionDialog$Builder.create();
     }
     
@@ -104,24 +102,24 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initGeneric(final Menu menu) {
-        (this.mEpisodeSelector = menu.add(2131493228)).setVisible(this.mEpisodeSelectorEnabled);
-        this.mEpisodeSelector.setIcon(2130837690);
+        (this.mEpisodeSelector = menu.add(2131165343)).setVisible(this.mEpisodeSelectorEnabled);
+        this.mEpisodeSelector.setIcon(2130837719);
         this.mEpisodeSelector.setShowAsAction(2);
         this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$6(this));
-        this.mTopGradient = this.context.findViewById(2131427710);
-        this.mToolBar = (Toolbar)this.context.findViewById(2131427713);
+        this.mTopGradient = this.playerFragment.getView().findViewById(2131624406);
+        this.mToolBar = (Toolbar)this.playerFragment.getView().findViewById(2131624408);
     }
     
     private void initLanguages(final Menu menu) {
-        this.mLanguageSelector = LanguageSelector.createInstance(this.context, this.context.isTablet(), new TopPanel$3(this));
-        (this.mLanguage = menu.add(2131493150)).setVisible(this.showLanguageMenuItem());
-        this.mLanguage.setIcon(2130837738);
+        this.mLanguageSelector = LanguageSelector.createInstance(this.playerFragment.getNetflixActivity(), this.playerFragment.getNetflixActivity().isTablet(), new TopPanel$3(this));
+        (this.mLanguage = menu.add(2131165344)).setVisible(this.showLanguageMenuItem());
+        this.mLanguage.setIcon(2130837786);
         this.mLanguage.setShowAsAction(2);
         this.mLanguage.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$4(this));
     }
     
     private void initMDX(final Menu menu) {
-        (this.mMdxTarget = menu.add(2131493148)).setIcon(2130837681);
+        (this.mMdxTarget = menu.add(2131165345)).setIcon(2130837701);
         this.mMdxTarget.setVisible(this.mMDXSelectorEnabled);
         this.mMdxTarget.setShowAsAction(2);
         this.mMdxTarget.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$7(this));
@@ -131,7 +129,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initSound(final Menu menu) {
-        (this.mSound = menu.add(2131493182)).setIcon(2130837743);
+        (this.mSound = menu.add(2131165362)).setIcon(2130837791);
         this.mSound.setShowAsAction(2);
         this.mSound.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$2(this));
     }
@@ -146,7 +144,7 @@ public final class TopPanel extends PlayerSection
     
     private boolean processLanguageChange(final Language language) {
         final boolean b = true;
-        if (this.context.getScreen() == null) {
+        if (this.playerFragment.getScreen() == null) {
             return false;
         }
         final AudioSource selectedAudio = language.getSelectedAudio();
@@ -163,7 +161,7 @@ public final class TopPanel extends PlayerSection
             Log.d("screen", "Selected subtitle " + selectedSubtitle);
             Log.d("screen", "Selected audio source " + selectedAudio);
         }
-        this.context.getSubtitleManager().setSubtitleVisibility(subtitleVisibility);
+        this.playerFragment.getSubtitleManager().setSubtitleVisibility(subtitleVisibility);
         final int nccpOrderNumber = selectedAudio.getNccpOrderNumber();
         boolean b2;
         int n;
@@ -198,20 +196,19 @@ public final class TopPanel extends PlayerSection
         }
         if (n != 0) {
             Log.d("screen", "Reloading tracks");
-            this.context.changeLanguage(language, b2);
+            this.playerFragment.changeLanguage(language, b2);
         }
         return !b2 && b;
     }
     
     private boolean showLanguageMenuItem() {
-        final Language language = this.context.getLanguage();
+        final Language language = this.playerFragment.getLanguage();
         return this.mLanguage != null && language != null && language.isLanguageSwitchEnabled();
     }
     
     private void updateLastPanelInteractionTime() {
-        final PlayerActivity context = this.context;
-        if (context != null) {
-            context.extendTimeoutTimer();
+        if (this.playerFragment.isActivityValid()) {
+            this.playerFragment.extendTimeoutTimer();
         }
     }
     
@@ -241,12 +238,9 @@ public final class TopPanel extends PlayerSection
         if (this.mdxTargetSelector == null || this.mdxTargetSelector.getMdxTargets() == null || this.mdxTargetSelector.getMdxTargets().length < 2) {
             Log.d("screen", "Non local targets are not available!");
         }
-        else {
-            final PlayerActivity context = this.context;
-            if (context != null) {
-                Log.d("screen", "MDX target is reachable, display dialog");
-                context.displayDialog((Dialog)this.createMdxTargetSelectionDialog(context));
-            }
+        else if (this.playerFragment.isActivityValid()) {
+            Log.d("screen", "MDX target is reachable, display dialog");
+            this.playerFragment.getNetflixActivity().displayDialog((Dialog)this.createMdxTargetSelectionDialog(this.playerFragment));
         }
     }
     
@@ -305,7 +299,7 @@ public final class TopPanel extends PlayerSection
                 Log.d("screen", "MDX target whould be visible: " + mdxTargetSelectionVisible);
             }
             if (showing) {
-                if (this.context == null) {
+                if (!this.playerFragment.isActivityValid()) {
                     Log.w("screen", "Player activity was destroyed, do nothing");
                 }
                 else {
@@ -317,9 +311,8 @@ public final class TopPanel extends PlayerSection
     }
     
     public void setTitle(final String s) {
-        final PlayerActivity context = this.context;
-        if (context != null && !context.isFinishing()) {
-            context.runInUiThread(new TopPanel$10(this, s));
+        if (this.playerFragment.isActivityValid()) {
+            this.playerFragment.runOnUiThread(new TopPanel$10(this, s));
         }
     }
     

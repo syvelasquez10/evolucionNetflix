@@ -5,24 +5,28 @@
 package com.google.android.gms.common.api;
 
 import android.os.Parcel;
-import com.google.android.gms.common.internal.zzu;
+import com.google.android.gms.common.internal.zzx;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class Scope implements SafeParcelable
 {
     public static final Parcelable$Creator<Scope> CREATOR;
-    final int zzCY;
-    private final String zzXN;
+    final int mVersionCode;
+    private final String zzaaC;
     
     static {
-        CREATOR = (Parcelable$Creator)new zzj();
+        CREATOR = (Parcelable$Creator)new zzm();
     }
     
-    Scope(final int zzCY, final String zzXN) {
-        zzu.zzh(zzXN, "scopeUri must not be null or empty");
-        this.zzCY = zzCY;
-        this.zzXN = zzXN;
+    Scope(final int mVersionCode, final String zzaaC) {
+        zzx.zzh(zzaaC, "scopeUri must not be null or empty");
+        this.mVersionCode = mVersionCode;
+        this.zzaaC = zzaaC;
+    }
+    
+    public Scope(final String s) {
+        this(1, s);
     }
     
     public int describeContents() {
@@ -31,24 +35,24 @@ public final class Scope implements SafeParcelable
     
     @Override
     public boolean equals(final Object o) {
-        return this == o || (o instanceof Scope && this.zzXN.equals(((Scope)o).zzXN));
+        return this == o || (o instanceof Scope && this.zzaaC.equals(((Scope)o).zzaaC));
     }
     
     @Override
     public int hashCode() {
-        return this.zzXN.hashCode();
+        return this.zzaaC.hashCode();
     }
     
     @Override
     public String toString() {
-        return this.zzXN;
+        return this.zzaaC;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        zzj.zza(this, parcel, n);
+        zzm.zza(this, parcel, n);
     }
     
-    public String zzmQ() {
-        return this.zzXN;
+    public String zznG() {
+        return this.zzaaC;
     }
 }

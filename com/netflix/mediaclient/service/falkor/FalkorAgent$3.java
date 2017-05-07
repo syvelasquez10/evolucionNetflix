@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.mediaclient.service.preapp.PreAppAgent;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
@@ -31,8 +30,12 @@ class FalkorAgent$3 extends SimpleBrowseAgentCallback
         else {
             Log.w("FalkorAgent", "status is not FalkorAgentStatus");
         }
-        if (!wasAllDataLocalToCache && StatusCode.OK.equals(status.getStatusCode())) {
-            PreAppAgent.informPrefetched(this.this$0.getContext());
+        if (!wasAllDataLocalToCache) {
+            Log.d("FalkorAgent", "nf_preapp notifying of  prefetch done");
+            this.this$0.getPreAppAgent().informPrefetched(this.this$0.getContext());
+            if (!StatusCode.OK.equals(status.getStatusCode())) {
+                Log.w("FalkorAgent", "nf_preapp prefetch failed");
+            }
         }
     }
 }

@@ -22,7 +22,7 @@ public class SearchUtils
         numRelatedColumnsTable = new SparseArray(2);
         numPeopleColumnsTable = new SparseArray(2);
         numVideoColumnsTable = new SparseArray(2);
-        setSearchExperience(SearchUtils$SearchExperience.STANDARD);
+        setSearchExperience(SearchUtils$SearchExperience.KUBRICK);
     }
     
     private static int computeMaxResultsForPeople(final Context context) {
@@ -128,10 +128,10 @@ public class SearchUtils
     public static int getSearchFragLayout() {
         switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
-                return 2130903188;
+                return 2130903221;
             }
             case 1: {
-                return 2130903189;
+                return 2130903222;
             }
         }
     }
@@ -139,10 +139,10 @@ public class SearchUtils
     public static int getSearchViewLayoutPeople() {
         switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
-                return 2130903185;
+                return 2130903218;
             }
             case 1: {
-                return 2130903187;
+                return 2130903220;
             }
         }
     }
@@ -150,10 +150,10 @@ public class SearchUtils
     public static int getSearchViewLayoutRelated() {
         switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
-                return 2130903186;
+                return 2130903219;
             }
             case 1: {
-                return 2130903187;
+                return 2130903220;
             }
         }
     }

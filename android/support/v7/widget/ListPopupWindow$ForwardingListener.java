@@ -5,6 +5,7 @@
 package android.support.v7.widget;
 
 import android.support.v4.widget.PopupWindowCompat;
+import android.os.Build$VERSION;
 import android.widget.PopupWindow$OnDismissListener;
 import android.widget.ListView;
 import android.view.ViewParent;
@@ -19,6 +20,7 @@ import android.support.v4.text.TextUtilsCompat;
 import android.support.v7.internal.widget.AppCompatPopupWindow;
 import android.support.v7.appcompat.R$styleable;
 import android.util.AttributeSet;
+import android.support.v7.appcompat.R$attr;
 import android.util.Log;
 import android.graphics.Rect;
 import android.widget.PopupWindow;
@@ -69,11 +71,12 @@ public abstract class ListPopupWindow$ForwardingListener implements View$OnTouch
     
     private void onLongPress() {
         this.clearCallbacks();
-        if (this.mSrc.isEnabled() && this.onForwardingStarted()) {
-            this.mSrc.getParent().requestDisallowInterceptTouchEvent(true);
+        final View mSrc = this.mSrc;
+        if (mSrc.isEnabled() && !mSrc.isLongClickable() && this.onForwardingStarted()) {
+            mSrc.getParent().requestDisallowInterceptTouchEvent(true);
             final long uptimeMillis = SystemClock.uptimeMillis();
             final MotionEvent obtain = MotionEvent.obtain(uptimeMillis, uptimeMillis, 3, 0.0f, 0.0f, 0);
-            this.mSrc.onTouchEvent(obtain);
+            mSrc.onTouchEvent(obtain);
             obtain.recycle();
             this.mForwarding = true;
             this.mWasLongPress = true;

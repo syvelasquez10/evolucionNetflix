@@ -13,6 +13,7 @@ import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.content.IntentSender$SendIntentException;
+import android.app.Activity;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
@@ -22,7 +23,6 @@ import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
-import android.app.Activity;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.google.android.gms.common.api.ResultCallback;
@@ -64,6 +64,6 @@ class LoginActivity$3 implements View$OnClickListener
             this.this$0.startActivityForResult(setData, 0);
             return;
         }
-        this.this$0.displayUserAgentDialog(this.this$0.getString(2131493322, new Object[] { "https://signup.netflix.com/loginhelp" }), null, false);
+        this.this$0.displayUserAgentDialog(this.this$0.getString(2131165563, new Object[] { "https://signup.netflix.com/loginhelp" }), null, false);
     }
 }

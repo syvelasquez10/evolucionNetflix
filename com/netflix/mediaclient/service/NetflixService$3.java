@@ -8,6 +8,7 @@ import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import android.os.Process;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
 import com.netflix.mediaclient.servicemgr.IPushNotification;
 import com.netflix.mediaclient.repository.SecurityRepository;
@@ -44,6 +45,7 @@ import com.netflix.mediaclient.Log;
 import android.app.AlarmManager;
 import android.content.Intent;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.service.voip.WhistleVoipAgent;
 import com.netflix.mediaclient.service.user.UserAgent;
 import com.netflix.mediaclient.service.pushnotification.PushNotificationAgent;
 import com.netflix.mediaclient.service.preapp.PreAppAgent;
@@ -54,6 +56,7 @@ import com.netflix.mediaclient.android.app.Status;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.falkor.FalkorAgent;
 import com.netflix.mediaclient.service.falkor.FalkorAccess;
+import com.netflix.mediaclient.service.error.ErrorAgent;
 import com.netflix.mediaclient.service.diagnostics.DiagnosisAgent;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.service.logging.LoggingAgent;
@@ -62,6 +65,7 @@ import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;
 import android.app.Service;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
+import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import com.netflix.mediaclient.NetflixApplication;
 
 class NetflixService$3 implements ServiceAgent$AgentContext
@@ -85,6 +89,11 @@ class NetflixService$3 implements ServiceAgent$AgentContext
     @Override
     public ServiceAgent$ConfigurationAgentInterface getConfigurationAgent() {
         return this.this$0.mConfigurationAgent;
+    }
+    
+    @Override
+    public IErrorHandler getErrorHandler() {
+        return this.this$0.mErrorAgent;
     }
     
     @Override

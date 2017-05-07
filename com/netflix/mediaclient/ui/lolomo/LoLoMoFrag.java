@@ -4,16 +4,16 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
-import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.graphics.drawable.Drawable;
+import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
-import android.view.View;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import android.view.View;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.widget.AbsListView$OnScrollListener;
@@ -36,19 +36,19 @@ import com.netflix.mediaclient.android.fragment.NetflixFrag;
 
 public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
 {
-    private static final String EXTRA_GENRE_ID = "genre_id";
-    private static final String EXTRA_GENRE_PARCEL = "genre_parcel";
-    private static final String EXTRA_IS_GENRE_LIST = "is_genre_list";
+    protected static final String EXTRA_GENRE_ID = "genre_id";
+    protected static final String EXTRA_GENRE_PARCEL = "genre_parcel";
+    protected static final String EXTRA_IS_GENRE_LIST = "is_genre_list";
     public static final int NUM_LOMOS_TO_FETCH_PER_BATCH = 20;
     private static final String TAG = "LoLoMoFrag";
     private LoLoMoFrag$ILoLoMoAdapter adapter;
-    private LoLoMoFocusHandler focusHandler;
-    private String genreId;
+    protected LoLoMoFocusHandler focusHandler;
+    protected String genreId;
     private boolean isGenreList;
-    private final ErrorWrapper$Callback leCallback;
-    private LoadingAndErrorWrapper leWrapper;
+    protected final ErrorWrapper$Callback leCallback;
+    protected LoadingAndErrorWrapper leWrapper;
     protected ListView listView;
-    private ServiceManager manager;
+    protected ServiceManager manager;
     private final AbsListView$RecyclerListener recycleListener;
     private final Map<String, Object> stateMap;
     private ObjectRecycler$ViewRecycler viewRecycler;
@@ -92,6 +92,10 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         this.adapter.onManagerReady(this.manager, CommonStatus.OK);
     }
     
+    private void setupErrorWrapper(final View view) {
+        this.leWrapper = new LoadingAndErrorWrapper(view, this.leCallback);
+    }
+    
     protected LoLoMoFrag$ILoLoMoAdapter createAdapter() {
         return BrowseExperience.get().createLolomoAdapter(this, this.isGenreList, this.genreId);
     }
@@ -100,8 +104,16 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         return this.focusHandler != null && this.focusHandler.dispatchKeyEvent(keyEvent);
     }
     
+    protected int getLayoutId() {
+        return 2130903152;
+    }
+    
     ListView getListView() {
         return this.listView;
+    }
+    
+    protected View getMainView() {
+        return (View)this.listView;
     }
     
     public Map<String, Object> getStateMap() {
@@ -143,15 +155,10 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("LoLoMoFrag", "Creating frag view");
-        final View inflate = layoutInflater.inflate(2130903128, viewGroup, false);
-        (this.listView = (ListView)inflate.findViewById(16908298)).setDivider((Drawable)null);
-        this.listView.setFocusable(false);
-        this.listView.setRecyclerListener(this.recycleListener);
-        if (BrowseExperience.isKubrickKids()) {
-            KidsUtils.configureListViewForKids(this.listView);
-        }
-        this.focusHandler = new LoLoMoFocusHandler(this.getNetflixActivity(), this.listView);
-        this.leWrapper = new LoadingAndErrorWrapper(inflate, this.leCallback);
+        final View inflate = layoutInflater.inflate(this.getLayoutId(), viewGroup, false);
+        this.setupMainView(inflate);
+        this.setupFocushandler();
+        this.setupErrorWrapper(inflate);
         return inflate;
     }
     
@@ -202,6 +209,19 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     public void setLoadingStatusCallback(final LoadingStatus$LoadingStatusCallback loadingStatusCallback) {
         if (this.adapter != null) {
             this.adapter.setLoadingStatusCallback(loadingStatusCallback);
+        }
+    }
+    
+    protected void setupFocushandler() {
+        this.focusHandler = new LoLoMoFocusHandler(this.getNetflixActivity(), this.listView);
+    }
+    
+    protected void setupMainView(final View view) {
+        (this.listView = (ListView)view.findViewById(16908298)).setDivider((Drawable)null);
+        this.listView.setFocusable(false);
+        this.listView.setRecyclerListener(this.recycleListener);
+        if (BrowseExperience.isKubrickKids()) {
+            KidsUtils.configureListViewForKids(this.listView);
         }
     }
     

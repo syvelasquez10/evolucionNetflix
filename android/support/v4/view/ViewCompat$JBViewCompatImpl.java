@@ -35,6 +35,11 @@ class ViewCompat$JBViewCompatImpl extends ViewCompat$ICSViewCompatImpl
     }
     
     @Override
+    public boolean hasOverlappingRendering(final View view) {
+        return ViewCompatJB.hasOverlappingRendering(view);
+    }
+    
+    @Override
     public boolean hasTransientState(final View view) {
         return ViewCompatJB.hasTransientState(view);
     }

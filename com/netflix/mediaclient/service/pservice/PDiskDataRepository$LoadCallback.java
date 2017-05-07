@@ -10,7 +10,8 @@ public class PDiskDataRepository$LoadCallback
 {
     public void onDataLoaded(final PDiskData pDiskData) {
         if (PDiskDataRepository.ENABLE_VERBOSE_LOGGING) {
-            Log.d("nf_preapp_dataRepo", String.format("mDiskData: %s", pDiskData.toJsonString()));
+            Log.d("nf_preapp_dataRepo", "onDataLoaded - diskData.print");
+            pDiskData.print();
         }
     }
 }

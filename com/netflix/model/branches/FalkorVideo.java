@@ -442,13 +442,13 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     @Override
     public String getHorzDispUrl() {
         final Video$Detail detail = this.getDetail();
-        if (detail != null) {
-            return detail.horzDispUrl;
+        if (this.summary != null) {
+            return this.summary.getHorzDispUrl();
         }
-        if (this.summary == null) {
+        if (detail == null) {
             return null;
         }
-        return this.summary.getHorzDispUrl();
+        return detail.horzDispUrl;
     }
     
     @Override
@@ -862,10 +862,10 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     @Override
     public String getTvCardUrl() {
         final Video$Detail detail = this.getDetail();
-        if (detail != null) {
+        if (detail != null && StringUtils.isNotEmpty(detail.tvCardUrl)) {
             return detail.tvCardUrl;
         }
-        if (this.summary == null) {
+        if (this.summary == null || StringUtils.isEmpty(this.summary.getTvCardUrl())) {
             return null;
         }
         return this.summary.getTvCardUrl();

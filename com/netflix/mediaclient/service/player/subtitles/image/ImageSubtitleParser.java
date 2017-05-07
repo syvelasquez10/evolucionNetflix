@@ -100,23 +100,30 @@ public class ImageSubtitleParser extends BaseSubtitleParser
     }
     
     private int getCurrentSegmentIndex() {
-        for (int i = 0; i < this.mSegmentIndexes.length; ++i) {
-            if (this.mSegmentIndexes[i].inRange(this.mLastKnownPosition)) {
-                return i;
+        if (this.mSegmentIndexes == null) {
+            Log.d("nf_subtitles", "Indexes not available yet!");
+        }
+        else {
+            for (int i = 0; i < this.mSegmentIndexes.length; ++i) {
+                if (this.mSegmentIndexes[i].inRange(this.mLastKnownPosition)) {
+                    return i;
+                }
             }
         }
         return 0;
     }
     
     private SegmentIndex getSegmentForPosition(final long n) {
-        int mIndexOfLastSearch;
-        if ((mIndexOfLastSearch = this.mIndexOfLastSearch) < 0) {
-            mIndexOfLastSearch = 0;
+        int i;
+        if ((i = this.mIndexOfLastSearch) < 0) {
+            i = 0;
         }
-        int i = mIndexOfLastSearch;
         if (Log.isLoggable()) {
-            Log.d("nf_subtitles", "Start searching from index " + mIndexOfLastSearch);
-            i = mIndexOfLastSearch;
+            Log.d("nf_subtitles", "Start searching from index " + i);
+        }
+        if (this.mSegmentIndexes == null) {
+            Log.d("nf_subtitles", "Indexes not available yet!");
+            return null;
         }
         while (i < this.mSegmentIndexes.length) {
             if (Log.isLoggable()) {

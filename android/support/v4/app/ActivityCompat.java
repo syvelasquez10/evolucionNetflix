@@ -4,6 +4,8 @@
 
 package android.support.v4.app;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Build$VERSION;
 import android.app.Activity;
 import android.support.v4.content.ContextCompat;
@@ -40,6 +42,15 @@ public class ActivityCompat extends ContextCompat
         }
     }
     
+    public static void requestPermissions(final Activity activity, final String[] array, final int n) {
+        if (Build$VERSION.SDK_INT >= 23) {
+            ActivityCompatApi23.requestPermissions(activity, array, n);
+        }
+        else if (activity instanceof ActivityCompat$OnRequestPermissionsResultCallback) {
+            new Handler(Looper.getMainLooper()).post((Runnable)new ActivityCompat$1(array, activity, n));
+        }
+    }
+    
     public static void setEnterSharedElementCallback(final Activity activity, final SharedElementCallback sharedElementCallback) {
         if (Build$VERSION.SDK_INT >= 21) {
             ActivityCompat21.setEnterSharedElementCallback(activity, createCallback(sharedElementCallback));
@@ -50,6 +61,10 @@ public class ActivityCompat extends ContextCompat
         if (Build$VERSION.SDK_INT >= 21) {
             ActivityCompat21.setExitSharedElementCallback(activity, createCallback(sharedElementCallback));
         }
+    }
+    
+    public static boolean shouldShowRequestPermissionRationale(final Activity activity, final String s) {
+        return Build$VERSION.SDK_INT >= 23 && ActivityCompatApi23.shouldShowRequestPermissionRationale(activity, s);
     }
     
     public static void startPostponedEnterTransition(final Activity activity) {

@@ -6,12 +6,12 @@ package android.support.v7.internal.view.menu;
 
 class f<T>
 {
-    final T a;
+    final T b;
     
-    f(final T a) {
-        if (a == null) {
+    f(final T b) {
+        if (b == null) {
             throw new IllegalArgumentException("Wrapped Object can not be null.");
         }
-        this.a = a;
+        this.b = b;
     }
 }

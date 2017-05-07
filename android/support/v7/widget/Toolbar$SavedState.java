@@ -9,11 +9,11 @@ import android.os.Parcel;
 import android.os.Parcelable$Creator;
 import android.view.View$BaseSavedState;
 
-class Toolbar$SavedState extends View$BaseSavedState
+public class Toolbar$SavedState extends View$BaseSavedState
 {
     public static final Parcelable$Creator<Toolbar$SavedState> CREATOR;
-    public int expandedMenuItemId;
-    public boolean isOverflowOpen;
+    int expandedMenuItemId;
+    boolean isOverflowOpen;
     
     static {
         CREATOR = (Parcelable$Creator)new Toolbar$SavedState$1();

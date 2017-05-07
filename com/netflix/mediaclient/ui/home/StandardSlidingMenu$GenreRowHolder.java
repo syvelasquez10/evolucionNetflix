@@ -7,7 +7,7 @@ package com.netflix.mediaclient.ui.home;
 import android.widget.TextView;
 import android.view.View;
 
-class StandardSlidingMenu$GenreRowHolder
+public class StandardSlidingMenu$GenreRowHolder
 {
     public final View selectionIndicator;
     public final TextView tv;

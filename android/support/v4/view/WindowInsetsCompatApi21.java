@@ -15,6 +15,11 @@ class WindowInsetsCompatApi21 extends WindowInsetsCompat
     }
     
     @Override
+    public WindowInsetsCompat consumeSystemWindowInsets() {
+        return new WindowInsetsCompatApi21(this.mSource.consumeSystemWindowInsets());
+    }
+    
+    @Override
     public int getSystemWindowInsetBottom() {
         return this.mSource.getSystemWindowInsetBottom();
     }
@@ -32,6 +37,11 @@ class WindowInsetsCompatApi21 extends WindowInsetsCompat
     @Override
     public int getSystemWindowInsetTop() {
         return this.mSource.getSystemWindowInsetTop();
+    }
+    
+    @Override
+    public boolean isConsumed() {
+        return this.mSource.isConsumed();
     }
     
     @Override

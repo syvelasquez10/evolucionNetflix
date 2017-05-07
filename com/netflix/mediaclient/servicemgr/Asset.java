@@ -137,7 +137,7 @@ public class Asset implements Parcelable, PlayContext
     public static Asset createForPostPlay(final Playable playable, final PlayContext playContext, final int mPostPlayVideoPlayed, final boolean b) {
         final Asset create = create(playable, playContext, b);
         create.mPostPlayVideoPlayed = mPostPlayVideoPlayed;
-        if (create.isEpisode() && create.mPlaybackBookmark == 0) {
+        if (create.isEpisode()) {
             create.mPlaybackBookmark = create.mLogicalStart;
             Log.d("nf_asset", String.format("%s postPlay start set to logicalPos: %d", create.mPlayableId, create.mLogicalStart));
         }

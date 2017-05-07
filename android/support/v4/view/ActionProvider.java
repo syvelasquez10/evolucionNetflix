@@ -16,8 +16,8 @@ public abstract class ActionProvider
     private ActionProvider$SubUiVisibilityListener mSubUiVisibilityListener;
     private ActionProvider$VisibilityListener mVisibilityListener;
     
-    public Context getContext() {
-        return this.mContext;
+    public ActionProvider(final Context mContext) {
+        this.mContext = mContext;
     }
     
     public boolean hasSubMenu() {
@@ -45,10 +45,9 @@ public abstract class ActionProvider
         return false;
     }
     
-    public void refreshVisibility() {
-        if (this.mVisibilityListener != null && this.overridesItemVisibility()) {
-            this.mVisibilityListener.onActionProviderVisibilityChanged(this.isVisible());
-        }
+    public void reset() {
+        this.mVisibilityListener = null;
+        this.mSubUiVisibilityListener = null;
     }
     
     public void setSubUiVisibilityListener(final ActionProvider$SubUiVisibilityListener mSubUiVisibilityListener) {
@@ -60,5 +59,11 @@ public abstract class ActionProvider
             Log.w("ActionProvider(support)", "setVisibilityListener: Setting a new ActionProvider.VisibilityListener when one is already set. Are you reusing this " + this.getClass().getSimpleName() + " instance while it is still in use somewhere else?");
         }
         this.mVisibilityListener = mVisibilityListener;
+    }
+    
+    public void subUiVisibilityChanged(final boolean b) {
+        if (this.mSubUiVisibilityListener != null) {
+            this.mSubUiVisibilityListener.onSubUiVisibilityChanged(b);
+        }
     }
 }

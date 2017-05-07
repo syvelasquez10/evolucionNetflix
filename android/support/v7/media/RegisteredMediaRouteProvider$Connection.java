@@ -190,8 +190,11 @@ final class RegisteredMediaRouteProvider$Connection implements IBinder$DeathReci
         this.sendRequest(7, n2, n, null, bundle);
     }
     
-    public void unselectRoute(final int n) {
-        this.sendRequest(6, this.mNextRequestId++, n, null, null);
+    public void unselectRoute(final int n, int n2) {
+        final Bundle bundle = new Bundle();
+        bundle.putInt("unselectReason", n2);
+        n2 = this.mNextRequestId++;
+        this.sendRequest(6, n2, n, null, bundle);
     }
     
     public void updateVolume(final int n, int n2) {

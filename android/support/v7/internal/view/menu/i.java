@@ -14,13 +14,13 @@ import android.view.SubMenu;
 import android.util.SparseArray;
 import android.support.v4.view.MenuItemCompat;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.KeyCharacterMap$KeyData;
 import java.util.List;
 import android.view.KeyEvent;
 import android.support.v7.appcompat.R$bool;
 import java.util.Iterator;
 import android.support.v4.content.ContextCompat;
-import android.view.MenuItem;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.CopyOnWriteArrayList;
 import android.view.ContextMenu$ContextMenuInfo;
@@ -57,6 +57,7 @@ public class i implements SupportMenu
     private ArrayList<m> v;
     private CopyOnWriteArrayList<WeakReference<x>> w;
     private m x;
+    private boolean y;
     
     static {
         d = new int[] { 1, 4, 5, 3, 2, 0 };
@@ -77,7 +78,7 @@ public class i implements SupportMenu
         this.l = true;
         this.m = new ArrayList<m>();
         this.n = new ArrayList<m>();
-        this.d(this.o = true);
+        this.e(this.o = true);
     }
     
     private static int a(final ArrayList<m> list, final int n) {
@@ -91,17 +92,6 @@ public class i implements SupportMenu
     
     private m a(final int n, final int n2, final int n3, final int n4, final CharSequence charSequence, final int n5) {
         return new m(this, n, n2, n3, n4, charSequence, n5);
-    }
-    
-    private MenuItem a(final int n, final int n2, final int n3, final CharSequence charSequence) {
-        final int d = d(n3);
-        final m a = this.a(n, n2, n3, d, charSequence, this.p);
-        if (this.q != null) {
-            a.a(this.q);
-        }
-        this.j.add(a(this.j, d), a);
-        this.b(true);
-        return (MenuItem)a;
     }
     
     private void a(final int n, final CharSequence a, final int n2, final Drawable b, final View c) {
@@ -161,7 +151,15 @@ public class i implements SupportMenu
         return b;
     }
     
-    private void c(final boolean b) {
+    private static int d(final int n) {
+        final int n2 = (0xFFFF0000 & n) >> 16;
+        if (n2 < 0 || n2 >= i.d.length) {
+            throw new IllegalArgumentException("order does not contain a valid category.");
+        }
+        return i.d[n2] << 16 | (0xFFFF & n);
+    }
+    
+    private void d(final boolean b) {
         if (this.w.isEmpty()) {
             return;
         }
@@ -178,15 +176,7 @@ public class i implements SupportMenu
         this.h();
     }
     
-    private static int d(final int n) {
-        final int n2 = (0xFFFF0000 & n) >> 16;
-        if (n2 < 0 || n2 >= i.d.length) {
-            throw new IllegalArgumentException("order does not contain a valid category.");
-        }
-        return i.d[n2] << 16 | (0xFFFF & n);
-    }
-    
-    private void d(final boolean b) {
+    private void e(final boolean b) {
         final boolean b2 = true;
         this.h = (b && this.f.getConfiguration().keyboard != 1 && this.f.getBoolean(R$bool.abc_config_showMenuShortcutsWhenKeyboardPresent) && b2);
     }
@@ -274,6 +264,17 @@ public class i implements SupportMenu
             return null;
         }
         return m;
+    }
+    
+    protected MenuItem a(final int n, final int n2, final int n3, final CharSequence charSequence) {
+        final int d = d(n3);
+        final m a = this.a(n, n2, n3, d, charSequence, this.p);
+        if (this.q != null) {
+            a.a(this.q);
+        }
+        this.j.add(a(this.j, d), a);
+        this.b(true);
+        return (MenuItem)a;
     }
     
     protected String a() {
@@ -401,9 +402,9 @@ public class i implements SupportMenu
             }
             else {
                 final boolean a = m.a();
-                final ActionProvider i = m.m();
-                final boolean b3 = i != null && i.hasSubMenu();
-                if (m.n()) {
+                final ActionProvider supportActionProvider = m.getSupportActionProvider();
+                final boolean b3 = supportActionProvider != null && supportActionProvider.hasSubMenu();
+                if (m.m()) {
                     final boolean b4 = b2 = (m.expandActionView() | a);
                     if (b4) {
                         this.a(true);
@@ -423,7 +424,7 @@ public class i implements SupportMenu
                     }
                     final ad ad = (ad)m.getSubMenu();
                     if (b3) {
-                        i.onPrepareSubMenu((SubMenu)ad);
+                        supportActionProvider.onPrepareSubMenu((SubMenu)ad);
                     }
                     final boolean b5 = b2 = (this.a(ad, x) | a);
                     if (!b5) {
@@ -557,7 +558,7 @@ public class i implements SupportMenu
                 this.l = true;
                 this.o = true;
             }
-            this.c(b);
+            this.d(b);
             return;
         }
         this.s = true;
@@ -569,6 +570,10 @@ public class i implements SupportMenu
     
     public int c(final int n) {
         return this.a(n, 0);
+    }
+    
+    public void c(final boolean y) {
+        this.y = y;
     }
     
     public boolean c() {
@@ -709,6 +714,9 @@ public class i implements SupportMenu
     }
     
     public boolean hasVisibleItems() {
+        if (this.y) {
+            return true;
+        }
         for (int size = this.size(), i = 0; i < size; ++i) {
             if (this.j.get(i).isVisible()) {
                 return true;

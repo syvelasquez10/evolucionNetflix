@@ -45,6 +45,7 @@ public class v implements x, View$OnKeyListener, ViewTreeObserver$OnGlobalLayout
     private ListPopupWindow mPopup;
     private final int mPopupMaxWidth;
     private final int mPopupStyleAttr;
+    private final int mPopupStyleRes;
     private y mPresenterCallback;
     private ViewTreeObserver mTreeObserver;
     
@@ -56,7 +57,11 @@ public class v implements x, View$OnKeyListener, ViewTreeObserver$OnGlobalLayout
         this(context, i, view, false, R$attr.popupMenuStyle);
     }
     
-    public v(final Context mContext, final i mMenu, final View mAnchorView, final boolean mOverflowOnly, final int mPopupStyleAttr) {
+    public v(final Context context, final i i, final View view, final boolean b, final int n) {
+        this(context, i, view, b, n, 0);
+    }
+    
+    public v(final Context mContext, final i mMenu, final View mAnchorView, final boolean mOverflowOnly, final int mPopupStyleAttr, final int mPopupStyleRes) {
         this.mDropDownGravity = 0;
         this.mContext = mContext;
         this.mInflater = LayoutInflater.from(mContext);
@@ -64,6 +69,7 @@ public class v implements x, View$OnKeyListener, ViewTreeObserver$OnGlobalLayout
         this.mAdapter = new w(this, this.mMenu);
         this.mOverflowOnly = mOverflowOnly;
         this.mPopupStyleAttr = mPopupStyleAttr;
+        this.mPopupStyleRes = mPopupStyleRes;
         final Resources resources = mContext.getResources();
         this.mPopupMaxWidth = Math.max(resources.getDisplayMetrics().widthPixels / 2, resources.getDimensionPixelSize(R$dimen.abc_config_prefDialogWidth));
         this.mAnchorView = mAnchorView;
@@ -244,7 +250,7 @@ public class v implements x, View$OnKeyListener, ViewTreeObserver$OnGlobalLayout
     
     public boolean tryShow() {
         boolean b = false;
-        (this.mPopup = new ListPopupWindow(this.mContext, null, this.mPopupStyleAttr)).setOnDismissListener((PopupWindow$OnDismissListener)this);
+        (this.mPopup = new ListPopupWindow(this.mContext, null, this.mPopupStyleAttr, this.mPopupStyleRes)).setOnDismissListener((PopupWindow$OnDismissListener)this);
         this.mPopup.setOnItemClickListener((AdapterView$OnItemClickListener)this);
         this.mPopup.setAdapter((ListAdapter)this.mAdapter);
         this.mPopup.setModal(true);

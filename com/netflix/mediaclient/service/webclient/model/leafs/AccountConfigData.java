@@ -17,6 +17,7 @@ import com.google.gson.annotations.SerializedName;
 public class AccountConfigData
 {
     private static final KubrickConfigData DEFAULT_KUBRICK_CONFIG;
+    private static final KubrickKidsConfigData DEFAULT_KUBRICK_KIDS_CONFIG;
     private static final String TAG = "nf_config";
     @SerializedName("castWhitelistTargets")
     private final String castWhitelist;
@@ -36,6 +37,8 @@ public class AccountConfigData
     private String jPlayerConfig;
     @SerializedName("kubrickConfig")
     private KubrickConfigData kubrickConfig;
+    @SerializedName("kubrickKidsTabletConfig")
+    private KubrickKidsConfigData kubrickKidsConfig;
     @Expose
     private JSONArray mCastWhitelistJSONArray;
     @Expose
@@ -52,9 +55,12 @@ public class AccountConfigData
     private int shareSheetExperience;
     @SerializedName("videoBufferSize")
     private final int videoBufferSize;
+    @SerializedName("voipEnabledOnAccount")
+    private boolean voipEnabledOnAccount;
     
     static {
         DEFAULT_KUBRICK_CONFIG = new KubrickConfigData();
+        DEFAULT_KUBRICK_KIDS_CONFIG = new KubrickKidsConfigData();
     }
     
     public AccountConfigData() {
@@ -159,6 +165,10 @@ public class AccountConfigData
         return this.kubrickConfig;
     }
     
+    public KubrickKidsConfigData getKubrickKidsConfig() {
+        return this.kubrickKidsConfig;
+    }
+    
     public String getMdxBlacklist() {
         return this.mdxBlacklistTargets;
     }
@@ -200,6 +210,10 @@ public class AccountConfigData
     
     public int getVideoBufferSize() {
         return 0;
+    }
+    
+    public boolean isVoipEnabledOnAccount() {
+        return this.voipEnabledOnAccount;
     }
     
     public boolean toDisableMcQueenV2() {

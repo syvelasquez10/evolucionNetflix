@@ -35,12 +35,12 @@ import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.ViewPropertyAnimator;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import android.app.Activity;
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.app.Status;
-import android.app.Activity;
 import android.widget.TextView;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import java.util.List;
@@ -230,7 +230,7 @@ public class ProfileSelectionActivity extends NetflixActivity
         }
         netflixActionBar.setLogoType(logoType);
         if (this.isProfileEditMode) {
-            this.getNetflixActionBar().setTitle(this.getResources().getString(2131493309));
+            this.getNetflixActionBar().setTitle(this.getResources().getString(2131165595));
         }
         this.getNetflixActionBar().setDisplayHomeAsUpEnabled(this.isProfileEditMode);
         final ViewPropertyAnimator animate = this.topTextHeader.animate();
@@ -248,7 +248,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                 Log.e("ProfileSelectionActivity", "Something wierd happened: null grid child view!");
             }
             else if (i < this.profiles.size()) {
-                final View viewById = child.findViewById(2131427781);
+                final View viewById = child.findViewById(2131624495);
                 int visibility;
                 if (this.isProfileEditMode) {
                     visibility = 0;
@@ -257,7 +257,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                     visibility = 8;
                 }
                 viewById.setVisibility(visibility);
-                this.findViewAndAnimate(child, 2131427451);
+                this.findViewAndAnimate(child, 2131624072);
             }
         }
         this.invalidateOptionsMenu();
@@ -320,14 +320,14 @@ public class ProfileSelectionActivity extends NetflixActivity
     }
     
     private void showPromoViewIfNeeded(final int n) {
-        final View viewById = this.findViewById(2131427780);
+        final View viewById = this.findViewById(2131624494);
         if (PreferenceUtils.getBooleanPref((Context)this, "user_profile_was_selected", false) || this.profiles == null || this.profiles.size() > 1) {
             viewById.setVisibility(8);
             return;
         }
         viewById.setVisibility(0);
-        final int n2 = (int)((this.columnWidth - this.getResources().getDimension(2131296430)) / 2.0f);
-        ((ViewGroup$MarginLayoutParams)viewById.getLayoutParams()).setMargins(n + n2, 0, n2 + n, (int)this.getResources().getDimension(2131296343));
+        final int n2 = (int)((this.columnWidth - this.getResources().getDimension(2131296324)) / 2.0f);
+        ((ViewGroup$MarginLayoutParams)viewById.getLayoutParams()).setMargins(n + n2, 0, n2 + n, (int)this.getResources().getDimension(2131296485));
     }
     
     private void updateAppWasRestartedFlag(final Intent intent) {
@@ -400,7 +400,7 @@ public class ProfileSelectionActivity extends NetflixActivity
         netflixStatus.setDisplayMessage(true);
         UserActionLogUtils.reportSelectProfileActionEnded((Context)this, IClientLogging$CompletionReason.failed, this.getUiScreen(), uiError);
         this.reportError(netflixStatus, message);
-        this.handleUserAgentErrors(this, netflixStatus);
+        this.handleUserAgentErrors(netflixStatus, false);
     }
     
     @Override
@@ -426,14 +426,14 @@ public class ProfileSelectionActivity extends NetflixActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.columnWidth = this.getResources().getDimensionPixelSize(2131296419);
-        this.setContentView(2130903175);
-        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131427776), this.errorCallback);
-        this.content = this.findViewById(2131427777);
-        this.topTextHeader = (TextView)this.findViewById(2131427778);
-        (this.gridView = (StaticGridView)this.findViewById(2131427779)).setOnItemClickListener(this.onAvatarClickListener);
+        this.columnWidth = this.getResources().getDimensionPixelSize(2131296320);
+        this.setContentView(2130903208);
+        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131624490), this.errorCallback);
+        this.content = this.findViewById(2131624491);
+        this.topTextHeader = (TextView)this.findViewById(2131624492);
+        (this.gridView = (StaticGridView)this.findViewById(2131624493)).setOnItemClickListener(this.onAvatarClickListener);
         this.gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ProfileSelectionActivity$1(this));
-        this.kidsLoadingScreen = this.findViewById(2131427539);
+        this.kidsLoadingScreen = this.findViewById(2131624213);
         this.mDestination = this.getIntent().getStringExtra("extra_destination");
         if (bundle == null) {
             this.logKidsEntryExit();
@@ -455,9 +455,9 @@ public class ProfileSelectionActivity extends NetflixActivity
             return;
         }
         super.onCreateOptionsMenu(menu, menu2);
-        final MenuItem add = menu.add(0, 2131427344, 0, (CharSequence)this.getString(2131493308));
+        final MenuItem add = menu.add(0, 2131623944, 0, (CharSequence)this.getString(2131165594));
         add.setShowAsAction(1);
-        add.setIcon(2130837711);
+        add.setIcon(2130837753);
         add.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new ProfileSelectionActivity$3(this));
     }
     
@@ -479,12 +479,12 @@ public class ProfileSelectionActivity extends NetflixActivity
     }
     
     @Override
-    protected boolean showSettingsInMenu() {
+    public boolean showSettingsInMenu() {
         return !this.isProfileEditMode;
     }
     
     @Override
-    protected boolean showSignOutInMenu() {
+    public boolean showSignOutInMenu() {
         return !this.isProfileEditMode;
     }
     

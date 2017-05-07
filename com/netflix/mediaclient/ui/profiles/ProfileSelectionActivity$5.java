@@ -32,6 +32,7 @@ import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.ViewPropertyAnimator;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import android.app.Activity;
 import android.content.Intent;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.TextView;
@@ -44,7 +45,6 @@ import android.util.SparseIntArray;
 import android.util.SparseArray;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.Status;
-import android.app.Activity;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$RememberProfile;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
@@ -82,7 +82,7 @@ class ProfileSelectionActivity$5 implements AdapterView$OnItemClickListener
             return;
         }
         if (this.this$0.profiles.get(n).getProfileGuid() == null) {
-            this.this$0.handleUserAgentErrors(this.this$0, CommonStatus.INTERNAL_ERROR);
+            this.this$0.handleUserAgentErrors(CommonStatus.INTERNAL_ERROR);
             return;
         }
         UserActionLogUtils.reportEditProfileActionStarted((Context)this.this$0, null, this.this$0.getUiScreen());

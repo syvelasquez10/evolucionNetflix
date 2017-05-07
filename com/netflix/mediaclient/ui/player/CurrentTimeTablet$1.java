@@ -27,7 +27,7 @@ class CurrentTimeTablet$1 implements Animator$AnimatorListener
         Log.i("CurrentTimeTablet", "startStartAnimation end");
         if (this.this$0.mBifDownloaded.get()) {
             Log.w("CurrentTimeTablet", "Bifs are downloaded, setup currentTimeExp layout params");
-            this.this$0.context.getScreen().startBif(this.val$bb);
+            this.this$0.playerFragment.getScreen().startBif(this.val$bb);
             return;
         }
         Log.w("CurrentTimeTablet", "Bifs are not downloaded, do not setup currentTimeExp layout params");

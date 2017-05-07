@@ -11,36 +11,36 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class ConnectionEvent implements SafeParcelable
 {
     public static final Parcelable$Creator<ConnectionEvent> CREATOR;
-    final int zzCY;
-    private final long zzabY;
-    private int zzabZ;
-    private final String zzaca;
-    private final String zzacb;
-    private final String zzacc;
-    private final String zzacd;
-    private final String zzace;
-    private final String zzacf;
-    private final long zzacg;
-    private final long zzach;
-    private long zzaci;
+    final int mVersionCode;
+    private final long zzafj;
+    private int zzafk;
+    private final String zzafl;
+    private final String zzafm;
+    private final String zzafn;
+    private final String zzafo;
+    private final String zzafp;
+    private final String zzafq;
+    private final long zzafr;
+    private final long zzafs;
+    private long zzaft;
     
     static {
         CREATOR = (Parcelable$Creator)new zza();
     }
     
-    ConnectionEvent(final int zzCY, final long zzabY, final int zzabZ, final String zzaca, final String zzacb, final String zzacc, final String zzacd, final String zzace, final String zzacf, final long zzacg, final long zzach) {
-        this.zzCY = zzCY;
-        this.zzabY = zzabY;
-        this.zzabZ = zzabZ;
-        this.zzaca = zzaca;
-        this.zzacb = zzacb;
-        this.zzacc = zzacc;
-        this.zzacd = zzacd;
-        this.zzaci = -1L;
-        this.zzace = zzace;
-        this.zzacf = zzacf;
-        this.zzacg = zzacg;
-        this.zzach = zzach;
+    ConnectionEvent(final int mVersionCode, final long zzafj, final int zzafk, final String zzafl, final String zzafm, final String zzafn, final String zzafo, final String zzafp, final String zzafq, final long zzafr, final long zzafs) {
+        this.mVersionCode = mVersionCode;
+        this.zzafj = zzafj;
+        this.zzafk = zzafk;
+        this.zzafl = zzafl;
+        this.zzafm = zzafm;
+        this.zzafn = zzafn;
+        this.zzafo = zzafo;
+        this.zzaft = -1L;
+        this.zzafp = zzafp;
+        this.zzafq = zzafq;
+        this.zzafr = zzafr;
+        this.zzafs = zzafs;
     }
     
     public ConnectionEvent(final long n, final int n2, final String s, final String s2, final String s3, final String s4, final String s5, final String s6, final long n3, final long n4) {
@@ -52,46 +52,46 @@ public final class ConnectionEvent implements SafeParcelable
     }
     
     public int getEventType() {
-        return this.zzabZ;
+        return this.zzafk;
     }
     
     public long getTimeMillis() {
-        return this.zzabY;
+        return this.zzafj;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
         zza.zza(this, parcel, n);
     }
     
-    public String zzoE() {
-        return this.zzaca;
+    public String zzpA() {
+        return this.zzafq;
     }
     
-    public String zzoF() {
-        return this.zzacb;
+    public long zzpB() {
+        return this.zzafs;
     }
     
-    public String zzoG() {
-        return this.zzacc;
+    public long zzpC() {
+        return this.zzafr;
     }
     
-    public String zzoH() {
-        return this.zzacd;
+    public String zzpv() {
+        return this.zzafl;
     }
     
-    public String zzoI() {
-        return this.zzace;
+    public String zzpw() {
+        return this.zzafm;
     }
     
-    public String zzoJ() {
-        return this.zzacf;
+    public String zzpx() {
+        return this.zzafn;
     }
     
-    public long zzoK() {
-        return this.zzach;
+    public String zzpy() {
+        return this.zzafo;
     }
     
-    public long zzoL() {
-        return this.zzacg;
+    public String zzpz() {
+        return this.zzafp;
     }
 }

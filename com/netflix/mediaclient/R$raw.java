@@ -6,7 +6,7 @@ package com.netflix.mediaclient;
 
 public final class R$raw
 {
-    public static final int ca = 2131099648;
-    public static final int gtm_analytics = 2131099649;
-    public static final int notification = 2131099650;
+    public static final int gtm_analytics = 2131099648;
+    public static final int notification = 2131099649;
+    public static final int voip = 2131099650;
 }

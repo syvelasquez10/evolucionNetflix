@@ -16,7 +16,7 @@ class TopPanel$1 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        this.this$0.context.performUpAction();
-        this.this$0.context.cleanupAndExit();
+        this.this$0.playerFragment.getNetflixActivity().performUpAction();
+        this.this$0.playerFragment.cleanupAndExit();
     }
 }

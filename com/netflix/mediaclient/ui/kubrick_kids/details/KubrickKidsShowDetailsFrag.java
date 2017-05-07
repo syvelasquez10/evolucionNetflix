@@ -24,7 +24,7 @@ import android.annotation.SuppressLint;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
 import android.view.ViewGroup;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.os.Bundle;
 import android.app.Fragment;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag$HeroSlideshow;
@@ -35,6 +35,7 @@ import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag;
 public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
 {
     private static final String EXTRA_SHOW_ID = "extra_show_id";
+    boolean isSeasonUserSelected;
     protected RecyclerViewHeaderAdapter$IViewCreator viewCreatorEpisodes;
     
     public KubrickKidsShowDetailsFrag() {
@@ -53,29 +54,34 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
     @Override
     protected int calculateSpinnerLeftPosition() {
         int n = 0;
-        final int detailsPageContentWidth = KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity());
+        final int detailsPageContentWidth = KidsUtils.getDetailsPageContentWidth((Context)this.getActivity());
         if (detailsPageContentWidth > 0) {
-            n = (KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity()) - detailsPageContentWidth) / 2;
+            n = (KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) - detailsPageContentWidth) / 2;
         }
-        return n + (int)this.getResources().getDimension(2131296477);
+        return n + (int)this.getResources().getDimension(2131296536);
     }
     
     @SuppressLint({ "ResourceAsColor" })
     @Override
-    protected ViewGroup createSeasonsSpinnerGroup() {
-        final ViewGroup seasonsSpinnerGroup = super.createSeasonsSpinnerGroup();
-        this.setSpinnerBackground(this.getResources().getColor(2131230896));
+    protected ViewGroup createSeasonsSelectorGroup() {
+        final ViewGroup seasonsSelectorGroup = super.createSeasonsSelectorGroup();
+        this.setSpinnerBackground(this.getResources().getColor(2131558498));
         final SeasonsSpinnerAdapter seasonsSpinnerAdapter = (SeasonsSpinnerAdapter)this.spinner.getAdapter();
         if (seasonsSpinnerAdapter != null) {
-            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131230826);
-            seasonsSpinnerAdapter.setDropDownTextColor(2131230896);
+            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131558601);
+            seasonsSpinnerAdapter.setDropDownTextColor(2131558498);
         }
-        return seasonsSpinnerGroup;
+        return seasonsSelectorGroup;
+    }
+    
+    @Override
+    protected int getRecyclerViewShadowWidth() {
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296521) * 2;
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903108;
+        return 2130903128;
     }
     
     @Override
@@ -85,9 +91,9 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
     }
     
     protected void setSpinnerBackground(final int n) {
-        final Drawable drawable = this.getResources().getDrawable(2130837582);
+        final Drawable drawable = this.getResources().getDrawable(2130837592);
         drawable.setColorFilter(n, PorterDuff$Mode.MULTIPLY);
-        final LayerDrawable layerDrawable = (LayerDrawable)this.getResources().getDrawable(2130837775);
+        final LayerDrawable layerDrawable = (LayerDrawable)this.getResources().getDrawable(2130837824);
         final Drawable drawable2 = layerDrawable.getDrawable(1);
         if (drawable2 != null) {
             drawable2.setColorFilter(n, PorterDuff$Mode.MULTIPLY);
@@ -118,14 +124,21 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131296476), this.numColumns, 3));
+        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131296535), this.numColumns, 3));
+    }
+    
+    @Override
+    protected void setupRecyclerViewLayoutManager() {
+        super.setupRecyclerViewLayoutManager();
+        this.recyclerView.getLayoutParams().width = KidsUtils.getDetailsPageContentWidth((Context)this.getActivity());
+        this.recyclerView.setAlpha(0.0f);
     }
     
     @SuppressLint({ "ResourceAsColor" })
     @Override
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new KubrickKidsShowDetailsFrag$3(this));
-        adapter.setItemBackgroundColor(2131230896);
+        adapter.setItemBackgroundColor(2131558498);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     
@@ -135,5 +148,18 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
             this.heroSlideshow.start();
         }
         this.postSetSpinnerSelectionRunnable();
+    }
+    
+    @Override
+    protected void switchSeason(final int n, final boolean isSeasonUserSelected) {
+        this.isSeasonUserSelected = isSeasonUserSelected;
+        ((KubrickKidsShowDetailsFrag$KubrickKidsAdapter)this.episodesAdapter).updateEpisodeStartIndex(((SeasonsSpinnerAdapter)this.spinner.getAdapter()).tryGetEpisodeIndexBySeasonNumber(n));
+        super.switchSeason(n, isSeasonUserSelected);
+    }
+    
+    @Override
+    protected void updateShowDetails(final ShowDetails showDetails) {
+        super.updateShowDetails(showDetails);
+        this.episodesAdapter.setViewCreator(this.viewCreatorEpisodes);
     }
 }

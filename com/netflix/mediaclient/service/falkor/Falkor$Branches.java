@@ -10,11 +10,13 @@ public class Falkor$Branches
     public static final String CURRENT = "current";
     public static final String EPISODES = "episodes";
     public static final String EVIDENCE_LISTS = "evidenceLists";
+    public static final String FLAT_GENRE = "flatGenre";
     public static final String GENRE_LIST = "genreList";
     public static final String LISTS = "lists";
     public static final String LOLOMO = "lolomo";
     public static final String LOLOMOS = "lolomos";
     public static final String MOVIES = "movies";
+    public static final String NON_MEMBER_VIDEOS = "nonMemberVideos";
     public static final String NOTIFICATIONS = "notifications";
     public static final String NOTIFICATIONS_LIST = "notificationsList";
     public static final String PEOPLE = "people";

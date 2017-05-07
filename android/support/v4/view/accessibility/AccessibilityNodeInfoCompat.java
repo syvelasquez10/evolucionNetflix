@@ -4,6 +4,7 @@
 
 package android.support.v4.view.accessibility;
 
+import android.os.Bundle;
 import android.graphics.Rect;
 import android.view.View;
 import android.os.Build$VERSION;
@@ -14,6 +15,10 @@ public class AccessibilityNodeInfoCompat
     private final Object mInfo;
     
     static {
+        if (Build$VERSION.SDK_INT >= 22) {
+            IMPL = new AccessibilityNodeInfoCompat$AccessibilityNodeInfoApi22Impl();
+            return;
+        }
         if (Build$VERSION.SDK_INT >= 21) {
             IMPL = new AccessibilityNodeInfoCompat$AccessibilityNodeInfoApi21Impl();
             return;
@@ -24,6 +29,10 @@ public class AccessibilityNodeInfoCompat
         }
         if (Build$VERSION.SDK_INT >= 18) {
             IMPL = new AccessibilityNodeInfoCompat$AccessibilityNodeInfoJellybeanMr2Impl();
+            return;
+        }
+        if (Build$VERSION.SDK_INT >= 17) {
+            IMPL = new AccessibilityNodeInfoCompat$AccessibilityNodeInfoJellybeanMr1Impl();
             return;
         }
         if (Build$VERSION.SDK_INT >= 16) {
@@ -236,8 +245,20 @@ public class AccessibilityNodeInfoCompat
         return AccessibilityNodeInfoCompat.IMPL.isVisibleToUser(this.mInfo);
     }
     
+    public boolean performAction(final int n) {
+        return AccessibilityNodeInfoCompat.IMPL.performAction(this.mInfo, n);
+    }
+    
+    public boolean performAction(final int n, final Bundle bundle) {
+        return AccessibilityNodeInfoCompat.IMPL.performAction(this.mInfo, n, bundle);
+    }
+    
     public void recycle() {
         AccessibilityNodeInfoCompat.IMPL.recycle(this.mInfo);
+    }
+    
+    public boolean removeAction(final AccessibilityNodeInfoCompat$AccessibilityActionCompat accessibilityNodeInfoCompat$AccessibilityActionCompat) {
+        return AccessibilityNodeInfoCompat.IMPL.removeAction(this.mInfo, accessibilityNodeInfoCompat$AccessibilityActionCompat.mAction);
     }
     
     public void setAccessibilityFocused(final boolean b) {

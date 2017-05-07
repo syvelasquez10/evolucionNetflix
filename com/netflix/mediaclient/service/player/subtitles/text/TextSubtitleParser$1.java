@@ -51,6 +51,6 @@ class TextSubtitleParser$1 extends LoggingResourceFetcherCallback
         if (Log.isLoggable()) {
             Log.e("nf_subtitles", "Failed to download subtitle metadata, status " + status);
         }
-        this.this$0.mPlayer.reportFailedToDownloadSubtitleMetadata();
+        this.this$0.mPlayer.reportFailedToDownloadSubtitleMetadata(s);
     }
 }

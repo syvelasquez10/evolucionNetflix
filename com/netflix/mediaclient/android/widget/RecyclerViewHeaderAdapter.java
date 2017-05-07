@@ -71,10 +71,6 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         }
     }
     
-    private boolean isPositionHeader(final int n) {
-        return n < this.getHeaderViewsCount();
-    }
-    
     private void onBindFooterView(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
         if (this.footerView == null) {
             return;
@@ -221,6 +217,10 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
     
     public boolean isPositionFooter(final int n) {
         return this.footerView != null && n >= this.getItemCount() - 1;
+    }
+    
+    public boolean isPositionHeader(final int n) {
+        return n < this.getHeaderViewsCount();
     }
     
     public boolean isViewFooter(final View view, final RecyclerView recyclerView) {

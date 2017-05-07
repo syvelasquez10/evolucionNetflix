@@ -26,37 +26,49 @@ public final class EsnProviderRegistry
         else {
             n = 0;
         }
-        BaseEsnProvider baseEsnProvider;
+        BaseEsnProvider baseEsnProvider2;
         if (n != 0) {
-            if (androidVersion >= 18) {
-                Log.d("nf_esn", "JB MR2+ device");
-                if (WidevineDrmManager.isWidewineSupported()) {
-                    Log.d("nf_esn", "JB MR2+ device with Widewine support, but failed to initialize or not allowed, return ESN Legacy implemenatation!");
+            BaseEsnProvider baseEsnProvider;
+            if (androidVersion >= 23) {
+                baseEsnProvider = new EsnLegacyMPlusProvider();
+            }
+            else {
+                baseEsnProvider = new EsnLegacyProvider();
+            }
+            baseEsnProvider2 = baseEsnProvider;
+            if (Log.isLoggable()) {
+                if (androidVersion >= 18) {
+                    Log.d("nf_esn", "JB MR2+ device");
+                    if (WidevineDrmManager.isWidewineSupported()) {
+                        Log.d("nf_esn", "JB MR2+ device with Widewine support, but failed to initialize or not allowed, return ESN Legacy implementation!");
+                        baseEsnProvider2 = baseEsnProvider;
+                    }
+                    else {
+                        Log.d("nf_esn", "JB MR2+ device without Widewine support, return ESN Legacy implementation!");
+                        baseEsnProvider2 = baseEsnProvider;
+                    }
                 }
                 else {
-                    Log.d("nf_esn", "JB MR2+ device without Widewine support, return ESN Legacy implemenatation!");
+                    Log.d("nf_esn", "Pre JB MR2 device, return ESN Legacy implementation!");
+                    baseEsnProvider2 = baseEsnProvider;
                 }
             }
-            else {
-                Log.d("nf_esn", "Pre JB MR2 device, return ESN Legacy implemenatation!");
-            }
-            baseEsnProvider = new EsnLegacyProvider();
         }
         else {
-            Log.d("nf_esn", "JB MR2+ device with Widewine support, return ESN CDM implemenatation!");
+            Log.d("nf_esn", "JB MR2+ device with Widewine support, return ESN CDM implementation!");
             if (DrmManagerRegistry.isDevicePredeterminedToUseWV()) {
-                Log.d("nf_esn", "JB MR2+ device with legacy Widewine support, return ESN CDM Nexus 7 implemenatation!");
-                baseEsnProvider = new EsnCdmNexus7Provider(drmManager);
+                Log.d("nf_esn", "JB MR2+ device with legacy Widewine support, return ESN CDM Nexus 7 implementation!");
+                baseEsnProvider2 = new EsnCdmNexus7Provider(drmManager);
             }
             else {
-                Log.d("nf_esn", "JB MR2+ device with new Widewine support, return ESN CDM implemenatation!");
-                baseEsnProvider = new EsnCdmProvider(drmManager, configurationAgent.getDeviceCategory());
+                Log.d("nf_esn", "JB MR2+ device with new Widewine support, return ESN CDM implementation!");
+                baseEsnProvider2 = new EsnCdmProvider(drmManager, configurationAgent.getDeviceCategory());
             }
         }
-        baseEsnProvider.initialize(context);
+        baseEsnProvider2.initialize(context);
         if (Log.isLoggable()) {
-            Log.d("nf_esn", "ESN: " + baseEsnProvider.getEsn());
+            Log.d("nf_esn", "ESN: " + baseEsnProvider2.getEsn());
         }
-        return baseEsnProvider;
+        return baseEsnProvider2;
     }
 }

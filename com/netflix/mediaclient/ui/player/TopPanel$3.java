@@ -6,14 +6,12 @@ package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import android.content.DialogInterface$OnCancelListener;
 import android.widget.AdapterView$OnItemClickListener;
 import android.content.Context;
-import android.app.Activity;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog$Builder;
 import android.app.AlertDialog;
 import com.netflix.mediaclient.util.ViewUtils;
@@ -45,27 +43,27 @@ class TopPanel$3 implements LanguageSelector$LanguageSelectorCallback
     public void languageChanged(final Language language, final boolean b) {
         Log.d("screen", "Language changed");
         if (this.this$0.processLanguageChange(language) && b) {
-            this.this$0.context.doUnpause();
+            this.this$0.playerFragment.doUnpause();
         }
-        this.this$0.context.startScreenUpdateTask();
-        this.this$0.context.reportUiModelessViewSessionEnded(IClientLogging$ModalView.audioSubtitlesSelector, this.this$0.mDialogLanguageId);
+        this.this$0.playerFragment.startScreenUpdateTask();
+        this.this$0.playerFragment.getNetflixActivity().reportUiModelessViewSessionEnded(IClientLogging$ModalView.audioSubtitlesSelector, this.this$0.mDialogLanguageId);
     }
     
     @Override
     public void updateDialog(final Dialog dialog) {
-        this.this$0.context.updateVisibleDialog(dialog);
+        this.this$0.playerFragment.getNetflixActivity().updateVisibleDialog(dialog);
     }
     
     @Override
     public void userCanceled() {
         Log.d("screen", "User canceled selection");
-        this.this$0.context.doUnpause();
-        this.this$0.context.startScreenUpdateTask();
-        this.this$0.context.reportUiModelessViewSessionEnded(IClientLogging$ModalView.audioSubtitlesSelector, this.this$0.mDialogLanguageId);
+        this.this$0.playerFragment.doUnpause();
+        this.this$0.playerFragment.startScreenUpdateTask();
+        this.this$0.playerFragment.getNetflixActivity().reportUiModelessViewSessionEnded(IClientLogging$ModalView.audioSubtitlesSelector, this.this$0.mDialogLanguageId);
     }
     
     @Override
     public boolean wasPlaying() {
-        return this.this$0.context.getPlayer().isPlaying();
+        return this.this$0.playerFragment.getPlayer().isPlaying();
     }
 }

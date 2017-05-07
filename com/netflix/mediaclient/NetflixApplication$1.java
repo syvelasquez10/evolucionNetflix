@@ -11,6 +11,8 @@ import java.util.Locale;
 import com.netflix.mediaclient.repository.UserLocale;
 import com.netflix.mediaclient.event.UIEvent;
 import android.app.Application$ActivityLifecycleCallbacks;
+import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.res.Configuration;
 import android.app.Notification;
 import android.app.NotificationManager;

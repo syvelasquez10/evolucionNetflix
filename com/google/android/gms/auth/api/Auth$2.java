@@ -4,24 +4,19 @@
 
 package com.google.android.gms.auth.api;
 
-import com.google.android.gms.common.api.Api$Client;
+import com.google.android.gms.common.api.Api$zzb;
 import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
-import com.google.android.gms.common.internal.zze;
+import com.google.android.gms.common.internal.zzf;
 import android.os.Looper;
 import android.content.Context;
-import com.google.android.gms.common.api.Api$ApiOptions$NoOptions;
-import com.google.android.gms.auth.api.credentials.internal.CredentialsClientImpl;
+import com.google.android.gms.auth.api.credentials.internal.zze;
 import com.google.android.gms.common.api.Api$zza;
 
-final class Auth$2 implements Api$zza<CredentialsClientImpl, Api$ApiOptions$NoOptions>
+final class Auth$2 extends Api$zza<zze, Auth$AuthCredentialsOptions>
 {
     @Override
-    public int getPriority() {
-        return Integer.MAX_VALUE;
-    }
-    
-    public CredentialsClientImpl zzd(final Context context, final Looper looper, final zze zze, final Api$ApiOptions$NoOptions api$ApiOptions$NoOptions, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
-        return new CredentialsClientImpl(context, looper, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
+    public zze zza(final Context context, final Looper looper, final zzf zzf, final Auth$AuthCredentialsOptions auth$AuthCredentialsOptions, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
+        return new zze(context, looper, zzf, auth$AuthCredentialsOptions, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
     }
 }

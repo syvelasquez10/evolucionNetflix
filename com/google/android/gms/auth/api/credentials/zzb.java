@@ -9,49 +9,49 @@ import com.google.android.gms.common.internal.safeparcel.zza;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class zzb implements Parcelable$Creator<CredentialRequest>
+public class zzb implements Parcelable$Creator<CredentialPickerConfig>
 {
-    static void zza(final CredentialRequest credentialRequest, final Parcel parcel, int zzac) {
-        zzac = com.google.android.gms.common.internal.safeparcel.zzb.zzac(parcel);
-        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 1, credentialRequest.getSupportsPasswordLogin());
-        com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 1000, credentialRequest.zzCY);
-        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 2, credentialRequest.getAccountTypes(), false);
-        com.google.android.gms.common.internal.safeparcel.zzb.zzH(parcel, zzac);
+    static void zza(final CredentialPickerConfig credentialPickerConfig, final Parcel parcel, int zzak) {
+        zzak = com.google.android.gms.common.internal.safeparcel.zzb.zzak(parcel);
+        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 1, credentialPickerConfig.shouldShowAddAccountButton());
+        com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 1000, credentialPickerConfig.mVersionCode);
+        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 2, credentialPickerConfig.shouldShowCancelButton());
+        com.google.android.gms.common.internal.safeparcel.zzb.zzH(parcel, zzak);
     }
     
-    public CredentialRequest zzD(final Parcel parcel) {
+    public CredentialPickerConfig zzE(final Parcel parcel) {
         boolean zzc = false;
-        final int zzab = zza.zzab(parcel);
-        String[] zzA = null;
+        final int zzaj = zza.zzaj(parcel);
+        boolean zzc2 = false;
         int zzg = 0;
-        while (parcel.dataPosition() < zzab) {
-            final int zzaa = zza.zzaa(parcel);
-            switch (zza.zzbA(zzaa)) {
+        while (parcel.dataPosition() < zzaj) {
+            final int zzai = zza.zzai(parcel);
+            switch (zza.zzbH(zzai)) {
                 default: {
-                    zza.zzb(parcel, zzaa);
+                    zza.zzb(parcel, zzai);
                     continue;
                 }
                 case 1: {
-                    zzc = zza.zzc(parcel, zzaa);
+                    zzc2 = zza.zzc(parcel, zzai);
                     continue;
                 }
                 case 1000: {
-                    zzg = zza.zzg(parcel, zzaa);
+                    zzg = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 2: {
-                    zzA = zza.zzA(parcel, zzaa);
+                    zzc = zza.zzc(parcel, zzai);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzab) {
-            throw new zza$zza("Overread allowed size end=" + zzab, parcel);
+        if (parcel.dataPosition() != zzaj) {
+            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
         }
-        return new CredentialRequest(zzg, zzc, zzA);
+        return new CredentialPickerConfig(zzg, zzc2, zzc);
     }
     
-    public CredentialRequest[] zzat(final int n) {
-        return new CredentialRequest[n];
+    public CredentialPickerConfig[] zzau(final int n) {
+        return new CredentialPickerConfig[n];
     }
 }

@@ -29,6 +29,10 @@ class ViewCompatJB
         return view.getParentForAccessibility();
     }
     
+    public static boolean hasOverlappingRendering(final View view) {
+        return view.hasOverlappingRendering();
+    }
+    
     public static boolean hasTransientState(final View view) {
         return view.hasTransientState();
     }

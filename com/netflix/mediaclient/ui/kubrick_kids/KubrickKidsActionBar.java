@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.kubrick_kids;
 
+import android.content.Context;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
@@ -16,7 +18,7 @@ public class KubrickKidsActionBar extends NetflixActionBar
     
     @Override
     protected int getLayoutId() {
-        return 2130903065;
+        return 2130903066;
     }
     
     @Override
@@ -24,11 +26,15 @@ public class KubrickKidsActionBar extends NetflixActionBar
         final Toolbar toolbar = this.toolbar;
         int navigationIcon;
         if (b) {
-            navigationIcon = 2130837700;
+            navigationIcon = 2130837737;
         }
         else {
-            navigationIcon = 2130837699;
+            navigationIcon = 2130837736;
         }
         toolbar.setNavigationIcon(navigationIcon);
+    }
+    
+    public void setWidth() {
+        this.toolbar.getLayoutParams().width = KidsUtils.getDetailsPageContentWidth((Context)this.getActivity());
     }
 }

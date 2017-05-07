@@ -7,16 +7,18 @@ package com.netflix.mediaclient.ui.player;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.content.Context;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayContext;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.ViewUtils$Visibility;
 import com.netflix.mediaclient.Log;
+import android.app.Activity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.TextView;
 import android.view.View;
 
@@ -30,15 +32,22 @@ public class PostPlayForEpisodes extends PostPlay
     protected TextView mTimerView;
     private final Runnable onEverySecond;
     
-    PostPlayForEpisodes(final PlayerActivity playerActivity) {
-        super(playerActivity);
+    PostPlayForEpisodes(final NetflixActivity netflixActivity) {
+        super(netflixActivity);
+        this.mAutoPlayEnabled = true;
+        this.onEverySecond = new PostPlayForEpisodes$1(this);
+        this.init(netflixActivity);
+    }
+    
+    PostPlayForEpisodes(final PlayerFragment playerFragment) {
+        super(playerFragment);
         this.mAutoPlayEnabled = true;
         this.onEverySecond = new PostPlayForEpisodes$1(this);
         this.init();
     }
     
     private void init() {
-        this.mTimerValue = this.mContext.getResources().getInteger(2131361799);
+        this.mTimerValue = this.mNetflixActivity.getResources().getInteger(2131427344);
         this.mAutoPlayEnabled = this.isAutoPlayEnabled();
         if (Log.isLoggable()) {
             Log.d("nf_postplay", "PostPlayForEpisodes:: timer max value " + this.mTimerValue);
@@ -46,7 +55,20 @@ public class PostPlayForEpisodes extends PostPlay
         if (!this.mAutoPlayEnabled && this.mTimerView != null) {
             ViewUtils.setVisibility(this.mAutoPlayView, ViewUtils$Visibility.INVISIBLE);
         }
-        this.initInfoContainer();
+        this.initInfoContainer(this.mNetflixActivity);
+        this.initButtons();
+    }
+    
+    private void init(final Activity activity) {
+        this.mTimerValue = activity.getResources().getInteger(2131427344);
+        this.mAutoPlayEnabled = this.isAutoPlayEnabled();
+        if (Log.isLoggable()) {
+            Log.d("nf_postplay", "PostPlayForEpisodes:: timer max value " + this.mTimerValue);
+        }
+        if (!this.mAutoPlayEnabled && this.mTimerView != null) {
+            ViewUtils.setVisibility(this.mAutoPlayView, ViewUtils$Visibility.INVISIBLE);
+        }
+        this.initInfoContainer(activity);
         this.initButtons();
     }
     
@@ -54,15 +76,14 @@ public class PostPlayForEpisodes extends PostPlay
     public void destroy() {
         super.destroy();
         if (this.mAutoPlayEnabled) {
-            this.mContext.getHandler().removeCallbacks(this.onEverySecond);
+            this.mNetflixActivity.getHandler().removeCallbacks(this.onEverySecond);
         }
     }
     
     @Override
     protected void doTransitionFromPostPlay() {
-        final PlayerActivity mContext = this.mContext;
         if (this.mBackground.getVisibility() == 0) {
-            mContext.performUpAction();
+            this.mNetflixActivity.performUpAction();
         }
     }
     
@@ -71,7 +92,7 @@ public class PostPlayForEpisodes extends PostPlay
         if (this.mAutoPlayEnabled) {
             Log.d("nf_postplay", "Auto play is enabled");
             this.mTimer = this.mTimerValue;
-            this.mContext.getHandler().postDelayed(this.onEverySecond, 1000L);
+            this.mNetflixActivity.getHandler().postDelayed(this.onEverySecond, 1000L);
             return;
         }
         Log.d("nf_postplay", "Auto play is disabled");
@@ -83,54 +104,72 @@ public class PostPlayForEpisodes extends PostPlay
         this.setBackgroundImageVisible(true);
     }
     
-    protected void findViews() {
-        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131427734);
-        this.mAutoPlayView = this.mContext.findViewById(2131427733);
-        this.mTimerView = (TextView)this.mContext.findViewById(2131427735);
+    @Override
+    void findViews() {
+        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131624429);
+        this.mAutoPlayView = this.mNetflixActivity.findViewById(2131624428);
+        this.mTimerView = (TextView)this.mNetflixActivity.findViewById(2131624430);
+    }
+    
+    @Override
+    protected int getLengthOfAutoPlayCountdow() {
+        return this.mTimerValue;
+    }
+    
+    @Override
+    protected UserActionLogging$PostPlayExperience getPostPlayExpirience() {
+        return UserActionLogging$PostPlayExperience.PostPlayNextEpisode;
     }
     
     @Override
     protected void handlePlayNow(final boolean b) {
-        if (this.mContext == null || this.mContext.destroyed()) {
+        if (this.mNetflixActivity == null || this.mNetflixActivity.isFinishing()) {
             Log.d("nf_postplay", "Activity is alredy destroyed, ignore play now!");
+            return;
+        }
+        Log.d("nf_postplay", "Play NEXT episode!");
+        if (this.mPostPlayVideos.size() == 0) {
+            Log.d("nf_postplay", "mPostPlayVideos size is zero");
+            CharSequence text;
+            if (this.mTitle.getText() != null) {
+                text = this.mTitle.getText();
+            }
+            else {
+                text = "null";
+            }
+            this.mNetflixActivity.getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("SPY-7987 - PostPlayVideos empty for title  %s", text));
+            this.reportNextPlayFailed(b);
+            return;
+        }
+        if (this.mPostPlayContexts.size() == 0) {
+            Log.d("nf_postplay", "mPostPlayContexts size is zero");
+            CharSequence text2;
+            if (this.mTitle.getText() != null) {
+                text2 = this.mTitle.getText();
+            }
+            else {
+                text2 = "null";
+            }
+            this.mNetflixActivity.getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("SPY-7987 - PostPlayContexts empty for title  %s", text2));
+        }
+        final PostPlayVideo postPlayVideo = this.mPostPlayVideos.get(0);
+        PlayContext playContext;
+        if (this.mPostPlayContexts != null && this.mPostPlayContexts.size() > 1) {
+            playContext = new PlayContextImp(this.mPostPlayContexts.get(0).getRequestId(), this.mPostPlayContexts.get(0).getTrackId(), 0, 0);
         }
         else {
-            Log.d("nf_postplay", "Play NEXT episode!");
-            if (this.mPostPlayVideos.size() == 0) {
-                Log.d("nf_postplay", "mPostPlayVideos size is zero");
-                CharSequence text;
-                if (this.mTitle.getText() != null) {
-                    text = this.mTitle.getText();
-                }
-                else {
-                    text = "null";
-                }
-                this.mContext.getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("SPY-7987 - PostPlayVideos empty for title  %s", text));
-                return;
-            }
-            if (this.mPostPlayContexts.size() == 0) {
-                Log.d("nf_postplay", "mPostPlayContexts size is zero");
-                CharSequence text2;
-                if (this.mTitle.getText() != null) {
-                    text2 = this.mTitle.getText();
-                }
-                else {
-                    text2 = "null";
-                }
-                this.mContext.getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("SPY-7987 - PostPlayContexts empty for title  %s", text2));
-            }
-            final PostPlayVideo postPlayVideo = this.mPostPlayVideos.get(0);
-            PlayContext playContext = null;
-            if (this.mPostPlayContexts != null) {
-                playContext = playContext;
-                if (this.mPostPlayContexts.size() > 1) {
-                    playContext = new PlayContextImp(this.mPostPlayContexts.get(0).getRequestId(), this.mPostPlayContexts.get(0).getTrackId(), 0, 0);
-                }
-            }
-            if (postPlayVideo != null) {
-                this.mContext.playNextVideo(postPlayVideo.getPlayable(), playContext, b);
-            }
+            playContext = null;
         }
+        if (postPlayVideo == null) {
+            this.reportNextPlayFailed(b);
+            return;
+        }
+        if (this.mPlayerFragment != null) {
+            this.mPlayerFragment.playNextVideo(postPlayVideo.getPlayable(), playContext, b);
+            this.reportNextPlay(postPlayVideo.getPlayable(), playContext, !b, null);
+            return;
+        }
+        Log.e("nf_postplay", "handlePlayNow() - called with null PlayerFragment!");
     }
     
     protected void initButtons() {
@@ -145,9 +184,9 @@ public class PostPlayForEpisodes extends PostPlay
         }
     }
     
-    protected void initInfoContainer() {
+    protected void initInfoContainer(final Activity activity) {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493282));
+            this.mInfoTitleView.setText(activity.getResources().getText(2131165503));
         }
         if (this.mTimerView != null) {
             this.mTimerView.setVisibility(0);
@@ -160,15 +199,15 @@ public class PostPlayForEpisodes extends PostPlay
     @Override
     public void onPause() {
         if (this.mAutoPlayEnabled) {
-            this.mContext.getHandler().removeCallbacks(this.onEverySecond);
+            this.mNetflixActivity.getHandler().removeCallbacks(this.onEverySecond);
         }
     }
     
     @Override
     public void onResume() {
         if (this.mInPostPlay && this.mAutoPlayEnabled) {
-            this.mContext.getHandler().removeCallbacks(this.onEverySecond);
-            this.mContext.getHandler().post(this.onEverySecond);
+            this.mNetflixActivity.getHandler().removeCallbacks(this.onEverySecond);
+            this.mNetflixActivity.getHandler().post(this.onEverySecond);
         }
     }
     
@@ -181,7 +220,7 @@ public class PostPlayForEpisodes extends PostPlay
     public void postPlayDismissed() {
         super.postPlayDismissed();
         if (this.mAutoPlayEnabled) {
-            this.mContext.getHandler().removeCallbacks(this.onEverySecond);
+            this.mNetflixActivity.getHandler().removeCallbacks(this.onEverySecond);
         }
     }
     
@@ -210,16 +249,16 @@ public class PostPlayForEpisodes extends PostPlay
         if (postPlayVideo.getType() != VideoType.EPISODE) {
             s = postPlayVideo.getStoryUrl();
         }
-        final String string = this.mContext.getResources().getString(2131493285, new Object[] { title });
+        final String string = this.mNetflixActivity.getResources().getString(2131165358, new Object[] { title });
         if (this.mBackground != null) {
-            if (!StringUtils.isEmpty(storyUrl) && this.mContext.isTablet()) {
-                NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, storyUrl, IClientLogging$AssetType.merchStill, string, ImageLoader$StaticImgConfig.DARK, true, 1);
+            if (!StringUtils.isEmpty(storyUrl) && this.mNetflixActivity.isTablet()) {
+                NetflixActivity.getImageLoader((Context)this.mNetflixActivity).showImg(this.mBackground, storyUrl, IClientLogging$AssetType.merchStill, string, ImageLoader$StaticImgConfig.DARK, true, 1);
             }
-            else if (!StringUtils.isEmpty(s) && !this.mContext.isTablet()) {
-                NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, s, IClientLogging$AssetType.merchStill, string, ImageLoader$StaticImgConfig.DARK, true, 1);
+            else if (!StringUtils.isEmpty(s) && !this.mNetflixActivity.isTablet()) {
+                NetflixActivity.getImageLoader((Context)this.mNetflixActivity).showImg(this.mBackground, s, IClientLogging$AssetType.merchStill, string, ImageLoader$StaticImgConfig.DARK, true, 1);
             }
         }
-        final String string2 = this.mContext.getResources().getString(2131493240, new Object[] { postPlayVideo.getPlayable().getSeasonNumber(), postPlayVideo.getPlayable().getEpisodeNumber(), title });
+        final String string2 = this.mNetflixActivity.getResources().getString(2131165508, new Object[] { postPlayVideo.getPlayable().getSeasonNumber(), postPlayVideo.getPlayable().getEpisodeNumber(), title });
         if (Log.isLoggable()) {
             Log.d("nf_postplay", "Title: " + string2);
         }

@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.player.subtitles;
 
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
-import android.content.Context;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 
 public interface SubtitleManager
@@ -16,7 +16,7 @@ public interface SubtitleManager
     
     void clearPendingUpdates();
     
-    Context getContext();
+    NetflixActivity getContext();
     
     IMedia$SubtitleProfile getSubtitleProfile();
     

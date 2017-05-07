@@ -10,12 +10,20 @@ import android.view.View;
 
 class ViewCompatHC
 {
+    public static int combineMeasuredStates(final int n, final int n2) {
+        return View.combineMeasuredStates(n, n2);
+    }
+    
     public static float getAlpha(final View view) {
         return view.getAlpha();
     }
     
     static long getFrameTime() {
         return ValueAnimator.getFrameDelay();
+    }
+    
+    public static int getLayerType(final View view) {
+        return view.getLayerType();
     }
     
     public static int getMeasuredState(final View view) {
@@ -38,6 +46,10 @@ class ViewCompatHC
         return View.resolveSizeAndState(n, n2, n3);
     }
     
+    public static void setActivated(final View view, final boolean activated) {
+        view.setActivated(activated);
+    }
+    
     public static void setAlpha(final View view, final float alpha) {
         view.setAlpha(alpha);
     }
@@ -46,8 +58,8 @@ class ViewCompatHC
         view.setLayerType(n, paint);
     }
     
-    public static void setScaleY(final View view, final float scaleY) {
-        view.setScaleY(scaleY);
+    public static void setSaveFromParentEnabled(final View view, final boolean saveFromParentEnabled) {
+        view.setSaveFromParentEnabled(saveFromParentEnabled);
     }
     
     public static void setTranslationX(final View view, final float translationX) {

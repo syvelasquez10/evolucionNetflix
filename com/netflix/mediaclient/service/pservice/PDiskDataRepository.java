@@ -7,9 +7,9 @@ package com.netflix.mediaclient.service.pservice;
 import com.netflix.mediaclient.util.data.DataRepository$LoadedCallback;
 import com.netflix.mediaclient.util.data.DataRepository$DataSavedCallback;
 import com.netflix.mediaclient.util.data.DataRepository$DataLoadedCallback;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
 import java.io.File;
+import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.util.data.DataRepository$Entry;
 import com.netflix.mediaclient.util.data.DataRepository;
@@ -26,6 +26,9 @@ public final class PDiskDataRepository
     }
     
     public static void clearDiskData(final Context context) {
+        if (PDiskDataRepository.ENABLE_VERBOSE_LOGGING) {
+            Log.d("nf_preapp_dataRepo", String.format("clearDiskData", new Object[0]));
+        }
         final DataRepository dataRepository = getDataRepository(context);
         synchronized (PDiskDataRepository.repoLock) {
             dataRepository.clear();
@@ -60,9 +63,7 @@ public final class PDiskDataRepository
         final DataRepository dataRepository = getDataRepository(context);
         try {
             Log.d("nf_preapp_dataRepo", "saving payload to file: REPOSITORY_FILE_NAME");
-            if (PDiskDataRepository.ENABLE_VERBOSE_LOGGING) {
-                Log.d("nf_preapp_dataRepo", String.format("payload: %s", s));
-            }
+            if (PDiskDataRepository.ENABLE_VERBOSE_LOGGING) {}
             synchronized (PDiskDataRepository.repoLock) {
                 dataRepository.save("preAppDiskDataFile", s.getBytes("utf-8"), dataRepository$DataSavedCallback);
             }

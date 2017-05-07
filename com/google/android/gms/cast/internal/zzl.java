@@ -7,45 +7,45 @@ package com.google.android.gms.cast.internal;
 import android.text.TextUtils;
 import java.util.Locale;
 import android.util.Log;
-import com.google.android.gms.common.internal.zzu;
+import com.google.android.gms.common.internal.zzx;
 
 public class zzl
 {
-    private static boolean zzUS;
+    private static boolean zzXv;
     protected final String mTag;
-    private final boolean zzUT;
-    private boolean zzUU;
-    private boolean zzUV;
-    private String zzUW;
+    private final boolean zzXw;
+    private boolean zzXx;
+    private boolean zzXy;
+    private String zzXz;
     
     static {
-        zzl.zzUS = false;
+        zzl.zzXv = false;
     }
     
     public zzl(final String s) {
-        this(s, zzlZ());
+        this(s, zzmL());
     }
     
-    public zzl(final String mTag, final boolean zzUU) {
-        zzu.zzh(mTag, "The log tag cannot be null or empty.");
+    public zzl(final String mTag, final boolean zzXx) {
+        zzx.zzh(mTag, "The log tag cannot be null or empty.");
         this.mTag = mTag;
-        this.zzUT = (mTag.length() <= 23);
-        this.zzUU = zzUU;
-        this.zzUV = false;
+        this.zzXw = (mTag.length() <= 23);
+        this.zzXx = zzXx;
+        this.zzXy = false;
     }
     
-    public static boolean zzlZ() {
-        return zzl.zzUS;
+    public static boolean zzmL() {
+        return zzl.zzXv;
     }
     
     public void zzb(final String s, final Object... array) {
-        if (this.zzlX() || zzl.zzUS) {
+        if (this.zzmJ() || zzl.zzXv) {
             Log.d(this.mTag, this.zzg(s, array));
         }
     }
     
     public void zzb(final Throwable t, final String s, final Object... array) {
-        if (this.zzlX() || zzl.zzUS) {
+        if (this.zzmJ() || zzl.zzXv) {
             Log.d(this.mTag, this.zzg(s, array), t);
         }
     }
@@ -55,13 +55,13 @@ public class zzl
             format = String.format(Locale.ROOT, format, array);
         }
         String string = format;
-        if (!TextUtils.isEmpty((CharSequence)this.zzUW)) {
-            string = this.zzUW + format;
+        if (!TextUtils.isEmpty((CharSequence)this.zzXz)) {
+            string = this.zzXz + format;
         }
         return string;
     }
     
-    public boolean zzlX() {
-        return this.zzUU || (this.zzUT && Log.isLoggable(this.mTag, 3));
+    public boolean zzmJ() {
+        return this.zzXx || (this.zzXw && Log.isLoggable(this.mTag, 3));
     }
 }

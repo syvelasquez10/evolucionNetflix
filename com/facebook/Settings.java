@@ -232,21 +232,24 @@ public final class Settings
                     }
                     // iftrue(Label_0351:, Utility.queryAppSettings(s, false).supportsAttribution())
                     // iftrue(Label_0329:, attributionIdentifiers != null && attributionIdentifiers.getAndroidAdvertiserId() != null || attributionIdentifiers.getAttributionId() != null)
-                    throw new FacebookException("No attribution id available to send to server.");
+                    // iftrue(Label_0417:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
+                    SharedPreferences$Editor edit = null;
+                    Response executeAndWait = null;
+                Label_0417:
                     while (true) {
-                        final SharedPreferences$Editor edit;
-                        edit.apply();
-                        return;
+                        edit.putString(string2, executeAndWait.getGraphObject().getInnerJSONObject().toString());
+                        break Label_0417;
+                        throw new FacebookException("No attribution id available to send to server.");
                         Label_0351: {
                             executeAndWait = postRequest.executeAndWait();
                         }
                         edit = sharedPreferences.edit();
                         edit.putLong(string, System.currentTimeMillis());
-                        edit.putString(string2, executeAndWait.getGraphObject().getInnerJSONObject().toString());
                         continue;
                     }
+                    edit.apply();
+                    return executeAndWait;
                 }
-                // iftrue(Label_0417:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
                 catch (JSONException ex2) {
                     create2 = null;
                     continue;

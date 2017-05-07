@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.content.Context;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
@@ -29,7 +28,7 @@ class MovieDetailsFrag$4 implements VideoDetailsViewGroup$DetailsStringProvider
         if (StringUtils.isEmpty(this.val$details.getDirectors())) {
             return null;
         }
-        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), this.this$0.getActivity().getResources().getQuantityString(2131623936, this.val$details.getNumDirectors()), this.val$details.getDirectors());
+        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), this.this$0.getActivity().getResources().getQuantityString(2131230721, this.val$details.getNumDirectors()), this.val$details.getDirectors());
     }
     
     @Override
@@ -37,11 +36,11 @@ class MovieDetailsFrag$4 implements VideoDetailsViewGroup$DetailsStringProvider
         if (StringUtils.isEmpty(this.val$details.getGenres())) {
             return null;
         }
-        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131493164, this.val$details.getGenres());
+        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131165447, this.val$details.getGenres());
     }
     
     @Override
     public CharSequence getStarringText() {
-        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131493162, this.val$details.getActors());
+        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131165549, this.val$details.getActors());
     }
 }

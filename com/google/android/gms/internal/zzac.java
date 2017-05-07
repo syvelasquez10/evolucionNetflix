@@ -1,0 +1,46 @@
+// 
+// Decompiled by Procyon v0.5.30
+// 
+
+package com.google.android.gms.internal;
+
+import android.content.pm.PackageManager$NameNotFoundException;
+import org.apache.http.client.HttpClient;
+import android.net.http.AndroidHttpClient;
+import android.os.Build$VERSION;
+import java.io.File;
+import android.content.Context;
+
+public class zzac
+{
+    public static zzl zza(final Context context) {
+        return zza(context, null);
+    }
+    
+    public static zzl zza(final Context context, final zzy zzy) {
+        final File file = new File(context.getCacheDir(), "volley");
+        String string = "volley/0";
+        while (true) {
+            try {
+                final String packageName = context.getPackageName();
+                string = packageName + "/" + context.getPackageManager().getPackageInfo(packageName, 0).versionCode;
+                zzy zzy2 = zzy;
+                if (zzy == null) {
+                    if (Build$VERSION.SDK_INT >= 9) {
+                        zzy2 = new zzz();
+                    }
+                    else {
+                        zzy2 = new zzw((HttpClient)AndroidHttpClient.newInstance(string));
+                    }
+                }
+                final zzl zzl = new zzl(new zzv(file), new zzt(zzy2));
+                zzl.start();
+                return zzl;
+            }
+            catch (PackageManager$NameNotFoundException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+}

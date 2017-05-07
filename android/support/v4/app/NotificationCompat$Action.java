@@ -36,25 +36,27 @@ public class NotificationCompat$Action extends NotificationCompatBase$Action
     }
     
     @Override
-    protected PendingIntent getActionIntent() {
+    public PendingIntent getActionIntent() {
         return this.actionIntent;
     }
     
+    @Override
     public Bundle getExtras() {
         return this.mExtras;
     }
     
     @Override
-    protected int getIcon() {
+    public int getIcon() {
         return this.icon;
     }
     
+    @Override
     public RemoteInput[] getRemoteInputs() {
         return this.mRemoteInputs;
     }
     
     @Override
-    protected CharSequence getTitle() {
+    public CharSequence getTitle() {
         return this.title;
     }
 }

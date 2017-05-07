@@ -6,9 +6,7 @@ package com.netflix.mediaclient.service.configuration.drm;
 
 import com.netflix.mediaclient.util.CryptoUtils;
 import java.util.Arrays;
-import android.support.v4.content.LocalBroadcastManager;
-import android.content.Intent;
-import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.StringUtils;
@@ -25,6 +23,7 @@ import com.netflix.mediaclient.util.PreferenceUtils;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
+import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import android.content.Context;
 import android.media.MediaDrm;
 import java.util.UUID;

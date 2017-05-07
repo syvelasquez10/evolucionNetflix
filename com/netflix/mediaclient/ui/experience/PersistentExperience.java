@@ -17,6 +17,10 @@ public enum PersistentExperience
 {
     KUBRICK_HERO_IMGS, 
     KUBRICK_HIGH_DENSITY, 
+    KUBRICK_KIDS_CONTROL_FLAT_GENRES, 
+    KUBRICK_KIDS_HERO_IMGS, 
+    KUBRICK_KIDS_HIGH_DENSITY, 
+    KUBRICK_KIDS_HIGH_DENSITY_VERT, 
     NON_KUBRICK;
     
     private static final String PERSISTENT_EXPERIENCE_PREFS_KEY = "persistent_experience_key";
@@ -59,6 +63,30 @@ public enum PersistentExperience
                         }
                         case 2: {
                             persistentExperience2 = PersistentExperience.KUBRICK_HIGH_DENSITY;
+                            break;
+                        }
+                    }
+                }
+                if (serviceAgent$ConfigurationAgentInterface.getKubrickKidsConfiguration() != null) {
+                    switch (PersistentExperience$1.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$KubrickKidsConfigData$KubrickKidsCell[serviceAgent$ConfigurationAgentInterface.getKubrickKidsConfiguration().getCell().ordinal()]) {
+                        default: {
+                            persistentExperience2 = PersistentExperience.NON_KUBRICK;
+                            break;
+                        }
+                        case 1: {
+                            persistentExperience2 = PersistentExperience.KUBRICK_KIDS_HERO_IMGS;
+                            break;
+                        }
+                        case 2: {
+                            persistentExperience2 = PersistentExperience.KUBRICK_KIDS_HIGH_DENSITY;
+                            break;
+                        }
+                        case 3: {
+                            persistentExperience2 = PersistentExperience.KUBRICK_KIDS_HIGH_DENSITY_VERT;
+                            break;
+                        }
+                        case 4: {
+                            persistentExperience2 = PersistentExperience.KUBRICK_KIDS_CONTROL_FLAT_GENRES;
                             break;
                         }
                     }

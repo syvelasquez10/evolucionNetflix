@@ -20,6 +20,7 @@ import android.support.v7.internal.view.menu.aa;
 import android.view.ViewGroup;
 import android.support.v7.internal.view.menu.z;
 import android.support.v7.appcompat.R$layout;
+import android.graphics.drawable.Drawable;
 import android.util.SparseBooleanArray;
 import android.support.v4.view.ActionProvider$SubUiVisibilityListener;
 import android.support.v7.internal.view.menu.d;
@@ -44,14 +45,14 @@ class ActionMenuPresenter$ActionButtonSubmenu extends v
         super(context, mSubMenu, null, false, R$attr.actionOverflowMenuStyle);
         this.mSubMenu = mSubMenu;
         if (!((m)mSubMenu.getItem()).i()) {
-            View access$500;
+            Object access$500;
             if (this$0.mOverflowButton == null) {
-                access$500 = (View)this$0.mMenuView;
+                access$500 = this$0.mMenuView;
             }
             else {
                 access$500 = this$0.mOverflowButton;
             }
-            this.setAnchorView(access$500);
+            this.setAnchorView((View)access$500);
         }
         this.setCallback(this$0.mPopupPresenterCallback);
         final int size = mSubMenu.size();

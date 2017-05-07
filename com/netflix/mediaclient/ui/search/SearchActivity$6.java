@@ -12,11 +12,13 @@ import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View$OnFocusChangeListener;
+import java.util.Iterator;
 import android.content.Intent;
 import android.annotation.SuppressLint;
 import android.view.View$OnTouchListener;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.SearchActionBar;
 import android.view.View;
@@ -27,10 +29,11 @@ import android.annotation.TargetApi;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.Activity;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.Log;
 import android.text.TextUtils;
 import android.content.Context;
 import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
+import com.netflix.mediaclient.servicemgr.ISearchLogging$InputMode;
+import com.netflix.mediaclient.Log;
 import android.widget.SearchView$OnQueryTextListener;
 
 class SearchActivity$6 implements SearchView$OnQueryTextListener
@@ -42,8 +45,18 @@ class SearchActivity$6 implements SearchView$OnQueryTextListener
     }
     
     public boolean onQueryTextChange(final String s) {
+        if (Log.isLoggable()) {
+            Log.v("SearchActivity", "onQueryTextChange triggers query update, query: " + s + ", voice search " + this.this$0.voiceSearch.get());
+        }
         this.this$0.handleQueryUpdate(s);
-        SearchLogUtils.reportSearchEditChange(this.this$0.requestId, (Context)this.this$0, this.this$0.getUiScreen(), s);
+        ISearchLogging$InputMode searchLogging$InputMode;
+        if (this.this$0.voiceSearch.getAndSet(false)) {
+            searchLogging$InputMode = ISearchLogging$InputMode.speech;
+        }
+        else {
+            searchLogging$InputMode = ISearchLogging$InputMode.keyboard;
+        }
+        SearchLogUtils.reportSearchEditChange(this.this$0.requestId, (Context)this.this$0, this.this$0.getUiScreen(), s, searchLogging$InputMode);
         if (TextUtils.isEmpty((CharSequence)s) && this.this$0.resultsFrag != null) {
             this.this$0.resultsFrag.clearSelectedStack();
             this.this$0.resultsFrag.clearGridSelected();

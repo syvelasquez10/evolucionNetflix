@@ -6,6 +6,7 @@ package android.support.v7.media;
 
 import java.util.Arrays;
 import android.text.TextUtils;
+import android.content.IntentSender;
 import java.util.Collections;
 import java.util.List;
 import java.util.Iterator;

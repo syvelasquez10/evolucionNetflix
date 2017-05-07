@@ -10,6 +10,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class DeviceConfigData
 {
+    @SerializedName("audioFormats")
+    private int audioFormats;
     @SerializedName("breadcrumb_logging_specification")
     private BreadcrumbLoggingSpecification breadcrumb_logging_specification;
     @SerializedName("consolidated_logging_specification")
@@ -49,6 +51,8 @@ public class DeviceConfigData
     private int user_session_timeout_duration;
     @SerializedName("videoResolutionOverride")
     private int videoResolutionOverride;
+    @SerializedName("voipEnabledOnDevice")
+    private boolean voipEnabledOnDevice;
     
     public DeviceConfigData() {
         this.consolidated_logging_specification = new ArrayList<ConsolidatedLoggingSessionSpecification>();
@@ -63,6 +67,10 @@ public class DeviceConfigData
     
     public String getAppRecommendedVresion() {
         return this.current_version;
+    }
+    
+    public int getAudioFormats() {
+        return this.audioFormats;
     }
     
     public BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification() {
@@ -147,6 +155,10 @@ public class DeviceConfigData
     
     public String getWebsocketDisabled() {
         return this.disable_websocket;
+    }
+    
+    public boolean isVoipEnabledOnDevice() {
+        return this.voipEnabledOnDevice;
     }
     
     public boolean isWidevineL1Enabled() {

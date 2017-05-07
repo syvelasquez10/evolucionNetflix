@@ -194,14 +194,6 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     }
     
     @Override
-    public String getCharacterSynopsis() {
-        if (this.kidsDetail == null) {
-            return null;
-        }
-        return this.kidsDetail.synopsis;
-    }
-    
-    @Override
     public int getEndtime() {
         final Video$Detail watchNextDetails = this.getWatchNextDetails();
         if (watchNextDetails == null) {

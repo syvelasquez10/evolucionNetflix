@@ -6,6 +6,7 @@ package android.support.v7.media;
 
 import java.util.Arrays;
 import android.text.TextUtils;
+import android.content.IntentSender;
 import java.util.Collections;
 import android.content.IntentFilter;
 import java.util.List;
@@ -41,6 +42,10 @@ public final class MediaRouteDescriptor
         return this.mBundle;
     }
     
+    public boolean canDisconnectAndKeepPlaying() {
+        return this.mBundle.getBoolean("canDisconnect", false);
+    }
+    
     public List<IntentFilter> getControlFilters() {
         this.ensureControlFilters();
         return this.mControlFilters;
@@ -72,6 +77,10 @@ public final class MediaRouteDescriptor
     
     public int getPresentationDisplayId() {
         return this.mBundle.getInt("presentationDisplayId", -1);
+    }
+    
+    public IntentSender getSettingsActivity() {
+        return (IntentSender)this.mBundle.getParcelable("settingsIntent");
     }
     
     public int getVolume() {

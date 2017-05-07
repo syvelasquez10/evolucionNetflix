@@ -32,9 +32,9 @@ public interface GoogleApiClient
     
     void unregisterConnectionFailedListener(final GoogleApiClient$OnConnectionFailedListener p0);
     
-     <C extends Api$Client> C zza(final Api$ClientKey<C> p0);
+     <C extends Api$zzb> C zza(final Api$zzc<C> p0);
     
-     <A extends Api$Client, R extends Result, T extends zza$zza<R, A>> T zza(final T p0);
+     <A extends Api$zzb, R extends Result, T extends zzc$zza<R, A>> T zza(final T p0);
     
-     <A extends Api$Client, T extends zza$zza<? extends Result, A>> T zzb(final T p0);
+     <A extends Api$zzb, T extends zzc$zza<? extends Result, A>> T zzb(final T p0);
 }

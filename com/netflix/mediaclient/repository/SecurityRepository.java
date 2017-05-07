@@ -5,7 +5,12 @@
 package com.netflix.mediaclient.repository;
 
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.util.FileUtils;
+import com.netflix.mediaclient.servicemgr.IVoip$UserType;
+import com.netflix.mediaclient.util.StringUtils;
+import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.IVoip$AuthorizationTokens;
 import android.content.Context;
 
 public final class SecurityRepository
@@ -23,6 +28,7 @@ public final class SecurityRepository
     private static final int CONSTANT_CRITTERCISM_APP_ID = 2;
     private static final int CONSTANT_DEVICE_ID_TOKEN = 1;
     private static final int CONSTANT_FACEBOOK_ID = 0;
+    public static final String CUSTOMER_SUPPORT_FILE_NAME = "cs.dat";
     private static final String ESN_DELIM = "-";
     private static final String MDXJS_VERSION_VALUE = "1.1.6-android";
     private static final String MDXLIB_VERSION_VALUE = "2013.3";
@@ -81,6 +87,50 @@ public final class SecurityRepository
     
     public static String getCrittercismAppId() {
         return SecurityRepository.crittercismAppId;
+    }
+    
+    public static IVoip$AuthorizationTokens getDefaultTokens(final Context context) {
+        final String absolutePath = context.getFilesDir().getAbsolutePath();
+        Label_0153: {
+            if (!absolutePath.endsWith("/")) {
+                break Label_0153;
+            }
+            String s = absolutePath + "cs.dat";
+            while (true) {
+                if (Log.isLoggable()) {
+                    Log.d("SEC", "Load customer support secure data from " + s);
+                }
+                final String native_loadVoipTokens = native_loadVoipTokens(s);
+                if (Log.isLoggable()) {
+                    Log.d("SEC", "Received" + native_loadVoipTokens);
+                }
+                try {
+                    final JSONObject jsonObject = new JSONObject(native_loadVoipTokens);
+                    final String string = jsonObject.getString("userToken");
+                    final String string2 = jsonObject.getString("encToken");
+                    IVoip$AuthorizationTokens voip$AuthorizationTokens;
+                    if (StringUtils.isEmpty(string) || StringUtils.isEmpty(string2)) {
+                        Log.e("SEC", "Credentials are empty!");
+                        voip$AuthorizationTokens = null;
+                    }
+                    else {
+                        final IVoip$AuthorizationTokens voip$AuthorizationTokens2 = voip$AuthorizationTokens = new IVoip$AuthorizationTokens(string, string2, IVoip$UserType.CS_DEFAULT, System.currentTimeMillis() + 1471228928L);
+                        if (Log.isLoggable()) {
+                            Log.d("SEC", "getDefaultTokens: " + voip$AuthorizationTokens2);
+                            return voip$AuthorizationTokens2;
+                        }
+                    }
+                    return voip$AuthorizationTokens;
+                    s = absolutePath + "/cs.dat";
+                    continue;
+                }
+                catch (Throwable t) {
+                    Log.e("SEC", "Failed to load default tokens", t);
+                    return null;
+                }
+                break;
+            }
+        }
     }
     
     public static String getDeviceIdToken() {
@@ -142,6 +192,8 @@ public final class SecurityRepository
                 Log.w("SEC", "We already loaded native libraries!");
             }
             else {
+                FileUtils.copyFileFromAssetToFS(context, "cs.dat", "cs.dat", false);
+                Log.d("SEC", "We copied cs.dat");
                 SecurityRepository.sLoaded = DeviceUtils.loadNativeLibrary(context, "netflixmp_jni");
                 if (SecurityRepository.sLoaded) {
                     native_init(new byte[0]);
@@ -162,4 +214,6 @@ public final class SecurityRepository
     private static native String native_getSystemProperty(final String p0);
     
     private static final native void native_init(final byte[] p0);
+    
+    private static native String native_loadVoipTokens(final String p0);
 }

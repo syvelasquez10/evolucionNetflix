@@ -18,8 +18,8 @@ public class VideoWindowForPostplayWithAnimation extends VideoWindowForPostplayW
     private final int END_WIDTH_DP;
     private Thread mAnimator;
     
-    public VideoWindowForPostplayWithAnimation(final PlayerActivity playerActivity) {
-        super(playerActivity);
+    public VideoWindowForPostplayWithAnimation(final PlayerFragment playerFragment) {
+        super(playerFragment);
         this.END_MARGIN_TOP_DP = 12;
         this.END_MARGIN_LEFT_DP = 12;
         this.END_WIDTH_DP = 300;
@@ -28,7 +28,7 @@ public class VideoWindowForPostplayWithAnimation extends VideoWindowForPostplayW
     }
     
     private void init() {
-        this.mParams = new VideoWindowForPostplayWithAnimation$ScaleAnimationParameters(500, 0, 0, 1.0f, AndroidUtils.dipToPixels((Context)this.mContext, 12), AndroidUtils.dipToPixels((Context)this.mContext, 12), AndroidUtils.dipToPixels((Context)this.mContext, 300) / DeviceUtils.getScreenWidthInPixels((Context)this.mContext));
+        this.mParams = new VideoWindowForPostplayWithAnimation$ScaleAnimationParameters(500, 0, 0, 1.0f, AndroidUtils.dipToPixels((Context)this.mContext.getActivity(), 12), AndroidUtils.dipToPixels((Context)this.mContext.getActivity(), 12), AndroidUtils.dipToPixels((Context)this.mContext.getActivity(), 300) / DeviceUtils.getScreenWidthInPixels((Context)this.mContext.getActivity()));
     }
     
     @Override
@@ -36,7 +36,7 @@ public class VideoWindowForPostplayWithAnimation extends VideoWindowForPostplayW
         this.removeCenterInParent((View)this.mSurface);
         this.removeCenterInParent((View)this.mSurface2);
         if (this.mSurface != null) {
-            this.mSurface.setBackgroundResource(2130837868);
+            this.mSurface.setBackgroundResource(2130837912);
             this.mSurface.setPadding(1, 1, 1, 1);
         }
         this.mOriginalSurfaceState = this.getCurrentSurfaceState();

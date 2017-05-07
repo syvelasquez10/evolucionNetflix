@@ -14,36 +14,37 @@ import android.os.RemoteException;
 import java.util.HashMap;
 import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
+import com.google.android.gms.common.internal.zzf;
 import android.os.Looper;
 import android.content.Context;
+import com.google.android.gms.cast.Cast$ApplicationConnectionResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.api.zzc$zzb;
 import android.os.Bundle;
 import java.util.concurrent.atomic.AtomicLong;
 import com.google.android.gms.cast.Cast$MessageReceivedCallback;
 import java.util.Map;
 import com.google.android.gms.cast.CastDevice;
 import com.google.android.gms.cast.ApplicationMetadata;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.cast.Cast$ApplicationConnectionResult;
-import com.google.android.gms.common.api.zza$zzb;
 import com.google.android.gms.cast.Cast$Listener;
-import com.google.android.gms.common.internal.zzi;
+import com.google.android.gms.common.internal.zzj;
 
 class zze$zzb$1 implements Runnable
 {
-    final /* synthetic */ zze zzUI;
-    final /* synthetic */ int zzUJ;
-    final /* synthetic */ zze$zzb zzUK;
+    final /* synthetic */ zze zzXl;
+    final /* synthetic */ int zzXm;
+    final /* synthetic */ zze$zzb zzXn;
     
-    zze$zzb$1(final zze$zzb zzUK, final zze zzUI, final int zzUJ) {
-        this.zzUK = zzUK;
-        this.zzUI = zzUI;
-        this.zzUJ = zzUJ;
+    zze$zzb$1(final zze$zzb zzXn, final zze zzXl, final int zzXm) {
+        this.zzXn = zzXn;
+        this.zzXl = zzXl;
+        this.zzXm = zzXm;
     }
     
     @Override
     public void run() {
-        if (this.zzUI.zzQH != null) {
-            this.zzUI.zzQH.onApplicationDisconnected(this.zzUJ);
+        if (this.zzXl.zzTk != null) {
+            this.zzXl.zzTk.onApplicationDisconnected(this.zzXm);
         }
     }
 }

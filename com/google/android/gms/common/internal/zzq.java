@@ -8,5 +8,5 @@ import android.os.IInterface;
 
 public interface zzq extends IInterface
 {
-    void zzb(final ResolveAccountResponse p0);
+    void cancel();
 }

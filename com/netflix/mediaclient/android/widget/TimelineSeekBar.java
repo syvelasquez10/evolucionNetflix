@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.android.widget;
 
 import android.widget.SeekBar;
-import com.netflix.mediaclient.ui.player.PlayerActivity$VideoPositionListener;
+import com.netflix.mediaclient.ui.player.PlayerFragment$VideoPositionListener;
 import com.netflix.mediaclient.Log;
 import android.graphics.drawable.Drawable;
 import android.os.Build$VERSION;
@@ -72,10 +72,10 @@ public class TimelineSeekBar extends NetflixSeekBar
         }
         Drawable thumb2;
         if (b) {
-            thumb2 = this.getResources().getDrawable(2131230820);
+            thumb2 = this.getResources().getDrawable(2131558590);
         }
         else {
-            thumb2 = this.getResources().getDrawable(2130837864);
+            thumb2 = this.getResources().getDrawable(2130837908);
         }
         this.setThumb(thumb2);
     }
@@ -85,7 +85,7 @@ public class TimelineSeekBar extends NetflixSeekBar
         if (Log.isLoggable()) {
             Log.d("nf_timelineseekbar", "onTouchEvent: " + motionEvent.getAction());
         }
-        return (this.onSeekBarChangeListener instanceof PlayerActivity$VideoPositionListener && ((PlayerActivity$VideoPositionListener)this.onSeekBarChangeListener).handleTouchEvent(this, motionEvent, touchEventToProgress)) || super.onTouchEvent(motionEvent);
+        return (this.onSeekBarChangeListener instanceof PlayerFragment$VideoPositionListener && ((PlayerFragment$VideoPositionListener)this.onSeekBarChangeListener).handleTouchEvent(this, motionEvent, touchEventToProgress)) || super.onTouchEvent(motionEvent);
     }
     
     public boolean onTrackballEvent(final MotionEvent motionEvent) {

@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.ui.kids;
 
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
+import com.netflix.mediaclient.util.DeviceUtils;
+import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import android.view.ViewConfiguration;
 import android.graphics.drawable.Drawable;

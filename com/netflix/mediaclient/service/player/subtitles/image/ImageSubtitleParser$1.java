@@ -41,6 +41,7 @@ class ImageSubtitleParser$1 extends LoggingResourceFetcherCallback
             if (Log.isLoggable()) {
                 Log.e("nf_subtitles", "Failed to download master index " + status);
             }
+            this.this$0.mPlayer.reportFailedToDownloadSubtitleMetadata(s);
         }
         else if (this.this$0.parseMasterIndex(array)) {
             this.this$0.handleDownloadSegmentIndexes();

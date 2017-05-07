@@ -23,7 +23,7 @@ import android.annotation.SuppressLint;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
 import android.view.ViewGroup;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.os.Bundle;
 import android.app.Fragment;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag$HeroSlideshow;
@@ -51,7 +51,8 @@ class KubrickKidsShowDetailsFrag$2 implements DetailsPageParallaxScrollListener$
     
     @Override
     public void onScrollStart() {
-        this.this$0.heroSlideshow.stop();
+        this.this$0.isSeasonUserSelected = false;
+        this.this$0.heroSlideshow.stop(false);
     }
     
     @Override

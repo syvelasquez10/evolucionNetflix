@@ -48,6 +48,13 @@ public class ViewPropertyAnimatorCompatSet
         return this;
     }
     
+    public ViewPropertyAnimatorCompatSet playSequentially(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat2) {
+        this.mAnimators.add(viewPropertyAnimatorCompat);
+        viewPropertyAnimatorCompat2.setStartDelay(viewPropertyAnimatorCompat.getDuration());
+        this.mAnimators.add(viewPropertyAnimatorCompat2);
+        return this;
+    }
+    
     public ViewPropertyAnimatorCompatSet setDuration(final long mDuration) {
         if (!this.mIsStarted) {
             this.mDuration = mDuration;

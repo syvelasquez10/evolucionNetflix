@@ -15,6 +15,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View$OnFocusChangeListener;
 import android.app.Activity;
+import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import android.annotation.SuppressLint;
 import android.view.View$OnTouchListener;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.SearchView$OnQueryTextListener;
 import com.netflix.mediaclient.android.widget.SearchActionBar;
@@ -54,8 +56,10 @@ public class SearchActivity extends NetflixActivity
     private SearchActionBar searchActionBar;
     private final SearchView$OnQueryTextListener searchQueryTextListener;
     private ServiceManager serviceManager;
+    private AtomicBoolean voiceSearch;
     
     public SearchActivity() {
+        this.voiceSearch = new AtomicBoolean(false);
         this.errorsCallback = new SearchActivity$4(this);
         this.handleQueryUpdateRunnable = new SearchActivity$5(this);
         this.searchQueryTextListener = (SearchView$OnQueryTextListener)new SearchActivity$6(this);
@@ -71,19 +75,24 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void findViews() {
-        this.fragGroup = (ViewGroup)this.findViewById(2131427799);
-        this.loadingWrapper = this.findViewById(2131427798);
+        this.fragGroup = (ViewGroup)this.findViewById(2131624513);
+        this.loadingWrapper = this.findViewById(2131624512);
     }
     
     private void handleNewIntent(final Intent intent) {
         final String action = intent.getAction();
-        Log.v("SearchActivity", "Received intent with action: " + action);
+        if (Log.isLoggable()) {
+            Log.d("SearchActivity", "Received intent with action: " + action);
+            Log.d("SearchActivity", intent);
+        }
         if ("android.intent.action.VIEW".equals(action)) {
             return;
         }
         if ("android.intent.action.SEARCH".equals(action)) {
             final String stringExtra = intent.getStringExtra("query");
-            this.searchActionBar.setQuery(stringExtra, intent.getBooleanExtra("submit", false));
+            final boolean booleanExtra = intent.getBooleanExtra("submit", false);
+            this.voiceSearch.set(this.isVoiceSearch(intent));
+            this.searchActionBar.setQuery(stringExtra, booleanExtra);
             this.handleQueryUpdate(stringExtra);
             return;
         }
@@ -110,6 +119,18 @@ public class SearchActivity extends NetflixActivity
         }
     }
     
+    private boolean isVoiceSearch(final Intent intent) {
+        final Iterator<String> iterator = intent.getExtras().keySet().iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().startsWith("android.speech.extra")) {
+                Log.d("SearchActivity", "Voice search");
+                return true;
+            }
+        }
+        Log.w("SearchActivity", "Not voice search?");
+        return false;
+    }
+    
     public static void search(final Activity activity, final String s) {
         activity.startActivity(new Intent((Context)activity, (Class)SearchActivity.class).setAction("android.intent.action.SEARCH").putExtra("query", s).putExtra("submit", true));
     }
@@ -131,7 +152,7 @@ public class SearchActivity extends NetflixActivity
     private void setupFragments(final Bundle bundle) {
         if (bundle == null) {
             (this.resultsFrag = SearchResultsFrag.create()).setServiceManager(this.serviceManager);
-            this.getFragmentManager().beginTransaction().add(2131427799, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131624513, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
             return;
         }
@@ -143,7 +164,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void showEmpty() {
-        this.leWrapper.showErrorView(2131493205, false, false);
+        this.leWrapper.showErrorView(2131165476, false, false);
         this.fragGroup.setVisibility(4);
         this.searchActionBar.hideProgressSpinner();
     }
@@ -182,9 +203,9 @@ public class SearchActivity extends NetflixActivity
     
     protected int getInitMessageStringId() {
         if (BrowseExperience.isKubrickKids()) {
-            return 2131492980;
+            return 2131165770;
         }
-        return 2131493191;
+        return 2131165610;
     }
     
     @Override
@@ -209,7 +230,10 @@ public class SearchActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         SearchUtils.setSearchExperience(BrowseExperience.getSearchExperience());
-        this.setContentView(2130903182);
+        if (BrowseExperience.isKubrickKids()) {
+            this.setTheme(2131362162);
+        }
+        this.setContentView(2130903215);
         this.setupActionBar();
         this.findViews();
         this.setupLoadingWrapper();
@@ -220,7 +244,9 @@ public class SearchActivity extends NetflixActivity
         this.loggingSessionId = SearchLogUtils.reportSearchSessionStarted(this.requestId, (Context)this, this.getUiScreen(), this.query);
         this.handleNewIntent(this.getIntent());
         if (BrowseExperience.isKubrickKids()) {
-            this.leWrapper.getErrorMessageTextView().setTextColor(this.getResources().getColor(2131230822));
+            this.leWrapper.getErrorMessageTextView().setTextColor(this.getResources().getColor(2131558460));
+            this.leWrapper.getErrorMessageTextView().setBackgroundColor(this.getResources().getColor(2131558601));
+            ((ViewGroup)this.leWrapper.getErrorMessageTextView().getParent()).setBackgroundColor(-1);
             ViewUtils.removeShadow(this.leWrapper.getErrorMessageTextView());
         }
     }
@@ -244,7 +270,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     public void showError() {
-        this.leWrapper.showErrorView(2131493204, true, false);
+        this.leWrapper.showErrorView(2131165414, true, false);
         this.fragGroup.setVisibility(4);
         this.searchActionBar.hideProgressSpinner();
     }

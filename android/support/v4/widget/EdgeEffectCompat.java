@@ -14,6 +14,10 @@ public class EdgeEffectCompat
     private Object mEdgeEffect;
     
     static {
+        if (Build$VERSION.SDK_INT >= 21) {
+            IMPL = new EdgeEffectCompat$EdgeEffectLollipopImpl();
+            return;
+        }
         if (Build$VERSION.SDK_INT >= 14) {
             IMPL = new EdgeEffectCompat$EdgeEffectIcsImpl();
             return;

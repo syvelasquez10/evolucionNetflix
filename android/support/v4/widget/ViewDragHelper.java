@@ -665,6 +665,7 @@ public class ViewDragHelper
     }
     
     void setDragState(final int mDragState) {
+        this.mParentView.removeCallbacks(this.mSetIdleRunnable);
         if (this.mDragState != mDragState) {
             this.mDragState = mDragState;
             this.mCallback.onViewDragStateChanged(mDragState);
@@ -743,37 +744,40 @@ public class ViewDragHelper
                 break;
             }
             case 2: {
-                for (int pointerCount = MotionEventCompat.getPointerCount(motionEvent), i = 0; i < pointerCount; ++i) {
-                    final int pointerId3 = MotionEventCompat.getPointerId(motionEvent, i);
-                    final float x3 = MotionEventCompat.getX(motionEvent, i);
-                    final float y3 = MotionEventCompat.getY(motionEvent, i);
-                    final float n3 = x3 - this.mInitialMotionX[pointerId3];
-                    final float n4 = y3 - this.mInitialMotionY[pointerId3];
-                    final View topChildUnder3 = this.findTopChildUnder((int)x3, (int)y3);
-                    boolean b;
-                    if (topChildUnder3 != null && this.checkTouchSlop(topChildUnder3, n3, n4)) {
-                        b = true;
-                    }
-                    else {
-                        b = false;
-                    }
-                    if (b) {
-                        final int left = topChildUnder3.getLeft();
-                        final int clampViewPositionHorizontal = this.mCallback.clampViewPositionHorizontal(topChildUnder3, (int)n3 + left, (int)n3);
-                        final int top = topChildUnder3.getTop();
-                        final int clampViewPositionVertical = this.mCallback.clampViewPositionVertical(topChildUnder3, (int)n4 + top, (int)n4);
-                        final int viewHorizontalDragRange = this.mCallback.getViewHorizontalDragRange(topChildUnder3);
-                        final int viewVerticalDragRange = this.mCallback.getViewVerticalDragRange(topChildUnder3);
-                        if ((viewHorizontalDragRange == 0 || (viewHorizontalDragRange > 0 && clampViewPositionHorizontal == left)) && (viewVerticalDragRange == 0 || (viewVerticalDragRange > 0 && clampViewPositionVertical == top))) {
+                if (this.mInitialMotionX != null && this.mInitialMotionY != null) {
+                    for (int pointerCount = MotionEventCompat.getPointerCount(motionEvent), i = 0; i < pointerCount; ++i) {
+                        final int pointerId3 = MotionEventCompat.getPointerId(motionEvent, i);
+                        final float x3 = MotionEventCompat.getX(motionEvent, i);
+                        final float y3 = MotionEventCompat.getY(motionEvent, i);
+                        final float n3 = x3 - this.mInitialMotionX[pointerId3];
+                        final float n4 = y3 - this.mInitialMotionY[pointerId3];
+                        final View topChildUnder3 = this.findTopChildUnder((int)x3, (int)y3);
+                        boolean b;
+                        if (topChildUnder3 != null && this.checkTouchSlop(topChildUnder3, n3, n4)) {
+                            b = true;
+                        }
+                        else {
+                            b = false;
+                        }
+                        if (b) {
+                            final int left = topChildUnder3.getLeft();
+                            final int clampViewPositionHorizontal = this.mCallback.clampViewPositionHorizontal(topChildUnder3, (int)n3 + left, (int)n3);
+                            final int top = topChildUnder3.getTop();
+                            final int clampViewPositionVertical = this.mCallback.clampViewPositionVertical(topChildUnder3, (int)n4 + top, (int)n4);
+                            final int viewHorizontalDragRange = this.mCallback.getViewHorizontalDragRange(topChildUnder3);
+                            final int viewVerticalDragRange = this.mCallback.getViewVerticalDragRange(topChildUnder3);
+                            if ((viewHorizontalDragRange == 0 || (viewHorizontalDragRange > 0 && clampViewPositionHorizontal == left)) && (viewVerticalDragRange == 0 || (viewVerticalDragRange > 0 && clampViewPositionVertical == top))) {
+                                break;
+                            }
+                        }
+                        this.reportNewEdgeDrags(n3, n4, pointerId3);
+                        if (this.mDragState == 1 || (b && this.tryCaptureViewForDrag(topChildUnder3, pointerId3))) {
                             break;
                         }
                     }
-                    this.reportNewEdgeDrags(n3, n4, pointerId3);
-                    if (this.mDragState == 1 || (b && this.tryCaptureViewForDrag(topChildUnder3, pointerId3))) {
-                        break;
-                    }
+                    this.saveLastMotion(motionEvent);
+                    break;
                 }
-                this.saveLastMotion(motionEvent);
                 break;
             }
             case 6: {

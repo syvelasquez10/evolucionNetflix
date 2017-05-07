@@ -4,39 +4,43 @@
 
 package com.netflix.mediaclient.ui.kubrick.details;
 
+import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
-import android.support.v7.widget.RecyclerView$LayoutManager;
 import android.support.v7.widget.GridLayoutManager$SpanSizeLookup;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.annotation.SuppressLint;
 import android.view.ViewGroup$LayoutParams;
-import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
 import android.view.LayoutInflater;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView$Adapter;
+import android.support.v7.widget.RecyclerView$LayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.widget.AdapterView$OnItemSelectedListener;
-import com.netflix.mediaclient.util.DeviceUtils;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import android.support.v7.widget.RecyclerView;
-import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
-import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.view.ViewGroup;
+import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup;
+import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
+import android.support.v7.widget.RecyclerView;
+import java.util.Stack;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import java.util.List;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
 import com.netflix.mediaclient.ui.details.ServiceManagerProvider;
+import com.netflix.mediaclient.ui.details.IHandleBackPress;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
@@ -45,8 +49,8 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.widget.PressedStateHandler$DelayedOnClickListener;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.util.TimeUtils;
 import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.util.TimeUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import android.content.Context;
@@ -57,8 +61,8 @@ import com.netflix.mediaclient.ui.details.EpisodesFrag$EpisodeView;
 
 public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$EpisodeView
 {
-    private AdvancedImageView image;
-    private View progressBarBackground;
+    protected AdvancedImageView image;
+    protected View progressBarBackground;
     private TextView runtime;
     final /* synthetic */ KubrickShowDetailsFrag this$0;
     private View unavailable;
@@ -68,10 +72,6 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
         super(this$0, context, n);
     }
     
-    private void adjustHeight() {
-        this.image.getLayoutParams().height = (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296450) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
-    }
-    
     private void updateRuntime(final EpisodeDetails episodeDetails) {
         if (this.runtime != null) {
             if (!episodeDetails.isAvailableToStream() || episodeDetails.getPlayable().getRuntime() <= 0) {
@@ -79,13 +79,17 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
                 return;
             }
             this.runtime.setVisibility(0);
-            this.runtime.setText((CharSequence)this.getResources().getString(2131493167, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
+            this.runtime.setText((CharSequence)this.getResources().getString(2131165483, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
         }
+    }
+    
+    protected void adjustHeight() {
+        this.image.getLayoutParams().height = (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296507) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
     }
     
     @Override
     protected CharSequence createTitleText(final EpisodeDetails episodeDetails) {
-        return this.getResources().getString(2131493237, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        return this.getResources().getString(2131165386, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
     }
     
     protected void disablePlay() {
@@ -113,10 +117,10 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
     @Override
     protected void findViews() {
         super.findViews();
-        this.image = (AdvancedImageView)this.findViewById(2131427551);
-        this.runtime = (TextView)this.findViewById(2131427554);
-        this.progressBarBackground = this.findViewById(2131427552);
-        this.unavailable = this.findViewById(2131427553);
+        this.image = (AdvancedImageView)this.findViewById(2131624225);
+        this.runtime = (TextView)this.findViewById(2131624228);
+        this.progressBarBackground = this.findViewById(2131624226);
+        this.unavailable = this.findViewById(2131624227);
     }
     
     @Override
@@ -154,9 +158,9 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
     
     protected void updateEpisodeImage(final EpisodeDetails episodeDetails) {
         if (this.image != null) {
-            final String horzDispUrl = episodeDetails.getHorzDispUrl();
-            if (StringUtils.isNotEmpty(horzDispUrl)) {
-                NetflixActivity.getImageLoader(this.getContext()).showImg(this.image, horzDispUrl, IClientLogging$AssetType.boxArt, episodeDetails.getTitle(), BrowseExperience.getImageLoaderConfig(), true, 1);
+            final String interestingUrl = episodeDetails.getInterestingUrl();
+            if (StringUtils.isNotEmpty(interestingUrl)) {
+                NetflixActivity.getImageLoader(this.getContext()).showImg(this.image, interestingUrl, IClientLogging$AssetType.boxArt, episodeDetails.getTitle(), BrowseExperience.getImageLoaderConfig(), true, 1);
             }
             this.adjustHeight();
         }
@@ -192,7 +196,7 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
         if (this.title == null) {
             return;
         }
-        this.title.setTextColor(this.getResources().getColor(2131230840));
+        this.title.setTextColor(this.getResources().getColor(2131558545));
         this.title.setText(this.createTitleText(episodeDetails));
     }
 }

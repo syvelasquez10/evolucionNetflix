@@ -15,8 +15,8 @@ import android.support.v4.util.SparseArrayCompat;
 class LoaderManagerImpl extends LoaderManager
 {
     static boolean DEBUG;
-    FragmentActivity mActivity;
     boolean mCreatingLoader;
+    private FragmentHostCallback mHost;
     final SparseArrayCompat<LoaderManagerImpl$LoaderInfo> mInactiveLoaders;
     final SparseArrayCompat<LoaderManagerImpl$LoaderInfo> mLoaders;
     boolean mRetaining;
@@ -27,11 +27,11 @@ class LoaderManagerImpl extends LoaderManager
         LoaderManagerImpl.DEBUG = false;
     }
     
-    LoaderManagerImpl(final String mWho, final FragmentActivity mActivity, final boolean mStarted) {
+    LoaderManagerImpl(final String mWho, final FragmentHostCallback mHost, final boolean mStarted) {
         this.mLoaders = new SparseArrayCompat<LoaderManagerImpl$LoaderInfo>();
         this.mInactiveLoaders = new SparseArrayCompat<LoaderManagerImpl$LoaderInfo>();
         this.mWho = mWho;
-        this.mActivity = mActivity;
+        this.mHost = mHost;
         this.mStarted = mStarted;
     }
     
@@ -73,8 +73,8 @@ class LoaderManagerImpl extends LoaderManager
             this.mInactiveLoaders.removeAt(indexOfKey);
             loaderManagerImpl$LoaderInfo2.destroy();
         }
-        if (this.mActivity != null && !this.hasRunningLoaders()) {
-            this.mActivity.mFragments.startPendingDeferredFragments();
+        if (this.mHost != null && !this.hasRunningLoaders()) {
+            this.mHost.mFragmentManager.startPendingDeferredFragments();
         }
     }
     
@@ -292,6 +292,10 @@ class LoaderManagerImpl extends LoaderManager
                 }
                 else {
                     if (loaderManagerImpl$LoaderInfo.mStarted) {
+                        if (LoaderManagerImpl.DEBUG) {
+                            Log.v("LoaderManager", "  Current loader is running; attempting to cancel");
+                        }
+                        loaderManagerImpl$LoaderInfo.cancel();
                         if (loaderManagerImpl$LoaderInfo.mPendingLoader != null) {
                             if (LoaderManagerImpl.DEBUG) {
                                 Log.v("LoaderManager", "  Removing pending loader: " + loaderManagerImpl$LoaderInfo.mPendingLoader);
@@ -329,12 +333,12 @@ class LoaderManagerImpl extends LoaderManager
         sb.append("LoaderManager{");
         sb.append(Integer.toHexString(System.identityHashCode(this)));
         sb.append(" in ");
-        DebugUtils.buildShortClassTag(this.mActivity, sb);
+        DebugUtils.buildShortClassTag(this.mHost, sb);
         sb.append("}}");
         return sb.toString();
     }
     
-    void updateActivity(final FragmentActivity mActivity) {
-        this.mActivity = mActivity;
+    void updateHostController(final FragmentHostCallback mHost) {
+        this.mHost = mHost;
     }
 }

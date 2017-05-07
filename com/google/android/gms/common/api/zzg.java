@@ -4,412 +4,433 @@
 
 package com.google.android.gms.common.api;
 
-import android.content.IntentFilter;
-import com.google.android.gms.common.internal.zzu;
-import java.io.PrintWriter;
-import java.io.FileDescriptor;
-import java.util.Iterator;
-import com.google.android.gms.common.internal.zzaa;
-import com.google.android.gms.common.internal.zze$zza;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.Collections;
-import java.util.WeakHashMap;
-import java.util.HashSet;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.concurrent.locks.ReentrantLock;
+import com.google.android.gms.common.internal.zzf$zza;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import android.app.PendingIntent;
+import android.util.Log;
+import com.google.android.gms.common.internal.ResolveAccountResponse;
+import java.util.HashSet;
 import java.util.Set;
+import android.os.Bundle;
 import com.google.android.gms.common.ConnectionResult;
-import android.content.BroadcastReceiver;
-import java.util.Queue;
-import com.google.android.gms.common.internal.zzj;
-import java.util.concurrent.locks.Condition;
-import java.util.Map;
-import com.google.android.gms.common.internal.zzj$zza;
-import android.os.Looper;
-import com.google.android.gms.common.internal.zze;
 import java.util.concurrent.locks.Lock;
-import com.google.android.gms.internal.zzpt;
-import com.google.android.gms.internal.zzps;
+import com.google.android.gms.signin.zze;
+import com.google.android.gms.common.GoogleApiAvailability;
+import java.util.concurrent.Future;
+import java.util.ArrayList;
+import java.util.Map;
+import com.google.android.gms.common.internal.zzf;
+import com.google.android.gms.common.internal.zzp;
+import com.google.android.gms.signin.zzd;
 import android.content.Context;
 
-final class zzg implements GoogleApiClient
+public class zzg implements zzj
 {
     private final Context mContext;
-    private final int zzWA;
-    private final int zzWB;
-    final Api$zza<? extends zzps, zzpt> zzWD;
-    private final Lock zzWK;
-    final zze zzWZ;
-    private final Looper zzWs;
-    private final zzg$zzc zzXA;
-    private final GoogleApiClient$ConnectionCallbacks zzXB;
-    private final zzj$zza zzXC;
-    final Map<Api<?>, Integer> zzXa;
-    private final Condition zzXl;
-    final zzj zzXm;
-    final Queue<zzg$zze<?>> zzXn;
-    private volatile boolean zzXo;
-    private long zzXp;
-    private long zzXq;
-    final zzg$zza zzXr;
-    BroadcastReceiver zzXs;
-    final Map<Api$ClientKey<?>, Api$Client> zzXt;
-    final Map<Api$ClientKey<?>, ConnectionResult> zzXu;
-    Set<Scope> zzXv;
-    private volatile zzh zzXw;
-    private ConnectionResult zzXx;
-    private final Set<zzi<?>> zzXy;
-    final Set<zzg$zze<?>> zzXz;
+    private zzd zzZA;
+    private int zzZB;
+    private boolean zzZC;
+    private boolean zzZD;
+    private zzp zzZE;
+    private boolean zzZF;
+    private boolean zzZG;
+    private final zzf zzZH;
+    private final Map<Api<?>, Integer> zzZI;
+    private ArrayList<Future<?>> zzZJ;
+    private final GoogleApiAvailability zzZi;
+    private final Api$zza<? extends zzd, zze> zzZj;
+    private final zzi zzZq;
+    private final Lock zzZs;
+    private ConnectionResult zzZt;
+    private int zzZu;
+    private int zzZv;
+    private boolean zzZw;
+    private int zzZx;
+    private final Bundle zzZy;
+    private final Set<Api$zzc> zzZz;
     
-    public zzg(final Context mContext, final Looper zzWs, final zze zzWZ, final Api$zza<? extends zzps, zzpt> zzWD, final Map<Api<?>, Api$ApiOptions> map, final Set<GoogleApiClient$ConnectionCallbacks> set, final Set<GoogleApiClient$OnConnectionFailedListener> set2, int zzWA, final int zzWB) {
-        this.zzWK = new ReentrantLock();
-        this.zzXn = new LinkedList<zzg$zze<?>>();
-        this.zzXp = 120000L;
-        this.zzXq = 5000L;
-        this.zzXt = new HashMap<Api$ClientKey<?>, Api$Client>();
-        this.zzXu = new HashMap<Api$ClientKey<?>, ConnectionResult>();
-        this.zzXv = new HashSet<Scope>();
-        this.zzXx = null;
-        this.zzXy = Collections.newSetFromMap(new WeakHashMap<zzi<?>, Boolean>());
-        this.zzXz = Collections.newSetFromMap(new ConcurrentHashMap<zzg$zze<?>, Boolean>(16, 0.75f, 2));
-        this.zzXA = new zzg$1(this);
-        this.zzXB = new zzg$2(this);
-        this.zzXC = new zzg$3(this);
+    public zzg(final zzi zzZq, final zzf zzZH, final Map<Api<?>, Integer> zzZI, final GoogleApiAvailability zzZi, final Api$zza<? extends zzd, zze> zzZj, final Lock zzZs, final Context mContext) {
+        this.zzZv = 0;
+        this.zzZw = false;
+        this.zzZy = new Bundle();
+        this.zzZz = new HashSet<Api$zzc>();
+        this.zzZJ = new ArrayList<Future<?>>();
+        this.zzZq = zzZq;
+        this.zzZH = zzZH;
+        this.zzZI = zzZI;
+        this.zzZi = zzZi;
+        this.zzZj = zzZj;
+        this.zzZs = zzZs;
         this.mContext = mContext;
-        this.zzXm = new zzj(zzWs, this.zzXC);
-        this.zzWs = zzWs;
-        this.zzXr = new zzg$zza(this, zzWs);
-        this.zzWA = zzWA;
-        this.zzWB = zzWB;
-        this.zzXa = new HashMap<Api<?>, Integer>();
-        this.zzXl = this.zzWK.newCondition();
-        this.zzXw = new zzf(this);
-        final Iterator<GoogleApiClient$ConnectionCallbacks> iterator = set.iterator();
+    }
+    
+    private void zzX(final boolean b) {
+        if (this.zzZA != null) {
+            if (this.zzZA.isConnected() && b) {
+                this.zzZA.zzzn();
+            }
+            this.zzZA.disconnect();
+            this.zzZE = null;
+        }
+    }
+    
+    private void zza(final ResolveAccountResponse resolveAccountResponse) {
+        if (!this.zzbe(0)) {
+            return;
+        }
+        final ConnectionResult zzoP = resolveAccountResponse.zzoP();
+        if (zzoP.isSuccess()) {
+            this.zzZE = resolveAccountResponse.zzoO();
+            this.zzZD = true;
+            this.zzZF = resolveAccountResponse.zzoQ();
+            this.zzZG = resolveAccountResponse.zzoR();
+            this.zznp();
+            return;
+        }
+        if (this.zze(zzoP)) {
+            this.zznu();
+            this.zznp();
+            return;
+        }
+        this.zzf(zzoP);
+    }
+    
+    private boolean zza(final int n, final int n2, final ConnectionResult connectionResult) {
+        return (n2 != 1 || this.zzd(connectionResult)) && (this.zzZt == null || n < this.zzZu);
+    }
+    
+    private void zzb(final ConnectionResult zzZt, final Api<?> api, final int n) {
+        if (n != 2) {
+            final int priority = api.zznb().getPriority();
+            if (this.zza(priority, n, zzZt)) {
+                this.zzZt = zzZt;
+                this.zzZu = priority;
+            }
+        }
+        this.zzZq.zzaag.put(api.zznd(), zzZt);
+    }
+    
+    private boolean zzbe(final int n) {
+        if (this.zzZv != n) {
+            Log.wtf("GoogleApiClientConnecting", "GoogleApiClient connecting is in step " + this.zzbf(this.zzZv) + " but received callback for step " + this.zzbf(n));
+            this.zzf(new ConnectionResult(8, null));
+            return false;
+        }
+        return true;
+    }
+    
+    private String zzbf(final int n) {
+        switch (n) {
+            default: {
+                return "UNKNOWN";
+            }
+            case 0: {
+                return "STEP_GETTING_SERVICE_BINDINGS";
+            }
+            case 1: {
+                return "STEP_VALIDATING_ACCOUNT";
+            }
+            case 2: {
+                return "STEP_AUTHENTICATING";
+            }
+            case 3: {
+                return "STEP_GETTING_REMOTE_SERVICE";
+            }
+        }
+    }
+    
+    private void zzc(final ConnectionResult connectionResult) {
+        if (!this.zzbe(2)) {
+            return;
+        }
+        if (connectionResult.isSuccess()) {
+            this.zzns();
+            return;
+        }
+        if (this.zze(connectionResult)) {
+            this.zznu();
+            this.zzns();
+            return;
+        }
+        this.zzf(connectionResult);
+    }
+    
+    private boolean zzd(final ConnectionResult connectionResult) {
+        return connectionResult.hasResolution() || this.zzZi.zzbb(connectionResult.getErrorCode()) != null;
+    }
+    
+    private boolean zze(final ConnectionResult connectionResult) {
+        return this.zzZB == 2 || (this.zzZB == 1 && !connectionResult.hasResolution());
+    }
+    
+    private void zzf(final ConnectionResult connectionResult) {
+        boolean b = false;
+        this.zzZw = false;
+        this.zznv();
+        if (!connectionResult.hasResolution()) {
+            b = true;
+        }
+        this.zzX(b);
+        this.zzZq.zzaag.clear();
+        this.zzZq.zzg(connectionResult);
+        if (!this.zzZq.zznB() || !this.zzZi.zzd(this.mContext, connectionResult.getErrorCode())) {
+            this.zzZq.zznE();
+            this.zzZq.zzZY.zzj(connectionResult);
+        }
+        this.zzZq.zzZY.zzoI();
+    }
+    
+    private boolean zzno() {
+        --this.zzZx;
+        if (this.zzZx > 0) {
+            return false;
+        }
+        if (this.zzZx < 0) {
+            Log.wtf("GoogleApiClientConnecting", "GoogleApiClient received too many callbacks for the given step. Clients may be in an unexpected state; GoogleApiClient will now disconnect.");
+            this.zzf(new ConnectionResult(8, null));
+            return false;
+        }
+        if (this.zzZt != null) {
+            this.zzf(this.zzZt);
+            return false;
+        }
+        return true;
+    }
+    
+    private void zznp() {
+        if (this.zzZx == 0) {
+            if (!this.zzZC) {
+                this.zzns();
+                return;
+            }
+            if (this.zzZD) {
+                this.zznq();
+            }
+        }
+    }
+    
+    private void zznq() {
+        final ArrayList<Api$zzb> list = new ArrayList<Api$zzb>();
+        this.zzZv = 1;
+        this.zzZx = this.zzZq.zzaaf.size();
+        for (final Api$zzc<?> api$zzc : this.zzZq.zzaaf.keySet()) {
+            if (this.zzZq.zzaag.containsKey(api$zzc)) {
+                if (!this.zzno()) {
+                    continue;
+                }
+                this.zznr();
+            }
+            else {
+                list.add(this.zzZq.zzaaf.get(api$zzc));
+            }
+        }
+        if (!list.isEmpty()) {
+            this.zzZJ.add(zzk.zznF().submit(new zzg$zzh(list)));
+        }
+    }
+    
+    private void zznr() {
+        this.zzZv = 2;
+        this.zzZq.zzaah = this.zznw();
+        this.zzZJ.add(zzk.zznF().submit(new zzg$zzc(this, null)));
+    }
+    
+    private void zzns() {
+        final ArrayList<Api$zzb> list = new ArrayList<Api$zzb>();
+        this.zzZv = 3;
+        this.zzZx = this.zzZq.zzaaf.size();
+        for (final Api$zzc<?> api$zzc : this.zzZq.zzaaf.keySet()) {
+            if (this.zzZq.zzaag.containsKey(api$zzc)) {
+                if (!this.zzno()) {
+                    continue;
+                }
+                this.zznt();
+            }
+            else {
+                list.add(this.zzZq.zzaaf.get(api$zzc));
+            }
+        }
+        if (!list.isEmpty()) {
+            this.zzZJ.add(zzk.zznF().submit(new zzg$zzf(list)));
+        }
+    }
+    
+    private void zznt() {
+        this.zzZq.zznA();
+        zzk.zznF().execute(new zzg$1(this));
+        if (this.zzZA != null) {
+            if (this.zzZF) {
+                this.zzZA.zza(this.zzZE, this.zzZG);
+            }
+            this.zzX(false);
+        }
+        final Iterator<Api$zzc<?>> iterator = this.zzZq.zzaag.keySet().iterator();
         while (iterator.hasNext()) {
-            this.zzXm.registerConnectionCallbacks(iterator.next());
+            this.zzZq.zzaaf.get(iterator.next()).disconnect();
         }
-        final Iterator<GoogleApiClient$OnConnectionFailedListener> iterator2 = set2.iterator();
-        while (iterator2.hasNext()) {
-            this.zzXm.registerConnectionFailedListener(iterator2.next());
+        if (this.zzZw) {
+            this.zzZw = false;
+            this.disconnect();
+            return;
         }
-        final Map<Api<?>, zze$zza> zznv = zzWZ.zznv();
-        for (final Api<?> api : map.keySet()) {
-            final Api$ApiOptions value = map.get(api);
-            if (zznv.get(api) != null) {
-                if (zznv.get(api).zzZV) {
-                    zzWA = 1;
-                }
-                else {
-                    zzWA = 2;
-                }
+        Bundle zzZy;
+        if (this.zzZy.isEmpty()) {
+            zzZy = null;
+        }
+        else {
+            zzZy = this.zzZy;
+        }
+        this.zzZq.zzZY.zzh(zzZy);
+    }
+    
+    private void zznu() {
+        this.zzZC = false;
+        this.zzZq.zzaah = Collections.emptySet();
+        for (final Api$zzc<?> api$zzc : this.zzZz) {
+            if (!this.zzZq.zzaag.containsKey(api$zzc)) {
+                this.zzZq.zzaag.put(api$zzc, new ConnectionResult(17, null));
+            }
+        }
+    }
+    
+    private void zznv() {
+        final Iterator<Future<?>> iterator = this.zzZJ.iterator();
+        while (iterator.hasNext()) {
+            iterator.next().cancel(true);
+        }
+        this.zzZJ.clear();
+    }
+    
+    private Set<Scope> zznw() {
+        final HashSet<Object> set = (HashSet<Object>)new HashSet<Scope>(this.zzZH.zzoi());
+        final Map<Api<?>, zzf$zza> zzok = this.zzZH.zzok();
+        for (final Api<?> api : zzok.keySet()) {
+            if (!this.zzZq.zzaag.containsKey(api.zznd())) {
+                set.addAll(zzok.get(api).zzZp);
+            }
+        }
+        return (Set<Scope>)set;
+    }
+    
+    @Override
+    public void begin() {
+        this.zzZq.zzZY.zzoJ();
+        this.zzZq.zzaag.clear();
+        this.zzZw = false;
+        this.zzZC = false;
+        this.zzZt = null;
+        this.zzZv = 0;
+        this.zzZB = 2;
+        this.zzZD = false;
+        this.zzZF = false;
+        final HashMap<Api$zzb, zzg$zzd> hashMap = new HashMap<Api$zzb, zzg$zzd>();
+        final Iterator<Api<?>> iterator = this.zzZI.keySet().iterator();
+        int n = false ? 1 : 0;
+        while (iterator.hasNext()) {
+            final Api<?> api = iterator.next();
+            final Api$zzb api$zzb = this.zzZq.zzaaf.get(api.zznd());
+            final int intValue = this.zzZI.get(api);
+            boolean b;
+            if (api.zznb().getPriority() == 1) {
+                b = true;
             }
             else {
-                zzWA = 0;
+                b = false;
             }
-            this.zzXa.put(api, zzWA);
-            zzaa zzaa;
-            if (api.zzmr()) {
-                zzaa = zza(api.zzmo(), value, mContext, zzWs, zzWZ, this.zzXB, this.zza(api, zzWA));
+            if (api$zzb.zzlm()) {
+                this.zzZC = true;
+                if (intValue < this.zzZB) {
+                    this.zzZB = intValue;
+                }
+                if (intValue != 0) {
+                    this.zzZz.add(api.zznd());
+                }
             }
-            else {
-                zzaa = zza(api.zzmn(), value, mContext, zzWs, zzWZ, this.zzXB, this.zza(api, zzWA));
-            }
-            this.zzXt.put(api.zzmq(), zzaa);
+            hashMap.put(api$zzb, new zzg$zzd(this, api, intValue));
+            n |= (b ? 1 : 0);
         }
-        this.zzWZ = zzWZ;
-        this.zzWD = zzWD;
-    }
-    
-    private void resume() {
-        this.zzWK.lock();
-        try {
-            if (this.zzmM()) {
-                this.connect();
-            }
+        if (n != 0) {
+            this.zzZC = false;
         }
-        finally {
-            this.zzWK.unlock();
+        if (this.zzZC) {
+            this.zzZH.zza(this.zzZq.getSessionId());
+            final zzg$zzg zzg$zzg = new zzg$zzg(this, null);
+            this.zzZA = (zzd)this.zzZj.zza(this.mContext, this.zzZq.getLooper(), this.zzZH, this.zzZH.zzoo(), zzg$zzg, zzg$zzg);
         }
-    }
-    
-    private static <C extends Api$Client, O> C zza(final Api$zza<C, O> api$zza, final Object o, final Context context, final Looper looper, final zze zze, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
-        return api$zza.zza(context, looper, zze, (O)o, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
-    }
-    
-    private final GoogleApiClient$OnConnectionFailedListener zza(final Api<?> api, final int n) {
-        return new zzg$4(this, api, n);
-    }
-    
-    private static <C extends Api$zzb, O> zzaa zza(final Api$zzc<C, O> api$zzc, final Object o, final Context context, final Looper looper, final zze zze, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
-        return new zzaa(context, looper, api$zzc.zzms(), googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener, zze, api$zzc.zzl((O)o));
-    }
-    
-    private void zzaY(final int n) {
-        this.zzWK.lock();
-        try {
-            this.zzXw.zzaV(n);
-        }
-        finally {
-            this.zzWK.unlock();
-        }
-    }
-    
-    private void zzmN() {
-        this.zzWK.lock();
-        try {
-            if (this.zzmP()) {
-                this.connect();
-            }
-        }
-        finally {
-            this.zzWK.unlock();
-        }
+        this.zzZx = this.zzZq.zzaaf.size();
+        this.zzZJ.add(zzk.zznF().submit(new zzg$zze((Map<Api$zzb, GoogleApiClient$zza>)hashMap)));
     }
     
     @Override
     public void connect() {
-        this.zzWK.lock();
-        try {
-            this.zzXw.connect();
-        }
-        finally {
-            this.zzWK.unlock();
-        }
+        this.zzZw = false;
     }
     
     @Override
     public void disconnect() {
-        this.zzmP();
-        this.zzaY(-1);
-    }
-    
-    @Override
-    public void dump(final String s, final FileDescriptor fileDescriptor, final PrintWriter printWriter, final String[] array) {
-        printWriter.append(s).append("mState=").append(this.zzXw.getName());
-        printWriter.append(" mResuming=").print(this.zzXo);
-        printWriter.append(" mWorkQueue.size()=").print(this.zzXn.size());
-        printWriter.append(" mUnconsumedRunners.size()=").println(this.zzXz.size());
-        final String string = s + "  ";
-        for (final Api<?> api : this.zzXa.keySet()) {
-            printWriter.append(s).append(api.getName()).println(":");
-            this.zzXt.get(api.zzmq()).dump(string, fileDescriptor, printWriter, array);
-        }
-    }
-    
-    @Override
-    public Looper getLooper() {
-        return this.zzWs;
-    }
-    
-    public int getSessionId() {
-        return System.identityHashCode(this);
-    }
-    
-    @Override
-    public boolean isConnected() {
-        return this.zzXw instanceof zzd;
-    }
-    
-    @Override
-    public boolean isConnecting() {
-        return this.zzXw instanceof com.google.android.gms.common.api.zze;
-    }
-    
-    @Override
-    public void reconnect() {
-        this.disconnect();
-        this.connect();
-    }
-    
-    @Override
-    public void registerConnectionCallbacks(final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks) {
-        this.zzXm.registerConnectionCallbacks(googleApiClient$ConnectionCallbacks);
-    }
-    
-    @Override
-    public void registerConnectionFailedListener(final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
-        this.zzXm.registerConnectionFailedListener(googleApiClient$OnConnectionFailedListener);
-    }
-    
-    @Override
-    public void unregisterConnectionCallbacks(final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks) {
-        this.zzXm.unregisterConnectionCallbacks(googleApiClient$ConnectionCallbacks);
-    }
-    
-    @Override
-    public void unregisterConnectionFailedListener(final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
-        this.zzXm.unregisterConnectionFailedListener(googleApiClient$OnConnectionFailedListener);
-    }
-    
-    @Override
-    public <C extends Api$Client> C zza(final Api$ClientKey<C> api$ClientKey) {
-        final Api$Client api$Client = this.zzXt.get(api$ClientKey);
-        zzu.zzb(api$Client, "Appropriate Api was not requested.");
-        return (C)api$Client;
-    }
-    
-    @Override
-    public <A extends Api$Client, R extends Result, T extends zza$zza<R, A>> T zza(final T t) {
-        Label_0066: {
-            if (t.zzmq() == null) {
-                break Label_0066;
-            }
-            boolean b = true;
-            while (true) {
-                zzu.zzb(b, "This task can not be enqueued (it's probably a Batch or malformed)");
-                zzu.zzb(this.zzXt.containsKey(t.zzmq()), "GoogleApiClient is not configured to use the API required for this call.");
-                this.zzWK.lock();
-                try {
-                    return this.zzXw.zza(t);
-                    b = false;
-                }
-                finally {
-                    this.zzWK.unlock();
-                }
-            }
-        }
-    }
-    
-    @Override
-    public <A extends Api$Client, T extends zza$zza<? extends Result, A>> T zzb(final T t) {
-        while (true) {
-            Label_0097: {
-                if (t.zzmq() == null) {
-                    break Label_0097;
-                }
-                final boolean b = true;
-                zzu.zzb(b, "This task can not be executed (it's probably a Batch or malformed)");
-                this.zzWK.lock();
-                final T t2;
-                Label_0113: {
-                    Label_0102: {
-                        try {
-                            if (this.zzmM()) {
-                                this.zzXn.add(t);
-                                while (!this.zzXn.isEmpty()) {
-                                    final zzg$zze<?> zzg$zze = this.zzXn.remove();
-                                    this.zzb((zzg$zze<Api$Client>)zzg$zze);
-                                    zzg$zze.zzr(Status.zzXQ);
-                                }
-                                break Label_0102;
-                            }
-                            break Label_0113;
-                        }
-                        finally {
-                            this.zzWK.unlock();
-                        }
-                        break Label_0097;
-                    }
-                    this.zzWK.unlock();
-                    return t2;
-                }
-                final zza$zza<? extends Result, A> zzb = this.zzXw.zzb(t2);
-                this.zzWK.unlock();
-                return (T)zzb;
-            }
-            final boolean b = false;
-            continue;
-        }
-    }
-    
-     <A extends Api$Client> void zzb(final zzg$zze<A> zzg$zze) {
-        this.zzXz.add(zzg$zze);
-        zzg$zze.zza(this.zzXA);
-    }
-    
-    void zze(final ConnectionResult zzXx) {
-        this.zzWK.lock();
-        try {
-            this.zzXx = zzXx;
-            (this.zzXw = new zzf(this)).begin();
-            this.zzXl.signalAll();
-        }
-        finally {
-            this.zzWK.unlock();
-        }
-    }
-    
-    void zzmI() {
-        for (final zzg$zze<?> zzg$zze : this.zzXz) {
-            zzg$zze.zza(null);
-            zzg$zze.cancel();
-        }
-        this.zzXz.clear();
-        final Iterator<zzi<?>> iterator2 = this.zzXy.iterator();
-        while (iterator2.hasNext()) {
-            iterator2.next().clear();
-        }
-        this.zzXy.clear();
-        this.zzXv.clear();
-    }
-    
-    void zzmJ() {
-        final Iterator<Api$Client> iterator = this.zzXt.values().iterator();
+        final Iterator<zzi$zze> iterator = (Iterator<zzi$zze>)this.zzZq.zzZZ.iterator();
         while (iterator.hasNext()) {
-            iterator.next().disconnect();
+            final zzi$zze zzi$zze = iterator.next();
+            if (zzi$zze.zzng() != 1) {
+                zzi$zze.cancel();
+                iterator.remove();
+            }
         }
-    }
-    
-    void zzmK() {
-        this.zzWK.lock();
-        try {
-            (this.zzXw = new com.google.android.gms.common.api.zze(this, this.zzWZ, this.zzXa, this.zzWD, this.zzWK, this.mContext)).begin();
-            this.zzXl.signalAll();
-        }
-        finally {
-            this.zzWK.unlock();
-        }
-    }
-    
-    void zzmL() {
-        this.zzWK.lock();
-        try {
-            this.zzmP();
-            (this.zzXw = new zzd(this)).begin();
-            this.zzXl.signalAll();
-        }
-        finally {
-            this.zzWK.unlock();
-        }
-    }
-    
-    boolean zzmM() {
-        return this.zzXo;
-    }
-    
-    void zzmO() {
-        if (this.zzmM()) {
+        this.zzZq.zznx();
+        if (this.zzZt == null && !this.zzZq.zzZZ.isEmpty()) {
+            this.zzZw = true;
             return;
         }
-        this.zzXo = true;
-        if (this.zzXs == null) {
-            this.zzXs = new zzg$zzb(this);
-            final IntentFilter intentFilter = new IntentFilter("android.intent.action.PACKAGE_ADDED");
-            intentFilter.addDataScheme("package");
-            this.mContext.getApplicationContext().registerReceiver(this.zzXs, intentFilter);
-        }
-        this.zzXr.sendMessageDelayed(this.zzXr.obtainMessage(1), this.zzXp);
-        this.zzXr.sendMessageDelayed(this.zzXr.obtainMessage(2), this.zzXq);
+        this.zznv();
+        this.zzX(true);
+        this.zzZq.zzaag.clear();
+        this.zzZq.zzg(null);
+        this.zzZq.zzZY.zzoI();
     }
     
-    boolean zzmP() {
-        this.zzWK.lock();
-        try {
-            if (!this.zzmM()) {
-                return false;
+    @Override
+    public String getName() {
+        return "CONNECTING";
+    }
+    
+    @Override
+    public void onConnected(final Bundle bundle) {
+        if (this.zzbe(3)) {
+            if (bundle != null) {
+                this.zzZy.putAll(bundle);
             }
-            this.zzXo = false;
-            this.zzXr.removeMessages(2);
-            this.zzXr.removeMessages(1);
-            if (this.zzXs != null) {
-                this.mContext.getApplicationContext().unregisterReceiver(this.zzXs);
-                this.zzXs = null;
+            if (this.zzno()) {
+                this.zznt();
             }
-            return true;
         }
-        finally {
-            this.zzWK.unlock();
+    }
+    
+    @Override
+    public void onConnectionSuspended(final int n) {
+        this.zzf(new ConnectionResult(8, null));
+    }
+    
+    @Override
+    public <A extends Api$zzb, R extends Result, T extends zzc$zza<R, A>> T zza(final T t) {
+        this.zzZq.zzZZ.add(t);
+        return t;
+    }
+    
+    @Override
+    public void zza(final ConnectionResult connectionResult, final Api<?> api, final int n) {
+        if (this.zzbe(3)) {
+            this.zzb(connectionResult, api, n);
+            if (this.zzno()) {
+                this.zznt();
+            }
         }
+    }
+    
+    @Override
+    public <A extends Api$zzb, T extends zzc$zza<? extends Result, A>> T zzb(final T t) {
+        throw new IllegalStateException("GoogleApiClient is not connected yet.");
     }
 }

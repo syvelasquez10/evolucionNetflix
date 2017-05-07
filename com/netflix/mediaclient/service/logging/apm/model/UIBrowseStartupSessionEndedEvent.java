@@ -4,6 +4,10 @@
 
 package com.netflix.mediaclient.service.logging.apm.model;
 
+import java.util.Map;
+import java.util.HashMap;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
@@ -40,7 +44,13 @@ public final class UIBrowseStartupSessionEndedEvent extends SessionEndedEvent
     
     @Override
     protected JSONObject getCustomData() {
-        return null;
+        final String value = String.valueOf(BrowseExperience.get());
+        if (Log.isLoggable()) {
+            Log.v("UIBrowseStartupSessionEndedEvent", "getCustomData() - adding current browse experience: " + value);
+        }
+        final HashMap<String, String> hashMap = new HashMap<String, String>(1);
+        hashMap.put("browseExperience", value);
+        return new JSONObject((Map)hashMap);
     }
     
     @Override

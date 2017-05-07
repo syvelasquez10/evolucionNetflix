@@ -12,29 +12,36 @@ import android.support.v7.widget.RecyclerView$Adapter;
 import android.view.ViewGroup$LayoutParams;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import com.netflix.mediaclient.android.widget.NetflixActionBar;
-import com.netflix.mediaclient.util.DeviceUtils;
-import android.content.Context;
 import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.view.View$OnClickListener;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
+import android.content.Context;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
+import java.util.Stack;
 import android.view.View;
+import com.netflix.mediaclient.ui.details.IHandleBackPress;
 import com.netflix.mediaclient.ui.details.MovieDetailsFrag;
 
-public class KubrickMovieDetailsFrag extends MovieDetailsFrag
+public class KubrickMovieDetailsFrag extends MovieDetailsFrag implements IHandleBackPress
 {
     private static final int ANIMATE_IN_DURATION_MS = 500;
     private static final String SAVED_STATE_SUPRESS_ANIMATEIN = "saved_state_supress_animatein";
     private View fragBackground;
     private boolean fromSameActivityType;
+    RelatedTitleState previousRelatedTitleState;
+    private Stack<RelatedTitleState> relatedTitlesHistory;
     private View rootContainer;
     private boolean showRecyclerBackground;
     private boolean supressAnimateIn;
     
     public KubrickMovieDetailsFrag() {
         this.supressAnimateIn = false;
+        this.relatedTitlesHistory = new Stack<RelatedTitleState>();
     }
     
     public static KubrickMovieDetailsFrag create(final String s) {
@@ -45,8 +52,27 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag
         return kubrickMovieDetailsFrag;
     }
     
+    private void restorePreviousRelatedTitle() {
+        this.previousRelatedTitleState = this.relatedTitlesHistory.pop();
+        if (this.previousRelatedTitleState != null) {
+            this.videoId = this.previousRelatedTitleState.titleId;
+            this.fetchMovieData();
+        }
+    }
+    
     private void setSameActivity() {
         this.fromSameActivityType = this.getActivity().getIntent().getBooleanExtra("extra_same_activity_type", false);
+    }
+    
+    private void setScrollPosition() {
+        if (this.previousRelatedTitleState == null) {
+            this.recyclerView.smoothScrollToPosition(0);
+            return;
+        }
+        if (this.previousRelatedTitleState.orientation == DeviceUtils.getBasicScreenOrientation((Context)this.getActivity())) {
+            this.recyclerView.getLayoutManager().onRestoreInstanceState(this.previousRelatedTitleState.recyclerViewState);
+        }
+        this.previousRelatedTitleState = null;
     }
     
     private void setupBackground(final View view) {
@@ -57,19 +83,12 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag
             Api16Util.setBackgroundDrawableCompat(view, null);
             return;
         }
-        this.setupRecyclerBackground();
+        this.setupRecyclerShadow();
     }
     
     private void setupDismissClick() {
         if (this.rootContainer != null) {
             this.rootContainer.setOnClickListener((View$OnClickListener)new KubrickMovieDetailsFrag$1(this));
-        }
-    }
-    
-    private void setupRecyclerBackground() {
-        if (KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity()) < DeviceUtils.getScreenWidthInPixels((Context)this.getActivity()) && this.fragBackground != null) {
-            this.showRecyclerBackground = true;
-            this.fragBackground.getLayoutParams().width = KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity()) + 60;
         }
     }
     
@@ -88,8 +107,21 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.rootContainer = view.findViewById(2131427564);
-        this.fragBackground = view.findViewById(2131427565);
+        this.rootContainer = view.findViewById(2131624231);
+        this.fragBackground = view.findViewById(2131624244);
+    }
+    
+    protected int getRecyclerViewShadowWidth() {
+        return KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296521) * 2;
+    }
+    
+    @Override
+    public boolean handleBackPressed() {
+        if (!this.relatedTitlesHistory.empty()) {
+            this.restorePreviousRelatedTitle();
+            return true;
+        }
+        return false;
     }
     
     @Override
@@ -104,6 +136,11 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag
         super.onCreate(bundle);
         if (bundle != null) {
             this.supressAnimateIn = bundle.getBoolean("saved_state_supress_animatein", false);
+            new RelatedTitlesHistoryRestoreInstanceState(bundle, this.relatedTitlesHistory).invoke();
+            if (!this.relatedTitlesHistory.empty()) {
+                this.previousRelatedTitleState = this.relatedTitlesHistory.pop();
+                this.videoId = this.previousRelatedTitleState.titleId;
+            }
         }
     }
     
@@ -120,25 +157,36 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag
         if (this.getActivity().isChangingConfigurations()) {
             bundle.putBoolean("saved_state_supress_animatein", true);
         }
+        if (!this.relatedTitlesHistory.empty()) {
+            this.relatedTitlesHistory.push(new RelatedTitleState(this.getVideoId(), this.recyclerView.getLayoutManager().onSaveInstanceState(), 0, DeviceUtils.getBasicScreenOrientation((Context)this.getActivity())));
+            new RelatedTitlesHistorySaveInstanceState(bundle, this.relatedTitlesHistory).invoke();
+        }
     }
     
     @Override
     protected int retrieveNumColumns() {
-        return this.getActivity().getResources().getInteger(2131361802);
+        return this.getActivity().getResources().getInteger(2131427333);
+    }
+    
+    protected void setupRecyclerShadow() {
+        if (KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity()) < DeviceUtils.getScreenWidthInPixels((Context)this.getActivity()) && this.fragBackground != null) {
+            this.showRecyclerBackground = true;
+            this.fragBackground.getLayoutParams().width = this.getRecyclerViewShadowWidth();
+        }
     }
     
     @Override
     protected void setupRecyclerViewAdapter() {
-        (this.adapter = new KubrickMovieDetailsFrag$KubrickSimilarItemsGridViewAdapter(this, this.recyclerView, true, this.numColumns)).addHeaderView((View)this.detailsViewGroup);
+        (this.adapter = new KubrickMovieDetailsFrag$KubrickSimilarItemsGridViewAdapter(this, true, this.numColumns)).addHeaderView((View)this.detailsViewGroup);
         final View view = new View((Context)this.getActivity());
-        view.setLayoutParams(new ViewGroup$LayoutParams(-2, this.getResources().getDimensionPixelOffset(2131296450) / 2));
+        view.setLayoutParams(new ViewGroup$LayoutParams(-2, this.getResources().getDimensionPixelOffset(2131296507) / 2));
         this.adapter.addFooterView(view);
         this.recyclerView.setAdapter(this.adapter);
     }
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296450), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296507), this.numColumns));
     }
     
     @Override
@@ -151,6 +199,7 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag
     @Override
     protected void showDetailsView(final MovieDetails movieDetails) {
         super.showDetailsView(movieDetails);
+        this.setScrollPosition();
         this.showViews();
         this.setupDismissClick();
         this.updateBookmark(movieDetails);

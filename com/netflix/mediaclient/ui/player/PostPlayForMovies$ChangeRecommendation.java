@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.player;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayContext;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Ratable;

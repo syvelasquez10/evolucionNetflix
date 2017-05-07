@@ -6,13 +6,14 @@ package com.netflix.mediaclient.service.pservice;
 
 import java.util.HashMap;
 
-final class PServiceABTest$2 extends HashMap<PDiskData$ListName, Integer>
+final class PServiceABTest$2 extends HashMap<PDiskData$ListType, Integer>
 {
     PServiceABTest$2() {
-        this.put(PDiskData$ListName.BILLBOARD, 3);
-        this.put(PDiskData$ListName.CW, 3);
-        this.put(PDiskData$ListName.IQ, 2);
-        this.put(PDiskData$ListName.STANDARD_FIRST, 2);
-        this.put(PDiskData$ListName.STANDARD_SECOND, 2);
+        this.put(PDiskData$ListType.BILLBOARD, 3);
+        this.put(PDiskData$ListType.CW, 3);
+        this.put(PDiskData$ListType.IQ, 3);
+        this.put(PDiskData$ListType.STANDARD_FIRST, 3);
+        this.put(PDiskData$ListType.STANDARD_SECOND, 3);
+        this.put(PDiskData$ListType.NON_MEMBER, 12);
     }
 }

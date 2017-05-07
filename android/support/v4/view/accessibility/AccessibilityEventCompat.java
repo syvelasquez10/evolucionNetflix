@@ -12,6 +12,10 @@ public class AccessibilityEventCompat
     private static final AccessibilityEventCompat$AccessibilityEventVersionImpl IMPL;
     
     static {
+        if (Build$VERSION.SDK_INT >= 19) {
+            IMPL = new AccessibilityEventCompat$AccessibilityEventKitKatImpl();
+            return;
+        }
         if (Build$VERSION.SDK_INT >= 14) {
             IMPL = new AccessibilityEventCompat$AccessibilityEventIcsImpl();
             return;

@@ -8,5 +8,5 @@ import android.app.Notification;
 
 interface NotificationCompat$NotificationCompatImpl
 {
-    Notification build(final NotificationCompat$Builder p0);
+    Notification build(final NotificationCompat$Builder p0, final NotificationCompat$BuilderExtender p1);
 }

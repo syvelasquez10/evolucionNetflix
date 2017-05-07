@@ -10,6 +10,7 @@ import java.util.Set;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.util.PrivacyUtils;
@@ -443,8 +444,9 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         return this.mListOfUserProfiles;
     }
     
-    public String getCurrentAppLocale() {
-        return this.userLocaleRepository.getCurrentAppLocale().getRaw();
+    @Override
+    public UserLocale getCurrentAppLocale() {
+        return this.userLocaleRepository.getCurrentAppLocale();
     }
     
     @Override
@@ -494,6 +496,13 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             return null;
         }
         return this.mCurrentUserProfile.getProfileToken();
+    }
+    
+    public String getEmail() {
+        if (this.mUser != null) {
+            return this.mUser.getEmail();
+        }
+        return null;
     }
     
     @Override
@@ -669,6 +678,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         }
         this.mLogoutCallback = mLogoutCallback;
         this.getService().getClientLogging().onUserLogout();
+        ((VoipAuthorizationTokensUpdater)this.getService().getVoip()).removeUserAuthorizationTokens();
         this.clearNonMemberInfoFromPref(this.getContext());
         if (!this.isUserLoggedIn()) {
             this.notifyLogoutComplete(StatusCode.OK);

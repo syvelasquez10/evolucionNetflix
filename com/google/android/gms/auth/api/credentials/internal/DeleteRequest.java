@@ -12,16 +12,16 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class DeleteRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<DeleteRequest> CREATOR;
-    final int zzCY;
-    private final Credential zzPa;
+    final int mVersionCode;
+    private final Credential zzRx;
     
     static {
-        CREATOR = (Parcelable$Creator)new zze();
+        CREATOR = (Parcelable$Creator)new zzf();
     }
     
-    DeleteRequest(final int zzCY, final Credential zzPa) {
-        this.zzCY = zzCY;
-        this.zzPa = zzPa;
+    DeleteRequest(final int mVersionCode, final Credential zzRx) {
+        this.mVersionCode = mVersionCode;
+        this.zzRx = zzRx;
     }
     
     public int describeContents() {
@@ -29,10 +29,10 @@ public final class DeleteRequest implements SafeParcelable
     }
     
     public Credential getCredential() {
-        return this.zzPa;
+        return this.zzRx;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        zze.zza(this, parcel, n);
+        zzf.zza(this, parcel, n);
     }
 }

@@ -5,6 +5,7 @@
 package android.support.v7.internal.widget;
 
 import android.view.View$MeasureSpec;
+import android.widget.AdapterView;
 import android.support.v7.internal.view.ActionBarPolicy;
 import android.os.Build$VERSION;
 import android.content.res.Configuration;
@@ -16,14 +17,17 @@ import android.graphics.drawable.Drawable;
 import android.view.ViewGroup$LayoutParams;
 import android.support.v7.widget.LinearLayoutCompat$LayoutParams;
 import android.util.AttributeSet;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.appcompat.R$attr;
 import android.support.v7.app.ActionBar$Tab;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Spinner;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.view.animation.Interpolator;
+import android.widget.AdapterView$OnItemSelectedListener;
 import android.widget.HorizontalScrollView;
 
-public class ScrollingTabContainerView extends HorizontalScrollView implements AdapterViewCompat$OnItemClickListener
+public class ScrollingTabContainerView extends HorizontalScrollView implements AdapterView$OnItemSelectedListener
 {
     private static final Interpolator sAlphaInterpolator;
     private boolean mAllowCollapse;
@@ -34,17 +38,17 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements A
     private ScrollingTabContainerView$TabClickListener mTabClickListener;
     private LinearLayoutCompat mTabLayout;
     Runnable mTabSelector;
-    private SpinnerCompat mTabSpinner;
+    private Spinner mTabSpinner;
     
     static {
         sAlphaInterpolator = (Interpolator)new DecelerateInterpolator();
     }
     
-    private SpinnerCompat createSpinner() {
-        final SpinnerCompat spinnerCompat = new SpinnerCompat(this.getContext(), null, R$attr.actionDropDownStyle);
-        spinnerCompat.setLayoutParams((ViewGroup$LayoutParams)new LinearLayoutCompat$LayoutParams(-2, -1));
-        spinnerCompat.setOnItemClickListenerInt(this);
-        return spinnerCompat;
+    private Spinner createSpinner() {
+        final AppCompatSpinner appCompatSpinner = new AppCompatSpinner(this.getContext(), null, R$attr.actionDropDownStyle);
+        appCompatSpinner.setLayoutParams((ViewGroup$LayoutParams)new LinearLayoutCompat$LayoutParams(-2, -1));
+        appCompatSpinner.setOnItemSelectedListener((AdapterView$OnItemSelectedListener)this);
+        return appCompatSpinner;
     }
     
     private ScrollingTabContainerView$TabView createTabView(final ActionBar$Tab actionBar$Tab, final boolean b) {
@@ -126,7 +130,7 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements A
         }
     }
     
-    public void onItemClick(final AdapterViewCompat<?> adapterViewCompat, final View view, final int n, final long n2) {
+    public void onItemSelected(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
         ((ScrollingTabContainerView$TabView)view).getTab().select();
     }
     
@@ -170,6 +174,9 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements A
         if (fillViewport && measuredWidth2 != measuredWidth) {
             this.setTabSelected(this.mSelectedTabIndex);
         }
+    }
+    
+    public void onNothingSelected(final AdapterView<?> adapterView) {
     }
     
     public void setAllowCollapse(final boolean mAllowCollapse) {

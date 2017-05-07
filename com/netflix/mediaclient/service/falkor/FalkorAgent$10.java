@@ -48,11 +48,13 @@ class FalkorAgent$10 extends SimpleBrowseAgentCallback
     final /* synthetic */ BrowseAgentCallback val$cb;
     final /* synthetic */ int val$n;
     final /* synthetic */ int val$standardListNumber;
+    final /* synthetic */ boolean val$useCacheOnly;
     
-    FalkorAgent$10(final FalkorAgent this$0, final int val$standardListNumber, final int val$n, final BrowseAgentCallback val$cb) {
+    FalkorAgent$10(final FalkorAgent this$0, final int val$standardListNumber, final int val$n, final boolean val$useCacheOnly, final BrowseAgentCallback val$cb) {
         this.this$0 = this$0;
         this.val$standardListNumber = val$standardListNumber;
         this.val$n = val$n;
+        this.val$useCacheOnly = val$useCacheOnly;
         this.val$cb = val$cb;
     }
     
@@ -75,7 +77,7 @@ class FalkorAgent$10 extends SimpleBrowseAgentCallback
                     if (Log.isLoggable()) {
                         Log.d("FalkorAgent", String.format("fetchRecommendedListFromCache listTitle: %s, listId: %s", loMo.getTitle(), loMo.getId()));
                     }
-                    this.this$0.cmp.fetchVideos(loMo, 0, this.val$n - 1, FalkorAgent.USE_CACHE_ONLY, false, false, this.val$cb);
+                    this.this$0.cmp.fetchVideos(loMo, 0, this.val$n - 1, this.val$useCacheOnly, false, false, this.val$cb);
                     b = true;
                     break;
                 }

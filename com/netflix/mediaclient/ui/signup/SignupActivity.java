@@ -99,6 +99,12 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
         this.mHandleError = new SignupActivity$9(this);
     }
     
+    public static Intent createShowIntent(final Context context) {
+        final Intent intent = new Intent(context, (Class)SignupActivity.class);
+        intent.addFlags(67141632);
+        return intent;
+    }
+    
     public static Intent createStartIntent(final Context context, final Intent intent) {
         return new Intent(context, (Class)SignupActivity.class);
     }
@@ -115,13 +121,16 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
                     Label_0014: {
                         return;
                     }
-                    // iftrue(Label_0014:, !this.saveCredentials)
-                    Log.d("SignupActivity", "Trying to save credentials to GPS");
-                    this.saveCredentials = false;
-                    // iftrue(Label_0073:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
-                    Log.w("SignupActivity", "Credential is empty, do not save it.");
-                    return;
+                    while (true) {
+                        Log.d("SignupActivity", "Trying to save credentials to GPS");
+                        this.saveCredentials = false;
+                        Log.w("SignupActivity", "Credential is empty, do not save it.");
+                        return;
+                        continue;
+                    }
                 }
+                // iftrue(Label_0073:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
+                // iftrue(Label_0014:, !this.saveCredentials)
                 finally {
                 }
                 // monitorexit(this)
@@ -155,11 +164,11 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
         }
         final StatusCode statusCode = status.getStatusCode();
         if (status.isSucces() || statusCode == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showToast(2131493203);
+            this.showToast(2131165535);
             this.clearCookies();
         }
         else {
-            this.provideDialog(this.getString(2131493260) + " (" + statusCode.getValue() + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131165616) + " (" + statusCode.getValue() + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 final String string = "javascript:" + this.mErrHandler + "('" + statusCode.getValue() + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -228,9 +237,9 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     }
     
     private void setUpSignInView(final ServiceManager serviceManager) {
-        this.setContentView(2130903195);
-        this.mWebView = (WebView)this.findViewById(2131427819);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131427520);
+        this.setContentView(2130903231);
+        this.mWebView = (WebView)this.findViewById(2131624533);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131624194);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
         this.mSoftwareVersion = serviceManager.getSoftwareVersion();
@@ -321,7 +330,7 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
             this.mWebView.goBack();
         }
         else {
-            this.provideTwoButtonDialog(this.getString(2131493261), new SignupActivity$10(this));
+            this.provideTwoButtonDialog(this.getString(2131165615), new SignupActivity$10(this));
         }
         return true;
     }
@@ -369,21 +378,21 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.mHandler = new Handler();
+        AndroidUtils.setWindowSecureFlag(this);
         if (this.shouldUseAutoLogin()) {
             (this.credentialsApiClient = new GoogleApiClient$Builder((Context)this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(Auth.CREDENTIALS_API).build()).connect();
         }
     }
     
     public void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
-        super.onCreateOptionsMenu(menu, menu2);
         MenuItem menuItem;
         if (this.mSignupMenuItem) {
-            menuItem = menu.add((CharSequence)this.getString(2131493171));
+            menuItem = menu.add((CharSequence)this.getString(2131165534));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$1(this));
         }
         else {
-            menuItem = menu.add((CharSequence)this.getString(2131493172));
+            menuItem = menu.add((CharSequence)this.getString(2131165536));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$2(this));
         }
@@ -393,6 +402,7 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
                 actionView.requestFocus();
             }
         }
+        super.onCreateOptionsMenu(menu, menu2);
     }
     
     @Override
@@ -417,16 +427,21 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     }
     
     void provideDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131493003), runnable)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131165485), runnable)));
     }
     
     void provideTwoButtonDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131493003), runnable, this.getString(2131493120), null)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131165485), runnable, this.getString(2131165400), null)));
     }
     
     @Override
-    protected boolean showAboutInMenu() {
+    public boolean showAboutInMenu() {
         return false;
+    }
+    
+    @Override
+    protected boolean showHelpInMenu() {
+        return true;
     }
     
     void showToast(final String s) {

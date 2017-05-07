@@ -4,133 +4,117 @@
 
 package com.google.android.gms.common.internal;
 
-import android.util.Log;
-import android.content.res.Resources;
-import com.google.android.gms.internal.zzle;
-import com.google.android.gms.R$string;
-import android.content.Context;
+import java.util.Iterator;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Collections;
+import com.google.android.gms.signin.zze;
+import com.google.android.gms.common.api.Api;
+import java.util.Map;
+import android.view.View;
+import com.google.android.gms.common.api.Scope;
+import java.util.Set;
+import android.accounts.Account;
 
 public final class zzf
 {
-    public static String zzb(final Context context, final int n, final String s) {
-        final Resources resources = context.getResources();
-        switch (n) {
-            default: {
-                return resources.getString(R$string.common_google_play_services_unknown_issue);
-            }
-            case 1: {
-                if (zzle.zzb(resources)) {
-                    return resources.getString(R$string.common_google_play_services_install_text_tablet, new Object[] { s });
-                }
-                return resources.getString(R$string.common_google_play_services_install_text_phone, new Object[] { s });
-            }
-            case 3: {
-                return resources.getString(R$string.common_google_play_services_enable_text, new Object[] { s });
-            }
-            case 18: {
-                return resources.getString(R$string.common_google_play_services_updating_text, new Object[] { s });
-            }
-            case 2: {
-                return resources.getString(R$string.common_google_play_services_update_text, new Object[] { s });
-            }
-            case 42: {
-                return resources.getString(R$string.common_android_wear_update_text, new Object[] { s });
-            }
-            case 9: {
-                return resources.getString(R$string.common_google_play_services_unsupported_text, new Object[] { s });
-            }
-            case 7: {
-                return resources.getString(R$string.common_google_play_services_network_error_text);
-            }
-            case 5: {
-                return resources.getString(R$string.common_google_play_services_invalid_account_text);
-            }
-            case 16: {
-                return resources.getString(R$string.common_google_play_services_api_unavailable_text, new Object[] { s });
-            }
-            case 17: {
-                return resources.getString(R$string.common_google_play_services_sign_in_failed_text);
-            }
+    private final Account zzOY;
+    private final String zzQl;
+    private final Set<Scope> zzYY;
+    private final int zzYZ;
+    private final View zzZa;
+    private final String zzZb;
+    private final Set<Scope> zzadc;
+    private final Map<Api<?>, zzf$zza> zzadd;
+    private final zze zzade;
+    private Integer zzadf;
+    
+    public zzf(final Account zzOY, final Set<Scope> set, final Map<Api<?>, zzf$zza> map, final int zzYZ, final View zzZa, final String zzQl, final String zzZb, final zze zzade) {
+        this.zzOY = zzOY;
+        Set<Scope> zzYY;
+        if (set == null) {
+            zzYY = (Set<Scope>)Collections.EMPTY_SET;
         }
+        else {
+            zzYY = Collections.unmodifiableSet((Set<? extends Scope>)set);
+        }
+        this.zzYY = zzYY;
+        Map<Api<?>, zzf$zza> empty_MAP = map;
+        if (map == null) {
+            empty_MAP = (Map<Api<?>, zzf$zza>)Collections.EMPTY_MAP;
+        }
+        this.zzadd = empty_MAP;
+        this.zzZa = zzZa;
+        this.zzYZ = zzYZ;
+        this.zzQl = zzQl;
+        this.zzZb = zzZb;
+        this.zzade = zzade;
+        final HashSet<Scope> set2 = new HashSet<Scope>(this.zzYY);
+        final Iterator<zzf$zza> iterator = this.zzadd.values().iterator();
+        while (iterator.hasNext()) {
+            set2.addAll((Collection<?>)iterator.next().zzZp);
+        }
+        this.zzadc = (Set<Scope>)Collections.unmodifiableSet((Set<?>)set2);
     }
     
-    public static final String zzg(final Context context, final int n) {
-        final Resources resources = context.getResources();
-        switch (n) {
-            default: {
-                Log.e("GooglePlayServicesUtil", "Unexpected error code " + n);
-                return null;
-            }
-            case 4:
-            case 6: {
-                return null;
-            }
-            case 1: {
-                return resources.getString(R$string.common_google_play_services_install_title);
-            }
-            case 3: {
-                return resources.getString(R$string.common_google_play_services_enable_title);
-            }
-            case 18: {
-                return resources.getString(R$string.common_google_play_services_updating_title);
-            }
-            case 2: {
-                return resources.getString(R$string.common_google_play_services_update_title);
-            }
-            case 42: {
-                return resources.getString(R$string.common_android_wear_update_title);
-            }
-            case 9: {
-                Log.e("GooglePlayServicesUtil", "Google Play services is invalid. Cannot recover.");
-                return resources.getString(R$string.common_google_play_services_unsupported_title);
-            }
-            case 7: {
-                Log.e("GooglePlayServicesUtil", "Network error occurred. Please retry request later.");
-                return resources.getString(R$string.common_google_play_services_network_error_title);
-            }
-            case 8: {
-                Log.e("GooglePlayServicesUtil", "Internal error occurred. Please see logs for detailed information");
-                return null;
-            }
-            case 10: {
-                Log.e("GooglePlayServicesUtil", "Developer error occurred. Please see logs for detailed information");
-                return null;
-            }
-            case 5: {
-                Log.e("GooglePlayServicesUtil", "An invalid account was specified when connecting. Please provide a valid account.");
-                return resources.getString(R$string.common_google_play_services_invalid_account_title);
-            }
-            case 11: {
-                Log.e("GooglePlayServicesUtil", "The application is not licensed to the user.");
-                return null;
-            }
-            case 16: {
-                Log.e("GooglePlayServicesUtil", "One of the API components you attempted to connect to is not available.");
-                return null;
-            }
-            case 17: {
-                Log.e("GooglePlayServicesUtil", "The specified account could not be signed in.");
-                return resources.getString(R$string.common_google_play_services_sign_in_failed_title);
-            }
-        }
+    public Account getAccount() {
+        return this.zzOY;
     }
     
-    public static String zzh(final Context context, final int n) {
-        final Resources resources = context.getResources();
-        switch (n) {
-            default: {
-                return resources.getString(17039370);
-            }
-            case 1: {
-                return resources.getString(R$string.common_google_play_services_install_button);
-            }
-            case 3: {
-                return resources.getString(R$string.common_google_play_services_enable_button);
-            }
-            case 2:
-            case 42: {
-                return resources.getString(R$string.common_google_play_services_update_button);
-            }
+    @Deprecated
+    public String getAccountName() {
+        if (this.zzOY != null) {
+            return this.zzOY.name;
         }
+        return null;
+    }
+    
+    public void zza(final Integer zzadf) {
+        this.zzadf = zzadf;
+    }
+    
+    public Set<Scope> zzb(final Api<?> api) {
+        final zzf$zza zzf$zza = this.zzadd.get(api);
+        if (zzf$zza == null || zzf$zza.zzZp.isEmpty()) {
+            return this.zzYY;
+        }
+        final HashSet<Object> set = (HashSet<Object>)new HashSet<Scope>(this.zzYY);
+        set.addAll(zzf$zza.zzZp);
+        return (Set<Scope>)set;
+    }
+    
+    public Account zzog() {
+        if (this.zzOY != null) {
+            return this.zzOY;
+        }
+        return new Account("<<default account>>", "com.google");
+    }
+    
+    public Set<Scope> zzoi() {
+        return this.zzYY;
+    }
+    
+    public Set<Scope> zzoj() {
+        return this.zzadc;
+    }
+    
+    public Map<Api<?>, zzf$zza> zzok() {
+        return this.zzadd;
+    }
+    
+    public String zzol() {
+        return this.zzQl;
+    }
+    
+    public String zzom() {
+        return this.zzZb;
+    }
+    
+    public zze zzoo() {
+        return this.zzade;
+    }
+    
+    public Integer zzop() {
+        return this.zzadf;
     }
 }

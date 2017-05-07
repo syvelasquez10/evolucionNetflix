@@ -10,6 +10,10 @@ public class MediaSessionCompat
 {
     private final MediaSessionCompat$MediaSessionImpl mImpl;
     
+    public void setPlaybackToLocal(final int playbackToLocal) {
+        this.mImpl.setPlaybackToLocal(playbackToLocal);
+    }
+    
     public void setPlaybackToRemote(final VolumeProviderCompat playbackToRemote) {
         if (playbackToRemote == null) {
             throw new IllegalArgumentException("volumeProvider may not be null!");

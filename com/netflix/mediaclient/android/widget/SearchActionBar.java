@@ -73,11 +73,11 @@ public class SearchActionBar extends NetflixActionBar
     
     @SuppressLint({ "InflateParams" })
     private void initViews() {
-        final View inflate = LayoutInflater.from((Context)this.activity).inflate(2130903066, (ViewGroup)null);
+        final View inflate = LayoutInflater.from((Context)this.activity).inflate(2130903067, (ViewGroup)null);
         if (inflate != null) {
-            this.searchView = (SearchView)inflate.findViewById(2131427444);
+            this.searchView = (SearchView)inflate.findViewById(2131624065);
             final ActionBar$LayoutParams actionBar$LayoutParams = new ActionBar$LayoutParams(-1, -2, 8388613);
-            this.progressSpinner = (ProgressBar)inflate.findViewById(2131427445);
+            this.progressSpinner = (ProgressBar)inflate.findViewById(2131624066);
             this.systemActionBar.setCustomView(inflate, actionBar$LayoutParams);
         }
     }
@@ -100,7 +100,7 @@ public class SearchActionBar extends NetflixActionBar
             return;
         }
         this.searchView.setImeOptions(33554435);
-        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131493192));
+        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131165609));
         this.searchView.setInputType(8192);
         this.searchView.setQueryRefinementEnabled(true);
         this.searchView.setSubmitButtonEnabled(false);
@@ -136,7 +136,7 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getActiveSearchIconResId() {
-        return 2130837731;
+        return 2130837774;
     }
     
     protected Integer getSearchCloseButtonTint() {
@@ -144,15 +144,15 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getSearchViewBgResId() {
-        return 2130837889;
+        return 2130837931;
     }
     
     protected int getSearchViewRightBgResId() {
-        return 2130837891;
+        return 2130837933;
     }
     
     protected int getSearchViewTextColorResId() {
-        return 2131230840;
+        return 2131558545;
     }
     
     protected Integer getSearchVoiceButtonTint() {

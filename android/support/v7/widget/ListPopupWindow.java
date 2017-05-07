@@ -6,12 +6,12 @@ package android.support.v7.widget;
 
 import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
-import android.support.v7.appcompat.R$attr;
 import android.support.v4.widget.ListViewAutoScrollHelper;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v7.internal.widget.ListViewCompat;
 import android.support.v4.widget.PopupWindowCompat;
 import android.view.View$OnTouchListener;
+import android.os.Build$VERSION;
 import android.widget.PopupWindow$OnDismissListener;
 import android.widget.ListView;
 import android.view.ViewParent;
@@ -26,6 +26,7 @@ import android.support.v4.text.TextUtilsCompat;
 import android.support.v7.internal.widget.AppCompatPopupWindow;
 import android.support.v7.appcompat.R$styleable;
 import android.util.AttributeSet;
+import android.support.v7.appcompat.R$attr;
 import android.util.Log;
 import android.graphics.Rect;
 import android.widget.PopupWindow;
@@ -81,7 +82,15 @@ public class ListPopupWindow
         }
     }
     
-    public ListPopupWindow(final Context mContext, final AttributeSet set, final int n) {
+    public ListPopupWindow(final Context context) {
+        this(context, null, R$attr.listPopupWindowStyle);
+    }
+    
+    public ListPopupWindow(final Context context, final AttributeSet set, final int n) {
+        this(context, set, n, 0);
+    }
+    
+    public ListPopupWindow(final Context mContext, final AttributeSet set, final int n, final int n2) {
         this.mDropDownHeight = -2;
         this.mDropDownWidth = -2;
         this.mDropDownGravity = 0;
@@ -96,7 +105,7 @@ public class ListPopupWindow
         this.mHandler = new Handler();
         this.mTempRect = new Rect();
         this.mContext = mContext;
-        final TypedArray obtainStyledAttributes = mContext.obtainStyledAttributes(set, R$styleable.ListPopupWindow, n, 0);
+        final TypedArray obtainStyledAttributes = mContext.obtainStyledAttributes(set, R$styleable.ListPopupWindow, n, n2);
         this.mDropDownHorizontalOffset = obtainStyledAttributes.getDimensionPixelOffset(R$styleable.ListPopupWindow_android_dropDownHorizontalOffset, 0);
         this.mDropDownVerticalOffset = obtainStyledAttributes.getDimensionPixelOffset(R$styleable.ListPopupWindow_android_dropDownVerticalOffset, 0);
         if (this.mDropDownVerticalOffset != 0) {
@@ -250,8 +259,27 @@ public class ListPopupWindow
         return this.mDropDownAnchorView;
     }
     
+    public Drawable getBackground() {
+        return this.mPopup.getBackground();
+    }
+    
+    public int getHorizontalOffset() {
+        return this.mDropDownHorizontalOffset;
+    }
+    
     public ListView getListView() {
         return this.mDropDownList;
+    }
+    
+    public int getVerticalOffset() {
+        if (!this.mDropDownVerticalOffsetSet) {
+            return 0;
+        }
+        return this.mDropDownVerticalOffset;
+    }
+    
+    public int getWidth() {
+        return this.mDropDownWidth;
     }
     
     public boolean isInputMethodNotNeeded() {
@@ -300,6 +328,10 @@ public class ListPopupWindow
         this.mDropDownGravity = mDropDownGravity;
     }
     
+    public void setHorizontalOffset(final int mDropDownHorizontalOffset) {
+        this.mDropDownHorizontalOffset = mDropDownHorizontalOffset;
+    }
+    
     public void setInputMethodMode(final int inputMethodMode) {
         this.mPopup.setInputMethodMode(inputMethodMode);
     }
@@ -319,6 +351,22 @@ public class ListPopupWindow
     
     public void setPromptPosition(final int mPromptPosition) {
         this.mPromptPosition = mPromptPosition;
+    }
+    
+    public void setSelection(final int selection) {
+        final ListPopupWindow$DropDownListView mDropDownList = this.mDropDownList;
+        if (this.isShowing() && mDropDownList != null) {
+            mDropDownList.mListSelectionHidden = false;
+            mDropDownList.setSelection(selection);
+            if (Build$VERSION.SDK_INT >= 11 && mDropDownList.getChoiceMode() != 0) {
+                mDropDownList.setItemChecked(selection, true);
+            }
+        }
+    }
+    
+    public void setVerticalOffset(final int mDropDownVerticalOffset) {
+        this.mDropDownVerticalOffset = mDropDownVerticalOffset;
+        this.mDropDownVerticalOffsetSet = true;
     }
     
     public void setWidth(final int mDropDownWidth) {

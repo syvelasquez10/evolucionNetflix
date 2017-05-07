@@ -8,6 +8,7 @@ import android.app.Service;
 import android.util.Pair;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import android.graphics.BitmapFactory;
 import com.netflix.mediaclient.service.NetflixService;
 import android.app.PendingIntent;
 import android.app.Notification$MediaStyle;
@@ -64,6 +65,10 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
         return PendingIntent.getBroadcast(this.context, 0, NetflixService.createShowMdxPlayerBroadcastIntent(), 134217728);
     }
     
+    private Bitmap getDefaultBoxArt() {
+        return BitmapFactory.decodeResource(this.context.getResources(), 2130837740);
+    }
+    
     private Notification$MediaStyle getStyle() {
         final Notification$MediaStyle setShowActionsInCompactView = new Notification$MediaStyle().setShowActionsInCompactView(new int[] { 0, 1 });
         if (this.mediaSessionController != null && this.mediaSessionController.getMediaSessionToken() != null) {
@@ -82,7 +87,13 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
         if (this.builder == null) {
             return;
         }
-        if (this.boxart != null) {
+        if (this.boxart == null) {
+            this.boxart = this.getDefaultBoxArt();
+        }
+        if (this.boxart == null) {
+            Log.e("nf_mdxnotification", "We failed to decode resource!");
+        }
+        else {
             this.builder.setLargeIcon(ViewUtils.createSquaredBitmap(this.boxart));
         }
         if (this.mainTitle != null) {
@@ -92,12 +103,12 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
             this.builder.setSubText((CharSequence)this.secondTitle);
         }
         if (this.isPostplay) {
-            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131493230));
+            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131165466));
         }
         else {
-            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131493229));
+            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131165579));
         }
-        this.builder.setSmallIcon(2130837830);
+        this.builder.setSmallIcon(2130837771);
         this.notification = this.builder.build();
         this.notificationManager.notify(1, this.notification);
     }

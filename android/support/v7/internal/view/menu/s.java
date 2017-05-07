@@ -9,14 +9,14 @@ import android.view.MenuItem$OnMenuItemClickListener;
 
 class s extends f<MenuItem$OnMenuItemClickListener> implements MenuItem$OnMenuItemClickListener
 {
-    final /* synthetic */ o b;
+    final /* synthetic */ o a;
     
-    s(final o b, final MenuItem$OnMenuItemClickListener menuItem$OnMenuItemClickListener) {
-        this.b = b;
+    s(final o a, final MenuItem$OnMenuItemClickListener menuItem$OnMenuItemClickListener) {
+        this.a = a;
         super(menuItem$OnMenuItemClickListener);
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        return ((MenuItem$OnMenuItemClickListener)this.a).onMenuItemClick((MenuItem)this.b.a(menuItem));
+        return ((MenuItem$OnMenuItemClickListener)this.b).onMenuItemClick(this.a.a(menuItem));
     }
 }

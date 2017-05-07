@@ -26,12 +26,17 @@ public class KubrickShowDetailsActivity extends ShowDetailsActivity
     
     @Override
     protected Fragment createPrimaryFrag() {
-        return (Fragment)KubrickShowDetailsFrag.create(this.getVideoId(), this.getEpisodeId());
+        return (Fragment)KubrickShowDetailsFrag.create(this.getVideoId(), this.getEpisodeId(), true);
     }
     
     @Override
     protected Fragment createSecondaryFrag() {
         return null;
+    }
+    
+    @Override
+    protected boolean handleBackPressed() {
+        return ((KubrickShowDetailsFrag)this.getPrimaryFrag()).handleBackPressed();
     }
     
     @Override

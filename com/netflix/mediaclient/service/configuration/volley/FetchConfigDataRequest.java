@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.netflix.mediaclient.service.webclient.model.leafs.VoipAuthorizationData;
 import com.netflix.mediaclient.service.webclient.model.leafs.AccountConfigData;
 import com.netflix.mediaclient.service.webclient.model.leafs.DeviceConfigData;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
@@ -22,11 +23,13 @@ import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientReq
 public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigData>
 {
     private static final String ACCOUNT_CONFIG = "accountConfig";
+    private static final String CUSTOMER_SUPPORT_VOIP_AUTHORIZATIONS = "customerSupportVoipAuthorizations";
     private static final String DEVICE_CONFIG = "deviceConfig";
     private static final String STREAMING_CONFIG = "streamingqoe";
     private static final String STREAMING_CONFIG_DEFAULT = "streamingqoeDefault";
     private static final String TAG = "nf_config_data";
     private static final String accountConfigPql;
+    public static final String customerSupportVoipPql;
     public static final String deviceConfigPql;
     private static final String streamingQoePql;
     public static final String streamingQoePqlDefault;
@@ -37,15 +40,17 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
         accountConfigPql = String.format("['%s']", "accountConfig");
         streamingQoePql = String.format("['%s']", "streamingqoe");
         streamingQoePqlDefault = String.format("['%s']", "streamingqoeDefault");
+        customerSupportVoipPql = String.format("['%s']", "customerSupportVoipAuthorizations");
     }
     
     public FetchConfigDataRequest(final Context context, final ConfigurationAgentWebCallback responseCallback) {
         super(context);
         this.responseCallback = responseCallback;
         if (Log.isLoggable()) {
-            Log.v("nf_config_data", "deviceConfigPql = " + FetchConfigDataRequest.deviceConfigPql);
-            Log.v("nf_config_data", "accountConfigPql = " + FetchConfigDataRequest.accountConfigPql);
-            Log.v("nf_config_data", "steamingqoePql = " + FetchConfigDataRequest.streamingQoePql);
+            Log.d("nf_config_data", "deviceConfigPql = " + FetchConfigDataRequest.deviceConfigPql);
+            Log.d("nf_config_data", "accountConfigPql = " + FetchConfigDataRequest.accountConfigPql);
+            Log.d("nf_config_data", "steamingqoePql = " + FetchConfigDataRequest.streamingQoePql);
+            Log.d("nf_config_data", "customerSupportVoipPql = " + FetchConfigDataRequest.customerSupportVoipPql);
         }
     }
     
@@ -91,12 +96,21 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
                 configData.streamingqoeJson = value2.toString();
             }
         }
+        if (dataObj.has("customerSupportVoipAuthorizations")) {
+            if (Log.isLoggable()) {
+                Log.v("nf_config_data", "Customer Support VOIP authorizations json: " + dataObj.get("customerSupportVoipAuthorizations"));
+            }
+            configData.customerSupportVoipAuthorizations = FalkorParseUtils.getPropertyObject(dataObj, "customerSupportVoipAuthorizations", VoipAuthorizationData.class);
+            if (Log.isLoggable()) {
+                Log.v("nf_config_data", "Parsed VOIP authorizations: " + configData.customerSupportVoipAuthorizations);
+            }
+        }
         return configData;
     }
     
     @Override
     protected List<String> getPQLQueries() {
-        return Arrays.asList(FetchConfigDataRequest.deviceConfigPql, FetchConfigDataRequest.accountConfigPql, FetchConfigDataRequest.streamingQoePql);
+        return Arrays.asList(FetchConfigDataRequest.deviceConfigPql, FetchConfigDataRequest.accountConfigPql, FetchConfigDataRequest.streamingQoePql, FetchConfigDataRequest.customerSupportVoipPql);
     }
     
     @Override

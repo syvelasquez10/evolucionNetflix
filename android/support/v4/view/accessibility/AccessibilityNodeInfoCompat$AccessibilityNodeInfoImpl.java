@@ -4,6 +4,7 @@
 
 package android.support.v4.view.accessibility;
 
+import android.os.Bundle;
 import android.graphics.Rect;
 import android.view.View;
 
@@ -53,13 +54,21 @@ interface AccessibilityNodeInfoCompat$AccessibilityNodeInfoImpl
     
     boolean isVisibleToUser(final Object p0);
     
+    Object newAccessibilityAction(final int p0, final CharSequence p1);
+    
     Object obtain(final Object p0);
     
     Object obtainCollectionInfo(final int p0, final int p1, final boolean p2, final int p3);
     
     Object obtainCollectionItemInfo(final int p0, final int p1, final int p2, final int p3, final boolean p4, final boolean p5);
     
+    boolean performAction(final Object p0, final int p1);
+    
+    boolean performAction(final Object p0, final int p1, final Bundle p2);
+    
     void recycle(final Object p0);
+    
+    boolean removeAction(final Object p0, final Object p1);
     
     void setAccessibilityFocused(final Object p0, final boolean p1);
     

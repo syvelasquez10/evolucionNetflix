@@ -242,11 +242,11 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
     }
     
     protected int getNetflixStarRatingDrawableId() {
-        return 2130837919;
+        return 2130837962;
     }
     
     protected int getUserStarRatingDrawableId() {
-        return 2130837921;
+        return 2130837964;
     }
     
     public void onRatingChanged(final RatingBar ratingBar, final float n, final boolean b) {
@@ -255,7 +255,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
         if (Log.isLoggable()) {
             Log.v("NetflixRatingBar", "Rating changed: " + currRating + ", from user: " + b);
         }
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493177), currRating));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131165360), currRating));
         if (b && this.getUserRating() != currRating) {
             final int progress = (int)(currRating * this.getProgressPerStar());
             Log.v("NetflixRatingBar", "Setting progress: " + progress);

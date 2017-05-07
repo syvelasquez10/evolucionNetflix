@@ -17,9 +17,9 @@ import com.netflix.mediaclient.android.widget.NetflixSeekBar;
 import android.widget.RelativeLayout$LayoutParams;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.view.View$OnTouchListener;
-import android.widget.SeekBar$OnSeekBarChangeListener;
 import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
+import android.widget.SeekBar$OnSeekBarChangeListener;
 import com.netflix.mediaclient.android.widget.TimelineSeekBar;
 import android.widget.ImageButton;
 import com.netflix.mediaclient.util.TimeFormatterHelper;
@@ -43,26 +43,29 @@ public final class BottomPanel extends PlayerSection
     protected ImageButton skipBack;
     protected TimelineSeekBar timeline;
     protected int timelineWasPreviouslyRendered;
+    private SeekBar$OnSeekBarChangeListener videoPositionListener;
     protected ImageButton zoom;
     
-    public BottomPanel(final PlayerActivity playerActivity, final PlayScreen$Listeners playScreen$Listeners) {
-        super(playerActivity);
+    public BottomPanel(final PlayerFragment playerFragment, final PlayScreen$Listeners playScreen$Listeners) {
+        super(playerFragment);
         this.mZoomEnabled = true;
         this.formatter = new TimeFormatterHelper();
         this.init(playScreen$Listeners);
     }
     
     private void init(final PlayScreen$Listeners playScreen$Listeners) {
-        this.durationLabel = (TextView)this.context.findViewById(2131427719);
-        this.bottomPanel = this.context.findViewById(2131427715);
-        this.bottomGradient = this.context.findViewById(2131427711);
-        (this.timeline = (TimelineSeekBar)this.context.findViewById(2131427718)).setOnSeekBarChangeListener(playScreen$Listeners.videoPositionListener);
-        this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.context, this.context.getUiResources().timelineThumbOffsetInDip));
-        (this.media = (ImageButton)this.context.findViewById(2131427716)).setOnClickListener(playScreen$Listeners.playPauseListener);
-        (this.skipBack = (ImageButton)this.context.findViewById(2131427717)).setOnClickListener(playScreen$Listeners.skipBackListener);
-        (this.zoom = (ImageButton)this.context.findViewById(2131427720)).setOnClickListener(playScreen$Listeners.zoomListener);
-        this.extraSeekbarHandler = this.context.findViewById(2131427729);
-        this.currentTime = CurrentTime.newInstance(this.context);
+        final View view = this.playerFragment.getView();
+        this.durationLabel = (TextView)view.findViewById(2131624414);
+        this.bottomPanel = view.findViewById(2131624410);
+        this.bottomGradient = view.findViewById(2131624407);
+        this.timeline = (TimelineSeekBar)view.findViewById(2131624413);
+        this.videoPositionListener = playScreen$Listeners.videoPositionListener;
+        this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.playerFragment.getNetflixActivity(), this.playerFragment.getUiResources().timelineThumbOffsetInDip));
+        (this.media = (ImageButton)view.findViewById(2131624411)).setOnClickListener(playScreen$Listeners.playPauseListener);
+        (this.skipBack = (ImageButton)view.findViewById(2131624412)).setOnClickListener(playScreen$Listeners.skipBackListener);
+        (this.zoom = (ImageButton)view.findViewById(2131624415)).setOnClickListener(playScreen$Listeners.zoomListener);
+        this.extraSeekbarHandler = view.findViewById(2131624424);
+        this.currentTime = CurrentTime.newInstance(this.playerFragment);
     }
     
     public int calculateTimelineMargin(final int n) {
@@ -83,12 +86,12 @@ public final class BottomPanel extends PlayerSection
         }
         int n;
         if (enabled) {
-            n = 2131230826;
+            n = 2131558601;
         }
         else {
-            n = 2131230842;
+            n = 2131558474;
         }
-        this.durationLabel.setTextColor(this.context.getResources().getColor(n));
+        this.durationLabel.setTextColor(this.playerFragment.getResources().getColor(n));
     }
     
     @Override
@@ -175,10 +178,10 @@ public final class BottomPanel extends PlayerSection
         final ImageButton media = this.media;
         int imageResource;
         if (b) {
-            imageResource = this.context.getUiResources().play;
+            imageResource = this.playerFragment.getUiResources().play;
         }
         else {
-            imageResource = this.context.getUiResources().pause;
+            imageResource = this.playerFragment.getUiResources().pause;
         }
         media.setImageResource(imageResource);
     }
@@ -208,6 +211,18 @@ public final class BottomPanel extends PlayerSection
         return n2;
     }
     
+    public void setSeekbarTrackingEnabled(final boolean b) {
+        final TimelineSeekBar timeline = this.timeline;
+        SeekBar$OnSeekBarChangeListener videoPositionListener;
+        if (b) {
+            videoPositionListener = this.videoPositionListener;
+        }
+        else {
+            videoPositionListener = null;
+        }
+        timeline.setOnSeekBarChangeListener(videoPositionListener);
+    }
+    
     public void setZoomEnabled(final boolean mZoomEnabled) {
         this.mZoomEnabled = mZoomEnabled;
     }
@@ -216,10 +231,10 @@ public final class BottomPanel extends PlayerSection
         final ImageButton zoom = this.zoom;
         int imageResource;
         if (b) {
-            imageResource = this.context.getUiResources().zoomIn;
+            imageResource = this.playerFragment.getUiResources().zoomIn;
         }
         else {
-            imageResource = this.context.getUiResources().zoomOut;
+            imageResource = this.playerFragment.getUiResources().zoomOut;
         }
         zoom.setImageResource(imageResource);
     }

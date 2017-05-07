@@ -12,7 +12,7 @@ import android.os.Binder;
 
 public abstract class zzi$zza extends Binder implements zzi
 {
-    public static zzi zzax(final IBinder binder) {
+    public static zzi zzaB(final IBinder binder) {
         if (binder == null) {
             return null;
         }
@@ -50,22 +50,22 @@ public abstract class zzi$zza extends Binder implements zzi
             }
             case 3: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceController");
-                this.zzr(parcel.readString(), parcel.readString());
+                this.zzt(parcel.readString(), parcel.readString());
                 return true;
             }
             case 4: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceController");
-                this.zzlW();
+                this.zzmI();
                 return true;
             }
             case 5: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceController");
-                this.zzbG(parcel.readString());
+                this.zzbO(parcel.readString());
                 return true;
             }
             case 6: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceController");
-                this.zzlL();
+                this.zzmx();
                 return true;
             }
             case 7: {
@@ -95,12 +95,12 @@ public abstract class zzi$zza extends Binder implements zzi
             }
             case 11: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceController");
-                this.zzbH(parcel.readString());
+                this.zzbP(parcel.readString());
                 return true;
             }
             case 12: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceController");
-                this.zzbI(parcel.readString());
+                this.zzbQ(parcel.readString());
                 return true;
             }
             case 13: {

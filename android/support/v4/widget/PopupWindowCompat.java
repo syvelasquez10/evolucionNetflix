@@ -13,11 +13,32 @@ public class PopupWindowCompat
     static final PopupWindowCompat$PopupWindowImpl IMPL;
     
     static {
-        if (Build$VERSION.SDK_INT >= 19) {
+        final int sdk_INT = Build$VERSION.SDK_INT;
+        if (sdk_INT >= 23) {
+            IMPL = new PopupWindowCompat$Api23PopupWindowImpl();
+            return;
+        }
+        if (sdk_INT >= 21) {
+            IMPL = new PopupWindowCompat$Api21PopupWindowImpl();
+            return;
+        }
+        if (sdk_INT >= 19) {
             IMPL = new PopupWindowCompat$KitKatPopupWindowImpl();
             return;
         }
+        if (sdk_INT >= 9) {
+            IMPL = new PopupWindowCompat$GingerbreadPopupWindowImpl();
+            return;
+        }
         IMPL = new PopupWindowCompat$BasePopupWindowImpl();
+    }
+    
+    public static void setOverlapAnchor(final PopupWindow popupWindow, final boolean b) {
+        PopupWindowCompat.IMPL.setOverlapAnchor(popupWindow, b);
+    }
+    
+    public static void setWindowLayoutType(final PopupWindow popupWindow, final int n) {
+        PopupWindowCompat.IMPL.setWindowLayoutType(popupWindow, n);
     }
     
     public static void showAsDropDown(final PopupWindow popupWindow, final View view, final int n, final int n2, final int n3) {

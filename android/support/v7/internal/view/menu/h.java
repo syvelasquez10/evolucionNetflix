@@ -68,7 +68,7 @@ class h extends BaseAdapter
         if (inflate == null) {
             inflate = this.a.b.inflate(this.a.f, viewGroup, false);
         }
-        ((aa)inflate).a(this.a(n), 0);
+        ((aa)inflate).initialize(this.a(n), 0);
         return inflate;
     }
     

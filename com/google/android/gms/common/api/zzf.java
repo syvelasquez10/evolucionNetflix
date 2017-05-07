@@ -5,30 +5,56 @@
 package com.google.android.gms.common.api;
 
 import java.util.Iterator;
-import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
+import com.google.android.gms.common.ConnectionResult;
+import android.os.DeadObjectException;
+import android.util.Log;
 
-public class zzf implements zzh
+public class zzf implements zzj
 {
-    private final zzg zzWJ;
+    private final zzi zzZq;
     
-    public zzf(final zzg zzWJ) {
-        this.zzWJ = zzWJ;
+    public zzf(final zzi zzZq) {
+        this.zzZq = zzZq;
+    }
+    
+    private <A extends Api$zzb> void zza(final zzi$zze<A> zzi$zze) {
+        this.zzZq.zzb(zzi$zze);
+        final Api$zzb zza = this.zzZq.zza(zzi$zze.zznd());
+        if (!zza.isConnected() && this.zzZq.zzaag.containsKey(zzi$zze.zznd())) {
+            zzi$zze.zzx(new Status(17));
+            return;
+        }
+        zzi$zze.zzb((A)zza);
     }
     
     @Override
     public void begin() {
-        this.zzWJ.zzmJ();
+        while (!this.zzZq.zzZZ.isEmpty()) {
+            try {
+                this.zza((zzi$zze<?>)this.zzZq.zzZZ.remove());
+            }
+            catch (DeadObjectException ex) {
+                Log.w("GoogleApiClientConnected", "Service died while flushing queue", (Throwable)ex);
+            }
+        }
     }
     
     @Override
     public void connect() {
-        this.zzWJ.zzmK();
+    }
+    
+    @Override
+    public void disconnect() {
+        this.zzZq.zzaag.clear();
+        this.zzZq.zznx();
+        this.zzZq.zzg(null);
+        this.zzZq.zzZY.zzoI();
     }
     
     @Override
     public String getName() {
-        return "DISCONNECTED";
+        return "CONNECTED";
     }
     
     @Override
@@ -37,12 +63,24 @@ public class zzf implements zzh
     
     @Override
     public void onConnectionSuspended(final int n) {
+        if (n == 1) {
+            this.zzZq.zznD();
+        }
+        final Iterator<zzi$zze<?>> iterator = this.zzZq.zzaal.iterator();
+        while (iterator.hasNext()) {
+            iterator.next().zzw(new Status(8, "The connection to Google Play services was lost"));
+        }
+        this.zzZq.zzg(null);
+        this.zzZq.zzZY.zzbB(n);
+        this.zzZq.zzZY.zzoI();
+        if (n == 2) {
+            this.zzZq.connect();
+        }
     }
     
     @Override
-    public <A extends Api$Client, R extends Result, T extends zza$zza<R, A>> T zza(final T t) {
-        this.zzWJ.zzXn.add(t);
-        return t;
+    public <A extends Api$zzb, R extends Result, T extends zzc$zza<R, A>> T zza(final T t) {
+        return this.zzb(t);
     }
     
     @Override
@@ -50,26 +88,14 @@ public class zzf implements zzh
     }
     
     @Override
-    public void zzaV(int n) {
-        if (n == -1) {
-            n = 1;
+    public <A extends Api$zzb, T extends zzc$zza<? extends Result, A>> T zzb(final T t) {
+        try {
+            this.zza((zzi$zze<Api$zzb>)t);
+            return t;
         }
-        else {
-            n = 0;
+        catch (DeadObjectException ex) {
+            this.zzZq.zza((zzi$zzb)new zzf$1(this, this));
+            return t;
         }
-        if (n != 0) {
-            final Iterator<zzg$zze> iterator = this.zzWJ.zzXn.iterator();
-            while (iterator.hasNext()) {
-                iterator.next().cancel();
-            }
-            this.zzWJ.zzXn.clear();
-            this.zzWJ.zzmI();
-            this.zzWJ.zzXu.clear();
-        }
-    }
-    
-    @Override
-    public <A extends Api$Client, T extends zza$zza<? extends Result, A>> T zzb(final T t) {
-        throw new IllegalStateException("GoogleApiClient is not connected yet.");
     }
 }

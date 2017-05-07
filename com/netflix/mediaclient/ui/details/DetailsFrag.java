@@ -41,7 +41,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     protected abstract VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final T p0);
     
     protected int getLayoutId() {
-        return 2130903211;
+        return 2130903247;
     }
     
     protected ServiceManager getServiceManager() {
@@ -69,7 +69,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         final View inflate = layoutInflater.inflate(this.getLayoutId(), (ViewGroup)null, false);
         this.initDetailsViewGroup(inflate);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
-        this.primaryView = inflate.findViewById(2131427847);
+        this.primaryView = inflate.findViewById(2131624565);
         if (this.primaryView != null) {
             this.primaryView.setVerticalScrollBarEnabled(false);
         }
@@ -92,10 +92,10 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     
     public void onResume() {
         super.onResume();
-        if (this.detailsViewGroup != null) {
-            this.detailsViewGroup.refreshImagesIfNecessary();
-        }
         if (this.manager != null) {
+            if (this.detailsViewGroup != null) {
+                this.detailsViewGroup.refreshImagesIfNecessary();
+            }
             if (this.mVideoDetails instanceof VideoDetails) {
                 this.manager.updateMyListState(this.getVideoId(), this.mVideoDetails.isInQueue());
             }

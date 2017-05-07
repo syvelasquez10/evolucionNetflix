@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface PServiceAgent$PServicePartnerFetchInterface
 {
-    List<PVideo> fetchVideosForPartner(final PDiskData$ListName p0);
+    List<PVideo> fetchVideosForPartner(final PDiskData$ListType p0);
 }

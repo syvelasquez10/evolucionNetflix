@@ -4,6 +4,8 @@
 
 package android.support.v4.widget;
 
+import android.graphics.drawable.Drawable;
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup$MarginLayoutParams;
 
@@ -19,6 +21,11 @@ class DrawerLayout$DrawerLayoutCompatImplBase implements DrawerLayout$DrawerLayo
     
     @Override
     public void dispatchChildInsets(final View view, final Object o, final int n) {
+    }
+    
+    @Override
+    public Drawable getDefaultStatusBarBackground(final Context context) {
+        return null;
     }
     
     @Override

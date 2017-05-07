@@ -16,12 +16,12 @@ public final class Cast$CastApi$zza implements Cast$CastApi
 {
     @Override
     public ApplicationMetadata getApplicationMetadata(final GoogleApiClient googleApiClient) {
-        return googleApiClient.zza(zzk.zzNX).getApplicationMetadata();
+        return googleApiClient.zza(zzk.zzQf).getApplicationMetadata();
     }
     
     @Override
     public String getApplicationStatus(final GoogleApiClient googleApiClient) {
-        return googleApiClient.zza(zzk.zzNX).getApplicationStatus();
+        return googleApiClient.zza(zzk.zzQf).getApplicationStatus();
     }
     
     @Override
@@ -37,7 +37,7 @@ public final class Cast$CastApi$zza implements Cast$CastApi
     @Override
     public void removeMessageReceivedCallbacks(final GoogleApiClient googleApiClient, final String s) {
         try {
-            googleApiClient.zza(zzk.zzNX).zzbC(s);
+            googleApiClient.zza(zzk.zzQf).zzbK(s);
         }
         catch (RemoteException ex) {
             throw new IOException("service error");
@@ -52,7 +52,7 @@ public final class Cast$CastApi$zza implements Cast$CastApi
     @Override
     public void setMessageReceivedCallbacks(final GoogleApiClient googleApiClient, final String s, final Cast$MessageReceivedCallback cast$MessageReceivedCallback) {
         try {
-            googleApiClient.zza(zzk.zzNX).zza(s, cast$MessageReceivedCallback);
+            googleApiClient.zza(zzk.zzQf).zza(s, cast$MessageReceivedCallback);
         }
         catch (RemoteException ex) {
             throw new IOException("service error");

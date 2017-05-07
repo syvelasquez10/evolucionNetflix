@@ -6,7 +6,7 @@ package android.support.v4.graphics.drawable;
 
 import android.graphics.drawable.Drawable;
 
-class DrawableCompat$KitKatDrawableImpl extends DrawableCompat$HoneycombDrawableImpl
+class DrawableCompat$KitKatDrawableImpl extends DrawableCompat$JellybeanMr1DrawableImpl
 {
     @Override
     public boolean isAutoMirrored(final Drawable drawable) {
@@ -16,5 +16,10 @@ class DrawableCompat$KitKatDrawableImpl extends DrawableCompat$HoneycombDrawable
     @Override
     public void setAutoMirrored(final Drawable drawable, final boolean b) {
         DrawableCompatKitKat.setAutoMirrored(drawable, b);
+    }
+    
+    @Override
+    public Drawable wrap(final Drawable drawable) {
+        return DrawableCompatKitKat.wrapForTinting(drawable);
     }
 }

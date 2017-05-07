@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.search;
 
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;

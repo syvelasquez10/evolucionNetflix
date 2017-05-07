@@ -17,13 +17,16 @@ import android.graphics.Canvas;
 import android.view.MotionEvent;
 import android.os.SystemClock;
 import android.view.ViewGroup$LayoutParams;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewGroupCompat;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.os.Build$VERSION;
 import android.graphics.drawable.Drawable;
 import android.graphics.Paint;
+import java.util.ArrayList;
 import android.view.ViewParent;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat$AccessibilityActionCompat;
 import android.support.v4.view.ViewCompat;
 import java.util.List;
 import android.view.accessibility.AccessibilityEvent;
@@ -112,6 +115,10 @@ class DrawerLayout$AccessibilityDelegate extends AccessibilityDelegateCompat
             this.addChildrenForAccessibility(accessibilityNodeInfoCompat, (ViewGroup)source);
         }
         accessibilityNodeInfoCompat.setClassName(DrawerLayout.class.getName());
+        accessibilityNodeInfoCompat.setFocusable(false);
+        accessibilityNodeInfoCompat.setFocused(false);
+        accessibilityNodeInfoCompat.removeAction(AccessibilityNodeInfoCompat$AccessibilityActionCompat.ACTION_FOCUS);
+        accessibilityNodeInfoCompat.removeAction(AccessibilityNodeInfoCompat$AccessibilityActionCompat.ACTION_CLEAR_FOCUS);
     }
     
     @Override

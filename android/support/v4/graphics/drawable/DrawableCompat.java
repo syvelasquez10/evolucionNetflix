@@ -15,12 +15,24 @@ public class DrawableCompat
     
     static {
         final int sdk_INT = Build$VERSION.SDK_INT;
+        if (sdk_INT >= 23) {
+            IMPL = new DrawableCompat$MDrawableImpl();
+            return;
+        }
+        if (sdk_INT >= 22) {
+            IMPL = new DrawableCompat$LollipopMr1DrawableImpl();
+            return;
+        }
         if (sdk_INT >= 21) {
-            IMPL = new DrawableCompat$LDrawableImpl();
+            IMPL = new DrawableCompat$LollipopDrawableImpl();
             return;
         }
         if (sdk_INT >= 19) {
             IMPL = new DrawableCompat$KitKatDrawableImpl();
+            return;
+        }
+        if (sdk_INT >= 17) {
+            IMPL = new DrawableCompat$JellybeanMr1DrawableImpl();
             return;
         }
         if (sdk_INT >= 11) {
@@ -50,6 +62,10 @@ public class DrawableCompat
         DrawableCompat.IMPL.setHotspotBounds(drawable, n, n2, n3, n4);
     }
     
+    public static void setLayoutDirection(final Drawable drawable, final int n) {
+        DrawableCompat.IMPL.setLayoutDirection(drawable, n);
+    }
+    
     public static void setTint(final Drawable drawable, final int n) {
         DrawableCompat.IMPL.setTint(drawable, n);
     }
@@ -60,5 +76,9 @@ public class DrawableCompat
     
     public static void setTintMode(final Drawable drawable, final PorterDuff$Mode porterDuff$Mode) {
         DrawableCompat.IMPL.setTintMode(drawable, porterDuff$Mode);
+    }
+    
+    public static Drawable wrap(final Drawable drawable) {
+        return DrawableCompat.IMPL.wrap(drawable);
     }
 }

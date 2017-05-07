@@ -83,6 +83,12 @@ class MediaDecoderPipe2$1 extends Handler
                     this.this$0.mInputHandler.sendEmptyMessageDelayed(1, 20L);
                     return;
                 }
+                if ((onRequestData.flags & 0x10000) != 0x0) {
+                    Log.d(this.this$0.mTag, "got codec change, need to terminate the pipe");
+                    this.this$0.mInputHandler.removeMessages(1);
+                    this.this$0.terminateRenderer();
+                    return;
+                }
                 if (this.frameReceived <= 0L && Log.isLoggable()) {
                     Log.d(this.this$0.mTag, "QueueInput " + intValue + " from " + onRequestData.offset + " size= " + onRequestData.size + " @" + onRequestData.timestamp + " ms" + " flags " + onRequestData.flags);
                 }
@@ -91,6 +97,12 @@ class MediaDecoderPipe2$1 extends Handler
                 }
                 if ((onRequestData.flags & 0x4) != 0x0) {
                     Log.d(this.this$0.mTag, "got decoder input BUFFER_FLAG_END_OF_STREAM");
+                }
+                if (this.frameReceived > 0L && (onRequestData.flags & 0x2) != 0x0) {
+                    Log.d(this.this$0.mTag, "got decoder input BUFFER_FLAG_CODEC_CONFIG during playback, ignored");
+                    this.this$0.mInputHandler.removeMessages(1);
+                    this.this$0.mInputHandler.sendEmptyMessage(1);
+                    return;
                 }
                 while (true) {
                     while (true) {

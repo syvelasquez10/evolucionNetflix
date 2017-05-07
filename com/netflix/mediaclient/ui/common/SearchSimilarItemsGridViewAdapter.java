@@ -66,7 +66,7 @@ public class SearchSimilarItemsGridViewAdapter extends BaseAdapter
         boolean isHorizontal = true;
         if (view == null) {
             view = (View)new VideoView((Context)this.activity);
-            final int dimensionPixelOffset = this.activity.getResources().getDimensionPixelOffset(2131296384);
+            final int dimensionPixelOffset = this.activity.getResources().getDimensionPixelOffset(2131296555);
             ((VideoView)view).setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
             ((VideoView)view).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.imgHeight));
             ((VideoView)view).setAdjustViewBounds(true);

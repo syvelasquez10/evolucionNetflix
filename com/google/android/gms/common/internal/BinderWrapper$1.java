@@ -9,11 +9,11 @@ import android.os.Parcelable$Creator;
 
 final class BinderWrapper$1 implements Parcelable$Creator<BinderWrapper>
 {
-    public BinderWrapper zzV(final Parcel parcel) {
+    public BinderWrapper zzad(final Parcel parcel) {
         return new BinderWrapper(parcel, null);
     }
     
-    public BinderWrapper[] zzbq(final int n) {
+    public BinderWrapper[] zzbx(final int n) {
         return new BinderWrapper[n];
     }
 }

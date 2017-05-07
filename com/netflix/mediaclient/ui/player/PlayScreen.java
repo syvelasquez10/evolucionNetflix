@@ -10,7 +10,6 @@ import android.graphics.BitmapFactory;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.RelativeLayout$LayoutParams;
 import android.content.Context;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.nio.ByteBuffer;
 import com.netflix.mediaclient.ui.player.subtitles.SubtitleManager;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
@@ -37,7 +36,7 @@ public class PlayScreen implements Screen
     private Animator mBifAnim;
     protected BottomPanel mBottomPanel;
     protected View mBufferingOverlay;
-    protected PlayerActivity mController;
+    protected PlayerFragment mController;
     protected TextView mDebugData;
     protected ViewFlipper mFlipper;
     protected SurfaceHolder mHolder;
@@ -51,7 +50,7 @@ public class PlayScreen implements Screen
     protected TopPanel mTopPanel;
     private boolean mZoomEnabled;
     
-    PlayScreen(final PlayerActivity mController, final PlayScreen$Listeners listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
+    PlayScreen(final PlayerFragment mController, final PlayScreen$Listeners listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         this.mState = PlayerUiState.Loading;
         this.mNavigationBarSetVisibleInProgress = false;
         this.mZoomEnabled = true;
@@ -62,7 +61,8 @@ public class PlayScreen implements Screen
         this.listeners = listeners;
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
-        this.mSurface = (TappableSurfaceView)mController.findViewById(2131427703);
+        final View view = mController.getView();
+        this.mSurface = (TappableSurfaceView)view.findViewById(2131624399);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -71,42 +71,42 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)mController.findViewById(2131427520);
-        this.mBackground = (RelativeLayout)mController.findViewById(2131427519);
-        this.mBufferingOverlay = mController.findViewById(2131427725);
+        this.mFlipper = (ViewFlipper)view.findViewById(2131624194);
+        this.mBackground = (RelativeLayout)view.findViewById(2131624193);
+        this.mBufferingOverlay = view.findViewById(2131624420);
         int n;
-        if (mController.isTablet()) {
-            n = 2131427722;
+        if (mController.getNetflixActivity().isTablet()) {
+            n = 2131624417;
         }
         else {
-            n = 2131427704;
+            n = 2131624400;
         }
-        this.mBif = (ImageView)mController.findViewById(n);
-        this.mTabletBifsLayout = mController.findViewById(2131427721);
+        this.mBif = (ImageView)view.findViewById(n);
+        this.mTabletBifsLayout = view.findViewById(2131624416);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayFactory$PostPlayType);
         this.moveToState(PlayerUiState.Loading);
     }
     
-    static PlayScreen createInstance(final PlayerActivity playerActivity, final PlayScreen$Listeners playScreen$Listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
+    static PlayScreen createInstance(final PlayerFragment playerFragment, final PlayScreen$Listeners playScreen$Listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         final int androidVersion = AndroidUtils.getAndroidVersion();
         if (androidVersion >= 16) {
             Log.d("screen", "PlayScreen for JB (Android 4.1+");
-            return new PlayScreenJB(playerActivity, playScreen$Listeners, postPlayFactory$PostPlayType);
+            return new PlayScreenJB(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
         }
         if (Build.MANUFACTURER.equals("Amazon") && (Build.MODEL.equals("KFOT") || Build.MODEL.equals("KFTT") || Build.MODEL.equals("KFJWA") || Build.MODEL.equals("KFJWI"))) {
             Log.d("screen", "PlayScreen for Amazon Kindle HD");
-            return new PlayScreenKindleHD(playerActivity, playScreen$Listeners, postPlayFactory$PostPlayType);
+            return new PlayScreenKindleHD(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
         }
         if (androidVersion >= 14) {
             Log.d("screen", "PlayScreen for ICS (Android 4+");
-            return new PlayScreenICS(playerActivity, playScreen$Listeners, postPlayFactory$PostPlayType);
+            return new PlayScreenICS(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
         }
         if (Build.MODEL.equals("Kindle Fire") && Build.MANUFACTURER.equals("Amazon")) {
             Log.d("screen", "PlayScreen for Amazon Kindle Fire");
-            return new PlayScreenKindleFire(playerActivity, playScreen$Listeners, postPlayFactory$PostPlayType);
+            return new PlayScreenKindleFire(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
         }
         Log.d("screen", "PlayScreen for Froyo/Gingerbread (Android 2.2-2.3) - default");
-        return new PlayScreen(playerActivity, playScreen$Listeners, postPlayFactory$PostPlayType);
+        return new PlayScreen(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
     }
     
     private boolean isZoomEnabled() {
@@ -117,9 +117,9 @@ public class PlayScreen implements Screen
     }
     
     private void moveToInterrupted() {
-        this.mController.removeVisibleDialog();
-        if (this.mController.isDialogFragmentVisible()) {
-            this.mController.removeDialogFrag();
+        this.mController.getNetflixActivity().removeVisibleDialog();
+        if (this.mController.getNetflixActivity().isDialogFragmentVisible()) {
+            this.mController.getNetflixActivity().removeDialogFrag();
         }
         this.clearPanel();
         this.mNavigationBarSetVisibleInProgress = true;
@@ -131,7 +131,7 @@ public class PlayScreen implements Screen
     private void moveToLoaded() {
         Log.d("screen", "STATE_LOADED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131230820);
+        final int color = this.mController.getResources().getColor(2131558590);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -139,9 +139,7 @@ public class PlayScreen implements Screen
             this.mSurface.setBackgroundColor(color);
         }
         if (this.mPlaybackControlOverlayId != null) {
-            if (!this.mController.getErrorManager().isErrorReported()) {
-                this.mController.reportUiModelessViewSessionEnded(IClientLogging$ModalView.playbackControls, this.mPlaybackControlOverlayId);
-            }
+            this.mController.getNetflixActivity().reportUiModelessViewSessionEnded(IClientLogging$ModalView.playbackControls, this.mPlaybackControlOverlayId);
             this.mPlaybackControlOverlayId = null;
         }
         this.playerOverlayVisibility(false);
@@ -150,16 +148,14 @@ public class PlayScreen implements Screen
     private void moveToLoadedTapped() {
         Log.d("screen", "STATE_LOADED_TAPPED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131230820);
+        final int color = this.mController.getResources().getColor(2131558590);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
         if (this.mSurface != null) {
             this.mSurface.setBackgroundColor(color);
         }
-        if (!this.mController.getErrorManager().isErrorReported()) {
-            this.mPlaybackControlOverlayId = this.mController.reportUiModelessViewSessionStart(IClientLogging$ModalView.playbackControls);
-        }
+        this.mPlaybackControlOverlayId = this.mController.getNetflixActivity().reportUiModelessViewSessionStart(IClientLogging$ModalView.playbackControls);
         this.playerOverlayVisibility(true);
     }
     
@@ -168,9 +164,9 @@ public class PlayScreen implements Screen
     }
     
     private void moveToPostPlay() {
-        this.mController.removeVisibleDialog();
-        if (this.mController.isDialogFragmentVisible()) {
-            this.mController.removeDialogFrag();
+        this.mController.getNetflixActivity().removeVisibleDialog();
+        if (this.mController.getNetflixActivity().isDialogFragmentVisible()) {
+            this.mController.getNetflixActivity().removeDialogFrag();
         }
         this.clearPanel();
         Log.d("screen", "POST_PLAY");
@@ -182,18 +178,18 @@ public class PlayScreen implements Screen
     static int resolveContentView(final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForPhone) {
             Log.d("screen", "playout_phone_episode");
-            return 2130903159;
+            return 2130903190;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForTablet) {
             Log.d("screen", "playout_tablet_episode");
-            return 2130903163;
+            return 2130903194;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.RecommendationForTablet) {
             Log.d("screen", "playout_tablet_movie");
-            return 2130903164;
+            return 2130903195;
         }
         Log.d("screen", "playout_phone_movie");
-        return 2130903160;
+        return 2130903191;
     }
     
     public boolean canExitPlaybackEndOfPlay() {
@@ -272,7 +268,7 @@ public class PlayScreen implements Screen
     
     @Override
     public Activity getController() {
-        return this.mController;
+        return this.mController.getNetflixActivity();
     }
     
     SurfaceHolder getHolder() {
@@ -370,18 +366,20 @@ public class PlayScreen implements Screen
         if (Log.isLoggable()) {
             Log.d("screen", "PlayScreen tap received. Event driven: " + b);
         }
-        if (!b) {
-            Log.d("screen", "Hack to make player overlay visible on ICS+ devices. It is only called when event is null");
-            if (this.mNavigationBarSetVisibleInProgress) {
-                Log.d("screen", "Navigation bar visibility was already triggered. Ignore.");
-                return;
+        Label_0076: {
+            if (b) {
+                Log.d("screen", "Event is received. We are either not on ICS+ phone or this is tap to hide overlay.");
+                this.mNavigationBarSetVisibleInProgress = false;
+                break Label_0076;
             }
-            Log.d("screen", "Navigation bar is now visible. Make player overlay visible.");
-            this.mNavigationBarSetVisibleInProgress = true;
-        }
-        else {
-            Log.d("screen", "Event is received. We are either not on ICS+ phone or this is tap to hide overlay.");
-            this.mNavigationBarSetVisibleInProgress = false;
+            Log.d("screen", "Hack to make player overlay visible on ICS+ devices. It is only called when event is null");
+            if (!this.mNavigationBarSetVisibleInProgress) {
+                Log.d("screen", "Navigation bar is now visible. Make player overlay visible.");
+                this.mNavigationBarSetVisibleInProgress = true;
+                break Label_0076;
+            }
+            Log.d("screen", "Navigation bar visibility was already triggered. Ignore.");
+            return;
         }
         if (this.mState == PlayerUiState.Loading) {
             Log.d("screen", "Loading, noop");
@@ -401,15 +399,17 @@ public class PlayScreen implements Screen
             Log.e("screen", "This should not be possible, ignoring");
             return;
         }
-        if (this.mPostPlayManager.wasPostPlayDismissed()) {
-            Log.d("screen", "PostPlay was dismissed before, stay in it!");
+        if (!this.mPostPlayManager.wasPostPlayDismissed()) {
+            Log.d("screen", "Move to PlayingWithTrickPlayOverlay from post play");
+            this.moveToState(PlayerUiState.Playing);
             this.mPostPlayManager.transitionFromPostPlay();
+            this.hideNavigationBar();
             return;
         }
-        Log.d("screen", "Move to PlayingWithTrickPlayOverlay from post play");
-        this.moveToState(PlayerUiState.Playing);
-        this.mPostPlayManager.transitionFromPostPlay();
-        this.hideNavigationBar();
+        Log.d("screen", "PostPlay was dismissed before, stay in it!");
+        if (!this.getPostPlay().isAutoPlayEnabled()) {
+            this.mPostPlayManager.transitionFromPostPlay();
+        }
     }
     
     protected void playerOverlayVisibility(final boolean b) {
@@ -531,7 +531,7 @@ public class PlayScreen implements Screen
             Log.d("screen", "bif data is null");
             return;
         }
-        if (((NetflixActivity)this.getController()).isTablet()) {
+        if (this.mController.isTablet()) {
             final int dipToPixels = AndroidUtils.dipToPixels((Context)this.getController(), 40);
             final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)this.mTabletBifsLayout.getLayoutParams();
             layoutParams.setMargins(this.mBottomPanel.getTimeXAndUpdateHandler(this.mTabletBifsLayout), 0, 0, dipToPixels);
@@ -559,7 +559,7 @@ public class PlayScreen implements Screen
     }
     
     public void startBif(final ByteBuffer byteBuffer) {
-        if (((NetflixActivity)this.getController()).isTablet()) {
+        if (this.mController.isTablet()) {
             this.mBifAnim = AnimationUtils.startViewAppearanceAnimation(this.mTabletBifsLayout, true);
         }
         else {
@@ -576,7 +576,7 @@ public class PlayScreen implements Screen
     }
     
     public void stopBif() {
-        if (!((NetflixActivity)this.getController()).isTablet()) {
+        if (!this.mController.isTablet()) {
             AnimationUtils.startViewAppearanceAnimation((View)this.mBif, false);
             return;
         }

@@ -4,15 +4,17 @@
 
 package android.support.v7.internal.widget;
 
+import android.support.v4.view.ViewPropertyAnimatorListener;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorCompat;
+import android.support.v7.internal.view.menu.j;
 import android.support.v7.internal.view.menu.i;
 import android.support.v7.appcompat.R$id;
 import android.support.v7.internal.view.menu.y;
-import android.view.Menu;
 import android.support.v7.widget.Toolbar$LayoutParams;
 import android.util.Log;
+import android.view.Menu;
 import android.content.Context;
-import android.support.v4.view.ViewPropertyAnimatorListener;
-import android.support.v4.view.ViewCompat;
 import android.view.ViewGroup$LayoutParams;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
@@ -22,7 +24,7 @@ import android.support.v7.appcompat.R$attr;
 import android.support.v7.appcompat.R$styleable;
 import android.support.v7.appcompat.R$drawable;
 import android.support.v7.appcompat.R$string;
-import android.support.v7.internal.app.WindowCallback;
+import android.view.Window$Callback;
 import android.support.v7.widget.Toolbar;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.ActionMenuPresenter;

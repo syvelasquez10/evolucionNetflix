@@ -12,4 +12,9 @@ class DrawableCompat$HoneycombDrawableImpl extends DrawableCompat$BaseDrawableIm
     public void jumpToCurrentState(final Drawable drawable) {
         DrawableCompatHoneycomb.jumpToCurrentState(drawable);
     }
+    
+    @Override
+    public Drawable wrap(final Drawable drawable) {
+        return DrawableCompatHoneycomb.wrapForTinting(drawable);
+    }
 }

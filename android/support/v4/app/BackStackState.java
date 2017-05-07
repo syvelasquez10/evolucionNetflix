@@ -45,7 +45,7 @@ final class BackStackState implements Parcelable
         this.mSharedElementTargetNames = (ArrayList<String>)parcel.createStringArrayList();
     }
     
-    public BackStackState(final FragmentManagerImpl fragmentManagerImpl, final BackStackRecord backStackRecord) {
+    public BackStackState(final BackStackRecord backStackRecord) {
         BackStackRecord$Op backStackRecord$Op = backStackRecord.mHead;
         int n = 0;
         while (backStackRecord$Op != null) {

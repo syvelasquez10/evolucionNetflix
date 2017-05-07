@@ -4,6 +4,22 @@
 
 package android.support.v7.internal.widget;
 
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.MotionEventCompat;
+import android.view.MotionEvent;
+import android.content.res.TypedArray;
+import android.support.v7.appcompat.R$styleable;
+import android.os.Build$VERSION;
+import android.content.res.Configuration;
+import android.view.View$MeasureSpec;
+import android.view.ContextThemeWrapper;
+import android.support.v7.appcompat.R$attr;
+import android.util.TypedValue;
+import android.util.AttributeSet;
+import android.content.Context;
+import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.ActionMenuPresenter;
+import android.view.ViewGroup;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.view.View;
 import android.support.v4.view.ViewPropertyAnimatorListener;
@@ -26,18 +42,16 @@ public class AbsActionBarView$VisibilityAnimListener implements ViewPropertyAnim
     
     @Override
     public void onAnimationEnd(final View view) {
-        if (!this.mCanceled) {
-            this.this$0.mVisibilityAnim = null;
-            this.this$0.setVisibility(this.mFinalVisibility);
-            if (this.this$0.mSplitView != null && this.this$0.mMenuView != null) {
-                this.this$0.mMenuView.setVisibility(this.mFinalVisibility);
-            }
+        if (this.mCanceled) {
+            return;
         }
+        this.this$0.mVisibilityAnim = null;
+        AbsActionBarView.access$101(this.this$0, this.mFinalVisibility);
     }
     
     @Override
     public void onAnimationStart(final View view) {
-        this.this$0.setVisibility(0);
+        AbsActionBarView.access$001(this.this$0, 0);
         this.mCanceled = false;
     }
     

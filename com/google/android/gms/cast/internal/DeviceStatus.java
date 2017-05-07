@@ -5,7 +5,7 @@
 package com.google.android.gms.cast.internal;
 
 import android.os.Parcel;
-import com.google.android.gms.common.internal.zzt;
+import com.google.android.gms.common.internal.zzw;
 import com.google.android.gms.cast.ApplicationMetadata;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
@@ -13,12 +13,12 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class DeviceStatus implements SafeParcelable
 {
     public static final Parcelable$Creator<DeviceStatus> CREATOR;
-    private final int zzCY;
-    private double zzSg;
-    private boolean zzSh;
-    private ApplicationMetadata zzUE;
-    private int zzUt;
-    private int zzUu;
+    private final int mVersionCode;
+    private double zzUJ;
+    private boolean zzUK;
+    private int zzWW;
+    private int zzWX;
+    private ApplicationMetadata zzXh;
     
     static {
         CREATOR = (Parcelable$Creator)new zzg();
@@ -28,13 +28,13 @@ public class DeviceStatus implements SafeParcelable
         this(3, Double.NaN, false, -1, null, -1);
     }
     
-    DeviceStatus(final int zzCY, final double zzSg, final boolean zzSh, final int zzUt, final ApplicationMetadata zzUE, final int zzUu) {
-        this.zzCY = zzCY;
-        this.zzSg = zzSg;
-        this.zzSh = zzSh;
-        this.zzUt = zzUt;
-        this.zzUE = zzUE;
-        this.zzUu = zzUu;
+    DeviceStatus(final int mVersionCode, final double zzUJ, final boolean zzUK, final int zzWW, final ApplicationMetadata zzXh, final int zzWX) {
+        this.mVersionCode = mVersionCode;
+        this.zzUJ = zzUJ;
+        this.zzUK = zzUK;
+        this.zzWW = zzWW;
+        this.zzXh = zzXh;
+        this.zzWX = zzWX;
     }
     
     public int describeContents() {
@@ -48,7 +48,7 @@ public class DeviceStatus implements SafeParcelable
                 return false;
             }
             final DeviceStatus deviceStatus = (DeviceStatus)o;
-            if (this.zzSg != deviceStatus.zzSg || this.zzSh != deviceStatus.zzSh || this.zzUt != deviceStatus.zzUt || !zzf.zza(this.zzUE, deviceStatus.zzUE) || this.zzUu != deviceStatus.zzUu) {
+            if (this.zzUJ != deviceStatus.zzUJ || this.zzUK != deviceStatus.zzUK || this.zzWW != deviceStatus.zzWW || !zzf.zza(this.zzXh, deviceStatus.zzXh) || this.zzWX != deviceStatus.zzWX) {
                 return false;
             }
         }
@@ -56,35 +56,35 @@ public class DeviceStatus implements SafeParcelable
     }
     
     public ApplicationMetadata getApplicationMetadata() {
-        return this.zzUE;
+        return this.zzXh;
     }
     
     public int getVersionCode() {
-        return this.zzCY;
+        return this.mVersionCode;
     }
     
     @Override
     public int hashCode() {
-        return zzt.hashCode(this.zzSg, this.zzSh, this.zzUt, this.zzUE, this.zzUu);
+        return zzw.hashCode(this.zzUJ, this.zzUK, this.zzWW, this.zzXh, this.zzWX);
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
         zzg.zza(this, parcel, n);
     }
     
-    public double zzlM() {
-        return this.zzSg;
+    public int zzmA() {
+        return this.zzWX;
     }
     
-    public int zzlN() {
-        return this.zzUt;
+    public boolean zzmH() {
+        return this.zzUK;
     }
     
-    public int zzlO() {
-        return this.zzUu;
+    public double zzmy() {
+        return this.zzUJ;
     }
     
-    public boolean zzlV() {
-        return this.zzSh;
+    public int zzmz() {
+        return this.zzWW;
     }
 }

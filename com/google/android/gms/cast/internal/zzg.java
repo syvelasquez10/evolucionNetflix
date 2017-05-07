@@ -15,64 +15,64 @@ import android.os.Parcelable$Creator;
 public class zzg implements Parcelable$Creator<DeviceStatus>
 {
     static void zza(final DeviceStatus deviceStatus, final Parcel parcel, final int n) {
-        final int zzac = zzb.zzac(parcel);
+        final int zzak = zzb.zzak(parcel);
         zzb.zzc(parcel, 1, deviceStatus.getVersionCode());
-        zzb.zza(parcel, 2, deviceStatus.zzlM());
-        zzb.zza(parcel, 3, deviceStatus.zzlV());
-        zzb.zzc(parcel, 4, deviceStatus.zzlN());
+        zzb.zza(parcel, 2, deviceStatus.zzmy());
+        zzb.zza(parcel, 3, deviceStatus.zzmH());
+        zzb.zzc(parcel, 4, deviceStatus.zzmz());
         zzb.zza(parcel, 5, (Parcelable)deviceStatus.getApplicationMetadata(), n, false);
-        zzb.zzc(parcel, 6, deviceStatus.zzlO());
-        zzb.zzH(parcel, zzac);
+        zzb.zzc(parcel, 6, deviceStatus.zzmA());
+        zzb.zzH(parcel, zzak);
     }
     
-    public DeviceStatus zzN(final Parcel parcel) {
+    public DeviceStatus zzV(final Parcel parcel) {
         int zzg = 0;
-        final int zzab = zza.zzab(parcel);
+        final int zzaj = zza.zzaj(parcel);
         double zzm = 0.0;
         ApplicationMetadata applicationMetadata = null;
         int zzg2 = 0;
         boolean zzc = false;
         int zzg3 = 0;
-        while (parcel.dataPosition() < zzab) {
-            final int zzaa = zza.zzaa(parcel);
-            switch (zza.zzbA(zzaa)) {
+        while (parcel.dataPosition() < zzaj) {
+            final int zzai = zza.zzai(parcel);
+            switch (zza.zzbH(zzai)) {
                 default: {
-                    zza.zzb(parcel, zzaa);
+                    zza.zzb(parcel, zzai);
                     continue;
                 }
                 case 1: {
-                    zzg3 = zza.zzg(parcel, zzaa);
+                    zzg3 = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 2: {
-                    zzm = zza.zzm(parcel, zzaa);
+                    zzm = zza.zzm(parcel, zzai);
                     continue;
                 }
                 case 3: {
-                    zzc = zza.zzc(parcel, zzaa);
+                    zzc = zza.zzc(parcel, zzai);
                     continue;
                 }
                 case 4: {
-                    zzg2 = zza.zzg(parcel, zzaa);
+                    zzg2 = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 5: {
-                    applicationMetadata = zza.zza(parcel, zzaa, ApplicationMetadata.CREATOR);
+                    applicationMetadata = zza.zza(parcel, zzai, ApplicationMetadata.CREATOR);
                     continue;
                 }
                 case 6: {
-                    zzg = zza.zzg(parcel, zzaa);
+                    zzg = zza.zzg(parcel, zzai);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzab) {
-            throw new zza$zza("Overread allowed size end=" + zzab, parcel);
+        if (parcel.dataPosition() != zzaj) {
+            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
         }
         return new DeviceStatus(zzg3, zzm, zzc, zzg2, applicationMetadata, zzg);
     }
     
-    public DeviceStatus[] zzaQ(final int n) {
+    public DeviceStatus[] zzaY(final int n) {
         return new DeviceStatus[n];
     }
 }

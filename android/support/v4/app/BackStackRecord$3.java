@@ -4,20 +4,18 @@
 
 package android.support.v4.app;
 
-import android.os.Build$VERSION;
 import java.io.FileDescriptor;
 import java.io.Writer;
 import java.io.PrintWriter;
 import android.support.v4.util.LogWriter;
 import android.util.Log;
-import android.support.v4.util.SimpleArrayMap;
 import android.view.ViewGroup;
 import java.util.Map;
 import java.util.List;
 import java.util.Collection;
-import android.content.Context;
 import android.util.SparseArray;
 import android.support.v4.util.ArrayMap;
+import android.os.Build$VERSION;
 import java.util.ArrayList;
 import android.view.View;
 import android.view.ViewTreeObserver$OnPreDrawListener;

@@ -17,13 +17,13 @@ public interface zzj extends IInterface
     
     void zza(final String p0, final long p1, final int p2);
     
-    void zzaM(final int p0);
+    void zzaU(final int p0);
     
-    void zzaN(final int p0);
+    void zzaV(final int p0);
     
-    void zzaO(final int p0);
+    void zzaW(final int p0);
     
-    void zzaP(final int p0);
+    void zzaX(final int p0);
     
     void zzb(final ApplicationStatus p0);
     
@@ -33,5 +33,5 @@ public interface zzj extends IInterface
     
     void zzd(final String p0, final long p1);
     
-    void zzq(final String p0, final String p1);
+    void zzs(final String p0, final String p1);
 }

@@ -13,7 +13,7 @@ public class NFError$Response
     public int labelId;
     
     public NFError$Response() {
-        this.labelId = 2131493008;
+        this.labelId = 2131165250;
         this.action = 0;
     }
 }

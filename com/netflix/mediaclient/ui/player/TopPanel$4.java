@@ -8,13 +8,11 @@ import android.app.Dialog;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import android.content.DialogInterface$OnCancelListener;
 import android.widget.AdapterView$OnItemClickListener;
 import android.content.Context;
-import android.app.Activity;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog$Builder;
 import android.app.AlertDialog;
 import com.netflix.mediaclient.util.ViewUtils;
@@ -44,9 +42,9 @@ class TopPanel$4 implements MenuItem$OnMenuItemClickListener
     public boolean onMenuItemClick(final MenuItem menuItem) {
         Log.d("screen", "Display language dialog");
         this.this$0.updateLastPanelInteractionTime();
-        this.this$0.mLanguageSelector.display(this.this$0.context.getLanguage());
-        this.this$0.context.stopScreenUpdateTask();
-        this.this$0.mDialogLanguageId = this.this$0.context.reportUiModelessViewSessionStart(IClientLogging$ModalView.audioSubtitlesSelector);
+        this.this$0.mLanguageSelector.display(this.this$0.playerFragment.getLanguage());
+        this.this$0.playerFragment.stopScreenUpdateTask();
+        this.this$0.mDialogLanguageId = this.this$0.playerFragment.getNetflixActivity().reportUiModelessViewSessionStart(IClientLogging$ModalView.audioSubtitlesSelector);
         return true;
     }
 }

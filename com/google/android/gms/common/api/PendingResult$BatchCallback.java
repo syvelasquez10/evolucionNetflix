@@ -6,5 +6,5 @@ package com.google.android.gms.common.api;
 
 public interface PendingResult$BatchCallback
 {
-    void zzs(final Status p0);
+    void onComplete(final Status p0);
 }

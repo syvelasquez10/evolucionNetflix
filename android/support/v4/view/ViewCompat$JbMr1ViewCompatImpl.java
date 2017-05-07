@@ -27,4 +27,14 @@ class ViewCompat$JbMr1ViewCompatImpl extends ViewCompat$JBViewCompatImpl
     public int getWindowSystemUiVisibility(final View view) {
         return ViewCompatJellybeanMr1.getWindowSystemUiVisibility(view);
     }
+    
+    @Override
+    public boolean isPaddingRelative(final View view) {
+        return ViewCompatJellybeanMr1.isPaddingRelative(view);
+    }
+    
+    @Override
+    public void setPaddingRelative(final View view, final int n, final int n2, final int n3, final int n4) {
+        ViewCompatJellybeanMr1.setPaddingRelative(view, n, n2, n3, n4);
+    }
 }

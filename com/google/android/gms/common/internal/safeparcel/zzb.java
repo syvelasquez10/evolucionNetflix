@@ -34,6 +34,11 @@ public class zzb
         parcel.writeDouble(n2);
     }
     
+    public static void zza(final Parcel parcel, final int n, final float n2) {
+        zzb(parcel, n, 4);
+        parcel.writeFloat(n2);
+    }
+    
     public static void zza(final Parcel parcel, final int n, final long n2) {
         zzb(parcel, n, 8);
         parcel.writeLong(n2);
@@ -84,6 +89,22 @@ public class zzb
         }
         zzF = zzF(parcel, zzF);
         parcel.writeString(s);
+        zzG(parcel, zzF);
+    }
+    
+    public static void zza(final Parcel parcel, int i, final List<Integer> list, final boolean b) {
+        if (list == null) {
+            if (b) {
+                zzb(parcel, i, 0);
+            }
+            return;
+        }
+        final int zzF = zzF(parcel, i);
+        final int size = list.size();
+        parcel.writeInt(size);
+        for (i = 0; i < size; ++i) {
+            parcel.writeInt((int)list.get(i));
+        }
         zzG(parcel, zzF);
     }
     
@@ -156,7 +177,7 @@ public class zzb
         parcel.setDataPosition(dataPosition);
     }
     
-    public static int zzac(final Parcel parcel) {
+    public static int zzak(final Parcel parcel) {
         return zzF(parcel, 20293);
     }
     

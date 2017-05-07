@@ -6,6 +6,7 @@ package android.support.v7.media;
 
 import java.util.Collection;
 import java.util.List;
+import android.content.IntentSender;
 import android.view.Display;
 import android.os.Bundle;
 import android.content.IntentFilter;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 
 public final class MediaRouter$RouteInfo
 {
+    private boolean mCanDisconnect;
     private boolean mConnecting;
     private final ArrayList<IntentFilter> mControlFilters;
     private String mDescription;
@@ -26,6 +28,7 @@ public final class MediaRouter$RouteInfo
     private Display mPresentationDisplay;
     private int mPresentationDisplayId;
     private final MediaRouter$ProviderInfo mProvider;
+    private IntentSender mSettingsIntent;
     private final String mUniqueId;
     private int mVolume;
     private int mVolumeHandling;
@@ -128,7 +131,7 @@ public final class MediaRouter$RouteInfo
     
     @Override
     public String toString() {
-        return "MediaRouter.RouteInfo{ uniqueId=" + this.mUniqueId + ", name=" + this.mName + ", description=" + this.mDescription + ", enabled=" + this.mEnabled + ", connecting=" + this.mConnecting + ", playbackType=" + this.mPlaybackType + ", playbackStream=" + this.mPlaybackStream + ", volumeHandling=" + this.mVolumeHandling + ", volume=" + this.mVolume + ", volumeMax=" + this.mVolumeMax + ", presentationDisplayId=" + this.mPresentationDisplayId + ", extras=" + this.mExtras + ", providerPackageName=" + this.mProvider.getPackageName() + " }";
+        return "MediaRouter.RouteInfo{ uniqueId=" + this.mUniqueId + ", name=" + this.mName + ", description=" + this.mDescription + ", enabled=" + this.mEnabled + ", connecting=" + this.mConnecting + ", canDisconnect=" + this.mCanDisconnect + ", playbackType=" + this.mPlaybackType + ", playbackStream=" + this.mPlaybackStream + ", volumeHandling=" + this.mVolumeHandling + ", volume=" + this.mVolume + ", volumeMax=" + this.mVolumeMax + ", presentationDisplayId=" + this.mPresentationDisplayId + ", extras=" + this.mExtras + ", settingsIntent=" + this.mSettingsIntent + ", providerPackageName=" + this.mProvider.getPackageName() + " }";
     }
     
     int updateDescriptor(final MediaRouteDescriptor mDescriptor) {
@@ -195,10 +198,20 @@ public final class MediaRouter$RouteInfo
                     this.mPresentationDisplay = null;
                     n5 = (n4 | 0x5);
                 }
-                n = n5;
+                int n6 = n5;
                 if (!MediaRouter.equal(this.mExtras, mDescriptor.getExtras())) {
                     this.mExtras = mDescriptor.getExtras();
-                    n = (n5 | 0x1);
+                    n6 = (n5 | 0x1);
+                }
+                int n7 = n6;
+                if (!MediaRouter.equal(this.mSettingsIntent, mDescriptor.getSettingsActivity())) {
+                    this.mSettingsIntent = mDescriptor.getSettingsActivity();
+                    n7 = (n6 | 0x1);
+                }
+                n = n7;
+                if (this.mCanDisconnect != mDescriptor.canDisconnectAndKeepPlaying()) {
+                    this.mCanDisconnect = mDescriptor.canDisconnectAndKeepPlaying();
+                    n = (n7 | 0x5);
                 }
             }
         }

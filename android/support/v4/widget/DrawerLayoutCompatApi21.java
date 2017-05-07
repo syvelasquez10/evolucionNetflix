@@ -4,6 +4,9 @@
 
 package android.support.v4.widget;
 
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.content.Context;
 import android.view.View$OnApplyWindowInsetsListener;
 import android.view.View;
 import android.view.WindowInsets;
@@ -11,6 +14,12 @@ import android.view.ViewGroup$MarginLayoutParams;
 
 class DrawerLayoutCompatApi21
 {
+    private static final int[] THEME_ATTRS;
+    
+    static {
+        THEME_ATTRS = new int[] { 16843828 };
+    }
+    
     public static void applyMarginInsets(final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams, final Object o, final int n) {
         final WindowInsets windowInsets = (WindowInsets)o;
         WindowInsets windowInsets2;
@@ -49,6 +58,16 @@ class DrawerLayoutCompatApi21
             }
         }
         view.dispatchApplyWindowInsets(windowInsets2);
+    }
+    
+    public static Drawable getDefaultStatusBarBackground(Context obtainStyledAttributes) {
+        obtainStyledAttributes = (Context)obtainStyledAttributes.obtainStyledAttributes(DrawerLayoutCompatApi21.THEME_ATTRS);
+        try {
+            return ((TypedArray)obtainStyledAttributes).getDrawable(0);
+        }
+        finally {
+            ((TypedArray)obtainStyledAttributes).recycle();
+        }
     }
     
     public static int getTopInset(final Object o) {

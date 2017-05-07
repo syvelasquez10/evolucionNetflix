@@ -6,7 +6,6 @@ package com.netflix.mediaclient.protocol.netflixcom;
 
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import java.util.Iterator;
 import android.content.pm.ActivityInfo;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.content.ComponentName;
@@ -14,12 +13,31 @@ import com.netflix.mediaclient.Log;
 import android.content.pm.ResolveInfo;
 import android.content.Intent;
 import android.app.Activity;
+import java.util.Iterator;
+import java.util.Set;
 import com.netflix.mediaclient.util.StringUtils;
+import java.util.HashMap;
+import java.util.Map;
 import android.net.Uri;
 
 public class NetflixComUtils
 {
     private static final String TAG = "NetflixComUtils";
+    
+    public static Map<String, String> getParameters(final Uri uri) {
+        final Set queryParameterNames = uri.getQueryParameterNames();
+        final HashMap<String, String> hashMap = new HashMap<String, String>();
+        for (final String s : queryParameterNames) {
+            if (StringUtils.isNotEmpty(s)) {
+                final String queryParameter = uri.getQueryParameter(s);
+                if (!StringUtils.isNotEmpty(queryParameter)) {
+                    continue;
+                }
+                hashMap.put(s, queryParameter);
+            }
+        }
+        return hashMap;
+    }
     
     public static String getTrackId(final Uri uri) {
         String s;

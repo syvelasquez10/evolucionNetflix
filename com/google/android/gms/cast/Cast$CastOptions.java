@@ -4,19 +4,19 @@
 
 package com.google.android.gms.cast;
 
-import com.google.android.gms.common.internal.zzu;
+import com.google.android.gms.common.internal.zzx;
 import com.google.android.gms.common.api.Api$ApiOptions$HasOptions;
 
 public final class Cast$CastOptions implements Api$ApiOptions$HasOptions
 {
-    final CastDevice zzQD;
-    final Cast$Listener zzQE;
-    private final int zzQF;
+    final CastDevice zzTg;
+    final Cast$Listener zzTh;
+    private final int zzTi;
     
     private Cast$CastOptions(final Cast$CastOptions$Builder cast$CastOptions$Builder) {
-        this.zzQD = cast$CastOptions$Builder.zzQG;
-        this.zzQE = cast$CastOptions$Builder.zzQH;
-        this.zzQF = cast$CastOptions$Builder.zzQI;
+        this.zzTg = cast$CastOptions$Builder.zzTj;
+        this.zzTh = cast$CastOptions$Builder.zzTk;
+        this.zzTi = cast$CastOptions$Builder.zzTl;
     }
     
     @Deprecated

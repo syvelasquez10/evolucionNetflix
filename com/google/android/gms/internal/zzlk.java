@@ -4,31 +4,30 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Build$VERSION;
+import android.content.Context;
+import java.util.regex.Pattern;
 
 public final class zzlk
 {
-    private static boolean zzbR(final int n) {
-        return Build$VERSION.SDK_INT >= n;
+    private static Pattern zzagc;
+    
+    static {
+        zzlk.zzagc = null;
     }
     
-    public static boolean zzoP() {
-        return zzbR(11);
+    public static boolean zzao(final Context context) {
+        return context.getPackageManager().hasSystemFeature("android.hardware.type.watch");
     }
     
-    public static boolean zzoR() {
-        return zzbR(13);
+    public static int zzbV(final int n) {
+        return n / 1000;
     }
     
-    public static boolean zzoS() {
-        return zzbR(14);
+    public static int zzbW(final int n) {
+        return n % 1000 / 100;
     }
     
-    public static boolean zzoV() {
-        return zzbR(19);
-    }
-    
-    public static boolean zzoX() {
-        return zzbR(21);
+    public static boolean zzbX(final int n) {
+        return zzbW(n) == 3;
     }
 }

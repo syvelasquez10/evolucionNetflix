@@ -32,7 +32,7 @@ public class AboutActivity extends FragmentHostActivity
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903097;
+        return 2130903111;
     }
     
     @Override
@@ -46,7 +46,7 @@ public class AboutActivity extends FragmentHostActivity
     }
     
     @Override
-    protected boolean showAboutInMenu() {
+    public boolean showAboutInMenu() {
         return false;
     }
     
@@ -56,12 +56,12 @@ public class AboutActivity extends FragmentHostActivity
     }
     
     @Override
-    protected boolean showSettingsInMenu() {
+    public boolean showSettingsInMenu() {
         return false;
     }
     
     @Override
-    protected boolean showSignOutInMenu() {
+    public boolean showSignOutInMenu() {
         return false;
     }
 }

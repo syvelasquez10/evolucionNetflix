@@ -81,7 +81,7 @@ class VideoWindowForPostplayWithAnimation$ScaleAnimation implements Runnable
         }
         this.this$0.resizeVideo(this.mParams.getEndLeftMargin(), this.mParams.getEndTopMargin(), this.mParams.getEndScale());
         if (this.mExecuteOnEndOfAnimation != null) {
-            this.this$0.mContext.runInUiThread(this.mExecuteOnEndOfAnimation);
+            this.this$0.mContext.runOnUiThread(this.mExecuteOnEndOfAnimation);
         }
     }
 }

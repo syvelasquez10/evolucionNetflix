@@ -22,13 +22,13 @@ import android.text.TextUtils;
 import android.content.IntentFilter;
 import android.content.Context;
 import android.content.Intent;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
 import android.content.BroadcastReceiver;
 import android.annotation.TargetApi;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 @TargetApi(14)
-public class MDXControllerActivity extends PlayerActivity
+public class MDXControllerActivity extends NetflixActivity
 {
     private static final String ACTION_FINISH_ACTIVITY = "com.netflix.mediaclient.ui.player.MDXControllerActivity.ACTION_FINISH";
     private static final String EXTRA_SHOW_MDX_CONTROLLER = "extra_shoe_mdx_controller";
@@ -50,8 +50,8 @@ public class MDXControllerActivity extends PlayerActivity
     }
     
     private void setupPostplayViews() {
-        this.postPlayViewGroup = this.findViewById(2131427737);
-        this.postPlayController = PostPlayFactory.create(this, PostPlayFactory$PostPlayType.EpisodesForMDX);
+        this.postPlayViewGroup = this.findViewById(2131624432);
+        this.postPlayController = PostPlayFactory.createForMdx(this);
     }
     
     private void setupReceivers() {
@@ -142,7 +142,7 @@ public class MDXControllerActivity extends PlayerActivity
     @Override
     public void onConfigurationChanged(final Configuration configuration) {
         super.onConfigurationChanged(configuration);
-        this.setContentView(2130903133);
+        this.setContentView(2130903157);
         this.setupPostplayViews();
         this.showEpisodesData();
         if (this.getSupportActionBar() != null) {
@@ -153,7 +153,7 @@ public class MDXControllerActivity extends PlayerActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903133);
+        this.setContentView(2130903157);
         if (this.getSupportActionBar() != null) {
             this.getSupportActionBar().hide();
         }

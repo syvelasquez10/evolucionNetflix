@@ -14,46 +14,46 @@ import android.os.Parcelable$Creator;
 public class zzb implements Parcelable$Creator<ConnectionResult>
 {
     static void zza(final ConnectionResult connectionResult, final Parcel parcel, final int n) {
-        final int zzac = com.google.android.gms.common.internal.safeparcel.zzb.zzac(parcel);
-        com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 1, connectionResult.zzCY);
+        final int zzak = com.google.android.gms.common.internal.safeparcel.zzb.zzak(parcel);
+        com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 1, connectionResult.mVersionCode);
         com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 2, connectionResult.getErrorCode());
         com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 3, (Parcelable)connectionResult.getResolution(), n, false);
-        com.google.android.gms.common.internal.safeparcel.zzb.zzH(parcel, zzac);
+        com.google.android.gms.common.internal.safeparcel.zzb.zzH(parcel, zzak);
     }
     
-    public ConnectionResult zzO(final Parcel parcel) {
+    public ConnectionResult zzW(final Parcel parcel) {
         int zzg = 0;
-        final int zzab = zza.zzab(parcel);
+        final int zzaj = zza.zzaj(parcel);
         PendingIntent pendingIntent = null;
         int zzg2 = 0;
-        while (parcel.dataPosition() < zzab) {
-            final int zzaa = zza.zzaa(parcel);
-            switch (zza.zzbA(zzaa)) {
+        while (parcel.dataPosition() < zzaj) {
+            final int zzai = zza.zzai(parcel);
+            switch (zza.zzbH(zzai)) {
                 default: {
-                    zza.zzb(parcel, zzaa);
+                    zza.zzb(parcel, zzai);
                     continue;
                 }
                 case 1: {
-                    zzg2 = zza.zzg(parcel, zzaa);
+                    zzg2 = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 2: {
-                    zzg = zza.zzg(parcel, zzaa);
+                    zzg = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 3: {
-                    pendingIntent = zza.zza(parcel, zzaa, (android.os.Parcelable$Creator<PendingIntent>)PendingIntent.CREATOR);
+                    pendingIntent = zza.zza(parcel, zzai, (android.os.Parcelable$Creator<PendingIntent>)PendingIntent.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzab) {
-            throw new zza$zza("Overread allowed size end=" + zzab, parcel);
+        if (parcel.dataPosition() != zzaj) {
+            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
         }
         return new ConnectionResult(zzg2, zzg, pendingIntent);
     }
     
-    public ConnectionResult[] zzaS(final int n) {
+    public ConnectionResult[] zzba(final int n) {
         return new ConnectionResult[n];
     }
 }

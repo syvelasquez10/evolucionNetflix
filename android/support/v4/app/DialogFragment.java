@@ -65,20 +65,11 @@ public class DialogFragment extends Fragment implements DialogInterface$OnCancel
             return super.getLayoutInflater(bundle);
         }
         this.mDialog = this.onCreateDialog(bundle);
-        switch (this.mStyle) {
-            case 3: {
-                this.mDialog.getWindow().addFlags(24);
-            }
-            case 1:
-            case 2: {
-                this.mDialog.requestWindowFeature(1);
-                break;
-            }
-        }
         if (this.mDialog != null) {
+            this.setupDialog(this.mDialog, this.mStyle);
             return (LayoutInflater)this.mDialog.getContext().getSystemService("layout_inflater");
         }
-        return (LayoutInflater)this.mActivity.getSystemService("layout_inflater");
+        return (LayoutInflater)this.mHost.getContext().getSystemService("layout_inflater");
     }
     
     public int getTheme() {
@@ -206,6 +197,19 @@ public class DialogFragment extends Fragment implements DialogInterface$OnCancel
     
     public void setShowsDialog(final boolean mShowsDialog) {
         this.mShowsDialog = mShowsDialog;
+    }
+    
+    public void setupDialog(final Dialog dialog, final int n) {
+        switch (n) {
+            default: {}
+            case 3: {
+                dialog.getWindow().addFlags(24);
+            }
+            case 1:
+            case 2: {
+                dialog.requestWindowFeature(1);
+            }
+        }
     }
     
     public void show(final FragmentManager fragmentManager, final String s) {

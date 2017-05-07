@@ -16,6 +16,7 @@ import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.view.ViewPropertyAnimator;
+import android.app.Activity;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import android.widget.TextView;
@@ -32,7 +33,6 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import android.os.Handler;
 import com.netflix.mediaclient.android.app.Status;
-import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$Profile;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
@@ -98,10 +98,10 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         if (!this.mProfileChangeRequestWasSent) {
             int n;
             if (this.mNewProfileCreation) {
-                n = 2131493311;
+                n = 2131165585;
             }
             else {
-                n = 2131493312;
+                n = 2131165596;
             }
             Toast.makeText((Context)this, n, 1).show();
         }
@@ -120,12 +120,12 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         }
         final String string = this.mName.getText().toString();
         if (string.contains("\"") || string.contains("<") || string.contains(">")) {
-            this.mName.setError((CharSequence)this.getString(2131493320));
+            this.mName.setError((CharSequence)this.getString(2131165604));
             return true;
         }
         for (final UserProfile userProfile : this.mServiceManager.getAllProfiles()) {
             if (string.equalsIgnoreCase(userProfile.getProfileName()) && !userProfile.getProfileGuid().equals(this.mInputProfileId)) {
-                this.mName.setError((CharSequence)this.getString(2131493317));
+                this.mName.setError((CharSequence)this.getString(2131165593));
                 return true;
             }
         }
@@ -145,34 +145,34 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
     }
     
     private void initUI() {
-        this.setContentView(2130903173);
+        this.setContentView(2130903206);
         this.getSupportActionBar().hide();
-        this.mContentView = this.findViewById(2131427764);
-        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131427763), this.errorCallback);
-        (this.mCancelButton = this.findViewById(2131427772)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$4(this));
-        this.mDeleteSection = this.findViewById(2131427770);
-        (this.mDeleteButton = this.findViewById(2131427771)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$5(this));
-        (this.mKidsSection = this.findViewById(2131427766)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$6(this));
-        this.mKidsCheckBox = (CheckBox)this.findViewById(2131427767);
-        this.mSaveButtonText = this.findViewById(2131427774);
-        (this.mSaveButton = this.findViewById(2131427773)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$7(this));
-        (this.mName = (EditText)this.findViewById(2131427765)).addTextChangedListener((TextWatcher)new ProfileDetailsActivity$8(this));
-        this.mProfilePictureView = (AdvancedImageView)this.findViewById(2131427451);
+        this.mContentView = this.findViewById(2131624478);
+        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131624477), this.errorCallback);
+        (this.mCancelButton = this.findViewById(2131624486)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$4(this));
+        this.mDeleteSection = this.findViewById(2131624484);
+        (this.mDeleteButton = this.findViewById(2131624485)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$5(this));
+        (this.mKidsSection = this.findViewById(2131624480)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$6(this));
+        this.mKidsCheckBox = (CheckBox)this.findViewById(2131624481);
+        this.mSaveButtonText = this.findViewById(2131624488);
+        (this.mSaveButton = this.findViewById(2131624487)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$7(this));
+        (this.mName = (EditText)this.findViewById(2131624479)).addTextChangedListener((TextWatcher)new ProfileDetailsActivity$8(this));
+        this.mProfilePictureView = (AdvancedImageView)this.findViewById(2131624072);
         final ProfileDetailsActivity$9 profileDetailsActivity$9 = new ProfileDetailsActivity$9(this);
         this.mProfilePictureView.setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
-        (this.mProfilePictureSection = this.findViewById(2131427768)).setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
-        this.mPictureSelectorHint = this.findViewById(2131427769);
+        (this.mProfilePictureSection = this.findViewById(2131624482)).setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
+        this.mPictureSelectorHint = this.findViewById(2131624483);
         if (this.mNewProfileCreation) {
             this.mName.requestFocus();
         }
-        final TextView textView = (TextView)this.findViewById(2131427775);
+        final TextView textView = (TextView)this.findViewById(2131624489);
         if (textView != null) {
             int text;
             if (this.mNewProfileCreation) {
-                text = 2131493300;
+                text = 2131165584;
             }
             else {
-                text = 2131493301;
+                text = 2131165597;
             }
             textView.setText(text);
         }
@@ -353,7 +353,7 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
             }
             Log.e("ProfileDetailsActivity", "Weird use case: profile deletion needs to be started, but input profile is null");
             final NetflixStatus netflixStatus = new NetflixStatus(StatusCode.NETWORK_ERROR);
-            final String handleUserAgentErrors = this.handleUserAgentErrors(this, netflixStatus);
+            final String handleUserAgentErrors = this.handleUserAgentErrors(netflixStatus);
             ActionOnUIError actionOnUIError = ActionOnUIError.displayedError;
             if (handleUserAgentErrors == null) {
                 actionOnUIError = ActionOnUIError.handledSilently;

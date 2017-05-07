@@ -7,24 +7,24 @@ package com.google.android.gms.cast.internal;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.nio.charset.Charset;
-import com.google.android.gms.common.api.Api$ClientKey;
+import com.google.android.gms.common.api.Api$zzc;
 
 public final class zzk
 {
-    public static final Api$ClientKey<zze> zzNX;
-    public static final String zzUP;
-    public static final String zzUQ;
-    public static final Charset zzUR;
+    public static final Api$zzc<zze> zzQf;
+    public static final String zzXs;
+    public static final String zzXt;
+    public static final Charset zzXu;
     
     static {
-        zzNX = new Api$ClientKey<zze>();
-        zzUP = zzf.zzbE("com.google.cast.receiver");
-        zzUQ = zzf.zzbE("com.google.cast.tp.connection");
+        zzQf = new Api$zzc<zze>();
+        zzXs = zzf.zzbM("com.google.cast.receiver");
+        zzXt = zzf.zzbM("com.google.cast.tp.connection");
         Charset forName = null;
         while (true) {
             try {
                 forName = Charset.forName("UTF-8");
-                zzUR = forName;
+                zzXu = forName;
             }
             catch (UnsupportedCharsetException ex) {
                 continue;

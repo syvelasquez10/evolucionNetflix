@@ -17,6 +17,7 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.widget.TextView;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.util.ThreadUtils;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.content.Context;
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
@@ -102,11 +103,12 @@ public final class ServiceManager implements IServiceManagerAccess
         Log.v("ServiceManager", "Intent BROWSE_AGENT_POPULAR_TITLES_REFRESH sent");
     }
     
-    private INetflixService validateService() {
-        if (this.mService == null || this.mClientId < 0) {
-            return null;
+    private boolean validateService() {
+        if (!this.isReady() || this.mClientId < 0) {
+            ErrorLoggingManager.logHandledException("SPY-8020 - ServiceMgr called before NetflixService is not ready " + this.mService);
+            return false;
         }
-        return this.mService;
+        return true;
     }
     
     private ManagerCallback wrapForAddToList(final ManagerCallback managerCallback, final String s) {
@@ -114,10 +116,8 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public void addProfile(final String s, final boolean b, final String s2, final ManagerCallback managerCallback) {
-        final INetflixService mService = this.mService;
-        final int addCallback = this.addCallback(managerCallback);
-        if (mService != null) {
-            mService.addProfile(s, b, s2, this.mClientId, addCallback);
+        if (this.validateService()) {
+            this.mService.addProfile(s, b, s2, this.mClientId, this.addCallback(managerCallback));
             return;
         }
         Log.w("ServiceManager", "addProfile:: service is not available");
@@ -136,9 +136,8 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public boolean connectWithFacebook(final String s, final ManagerCallback managerCallback) {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            mService.connectWithFacebook(s, this.mClientId, this.addCallback(managerCallback));
+        if (this.validateService()) {
+            this.mService.connectWithFacebook(s, this.mClientId, this.addCallback(managerCallback));
             return true;
         }
         Log.w("ServiceManager", "connectWithFacebook:: service is not available");
@@ -158,19 +157,16 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public void editProfile(final String s, final String s2, final boolean b, final String s3, final ManagerCallback managerCallback) {
-        final INetflixService mService = this.mService;
-        final int addCallback = this.addCallback(managerCallback);
-        if (mService != null) {
-            mService.editProfile(s, s2, b, s3, this.mClientId, addCallback);
+        if (this.validateService()) {
+            this.mService.editProfile(s, s2, b, s3, this.mClientId, this.addCallback(managerCallback));
             return;
         }
         Log.w("ServiceManager", "editProfile:: service is not available");
     }
     
     public boolean fetchAvailableAvatarsList(final ManagerCallback managerCallback) {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            mService.getAvailableAvatarsList(this.mClientId, this.addCallback(managerCallback));
+        if (this.validateService()) {
+            this.mService.getAvailableAvatarsList(this.mClientId, this.addCallback(managerCallback));
             return true;
         }
         Log.w("ServiceManager", "fetchAvailableAvatarsList:: service is not available");
@@ -178,10 +174,9 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public int fetchFriendsForRecommendationList(final String s, final int n, final String s2, final ManagerCallback managerCallback) {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
+        if (this.validateService()) {
             final int addCallback = this.addCallback(managerCallback);
-            mService.getFriendsForRecommendationList(s, n, s2, this.mClientId, addCallback);
+            this.mService.getFriendsForRecommendationList(s, n, s2, this.mClientId, addCallback);
             return addCallback;
         }
         Log.w("ServiceManager", "fetchFriendsForRecommendationList:: service is not available");
@@ -197,9 +192,8 @@ public final class ServiceManager implements IServiceManagerAccess
                 if (Log.isLoggable()) {
                     Log.d("ServiceManager", "fetchResource requestId=" + addCallback + " resourceUrl=" + s);
                 }
-                final INetflixService validateService = this.validateService();
-                if (validateService != null) {
-                    validateService.fetchResource(s, clientLogging$AssetType, this.mClientId, addCallback);
+                if (this.validateService()) {
+                    this.mService.fetchResource(s, clientLogging$AssetType, this.mClientId, addCallback);
                     b = true;
                 }
                 else {
@@ -219,9 +213,8 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public List<? extends UserProfile> getAllProfiles() {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            return mService.getAllProfiles();
+        if (this.validateService()) {
+            return this.mService.getAllProfiles();
         }
         Log.w("ServiceManager", "getAllProfiles:: service is not available");
         return null;
@@ -255,25 +248,23 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public String getCurrentAppLocale() {
-        final INetflixService validateService = this.validateService();
-        if (validateService != null) {
-            return validateService.getCurrentAppLocale();
+        if (this.validateService()) {
+            return this.mService.getCurrentAppLocale();
         }
         Log.w("ServiceManager", "getCurrentAppLocale:: service is not available");
         return null;
     }
     
     public UserProfile getCurrentProfile() {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            return mService.getCurrentProfile();
+        if (this.validateService()) {
+            return this.mService.getCurrentProfile();
         }
         Log.w("ServiceManager", "getCurrentProfile:: service is not available");
         return null;
     }
     
     public DeviceCategory getDeviceCategory() {
-        if (this.mService != null) {
+        if (this.validateService()) {
             return this.mService.getDeviceCategory();
         }
         Log.w("ServiceManager", "getDeviceCategory:: service is not available");
@@ -281,9 +272,8 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public IDiagnosis getDiagnosis() {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            return mService.getDiagnosis();
+        if (this.validateService()) {
+            return this.mService.getDiagnosis();
         }
         return null;
     }
@@ -297,13 +287,21 @@ public final class ServiceManager implements IServiceManagerAccess
         return null;
     }
     
-    public ImageLoader getImageLoader() {
-        final NetflixService mLocalService = this.mLocalService;
-        if (mLocalService == null) {
-            Log.w("ServiceManager", "getImageLoader:: Netflix service is not available, return null.");
-            return null;
+    public IErrorHandler getErrorHandler() {
+        final INetflixService mService = this.mService;
+        if (mService != null) {
+            return mService.getErrorHandler();
         }
-        return mLocalService.getImageLoader();
+        Log.w("ServiceManager", "getErrorHandler:: service is not available");
+        return null;
+    }
+    
+    public ImageLoader getImageLoader() {
+        if (this.validateService()) {
+            return this.mLocalService.getImageLoader();
+        }
+        Log.w("ServiceManager", "getImageLoader:: Netflix service is not available or not ready, return null.");
+        return null;
     }
     
     public IMdx getMdx() {
@@ -316,7 +314,7 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public String getNrdpComponentVersion(final NrdpComponent nrdpComponent) {
-        if (this.mService != null) {
+        if (this.validateService()) {
             return this.mService.getNrdpComponentVersion(nrdpComponent);
         }
         Log.w("ServiceManager", "getNrdpComponentVersion:: service is not available");
@@ -348,23 +346,40 @@ public final class ServiceManager implements IServiceManagerAccess
     
     @Override
     public INetflixService getService() {
-        return this.validateService();
+        this.validateService();
+        return this.mService;
     }
     
     public SignUpParams getSignUpParams() {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            return mService.getSignUpParams();
+        if (this.validateService()) {
+            return this.mService.getSignUpParams();
         }
         Log.w("ServiceManager", "getSignUpParams:: service is not available");
         return null;
     }
     
     public String getSoftwareVersion() {
-        if (this.mService != null) {
+        if (this.validateService()) {
             return this.mService.getSoftwareVersion();
         }
         Log.w("ServiceManager", "getSoftwareVersion:: service is not available");
+        return null;
+    }
+    
+    public String getUserEmail() {
+        if (this.validateService()) {
+            return this.mService.getUserEmail();
+        }
+        Log.w("ServiceManager", "getUserEmail:: service is not available");
+        return null;
+    }
+    
+    public IVoip getVoip() {
+        final INetflixService mService = this.mService;
+        if (mService != null) {
+            return mService.getVoip();
+        }
+        Log.w("ServiceManager", "getVoip:: service is not available");
         return null;
     }
     
@@ -374,77 +389,72 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public boolean isCurrentProfileFacebookConnected() {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            return mService.isCurrentProfileFacebookConnected();
+        if (this.validateService()) {
+            return this.mService.isCurrentProfileFacebookConnected();
         }
         Log.w("ServiceManager", "isCurrentProfileFacebookConnected:: service is not available");
         return false;
     }
     
     public boolean isCurrentProfileIQEnabled() {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            return mService.isCurrentProfileIQEnabled();
+        if (this.validateService()) {
+            return this.mService.isCurrentProfileIQEnabled();
         }
         Log.w("ServiceManager", "isCurrentProfileIQEnabled:: service is not available");
         return false;
     }
     
     public boolean isDeviceHd() {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            return mService.isDeviceHd();
+        if (this.validateService()) {
+            return this.mService.isDeviceHd();
         }
         Log.w("ServiceManager", "isDeviceHd:: service is not available");
         return false;
     }
     
+    public boolean isDolbyDigitalPlus51Supported() {
+        return this.validateService() && this.mService.getConfiguration().isDolbyDigitalPlus51Supported();
+    }
+    
     public boolean isProfileSwitchingDisabled() {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            return mService.isProfileSwitchingDisabled();
+        if (this.validateService()) {
+            return this.mService.isProfileSwitchingDisabled();
         }
         Log.w("ServiceManager", "isProfileSwitchingDisabled:: service is not available");
         return false;
     }
     
     public boolean isReady() {
-        return this.mReady;
+        return this.mService != null && this.mReady;
     }
     
     public boolean isTablet() {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            return mService.isTablet();
+        if (this.validateService()) {
+            return this.mService.isTablet();
         }
         Log.w("ServiceManager", "isTablet:: service is not available");
         return false;
     }
     
     public boolean isUserAgeVerified() {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            return mService.isUserAgeVerified();
+        if (this.validateService()) {
+            return this.mService.isUserAgeVerified();
         }
         Log.w("ServiceManager", "isUserAgeVerified:: service is not available");
         return false;
     }
     
     public boolean isUserLoggedIn() {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            return mService.isUserLoggedIn();
+        if (this.validateService()) {
+            return this.mService.isUserLoggedIn();
         }
         Log.w("ServiceManager", "isUserLoggedIn:: service is not available");
         return false;
     }
     
     public boolean loginUser(final String s, final String s2, final ManagerCallback managerCallback) {
-        final int addCallback = this.addCallback(managerCallback);
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            mService.loginUser(s, s2, this.mClientId, addCallback);
+        if (this.validateService()) {
+            this.mService.loginUser(s, s2, this.mClientId, this.addCallback(managerCallback));
             return true;
         }
         Log.w("ServiceManager", "loginUser:: service is not available");
@@ -452,10 +462,8 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public boolean loginUserByTokens(final ActivationTokens activationTokens, final ManagerCallback managerCallback) {
-        final int addCallback = this.addCallback(managerCallback);
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            mService.loginUserByTokens(activationTokens, this.mClientId, addCallback);
+        if (this.validateService()) {
+            this.mService.loginUserByTokens(activationTokens, this.mClientId, this.addCallback(managerCallback));
             return true;
         }
         Log.w("ServiceManager", "loginUserByTokens:: service is not available");
@@ -463,10 +471,8 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public boolean logoutUser(final ManagerCallback managerCallback) {
-        final int addCallback = this.addCallback(managerCallback);
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            mService.logoutUser(this.mClientId, addCallback);
+        if (this.validateService()) {
+            this.mService.logoutUser(this.mClientId, this.addCallback(managerCallback));
             return true;
         }
         Log.w("ServiceManager", "logoutUser:: service is not available");
@@ -474,9 +480,8 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public void refreshProfileSwitchingStatus() {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            mService.refreshProfileSwitchingStatus();
+        if (this.validateService()) {
+            this.mService.refreshProfileSwitchingStatus();
             return;
         }
         Log.w("ServiceManager", "refreshProfileSwitchingStatus:: service is not available");
@@ -501,34 +506,31 @@ public final class ServiceManager implements IServiceManagerAccess
                 if (this.mCallbackMuxer != null) {
                     this.mCallbackMuxer.reset();
                 }
+                this.mClientId = -1;
                 this.mReady = false;
             }
         }
     }
     
     public void removeProfile(final String s, final ManagerCallback managerCallback) {
-        final INetflixService mService = this.mService;
-        final int addCallback = this.addCallback(managerCallback);
-        if (mService != null) {
-            mService.removeProfile(s, this.mClientId, addCallback);
+        if (this.validateService()) {
+            this.mService.removeProfile(s, this.mClientId, this.addCallback(managerCallback));
             return;
         }
         Log.w("ServiceManager", "removeProfile:: service is not available");
     }
     
     public void selectProfile(final String s) {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            mService.selectProfile(s);
+        if (this.validateService()) {
+            this.mService.selectProfile(s);
             return;
         }
         Log.w("ServiceManager", "selectProfile:: service is not available");
     }
     
     public boolean sendRecommendationsToFriends(final String s, final Set<FriendForRecommendation> set, final String s2, final String s3) {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            mService.sendRecommendationsToFriends(s, set, s2, s3);
+        if (this.validateService()) {
+            this.mService.sendRecommendationsToFriends(s, set, s2, s3);
             return true;
         }
         Log.w("ServiceManager", "sendRecommendationsToFriends:: service is not available");
@@ -536,9 +538,8 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public boolean setCurrentAppLocale(final String currentAppLocale) {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            mService.setCurrentAppLocale(currentAppLocale);
+        if (this.validateService()) {
+            this.mService.setCurrentAppLocale(currentAppLocale);
             return true;
         }
         Log.w("ServiceManager", "setCurrentAppLocale:: service is not available");
@@ -565,9 +566,8 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public boolean verifyAge(final ManagerCallback managerCallback) {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            mService.verifyAge(this.mClientId, this.addCallback(managerCallback));
+        if (this.validateService()) {
+            this.mService.verifyAge(this.mClientId, this.addCallback(managerCallback));
             return true;
         }
         Log.w("ServiceManager", "verifyAge:: service is not available");
@@ -575,9 +575,8 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     public boolean verifyPin(final String s, final ManagerCallback managerCallback) {
-        final INetflixService mService = this.mService;
-        if (mService != null) {
-            mService.verifyPin(s, this.mClientId, this.addCallback(managerCallback));
+        if (this.validateService()) {
+            this.mService.verifyPin(s, this.mClientId, this.addCallback(managerCallback));
             return true;
         }
         Log.w("ServiceManager", "verifyPin:: service is not available");

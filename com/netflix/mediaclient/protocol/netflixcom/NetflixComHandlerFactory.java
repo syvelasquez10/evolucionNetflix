@@ -10,11 +10,14 @@ import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.protocol.nflx.NflxHandler$Response;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.NflxProtocolUtils;
+import com.netflix.mediaclient.util.StringUtils;
+import java.util.Map;
 import android.net.Uri;
 import java.util.List;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.Activity;
 import android.content.Intent;
 
@@ -23,6 +26,7 @@ public class NetflixComHandlerFactory
     protected static final String ADD_TO_MY_LIST_SUFFIX = "add";
     protected static final String BROWSE_SUFFIX = "browse";
     protected static final String DETAILS_PAGE_SUFFIX = "title";
+    protected static final String EXTRA_SOURCE = "source";
     public static final String FUTURE_HANDLER_SCHEME = "https";
     public static final String HANDLER_PREFIX = "www.netflix.com";
     public static final String HANDLER_SCHEME = "http";
@@ -39,7 +43,7 @@ public class NetflixComHandlerFactory
     public static boolean finishMeAndLaunchBrowserIfNeeded(final Activity activity, final Intent intent) {
         final boolean b = true;
         final List<String> actionParts = getActionParts(intent.getData());
-        final NetflixComHandler handler = getHandler(actionParts);
+        final NetflixComHandler handler = getHandler(null, actionParts, NetflixComUtils.getParameters(intent.getData()));
         boolean b2 = b;
         if (handler != null) {
             b2 = (!handler.canHandle(actionParts) && b);
@@ -59,8 +63,7 @@ public class NetflixComHandlerFactory
         return (List<String>)pathSegments;
     }
     
-    private static NetflixComHandler getHandler(final List<String> list) {
-        int n = 0;
+    private static NetflixComHandler getHandler(final NetflixActivity netflixActivity, final List<String> list, final Map<String, String> map) {
         String s;
         if (list.size() > 0) {
             s = list.get(0);
@@ -68,105 +71,68 @@ public class NetflixComHandlerFactory
         else {
             s = "";
         }
-        Label_0094: {
-            switch (s.hashCode()) {
-                case 0: {
-                    if (s.equals("")) {
-                        break Label_0094;
-                    }
-                    break;
-                }
-                case 110371416: {
-                    if (s.equals("title")) {
-                        n = 1;
-                        break Label_0094;
-                    }
-                    break;
-                }
-                case 112903375: {
-                    if (s.equals("watch")) {
-                        n = 2;
-                        break Label_0094;
-                    }
-                    break;
-                }
-                case -1380604278: {
-                    if (s.equals("browse")) {
-                        n = 3;
-                        break Label_0094;
-                    }
-                    break;
-                }
-                case 96417: {
-                    if (s.equals("add")) {
-                        n = 4;
-                        break Label_0094;
-                    }
-                    break;
-                }
-                case -906336856: {
-                    if (s.equals("search")) {
-                        n = 5;
-                        break Label_0094;
-                    }
-                    break;
-                }
-                case 3545755: {
-                    if (s.equals("sync")) {
-                        n = 6;
-                        break Label_0094;
-                    }
-                    break;
-                }
+        if (netflixActivity != null) {
+            String s2;
+            if (StringUtils.isNotEmpty(s)) {
+                s2 = s;
             }
-            n = -1;
+            else {
+                s2 = "home";
+            }
+            NflxProtocolUtils.reportApplicationLaunchedFromDeepLinking(netflixActivity, map, s2);
         }
-        switch (n) {
+        switch (s) {
             default: {
                 final String string = "SPY-7518 - got unsupported suffix: " + s;
                 Log.e("NetflixComHandlerFactory", string);
                 ErrorLoggingManager.logHandledException(string);
                 return null;
             }
-            case 0: {
+            case "": {
                 return new NetflixComHomeHandler();
             }
-            case 1: {
+            case "title": {
                 return new NetflixComVideoDetailsHandler();
             }
-            case 2: {
+            case "watch": {
                 return new NetflixComWatchHandler();
             }
-            case 3: {
+            case "browse": {
                 return new NetflixComBrowseHandler();
             }
-            case 4: {
+            case "add": {
                 return new NetflixComAddToListHandler();
             }
-            case 5: {
+            case "search": {
                 return new NetflixComSearchHandler();
             }
-            case 6: {
+            case "sync": {
                 return new NetflixComSyncHandler();
             }
         }
     }
     
-    public static NflxHandler$Response handle(final NetflixActivity netflixActivity, final Uri uri) {
-        final List<String> actionParts = getActionParts(uri);
-        final NetflixComHandler handler = getHandler(actionParts);
+    public static NflxHandler$Response handle(final NetflixActivity netflixActivity, final Intent intent) {
+        final Uri data = intent.getData();
+        final String stringExtra = intent.getStringExtra("source");
+        final List<String> actionParts = getActionParts(data);
+        final Map<String, String> parameters = NetflixComUtils.getParameters(data);
+        if (StringUtils.isNotEmpty(stringExtra)) {
+            parameters.put("source", stringExtra);
+        }
+        final NetflixComHandler handler = getHandler(netflixActivity, actionParts, parameters);
         if (handler == null) {
-            Log.w("NetflixComHandlerFactory", "Got null creator for data: " + uri.toString() + ". Redirecting user to browser.");
+            Log.w("NetflixComHandlerFactory", "Got null creator for data: " + data.toString() + ". Redirecting user to browser.");
         }
         else {
-            final NflxHandler$Response tryHandle = handler.tryHandle(netflixActivity, actionParts, NetflixComUtils.getTrackId(uri));
+            final NflxHandler$Response tryHandle = handler.tryHandle(netflixActivity, actionParts, NetflixComUtils.getTrackId(data));
             if (tryHandle != NflxHandler$Response.NOT_HANDLING) {
-                UIViewLogUtils.reportUIViewCommand((Context)netflixActivity, UIViewLogging$UIViewCommandName.deepLink, IClientLogging$ModalView.homeScreen, null, uri.toString());
+                UIViewLogUtils.reportUIViewCommand((Context)netflixActivity, UIViewLogging$UIViewCommandName.deepLink, IClientLogging$ModalView.homeScreen, null, data.toString());
                 return tryHandle;
             }
-            ErrorLoggingManager.logHandledException("SPY-7518 - couldn't handle the following data: " + uri.toString());
+            ErrorLoggingManager.logHandledException("SPY-7518 - couldn't handle the following data: " + data.toString());
         }
-        NetflixComUtils.launchBrowser(netflixActivity, uri);
+        NetflixComUtils.launchBrowser(netflixActivity, data);
         return NflxHandler$Response.HANDLING;
     }
 }

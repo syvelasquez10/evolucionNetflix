@@ -90,6 +90,10 @@ class AccessibilityNodeInfoCompatIcs
         return AccessibilityNodeInfo.obtain((AccessibilityNodeInfo)o);
     }
     
+    public static boolean performAction(final Object o, final int n) {
+        return ((AccessibilityNodeInfo)o).performAction(n);
+    }
+    
     public static void recycle(final Object o) {
         ((AccessibilityNodeInfo)o).recycle();
     }

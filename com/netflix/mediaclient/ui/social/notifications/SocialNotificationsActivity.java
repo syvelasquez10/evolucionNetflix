@@ -46,7 +46,7 @@ public class SocialNotificationsActivity extends FragmentHostActivity
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903097;
+        return 2130903111;
     }
     
     @Override
@@ -65,7 +65,7 @@ public class SocialNotificationsActivity extends FragmentHostActivity
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
             netflixActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
-            netflixActionBar.setTitle(this.getResources().getString(2131493368));
+            netflixActionBar.setTitle(this.getResources().getString(2131165578));
         }
         if (bundle != null) {
             this.mNotificationOpenedReportAlreadySent = bundle.getBoolean("notification_beacon_sent");
@@ -86,17 +86,17 @@ public class SocialNotificationsActivity extends FragmentHostActivity
     }
     
     @Override
-    protected boolean showAboutInMenu() {
+    public boolean showAboutInMenu() {
         return false;
     }
     
     @Override
-    protected boolean showSettingsInMenu() {
+    public boolean showSettingsInMenu() {
         return false;
     }
     
     @Override
-    protected boolean showSignOutInMenu() {
+    public boolean showSignOutInMenu() {
         return false;
     }
 }

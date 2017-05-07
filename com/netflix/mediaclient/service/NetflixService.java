@@ -8,6 +8,7 @@ import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import android.os.Process;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
 import com.netflix.mediaclient.servicemgr.IPushNotification;
 import com.netflix.mediaclient.repository.SecurityRepository;
@@ -15,6 +16,7 @@ import com.netflix.mediaclient.servicemgr.NrdpComponent;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
+import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.servicemgr.IDiagnosis;
 import com.netflix.mediaclient.util.DeviceCategory;
@@ -44,6 +46,7 @@ import com.netflix.mediaclient.Log;
 import android.app.AlarmManager;
 import android.content.Intent;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.service.voip.WhistleVoipAgent;
 import com.netflix.mediaclient.service.user.UserAgent;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
 import com.netflix.mediaclient.service.pushnotification.PushNotificationAgent;
@@ -55,6 +58,7 @@ import com.netflix.mediaclient.android.app.Status;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.falkor.FalkorAgent;
 import com.netflix.mediaclient.service.falkor.FalkorAccess;
+import com.netflix.mediaclient.service.error.ErrorAgent;
 import com.netflix.mediaclient.service.diagnostics.DiagnosisAgent;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.service.logging.LoggingAgent;
@@ -83,6 +87,7 @@ public final class NetflixService extends Service implements INetflixService
     private LoggingAgent mClientLoggingAgent;
     private ConfigurationAgent mConfigurationAgent;
     private DiagnosisAgent mDiagnosisAgent;
+    private ErrorAgent mErrorAgent;
     private FalkorAccess mFalkorAccess;
     private FalkorAgent mFalkorAgent;
     private final ArrayList<NetflixService$InitCallback> mInitCallbacks;
@@ -99,6 +104,7 @@ public final class NetflixService extends Service implements INetflixService
     private PushNotificationAgent mPushAgent;
     private ResourceFetcher mResourceFetcher;
     private UserAgent mUserAgent;
+    private WhistleVoipAgent mVoipAgent;
     
     static {
         NetflixService.fetchErrorsEnabled = false;
@@ -168,6 +174,10 @@ public final class NetflixService extends Service implements INetflixService
             if (intent.hasCategory("com.netflix.mediaclient.intent.category.USER")) {
                 Log.d("NetflixService", "User agent command intent ");
                 this.mUserAgent.handleCommand(intent);
+            }
+            if (intent.hasCategory("com.netflix.mediaclient.intent.category.CATEGORY_FROM_PREAPP_PSERVICE")) {
+                Log.d("NetflixService", "Preapp service command intent ");
+                this.mPreAppAgent.handleCommand(intent);
             }
         }
     }
@@ -352,7 +362,7 @@ public final class NetflixService extends Service implements INetflixService
     }
     
     public String getCurrentAppLocale() {
-        return this.mUserAgent.getCurrentAppLocale();
+        return this.mUserAgent.getCurrentAppLocale().getRaw();
     }
     
     public UserProfile getCurrentProfile() {
@@ -385,6 +395,10 @@ public final class NetflixService extends Service implements INetflixService
     
     public EsnProvider getESN() {
         return this.mConfigurationAgent.getEsnProvider();
+    }
+    
+    public IErrorHandler getErrorHandler() {
+        return this.mErrorAgent;
     }
     
     public FalkorAccess getFalkorAgent() {
@@ -434,6 +448,14 @@ public final class NetflixService extends Service implements INetflixService
     
     public String getSoftwareVersion() {
         return this.mConfigurationAgent.getSoftwareVersion();
+    }
+    
+    public String getUserEmail() {
+        return this.mUserAgent.getEmail();
+    }
+    
+    public IVoip getVoip() {
+        return this.mVoipAgent;
     }
     
     public boolean isCurrentProfileFacebookConnected() {
@@ -502,6 +524,8 @@ public final class NetflixService extends Service implements INetflixService
         this.mFalkorAgent = new FalkorAgent();
         this.mFalkorAccess = new FalkorAccess(this.mFalkorAgent, this.mClientCallbacks);
         this.mPreAppAgent = new PreAppAgent();
+        this.mErrorAgent = new ErrorAgent();
+        this.mVoipAgent = new WhistleVoipAgent(this.getApplicationContext(), this.mUserAgent);
         this.init();
     }
     
@@ -545,6 +569,9 @@ public final class NetflixService extends Service implements INetflixService
         }
         if (this.mDiagnosisAgent != null) {
             this.mDiagnosisAgent.destroy();
+        }
+        if (this.mVoipAgent != null) {
+            this.mVoipAgent.destroy();
         }
         NetflixService.isCreated = false;
         final int myPid = Process.myPid();

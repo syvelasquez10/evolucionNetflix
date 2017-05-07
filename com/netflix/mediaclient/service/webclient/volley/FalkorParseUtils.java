@@ -36,7 +36,7 @@ public class FalkorParseUtils
         try {
             asJsonObject = new JsonParser().parse(s2).getAsJsonObject();
             if (hasErrors(asJsonObject)) {
-                throw new FalkorServerException(getErrorMessage(asJsonObject));
+                throw new FalkorServerException(getErrorMessage(asJsonObject, s));
             }
         }
         catch (Exception ex) {
@@ -46,9 +46,12 @@ public class FalkorParseUtils
         return asJsonObject.getAsJsonObject("value");
     }
     
-    public static String getErrorMessage(JsonObject asJsonObject) {
+    public static String getErrorMessage(JsonObject asJsonObject, final String s) {
         if (hasErrors(asJsonObject)) {
             asJsonObject = asJsonObject.getAsJsonObject("error");
+            if (Log.isLoggable()) {
+                Log.d(s, "json error object: " + asJsonObject);
+            }
             if (asJsonObject.has("message")) {
                 return asJsonObject.get("message").toString();
             }

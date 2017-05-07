@@ -35,7 +35,7 @@ public class VideoDetailsClickListener implements View$OnClickListener, View$OnL
     }
     
     public void onClick(final View view) {
-        final Object tag = view.getTag(2131427339);
+        final Object tag = view.getTag(2131623956);
         if (tag == null) {
             Log.w("VideoDetailsClickListener", "No video details for click listener to use");
             return;
@@ -50,7 +50,7 @@ public class VideoDetailsClickListener implements View$OnClickListener, View$OnL
     }
     
     public boolean onLongClick(final View view) {
-        final Object tag = view.getTag(2131427339);
+        final Object tag = view.getTag(2131623956);
         if (tag == null) {
             return false;
         }
@@ -62,12 +62,12 @@ public class VideoDetailsClickListener implements View$OnClickListener, View$OnL
         Log.v("VideoDetailsClickListener", "Removing click listeners");
         view.setOnClickListener((View$OnClickListener)null);
         view.setOnLongClickListener((View$OnLongClickListener)null);
-        view.setTag(2131427339, (Object)null);
+        view.setTag(2131623956, (Object)null);
     }
     
     public void update(final View view, final Video video, final PressedStateHandler pressedStateHandler) {
         view.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(pressedStateHandler, (View$OnClickListener)this));
         view.setOnLongClickListener((View$OnLongClickListener)this);
-        view.setTag(2131427339, (Object)video);
+        view.setTag(2131623956, (Object)video);
     }
 }

@@ -46,7 +46,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     protected RecyclerView recyclerView;
     private long requestId;
     private int targetScrollYOffset;
-    private String videoId;
+    protected String videoId;
     
     public MovieDetailsFrag() {
         this.isLoading = true;
@@ -68,7 +68,14 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         return movieDetailsFrag;
     }
     
-    private void fetchMovieData() {
+    private void scrollTo(final int n) {
+        if (this.primaryView != null) {
+            Log.v("MovieDetailsFrag", "Posting scroll to mdp frag, offset: " + n);
+            this.primaryView.post((Runnable)new MovieDetailsFrag$5(this, n));
+        }
+    }
+    
+    protected void fetchMovieData() {
         final ServiceManager serviceManager = this.getServiceManager();
         if (serviceManager == null || !serviceManager.isReady()) {
             Log.w("MovieDetailsFrag", "Manager is null/notReady - can't reload data");
@@ -78,13 +85,6 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         this.requestId = System.nanoTime();
         Log.v("MovieDetailsFrag", "Fetching data for movie ID: " + this.videoId);
         serviceManager.getBrowse().fetchMovieDetails(this.videoId, new MovieDetailsFrag$FetchMovieDetailsCallback(this, this.requestId));
-    }
-    
-    private void scrollTo(final int n) {
-        if (this.primaryView != null) {
-            Log.v("MovieDetailsFrag", "Posting scroll to mdp frag, offset: " + n);
-            this.primaryView.post((Runnable)new MovieDetailsFrag$5(this, n));
-        }
     }
     
     protected void findViews(final View view) {
@@ -98,7 +98,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     
     @Override
     protected int getLayoutId() {
-        return 2130903181;
+        return 2130903214;
     }
     
     public int getScrollYOffset() {
@@ -153,7 +153,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     @Override
     public void onResume() {
         super.onResume();
-        ((SimilarItemsGridViewAdapter)this.adapter).refreshImagesIfNecessary();
+        SimilarItemsGridViewAdapter.refreshImagesIfNecessary(this.recyclerView);
     }
     
     @Override
@@ -174,7 +174,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(null, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, this.recyclerView.getResources().getColor(2131230829), 0, null);
+                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(null, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, this.recyclerView.getResources().getColor(2131558586), 0, null);
                 this.recyclerView.setOnScrollListener(onScrollListener);
                 return onScrollListener;
             }
@@ -194,14 +194,14 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     }
     
     protected void setupRecyclerViewAdapter() {
-        this.adapter = new SimilarItemsGridViewAdapter(this.recyclerView, true, this.numColumns, new MovieDetailsFrag$2(this));
+        this.adapter = new SimilarItemsGridViewAdapter(true, this.numColumns, new MovieDetailsFrag$2(this));
         this.addCopyrightAsFooter();
         this.adapter.addHeaderView((View)this.detailsViewGroup);
         this.recyclerView.setAdapter(this.adapter);
     }
     
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296342), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296462), this.numColumns));
     }
     
     protected void setupRecyclerViewLayoutManager() {
@@ -214,7 +214,12 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     protected void showDetailsView(final MovieDetails movieDetails) {
         super.showDetailsView(movieDetails);
         this.adapter.setTrackable(new TrackableObject(movieDetails.getSimilarsRequestId(), movieDetails.getSimilarsTrackId(), movieDetails.getSimilarsListPos()));
-        this.adapter.setItems(movieDetails.getSimilars());
+        if (movieDetails.getSimilars().size() != 0) {
+            this.adapter.setItems(movieDetails.getSimilars());
+        }
+        else if (this.getVideoDetailsViewGroup() != null) {
+            this.getVideoDetailsViewGroup().hideRelatedTitle();
+        }
         if (this.recyclerView != null) {
             this.recyclerView.setVisibility(0);
         }

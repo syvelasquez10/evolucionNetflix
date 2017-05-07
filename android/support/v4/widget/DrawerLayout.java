@@ -17,15 +17,17 @@ import android.graphics.Canvas;
 import android.view.MotionEvent;
 import android.os.SystemClock;
 import android.view.ViewGroup$LayoutParams;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewGroupCompat;
 import android.support.v4.view.AccessibilityDelegateCompat;
-import android.view.View;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.os.Build$VERSION;
 import android.graphics.drawable.Drawable;
 import android.graphics.Paint;
+import android.view.View;
+import java.util.ArrayList;
 import android.view.ViewGroup;
 
 public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
@@ -33,10 +35,12 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
     private static final boolean CAN_HIDE_DESCENDANTS;
     static final DrawerLayout$DrawerLayoutCompatImpl IMPL;
     private static final int[] LAYOUT_ATTRS;
+    private static final boolean SET_DRAWER_SHADOW_FROM_ELEVATION;
     private final DrawerLayout$ChildAccessibilityDelegate mChildAccessibilityDelegate;
     private boolean mChildrenCanceledTouch;
     private boolean mDisallowInterceptRequested;
     private boolean mDrawStatusBarBackground;
+    private float mDrawerElevation;
     private int mDrawerState;
     private boolean mFirstLayout;
     private boolean mInLayout;
@@ -49,24 +53,27 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
     private int mLockModeLeft;
     private int mLockModeRight;
     private int mMinDrawerMargin;
+    private final ArrayList<View> mNonDrawerViews;
     private final DrawerLayout$ViewDragCallback mRightCallback;
     private final ViewDragHelper mRightDragger;
     private int mScrimColor;
     private float mScrimOpacity;
     private Paint mScrimPaint;
+    private Drawable mShadowEnd;
     private Drawable mShadowLeft;
+    private Drawable mShadowLeftResolved;
     private Drawable mShadowRight;
+    private Drawable mShadowRightResolved;
+    private Drawable mShadowStart;
     private Drawable mStatusBarBackground;
     private CharSequence mTitleLeft;
     private CharSequence mTitleRight;
     
     static {
-        boolean can_HIDE_DESCENDANTS = true;
+        final boolean b = true;
         LAYOUT_ATTRS = new int[] { 16842931 };
-        if (Build$VERSION.SDK_INT < 19) {
-            can_HIDE_DESCENDANTS = false;
-        }
-        CAN_HIDE_DESCENDANTS = can_HIDE_DESCENDANTS;
+        CAN_HIDE_DESCENDANTS = (Build$VERSION.SDK_INT >= 19);
+        SET_DRAWER_SHADOW_FROM_ELEVATION = (Build$VERSION.SDK_INT >= 21 && b);
         if (Build$VERSION.SDK_INT >= 21) {
             IMPL = new DrawerLayout$DrawerLayoutCompatImplApi21();
             return;
@@ -88,10 +95,14 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
         this.mScrimColor = -1728053248;
         this.mScrimPaint = new Paint();
         this.mFirstLayout = true;
+        this.mShadowStart = null;
+        this.mShadowEnd = null;
+        this.mShadowLeft = null;
+        this.mShadowRight = null;
         this.setDescendantFocusability(262144);
         final float density = this.getResources().getDisplayMetrics().density;
         this.mMinDrawerMargin = (int)(64.0f * density + 0.5f);
-        final float n2 = density * 400.0f;
+        final float n2 = 400.0f * density;
         this.mLeftCallback = new DrawerLayout$ViewDragCallback(this, 3);
         this.mRightCallback = new DrawerLayout$ViewDragCallback(this, 5);
         (this.mLeftDragger = ViewDragHelper.create(this, 1.0f, this.mLeftCallback)).setEdgeTrackingEnabled(1);
@@ -106,7 +117,10 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
         ViewGroupCompat.setMotionEventSplittingEnabled(this, false);
         if (ViewCompat.getFitsSystemWindows((View)this)) {
             DrawerLayout.IMPL.configureApplyInsets((View)this);
+            this.mStatusBarBackground = DrawerLayout.IMPL.getDefaultStatusBarBackground(context);
         }
+        this.mDrawerElevation = density * 10.0f;
+        this.mNonDrawerViews = new ArrayList<View>();
     }
     
     private View findVisibleDrawer() {
@@ -159,6 +173,52 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
         return ViewCompat.getImportantForAccessibility(view) != 4 && ViewCompat.getImportantForAccessibility(view) != 2;
     }
     
+    private boolean mirror(final Drawable drawable, final int n) {
+        if (drawable == null || !DrawableCompat.isAutoMirrored(drawable)) {
+            return false;
+        }
+        DrawableCompat.setLayoutDirection(drawable, n);
+        return true;
+    }
+    
+    private Drawable resolveLeftShadow() {
+        final int layoutDirection = ViewCompat.getLayoutDirection((View)this);
+        if (layoutDirection == 0) {
+            if (this.mShadowStart != null) {
+                this.mirror(this.mShadowStart, layoutDirection);
+                return this.mShadowStart;
+            }
+        }
+        else if (this.mShadowEnd != null) {
+            this.mirror(this.mShadowEnd, layoutDirection);
+            return this.mShadowEnd;
+        }
+        return this.mShadowLeft;
+    }
+    
+    private Drawable resolveRightShadow() {
+        final int layoutDirection = ViewCompat.getLayoutDirection((View)this);
+        if (layoutDirection == 0) {
+            if (this.mShadowEnd != null) {
+                this.mirror(this.mShadowEnd, layoutDirection);
+                return this.mShadowEnd;
+            }
+        }
+        else if (this.mShadowStart != null) {
+            this.mirror(this.mShadowStart, layoutDirection);
+            return this.mShadowStart;
+        }
+        return this.mShadowRight;
+    }
+    
+    private void resolveShadowDrawables() {
+        if (DrawerLayout.SET_DRAWER_SHADOW_FROM_ELEVATION) {
+            return;
+        }
+        this.mShadowLeftResolved = this.resolveLeftShadow();
+        this.mShadowRightResolved = this.resolveRightShadow();
+    }
+    
     private void updateChildrenImportantForAccessibility(final View view, final boolean b) {
         for (int childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
             final View child = this.getChildAt(i);
@@ -169,6 +229,38 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
                 ViewCompat.setImportantForAccessibility(child, 4);
             }
         }
+    }
+    
+    public void addFocusables(final ArrayList<View> list, final int n, final int n2) {
+        final int n3 = 0;
+        if (this.getDescendantFocusability() == 393216) {
+            return;
+        }
+        final int childCount = this.getChildCount();
+        int i = 0;
+        boolean b = false;
+        while (i < childCount) {
+            final View child = this.getChildAt(i);
+            if (this.isDrawerView(child)) {
+                if (this.isDrawerOpen(child)) {
+                    b = true;
+                    child.addFocusables((ArrayList)list, n, n2);
+                }
+            }
+            else {
+                this.mNonDrawerViews.add(child);
+            }
+            ++i;
+        }
+        if (!b) {
+            for (int size = this.mNonDrawerViews.size(), j = n3; j < size; ++j) {
+                final View view = this.mNonDrawerViews.get(j);
+                if (view.getVisibility() == 0) {
+                    view.addFocusables((ArrayList)list, n, n2);
+                }
+            }
+        }
+        this.mNonDrawerViews.clear();
     }
     
     public void addView(final View view, final int n, final ViewGroup$LayoutParams viewGroup$LayoutParams) {
@@ -308,6 +400,9 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
                 this.mListener.onDrawerOpened(view);
             }
             this.updateChildrenImportantForAccessibility(view, true);
+            if (this.hasWindowFocus()) {
+                this.sendAccessibilityEvent(32);
+            }
             view.requestFocus();
         }
     }
@@ -379,22 +474,22 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
             canvas.drawRect((float)n2, 0.0f, (float)n4, (float)this.getHeight(), this.mScrimPaint);
         }
         else {
-            if (this.mShadowLeft != null && this.checkDrawerViewAbsoluteGravity(view, 3)) {
-                final int intrinsicWidth = this.mShadowLeft.getIntrinsicWidth();
+            if (this.mShadowLeftResolved != null && this.checkDrawerViewAbsoluteGravity(view, 3)) {
+                final int intrinsicWidth = this.mShadowLeftResolved.getIntrinsicWidth();
                 final int right2 = view.getRight();
                 final float max = Math.max(0.0f, Math.min(right2 / this.mLeftDragger.getEdgeSize(), 1.0f));
-                this.mShadowLeft.setBounds(right2, view.getTop(), intrinsicWidth + right2, view.getBottom());
-                this.mShadowLeft.setAlpha((int)(255.0f * max));
-                this.mShadowLeft.draw(canvas);
+                this.mShadowLeftResolved.setBounds(right2, view.getTop(), intrinsicWidth + right2, view.getBottom());
+                this.mShadowLeftResolved.setAlpha((int)(255.0f * max));
+                this.mShadowLeftResolved.draw(canvas);
                 return drawChild;
             }
-            if (this.mShadowRight != null && this.checkDrawerViewAbsoluteGravity(view, 5)) {
-                final int intrinsicWidth2 = this.mShadowRight.getIntrinsicWidth();
+            if (this.mShadowRightResolved != null && this.checkDrawerViewAbsoluteGravity(view, 5)) {
+                final int intrinsicWidth2 = this.mShadowRightResolved.getIntrinsicWidth();
                 final int left2 = view.getLeft();
                 final float max2 = Math.max(0.0f, Math.min((this.getWidth() - left2) / this.mRightDragger.getEdgeSize(), 1.0f));
-                this.mShadowRight.setBounds(left2 - intrinsicWidth2, view.getTop(), left2, view.getBottom());
-                this.mShadowRight.setAlpha((int)(255.0f * max2));
-                this.mShadowRight.draw(canvas);
+                this.mShadowRightResolved.setBounds(left2 - intrinsicWidth2, view.getTop(), left2, view.getBottom());
+                this.mShadowRightResolved.setAlpha((int)(255.0f * max2));
+                this.mShadowRightResolved.draw(canvas);
                 return drawChild;
             }
         }
@@ -442,6 +537,13 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
         return (ViewGroup$LayoutParams)new DrawerLayout$LayoutParams(viewGroup$LayoutParams);
     }
     
+    public float getDrawerElevation() {
+        if (DrawerLayout.SET_DRAWER_SHADOW_FROM_ELEVATION) {
+            return this.mDrawerElevation;
+        }
+        return 0.0f;
+    }
+    
     public int getDrawerLockMode(final View view) {
         final int drawerViewAbsoluteGravity = this.getDrawerViewAbsoluteGravity(view);
         if (drawerViewAbsoluteGravity == 3) {
@@ -470,6 +572,10 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
     
     float getDrawerViewOffset(final View view) {
         return ((DrawerLayout$LayoutParams)view.getLayoutParams()).onScreen;
+    }
+    
+    public Drawable getStatusBarBackgroundDrawable() {
+        return this.mStatusBarBackground;
     }
     
     boolean isContentView(final View view) {
@@ -741,6 +847,9 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
                             if (!this.isDrawerView(child)) {
                                 throw new IllegalStateException("Child " + child + " at index " + i + " does not have a valid layout_gravity - must be Gravity.LEFT, " + "Gravity.RIGHT or Gravity.NO_GRAVITY");
                             }
+                            if (DrawerLayout.SET_DRAWER_SHADOW_FROM_ELEVATION && ViewCompat.getElevation(child) != this.mDrawerElevation) {
+                                ViewCompat.setElevation(child, this.mDrawerElevation);
+                            }
                             final int n7 = this.getDrawerViewAbsoluteGravity(child) & 0x7;
                             if ((0x0 & n7) != 0x0) {
                                 throw new IllegalStateException("Child drawer has absolute gravity " + gravityToString(n7) + " but this " + "DrawerLayout" + " already has a " + "drawer view along that edge");
@@ -768,6 +877,10 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
         }
         this.setDrawerLockMode(drawerLayout$SavedState.lockModeLeft, 3);
         this.setDrawerLockMode(drawerLayout$SavedState.lockModeRight, 5);
+    }
+    
+    public void onRtlPropertiesChanged(final int n) {
+        this.resolveShadowDrawables();
     }
     
     protected Parcelable onSaveInstanceState() {
@@ -881,6 +994,16 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
         this.requestLayout();
     }
     
+    public void setDrawerElevation(final float mDrawerElevation) {
+        this.mDrawerElevation = mDrawerElevation;
+        for (int i = 0; i < this.getChildCount(); ++i) {
+            final View child = this.getChildAt(i);
+            if (this.isDrawerView(child)) {
+                ViewCompat.setElevation(child, this.mDrawerElevation);
+            }
+        }
+    }
+    
     public void setDrawerListener(final DrawerLayout$DrawerListener mListener) {
         this.mListener = mListener;
     }
@@ -950,14 +1073,17 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
             drawable = null;
         }
         this.mStatusBarBackground = drawable;
+        this.invalidate();
     }
     
     public void setStatusBarBackground(final Drawable mStatusBarBackground) {
         this.mStatusBarBackground = mStatusBarBackground;
+        this.invalidate();
     }
     
     public void setStatusBarBackgroundColor(final int n) {
         this.mStatusBarBackground = (Drawable)new ColorDrawable(n);
+        this.invalidate();
     }
     
     void updateDrawerState(int mDrawerState, final int n, final View view) {

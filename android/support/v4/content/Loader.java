@@ -16,6 +16,7 @@ public class Loader<D>
     Context mContext;
     int mId;
     Loader$OnLoadCompleteListener<D> mListener;
+    Loader$OnLoadCanceledListener<D> mOnLoadCanceledListener;
     boolean mProcessingChange;
     boolean mReset;
     boolean mStarted;
@@ -32,6 +33,10 @@ public class Loader<D>
     public void abandon() {
         this.mAbandoned = true;
         this.onAbandon();
+    }
+    
+    public boolean cancelLoad() {
+        return this.onCancelLoad();
     }
     
     public String dataToString(final D n) {
@@ -86,6 +91,10 @@ public class Loader<D>
     protected void onAbandon() {
     }
     
+    protected boolean onCancelLoad() {
+        return false;
+    }
+    
     protected void onReset() {
     }
     
@@ -101,6 +110,13 @@ public class Loader<D>
         }
         this.mListener = mListener;
         this.mId = mId;
+    }
+    
+    public void registerOnLoadCanceledListener(final Loader$OnLoadCanceledListener<D> mOnLoadCanceledListener) {
+        if (this.mOnLoadCanceledListener != null) {
+            throw new IllegalStateException("There is already a listener registered");
+        }
+        this.mOnLoadCanceledListener = mOnLoadCanceledListener;
     }
     
     public void reset() {
@@ -142,5 +158,15 @@ public class Loader<D>
             throw new IllegalArgumentException("Attempting to unregister the wrong listener");
         }
         this.mListener = null;
+    }
+    
+    public void unregisterOnLoadCanceledListener(final Loader$OnLoadCanceledListener<D> loader$OnLoadCanceledListener) {
+        if (this.mOnLoadCanceledListener == null) {
+            throw new IllegalStateException("No listener register");
+        }
+        if (this.mOnLoadCanceledListener != loader$OnLoadCanceledListener) {
+            throw new IllegalArgumentException("Attempting to unregister the wrong listener");
+        }
+        this.mOnLoadCanceledListener = null;
     }
 }

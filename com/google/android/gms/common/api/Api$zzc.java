@@ -4,9 +4,6 @@
 
 package com.google.android.gms.common.api;
 
-public interface Api$zzc<T extends Api$zzb, O>
+public final class Api$zzc<C extends Api$zzb>
 {
-    T zzl(final O p0);
-    
-    int zzms();
 }

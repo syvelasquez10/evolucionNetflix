@@ -12,65 +12,65 @@ import android.os.Parcelable$Creator;
 
 public class zzb implements Parcelable$Creator<ProxyRequest>
 {
-    static void zza(final ProxyRequest proxyRequest, final Parcel parcel, int zzac) {
-        zzac = com.google.android.gms.common.internal.safeparcel.zzb.zzac(parcel);
-        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 1, proxyRequest.zzzf, false);
+    static void zza(final ProxyRequest proxyRequest, final Parcel parcel, int zzak) {
+        zzak = com.google.android.gms.common.internal.safeparcel.zzb.zzak(parcel);
+        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 1, proxyRequest.url, false);
         com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 1000, proxyRequest.versionCode);
-        com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 2, proxyRequest.zzPp);
-        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 3, proxyRequest.zzPq);
-        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 4, proxyRequest.zzPr, false);
-        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 5, proxyRequest.zzPs, false);
-        com.google.android.gms.common.internal.safeparcel.zzb.zzH(parcel, zzac);
+        com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 2, proxyRequest.httpMethod);
+        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 3, proxyRequest.timeoutMillis);
+        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 4, proxyRequest.body, false);
+        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 5, proxyRequest.zzRE, false);
+        com.google.android.gms.common.internal.safeparcel.zzb.zzH(parcel, zzak);
     }
     
-    public ProxyRequest zzH(final Parcel parcel) {
+    public ProxyRequest zzL(final Parcel parcel) {
         int zzg = 0;
         Bundle zzq = null;
-        final int zzab = zza.zzab(parcel);
+        final int zzaj = zza.zzaj(parcel);
         long zzi = 0L;
         byte[] zzr = null;
         String zzo = null;
         int zzg2 = 0;
-        while (parcel.dataPosition() < zzab) {
-            final int zzaa = zza.zzaa(parcel);
-            switch (zza.zzbA(zzaa)) {
+        while (parcel.dataPosition() < zzaj) {
+            final int zzai = zza.zzai(parcel);
+            switch (zza.zzbH(zzai)) {
                 default: {
-                    zza.zzb(parcel, zzaa);
+                    zza.zzb(parcel, zzai);
                     continue;
                 }
                 case 1: {
-                    zzo = zza.zzo(parcel, zzaa);
+                    zzo = zza.zzo(parcel, zzai);
                     continue;
                 }
                 case 1000: {
-                    zzg2 = zza.zzg(parcel, zzaa);
+                    zzg2 = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 2: {
-                    zzg = zza.zzg(parcel, zzaa);
+                    zzg = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 3: {
-                    zzi = zza.zzi(parcel, zzaa);
+                    zzi = zza.zzi(parcel, zzai);
                     continue;
                 }
                 case 4: {
-                    zzr = zza.zzr(parcel, zzaa);
+                    zzr = zza.zzr(parcel, zzai);
                     continue;
                 }
                 case 5: {
-                    zzq = zza.zzq(parcel, zzaa);
+                    zzq = zza.zzq(parcel, zzai);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzab) {
-            throw new zza$zza("Overread allowed size end=" + zzab, parcel);
+        if (parcel.dataPosition() != zzaj) {
+            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
         }
         return new ProxyRequest(zzg2, zzo, zzg, zzi, zzr, zzq);
     }
     
-    public ProxyRequest[] zzax(final int n) {
+    public ProxyRequest[] zzaB(final int n) {
         return new ProxyRequest[n];
     }
 }

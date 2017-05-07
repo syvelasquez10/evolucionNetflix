@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.details;
 
 import java.util.Collection;
+import android.support.v4.content.ContextCompat;
 import com.netflix.mediaclient.Log;
 import android.widget.TextView;
 import android.view.View;
@@ -38,7 +39,7 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         if (viewGroup == null) {
             return;
         }
-        viewGroup.setId(2131427348);
+        viewGroup.setId(2131623952);
     }
     
     public int getCount() {
@@ -87,12 +88,13 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         textView.setTag((Object)item.getSeasonNumber());
         textView.setText((CharSequence)item.getSeasonNumberTitle(this.context));
         if (viewGroup instanceof SeasonsSpinner) {
-            itemBackgroundResource = 2131230820;
+            itemBackgroundResource = 2131558590;
         }
         else {
             itemBackgroundResource = this.itemBackgroundResource;
         }
         textView.setBackgroundResource(itemBackgroundResource);
+        textView.setTextColor(ContextCompat.getColor(viewGroup.getContext(), 2131558559));
         return (View)textView;
     }
     

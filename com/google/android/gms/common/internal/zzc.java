@@ -15,46 +15,46 @@ import android.os.Parcelable$Creator;
 public class zzc implements Parcelable$Creator<AuthAccountRequest>
 {
     static void zza(final AuthAccountRequest authAccountRequest, final Parcel parcel, final int n) {
-        final int zzac = zzb.zzac(parcel);
-        zzb.zzc(parcel, 1, authAccountRequest.zzCY);
-        zzb.zza(parcel, 2, authAccountRequest.zzZN, false);
-        zzb.zza(parcel, 3, authAccountRequest.zzZO, n, false);
-        zzb.zzH(parcel, zzac);
+        final int zzak = zzb.zzak(parcel);
+        zzb.zzc(parcel, 1, authAccountRequest.mVersionCode);
+        zzb.zza(parcel, 2, authAccountRequest.zzacC, false);
+        zzb.zza(parcel, 3, authAccountRequest.zzacD, n, false);
+        zzb.zzH(parcel, zzak);
     }
     
-    public AuthAccountRequest zzU(final Parcel parcel) {
+    public AuthAccountRequest zzac(final Parcel parcel) {
         Scope[] array = null;
-        final int zzab = zza.zzab(parcel);
+        final int zzaj = zza.zzaj(parcel);
         int zzg = 0;
         IBinder zzp = null;
-        while (parcel.dataPosition() < zzab) {
-            final int zzaa = zza.zzaa(parcel);
-            switch (zza.zzbA(zzaa)) {
+        while (parcel.dataPosition() < zzaj) {
+            final int zzai = zza.zzai(parcel);
+            switch (zza.zzbH(zzai)) {
                 default: {
-                    zza.zzb(parcel, zzaa);
+                    zza.zzb(parcel, zzai);
                     continue;
                 }
                 case 1: {
-                    zzg = zza.zzg(parcel, zzaa);
+                    zzg = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 2: {
-                    zzp = zza.zzp(parcel, zzaa);
+                    zzp = zza.zzp(parcel, zzai);
                     continue;
                 }
                 case 3: {
-                    array = zza.zzb(parcel, zzaa, Scope.CREATOR);
+                    array = zza.zzb(parcel, zzai, Scope.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzab) {
-            throw new zza$zza("Overread allowed size end=" + zzab, parcel);
+        if (parcel.dataPosition() != zzaj) {
+            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
         }
         return new AuthAccountRequest(zzg, zzp, array);
     }
     
-    public AuthAccountRequest[] zzbp(final int n) {
+    public AuthAccountRequest[] zzbw(final int n) {
         return new AuthAccountRequest[n];
     }
 }

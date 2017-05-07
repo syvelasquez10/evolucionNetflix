@@ -21,18 +21,18 @@ public abstract class CurrentTime extends PlayerSection
     protected TextView currentTimeLabel;
     protected AtomicBoolean mBifDownloaded;
     
-    CurrentTime(final PlayerActivity playerActivity) {
-        super(playerActivity);
+    CurrentTime(final PlayerFragment playerFragment) {
+        super(playerFragment);
         this.mBifDownloaded = new AtomicBoolean(false);
-        this.currentTime = playerActivity.findViewById(2131427723);
-        this.currentTimeLabel = (TextView)playerActivity.findViewById(2131427724);
+        this.currentTime = playerFragment.getView().findViewById(2131624418);
+        this.currentTimeLabel = (TextView)playerFragment.getView().findViewById(2131624419);
     }
     
-    static CurrentTime newInstance(final PlayerActivity playerActivity) {
-        if (playerActivity.isTablet()) {
-            return new CurrentTimeTablet(playerActivity);
+    static CurrentTime newInstance(final PlayerFragment playerFragment) {
+        if (playerFragment.getNetflixActivity().isTablet()) {
+            return new CurrentTimeTablet(playerFragment);
         }
-        return new CurrentTimePhone(playerActivity);
+        return new CurrentTimePhone(playerFragment);
     }
     
     @Override
@@ -54,14 +54,14 @@ public abstract class CurrentTime extends PlayerSection
     }
     
     protected void restorePlaybackIfSnapOnExit() {
-        if (this.context.getState().getTimelineExitOnSnap()) {
-            this.context.restorePlaybackAfterSnap();
-            this.context.getState().setDraggingInProgress(false);
-            if (!this.context.isTablet()) {
-                this.context.getScreen().stopBif();
+        if (this.playerFragment.getState().getTimelineExitOnSnap()) {
+            this.playerFragment.restorePlaybackAfterSnap();
+            this.playerFragment.getState().setDraggingInProgress(false);
+            if (!this.playerFragment.getNetflixActivity().isTablet()) {
+                this.playerFragment.getScreen().stopBif();
             }
         }
-        this.context.getState().setTimelineExitOnSnap(false);
+        this.playerFragment.getState().setTimelineExitOnSnap(false);
     }
     
     public void setBifDownloaded(final boolean b) {
@@ -79,7 +79,7 @@ public abstract class CurrentTime extends PlayerSection
     public abstract void stop(final boolean p0);
     
     public void updateCurrentTime() {
-        final BottomPanel bottomPanel = this.context.getScreen().getBottomPanel();
+        final BottomPanel bottomPanel = this.playerFragment.getScreen().getBottomPanel();
         this.updateText("screen", this.currentTimeLabel, "currentTimeLabel", bottomPanel.getFormatter().getStringForMs(bottomPanel.getCurrentProgress()));
         this.updateTimeMargins();
     }

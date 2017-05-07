@@ -14,22 +14,22 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class AuthAccountRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<AuthAccountRequest> CREATOR;
-    final int zzCY;
-    final IBinder zzZN;
-    final Scope[] zzZO;
+    final int mVersionCode;
+    final IBinder zzacC;
+    final Scope[] zzacD;
     
     static {
         CREATOR = (Parcelable$Creator)new zzc();
     }
     
-    AuthAccountRequest(final int zzCY, final IBinder zzZN, final Scope[] zzZO) {
-        this.zzCY = zzCY;
-        this.zzZN = zzZN;
-        this.zzZO = zzZO;
+    AuthAccountRequest(final int mVersionCode, final IBinder zzacC, final Scope[] zzacD) {
+        this.mVersionCode = mVersionCode;
+        this.zzacC = zzacC;
+        this.zzacD = zzacD;
     }
     
-    public AuthAccountRequest(final IAccountAccessor accountAccessor, final Set<Scope> set) {
-        this(1, accountAccessor.asBinder(), set.toArray(new Scope[set.size()]));
+    public AuthAccountRequest(final zzp zzp, final Set<Scope> set) {
+        this(1, zzp.asBinder(), set.toArray(new Scope[set.size()]));
     }
     
     public int describeContents() {

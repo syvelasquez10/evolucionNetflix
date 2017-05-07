@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.player.subtitles;
 
 import com.netflix.mediaclient.service.player.subtitles.image.ImageSubtitleParser;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
@@ -21,7 +22,7 @@ import android.view.View;
 import android.widget.RelativeLayout$LayoutParams;
 import android.content.Context;
 import java.util.HashMap;
-import com.netflix.mediaclient.ui.player.PlayerActivity;
+import com.netflix.mediaclient.ui.player.PlayerFragment;
 import android.widget.ImageView;
 import java.util.Map;
 import android.widget.RelativeLayout;

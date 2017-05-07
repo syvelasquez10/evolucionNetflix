@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.ViewUtils$Visibility;
+import android.view.View;
 import com.netflix.mediaclient.Log;
 import android.view.TextureView;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView;
@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 public class VideoWindowForPostplayFullScreen implements VideoWindowForPostplay
 {
     protected static String TAG;
-    protected PlayerActivity mContext;
+    protected PlayerFragment mContext;
     protected RelativeLayout mParent;
     protected TappableSurfaceView mSurface;
     protected TextureView mSurface2;
@@ -24,11 +24,12 @@ public class VideoWindowForPostplayFullScreen implements VideoWindowForPostplay
         VideoWindowForPostplayFullScreen.TAG = "nf_postplay";
     }
     
-    public VideoWindowForPostplayFullScreen(final PlayerActivity mContext) {
+    public VideoWindowForPostplayFullScreen(final PlayerFragment mContext) {
         this.mContext = mContext;
-        this.mSurface = (TappableSurfaceView)mContext.findViewById(2131427703);
-        this.mSurface2 = (TextureView)mContext.findViewById(2131427708);
-        this.mParent = (RelativeLayout)mContext.findViewById(2131427519);
+        final View view = this.mContext.getView();
+        this.mSurface = (TappableSurfaceView)view.findViewById(2131624399);
+        this.mSurface2 = (TextureView)view.findViewById(2131624404);
+        this.mParent = (RelativeLayout)view.findViewById(2131624193);
         if (this.mSurface == null) {
             Log.w(VideoWindowForPostplayFullScreen.TAG, "PostPlayWithScaling:: surface not found");
         }

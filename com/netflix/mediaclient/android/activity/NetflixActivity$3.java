@@ -4,12 +4,12 @@
 
 package com.netflix.mediaclient.android.activity;
 
-import android.app.Activity;
-import com.netflix.mediaclient.ui.settings.AboutActivity;
-import android.view.MenuItem;
-import android.view.MenuItem$OnMenuItemClickListener;
+import com.netflix.mediaclient.Log;
+import android.content.Intent;
+import android.content.Context;
+import android.content.BroadcastReceiver;
 
-class NetflixActivity$3 implements MenuItem$OnMenuItemClickListener
+class NetflixActivity$3 extends BroadcastReceiver
 {
     final /* synthetic */ NetflixActivity this$0;
     
@@ -17,8 +17,10 @@ class NetflixActivity$3 implements MenuItem$OnMenuItemClickListener
         this.this$0 = this$0;
     }
     
-    public boolean onMenuItemClick(final MenuItem menuItem) {
-        this.this$0.startActivity(AboutActivity.createStartIntent(this.this$0));
-        return true;
+    public void onReceive(final Context context, final Intent intent) {
+        if (Log.isLoggable()) {
+            Log.v("NetflixActivity", "Finishing activity " + this.this$0.getClass().getSimpleName() + " from intent: " + intent.getAction());
+        }
+        this.this$0.finish();
     }
 }

@@ -25,7 +25,6 @@ import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.widget.GridView;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.app.Activity;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
@@ -54,6 +53,6 @@ class AvatarsGridActivity$AvatarsFetchedCallback extends SimpleManagerCallback
             this.this$0.updateUI();
             return;
         }
-        this.this$0.handleUserAgentErrors(this.this$0, status);
+        this.this$0.handleUserAgentErrors(status);
     }
 }

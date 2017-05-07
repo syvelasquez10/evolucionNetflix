@@ -9,14 +9,14 @@ import android.os.IBinder;
 
 class zzav$zza$zza implements zzav
 {
-    private IBinder zznF;
+    private IBinder zznI;
     
-    zzav$zza$zza(final IBinder zznF) {
-        this.zznF = zznF;
+    zzav$zza$zza(final IBinder zznI) {
+        this.zznI = zznI;
     }
     
     public IBinder asBinder() {
-        return this.zznF;
+        return this.zznI;
     }
     
     @Override
@@ -25,7 +25,7 @@ class zzav$zza$zza implements zzav
         final Parcel obtain2 = Parcel.obtain();
         try {
             obtain.writeInterfaceToken("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
-            this.zznF.transact(1, obtain, obtain2, 0);
+            this.zznI.transact(1, obtain, obtain2, 0);
             obtain2.readException();
             return obtain2.readString();
         }
@@ -47,7 +47,7 @@ class zzav$zza$zza implements zzav
                 n = 1;
             }
             obtain.writeInt(n);
-            this.zznF.transact(4, obtain, obtain2, 0);
+            this.zznI.transact(4, obtain, obtain2, 0);
             obtain2.readException();
         }
         finally {
@@ -71,7 +71,7 @@ class zzav$zza$zza implements zzav
                 n = 0;
             }
             obtain.writeInt(n);
-            this.zznF.transact(2, obtain, obtain2, 0);
+            this.zznI.transact(2, obtain, obtain2, 0);
             obtain2.readException();
             return obtain2.readInt() != 0 && b2;
         }
@@ -88,7 +88,7 @@ class zzav$zza$zza implements zzav
         try {
             obtain.writeInterfaceToken("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
             obtain.writeString(string);
-            this.zznF.transact(3, obtain, obtain2, 0);
+            this.zznI.transact(3, obtain, obtain2, 0);
             obtain2.readException();
             string = obtain2.readString();
             return string;

@@ -5,19 +5,18 @@
 package android.support.v7.widget;
 
 import android.text.TextUtils$TruncateAt;
-import android.support.v4.view.MotionEventCompat;
-import android.view.MotionEvent;
+import android.view.ContextThemeWrapper;
+import android.os.Build$VERSION;
 import android.view.MenuItem;
 import android.support.v4.view.MenuItemCompat;
 import android.os.Parcelable;
 import android.support.v7.internal.widget.ViewUtils;
+import android.support.v4.view.MotionEventCompat;
+import android.view.MotionEvent;
 import android.support.v7.internal.widget.DecorToolbar;
 import android.view.Menu;
 import android.support.v7.app.ActionBar$LayoutParams;
-import android.content.res.TypedArray;
-import android.view.ContextThemeWrapper;
 import android.view.View$MeasureSpec;
-import android.os.Build$VERSION;
 import android.support.v7.internal.view.SupportMenuInflater;
 import android.view.MenuInflater;
 import android.support.v4.view.MarginLayoutParamsCompat;
@@ -33,10 +32,10 @@ import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
 import android.support.v7.internal.widget.ToolbarWidgetWrapper;
 import android.support.v7.internal.widget.TintManager;
-import java.util.ArrayList;
 import android.widget.TextView;
 import android.support.v7.internal.view.menu.j;
 import android.widget.ImageView;
+import java.util.ArrayList;
 import android.support.v7.internal.widget.RtlSpacingHelper;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageButton;
@@ -69,7 +68,7 @@ class Toolbar$ExpandedActionViewMenuPresenter implements x
         this.this$0.removeView(this.this$0.mExpandedActionView);
         this.this$0.removeView((View)this.this$0.mCollapseButtonView);
         this.this$0.mExpandedActionView = null;
-        this.this$0.setChildVisibilityForExpandedActionView(false);
+        this.this$0.addChildrenForExpandedActionView();
         this.mCurrentExpandedItem = null;
         this.this$0.requestLayout();
         m.e(false);
@@ -91,7 +90,7 @@ class Toolbar$ExpandedActionViewMenuPresenter implements x
             this.this$0.mExpandedActionView.setLayoutParams((ViewGroup$LayoutParams)generateDefaultLayoutParams);
             this.this$0.addView(this.this$0.mExpandedActionView);
         }
-        this.this$0.setChildVisibilityForExpandedActionView(true);
+        this.this$0.removeChildrenForExpandedActionView();
         this.this$0.requestLayout();
         mCurrentExpandedItem.e(true);
         if (this.this$0.mExpandedActionView instanceof CollapsibleActionView) {

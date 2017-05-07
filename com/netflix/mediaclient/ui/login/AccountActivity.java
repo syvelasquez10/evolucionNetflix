@@ -42,12 +42,12 @@ public abstract class AccountActivity extends NetflixActivity
     }
     
     @Override
-    protected boolean showSettingsInMenu() {
+    public boolean showSettingsInMenu() {
         return false;
     }
     
     @Override
-    protected boolean showSignOutInMenu() {
+    public boolean showSignOutInMenu() {
         return false;
     }
 }

@@ -4,26 +4,26 @@
 
 package android.support.v4.app;
 
-import android.os.Build$VERSION;
+import android.support.v4.util.SimpleArrayMap;
 import java.io.FileDescriptor;
 import java.io.Writer;
 import java.io.PrintWriter;
 import android.support.v4.util.LogWriter;
 import android.util.Log;
 import android.view.ViewTreeObserver$OnPreDrawListener;
-import android.support.v4.util.SimpleArrayMap;
 import android.view.ViewGroup;
 import java.util.Map;
 import java.util.List;
 import java.util.Collection;
-import android.content.Context;
 import android.util.SparseArray;
 import android.view.View;
 import android.support.v4.util.ArrayMap;
+import android.os.Build$VERSION;
 import java.util.ArrayList;
 
 final class BackStackRecord extends FragmentTransaction implements Runnable
 {
+    static final boolean SUPPORTS_TRANSITIONS;
     boolean mAddToBackStack;
     boolean mAllowAddToBackStack;
     int mBreadCrumbShortTitleRes;
@@ -46,6 +46,10 @@ final class BackStackRecord extends FragmentTransaction implements Runnable
     int mTransition;
     int mTransitionStyle;
     
+    static {
+        SUPPORTS_TRANSITIONS = (Build$VERSION.SDK_INT >= 21);
+    }
+    
     public BackStackRecord(final FragmentManagerImpl mManager) {
         this.mAllowAddToBackStack = true;
         this.mIndex = -1;
@@ -55,7 +59,7 @@ final class BackStackRecord extends FragmentTransaction implements Runnable
     private BackStackRecord$TransitionState beginTransition(final SparseArray<Fragment> sparseArray, final SparseArray<Fragment> sparseArray2, final boolean b) {
         final int n = 0;
         final BackStackRecord$TransitionState backStackRecord$TransitionState = new BackStackRecord$TransitionState(this);
-        backStackRecord$TransitionState.nonExistentView = new View((Context)this.mManager.mActivity);
+        backStackRecord$TransitionState.nonExistentView = new View(this.mManager.mHost.getContext());
         int n2 = 0;
         int n3 = 0;
         int i;
@@ -91,7 +95,7 @@ final class BackStackRecord extends FragmentTransaction implements Runnable
     }
     
     private void calculateFragments(final SparseArray<Fragment> sparseArray, final SparseArray<Fragment> sparseArray2) {
-        if (this.mManager.mContainer.hasView()) {
+        if (this.mManager.mContainer.onHasView()) {
             for (BackStackRecord$Op backStackRecord$Op = this.mHead; backStackRecord$Op != null; backStackRecord$Op = backStackRecord$Op.next) {
                 switch (backStackRecord$Op.cmd) {
                     case 1: {
@@ -110,11 +114,11 @@ final class BackStackRecord extends FragmentTransaction implements Runnable
                                 }
                                 final Fragment fragment3 = this.mManager.mAdded.get(n);
                                 Fragment fragment4 = null;
-                                Label_0184: {
+                                Label_0180: {
                                     if (fragment != null) {
                                         fragment4 = fragment;
                                         if (fragment3.mContainerId != fragment.mContainerId) {
-                                            break Label_0184;
+                                            break Label_0180;
                                         }
                                     }
                                     if (fragment3 == fragment) {
@@ -173,86 +177,88 @@ final class BackStackRecord extends FragmentTransaction implements Runnable
         }
     }
     
-    private static Object captureExitingViews(final Object o, final Fragment fragment, final ArrayList<View> list, final ArrayMap<String, View> arrayMap) {
+    private static Object captureExitingViews(final Object o, final Fragment fragment, final ArrayList<View> list, final ArrayMap<String, View> arrayMap, final View view) {
         Object captureExitingViews = o;
         if (o != null) {
-            captureExitingViews = FragmentTransitionCompat21.captureExitingViews(o, fragment.getView(), list, arrayMap);
+            captureExitingViews = FragmentTransitionCompat21.captureExitingViews(o, fragment.getView(), list, arrayMap, view);
         }
         return captureExitingViews;
     }
     
     private boolean configureTransitions(final int n, final BackStackRecord$TransitionState backStackRecord$TransitionState, final boolean b, final SparseArray<Fragment> sparseArray, final SparseArray<Fragment> sparseArray2) {
-        final ViewGroup viewGroup = (ViewGroup)this.mManager.mContainer.findViewById(n);
+        final ViewGroup viewGroup = (ViewGroup)this.mManager.mContainer.onFindViewById(n);
         if (viewGroup == null) {
             return false;
         }
         final Fragment fragment = (Fragment)sparseArray2.get(n);
         final Fragment fragment2 = (Fragment)sparseArray.get(n);
         final Object enterTransition = getEnterTransition(fragment, b);
-        final Object sharedElementTransition = getSharedElementTransition(fragment, fragment2, b);
+        Object sharedElementTransition = getSharedElementTransition(fragment, fragment2, b);
         final Object exitTransition = getExitTransition(fragment2, b);
-        if (enterTransition == null && sharedElementTransition == null && exitTransition == null) {
-            return false;
-        }
-        SimpleArrayMap<Object, View> simpleArrayMap = null;
+        Map<String, View> map = null;
         final ArrayList<View> list = new ArrayList<View>();
         if (sharedElementTransition != null) {
             final ArrayMap<String, View> remapSharedElements = this.remapSharedElements(backStackRecord$TransitionState, fragment2, b);
             if (remapSharedElements.isEmpty()) {
-                list.add(backStackRecord$TransitionState.nonExistentView);
+                map = null;
+                sharedElementTransition = null;
             }
             else {
-                list.addAll(remapSharedElements.values());
-            }
-            SharedElementCallback sharedElementCallback;
-            if (b) {
-                sharedElementCallback = fragment2.mEnterTransitionCallback;
-            }
-            else {
-                sharedElementCallback = fragment.mEnterTransitionCallback;
-            }
-            simpleArrayMap = (SimpleArrayMap<Object, View>)remapSharedElements;
-            if (sharedElementCallback != null) {
-                sharedElementCallback.onSharedElementStart(new ArrayList<String>(remapSharedElements.keySet()), new ArrayList<View>(remapSharedElements.values()), null);
-                simpleArrayMap = (SimpleArrayMap<Object, View>)remapSharedElements;
-            }
-        }
-        final ArrayList<View> list2 = new ArrayList<View>();
-        final Object captureExitingViews = captureExitingViews(exitTransition, fragment2, list2, (ArrayMap<String, View>)simpleArrayMap);
-        if (this.mSharedElementTargetNames != null && simpleArrayMap != null) {
-            final View view = simpleArrayMap.get(this.mSharedElementTargetNames.get(0));
-            if (view != null) {
-                if (captureExitingViews != null) {
-                    FragmentTransitionCompat21.setEpicenter(captureExitingViews, view);
+                SharedElementCallback sharedElementCallback;
+                if (b) {
+                    sharedElementCallback = fragment2.mEnterTransitionCallback;
                 }
-                if (sharedElementTransition != null) {
-                    FragmentTransitionCompat21.setEpicenter(sharedElementTransition, view);
+                else {
+                    sharedElementCallback = fragment.mEnterTransitionCallback;
                 }
+                if (sharedElementCallback != null) {
+                    sharedElementCallback.onSharedElementStart(new ArrayList<String>(remapSharedElements.keySet()), new ArrayList<View>(remapSharedElements.values()), null);
+                }
+                this.prepareSharedElementTransition(backStackRecord$TransitionState, (View)viewGroup, sharedElementTransition, fragment, fragment2, b, list);
+                map = remapSharedElements;
             }
         }
-        final BackStackRecord$1 backStackRecord$1 = new BackStackRecord$1(this, fragment);
-        if (sharedElementTransition != null) {
-            this.prepareSharedElementTransition(backStackRecord$TransitionState, (View)viewGroup, sharedElementTransition, fragment, fragment2, b, list);
+        while (true) {
+            if (enterTransition == null && sharedElementTransition == null && exitTransition == null) {
+                return false;
+            }
+            final ArrayList<View> list2 = new ArrayList<View>();
+            final Object captureExitingViews = captureExitingViews(exitTransition, fragment2, list2, (ArrayMap<String, View>)map, backStackRecord$TransitionState.nonExistentView);
+            if (this.mSharedElementTargetNames != null && map != null) {
+                final View view = ((SimpleArrayMap<Object, View>)map).get(this.mSharedElementTargetNames.get(0));
+                if (view != null) {
+                    if (captureExitingViews != null) {
+                        FragmentTransitionCompat21.setEpicenter(captureExitingViews, view);
+                    }
+                    if (sharedElementTransition != null) {
+                        FragmentTransitionCompat21.setEpicenter(sharedElementTransition, view);
+                    }
+                }
+            }
+            final BackStackRecord$1 backStackRecord$1 = new BackStackRecord$1(this, fragment);
+            final ArrayList<View> list3 = new ArrayList<View>();
+            final ArrayMap<String, View> arrayMap = new ArrayMap<String, View>();
+            boolean b2 = true;
+            if (fragment != null) {
+                if (b) {
+                    b2 = fragment.getAllowReturnTransitionOverlap();
+                }
+                else {
+                    b2 = fragment.getAllowEnterTransitionOverlap();
+                }
+            }
+            final Object mergeTransitions = FragmentTransitionCompat21.mergeTransitions(enterTransition, captureExitingViews, sharedElementTransition, b2);
+            if (mergeTransitions != null) {
+                FragmentTransitionCompat21.addTransitionTargets(enterTransition, sharedElementTransition, (View)viewGroup, backStackRecord$1, backStackRecord$TransitionState.nonExistentView, backStackRecord$TransitionState.enteringEpicenterView, backStackRecord$TransitionState.nameOverrides, list3, map, arrayMap, list);
+                this.excludeHiddenFragmentsAfterEnter((View)viewGroup, backStackRecord$TransitionState, n, mergeTransitions);
+                FragmentTransitionCompat21.excludeTarget(mergeTransitions, backStackRecord$TransitionState.nonExistentView, true);
+                this.excludeHiddenFragments(backStackRecord$TransitionState, n, mergeTransitions);
+                FragmentTransitionCompat21.beginDelayedTransition(viewGroup, mergeTransitions);
+                FragmentTransitionCompat21.cleanupTransitions((View)viewGroup, backStackRecord$TransitionState.nonExistentView, enterTransition, list3, captureExitingViews, list2, sharedElementTransition, list, mergeTransitions, backStackRecord$TransitionState.hiddenFragmentViews, arrayMap);
+            }
+            return mergeTransitions != null;
+            continue;
         }
-        final ArrayList<View> list3 = new ArrayList<View>();
-        final ArrayMap<String, View> arrayMap = new ArrayMap<String, View>();
-        boolean b2;
-        if (b) {
-            b2 = fragment.getAllowReturnTransitionOverlap();
-        }
-        else {
-            b2 = fragment.getAllowEnterTransitionOverlap();
-        }
-        final Object mergeTransitions = FragmentTransitionCompat21.mergeTransitions(enterTransition, captureExitingViews, sharedElementTransition, b2);
-        if (mergeTransitions != null) {
-            FragmentTransitionCompat21.addTransitionTargets(enterTransition, sharedElementTransition, (View)viewGroup, backStackRecord$1, backStackRecord$TransitionState.nonExistentView, backStackRecord$TransitionState.enteringEpicenterView, backStackRecord$TransitionState.nameOverrides, list3, arrayMap, list);
-            this.excludeHiddenFragmentsAfterEnter((View)viewGroup, backStackRecord$TransitionState, n, mergeTransitions);
-            FragmentTransitionCompat21.excludeTarget(mergeTransitions, backStackRecord$TransitionState.nonExistentView, true);
-            this.excludeHiddenFragments(backStackRecord$TransitionState, n, mergeTransitions);
-            FragmentTransitionCompat21.beginDelayedTransition(viewGroup, mergeTransitions);
-            FragmentTransitionCompat21.cleanupTransitions((View)viewGroup, backStackRecord$TransitionState.nonExistentView, enterTransition, list3, captureExitingViews, list2, sharedElementTransition, list, mergeTransitions, backStackRecord$TransitionState.hiddenFragmentViews, arrayMap);
-        }
-        return mergeTransitions != null;
     }
     
     private void doAddOp(final int n, final Fragment fragment, final String mTag, final int cmd) {
@@ -339,7 +345,7 @@ final class BackStackRecord extends FragmentTransaction implements Runnable
         else {
             o = fragment.getSharedElementEnterTransition();
         }
-        return FragmentTransitionCompat21.cloneTransition(o);
+        return FragmentTransitionCompat21.wrapSharedElementTransition(o);
     }
     
     private ArrayMap<String, View> mapEnteringSharedElements(final BackStackRecord$TransitionState backStackRecord$TransitionState, final Fragment fragment, final boolean b) {
@@ -472,7 +478,7 @@ final class BackStackRecord extends FragmentTransaction implements Runnable
     }
     
     private static void setNameOverride(final ArrayMap<String, String> arrayMap, final String s, final String s2) {
-        if (s != null && s2 != null && !s.equals(s2)) {
+        if (s != null && s2 != null) {
             for (int i = 0; i < arrayMap.size(); ++i) {
                 if (s.equals(arrayMap.valueAt(i))) {
                     arrayMap.setValueAt(i, s2);
@@ -554,7 +560,7 @@ final class BackStackRecord extends FragmentTransaction implements Runnable
     }
     
     public void calculateBackFragments(final SparseArray<Fragment> sparseArray, final SparseArray<Fragment> sparseArray2) {
-        if (this.mManager.mContainer.hasView()) {
+        if (this.mManager.mContainer.onHasView()) {
             for (BackStackRecord$Op backStackRecord$Op = this.mHead; backStackRecord$Op != null; backStackRecord$Op = backStackRecord$Op.next) {
                 switch (backStackRecord$Op.cmd) {
                     case 1: {
@@ -772,22 +778,24 @@ final class BackStackRecord extends FragmentTransaction implements Runnable
             Log.v("FragmentManager", "popFromBackStack: " + this);
             this.dump("  ", null, new PrintWriter(new LogWriter("FragmentManager")), null);
         }
-        BackStackRecord$TransitionState beginTransition = null;
-        Label_0091: {
-            if (backStackRecord$TransitionState == null) {
-                if (sparseArray.size() == 0) {
-                    beginTransition = backStackRecord$TransitionState;
-                    if (sparseArray2.size() == 0) {
-                        break Label_0091;
+        BackStackRecord$TransitionState beginTransition = backStackRecord$TransitionState;
+        Label_0100: {
+            if (BackStackRecord.SUPPORTS_TRANSITIONS) {
+                if (backStackRecord$TransitionState == null) {
+                    if (sparseArray.size() == 0) {
+                        beginTransition = backStackRecord$TransitionState;
+                        if (sparseArray2.size() == 0) {
+                            break Label_0100;
+                        }
                     }
+                    beginTransition = this.beginTransition(sparseArray, sparseArray2, true);
                 }
-                beginTransition = this.beginTransition(sparseArray, sparseArray2, true);
-            }
-            else {
-                beginTransition = backStackRecord$TransitionState;
-                if (!b) {
-                    setNameOverrides(backStackRecord$TransitionState, this.mSharedElementTargetNames, this.mSharedElementSourceNames);
+                else {
                     beginTransition = backStackRecord$TransitionState;
+                    if (!b) {
+                        setNameOverrides(backStackRecord$TransitionState, this.mSharedElementTargetNames, this.mSharedElementSourceNames);
+                        beginTransition = backStackRecord$TransitionState;
+                    }
                 }
             }
         }
@@ -909,7 +917,7 @@ final class BackStackRecord extends FragmentTransaction implements Runnable
         }
         this.bumpBackStackNesting(1);
         BackStackRecord$TransitionState beginTransition;
-        if (Build$VERSION.SDK_INT >= 21) {
+        if (BackStackRecord.SUPPORTS_TRANSITIONS) {
             final SparseArray sparseArray = new SparseArray();
             final SparseArray sparseArray2 = new SparseArray();
             this.calculateFragments((SparseArray<Fragment>)sparseArray, (SparseArray<Fragment>)sparseArray2);
@@ -959,6 +967,7 @@ final class BackStackRecord extends FragmentTransaction implements Runnable
                 }
                 case 2: {
                     Fragment fragment2 = backStackRecord$Op.fragment;
+                    final int mContainerId = fragment2.mContainerId;
                     Fragment fragment3;
                     if (this.mManager.mAdded != null) {
                         int n = 0;
@@ -971,17 +980,11 @@ final class BackStackRecord extends FragmentTransaction implements Runnable
                             if (FragmentManagerImpl.DEBUG) {
                                 Log.v("FragmentManager", "OP_REPLACE: adding=" + fragment2 + " old=" + fragment4);
                             }
-                            Fragment fragment5 = null;
-                            Label_0435: {
-                                if (fragment2 != null) {
-                                    fragment5 = fragment2;
-                                    if (fragment4.mContainerId != fragment2.mContainerId) {
-                                        break Label_0435;
-                                    }
-                                }
+                            Fragment fragment5 = fragment2;
+                            if (fragment4.mContainerId == mContainerId) {
                                 if (fragment4 == fragment2) {
-                                    backStackRecord$Op.fragment = null;
                                     fragment5 = null;
+                                    backStackRecord$Op.fragment = null;
                                 }
                                 else {
                                     if (backStackRecord$Op.removed == null) {

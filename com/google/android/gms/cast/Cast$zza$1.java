@@ -8,16 +8,16 @@ import com.google.android.gms.common.api.Status;
 
 class Cast$zza$1 implements Cast$ApplicationConnectionResult
 {
-    final /* synthetic */ Status zzOl;
-    final /* synthetic */ Cast$zza zzQJ;
+    final /* synthetic */ Status zzQs;
+    final /* synthetic */ Cast$zza zzTm;
     
-    Cast$zza$1(final Cast$zza zzQJ, final Status zzOl) {
-        this.zzQJ = zzQJ;
-        this.zzOl = zzOl;
+    Cast$zza$1(final Cast$zza zzTm, final Status zzQs) {
+        this.zzTm = zzTm;
+        this.zzQs = zzQs;
     }
     
     @Override
     public Status getStatus() {
-        return this.zzOl;
+        return this.zzQs;
     }
 }

@@ -26,7 +26,7 @@ class PostPlay$FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
         if (Log.isLoggable()) {
             Log.v("nf_postplay", "postPlayVideosProvider: " + postPlayVideosProvider);
         }
-        if (this.this$0.mContext.destroyed()) {
+        if (this.this$0.mNetflixActivity.isFinishing()) {
             return;
         }
         if (status.isError() || postPlayVideosProvider == null) {

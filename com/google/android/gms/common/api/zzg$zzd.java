@@ -4,51 +4,104 @@
 
 package com.google.android.gms.common.api;
 
-import android.content.IntentFilter;
-import com.google.android.gms.common.internal.zzu;
-import java.io.PrintWriter;
-import java.io.FileDescriptor;
-import java.util.Iterator;
-import com.google.android.gms.common.internal.zzaa;
-import com.google.android.gms.common.internal.zze$zza;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.Collections;
-import java.util.WeakHashMap;
-import java.util.HashSet;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.concurrent.locks.ReentrantLock;
+import com.google.android.gms.common.internal.zzf$zza;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import android.app.PendingIntent;
+import android.util.Log;
+import com.google.android.gms.common.internal.ResolveAccountResponse;
+import java.util.HashSet;
 import java.util.Set;
-import com.google.android.gms.common.ConnectionResult;
-import android.content.BroadcastReceiver;
-import java.util.Queue;
-import com.google.android.gms.common.internal.zzj;
-import java.util.concurrent.locks.Condition;
-import java.util.Map;
-import com.google.android.gms.common.internal.zzj$zza;
-import android.os.Looper;
-import com.google.android.gms.common.internal.zze;
+import android.os.Bundle;
 import java.util.concurrent.locks.Lock;
-import com.google.android.gms.internal.zzpt;
-import com.google.android.gms.internal.zzps;
+import com.google.android.gms.signin.zze;
+import com.google.android.gms.common.GoogleApiAvailability;
+import java.util.concurrent.Future;
+import java.util.ArrayList;
+import java.util.Map;
+import com.google.android.gms.common.internal.zzf;
+import com.google.android.gms.common.internal.zzp;
+import com.google.android.gms.signin.zzd;
 import android.content.Context;
+import com.google.android.gms.common.internal.zzx;
+import android.os.Looper;
+import com.google.android.gms.common.ConnectionResult;
+import java.lang.ref.WeakReference;
 
-public abstract class zzg$zzd implements GoogleApiClient$ConnectionCallbacks
+class zzg$zzd implements GoogleApiClient$zza
 {
-    final /* synthetic */ zzg zzXD;
+    private final WeakReference<zzg> zzZL;
+    private final Api<?> zzZR;
+    private final int zzZS;
     
-    public zzg$zzd(final zzg zzXD) {
-        this.zzXD = zzXD;
+    public zzg$zzd(final zzg zzg, final Api<?> zzZR, final int zzZS) {
+        this.zzZL = new WeakReference<zzg>(zzg);
+        this.zzZR = zzZR;
+        this.zzZS = zzZS;
     }
     
     @Override
-    public void onConnectionSuspended(final int n) {
-        this.zzXD.zzWK.lock();
+    public void zza(final ConnectionResult connectionResult) {
+        boolean b = false;
+        final zzg zzg = this.zzZL.get();
+        if (zzg == null) {
+            return;
+        }
+        if (Looper.myLooper() == zzg.zzZq.getLooper()) {
+            b = true;
+        }
+        zzx.zza(b, "onReportServiceBinding must be called on the GoogleApiClient handler thread");
+        zzg.zzZs.lock();
         try {
-            this.zzXD.zzXw.onConnectionSuspended(n);
+            if (!zzg.zzbe(0)) {
+                return;
+            }
+            if (!connectionResult.isSuccess()) {
+                zzg.zzb(connectionResult, this.zzZR, this.zzZS);
+            }
+            if (zzg.zzno()) {
+                zzg.zznp();
+            }
         }
         finally {
-            this.zzXD.zzWK.unlock();
+            zzg.zzZs.unlock();
+        }
+    }
+    
+    @Override
+    public void zzb(final ConnectionResult connectionResult) {
+        boolean zza = true;
+        final zzg zzg = this.zzZL.get();
+        if (zzg == null) {
+            return;
+        }
+        Label_0066: {
+            if (Looper.myLooper() != zzg.zzZq.getLooper()) {
+                break Label_0066;
+            }
+            while (true) {
+                zzx.zza(zza, "onReportAccountValidation must be called on the GoogleApiClient handler thread");
+                zzg.zzZs.lock();
+                try {
+                    zza = zzg.zzbe(1);
+                    if (!zza) {
+                        return;
+                    }
+                    if (!connectionResult.isSuccess()) {
+                        zzg.zzb(connectionResult, this.zzZR, this.zzZS);
+                    }
+                    if (zzg.zzno()) {
+                        zzg.zznr();
+                    }
+                    return;
+                    zza = false;
+                }
+                finally {
+                    zzg.zzZs.unlock();
+                }
+            }
         }
     }
 }

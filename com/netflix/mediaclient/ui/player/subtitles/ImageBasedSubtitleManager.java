@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.player.subtitles;
 
 import com.netflix.mediaclient.service.player.subtitles.image.ImageSubtitleParser;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
@@ -24,7 +25,7 @@ import android.view.View;
 import android.widget.RelativeLayout$LayoutParams;
 import android.content.Context;
 import java.util.HashMap;
-import com.netflix.mediaclient.ui.player.PlayerActivity;
+import com.netflix.mediaclient.ui.player.PlayerFragment;
 import android.widget.ImageView;
 import java.util.Map;
 import android.widget.RelativeLayout;
@@ -36,10 +37,10 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
     private boolean mPlayerControlsVisible;
     private Map<String, ImageView> mVisibleBlocks;
     
-    ImageBasedSubtitleManager(final PlayerActivity playerActivity) {
-        super(playerActivity);
+    ImageBasedSubtitleManager(final PlayerFragment playerFragment) {
+        super(playerFragment);
         this.mVisibleBlocks = new HashMap<String, ImageView>();
-        this.mImageWrapper = new RelativeLayout((Context)playerActivity);
+        this.mImageWrapper = new RelativeLayout((Context)playerFragment.getActivity());
         this.mDisplayArea.addView((View)this.mImageWrapper, (ViewGroup$LayoutParams)new RelativeLayout$LayoutParams(-1, -1));
     }
     
@@ -54,7 +55,7 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
         else {
             Log.d("nf_subtitles_render", "Do not scale, use image original width");
         }
-        final ImageView imageView = new ImageView(this.getContext());
+        final ImageView imageView = new ImageView((Context)this.getContext());
         imageView.setImageBitmap(imageBitmap);
         imageView.setVisibility(4);
         return imageView;
@@ -158,7 +159,7 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
             final int n5 = this.mDisplayArea.getWidth() - n4 - width;
             final int n6 = (int)(image.getOriginY() * scaleFactor) + this.getVerticalOffset() + n2;
             int n8;
-            final int n7 = n8 = DeviceUtils.getScreenHeightInPixels(this.getContext()) - n6 - height;
+            final int n7 = n8 = DeviceUtils.getScreenHeightInPixels((Context)this.getContext()) - n6 - height;
             int n9 = n6;
             if (this.mPlayerControlsVisible) {
                 if (n6 > this.mDisplayArea.getHeight() / 2) {

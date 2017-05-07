@@ -78,6 +78,8 @@ class RecommendToFriendsFrag$3 implements TextWatcher
         }
         access$400.setVisibility(visibility);
         SocialLoggingUtils.reportRecommendPanelSearchedEvent((Context)this.this$0.getActivity(), IClientLogging$ModalView.movieDetails, this.this$0.getGUID(), this.this$0.getTrackId(this.this$0.getActivity()));
-        this.this$0.fetchFriends();
+        if (this.this$0.mServiceManager != null && this.this$0.mServiceManager.isReady()) {
+            this.this$0.fetchFriends();
+        }
     }
 }

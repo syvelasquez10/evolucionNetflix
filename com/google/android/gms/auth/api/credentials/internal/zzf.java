@@ -12,43 +12,43 @@ import com.google.android.gms.common.internal.safeparcel.zzb;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class zzf implements Parcelable$Creator<SaveRequest>
+public class zzf implements Parcelable$Creator<DeleteRequest>
 {
-    static void zza(final SaveRequest saveRequest, final Parcel parcel, final int n) {
-        final int zzac = zzb.zzac(parcel);
-        zzb.zza(parcel, 1, (Parcelable)saveRequest.getCredential(), n, false);
-        zzb.zzc(parcel, 1000, saveRequest.zzCY);
-        zzb.zzH(parcel, zzac);
+    static void zza(final DeleteRequest deleteRequest, final Parcel parcel, final int n) {
+        final int zzak = zzb.zzak(parcel);
+        zzb.zza(parcel, 1, (Parcelable)deleteRequest.getCredential(), n, false);
+        zzb.zzc(parcel, 1000, deleteRequest.mVersionCode);
+        zzb.zzH(parcel, zzak);
     }
     
-    public SaveRequest zzG(final Parcel parcel) {
-        final int zzab = zza.zzab(parcel);
+    public DeleteRequest zzI(final Parcel parcel) {
+        final int zzaj = zza.zzaj(parcel);
         int zzg = 0;
         Credential credential = null;
-        while (parcel.dataPosition() < zzab) {
-            final int zzaa = zza.zzaa(parcel);
-            switch (zza.zzbA(zzaa)) {
+        while (parcel.dataPosition() < zzaj) {
+            final int zzai = zza.zzai(parcel);
+            switch (zza.zzbH(zzai)) {
                 default: {
-                    zza.zzb(parcel, zzaa);
+                    zza.zzb(parcel, zzai);
                     continue;
                 }
                 case 1: {
-                    credential = zza.zza(parcel, zzaa, Credential.CREATOR);
+                    credential = zza.zza(parcel, zzai, Credential.CREATOR);
                     continue;
                 }
                 case 1000: {
-                    zzg = zza.zzg(parcel, zzaa);
+                    zzg = zza.zzg(parcel, zzai);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzab) {
-            throw new zza$zza("Overread allowed size end=" + zzab, parcel);
+        if (parcel.dataPosition() != zzaj) {
+            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
         }
-        return new SaveRequest(zzg, credential);
+        return new DeleteRequest(zzg, credential);
     }
     
-    public SaveRequest[] zzaw(final int n) {
-        return new SaveRequest[n];
+    public DeleteRequest[] zzay(final int n) {
+        return new DeleteRequest[n];
     }
 }

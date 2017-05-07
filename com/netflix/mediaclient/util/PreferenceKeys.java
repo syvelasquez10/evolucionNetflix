@@ -20,6 +20,7 @@ public interface PreferenceKeys
     public static final String PREFERENCE_APM_USER_SESSION_TIMEOUT_OVERRIDE = "apm_user_session_timeout_duration_override";
     public static final String PREFERENCE_BREADCRUMB_LOGGING_CONFIGURATION = "breadcrumb_log_configuration";
     public static final String PREFERENCE_CL_CONFIGURATION = "cl_configuration";
+    public static final String PREFERENCE_CUSTOMER_SUPPORT_VOIP_AUTHORIZATIONS = "cusotmer_support_voip_authorizations";
     public static final String PREFERENCE_DEVICE_CATEGORY = "nf_device_category";
     public static final String PREFERENCE_DISABLE_MDX = "disable_mdx";
     public static final String PREFERENCE_DISABLE_WEBSOCKET = "disable_websocket";
@@ -62,11 +63,13 @@ public interface PreferenceKeys
     public static final String PREFERENCE_STREAMING_QOE = "streamingqoe";
     public static final String PREFERENCE_SUBTITLE_CONFIGURATION = "nf_subtitle_configuraton";
     public static final String PREFERENCE_SUBTITLE_CONFIGURATION_QA_LOCAL = "nf_subtitle_configuraton_QA_local";
+    public static final String PREFERENCE_SUPPORTED_AUDIOFORMAT = "supported_audio_format";
     public static final String PREFERENCE_USERAGENT_ESNMIGRATION_FLAGS = "useragent_esnmigration_flags";
     public static final String PREFERENCE_USERAGENT_PROFILE_MAP = "useragent_profilemap";
     public static final String PREFERENCE_USER_LOGGED_IN = "nf_user_status_loggedin";
     public static final String PREFERENCE_USER_SELECTED_A_PROFILE = "user_profile_was_selected";
     public static final String PREFERENCE_VIDEO_RESOLUTION_OVERRIDE = "video_resolution_override";
+    public static final String PREFERENCE_VOIP_ENABLED_ON_DEVICE = "enable_voip_on_device";
     public static final String PREFERENCE_WARN_WHEN_PLAY_ON_NOWIFI = "nf_play_no_wifi_warning";
     public static final String PREFERENCE__PLAYEROVERLAY = "ui.playeroverlay";
     public static final String UI_LOADING_WORKFLOW_TYPE = "ui_loading_workflow_type";

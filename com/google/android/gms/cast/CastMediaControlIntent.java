@@ -38,14 +38,14 @@ public final class CastMediaControlIntent
             int n = 1;
             while (iterator.hasNext()) {
                 final String s3 = iterator.next();
-                zzf.zzbD(s3);
+                zzf.zzbL(s3);
                 if (n != 0) {
                     n = 0;
                 }
                 else {
                     sb.append(",");
                 }
-                sb.append(zzf.zzbF(s3));
+                sb.append(zzf.zzbN(s3));
             }
         }
         return sb.toString();

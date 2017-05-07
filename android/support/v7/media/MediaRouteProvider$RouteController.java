@@ -18,6 +18,10 @@ public abstract class MediaRouteProvider$RouteController
     public void onUnselect() {
     }
     
+    public void onUnselect(final int n) {
+        this.onUnselect();
+    }
+    
     public void onUpdateVolume(final int n) {
     }
 }

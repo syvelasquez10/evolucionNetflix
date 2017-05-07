@@ -12,12 +12,12 @@ public class ImageDownloader
 {
     private static WorkQueue cacheReadQueue;
     private static WorkQueue downloadQueue;
-    private static final Map<ImageDownloader$RequestKey, ImageDownloader$DownloaderContext> pendingRequests;
+    private static final Map<Object, Object> pendingRequests;
     
     static {
         ImageDownloader.downloadQueue = new WorkQueue(8);
         ImageDownloader.cacheReadQueue = new WorkQueue(2);
-        pendingRequests = new HashMap<ImageDownloader$RequestKey, ImageDownloader$DownloaderContext>();
+        pendingRequests = new HashMap<Object, Object>();
     }
     
     public static void clearCache(final Context context) {

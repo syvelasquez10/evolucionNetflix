@@ -9,6 +9,9 @@ public abstract class MediaDecoderBase
     static final int BUFFER_FLAG_CSD = 2;
     static final int BUFFER_FLAG_EOS = 4;
     static final int BUFFER_FLAG_SYNC = 1;
+    static final String MIME_AAC = "audio/mp4a-latm";
+    static final String MIME_AVC = "video/avc";
+    static final String MIME_EAC3 = "audio/eac3";
     static final int STATE_INIT = -1;
     static final int STATE_PAUSED = 2;
     static final int STATE_PLAYING = 1;
@@ -16,6 +19,7 @@ public abstract class MediaDecoderBase
     protected boolean mAudioUseGetTimestampAPI;
     protected MediaDecoderBase$Clock mClock;
     protected MediaDecoderBase$EventListener mEventListener;
+    protected String mMime;
     protected MediaDecoderBase$Clock mRefClock;
     protected volatile int mState;
     
@@ -30,6 +34,10 @@ public abstract class MediaDecoderBase
             this.mClock = new MediaDecoderBase$Clock(this);
         }
         return this.mClock;
+    }
+    
+    public String getMime() {
+        return this.mMime;
     }
     
     public boolean isDecoderCreated() {

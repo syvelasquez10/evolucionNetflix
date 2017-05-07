@@ -13,13 +13,15 @@ interface ViewPropertyAnimatorCompat$ViewPropertyAnimatorCompatImpl
     
     void cancel(final ViewPropertyAnimatorCompat p0, final View p1);
     
-    void scaleY(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    long getDuration(final ViewPropertyAnimatorCompat p0, final View p1);
     
     void setDuration(final ViewPropertyAnimatorCompat p0, final View p1, final long p2);
     
     void setInterpolator(final ViewPropertyAnimatorCompat p0, final View p1, final Interpolator p2);
     
     void setListener(final ViewPropertyAnimatorCompat p0, final View p1, final ViewPropertyAnimatorListener p2);
+    
+    void setStartDelay(final ViewPropertyAnimatorCompat p0, final View p1, final long p2);
     
     void setUpdateListener(final ViewPropertyAnimatorCompat p0, final View p1, final ViewPropertyAnimatorUpdateListener p2);
     

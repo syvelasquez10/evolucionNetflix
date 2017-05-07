@@ -6,7 +6,7 @@ package com.google.android.gms.common.internal;
 
 import java.util.Collection;
 import android.os.Parcel;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import android.accounts.Account;
 import android.os.Bundle;
 import com.google.android.gms.common.api.Scope;
@@ -18,46 +18,46 @@ public class GetServiceRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<GetServiceRequest> CREATOR;
     final int version;
-    final int zzaac;
-    int zzaad;
-    String zzaae;
-    IBinder zzaaf;
-    Scope[] zzaag;
-    Bundle zzaah;
-    Account zzaai;
+    final int zzadn;
+    int zzado;
+    String zzadp;
+    IBinder zzadq;
+    Scope[] zzadr;
+    Bundle zzads;
+    Account zzadt;
     
     static {
-        CREATOR = (Parcelable$Creator)new zzh();
+        CREATOR = (Parcelable$Creator)new zzi();
     }
     
-    public GetServiceRequest(final int zzaac) {
+    public GetServiceRequest(final int zzadn) {
         this.version = 2;
-        this.zzaad = GooglePlayServicesUtil.GOOGLE_PLAY_SERVICES_VERSION_CODE;
-        this.zzaac = zzaac;
+        this.zzado = GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE;
+        this.zzadn = zzadn;
     }
     
-    GetServiceRequest(final int version, final int zzaac, final int zzaad, final String zzaae, final IBinder zzaaf, final Scope[] zzaag, final Bundle zzaah, final Account zzaai) {
+    GetServiceRequest(final int version, final int zzadn, final int zzado, final String zzadp, final IBinder zzadq, final Scope[] zzadr, final Bundle zzads, final Account zzadt) {
         this.version = version;
-        this.zzaac = zzaac;
-        this.zzaad = zzaad;
-        this.zzaae = zzaae;
+        this.zzadn = zzadn;
+        this.zzado = zzado;
+        this.zzadp = zzadp;
         if (version < 2) {
-            this.zzaai = this.zzaC(zzaaf);
+            this.zzadt = this.zzaG(zzadq);
         }
         else {
-            this.zzaaf = zzaaf;
-            this.zzaai = zzaai;
+            this.zzadq = zzadq;
+            this.zzadt = zzadt;
         }
-        this.zzaag = zzaag;
-        this.zzaah = zzaah;
+        this.zzadr = zzadr;
+        this.zzads = zzads;
     }
     
-    private Account zzaC(final IBinder binder) {
-        Account zza = null;
+    private Account zzaG(final IBinder binder) {
+        Account zzb = null;
         if (binder != null) {
-            zza = com.google.android.gms.common.internal.zza.zza(IAccountAccessor$zza.zzaD(binder));
+            zzb = zza.zzb(zzp$zza.zzaH(binder));
         }
-        return zza;
+        return zzb;
     }
     
     public int describeContents() {
@@ -65,33 +65,33 @@ public class GetServiceRequest implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        zzh.zza(this, parcel, n);
+        zzi.zza(this, parcel, n);
     }
     
-    public GetServiceRequest zzb(final Account zzaai) {
-        this.zzaai = zzaai;
+    public GetServiceRequest zzb(final Account zzadt) {
+        this.zzadt = zzadt;
         return this;
     }
     
-    public GetServiceRequest zzb(final IAccountAccessor accountAccessor) {
-        if (accountAccessor != null) {
-            this.zzaaf = accountAccessor.asBinder();
+    public GetServiceRequest zzc(final zzp zzp) {
+        if (zzp != null) {
+            this.zzadq = zzp.asBinder();
         }
         return this;
     }
     
-    public GetServiceRequest zzb(final Collection<Scope> collection) {
-        this.zzaag = collection.toArray(new Scope[collection.size()]);
+    public GetServiceRequest zzck(final String zzadp) {
+        this.zzadp = zzadp;
         return this;
     }
     
-    public GetServiceRequest zzcb(final String zzaae) {
-        this.zzaae = zzaae;
+    public GetServiceRequest zzd(final Collection<Scope> collection) {
+        this.zzadr = collection.toArray(new Scope[collection.size()]);
         return this;
     }
     
-    public GetServiceRequest zzf(final Bundle zzaah) {
-        this.zzaah = zzaah;
+    public GetServiceRequest zzg(final Bundle zzads) {
+        this.zzads = zzads;
         return this;
     }
 }

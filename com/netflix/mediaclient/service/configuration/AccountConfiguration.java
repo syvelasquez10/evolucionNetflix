@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.configuration;
 
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.webclient.model.leafs.KubrickKidsConfigData;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import com.netflix.mediaclient.util.PreferenceUtils;
@@ -67,6 +68,13 @@ public class AccountConfiguration
         return this.mAccountConfigData.getKubrickConfig();
     }
     
+    public KubrickKidsConfigData getKubrickKidsConfig() {
+        if (this.mAccountConfigData == null) {
+            return null;
+        }
+        return this.mAccountConfigData.getKubrickKidsConfig();
+    }
+    
     public JSONArray getMdxBlacklist() {
         if (this.mAccountConfigData == null) {
             return null;
@@ -112,6 +120,10 @@ public class AccountConfiguration
         }
         PreferenceUtils.putStringPref(this.mContext, "accountConfig", jsonString);
         this.mAccountConfigData = mAccountConfigData;
+    }
+    
+    public boolean shouldDisableVoip() {
+        return this.mAccountConfigData == null || !this.mAccountConfigData.isVoipEnabledOnAccount();
     }
     
     public boolean toDisableMcQueenV2() {

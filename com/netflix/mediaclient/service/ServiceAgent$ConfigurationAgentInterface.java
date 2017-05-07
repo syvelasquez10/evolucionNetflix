@@ -8,6 +8,7 @@ import com.netflix.mediaclient.media.VideoResolutionRange;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.service.configuration.PlaybackConfiguration;
 import com.netflix.mediaclient.service.configuration.MdxConfiguration;
+import com.netflix.mediaclient.service.webclient.model.leafs.KubrickKidsConfigData;
 import com.netflix.mediaclient.service.configuration.KubrickConfiguration;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
@@ -69,6 +70,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     KubrickConfiguration getKubrickConfiguration();
     
+    KubrickKidsConfigData getKubrickKidsConfiguration();
+    
     MdxConfiguration getMdxConfiguration();
     
     PlaybackConfiguration getPlaybackConfiguration();
@@ -105,6 +108,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     boolean isDisableMcQueenV2();
     
+    boolean isDolbyDigitalPlus51Supported();
+    
     boolean isEsnMigrationRequired();
     
     boolean isLogoutRequired();
@@ -114,6 +119,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     boolean isWidevineL3ABTestEnabled();
     
     boolean isWidevineL3Enabled();
+    
+    boolean shouldDisableVoip();
     
     void userAgentLogoutComplete();
 }

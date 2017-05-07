@@ -9,5 +9,9 @@ import android.widget.PopupWindow;
 
 interface PopupWindowCompat$PopupWindowImpl
 {
+    void setOverlapAnchor(final PopupWindow p0, final boolean p1);
+    
+    void setWindowLayoutType(final PopupWindow p0, final int p1);
+    
     void showAsDropDown(final PopupWindow p0, final View p1, final int p2, final int p3, final int p4);
 }

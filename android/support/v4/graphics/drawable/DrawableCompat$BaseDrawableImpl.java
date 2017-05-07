@@ -32,14 +32,26 @@ class DrawableCompat$BaseDrawableImpl implements DrawableCompat$DrawableImpl
     }
     
     @Override
+    public void setLayoutDirection(final Drawable drawable, final int n) {
+    }
+    
+    @Override
     public void setTint(final Drawable drawable, final int n) {
+        DrawableCompatBase.setTint(drawable, n);
     }
     
     @Override
     public void setTintList(final Drawable drawable, final ColorStateList list) {
+        DrawableCompatBase.setTintList(drawable, list);
     }
     
     @Override
     public void setTintMode(final Drawable drawable, final PorterDuff$Mode porterDuff$Mode) {
+        DrawableCompatBase.setTintMode(drawable, porterDuff$Mode);
+    }
+    
+    @Override
+    public Drawable wrap(final Drawable drawable) {
+        return DrawableCompatBase.wrapForTinting(drawable);
     }
 }

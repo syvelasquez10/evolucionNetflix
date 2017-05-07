@@ -11,7 +11,7 @@ import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
 
-class KubrickVideoDetailsClickListener extends VideoDetailsClickListener
+public class KubrickVideoDetailsClickListener extends VideoDetailsClickListener
 {
     public KubrickVideoDetailsClickListener(final NetflixActivity netflixActivity, final PlayContextProvider playContextProvider) {
         super(netflixActivity, playContextProvider);

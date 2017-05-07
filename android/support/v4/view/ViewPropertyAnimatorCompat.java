@@ -19,6 +19,10 @@ public class ViewPropertyAnimatorCompat
     
     static {
         final int sdk_INT = Build$VERSION.SDK_INT;
+        if (sdk_INT >= 21) {
+            IMPL = new ViewPropertyAnimatorCompat$LollipopViewPropertyAnimatorCompatImpl();
+            return;
+        }
         if (sdk_INT >= 19) {
             IMPL = new ViewPropertyAnimatorCompat$KitKatViewPropertyAnimatorCompatImpl();
             return;
@@ -60,12 +64,12 @@ public class ViewPropertyAnimatorCompat
         }
     }
     
-    public ViewPropertyAnimatorCompat scaleY(final float n) {
+    public long getDuration() {
         final View view = this.mView.get();
         if (view != null) {
-            ViewPropertyAnimatorCompat.IMPL.scaleY(this, view, n);
+            return ViewPropertyAnimatorCompat.IMPL.getDuration(this, view);
         }
-        return this;
+        return 0L;
     }
     
     public ViewPropertyAnimatorCompat setDuration(final long n) {
@@ -88,6 +92,14 @@ public class ViewPropertyAnimatorCompat
         final View view = this.mView.get();
         if (view != null) {
             ViewPropertyAnimatorCompat.IMPL.setListener(this, view, viewPropertyAnimatorListener);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat setStartDelay(final long n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.setStartDelay(this, view, n);
         }
         return this;
     }

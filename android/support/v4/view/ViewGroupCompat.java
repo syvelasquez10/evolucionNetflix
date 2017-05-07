@@ -14,7 +14,7 @@ public class ViewGroupCompat
     static {
         final int sdk_INT = Build$VERSION.SDK_INT;
         if (sdk_INT >= 21) {
-            IMPL = new ViewGroupCompat$ViewGroupCompatApi21Impl();
+            IMPL = new ViewGroupCompat$ViewGroupCompatLollipopImpl();
             return;
         }
         if (sdk_INT >= 18) {

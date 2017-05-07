@@ -4,14 +4,12 @@
 
 package android.support.v4.app;
 
-import java.util.ArrayList;
 import android.support.v4.util.SimpleArrayMap;
+import java.util.List;
 
 final class FragmentActivity$NonConfigurationInstances
 {
-    Object activity;
-    SimpleArrayMap<String, Object> children;
     Object custom;
-    ArrayList<Fragment> fragments;
-    SimpleArrayMap<String, LoaderManagerImpl> loaders;
+    List<Fragment> fragments;
+    SimpleArrayMap<String, LoaderManager> loaders;
 }

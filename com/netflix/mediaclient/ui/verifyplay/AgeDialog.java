@@ -50,7 +50,7 @@ public class AgeDialog extends NetflixDialogFrag
         final Bundle arguments = new Bundle();
         arguments.putParcelable(PlayVerifierVault.NAME, (Parcelable)playVerifierVault);
         ageDialog.setArguments(arguments);
-        ageDialog.setStyle(1, 2131558721);
+        ageDialog.setStyle(1, 2131361924);
         return ageDialog;
     }
     
@@ -127,9 +127,9 @@ public class AgeDialog extends NetflixDialogFrag
         }
         this.mVault = (PlayVerifierVault)this.getArguments().getParcelable(PlayVerifierVault.NAME);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903067, (ViewGroup)null);
-        this.mSpinner = (ProgressBar)inflate.findViewById(2131427447);
-        this.mAgeMessage = (TextView)inflate.findViewById(2131427446);
+        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903068, (ViewGroup)null);
+        this.mSpinner = (ProgressBar)inflate.findViewById(2131624068);
+        this.mAgeMessage = (TextView)inflate.findViewById(2131624067);
         int mDialogWidthInDp;
         if (DeviceUtils.isTabletByContext((Context)this.getActivity())) {
             mDialogWidthInDp = 400;
@@ -141,8 +141,8 @@ public class AgeDialog extends NetflixDialogFrag
         alertDialog$Builder.setView(inflate);
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);
-        create.setButton(-2, (CharSequence)this.getString(2131493120), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnCancel(this, null));
-        create.setButton(-1, (CharSequence)this.getString(2131493299), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnVerify(this, null));
+        create.setButton(-2, (CharSequence)this.getString(2131165400), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnCancel(this, null));
+        create.setButton(-1, (CharSequence)this.getString(2131165390), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnVerify(this, null));
         this.mActive = true;
         return (Dialog)(this.mDialog = create);
     }
@@ -191,10 +191,10 @@ public class AgeDialog extends NetflixDialogFrag
         final TextView mAgeMessage = this.mAgeMessage;
         int text;
         if (mInProgress) {
-            text = 2131493298;
+            text = 2131165389;
         }
         else {
-            text = 2131493297;
+            text = 2131165391;
         }
         mAgeMessage.setText(text);
         if (!mInProgress) {

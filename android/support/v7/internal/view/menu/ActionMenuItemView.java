@@ -15,8 +15,6 @@ import android.view.View;
 import android.text.TextUtils;
 import android.content.res.TypedArray;
 import android.content.res.Resources;
-import android.text.method.TransformationMethod;
-import android.support.v7.internal.text.AllCapsTransformationMethod;
 import android.support.v7.appcompat.R$styleable;
 import android.support.v7.appcompat.R$bool;
 import android.util.AttributeSet;
@@ -26,9 +24,9 @@ import android.graphics.drawable.Drawable;
 import android.view.View$OnLongClickListener;
 import android.view.View$OnClickListener;
 import android.support.v7.widget.ActionMenuView$ActionMenuChildView;
-import android.support.v7.internal.widget.CompatTextView;
+import android.support.v7.widget.AppCompatTextView;
 
-public class ActionMenuItemView extends CompatTextView implements aa, ActionMenuView$ActionMenuChildView, View$OnClickListener, View$OnLongClickListener
+public class ActionMenuItemView extends AppCompatTextView implements aa, ActionMenuView$ActionMenuChildView, View$OnClickListener, View$OnLongClickListener
 {
     private m a;
     private CharSequence b;
@@ -60,11 +58,10 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
         this.k = (int)(resources.getDisplayMetrics().density * 32.0f + 0.5f);
         this.setOnClickListener((View$OnClickListener)this);
         this.setOnLongClickListener((View$OnLongClickListener)this);
-        this.setTransformationMethod((TransformationMethod)new AllCapsTransformationMethod(context));
         this.j = -1;
     }
     
-    private void c() {
+    private void b() {
         final boolean b = false;
         final boolean b2 = !TextUtils.isEmpty(this.b) && true;
         boolean b3 = false;
@@ -93,8 +90,17 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
         this.setText(b4);
     }
     
+    public boolean a() {
+        return !TextUtils.isEmpty(this.getText());
+    }
+    
     @Override
-    public void a(final m a, int visibility) {
+    public m getItemData() {
+        return this.a;
+    }
+    
+    @Override
+    public void initialize(final m a, int visibility) {
         this.a = a;
         this.setIcon(a.getIcon());
         this.setTitle(a.a(this));
@@ -113,27 +119,13 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
     }
     
     @Override
-    public boolean a() {
-        return true;
-    }
-    
-    public boolean b() {
-        return !TextUtils.isEmpty(this.getText());
-    }
-    
-    @Override
-    public m getItemData() {
-        return this.a;
-    }
-    
-    @Override
     public boolean needsDividerAfter() {
-        return this.b();
+        return this.a();
     }
     
     @Override
     public boolean needsDividerBefore() {
-        return this.b() && this.a.getIcon() == null;
+        return this.a() && this.a.getIcon() == null;
     }
     
     public void onClick(final View view) {
@@ -147,11 +139,11 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
             super.onConfigurationChanged(configuration);
         }
         this.g = this.getContext().getResources().getBoolean(R$bool.abc_config_allowActionMenuItemTextWithIcon);
-        this.c();
+        this.b();
     }
     
     public boolean onLongClick(final View view) {
-        if (this.b()) {
+        if (this.a()) {
             return false;
         }
         final int[] array = new int[2];
@@ -163,13 +155,13 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
         final int height = this.getHeight();
         final int n = array[1];
         final int n2 = height / 2;
-        int n3 = array[0] + width / 2;
+        int n3 = width / 2 + array[0];
         if (ViewCompat.getLayoutDirection(view) == 0) {
             n3 = context.getResources().getDisplayMetrics().widthPixels - n3;
         }
         final Toast text = Toast.makeText(context, this.a.getTitle(), 0);
         if (n + n2 < rect.height()) {
-            text.setGravity(8388661, n3, height);
+            text.setGravity(8388661, n3, array[1] + height - rect.top);
         }
         else {
             text.setGravity(81, 0, height);
@@ -179,8 +171,8 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
     }
     
     protected void onMeasure(int n, final int n2) {
-        final boolean b = this.b();
-        if (b && this.j >= 0) {
+        final boolean a = this.a();
+        if (a && this.j >= 0) {
             super.setPadding(this.j, this.getPaddingTop(), this.getPaddingRight(), this.getPaddingBottom());
         }
         super.onMeasure(n, n2);
@@ -196,13 +188,18 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
         if (mode != 1073741824 && this.i > 0 && measuredWidth < n) {
             super.onMeasure(View$MeasureSpec.makeMeasureSpec(n, 1073741824), n2);
         }
-        if (!b && this.c != null) {
+        if (!a && this.c != null) {
             super.setPadding((this.getMeasuredWidth() - this.c.getBounds().width()) / 2, this.getPaddingTop(), this.getPaddingRight(), this.getPaddingBottom());
         }
     }
     
     public boolean onTouchEvent(final MotionEvent motionEvent) {
         return (this.a.hasSubMenu() && this.e != null && this.e.onTouch((View)this, motionEvent)) || super.onTouchEvent(motionEvent);
+    }
+    
+    @Override
+    public boolean prefersCondensedTitle() {
+        return true;
     }
     
     public void setCheckable(final boolean b) {
@@ -242,7 +239,7 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
             c.setBounds(0, 0, n3, i);
         }
         this.setCompoundDrawables(c, (Drawable)null, (Drawable)null, (Drawable)null);
-        this.c();
+        this.b();
     }
     
     public void setItemInvoker(final k d) {
@@ -259,6 +256,6 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
     
     public void setTitle(final CharSequence b) {
         this.setContentDescription(this.b = b);
-        this.c();
+        this.b();
     }
 }

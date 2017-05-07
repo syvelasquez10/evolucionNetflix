@@ -18,6 +18,8 @@ class PostPlay$4 implements View$OnClickListener
     
     public void onClick(final View view) {
         Log.d("nf_postplay", "Interrupter mode, stop");
-        this.this$0.mContext.finish();
+        if (this.this$0.mPlayerFragment != null) {
+            this.this$0.mPlayerFragment.finish();
+        }
     }
 }

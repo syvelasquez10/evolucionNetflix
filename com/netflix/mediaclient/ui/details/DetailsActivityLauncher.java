@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.Log;
@@ -117,7 +118,9 @@ public class DetailsActivityLauncher
     }
     
     public static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final String s4) {
-        show(netflixActivity, videoType, s, s2, playContext, detailsActivity$Action, s3, s4, null, 0);
+        if (validateAndlogVideoType(videoType, netflixActivity)) {
+            show(netflixActivity, videoType, s, s2, playContext, detailsActivity$Action, s3, s4, null, 0);
+        }
     }
     
     private static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final String s4, final Bundle bundle, final int n) {
@@ -141,7 +144,9 @@ public class DetailsActivityLauncher
     }
     
     public static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final String s3) {
-        show(netflixActivity, videoType, s, s2, playContext, null, null, s3, null, 0);
+        if (validateAndlogVideoType(videoType, netflixActivity)) {
+            show(netflixActivity, videoType, s, s2, playContext, null, null, s3, null, 0);
+        }
     }
     
     public static void showEpisodeDetails(final NetflixActivity netflixActivity, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3) {
@@ -151,5 +156,13 @@ public class DetailsActivityLauncher
             return;
         }
         netflixActivity.startActivity(episodeDetailsIntent);
+    }
+    
+    static boolean validateAndlogVideoType(final VideoType videoType, final NetflixActivity netflixActivity) {
+        if (videoType == null) {
+            ErrorLoggingManager.logHandledException("SPY-8330: Start intent must provide extra value: extra_video_type");
+            return false;
+        }
+        return true;
     }
 }

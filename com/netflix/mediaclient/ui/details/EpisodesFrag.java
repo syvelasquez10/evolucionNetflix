@@ -69,20 +69,20 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     private static final String TAG = "EpisodesFrag";
     private AddToListData$StateListener addToListWrapper;
     private SeasonDetails currSeasonDetails;
-    private int currSeasonIndex;
+    protected int currSeasonIndex;
     protected VideoDetailsViewGroup detailsViewGroup;
-    private String episodeId;
+    protected String episodeId;
     private final BroadcastReceiver episodeRefreshReceiver;
     protected RecyclerViewHeaderAdapter episodesAdapter;
     private final ErrorWrapper$Callback errorCallback;
     protected Handler handler;
-    private boolean isLoading;
+    protected boolean isLoading;
     private boolean isShowDAB;
     protected LoadingAndErrorWrapper leWrapper;
     protected ServiceManager manager;
     protected int numColumns;
     protected RecyclerView recyclerView;
-    private long requestId;
+    protected long requestId;
     private int restoredEpisodeIndex;
     public int selectedEpisodeIndex;
     protected ShowDetails showDetails;
@@ -147,13 +147,13 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     public static NetflixDialogFrag create(final String s, final String s2, final boolean b) {
         final EpisodesFrag episodesFrag = new EpisodesFrag();
-        episodesFrag.setStyle(1, 2131558721);
+        episodesFrag.setStyle(1, 2131361924);
         return applyCreateArgs(episodesFrag, s, s2, b, false);
     }
     
     public static NetflixDialogFrag createEpisodes(final String s, final String s2, final boolean b) {
         final EpisodesFrag episodesFrag = new EpisodesFrag();
-        episodesFrag.setStyle(1, 2131558721);
+        episodesFrag.setStyle(1, 2131361924);
         return applyCreateArgs(episodesFrag, s, s2, b, true);
     }
     
@@ -182,22 +182,6 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         }
     }
     
-    private void setSpinnerSelection() {
-        int n;
-        if ((n = this.currSeasonIndex) == -1) {
-            n = this.spinner.tryGetSeasonIndexBySeasonNumber(this.showDetails.getCurrentSeasonNumber());
-            this.currSeasonIndex = n;
-        }
-        if (n < 0) {
-            Log.v("EpisodesFrag", "No valid season index found");
-            return;
-        }
-        if (Log.isLoggable()) {
-            Log.v("EpisodesFrag", "Setting current season to: " + n);
-        }
-        this.spinner.setNonTouchSelection(n);
-    }
-    
     private void setupSeasonsSpinnerListener() {
         this.spinner.setOnItemSelectedListener((AdapterView$OnItemSelectedListener)new EpisodesFrag$3(this));
     }
@@ -220,7 +204,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         }
     }
     
-    protected ViewGroup createSeasonsSpinnerGroup() {
+    protected ViewGroup createSeasonsSelectorGroup() {
         SeasonsSpinner spinner;
         if (Build$VERSION.SDK_INT >= 21) {
             spinner = new SeasonsSpinnerLollipop((Context)this.getActivity());
@@ -231,8 +215,8 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.spinner = spinner;
         this.setupSeasonsSpinnerAdapter();
         this.setupSeasonsSpinnerListener();
-        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131230820);
-        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131296414)));
+        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131558590);
+        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131296623)));
         this.spinnerViewGroup.addView((View)this.spinner, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2, 16));
         return this.spinnerViewGroup;
     }
@@ -281,7 +265,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     }
     
     protected int getlayoutId() {
-        return 2130903181;
+        return 2130903214;
     }
     
     protected void initDetailsViewGroup() {
@@ -429,12 +413,28 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.detailsViewGroup.setVisibility(visibility);
     }
     
+    protected void setSpinnerSelection() {
+        int n;
+        if ((n = this.currSeasonIndex) == -1) {
+            n = this.spinner.tryGetSeasonIndexBySeasonNumber(this.showDetails.getCurrentSeasonNumber());
+            this.currSeasonIndex = n;
+        }
+        if (n < 0) {
+            Log.v("EpisodesFrag", "No valid season index found");
+            return;
+        }
+        if (Log.isLoggable()) {
+            Log.v("EpisodesFrag", "Setting current season to: " + n);
+        }
+        this.spinner.setNonTouchSelection(n);
+    }
+    
     protected DetailsPageParallaxScrollListener setupDetailsPageParallaxScrollListener() {
         if (this.getActivity() != null && this.recyclerView != null && this.recyclerView.getContext() instanceof NetflixActivity && (DeviceUtils.isNotTabletByContext((Context)this.getActivity()) || DeviceUtils.isPortrait((Context)this.getActivity()))) {
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, this.recyclerView.getResources().getColor(2131230829), 0, null);
+                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, this.recyclerView.getResources().getColor(2131558586), 0, null);
                 this.recyclerView.setOnScrollListener(onScrollListener);
                 return onScrollListener;
             }
@@ -473,12 +473,12 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new EpisodesFrag$4(this));
-        adapter.setItemBackgroundColor(2130837897);
+        adapter.setItemBackgroundColor(2130837939);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     
     protected void setupSeasonsSpinnerGroup() {
-        this.spinnerViewGroup = this.createSeasonsSpinnerGroup();
+        this.spinnerViewGroup = this.createSeasonsSelectorGroup();
         if (this.getArguments().getBoolean("extra_show_episodes_selector") || (DeviceUtils.isTabletByContext((Context)this.getActivity()) && DeviceUtils.isLandscape((Context)this.getActivity()))) {
             this.addSpinnerAsHeader();
             return;
@@ -506,6 +506,21 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
             this.spinnerViewGroup.setVisibility(0);
         }
         this.postSetSpinnerSelectionRunnable();
+    }
+    
+    protected void switchSeason(final int currSeasonIndex, final boolean b) {
+        if (Log.isLoggable()) {
+            Log.v("EpisodesFrag", "Season spinner selected position: " + currSeasonIndex);
+        }
+        this.invalidateCachedEpisodesIfDAB();
+        this.currSeasonDetails = (SeasonDetails)this.spinner.getItemAtPosition(currSeasonIndex);
+        this.currSeasonIndex = currSeasonIndex;
+        if (this.currSeasonDetails == null && Log.isLoggable()) {
+            Log.w("EpisodesFrag", "null season details retrieved for position: " + currSeasonIndex);
+        }
+        this.leWrapper.showLoadingView(true);
+        ((EpisodesAdapter)this.episodesAdapter).updateSeasonDetails(this.currSeasonDetails);
+        this.selectedEpisodeIndex = -1;
     }
     
     public void updateEpisodeSelection() {

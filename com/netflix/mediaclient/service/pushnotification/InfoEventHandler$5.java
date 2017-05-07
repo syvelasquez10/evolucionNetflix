@@ -26,7 +26,7 @@ class InfoEventHandler$5 implements Runnable
     public void run() {
         Log.i("nf_push_info", "fetching preAppData via runnable");
         if (InfoEventHandler.mService != null) {
-            InfoEventHandler.mService.getBrowse().fetchPreAppData(5, 5);
+            InfoEventHandler.mService.getBrowse().fetchPreAppData(6, 6);
         }
     }
 }

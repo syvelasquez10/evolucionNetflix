@@ -16,11 +16,10 @@ class TopPanel$7 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        final PlayerActivity context = this.this$0.context;
-        if (context != null) {
-            context.extendTimeoutTimer();
+        if (this.this$0.playerFragment.isActivityValid()) {
+            this.this$0.playerFragment.extendTimeoutTimer();
+            this.this$0.displayMdxTargets();
         }
-        this.this$0.displayMdxTargets();
         return true;
     }
 }

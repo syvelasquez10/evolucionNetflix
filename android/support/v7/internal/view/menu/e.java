@@ -5,64 +5,69 @@
 package android.support.v7.internal.view.menu;
 
 import java.util.Iterator;
+import android.support.v4.util.ArrayMap;
 import android.view.SubMenu;
-import android.support.v4.internal.view.SupportMenuItem;
+import android.support.v4.internal.view.SupportSubMenu;
 import android.view.MenuItem;
-import java.util.HashMap;
+import android.support.v4.internal.view.SupportMenuItem;
+import java.util.Map;
+import android.content.Context;
 
 abstract class e<T> extends f<T>
 {
-    private HashMap<MenuItem, SupportMenuItem> b;
-    private HashMap<SubMenu, SubMenu> c;
+    final Context a;
+    private Map<SupportMenuItem, MenuItem> c;
+    private Map<SupportSubMenu, SubMenu> d;
     
-    e(final T t) {
+    e(final Context a, final T t) {
         super(t);
+        this.a = a;
     }
     
-    final SupportMenuItem a(final MenuItem menuItem) {
-        if (menuItem != null) {
-            if (this.b == null) {
-                this.b = new HashMap<MenuItem, SupportMenuItem>();
-            }
-            SupportMenuItem b;
-            if ((b = this.b.get(menuItem)) == null) {
-                b = ab.b(menuItem);
-                this.b.put(menuItem, b);
-            }
-            return b;
-        }
-        return null;
-    }
-    
-    final SubMenu a(final SubMenu subMenu) {
-        if (subMenu != null) {
+    final MenuItem a(MenuItem a) {
+        if (a instanceof SupportMenuItem) {
+            final SupportMenuItem supportMenuItem = (SupportMenuItem)a;
             if (this.c == null) {
-                this.c = new HashMap<SubMenu, SubMenu>();
+                this.c = new ArrayMap<SupportMenuItem, MenuItem>();
             }
-            Object a;
-            if ((a = this.c.get(subMenu)) == null) {
-                a = ab.a(subMenu);
-                this.c.put(subMenu, (SubMenu)a);
+            if ((a = this.c.get(a)) == null) {
+                a = ab.a(this.a, supportMenuItem);
+                this.c.put(supportMenuItem, a);
             }
-            return (SubMenu)a;
+            return a;
         }
-        return null;
+        return a;
+    }
+    
+    final SubMenu a(SubMenu a) {
+        if (a instanceof SupportSubMenu) {
+            final SupportSubMenu supportSubMenu = (SupportSubMenu)a;
+            if (this.d == null) {
+                this.d = new ArrayMap<SupportSubMenu, SubMenu>();
+            }
+            if ((a = this.d.get(supportSubMenu)) == null) {
+                a = ab.a(this.a, supportSubMenu);
+                this.d.put(supportSubMenu, a);
+            }
+            return a;
+        }
+        return a;
     }
     
     final void a() {
-        if (this.b != null) {
-            this.b.clear();
-        }
         if (this.c != null) {
             this.c.clear();
+        }
+        if (this.d != null) {
+            this.d.clear();
         }
     }
     
     final void a(final int n) {
-        if (this.b != null) {
-            final Iterator<MenuItem> iterator = this.b.keySet().iterator();
+        if (this.c != null) {
+            final Iterator<SupportMenuItem> iterator = this.c.keySet().iterator();
             while (iterator.hasNext()) {
-                if (n == iterator.next().getGroupId()) {
+                if (n == ((MenuItem)iterator.next()).getGroupId()) {
                     iterator.remove();
                 }
             }
@@ -70,10 +75,10 @@ abstract class e<T> extends f<T>
     }
     
     final void b(final int n) {
-        if (this.b != null) {
-            final Iterator<MenuItem> iterator = this.b.keySet().iterator();
+        if (this.c != null) {
+            final Iterator<SupportMenuItem> iterator = this.c.keySet().iterator();
             while (iterator.hasNext()) {
-                if (n == iterator.next().getItemId()) {
+                if (n == ((MenuItem)iterator.next()).getItemId()) {
                     iterator.remove();
                 }
             }

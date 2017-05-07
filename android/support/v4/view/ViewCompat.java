@@ -5,6 +5,8 @@
 package android.support.v4.view;
 
 import android.graphics.Paint;
+import android.graphics.PorterDuff$Mode;
+import android.content.res.ColorStateList;
 import android.view.ViewParent;
 import android.view.View;
 import android.os.Build$VERSION;
@@ -16,7 +18,7 @@ public class ViewCompat
     static {
         final int sdk_INT = Build$VERSION.SDK_INT;
         if (sdk_INT >= 21) {
-            IMPL = new ViewCompat$Api21ViewCompatImpl();
+            IMPL = new ViewCompat$LollipopViewCompatImpl();
             return;
         }
         if (sdk_INT >= 19) {
@@ -62,8 +64,20 @@ public class ViewCompat
         return ViewCompat.IMPL.canScrollVertically(view, n);
     }
     
+    public static int combineMeasuredStates(final int n, final int n2) {
+        return ViewCompat.IMPL.combineMeasuredStates(n, n2);
+    }
+    
+    public static WindowInsetsCompat dispatchApplyWindowInsets(final View view, final WindowInsetsCompat windowInsetsCompat) {
+        return ViewCompat.IMPL.dispatchApplyWindowInsets(view, windowInsetsCompat);
+    }
+    
     public static float getAlpha(final View view) {
         return ViewCompat.IMPL.getAlpha(view);
+    }
+    
+    public static float getElevation(final View view) {
+        return ViewCompat.IMPL.getElevation(view);
     }
     
     public static boolean getFitsSystemWindows(final View view) {
@@ -72,6 +86,10 @@ public class ViewCompat
     
     public static int getImportantForAccessibility(final View view) {
         return ViewCompat.IMPL.getImportantForAccessibility(view);
+    }
+    
+    public static int getLayerType(final View view) {
+        return ViewCompat.IMPL.getLayerType(view);
     }
     
     public static int getLayoutDirection(final View view) {
@@ -118,16 +136,40 @@ public class ViewCompat
         return ViewCompat.IMPL.getWindowSystemUiVisibility(view);
     }
     
+    public static float getZ(final View view) {
+        return ViewCompat.IMPL.getZ(view);
+    }
+    
     public static boolean hasAccessibilityDelegate(final View view) {
         return ViewCompat.IMPL.hasAccessibilityDelegate(view);
+    }
+    
+    public static boolean hasOverlappingRendering(final View view) {
+        return ViewCompat.IMPL.hasOverlappingRendering(view);
     }
     
     public static boolean hasTransientState(final View view) {
         return ViewCompat.IMPL.hasTransientState(view);
     }
     
+    public static boolean isAttachedToWindow(final View view) {
+        return ViewCompat.IMPL.isAttachedToWindow(view);
+    }
+    
+    public static boolean isLaidOut(final View view) {
+        return ViewCompat.IMPL.isLaidOut(view);
+    }
+    
+    public static boolean isPaddingRelative(final View view) {
+        return ViewCompat.IMPL.isPaddingRelative(view);
+    }
+    
     public static void jumpDrawablesToCurrentState(final View view) {
         ViewCompat.IMPL.jumpDrawablesToCurrentState(view);
+    }
+    
+    public static WindowInsetsCompat onApplyWindowInsets(final View view, final WindowInsetsCompat windowInsetsCompat) {
+        return ViewCompat.IMPL.onApplyWindowInsets(view, windowInsetsCompat);
     }
     
     public static void postInvalidateOnAnimation(final View view) {
@@ -154,8 +196,20 @@ public class ViewCompat
         ViewCompat.IMPL.setAccessibilityDelegate(view, accessibilityDelegateCompat);
     }
     
+    public static void setActivated(final View view, final boolean b) {
+        ViewCompat.IMPL.setActivated(view, b);
+    }
+    
     public static void setAlpha(final View view, final float n) {
         ViewCompat.IMPL.setAlpha(view, n);
+    }
+    
+    public static void setBackgroundTintList(final View view, final ColorStateList list) {
+        ViewCompat.IMPL.setBackgroundTintList(view, list);
+    }
+    
+    public static void setBackgroundTintMode(final View view, final PorterDuff$Mode porterDuff$Mode) {
+        ViewCompat.IMPL.setBackgroundTintMode(view, porterDuff$Mode);
     }
     
     public static void setElevation(final View view, final float n) {
@@ -174,8 +228,12 @@ public class ViewCompat
         ViewCompat.IMPL.setOnApplyWindowInsetsListener(view, onApplyWindowInsetsListener);
     }
     
-    public static void setScaleY(final View view, final float n) {
-        ViewCompat.IMPL.setScaleY(view, n);
+    public static void setPaddingRelative(final View view, final int n, final int n2, final int n3, final int n4) {
+        ViewCompat.IMPL.setPaddingRelative(view, n, n2, n3, n4);
+    }
+    
+    public static void setSaveFromParentEnabled(final View view, final boolean b) {
+        ViewCompat.IMPL.setSaveFromParentEnabled(view, b);
     }
     
     public static void setTranslationX(final View view, final float n) {

@@ -17,25 +17,25 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class CheckServerAuthResult implements SafeParcelable
 {
     public static final Parcelable$Creator<CheckServerAuthResult> CREATOR;
-    final int zzCY;
-    final boolean zzaJX;
-    final List<Scope> zzaJY;
+    final int mVersionCode;
+    final boolean zzaOk;
+    final List<Scope> zzaOl;
     
     static {
         CREATOR = (Parcelable$Creator)new zzc();
     }
     
-    CheckServerAuthResult(final int zzCY, final boolean zzaJX, final List<Scope> zzaJY) {
-        this.zzCY = zzCY;
-        this.zzaJX = zzaJX;
-        this.zzaJY = zzaJY;
+    CheckServerAuthResult(final int mVersionCode, final boolean zzaOk, final List<Scope> zzaOl) {
+        this.mVersionCode = mVersionCode;
+        this.zzaOk = zzaOk;
+        this.zzaOl = zzaOl;
     }
     
     public CheckServerAuthResult(final boolean b, final Set<Scope> set) {
-        this(1, b, zzf(set));
+        this(1, b, zze(set));
     }
     
-    private static List<Scope> zzf(final Set<Scope> set) {
+    private static List<Scope> zze(final Set<Scope> set) {
         if (set == null) {
             return Collections.emptyList();
         }

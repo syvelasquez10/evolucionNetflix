@@ -14,47 +14,47 @@ import android.os.Parcelable$Creator;
 
 public class zzc implements Parcelable$Creator<CheckServerAuthResult>
 {
-    static void zza(final CheckServerAuthResult checkServerAuthResult, final Parcel parcel, int zzac) {
-        zzac = zzb.zzac(parcel);
-        zzb.zzc(parcel, 1, checkServerAuthResult.zzCY);
-        zzb.zza(parcel, 2, checkServerAuthResult.zzaJX);
-        zzb.zzc(parcel, 3, checkServerAuthResult.zzaJY, false);
-        zzb.zzH(parcel, zzac);
+    static void zza(final CheckServerAuthResult checkServerAuthResult, final Parcel parcel, int zzak) {
+        zzak = zzb.zzak(parcel);
+        zzb.zzc(parcel, 1, checkServerAuthResult.mVersionCode);
+        zzb.zza(parcel, 2, checkServerAuthResult.zzaOk);
+        zzb.zzc(parcel, 3, checkServerAuthResult.zzaOl, false);
+        zzb.zzH(parcel, zzak);
     }
     
-    public CheckServerAuthResult zzfZ(final Parcel parcel) {
+    public CheckServerAuthResult zzgk(final Parcel parcel) {
         boolean zzc = false;
-        final int zzab = zza.zzab(parcel);
+        final int zzaj = zza.zzaj(parcel);
         List<Scope> zzc2 = null;
         int zzg = 0;
-        while (parcel.dataPosition() < zzab) {
-            final int zzaa = zza.zzaa(parcel);
-            switch (zza.zzbA(zzaa)) {
+        while (parcel.dataPosition() < zzaj) {
+            final int zzai = zza.zzai(parcel);
+            switch (zza.zzbH(zzai)) {
                 default: {
-                    zza.zzb(parcel, zzaa);
+                    zza.zzb(parcel, zzai);
                     continue;
                 }
                 case 1: {
-                    zzg = zza.zzg(parcel, zzaa);
+                    zzg = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 2: {
-                    zzc = zza.zzc(parcel, zzaa);
+                    zzc = zza.zzc(parcel, zzai);
                     continue;
                 }
                 case 3: {
-                    zzc2 = zza.zzc(parcel, zzaa, Scope.CREATOR);
+                    zzc2 = zza.zzc(parcel, zzai, Scope.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzab) {
-            throw new zza$zza("Overread allowed size end=" + zzab, parcel);
+        if (parcel.dataPosition() != zzaj) {
+            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
         }
         return new CheckServerAuthResult(zzg, zzc, zzc2);
     }
     
-    public CheckServerAuthResult[] zziP(final int n) {
+    public CheckServerAuthResult[] zziZ(final int n) {
         return new CheckServerAuthResult[n];
     }
 }

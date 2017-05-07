@@ -4,13 +4,21 @@
 
 package com.google.android.gms.common.api;
 
-import com.google.android.gms.common.internal.zze;
+import java.util.Collections;
+import java.util.List;
+import com.google.android.gms.common.internal.zzf;
 import android.os.Looper;
 import android.content.Context;
 
-public interface Api$zza<T extends Api$Client, O>
+public abstract class Api$zza<T extends Api$zzb, O>
 {
-    int getPriority();
+    public int getPriority() {
+        return Integer.MAX_VALUE;
+    }
     
-    T zza(final Context p0, final Looper p1, final zze p2, final O p3, final GoogleApiClient$ConnectionCallbacks p4, final GoogleApiClient$OnConnectionFailedListener p5);
+    public abstract T zza(final Context p0, final Looper p1, final zzf p2, final O p3, final GoogleApiClient$ConnectionCallbacks p4, final GoogleApiClient$OnConnectionFailedListener p5);
+    
+    public List<Scope> zzl(final O o) {
+        return Collections.emptyList();
+    }
 }

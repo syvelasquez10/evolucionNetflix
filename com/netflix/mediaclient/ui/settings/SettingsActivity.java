@@ -24,7 +24,7 @@ public class SettingsActivity extends FragmentHostActivity
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903097;
+        return 2130903111;
     }
     
     @Override
@@ -38,7 +38,7 @@ public class SettingsActivity extends FragmentHostActivity
     }
     
     @Override
-    protected boolean showSettingsInMenu() {
+    public boolean showSettingsInMenu() {
         return false;
     }
 }

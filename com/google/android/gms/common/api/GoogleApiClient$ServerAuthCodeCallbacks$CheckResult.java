@@ -8,14 +8,14 @@ import java.util.Set;
 
 public class GoogleApiClient$ServerAuthCodeCallbacks$CheckResult
 {
-    private boolean zzWH;
-    private Set<Scope> zzWI;
+    private boolean zzZo;
+    private Set<Scope> zzZp;
     
-    public boolean zzmy() {
-        return this.zzWH;
+    public boolean zznl() {
+        return this.zzZo;
     }
     
-    public Set<Scope> zzmz() {
-        return this.zzWI;
+    public Set<Scope> zznm() {
+        return this.zzZp;
     }
 }

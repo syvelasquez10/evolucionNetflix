@@ -7,9 +7,7 @@ package com.netflix.mediaclient.service.configuration.drm;
 import android.media.MediaDrm$ProvisionRequest;
 import com.netflix.mediaclient.util.CryptoUtils;
 import java.util.Arrays;
-import android.support.v4.content.LocalBroadcastManager;
-import android.content.Intent;
-import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.StringUtils;
@@ -27,6 +25,7 @@ import com.netflix.mediaclient.Log;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
+import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import android.content.Context;
 import android.media.MediaDrm;
 import java.util.UUID;
@@ -47,6 +46,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     private Context mContext;
     private String mCurrentAccountId;
     private boolean mDrmSystemChanged;
+    private IErrorHandler mErrorHandler;
     private ErrorLogging mErrorLogging;
     private AccountKeyMap mKeyIdsMap;
     private ServiceAgent$UserAgentInterface mUser;
@@ -59,7 +59,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         WIDEVINE_SCHEME = new UUID(-1301668207276963122L, -6645017420763422227L);
     }
     
-    WidevineDrmManager(final Context mContext, final ServiceAgent$UserAgentInterface mUser, final ErrorLogging mErrorLogging, final DrmManager$DrmReadyCallback mCallback, final boolean b) {
+    WidevineDrmManager(final Context mContext, final ServiceAgent$UserAgentInterface mUser, final ErrorLogging mErrorLogging, final IErrorHandler mErrorHandler, final DrmManager$DrmReadyCallback mCallback, final boolean b) {
         this.mWidevineProvisioned = new AtomicBoolean(false);
         this.nccpCryptoFactoryCryptoSession = new WidevineDrmManager$CryptoSession(null);
         this.isWidevineL3 = false;
@@ -69,6 +69,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         this.mCallback = mCallback;
         this.mUser = mUser;
         this.mErrorLogging = mErrorLogging;
+        this.mErrorHandler = mErrorHandler;
         this.mContext = mContext;
         this.drm = new MediaDrm(WidevineDrmManager.WIDEVINE_SCHEME);
         if (b) {
@@ -243,30 +244,34 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     
     private void mediaDrmFailure(final StatusCode statusCode, final Throwable t) {
         while (true) {
+            // monitorenter(this)
+            final WidevineDrmManager$2 widevineDrmManager$2 = null;
             while (true) {
-                Label_0151: {
-                    synchronized (this) {
+                Label_0114: {
+                    try {
                         this.mErrorLogging.logHandledException(this.createMediaDrmErrorMessage(statusCode, t));
+                        Runnable runnable;
                         if (StatusCode.DRM_FAILURE_MEDIADRM_WIDEVINE_PLUGIN_CHANGED == statusCode) {
                             Log.d(WidevineDrmManager.TAG, "MediaDrm failed, unregister device and logout user");
-                            new BackgroundTask().execute(new WidevineDrmManager$2(this));
+                            runnable = new WidevineDrmManager$2(this);
                         }
                         else {
                             if (StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE != statusCode && StatusCode.DRM_FAILURE_MEDIADRM_KEYS_RESTORE_FAILED != statusCode) {
-                                break Label_0151;
+                                break Label_0114;
                             }
                             Log.d(WidevineDrmManager.TAG, "MediaDrm provide key update failed or restore keys failed. Unregister device, logout user, and kill app process after error is displayed.");
-                            new BackgroundTask().execute(new WidevineDrmManager$3(this));
-                            final Intent intent = new Intent("com.netflix.mediaclient.ui.error.ACTION_DISPLAY_ERROR");
-                            intent.putExtra("status", statusCode.getValue());
-                            intent.putExtra("message_id", 2131493376);
-                            LocalBroadcastManager.getInstance(this.mContext).sendBroadcast(intent);
+                            runnable = new WidevineDrmManager$3(this);
                         }
+                        this.mErrorHandler.addError(new WidevineErrorDescriptor(this.mContext, statusCode, runnable));
                         return;
                     }
+                    finally {
+                    }
+                    // monitorexit(this)
                 }
                 Log.d(WidevineDrmManager.TAG, "MediaDrm failed, fail back to legacy crypto scheme");
                 PreferenceUtils.putBooleanPref(this.mContext, "disable_widevine", true);
+                Runnable runnable = widevineDrmManager$2;
                 continue;
             }
         }
@@ -579,6 +584,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                                 Log.e(WidevineDrmManager.TAG, "We failed to update key response...", t);
                                 this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE, t);
                             }
+                            return b;
                             Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
                             return b;
                         }

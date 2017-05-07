@@ -4,15 +4,20 @@
 
 package android.support.v4.internal.view;
 
+import android.support.v4.view.MenuItemCompat$OnActionExpandListener;
 import android.support.v4.view.ActionProvider;
 import android.view.View;
 import android.view.MenuItem;
 
 public interface SupportMenuItem extends MenuItem
 {
+    boolean collapseActionView();
+    
     boolean expandActionView();
     
     View getActionView();
+    
+    ActionProvider getSupportActionProvider();
     
     boolean isActionViewExpanded();
     
@@ -22,5 +27,9 @@ public interface SupportMenuItem extends MenuItem
     
     void setShowAsAction(final int p0);
     
+    MenuItem setShowAsActionFlags(final int p0);
+    
     SupportMenuItem setSupportActionProvider(final ActionProvider p0);
+    
+    SupportMenuItem setSupportOnActionExpandListener(final MenuItemCompat$OnActionExpandListener p0);
 }

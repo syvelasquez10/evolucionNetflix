@@ -4,6 +4,7 @@
 
 package android.support.v4.app;
 
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.util.DebugUtils;
 import java.lang.reflect.Modifier;
 import java.io.PrintWriter;
@@ -12,8 +13,9 @@ import android.util.Log;
 import android.support.v4.content.Loader;
 import android.os.Bundle;
 import android.support.v4.content.Loader$OnLoadCompleteListener;
+import android.support.v4.content.Loader$OnLoadCanceledListener;
 
-final class LoaderManagerImpl$LoaderInfo implements Loader$OnLoadCompleteListener<Object>
+final class LoaderManagerImpl$LoaderInfo implements Loader$OnLoadCanceledListener<Object>, Loader$OnLoadCompleteListener<Object>
 {
     final Bundle mArgs;
     LoaderManager$LoaderCallbacks<Object> mCallbacks;
@@ -44,30 +46,39 @@ final class LoaderManagerImpl$LoaderInfo implements Loader$OnLoadCompleteListene
         }
         while (true) {
             Label_0158: {
-                if (this.this$0.mActivity == null) {
+                if (this.this$0.mHost == null) {
                     break Label_0158;
                 }
-                final String mNoTransactionsBecause = this.this$0.mActivity.mFragments.mNoTransactionsBecause;
-                this.this$0.mActivity.mFragments.mNoTransactionsBecause = "onLoadFinished";
+                final String mNoTransactionsBecause = this.this$0.mHost.mFragmentManager.mNoTransactionsBecause;
+                this.this$0.mHost.mFragmentManager.mNoTransactionsBecause = "onLoadFinished";
                 try {
                     if (LoaderManagerImpl.DEBUG) {
                         Log.v("LoaderManager", "  onLoadFinished in " + loader + ": " + loader.dataToString(o));
                     }
                     this.mCallbacks.onLoadFinished(loader, o);
-                    if (this.this$0.mActivity != null) {
-                        this.this$0.mActivity.mFragments.mNoTransactionsBecause = mNoTransactionsBecause;
+                    if (this.this$0.mHost != null) {
+                        this.this$0.mHost.mFragmentManager.mNoTransactionsBecause = mNoTransactionsBecause;
                     }
                     this.mDeliveredData = true;
                     return;
                 }
                 finally {
-                    if (this.this$0.mActivity != null) {
-                        this.this$0.mActivity.mFragments.mNoTransactionsBecause = mNoTransactionsBecause;
+                    if (this.this$0.mHost != null) {
+                        this.this$0.mHost.mFragmentManager.mNoTransactionsBecause = mNoTransactionsBecause;
                     }
                 }
             }
             final String mNoTransactionsBecause = null;
             continue;
+        }
+    }
+    
+    void cancel() {
+        if (LoaderManagerImpl.DEBUG) {
+            Log.v("LoaderManager", "  Canceling: " + this);
+        }
+        if (this.mStarted && this.mLoader != null && this.mListenerRegistered && !this.mLoader.cancelLoad()) {
+            this.onLoadCanceled(this.mLoader);
         }
     }
     
@@ -86,15 +97,15 @@ final class LoaderManagerImpl$LoaderInfo implements Loader$OnLoadCompleteListene
                 if (LoaderManagerImpl.DEBUG) {
                     Log.v("LoaderManager", "  Reseting: " + this);
                 }
-                if (this.this$0.mActivity == null) {
+                if (this.this$0.mHost == null) {
                     break Label_0178;
                 }
-                final String mNoTransactionsBecause = this.this$0.mActivity.mFragments.mNoTransactionsBecause;
-                this.this$0.mActivity.mFragments.mNoTransactionsBecause = "onLoaderReset";
+                final String mNoTransactionsBecause = this.this$0.mHost.mFragmentManager.mNoTransactionsBecause;
+                this.this$0.mHost.mFragmentManager.mNoTransactionsBecause = "onLoaderReset";
                 try {
                     this.mCallbacks.onLoaderReset(this.mLoader);
-                    if (this.this$0.mActivity != null) {
-                        this.this$0.mActivity.mFragments.mNoTransactionsBecause = mNoTransactionsBecause;
+                    if (this.this$0.mHost != null) {
+                        this.this$0.mHost.mFragmentManager.mNoTransactionsBecause = mNoTransactionsBecause;
                     }
                     this.mCallbacks = null;
                     this.mData = null;
@@ -103,6 +114,7 @@ final class LoaderManagerImpl$LoaderInfo implements Loader$OnLoadCompleteListene
                         if (this.mListenerRegistered) {
                             this.mListenerRegistered = false;
                             this.mLoader.unregisterListener(this);
+                            this.mLoader.unregisterOnLoadCanceledListener(this);
                         }
                         this.mLoader.reset();
                     }
@@ -112,8 +124,8 @@ final class LoaderManagerImpl$LoaderInfo implements Loader$OnLoadCompleteListene
                     return;
                 }
                 finally {
-                    if (this.this$0.mActivity != null) {
-                        this.this$0.mActivity.mFragments.mNoTransactionsBecause = mNoTransactionsBecause;
+                    if (this.this$0.mHost != null) {
+                        this.this$0.mHost.mFragmentManager.mNoTransactionsBecause = mNoTransactionsBecause;
                     }
                 }
             }
@@ -185,6 +197,34 @@ final class LoaderManagerImpl$LoaderInfo implements Loader$OnLoadCompleteListene
         }
     }
     
+    public void onLoadCanceled(final Loader<Object> loader) {
+        if (LoaderManagerImpl.DEBUG) {
+            Log.v("LoaderManager", "onLoadCanceled: " + this);
+        }
+        if (this.mDestroyed) {
+            if (LoaderManagerImpl.DEBUG) {
+                Log.v("LoaderManager", "  Ignoring load canceled -- destroyed");
+            }
+        }
+        else if (this.this$0.mLoaders.get(this.mId) != this) {
+            if (LoaderManagerImpl.DEBUG) {
+                Log.v("LoaderManager", "  Ignoring load canceled -- not active");
+            }
+        }
+        else {
+            final LoaderManagerImpl$LoaderInfo mPendingLoader = this.mPendingLoader;
+            if (mPendingLoader != null) {
+                if (LoaderManagerImpl.DEBUG) {
+                    Log.v("LoaderManager", "  Switching to pending loader: " + mPendingLoader);
+                }
+                this.mPendingLoader = null;
+                this.this$0.mLoaders.put(this.mId, null);
+                this.destroy();
+                this.this$0.installLoader(mPendingLoader);
+            }
+        }
+    }
+    
     @Override
     public void onLoadComplete(final Loader<Object> loader, final Object mData) {
         if (LoaderManagerImpl.DEBUG) {
@@ -225,8 +265,8 @@ final class LoaderManagerImpl$LoaderInfo implements Loader$OnLoadCompleteListene
                 loaderManagerImpl$LoaderInfo.destroy();
                 this.this$0.mInactiveLoaders.remove(this.mId);
             }
-            if (this.this$0.mActivity != null && !this.this$0.hasRunningLoaders()) {
-                this.this$0.mActivity.mFragments.startPendingDeferredFragments();
+            if (this.this$0.mHost != null && !this.this$0.hasRunningLoaders()) {
+                this.this$0.mHost.mFragmentManager.startPendingDeferredFragments();
             }
         }
     }
@@ -268,6 +308,7 @@ final class LoaderManagerImpl$LoaderInfo implements Loader$OnLoadCompleteListene
                 }
                 if (!this.mListenerRegistered) {
                     this.mLoader.registerListener(this.mId, this);
+                    this.mLoader.registerOnLoadCanceledListener(this);
                     this.mListenerRegistered = true;
                 }
                 this.mLoader.startLoading();
@@ -283,6 +324,7 @@ final class LoaderManagerImpl$LoaderInfo implements Loader$OnLoadCompleteListene
         if (!this.mRetaining && this.mLoader != null && this.mListenerRegistered) {
             this.mListenerRegistered = false;
             this.mLoader.unregisterListener(this);
+            this.mLoader.unregisterOnLoadCanceledListener(this);
             this.mLoader.stopLoading();
         }
     }

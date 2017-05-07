@@ -24,7 +24,7 @@ public class LoadingAndErrorWrapper extends ErrorWrapper
         this.showLoadingViewRunnable = new LoadingAndErrorWrapper$1(this);
         this.showLoadingViewAnimatedRunnable = new LoadingAndErrorWrapper$2(this);
         this.handler = new Handler(Looper.getMainLooper());
-        (this.loading = view.findViewById(2131427521)).setVisibility(8);
+        (this.loading = view.findViewById(2131624195)).setVisibility(8);
         this.showLoadingView(false);
     }
     

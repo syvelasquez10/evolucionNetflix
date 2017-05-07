@@ -4,6 +4,7 @@
 
 package android.support.v7.widget;
 
+import android.support.v7.appcompat.R$id;
 import android.view.ViewGroup;
 import android.net.Uri$Builder;
 import java.util.List;
@@ -15,6 +16,7 @@ import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.content.res.Resources$NotFoundException;
+import android.support.v4.content.ContextCompat;
 import android.net.Uri;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -27,7 +29,6 @@ import android.support.v7.appcompat.R$attr;
 import android.util.TypedValue;
 import android.graphics.drawable.Drawable;
 import android.database.Cursor;
-import android.support.v7.appcompat.R$layout;
 import android.content.res.ColorStateList;
 import android.app.SearchableInfo;
 import android.app.SearchManager;
@@ -40,22 +41,23 @@ import android.support.v4.widget.ResourceCursorAdapter;
 class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickListener
 {
     private boolean mClosed;
+    private final int mCommitIconResId;
     private int mFlagsCol;
     private int mIconName1Col;
     private int mIconName2Col;
-    private WeakHashMap<String, Drawable$ConstantState> mOutsideDrawablesCache;
-    private Context mProviderContext;
+    private final WeakHashMap<String, Drawable$ConstantState> mOutsideDrawablesCache;
+    private final Context mProviderContext;
     private int mQueryRefinement;
-    private SearchManager mSearchManager;
-    private SearchView mSearchView;
-    private SearchableInfo mSearchable;
+    private final SearchManager mSearchManager;
+    private final SearchView mSearchView;
+    private final SearchableInfo mSearchable;
     private int mText1Col;
     private int mText2Col;
     private int mText2UrlCol;
     private ColorStateList mUrlColor;
     
     public SuggestionsAdapter(final Context mProviderContext, final SearchView mSearchView, final SearchableInfo mSearchable, final WeakHashMap<String, Drawable$ConstantState> mOutsideDrawablesCache) {
-        super(mProviderContext, R$layout.abc_search_dropdown_item_icons_2line, null, true);
+        super(mProviderContext, mSearchView.getSuggestionRowLayout(), null, true);
         this.mClosed = false;
         this.mQueryRefinement = 1;
         this.mText1Col = -1;
@@ -67,6 +69,7 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
         this.mSearchManager = (SearchManager)this.mContext.getSystemService("search");
         this.mSearchView = mSearchView;
         this.mSearchable = mSearchable;
+        this.mCommitIconResId = mSearchView.getSuggestionCommitIconResId();
         this.mProviderContext = mProviderContext;
         this.mOutsideDrawablesCache = mOutsideDrawablesCache;
     }
@@ -315,7 +318,7 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
                 final int int1 = Integer.parseInt(s);
                 final String string = "android.resource://" + this.mProviderContext.getPackageName() + "/" + int1;
                 if ((drawable = this.checkIconCache(string)) == null) {
-                    final Drawable drawable2 = this.mProviderContext.getResources().getDrawable(int1);
+                    final Drawable drawable2 = ContextCompat.getDrawable(this.mProviderContext, int1);
                     this.storeInIconCache(string, drawable2);
                     return drawable2;
                 }
@@ -592,6 +595,7 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
     public View newView(final Context context, final Cursor cursor, final ViewGroup viewGroup) {
         final View view = super.newView(context, cursor, viewGroup);
         view.setTag((Object)new SuggestionsAdapter$ChildViewCache(view));
+        ((ImageView)view.findViewById(R$id.edit_query)).setImageResource(this.mCommitIconResId);
         return view;
     }
     

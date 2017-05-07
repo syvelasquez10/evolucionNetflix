@@ -6,21 +6,21 @@ package com.google.android.gms.common.stats;
 
 public class zzd
 {
-    public static int zzacA;
-    public static int zzacB;
-    public static int zzacC;
-    public static int zzacD;
-    public static int zzacE;
-    public static int zzacy;
-    public static int zzacz;
+    public static int LOG_LEVEL_OFF;
+    public static int zzafJ;
+    public static int zzafK;
+    public static int zzafL;
+    public static int zzafM;
+    public static int zzafN;
+    public static int zzafO;
     
     static {
-        zzd.zzacy = 0;
-        zzd.zzacz = 1;
-        zzd.zzacA = 2;
-        zzd.zzacB = 4;
-        zzd.zzacC = 8;
-        zzd.zzacD = 16;
-        zzd.zzacE = 32;
+        zzd.LOG_LEVEL_OFF = 0;
+        zzd.zzafJ = 1;
+        zzd.zzafK = 2;
+        zzd.zzafL = 4;
+        zzd.zzafM = 8;
+        zzd.zzafN = 16;
+        zzd.zzafO = 32;
     }
 }

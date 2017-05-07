@@ -22,5 +22,8 @@ public enum UIViewLogging$UIViewCommandName
     slidingMenuKidsExit, 
     slidingMenuOpened, 
     socialRecommendButton, 
-    upButton;
+    startPlay, 
+    upButton, 
+    viewMenu, 
+    viewTitleDetails;
 }

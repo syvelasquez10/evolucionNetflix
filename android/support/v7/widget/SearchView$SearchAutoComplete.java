@@ -11,7 +11,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.annotation.TargetApi;
 import android.support.v7.appcompat.R$dimen;
-import android.graphics.drawable.Drawable;
 import android.text.style.ImageSpan;
 import android.text.SpannableStringBuilder;
 import android.net.Uri;
@@ -19,6 +18,7 @@ import android.os.Build$VERSION;
 import android.content.Intent;
 import android.support.v4.widget.CursorAdapter;
 import android.app.SearchableInfo;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Drawable$ConstantState;
 import java.util.WeakHashMap;
 import android.view.View$OnClickListener;
@@ -26,42 +26,32 @@ import android.view.View$OnFocusChangeListener;
 import android.widget.ImageView;
 import android.os.Bundle;
 import android.support.v7.view.CollapsibleActionView;
+import android.widget.AutoCompleteTextView;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.view.KeyEvent$DispatcherState;
 import android.view.KeyEvent;
 import android.graphics.Rect;
-import android.support.v7.internal.widget.TintTypedArray;
+import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.support.v7.internal.widget.TintManager;
-import android.widget.AutoCompleteTextView;
 
-public class SearchView$SearchAutoComplete extends AutoCompleteTextView
+public class SearchView$SearchAutoComplete extends AppCompatAutoCompleteTextView
 {
-    private final int[] POPUP_WINDOW_ATTRS;
     private SearchView mSearchView;
     private int mThreshold;
-    private final TintManager mTintManager;
     
     public SearchView$SearchAutoComplete(final Context context) {
         this(context, null);
     }
     
     public SearchView$SearchAutoComplete(final Context context, final AttributeSet set) {
-        this(context, set, 16842859);
+        this(context, set, R$attr.autoCompleteTextViewStyle);
     }
     
     public SearchView$SearchAutoComplete(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.POPUP_WINDOW_ATTRS = new int[] { 16843126 };
         this.mThreshold = this.getThreshold();
-        final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, set, this.POPUP_WINDOW_ATTRS, n, 0);
-        if (obtainStyledAttributes.hasValue(0)) {
-            this.setDropDownBackgroundDrawable(obtainStyledAttributes.getDrawable(0));
-        }
-        obtainStyledAttributes.recycle();
-        this.mTintManager = obtainStyledAttributes.getTintManager();
     }
     
     public boolean enoughToFilter() {
@@ -111,10 +101,6 @@ public class SearchView$SearchAutoComplete extends AutoCompleteTextView
     }
     
     protected void replaceText(final CharSequence charSequence) {
-    }
-    
-    public void setDropDownBackgroundResource(final int n) {
-        this.setDropDownBackgroundDrawable(this.mTintManager.getDrawable(n));
     }
     
     void setSearchView(final SearchView mSearchView) {

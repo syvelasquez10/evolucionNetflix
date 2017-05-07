@@ -5,8 +5,6 @@
 package com.netflix.mediaclient.ui.social.notifications;
 
 import android.os.Parcelable;
-import android.widget.ListAdapter;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.util.SocialUtils;
@@ -15,47 +13,58 @@ import android.app.Activity;
 import java.util.List;
 import java.util.ArrayList;
 import android.content.IntentFilter;
-import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
+import com.netflix.mediaclient.ui.common.PlayContextImp;
+import org.json.JSONException;
+import com.netflix.model.leafs.social.SocialNotificationsListSummary;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import android.widget.ListAdapter;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import org.json.JSONObject;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.HashSet;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.Set;
 import com.netflix.mediaclient.android.widget.StaticListView;
+import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import android.content.Context;
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import android.view.View;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
+import com.netflix.mediaclient.ui.common.PlayContext;
+import android.view.View$OnClickListener;
 
-class NotificationsFrag$2 extends LoggingManagerCallback
+class NotificationsFrag$2 implements View$OnClickListener
 {
     final /* synthetic */ NotificationsFrag this$0;
+    final /* synthetic */ PlayContext val$playContext;
+    final /* synthetic */ int val$position;
+    final /* synthetic */ SocialNotificationSummary val$summary;
+    final /* synthetic */ String val$videoId;
+    final /* synthetic */ VideoType val$videoType;
     
-    NotificationsFrag$2(final NotificationsFrag this$0, final String s) {
+    NotificationsFrag$2(final NotificationsFrag this$0, final String val$videoId, final PlayContext val$playContext, final VideoType val$videoType, final SocialNotificationSummary val$summary, final int val$position) {
         this.this$0 = this$0;
-        super(s);
+        this.val$videoId = val$videoId;
+        this.val$playContext = val$playContext;
+        this.val$videoType = val$videoType;
+        this.val$summary = val$summary;
+        this.val$position = val$position;
     }
     
-    @Override
-    public void onNotificationsListFetched(final SocialNotificationsList list, final Status status) {
-        super.onNotificationsListFetched(list, status);
-        if (!this.this$0.checkForNetworkError(status)) {
-            this.this$0.mLoadMoreAvailable = (list != null && list.getSocialNotifications() != null && list.getSocialNotifications().size() == this.this$0.getNumNotificationsPerPage());
-            this.this$0.mNotifications = list;
-            this.this$0.mWereNotificationsFetched = true;
-            this.this$0.refreshNotificationsListStatus();
-            if (this.this$0.mAdapter != null) {
-                this.this$0.mAdapter.notifyDataSetChanged();
-            }
-        }
+    public void onClick(final View view) {
+        this.this$0.playVideo(this.val$videoId, this.val$playContext, this.val$videoType);
+        UIViewLogUtils.reportUIViewCommandStarted((Context)this.this$0.getActivity(), UIViewLogging$UIViewCommandName.startPlay, IClientLogging$ModalView.menuPanel, null, null, this.this$0.getModelObject(this.val$summary, this.val$position));
+        UIViewLogUtils.reportUIViewCommandEnded((Context)this.this$0.getActivity());
     }
 }

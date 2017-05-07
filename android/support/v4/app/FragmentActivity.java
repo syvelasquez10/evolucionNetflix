@@ -4,54 +4,49 @@
 
 package android.support.v4.app;
 
+import android.support.v4.util.SimpleArrayMap;
 import android.view.MenuItem;
 import android.view.KeyEvent;
-import android.util.AttributeSet;
-import android.content.Context;
 import android.view.Menu;
-import java.util.ArrayList;
 import android.os.Parcelable;
-import android.view.LayoutInflater$Factory;
 import android.os.Bundle;
 import android.content.res.Configuration;
+import java.util.List;
+import java.util.ArrayList;
 import android.util.Log;
 import android.content.Intent;
 import android.os.Build$VERSION;
 import java.io.FileDescriptor;
+import android.util.AttributeSet;
+import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources$NotFoundException;
+import android.app.Activity;
 import android.view.ViewGroup;
 import android.view.View;
 import java.io.PrintWriter;
 import android.os.Handler;
-import android.support.v4.util.SimpleArrayMap;
-import android.app.Activity;
 
-public class FragmentActivity extends Activity
+public class FragmentActivity extends BaseFragmentActivityHoneycomb implements ActivityCompat$OnRequestPermissionsResultCallback, ActivityCompatApi23$RequestPermissionsRequestCodeValidator
 {
     static final String FRAGMENTS_TAG = "android:support:fragments";
     private static final int HONEYCOMB = 11;
     static final int MSG_REALLY_STOPPED = 1;
     static final int MSG_RESUME_PENDING = 2;
     private static final String TAG = "FragmentActivity";
-    SimpleArrayMap<String, LoaderManagerImpl> mAllLoaderManagers;
-    boolean mCheckedForLoaderManager;
-    final FragmentContainer mContainer;
     boolean mCreated;
-    final FragmentManagerImpl mFragments;
+    final FragmentController mFragments;
     final Handler mHandler;
-    LoaderManagerImpl mLoaderManager;
-    boolean mLoadersStarted;
     boolean mOptionsMenuInvalidated;
     boolean mReallyStopped;
+    boolean mRequestedPermissionsFromFragment;
     boolean mResumed;
     boolean mRetaining;
     boolean mStopped;
     
     public FragmentActivity() {
         this.mHandler = new FragmentActivity$1(this);
-        this.mFragments = new FragmentManagerImpl();
-        this.mContainer = new FragmentActivity$2(this);
+        this.mFragments = FragmentController.createController(new FragmentActivity$HostCallbacks(this));
     }
     
     private void dumpViewHierarchy(String string, final PrintWriter printWriter, final View view) {
@@ -72,6 +67,18 @@ public class FragmentActivity extends Activity
                 }
             }
         }
+    }
+    
+    private void requestPermissionsFromFragment(final Fragment fragment, final String[] array, final int n) {
+        if (n == -1) {
+            ActivityCompat.requestPermissions(this, array, n);
+            return;
+        }
+        if ((n & 0xFFFFFF00) != 0x0) {
+            throw new IllegalArgumentException("Can only use lower 8 bits for requestCode");
+        }
+        this.mRequestedPermissionsFromFragment = true;
+        ActivityCompat.requestPermissions(this, array, (fragment.mIndex + 1 << 8) + (n & 0xFF));
     }
     
     private static String viewToString(final View view) {
@@ -102,22 +109,21 @@ public class FragmentActivity extends Activity
         Label_0616_Outer:
             while (true) {
                 while (true) {
-                Label_0604_Outer:
+                    Label_0580_Outer:Label_0598_Outer:Label_0604_Outer:
                     while (true) {
                         Label_0261: {
-                            Label_0574_Outer:Label_0580_Outer:Label_0598_Outer:
                             while (true) {
                                 Label_0244: {
-                                    Label_0586_Outer:Label_0592_Outer:
+                                Label_0592_Outer:
                                     while (true) {
                                         Label_0220: {
                                             while (true) {
                                                 Label_0203: {
                                                     while (true) {
                                                         Label_0186: {
+                                                            Label_0562_Outer:Label_0568_Outer:Label_0574_Outer:
                                                             while (true) {
                                                                 Label_0169: {
-                                                                    Label_0562_Outer:Label_0568_Outer:
                                                                     while (true) {
                                                                         Label_0152: {
                                                                             while (true) {
@@ -149,46 +155,46 @@ public class FragmentActivity extends Activity
                                                                                                                             sb.append("}");
                                                                                                                             return sb.toString();
                                                                                                                             c3 = '.';
-                                                                                                                            break Label_0261;
-                                                                                                                            c4 = '.';
-                                                                                                                            break Label_0169;
-                                                                                                                            c5 = '.';
-                                                                                                                            break Label_0135;
-                                                                                                                            c6 = '.';
                                                                                                                             break Label_0186;
-                                                                                                                            c7 = '.';
+                                                                                                                            c4 = '.';
                                                                                                                             break Label_0244;
-                                                                                                                            c8 = '.';
-                                                                                                                            break Label_0203;
+                                                                                                                            c5 = '.';
+                                                                                                                            break Label_0261;
+                                                                                                                            c6 = '.';
+                                                                                                                            break Label_0118;
+                                                                                                                            c7 = '.';
+                                                                                                                            break Label_0135;
+                                                                                                                            sb.append('G');
+                                                                                                                            break;
+                                                                                                                            c8 = 'D';
+                                                                                                                            break Label_0152;
                                                                                                                             resourcePackageName = "app";
                                                                                                                             continue Label_0509_Outer;
                                                                                                                             c9 = '.';
-                                                                                                                            break Label_0118;
-                                                                                                                            c10 = 'D';
-                                                                                                                            break Label_0152;
-                                                                                                                            sb.append('I');
-                                                                                                                            break;
+                                                                                                                            break Label_0203;
                                                                                                                             sb.append('V');
                                                                                                                             break;
                                                                                                                             resourcePackageName = "android";
                                                                                                                             continue Label_0509_Outer;
                                                                                                                         }
-                                                                                                                        sb.append('G');
+                                                                                                                        sb.append('I');
                                                                                                                         break;
+                                                                                                                        c10 = '.';
+                                                                                                                        break Label_0169;
                                                                                                                         c11 = '.';
                                                                                                                         break Label_0220;
                                                                                                                     }
                                                                                                                     catch (Resources$NotFoundException ex) {
-                                                                                                                        continue Label_0604_Outer;
+                                                                                                                        continue Label_0580_Outer;
                                                                                                                     }
                                                                                                                 }
                                                                                                                 break;
                                                                                                             }
                                                                                                             case 4: {
-                                                                                                                continue Label_0616_Outer;
+                                                                                                                continue Label_0574_Outer;
                                                                                                             }
                                                                                                             case 8: {
-                                                                                                                continue Label_0592_Outer;
+                                                                                                                continue Label_0568_Outer;
                                                                                                             }
                                                                                                         }
                                                                                                         break;
@@ -196,53 +202,53 @@ public class FragmentActivity extends Activity
                                                                                                     break;
                                                                                                 }
                                                                                                 if (!view.isFocusable()) {
-                                                                                                    continue Label_0568_Outer;
+                                                                                                    continue Label_0562_Outer;
                                                                                                 }
                                                                                                 break;
                                                                                             }
-                                                                                            c9 = 'F';
+                                                                                            c6 = 'F';
                                                                                         }
-                                                                                        sb.append(c9);
+                                                                                        sb.append(c6);
                                                                                         if (!view.isEnabled()) {
-                                                                                            continue Label_0580_Outer;
+                                                                                            continue Label_0568_Outer;
                                                                                         }
                                                                                         break;
                                                                                     }
-                                                                                    c5 = 'E';
+                                                                                    c7 = 'E';
                                                                                 }
-                                                                                sb.append(c5);
+                                                                                sb.append(c7);
                                                                                 if (!view.willNotDraw()) {
-                                                                                    continue Label_0616_Outer;
+                                                                                    continue Label_0610_Outer;
                                                                                 }
                                                                                 break;
                                                                             }
-                                                                            c10 = '.';
+                                                                            c8 = '.';
                                                                         }
-                                                                        sb.append(c10);
+                                                                        sb.append(c8);
                                                                         if (!view.isHorizontalScrollBarEnabled()) {
-                                                                            continue Label_0562_Outer;
+                                                                            continue Label_0592_Outer;
                                                                         }
                                                                         break;
                                                                     }
-                                                                    c4 = 'H';
+                                                                    c10 = 'H';
                                                                 }
-                                                                sb.append(c4);
+                                                                sb.append(c10);
                                                                 if (!view.isVerticalScrollBarEnabled()) {
                                                                     continue Label_0598_Outer;
                                                                 }
                                                                 break;
                                                             }
-                                                            c6 = 'V';
+                                                            c3 = 'V';
                                                         }
-                                                        sb.append(c6);
+                                                        sb.append(c3);
                                                         if (!view.isClickable()) {
-                                                            continue Label_0610_Outer;
+                                                            continue Label_0616_Outer;
                                                         }
                                                         break;
                                                     }
-                                                    c8 = 'C';
+                                                    c9 = 'C';
                                                 }
-                                                sb.append(c8);
+                                                sb.append(c9);
                                                 if (!view.isLongClickable()) {
                                                     continue;
                                                 }
@@ -253,21 +259,21 @@ public class FragmentActivity extends Activity
                                         sb.append(c11);
                                         sb.append(' ');
                                         if (!view.isFocused()) {
-                                            continue Label_0586_Outer;
+                                            continue Label_0604_Outer;
                                         }
                                         break;
                                     }
-                                    c7 = c;
+                                    c4 = c;
                                 }
-                                sb.append(c7);
+                                sb.append(c4);
                                 if (!view.isSelected()) {
-                                    continue Label_0574_Outer;
+                                    continue Label_0610_Outer;
                                 }
                                 break;
                             }
-                            c3 = 'S';
+                            c5 = 'S';
                         }
-                        sb.append(c3);
+                        sb.append(c5);
                         c12 = c2;
                         if (view.isPressed()) {
                             c12 = 'P';
@@ -283,13 +289,13 @@ public class FragmentActivity extends Activity
                         sb.append(view.getBottom());
                         id = view.getId();
                         if (id == -1) {
-                            continue Label_0604_Outer;
+                            continue Label_0580_Outer;
                         }
                         sb.append(" #");
                         sb.append(Integer.toHexString(id));
                         resources = view.getResources();
                         if (id == 0 || resources == null) {
-                            continue Label_0604_Outer;
+                            continue Label_0580_Outer;
                         }
                         break;
                     }
@@ -310,6 +316,11 @@ public class FragmentActivity extends Activity
             }
             break;
         }
+    }
+    
+    @Override
+    final View dispatchFragmentsOnCreateView(final View view, final String s, final Context context, final AttributeSet set) {
+        return this.mFragments.onCreateView(view, s, context, set);
     }
     
     void doReallyStop(final boolean mRetaining) {
@@ -337,17 +348,8 @@ public class FragmentActivity extends Activity
         printWriter.print(this.mStopped);
         printWriter.print(" mReallyStopped=");
         printWriter.println(this.mReallyStopped);
-        printWriter.print(string);
-        printWriter.print("mLoadersStarted=");
-        printWriter.println(this.mLoadersStarted);
-        if (this.mLoaderManager != null) {
-            printWriter.print(s);
-            printWriter.print("Loader Manager ");
-            printWriter.print(Integer.toHexString(System.identityHashCode(this.mLoaderManager)));
-            printWriter.println(":");
-            this.mLoaderManager.dump(s + "  ", fileDescriptor, printWriter, array);
-        }
-        this.mFragments.dump(s, fileDescriptor, printWriter, array);
+        this.mFragments.dumpLoaders(string, fileDescriptor, printWriter, array);
+        this.mFragments.getSupportFragmentManager().dump(s, fileDescriptor, printWriter, array);
         printWriter.print(s);
         printWriter.println("View Hierarchy:");
         this.dumpViewHierarchy(s + "  ", printWriter, this.getWindow().getDecorView());
@@ -361,42 +363,12 @@ public class FragmentActivity extends Activity
         return null;
     }
     
-    LoaderManagerImpl getLoaderManager(final String s, final boolean b, final boolean b2) {
-        if (this.mAllLoaderManagers == null) {
-            this.mAllLoaderManagers = new SimpleArrayMap<String, LoaderManagerImpl>();
-        }
-        LoaderManagerImpl loaderManagerImpl = this.mAllLoaderManagers.get(s);
-        if (loaderManagerImpl == null) {
-            if (b2) {
-                loaderManagerImpl = new LoaderManagerImpl(s, this, b);
-                this.mAllLoaderManagers.put(s, loaderManagerImpl);
-            }
-            return loaderManagerImpl;
-        }
-        loaderManagerImpl.updateActivity(this);
-        return loaderManagerImpl;
-    }
-    
     public FragmentManager getSupportFragmentManager() {
-        return this.mFragments;
+        return this.mFragments.getSupportFragmentManager();
     }
     
     public LoaderManager getSupportLoaderManager() {
-        if (this.mLoaderManager != null) {
-            return this.mLoaderManager;
-        }
-        this.mCheckedForLoaderManager = true;
-        return this.mLoaderManager = this.getLoaderManager("(root)", this.mLoadersStarted, true);
-    }
-    
-    void invalidateSupportFragment(final String s) {
-        if (this.mAllLoaderManagers != null) {
-            final LoaderManagerImpl loaderManagerImpl = this.mAllLoaderManagers.get(s);
-            if (loaderManagerImpl != null && !loaderManagerImpl.mRetaining) {
-                loaderManagerImpl.doDestroy();
-                this.mAllLoaderManagers.remove(s);
-            }
-        }
+        return this.mFragments.getSupportLoaderManager();
     }
     
     protected void onActivityResult(final int n, final int n2, final Intent intent) {
@@ -407,11 +379,12 @@ public class FragmentActivity extends Activity
             return;
         }
         final int n4 = n3 - 1;
-        if (this.mFragments.mActive == null || n4 < 0 || n4 >= this.mFragments.mActive.size()) {
+        final int activeFragmentsCount = this.mFragments.getActiveFragmentsCount();
+        if (activeFragmentsCount == 0 || n4 < 0 || n4 >= activeFragmentsCount) {
             Log.w("FragmentActivity", "Activity result fragment index out of range: 0x" + Integer.toHexString(n));
             return;
         }
-        final Fragment fragment = this.mFragments.mActive.get(n4);
+        final Fragment fragment = this.mFragments.getActiveFragments(new ArrayList<Fragment>(activeFragmentsCount)).get(n4);
         if (fragment == null) {
             Log.w("FragmentActivity", "Activity result no fragment exists for index: 0x" + Integer.toHexString(n));
             return;
@@ -423,7 +396,7 @@ public class FragmentActivity extends Activity
     }
     
     public void onBackPressed() {
-        if (!this.mFragments.popBackStackImmediate()) {
+        if (!this.mFragments.getSupportFragmentManager().popBackStackImmediate()) {
             this.supportFinishAfterTransition();
         }
     }
@@ -433,20 +406,18 @@ public class FragmentActivity extends Activity
         this.mFragments.dispatchConfigurationChanged(configuration);
     }
     
+    @Override
     protected void onCreate(final Bundle bundle) {
-        this.mFragments.attachActivity(this, this.mContainer, null);
-        if (this.getLayoutInflater().getFactory() == null) {
-            this.getLayoutInflater().setFactory((LayoutInflater$Factory)this);
-        }
+        this.mFragments.attachHost(null);
         super.onCreate(bundle);
         final FragmentActivity$NonConfigurationInstances fragmentActivity$NonConfigurationInstances = (FragmentActivity$NonConfigurationInstances)this.getLastNonConfigurationInstance();
         if (fragmentActivity$NonConfigurationInstances != null) {
-            this.mAllLoaderManagers = fragmentActivity$NonConfigurationInstances.loaders;
+            this.mFragments.restoreLoaderNonConfig(fragmentActivity$NonConfigurationInstances.loaders);
         }
         if (bundle != null) {
             final Parcelable parcelable = bundle.getParcelable("android:support:fragments");
-            final FragmentManagerImpl mFragments = this.mFragments;
-            ArrayList<Fragment> fragments;
+            final FragmentController mFragments = this.mFragments;
+            List<Fragment> fragments;
             if (fragmentActivity$NonConfigurationInstances != null) {
                 fragments = fragmentActivity$NonConfigurationInstances.fragments;
             }
@@ -467,24 +438,11 @@ public class FragmentActivity extends Activity
         return super.onCreatePanelMenu(n, menu);
     }
     
-    public View onCreateView(final String s, final Context context, final AttributeSet set) {
-        View view;
-        if (!"fragment".equals(s)) {
-            view = super.onCreateView(s, context, set);
-        }
-        else if ((view = this.mFragments.onCreateView(s, context, set)) == null) {
-            return super.onCreateView(s, context, set);
-        }
-        return view;
-    }
-    
     protected void onDestroy() {
         super.onDestroy();
         this.doReallyStop(false);
         this.mFragments.dispatchDestroy();
-        if (this.mLoaderManager != null) {
-            this.mLoaderManager.doDestroy();
-        }
+        this.mFragments.doLoaderDestroy();
     }
     
     public boolean onKeyDown(final int n, final KeyEvent keyEvent) {
@@ -566,18 +524,28 @@ public class FragmentActivity extends Activity
     }
     
     void onReallyStop() {
-        if (this.mLoadersStarted) {
-            this.mLoadersStarted = false;
-            if (this.mLoaderManager != null) {
-                if (!this.mRetaining) {
-                    this.mLoaderManager.doStop();
+        this.mFragments.doLoaderStop(this.mRetaining);
+        this.mFragments.dispatchReallyStop();
+    }
+    
+    @Override
+    public void onRequestPermissionsResult(final int n, final String[] array, final int[] array2) {
+        final int n2 = n >> 8 & 0xFF;
+        if (n2 != 0) {
+            final int n3 = n2 - 1;
+            final int activeFragmentsCount = this.mFragments.getActiveFragmentsCount();
+            if (activeFragmentsCount == 0 || n3 < 0 || n3 >= activeFragmentsCount) {
+                Log.w("FragmentActivity", "Activity result fragment index out of range: 0x" + Integer.toHexString(n));
+            }
+            else {
+                final Fragment fragment = this.mFragments.getActiveFragments(new ArrayList<Fragment>(activeFragmentsCount)).get(n3);
+                if (fragment == null) {
+                    Log.w("FragmentActivity", "Activity result no fragment exists for index: 0x" + Integer.toHexString(n));
+                    return;
                 }
-                else {
-                    this.mLoaderManager.doRetain();
-                }
+                fragment.onRequestPermissionsResult(n & 0xFF, array, array2);
             }
         }
-        this.mFragments.dispatchReallyStop();
     }
     
     protected void onResume() {
@@ -596,48 +564,19 @@ public class FragmentActivity extends Activity
     }
     
     public final Object onRetainNonConfigurationInstance() {
-        int n = 0;
         if (this.mStopped) {
             this.doReallyStop(true);
         }
         final Object onRetainCustomNonConfigurationInstance = this.onRetainCustomNonConfigurationInstance();
-        final ArrayList<Fragment> retainNonConfig = this.mFragments.retainNonConfig();
-        int n3;
-        if (this.mAllLoaderManagers != null) {
-            final int size = this.mAllLoaderManagers.size();
-            final LoaderManagerImpl[] array = new LoaderManagerImpl[size];
-            for (int i = size - 1; i >= 0; --i) {
-                array[i] = this.mAllLoaderManagers.valueAt(i);
-            }
-            int n2 = 0;
-            while (true) {
-                n3 = n2;
-                if (n >= size) {
-                    break;
-                }
-                final LoaderManagerImpl loaderManagerImpl = array[n];
-                if (loaderManagerImpl.mRetaining) {
-                    n2 = 1;
-                }
-                else {
-                    loaderManagerImpl.doDestroy();
-                    this.mAllLoaderManagers.remove(loaderManagerImpl.mWho);
-                }
-                ++n;
-            }
-        }
-        else {
-            n3 = 0;
-        }
-        if (retainNonConfig == null && n3 == 0 && onRetainCustomNonConfigurationInstance == null) {
+        final List<Fragment> retainNonConfig = this.mFragments.retainNonConfig();
+        final SimpleArrayMap<String, LoaderManager> retainLoaderNonConfig = this.mFragments.retainLoaderNonConfig();
+        if (retainNonConfig == null && retainLoaderNonConfig == null && onRetainCustomNonConfigurationInstance == null) {
             return null;
         }
         final FragmentActivity$NonConfigurationInstances fragmentActivity$NonConfigurationInstances = new FragmentActivity$NonConfigurationInstances();
-        fragmentActivity$NonConfigurationInstances.activity = null;
         fragmentActivity$NonConfigurationInstances.custom = onRetainCustomNonConfigurationInstance;
-        fragmentActivity$NonConfigurationInstances.children = null;
         fragmentActivity$NonConfigurationInstances.fragments = retainNonConfig;
-        fragmentActivity$NonConfigurationInstances.loaders = this.mAllLoaderManagers;
+        fragmentActivity$NonConfigurationInstances.loaders = retainLoaderNonConfig;
         return fragmentActivity$NonConfigurationInstances;
     }
     
@@ -660,32 +599,13 @@ public class FragmentActivity extends Activity
         }
         this.mFragments.noteStateNotSaved();
         this.mFragments.execPendingActions();
-        if (!this.mLoadersStarted) {
-            this.mLoadersStarted = true;
-            if (this.mLoaderManager != null) {
-                this.mLoaderManager.doStart();
-            }
-            else if (!this.mCheckedForLoaderManager) {
-                this.mLoaderManager = this.getLoaderManager("(root)", this.mLoadersStarted, false);
-                if (this.mLoaderManager != null && !this.mLoaderManager.mStarted) {
-                    this.mLoaderManager.doStart();
-                }
-            }
-            this.mCheckedForLoaderManager = true;
-        }
+        this.mFragments.doLoaderStart();
         this.mFragments.dispatchStart();
-        if (this.mAllLoaderManagers != null) {
-            final int size = this.mAllLoaderManagers.size();
-            final LoaderManagerImpl[] array = new LoaderManagerImpl[size];
-            for (int i = size - 1; i >= 0; --i) {
-                array[i] = this.mAllLoaderManagers.valueAt(i);
-            }
-            for (int j = 0; j < size; ++j) {
-                final LoaderManagerImpl loaderManagerImpl = array[j];
-                loaderManagerImpl.finishRetain();
-                loaderManagerImpl.doReportStart();
-            }
-        }
+        this.mFragments.reportLoaderStart();
+    }
+    
+    public void onStateNotSaved() {
+        this.mFragments.noteStateNotSaved();
     }
     
     protected void onStop() {
@@ -739,5 +659,15 @@ public class FragmentActivity extends Activity
     
     public void supportStartPostponedEnterTransition() {
         ActivityCompat.startPostponedEnterTransition(this);
+    }
+    
+    @Override
+    public final void validateRequestPermissionsRequestCode(final int n) {
+        if (this.mRequestedPermissionsFromFragment) {
+            this.mRequestedPermissionsFromFragment = false;
+        }
+        else if ((n & 0xFFFFFF00) != 0x0) {
+            throw new IllegalArgumentException("Can only use lower 8 bits for requestCode");
+        }
     }
 }

@@ -191,8 +191,8 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
         if (this.recyclerView.getChildCount() > 0) {
             final View child = this.recyclerView.getChildAt(0);
             if (!((RecyclerViewHeaderAdapter)this.recyclerView.getAdapter()).isViewHeader(child, this.recyclerView)) {
-                if (this.seasonsSpinner != null && child.getTag(2131427347) != null) {
-                    this.postSetSpinnerSelectionRunnable((int)child.getTag(2131427347));
+                if (this.seasonsSpinner != null && child.getTag(2131623950) != null) {
+                    this.postSetSpinnerSelectionRunnable((int)child.getTag(2131623950));
                 }
                 this.onItemsShown();
                 n = 76;

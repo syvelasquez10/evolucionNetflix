@@ -4,6 +4,8 @@
 
 package android.support.v4.view.accessibility;
 
+import android.os.Bundle;
+
 class AccessibilityNodeInfoCompat$AccessibilityNodeInfoJellybeanImpl extends AccessibilityNodeInfoCompat$AccessibilityNodeInfoIcsImpl
 {
     @Override
@@ -14,6 +16,11 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoJellybeanImpl extends Acc
     @Override
     public boolean isVisibleToUser(final Object o) {
         return AccessibilityNodeInfoCompatJellyBean.isVisibleToUser(o);
+    }
+    
+    @Override
+    public boolean performAction(final Object o, final int n, final Bundle bundle) {
+        return AccessibilityNodeInfoCompatJellyBean.performAction(o, n, bundle);
     }
     
     @Override

@@ -12,6 +12,14 @@ public class MotionEventCompat
     static final MotionEventCompat$MotionEventVersionImpl IMPL;
     
     static {
+        if (Build$VERSION.SDK_INT >= 12) {
+            IMPL = new MotionEventCompat$HoneycombMr1MotionEventVersionImpl();
+            return;
+        }
+        if (Build$VERSION.SDK_INT >= 9) {
+            IMPL = new MotionEventCompat$GingerbreadMotionEventVersionImpl();
+            return;
+        }
         if (Build$VERSION.SDK_INT >= 5) {
             IMPL = new MotionEventCompat$EclairMotionEventVersionImpl();
             return;

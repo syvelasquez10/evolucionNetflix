@@ -4,14 +4,24 @@
 
 package com.google.android.gms.common.api;
 
-import android.os.IBinder;
-import android.os.IInterface;
+import java.util.Set;
+import com.google.android.gms.common.internal.zzp;
+import java.io.PrintWriter;
+import java.io.FileDescriptor;
 
-public interface Api$zzb<T extends IInterface>
+public interface Api$zzb
 {
-    String getServiceDescriptor();
+    void disconnect();
     
-    String getStartServiceAction();
+    void dump(final String p0, final FileDescriptor p1, final PrintWriter p2, final String[] p3);
     
-    T zzT(final IBinder p0);
+    boolean isConnected();
+    
+    void zza(final GoogleApiClient$zza p0);
+    
+    void zza(final zzp p0);
+    
+    void zza(final zzp p0, final Set<Scope> p1);
+    
+    boolean zzlm();
 }

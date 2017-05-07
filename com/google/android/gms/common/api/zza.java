@@ -4,6 +4,11 @@
 
 package com.google.android.gms.common.api;
 
-public class zza
+import android.os.Looper;
+
+public abstract class zza<R extends Result> extends zzb<R> implements OptionalPendingResult<R>
 {
+    protected zza(final Looper looper) {
+        super(looper);
+    }
 }

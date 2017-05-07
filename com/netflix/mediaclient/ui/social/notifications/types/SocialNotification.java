@@ -41,7 +41,7 @@ public abstract class SocialNotification
     }
     
     public static final NotificationViewHolder getViewHolder(final View view, final SocialNotificationSummary$NotificationTypes socialNotificationSummary$NotificationTypes) {
-        return new NotificationViewHolder((AdvancedImageView)view.findViewById(2131427793), (AdvancedImageView)view.findViewById(2131427585), (TextView)view.findViewById(2131427584), (TextView)view.findViewById(2131427582), (TextView)view.findViewById(2131427583), (TextView)view.findViewById(2131427824), (Button)view.findViewById(2131427825), (Button)view.findViewById(2131427826), view.findViewById(2131427823), view.findViewById(2131427822), (AdvancedImageView)view.findViewById(2131427581), view.findViewById(2131427580));
+        return new NotificationViewHolder((AdvancedImageView)view.findViewById(2131624507), (AdvancedImageView)view.findViewById(2131624264), (TextView)view.findViewById(2131624263), (TextView)view.findViewById(2131624261), (TextView)view.findViewById(2131624262), (TextView)view.findViewById(2131624538), (Button)view.findViewById(2131624539), (Button)view.findViewById(2131624540), view.findViewById(2131624537), view.findViewById(2131624536), (AdvancedImageView)view.findViewById(2131624260), view.findViewById(2131624259));
     }
     
     public static void showSingleLineText(final NotificationViewHolder notificationViewHolder, final int text) {
@@ -111,7 +111,7 @@ public abstract class SocialNotification
             }
             unreadIndicator.setVisibility(visibility);
         }
-        if (notificationViewHolder.getFriendImage() != null) {
+        if (notificationViewHolder.getFriendImage() != null && socialNotificationSummary.getFriendProfile() != null) {
             notificationViewHolder.getFriendImage().setVisibility(0);
             NetflixActivity.getImageLoader(context).showImg(notificationViewHolder.getFriendImage(), socialNotificationSummary.getFriendProfile().getBigImageUrl(), IClientLogging$AssetType.profileAvatar, socialNotificationSummary.getFriendProfile().getFullName(), ImageLoader$StaticImgConfig.DARK, true);
         }
@@ -119,7 +119,9 @@ public abstract class SocialNotification
         notificationViewHolder.getMovieArtImage().setVisibility(0);
         NetflixActivity.getImageLoader(context).showImg(notificationViewHolder.getMovieArtImage(), socialNotificationSummary.getTVCardUrl(), IClientLogging$AssetType.boxArt, socialNotificationSummary.getVideoTitle(), ImageLoader$StaticImgConfig.DARK, true);
         notificationViewHolder.getTopTextView().setVisibility(0);
-        notificationViewHolder.getTopTextView().setText((CharSequence)socialNotificationSummary.getFriendProfile().getFullName());
+        if (socialNotificationSummary.getFriendProfile() != null) {
+            notificationViewHolder.getTopTextView().setText((CharSequence)socialNotificationSummary.getFriendProfile().getFullName());
+        }
         notificationViewHolder.getMiddleTextView().setGravity(3);
         if (notificationViewHolder.getBottomTextView() != null) {
             if (socialNotificationSummary.getMessageString() == null || socialNotificationSummary.getMessageString().length() == 0) {

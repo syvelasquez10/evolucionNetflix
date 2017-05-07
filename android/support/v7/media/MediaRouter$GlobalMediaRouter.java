@@ -6,6 +6,7 @@ package android.support.v7.media;
 
 import android.os.Looper;
 import java.util.Collection;
+import android.content.IntentSender;
 import android.view.Display;
 import android.os.Bundle;
 import android.content.IntentFilter;
@@ -17,6 +18,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import android.support.v4.app.ActivityManagerCompat;
 import android.app.ActivityManager;
+import android.support.v4.media.session.MediaSessionCompat$OnActiveChangeListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import android.support.v4.hardware.display.DisplayManagerCompat;
@@ -40,6 +42,7 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
     private final ArrayList<MediaRouter$RouteInfo> mRoutes;
     private MediaRouter$RouteInfo mSelectedRoute;
     private MediaRouteProvider$RouteController mSelectedRouteController;
+    private MediaSessionCompat$OnActiveChangeListener mSessionActiveListener;
     private final SystemMediaRouteProvider mSystemProvider;
     
     MediaRouter$GlobalMediaRouter(final Context mApplicationContext) {
@@ -50,6 +53,7 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
         this.mPlaybackInfo = new RemoteControlClientCompat$PlaybackInfo();
         this.mProviderCallback = new MediaRouter$GlobalMediaRouter$ProviderCallback(this, null);
         this.mCallbackHandler = new MediaRouter$GlobalMediaRouter$CallbackHandler(this, null);
+        this.mSessionActiveListener = new MediaRouter$GlobalMediaRouter$1(this);
         this.mApplicationContext = mApplicationContext;
         this.mDisplayManager = DisplayManagerCompat.getInstance(mApplicationContext);
         this.mLowRam = ActivityManagerCompat.isLowRamDevice((ActivityManager)mApplicationContext.getSystemService("activity"));
@@ -111,15 +115,15 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
         return mediaRouter$RouteInfo.getProviderInstance() == this.mSystemProvider && mediaRouter$RouteInfo.supportsControlCategory("android.media.intent.category.LIVE_AUDIO") && !mediaRouter$RouteInfo.supportsControlCategory("android.media.intent.category.LIVE_VIDEO");
     }
     
-    private void setSelectedRouteInternal(final MediaRouter$RouteInfo mSelectedRoute) {
+    private void setSelectedRouteInternal(final MediaRouter$RouteInfo mSelectedRoute, final int n) {
         if (this.mSelectedRoute != mSelectedRoute) {
             if (this.mSelectedRoute != null) {
                 if (MediaRouter.DEBUG) {
-                    Log.d("MediaRouter", "Route unselected: " + this.mSelectedRoute);
+                    Log.d("MediaRouter", "Route unselected: " + this.mSelectedRoute + " reason: " + n);
                 }
                 this.mCallbackHandler.post(263, this.mSelectedRoute);
                 if (this.mSelectedRouteController != null) {
-                    this.mSelectedRouteController.onUnselect();
+                    this.mSelectedRouteController.onUnselect(n);
                     this.mSelectedRouteController.onRelease();
                     this.mSelectedRouteController = null;
                 }
@@ -150,15 +154,22 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
                 this.mRemoteControlClients.get(i).updatePlaybackInfo();
             }
             if (this.mMediaSession != null) {
-                int n;
-                if (this.mPlaybackInfo.volumeHandling == 1) {
-                    n = 2;
+                if (this.mSelectedRoute != this.getDefaultRoute()) {
+                    int n;
+                    if (this.mPlaybackInfo.volumeHandling == 1) {
+                        n = 2;
+                    }
+                    else {
+                        n = 0;
+                    }
+                    this.mMediaSession.configureVolume(n, this.mPlaybackInfo.volumeMax, this.mPlaybackInfo.volume);
+                    return;
                 }
-                else {
-                    n = 0;
-                }
-                this.mMediaSession.configureVolume(n, this.mPlaybackInfo.volumeMax, this.mPlaybackInfo.volume);
+                this.mMediaSession.clearVolumeHandling();
             }
+        }
+        else if (this.mMediaSession != null) {
+            this.mMediaSession.clearVolumeHandling();
         }
     }
     
@@ -186,9 +197,9 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
                             Label_0195: {
                                 if (routeByDescriptorId < 0) {
                                     final MediaRouter$RouteInfo mediaRouter$RouteInfo = new MediaRouter$RouteInfo(mediaRouter$ProviderInfo, id, this.assignRouteUniqueId(mediaRouter$ProviderInfo, id));
-                                    final ArrayList access$600 = mediaRouter$ProviderInfo.mRoutes;
+                                    final ArrayList access$700 = mediaRouter$ProviderInfo.mRoutes;
                                     final int n4 = n2 + 1;
-                                    access$600.add(n2, mediaRouter$RouteInfo);
+                                    access$700.add(n2, mediaRouter$RouteInfo);
                                     this.mRoutes.add(mediaRouter$RouteInfo);
                                     mediaRouter$RouteInfo.updateDescriptor(mediaRouteDescriptor);
                                     if (MediaRouter.DEBUG) {
@@ -202,9 +213,9 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
                                 }
                                 else {
                                     final MediaRouter$RouteInfo mediaRouter$RouteInfo2 = mediaRouter$ProviderInfo.mRoutes.get(routeByDescriptorId);
-                                    final ArrayList access$601 = mediaRouter$ProviderInfo.mRoutes;
+                                    final ArrayList access$701 = mediaRouter$ProviderInfo.mRoutes;
                                     final int n5 = n2 + 1;
-                                    Collections.swap(access$601, routeByDescriptorId, n2);
+                                    Collections.swap(access$701, routeByDescriptorId, n2);
                                     final int updateDescriptor = mediaRouter$RouteInfo2.updateDescriptor(mediaRouteDescriptor);
                                     if (updateDescriptor != 0) {
                                         if ((updateDescriptor & 0x1) != 0x0) {
@@ -286,10 +297,10 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
         }
         if (this.mSelectedRoute != null && !this.isRouteSelectable(this.mSelectedRoute)) {
             Log.i("MediaRouter", "Unselecting the current route because it is no longer selectable: " + this.mSelectedRoute);
-            this.setSelectedRouteInternal(null);
+            this.setSelectedRouteInternal(null, 0);
         }
         if (this.mSelectedRoute == null) {
-            this.setSelectedRouteInternal(this.chooseFallbackRoute());
+            this.setSelectedRouteInternal(this.chooseFallbackRoute(), 0);
         }
         else if (b) {
             this.updatePlaybackInfoFromSelectedRoute();
@@ -309,6 +320,13 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
             mediaRouteProvider.setCallback(this.mProviderCallback);
             mediaRouteProvider.setDiscoveryRequest(this.mDiscoveryRequest);
         }
+    }
+    
+    public MediaRouter$RouteInfo getDefaultRoute() {
+        if (this.mDefaultRoute == null) {
+            throw new IllegalStateException("There is no default route.  The media router has not yet been fully initialized.");
+        }
+        return this.mDefaultRoute;
     }
     
     public MediaRouter getRouter(final Context context) {
@@ -381,16 +399,20 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
         }
     }
     
-    public void selectRoute(final MediaRouter$RouteInfo selectedRouteInternal) {
-        if (!this.mRoutes.contains(selectedRouteInternal)) {
-            Log.w("MediaRouter", "Ignoring attempt to select removed route: " + selectedRouteInternal);
+    public void selectRoute(final MediaRouter$RouteInfo mediaRouter$RouteInfo) {
+        this.selectRoute(mediaRouter$RouteInfo, 3);
+    }
+    
+    public void selectRoute(final MediaRouter$RouteInfo mediaRouter$RouteInfo, final int n) {
+        if (!this.mRoutes.contains(mediaRouter$RouteInfo)) {
+            Log.w("MediaRouter", "Ignoring attempt to select removed route: " + mediaRouter$RouteInfo);
             return;
         }
-        if (!selectedRouteInternal.mEnabled) {
-            Log.w("MediaRouter", "Ignoring attempt to select disabled route: " + selectedRouteInternal);
+        if (!mediaRouter$RouteInfo.mEnabled) {
+            Log.w("MediaRouter", "Ignoring attempt to select disabled route: " + mediaRouter$RouteInfo);
             return;
         }
-        this.setSelectedRouteInternal(selectedRouteInternal);
+        this.setSelectedRouteInternal(mediaRouter$RouteInfo, n);
     }
     
     public void start() {

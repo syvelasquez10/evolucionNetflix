@@ -6,6 +6,7 @@ package android.support.v7.media;
 
 import java.util.Collection;
 import java.util.List;
+import android.content.IntentSender;
 import android.view.Display;
 import android.os.Bundle;
 import android.content.IntentFilter;

@@ -6,9 +6,9 @@ package com.google.android.gms.common;
 
 final class zzc$zzq
 {
-    static final zzc$zza[] zzVQ;
+    static final zzc$zza[] zzYt;
     
     static {
-        zzVQ = new zzc$zza[] { new zzc$zzq$1(zzc$zza.zzbO("0\u0082\u0003\u00df0\u0082\u0002\u00c7 \u0003\u0002\u0001\u0002\u0002\t\u0000\u00ad\u00dc9.?\u00fe\u0010\b0")), new zzc$zzq$2(zzc$zza.zzbO("0\u0082\u0003\u00df0\u0082\u0002\u00c7 \u0003\u0002\u0001\u0002\u0002\t\u0000º\u00f3Jf\u001a¹\u0080\u009b0")) };
+        zzYt = new zzc$zza[] { new zzc$zzq$1(zzc$zza.zzbW("0\u0082\u0003\u00c10\u0082\u0002© \u0003\u0002\u0001\u0002\u0002\t\u0000\u00e9\u0005DY+\u0084P\u00820")), new zzc$zzq$2(zzc$zza.zzbW("0\u0082\u0003\u00c10\u0082\u0002© \u0003\u0002\u0001\u0002\u0002\t\u0000\u00d0T\u00e3\u00ce\u00db\u00ce\u0004\u008b0")) };
     }
 }

@@ -4,7 +4,8 @@
 
 package com.netflix.mediaclient.service.logging.uiview.model;
 
-enum CommandEndedEvent$InputValue
+public enum CommandEndedEvent$InputValue
 {
+    swipe, 
     touch;
 }

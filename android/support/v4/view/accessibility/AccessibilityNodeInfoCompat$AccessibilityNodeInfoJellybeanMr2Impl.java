@@ -4,7 +4,7 @@
 
 package android.support.v4.view.accessibility;
 
-class AccessibilityNodeInfoCompat$AccessibilityNodeInfoJellybeanMr2Impl extends AccessibilityNodeInfoCompat$AccessibilityNodeInfoJellybeanImpl
+class AccessibilityNodeInfoCompat$AccessibilityNodeInfoJellybeanMr2Impl extends AccessibilityNodeInfoCompat$AccessibilityNodeInfoJellybeanMr1Impl
 {
     @Override
     public String getViewIdResourceName(final Object o) {

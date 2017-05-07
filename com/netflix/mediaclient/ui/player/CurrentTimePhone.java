@@ -11,14 +11,14 @@ import java.nio.ByteBuffer;
 
 public class CurrentTimePhone extends CurrentTime
 {
-    CurrentTimePhone(final PlayerActivity playerActivity) {
-        super(playerActivity);
+    CurrentTimePhone(final PlayerFragment playerFragment) {
+        super(playerFragment);
     }
     
     @Override
     public void start(final ByteBuffer byteBuffer) {
         synchronized (this) {
-            this.context.getScreen().startBif(byteBuffer);
+            this.playerFragment.getScreen().startBif(byteBuffer);
             Log.d("screen", "Movie current time from startCurrentTime");
         }
     }
@@ -35,10 +35,10 @@ public class CurrentTimePhone extends CurrentTime
     
     @Override
     public void updateTimeMargins() {
-        if (this.context == null || this.currentTime == null) {
+        if (this.playerFragment == null || this.currentTime == null) {
             return;
         }
-        final BottomPanel bottomPanel = this.context.getScreen().getBottomPanel();
+        final BottomPanel bottomPanel = this.playerFragment.getScreen().getBottomPanel();
         final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)this.currentTime.getLayoutParams();
         layoutParams.setMargins(bottomPanel.getTimeXAndUpdateHandler(this.currentTime), 0, 0, 0);
         this.currentTime.setLayoutParams((ViewGroup$LayoutParams)layoutParams);

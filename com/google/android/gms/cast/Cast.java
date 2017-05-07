@@ -4,8 +4,7 @@
 
 package com.google.android.gms.cast;
 
-import com.google.android.gms.common.api.Api$ClientKey;
-import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.api.Api$zzc;
 import com.google.android.gms.cast.internal.zzk;
 import com.google.android.gms.cast.internal.zze;
 import com.google.android.gms.common.api.Api$zza;
@@ -15,11 +14,11 @@ public final class Cast
 {
     public static final Api<Cast$CastOptions> API;
     public static final Cast$CastApi CastApi;
-    private static final Api$zza<zze, Cast$CastOptions> zzNY;
+    private static final Api$zza<zze, Cast$CastOptions> zzQg;
     
     static {
-        zzNY = new Cast$1();
-        API = new Api<Cast$CastOptions>("Cast.API", (Api$zza<C, Cast$CastOptions>)Cast.zzNY, (Api$ClientKey<C>)zzk.zzNX, new Scope[0]);
+        zzQg = new Cast$1();
+        API = new Api<Cast$CastOptions>("Cast.API", (Api$zza<C, Cast$CastOptions>)Cast.zzQg, (Api$zzc<C>)zzk.zzQf);
         CastApi = new Cast$CastApi$zza();
     }
 }

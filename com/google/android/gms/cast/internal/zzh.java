@@ -14,7 +14,7 @@ public abstract class zzh extends zzb<Status>
         super(googleApiClient);
     }
     
-    public Status zzb(final Status status) {
+    public Status zzd(final Status status) {
         return status;
     }
 }

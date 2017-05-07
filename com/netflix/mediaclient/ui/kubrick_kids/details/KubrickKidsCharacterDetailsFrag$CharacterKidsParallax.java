@@ -8,21 +8,19 @@ import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.support.v7.widget.RecyclerView$Adapter;
+import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup$DetailsStringProvider;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import java.util.Collection;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
-import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
-import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup$DetailsStringProvider;
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
-import com.netflix.mediaclient.ui.details.ShowDetailsFrag$ShowDetailsStringProvider;
-import com.netflix.mediaclient.servicemgr.interface_.Video;
-import java.util.Collection;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import android.content.Context;
-import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
@@ -30,6 +28,8 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag$HeroSlideshow;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
@@ -72,22 +72,22 @@ class KubrickKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
     private Drawable getBackroundResource(final View view) {
         switch (this.this$0.kidsColor) {
             default: {
-                return view.getResources().getDrawable(2130837776);
+                return view.getResources().getDrawable(2130837826);
             }
-            case 2131230892: {
-                return view.getResources().getDrawable(2130837780);
+            case 2131558504: {
+                return view.getResources().getDrawable(2130837830);
             }
-            case 2131230896: {
-                return view.getResources().getDrawable(2130837776);
+            case 2131558497: {
+                return view.getResources().getDrawable(2130837825);
             }
-            case 2131230893: {
-                return view.getResources().getDrawable(2130837777);
+            case 2131558499: {
+                return view.getResources().getDrawable(2130837827);
             }
-            case 2131230895: {
-                return view.getResources().getDrawable(2130837779);
+            case 2131558501: {
+                return view.getResources().getDrawable(2130837829);
             }
-            case 2131230891: {
-                return view.getResources().getDrawable(2130837778);
+            case 2131558500: {
+                return view.getResources().getDrawable(2130837828);
             }
         }
     }
@@ -95,7 +95,7 @@ class KubrickKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
     @Override
     protected void setInitialToolbarColor() {
         super.setInitialToolbarColor();
-        final View viewById = this.recyclerView.getRootView().findViewById(2131427429);
+        final View viewById = this.recyclerView.getRootView().findViewById(2131624049);
         if (viewById != null) {
             viewById.setBackground(this.getBackroundResource(viewById));
         }

@@ -12,18 +12,18 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class ResolveAccountRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<ResolveAccountRequest> CREATOR;
-    final int zzCY;
-    private final Account zzMY;
-    private final int zzabb;
+    final int mVersionCode;
+    private final Account zzOY;
+    private final int zzaem;
     
     static {
-        CREATOR = (Parcelable$Creator)new zzv();
+        CREATOR = (Parcelable$Creator)new zzy();
     }
     
-    ResolveAccountRequest(final int zzCY, final Account zzMY, final int zzabb) {
-        this.zzCY = zzCY;
-        this.zzMY = zzMY;
-        this.zzabb = zzabb;
+    ResolveAccountRequest(final int mVersionCode, final Account zzOY, final int zzaem) {
+        this.mVersionCode = mVersionCode;
+        this.zzOY = zzOY;
+        this.zzaem = zzaem;
     }
     
     public ResolveAccountRequest(final Account account, final int n) {
@@ -35,14 +35,14 @@ public class ResolveAccountRequest implements SafeParcelable
     }
     
     public Account getAccount() {
-        return this.zzMY;
+        return this.zzOY;
     }
     
     public int getSessionId() {
-        return this.zzabb;
+        return this.zzaem;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        zzv.zza(this, parcel, n);
+        zzy.zza(this, parcel, n);
     }
 }

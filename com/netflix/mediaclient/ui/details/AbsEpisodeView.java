@@ -52,23 +52,23 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     
     protected CharSequence createTitleText(final EpisodeDetails episodeDetails) {
         if (episodeDetails.isAvailableToStream()) {
-            return this.getResources().getString(2131493235, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+            return this.getResources().getString(2131165431, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
         }
         String s;
         if (StringUtils.isEmpty(episodeDetails.getAvailabilityDateMessage())) {
-            s = this.getResources().getString(2131493161);
+            s = this.getResources().getString(2131165480);
         }
         else {
             s = episodeDetails.getAvailabilityDateMessage();
         }
-        return this.getResources().getString(2131493235, new Object[] { episodeDetails.getEpisodeNumber(), s });
+        return this.getResources().getString(2131165431, new Object[] { episodeDetails.getEpisodeNumber(), s });
     }
     
     protected void findViews() {
-        this.title = (TextView)this.findViewById(2131427513);
-        this.synopsis = (TextView)this.findViewById(2131427515);
-        this.playButton = (ImageView)this.findViewById(2131427511);
-        this.progressBar = (ProgressBar)this.findViewById(2131427514);
+        this.title = (TextView)this.findViewById(2131624187);
+        this.synopsis = (TextView)this.findViewById(2131624189);
+        this.playButton = (ImageView)this.findViewById(2131624185);
+        this.progressBar = (ProgressBar)this.findViewById(2131624188);
     }
     
     protected int getDefaultSynopsisVisibility() {
@@ -93,7 +93,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             episodeRowListener.onEpisodeSelectedForPlayback(episodeDetails, playContext);
             return;
         }
-        Log.w("EpisodeRowView", "No EpisodeRowListener provided: " + this.getContext());
+        Log.e("EpisodeRowView", "No EpisodeRowListener provided: " + this.getContext());
     }
     
     public void setChecked(final boolean checked) {
@@ -137,16 +137,16 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             return;
         }
         this.isCurrentEpisode = isCurrentEpisode;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493180), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131165352), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
         this.title.setText(this.createTitleText(episodeDetails));
         final TextView title = this.title;
         final Resources resources = this.getResources();
         int n;
         if (episodeDetails.isAvailableToStream()) {
-            n = 2131230840;
+            n = 2131558545;
         }
         else {
-            n = 2131230841;
+            n = 2131558560;
         }
         title.setTextColor(resources.getColor(n));
         this.title.setClickable(false);

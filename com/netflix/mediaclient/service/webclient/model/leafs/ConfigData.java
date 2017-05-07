@@ -4,14 +4,22 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ConfigData
 {
     public AccountConfigData accountConfig;
+    @SerializedName("customerSupportVoipAuthorizations")
+    public VoipAuthorizationData customerSupportVoipAuthorizations;
     public DeviceConfigData deviceConfig;
     public String streamingqoeJson;
     
     public AccountConfigData getAccountConfig() {
         return this.accountConfig;
+    }
+    
+    public VoipAuthorizationData getCustomerSupportVoipAuthorizations() {
+        return this.customerSupportVoipAuthorizations;
     }
     
     public DeviceConfigData getDeviceConfig() {
@@ -24,22 +32,6 @@ public class ConfigData
     
     @Override
     public String toString() {
-        final StringBuilder append = new StringBuilder().append("ConfigData [deviceConfig=");
-        String string;
-        if (this.deviceConfig != null) {
-            string = this.deviceConfig.toString();
-        }
-        else {
-            string = "null";
-        }
-        final StringBuilder append2 = append.append(string).append(", accountConfig=");
-        String string2;
-        if (this.accountConfig != null) {
-            string2 = this.accountConfig.toString();
-        }
-        else {
-            string2 = "null";
-        }
-        return append2.append(string2).append(", streamingqoeJson=").append(this.streamingqoeJson).append("]").toString();
+        return "ConfigData{deviceConfig=" + this.deviceConfig + ", accountConfig=" + this.accountConfig + ", streamingqoeJson='" + this.streamingqoeJson + '\'' + ", customerSupportVoipAuthorizations=" + this.customerSupportVoipAuthorizations + '}';
     }
 }

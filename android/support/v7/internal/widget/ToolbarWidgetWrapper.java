@@ -4,15 +4,17 @@
 
 package android.support.v7.internal.widget;
 
+import android.support.v4.view.ViewPropertyAnimatorListener;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorCompat;
+import android.support.v7.internal.view.menu.j;
 import android.support.v7.internal.view.menu.i;
 import android.support.v7.appcompat.R$id;
 import android.support.v7.internal.view.menu.y;
-import android.view.Menu;
 import android.support.v7.widget.Toolbar$LayoutParams;
 import android.util.Log;
+import android.view.Menu;
 import android.content.Context;
-import android.support.v4.view.ViewPropertyAnimatorListener;
-import android.support.v4.view.ViewCompat;
 import android.view.ViewGroup$LayoutParams;
 import android.view.View$OnClickListener;
 import android.view.ViewGroup;
@@ -23,7 +25,7 @@ import android.support.v7.appcompat.R$attr;
 import android.support.v7.appcompat.R$styleable;
 import android.support.v7.appcompat.R$drawable;
 import android.support.v7.appcompat.R$string;
-import android.support.v7.internal.app.WindowCallback;
+import android.view.Window$Callback;
 import android.support.v7.widget.Toolbar;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -48,7 +50,7 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     private CharSequence mTitle;
     private boolean mTitleSet;
     private Toolbar mToolbar;
-    private WindowCallback mWindowCallback;
+    private Window$Callback mWindowCallback;
     
     public ToolbarWidgetWrapper(final Toolbar toolbar, final boolean b) {
         this(toolbar, b, R$string.abc_action_bar_up_description, R$drawable.abc_ic_ab_back_mtrl_am_alpha);
@@ -61,6 +63,7 @@ public class ToolbarWidgetWrapper implements DecorToolbar
         this.mTitle = mToolbar.getTitle();
         this.mSubtitle = mToolbar.getSubtitle();
         this.mTitleSet = (this.mTitle != null);
+        this.mNavIcon = mToolbar.getNavigationIcon();
         if (b) {
             final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(mToolbar.getContext(), null, R$styleable.ActionBar, R$attr.actionBarStyle, 0);
             final CharSequence text = obtainStyledAttributes.getText(R$styleable.ActionBar_title);
@@ -76,7 +79,7 @@ public class ToolbarWidgetWrapper implements DecorToolbar
                 this.setLogo(drawable);
             }
             final Drawable drawable2 = obtainStyledAttributes.getDrawable(R$styleable.ActionBar_icon);
-            if (drawable2 != null) {
+            if (this.mNavIcon == null && drawable2 != null) {
                 this.setIcon(drawable2);
             }
             final Drawable drawable3 = obtainStyledAttributes.getDrawable(R$styleable.ActionBar_homeAsUpIndicator);
@@ -117,7 +120,7 @@ public class ToolbarWidgetWrapper implements DecorToolbar
         }
         else {
             this.mDisplayOpts = this.detectDisplayOptions();
-            this.mTintManager = new TintManager(mToolbar.getContext());
+            this.mTintManager = TintManager.get(mToolbar.getContext());
         }
         this.setDefaultNavigationContentDescription(defaultNavigationContentDescription);
         this.mHomeDescription = this.mToolbar.getNavigationContentDescription();
@@ -183,16 +186,6 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     }
     
     @Override
-    public void animateToVisibility(final int n) {
-        if (n == 8) {
-            ViewCompat.animate((View)this.mToolbar).alpha(0.0f).setListener(new ToolbarWidgetWrapper$2(this));
-        }
-        else if (n == 0) {
-            ViewCompat.animate((View)this.mToolbar).alpha(1.0f).setListener(new ToolbarWidgetWrapper$3(this));
-        }
-    }
-    
-    @Override
     public boolean canShowOverflowMenu() {
         return this.mToolbar.canShowOverflowMenu();
     }
@@ -218,6 +211,11 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     }
     
     @Override
+    public Menu getMenu() {
+        return this.mToolbar.getMenu();
+    }
+    
+    @Override
     public int getNavigationMode() {
         return this.mNavigationMode;
     }
@@ -230,6 +228,11 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     @Override
     public ViewGroup getViewGroup() {
         return this.mToolbar;
+    }
+    
+    @Override
+    public int getVisibility() {
+        return this.mToolbar.getVisibility();
     }
     
     @Override
@@ -263,8 +266,8 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     }
     
     @Override
-    public boolean isSplit() {
-        return false;
+    public void setBackgroundDrawable(final Drawable backgroundDrawable) {
+        this.mToolbar.setBackgroundDrawable(backgroundDrawable);
     }
     
     @Override
@@ -399,6 +402,11 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     }
     
     @Override
+    public void setMenuCallbacks(final y y, final j j) {
+        this.mToolbar.setMenuCallbacks(y, j);
+    }
+    
+    @Override
     public void setMenuPrepared() {
         this.mMenuPrepared = true;
     }
@@ -439,7 +447,12 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     }
     
     @Override
-    public void setWindowCallback(final WindowCallback mWindowCallback) {
+    public void setVisibility(final int visibility) {
+        this.mToolbar.setVisibility(visibility);
+    }
+    
+    @Override
+    public void setWindowCallback(final Window$Callback mWindowCallback) {
         this.mWindowCallback = mWindowCallback;
     }
     
@@ -448,6 +461,23 @@ public class ToolbarWidgetWrapper implements DecorToolbar
         if (!this.mTitleSet) {
             this.setTitleInt(titleInt);
         }
+    }
+    
+    @Override
+    public ViewPropertyAnimatorCompat setupAnimatorToVisibility(final int n, final long n2) {
+        if (n == 8) {
+            final ViewPropertyAnimatorCompat alpha = ViewCompat.animate((View)this.mToolbar).alpha(0.0f);
+            alpha.setDuration(n2);
+            alpha.setListener(new ToolbarWidgetWrapper$2(this));
+            return alpha;
+        }
+        if (n == 0) {
+            final ViewPropertyAnimatorCompat alpha2 = ViewCompat.animate((View)this.mToolbar).alpha(1.0f);
+            alpha2.setDuration(n2);
+            alpha2.setListener(new ToolbarWidgetWrapper$3(this));
+            return alpha2;
+        }
+        return null;
     }
     
     @Override

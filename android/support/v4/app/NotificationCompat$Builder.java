@@ -16,22 +16,22 @@ import java.util.ArrayList;
 
 public class NotificationCompat$Builder
 {
-    ArrayList<NotificationCompat$Action> mActions;
+    public ArrayList<NotificationCompat$Action> mActions;
     String mCategory;
     int mColor;
-    CharSequence mContentInfo;
+    public CharSequence mContentInfo;
     PendingIntent mContentIntent;
-    CharSequence mContentText;
-    CharSequence mContentTitle;
-    Context mContext;
+    public CharSequence mContentText;
+    public CharSequence mContentTitle;
+    public Context mContext;
     Bundle mExtras;
     PendingIntent mFullScreenIntent;
     String mGroupKey;
     boolean mGroupSummary;
-    Bitmap mLargeIcon;
+    public Bitmap mLargeIcon;
     boolean mLocalOnly;
-    Notification mNotification;
-    int mNumber;
+    public Notification mNotification;
+    public int mNumber;
     public ArrayList<String> mPeople;
     int mPriority;
     int mProgress;
@@ -40,10 +40,10 @@ public class NotificationCompat$Builder
     Notification mPublicVersion;
     boolean mShowWhen;
     String mSortKey;
-    NotificationCompat$Style mStyle;
-    CharSequence mSubText;
+    public NotificationCompat$Style mStyle;
+    public CharSequence mSubText;
     RemoteViews mTickerView;
-    boolean mUseChronometer;
+    public boolean mUseChronometer;
     int mVisibility;
     
     public NotificationCompat$Builder(final Context mContext) {
@@ -77,17 +77,31 @@ public class NotificationCompat$Builder
         mNotification2.flags &= ~n;
     }
     
+    public NotificationCompat$Builder addAction(final int n, final CharSequence charSequence, final PendingIntent pendingIntent) {
+        this.mActions.add(new NotificationCompat$Action(n, charSequence, pendingIntent));
+        return this;
+    }
+    
     public NotificationCompat$Builder addAction(final NotificationCompat$Action notificationCompat$Action) {
         this.mActions.add(notificationCompat$Action);
         return this;
     }
     
     public Notification build() {
-        return NotificationCompat.IMPL.build(this);
+        return NotificationCompat.IMPL.build(this, this.getExtender());
+    }
+    
+    protected NotificationCompat$BuilderExtender getExtender() {
+        return new NotificationCompat$BuilderExtender();
     }
     
     public NotificationCompat$Builder setAutoCancel(final boolean b) {
         this.setFlag(16, b);
+        return this;
+    }
+    
+    public NotificationCompat$Builder setCategory(final String mCategory) {
+        this.mCategory = mCategory;
         return this;
     }
     
@@ -143,6 +157,11 @@ public class NotificationCompat$Builder
     
     public NotificationCompat$Builder setOnlyAlertOnce(final boolean b) {
         this.setFlag(8, b);
+        return this;
+    }
+    
+    public NotificationCompat$Builder setPriority(final int mPriority) {
+        this.mPriority = mPriority;
         return this;
     }
     

@@ -4,11 +4,34 @@
 
 package com.google.android.gms.common.internal;
 
-import com.google.android.gms.common.api.Scope;
-import java.util.Set;
+import java.util.Iterator;
+import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
-public final class zze$zza
+class zze$zza extends zze
 {
-    public final Set<Scope> zzWI;
-    public final boolean zzZV;
+    List<zze> zzadb;
+    
+    zze$zza(final List<zze> zzadb) {
+        this.zzadb = zzadb;
+    }
+    
+    @Override
+    public zze zza(final zze zze) {
+        final ArrayList<zze> list = new ArrayList<zze>(this.zzadb);
+        list.add(zzx.zzv(zze));
+        return new zze$zza(list);
+    }
+    
+    @Override
+    public boolean zzd(final char c) {
+        final Iterator<zze> iterator = this.zzadb.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().zzd(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

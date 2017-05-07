@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.service.preapp;
 
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
+import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
@@ -27,7 +29,7 @@ class PreAppAgent$2 extends BroadcastReceiver
     
     public void onReceive(final Context context, final Intent intent) {
         if (intent != null && "com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_DEACTIVE".equals(intent.getAction())) {
-            Log.i("nf_preappagent", "UserAgentIntentReceiver inovoked and received Intent with Action NOTIFY_USER_ACCOUNT_DEACTIVE");
+            Log.i("nf_preappagent", "UserAgentIntentReceiver invoked and received Intent with Action NOTIFY_USER_ACCOUNT_DEACTIVE");
             this.this$0.handleAccountDeactive(context);
         }
     }

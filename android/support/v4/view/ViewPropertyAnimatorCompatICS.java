@@ -19,8 +19,8 @@ class ViewPropertyAnimatorCompatICS
         view.animate().cancel();
     }
     
-    public static void scaleY(final View view, final float n) {
-        view.animate().scaleY(n);
+    public static long getDuration(final View view) {
+        return view.animate().getDuration();
     }
     
     public static void setDuration(final View view, final long duration) {
@@ -37,6 +37,10 @@ class ViewPropertyAnimatorCompatICS
             return;
         }
         view.animate().setListener((Animator$AnimatorListener)null);
+    }
+    
+    public static void setStartDelay(final View view, final long startDelay) {
+        view.animate().setStartDelay(startDelay);
     }
     
     public static void start(final View view) {

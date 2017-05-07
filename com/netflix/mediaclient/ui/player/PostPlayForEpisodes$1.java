@@ -7,15 +7,17 @@ package com.netflix.mediaclient.ui.player;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.content.Context;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayContext;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.ViewUtils$Visibility;
+import android.app.Activity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.TextView;
 import android.view.View;
 import com.netflix.mediaclient.Log;
@@ -30,7 +32,7 @@ class PostPlayForEpisodes$1 implements Runnable
     
     @Override
     public void run() {
-        if (!this.this$0.mInPostPlay || this.this$0.mContext.destroyed()) {
+        if (!this.this$0.mInPostPlay || this.this$0.mNetflixActivity.isFinishing()) {
             Log.d("nf_postplay", "post play timer exit or activity is destroyed");
             return;
         }
@@ -43,6 +45,6 @@ class PostPlayForEpisodes$1 implements Runnable
             this.this$0.onTimerEnd();
             return;
         }
-        this.this$0.mContext.getHandler().postDelayed((Runnable)this, 1000L);
+        this.this$0.mNetflixActivity.getHandler().postDelayed((Runnable)this, 1000L);
     }
 }

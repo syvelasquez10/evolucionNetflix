@@ -14,6 +14,7 @@ import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.content.IntentSender$SendIntentException;
+import android.app.Activity;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
@@ -23,7 +24,6 @@ import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
-import android.app.Activity;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.google.android.gms.common.api.ResultCallback;
@@ -61,6 +61,6 @@ class LoginActivity$6 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131493254), this.this$0.getString(2131493003), null)));
+        this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131165477), this.this$0.getString(2131165485), null)));
     }
 }

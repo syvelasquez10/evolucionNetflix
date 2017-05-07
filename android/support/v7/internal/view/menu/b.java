@@ -14,8 +14,6 @@ import android.content.res.Configuration;
 import android.text.TextUtils;
 import android.content.res.TypedArray;
 import android.content.res.Resources;
-import android.text.method.TransformationMethod;
-import android.support.v7.internal.text.AllCapsTransformationMethod;
 import android.support.v7.appcompat.R$styleable;
 import android.support.v7.appcompat.R$bool;
 import android.util.AttributeSet;
@@ -24,7 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View$OnLongClickListener;
 import android.view.View$OnClickListener;
 import android.support.v7.widget.ActionMenuView$ActionMenuChildView;
-import android.support.v7.internal.widget.CompatTextView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.ListPopupWindow;
 import android.view.View;
 import android.support.v7.widget.ListPopupWindow$ForwardingListener;
@@ -64,15 +62,5 @@ class b extends ListPopupWindow$ForwardingListener
             }
         }
         return b2;
-    }
-    
-    @Override
-    protected boolean onForwardingStopped() {
-        final ListPopupWindow popup = this.getPopup();
-        if (popup != null) {
-            popup.dismiss();
-            return true;
-        }
-        return false;
     }
 }

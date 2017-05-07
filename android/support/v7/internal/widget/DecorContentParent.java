@@ -4,7 +4,7 @@
 
 package android.support.v7.internal.widget;
 
-import android.support.v7.internal.app.WindowCallback;
+import android.view.Window$Callback;
 import android.support.v7.internal.view.menu.y;
 import android.view.Menu;
 
@@ -26,7 +26,7 @@ public interface DecorContentParent
     
     void setMenuPrepared();
     
-    void setWindowCallback(final WindowCallback p0);
+    void setWindowCallback(final Window$Callback p0);
     
     void setWindowTitle(final CharSequence p0);
     

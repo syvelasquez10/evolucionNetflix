@@ -90,9 +90,9 @@ public class ExternalLinkActivity extends NetflixActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903095);
-        this.mWebView = (WebView)this.findViewById(2131427522);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131427520);
+        this.setContentView(2130903108);
+        this.mWebView = (WebView)this.findViewById(2131624196);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131624194);
     }
     
     @Override
@@ -142,17 +142,17 @@ public class ExternalLinkActivity extends NetflixActivity
     }
     
     @Override
-    protected boolean showAboutInMenu() {
+    public boolean showAboutInMenu() {
         return false;
     }
     
     @Override
-    protected boolean showSettingsInMenu() {
+    public boolean showSettingsInMenu() {
         return false;
     }
     
     @Override
-    protected boolean showSignOutInMenu() {
+    public boolean showSignOutInMenu() {
         return false;
     }
 }

@@ -63,6 +63,8 @@ public interface INetflixService
     
     EsnProvider getESN();
     
+    IErrorHandler getErrorHandler();
+    
     void getFriendsForRecommendationList(final String p0, final int p1, final String p2, final int p3, final int p4);
     
     Handler getHandler();
@@ -78,6 +80,10 @@ public interface INetflixService
     SignUpParams getSignUpParams();
     
     String getSoftwareVersion();
+    
+    String getUserEmail();
+    
+    IVoip getVoip();
     
     boolean isCurrentProfileFacebookConnected();
     

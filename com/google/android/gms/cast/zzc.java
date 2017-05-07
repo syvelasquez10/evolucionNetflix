@@ -12,47 +12,47 @@ import android.os.Parcelable$Creator;
 
 public class zzc implements Parcelable$Creator<LaunchOptions>
 {
-    static void zza(final LaunchOptions launchOptions, final Parcel parcel, int zzac) {
-        zzac = zzb.zzac(parcel);
+    static void zza(final LaunchOptions launchOptions, final Parcel parcel, int zzak) {
+        zzak = zzb.zzak(parcel);
         zzb.zzc(parcel, 1, launchOptions.getVersionCode());
         zzb.zza(parcel, 2, launchOptions.getRelaunchIfRunning());
         zzb.zza(parcel, 3, launchOptions.getLanguage(), false);
-        zzb.zzH(parcel, zzac);
+        zzb.zzH(parcel, zzak);
     }
     
-    public LaunchOptions zzL(final Parcel parcel) {
+    public LaunchOptions zzT(final Parcel parcel) {
         boolean zzc = false;
-        final int zzab = zza.zzab(parcel);
+        final int zzaj = zza.zzaj(parcel);
         String zzo = null;
         int zzg = 0;
-        while (parcel.dataPosition() < zzab) {
-            final int zzaa = zza.zzaa(parcel);
-            switch (zza.zzbA(zzaa)) {
+        while (parcel.dataPosition() < zzaj) {
+            final int zzai = zza.zzai(parcel);
+            switch (zza.zzbH(zzai)) {
                 default: {
-                    zza.zzb(parcel, zzaa);
+                    zza.zzb(parcel, zzai);
                     continue;
                 }
                 case 1: {
-                    zzg = zza.zzg(parcel, zzaa);
+                    zzg = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 2: {
-                    zzc = zza.zzc(parcel, zzaa);
+                    zzc = zza.zzc(parcel, zzai);
                     continue;
                 }
                 case 3: {
-                    zzo = zza.zzo(parcel, zzaa);
+                    zzo = zza.zzo(parcel, zzai);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzab) {
-            throw new zza$zza("Overread allowed size end=" + zzab, parcel);
+        if (parcel.dataPosition() != zzaj) {
+            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
         }
         return new LaunchOptions(zzg, zzc, zzo);
     }
     
-    public LaunchOptions[] zzaB(final int n) {
+    public LaunchOptions[] zzaJ(final int n) {
         return new LaunchOptions[n];
     }
 }

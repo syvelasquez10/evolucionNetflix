@@ -6,18 +6,18 @@ package com.google.android.gms.common;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import com.google.android.gms.common.internal.zzu;
+import com.google.android.gms.common.internal.zzx;
 
 abstract class zzc$zza
 {
-    private int zzVM;
+    private int zzYp;
     
     protected zzc$zza(final byte[] array) {
-        zzu.zzb(array.length == 25, "cert hash data has incorrect length");
-        this.zzVM = Arrays.hashCode(array);
+        zzx.zzb(array.length == 25, "cert hash data has incorrect length");
+        this.zzYp = Arrays.hashCode(array);
     }
     
-    protected static byte[] zzbO(final String s) {
+    protected static byte[] zzbW(final String s) {
         try {
             return s.getBytes("ISO-8859-1");
         }
@@ -35,6 +35,6 @@ abstract class zzc$zza
     
     @Override
     public int hashCode() {
-        return this.zzVM;
+        return this.zzYp;
     }
 }

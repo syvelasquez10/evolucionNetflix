@@ -5,7 +5,7 @@
 package android.support.v4.app;
 
 import android.support.v4.util.DebugUtils;
-import java.util.ArrayList;
+import java.util.List;
 import android.util.AttributeSet;
 import android.view.MenuInflater;
 import android.view.Menu;
@@ -17,6 +17,7 @@ import android.content.res.Configuration;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.support.v4.view.LayoutInflaterCompat;
 import android.view.LayoutInflater;
 import java.io.PrintWriter;
 import java.io.FileDescriptor;
@@ -34,7 +35,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
 {
     static final Object USE_DEFAULT_TRANSITION;
     private static final SimpleArrayMap<String, Class<?>> sClassMap;
-    FragmentActivity mActivity;
     boolean mAdded;
     Boolean mAllowEnterTransitionOverlap;
     Boolean mAllowReturnTransitionOverlap;
@@ -57,6 +57,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     boolean mFromLayout;
     boolean mHasMenu;
     boolean mHidden;
+    FragmentHostCallback mHost;
     boolean mInLayout;
     int mIndex;
     View mInnerView;
@@ -199,10 +200,10 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
             printWriter.print("mFragmentManager=");
             printWriter.println(this.mFragmentManager);
         }
-        if (this.mActivity != null) {
+        if (this.mHost != null) {
             printWriter.print(s);
-            printWriter.print("mActivity=");
-            printWriter.println(this.mActivity);
+            printWriter.print("mHost=");
+            printWriter.println(this.mHost);
         }
         if (this.mParentFragment != null) {
             printWriter.print(s);
@@ -277,7 +278,10 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     public final FragmentActivity getActivity() {
-        return this.mActivity;
+        if (this.mHost == null) {
+            return null;
+        }
+        return (FragmentActivity)this.mHost.getActivity();
     }
     
     public boolean getAllowEnterTransitionOverlap() {
@@ -320,21 +324,21 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     public LayoutInflater getLayoutInflater(final Bundle bundle) {
-        final LayoutInflater cloneInContext = this.mActivity.getLayoutInflater().cloneInContext((Context)this.mActivity);
+        final LayoutInflater onGetLayoutInflater = this.mHost.onGetLayoutInflater();
         this.getChildFragmentManager();
-        cloneInContext.setFactory(this.mChildFragmentManager.getLayoutInflaterFactory());
-        return cloneInContext;
+        LayoutInflaterCompat.setFactory(onGetLayoutInflater, this.mChildFragmentManager.getLayoutInflaterFactory());
+        return onGetLayoutInflater;
     }
     
     public LoaderManager getLoaderManager() {
         if (this.mLoaderManager != null) {
             return this.mLoaderManager;
         }
-        if (this.mActivity == null) {
+        if (this.mHost == null) {
             throw new IllegalStateException("Fragment " + this + " not attached to Activity");
         }
         this.mCheckedForLoaderManager = true;
-        return this.mLoaderManager = this.mActivity.getLoaderManager(this.mWho, this.mLoadersStarted, true);
+        return this.mLoaderManager = this.mHost.getLoaderManager(this.mWho, this.mLoadersStarted, true);
     }
     
     public Object getReenterTransition() {
@@ -345,10 +349,10 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     public final Resources getResources() {
-        if (this.mActivity == null) {
+        if (this.mHost == null) {
             throw new IllegalStateException("Fragment " + this + " not attached to Activity");
         }
-        return this.mActivity.getResources();
+        return this.mHost.getContext().getResources();
     }
     
     public Object getReturnTransition() {
@@ -390,7 +394,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         this.mBackStackNesting = 0;
         this.mFragmentManager = null;
         this.mChildFragmentManager = null;
-        this.mActivity = null;
+        this.mHost = null;
         this.mFragmentId = 0;
         this.mContainerId = 0;
         this.mTag = null;
@@ -403,11 +407,11 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     void instantiateChildFragmentManager() {
-        (this.mChildFragmentManager = new FragmentManagerImpl()).attachActivity(this.mActivity, new Fragment$1(this), this);
+        (this.mChildFragmentManager = new FragmentManagerImpl()).attachController(this.mHost, new Fragment$1(this), this);
     }
     
     public final boolean isAdded() {
-        return this.mActivity != null && this.mAdded;
+        return this.mHost != null && this.mAdded;
     }
     
     public final boolean isHidden() {
@@ -429,8 +433,24 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     public void onActivityResult(final int n, final int n2, final Intent intent) {
     }
     
+    @Deprecated
     public void onAttach(final Activity activity) {
         this.mCalled = true;
+    }
+    
+    public void onAttach(final Context context) {
+        this.mCalled = true;
+        Activity activity;
+        if (this.mHost == null) {
+            activity = null;
+        }
+        else {
+            activity = this.mHost.getActivity();
+        }
+        if (activity != null) {
+            this.mCalled = false;
+            this.onAttach(activity);
+        }
     }
     
     public void onConfigurationChanged(final Configuration configuration) {
@@ -464,7 +484,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         this.mCalled = true;
         if (!this.mCheckedForLoaderManager) {
             this.mCheckedForLoaderManager = true;
-            this.mLoaderManager = this.mActivity.getLoaderManager(this.mWho, this.mLoadersStarted, false);
+            this.mLoaderManager = this.mHost.getLoaderManager(this.mWho, this.mLoadersStarted, false);
         }
         if (this.mLoaderManager != null) {
             this.mLoaderManager.doDestroy();
@@ -485,8 +505,24 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     public void onHiddenChanged(final boolean b) {
     }
     
+    @Deprecated
     public void onInflate(final Activity activity, final AttributeSet set, final Bundle bundle) {
         this.mCalled = true;
+    }
+    
+    public void onInflate(final Context context, final AttributeSet set, final Bundle bundle) {
+        this.mCalled = true;
+        Activity activity;
+        if (this.mHost == null) {
+            activity = null;
+        }
+        else {
+            activity = this.mHost.getActivity();
+        }
+        if (activity != null) {
+            this.mCalled = false;
+            this.onInflate(activity, set, bundle);
+        }
     }
     
     public void onLowMemory() {
@@ -507,6 +543,9 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     public void onPrepareOptionsMenu(final Menu menu) {
     }
     
+    public void onRequestPermissionsResult(final int n, final String[] array, final int[] array2) {
+    }
+    
     public void onResume() {
         this.mCalled = true;
     }
@@ -520,7 +559,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
             this.mLoadersStarted = true;
             if (!this.mCheckedForLoaderManager) {
                 this.mCheckedForLoaderManager = true;
-                this.mLoaderManager = this.mActivity.getLoaderManager(this.mWho, this.mLoadersStarted, false);
+                this.mLoaderManager = this.mHost.getLoaderManager(this.mWho, this.mLoadersStarted, false);
             }
             if (this.mLoaderManager != null) {
                 this.mLoaderManager.doStart();
@@ -698,10 +737,10 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
             this.mLoadersStarted = false;
             if (!this.mCheckedForLoaderManager) {
                 this.mCheckedForLoaderManager = true;
-                this.mLoaderManager = this.mActivity.getLoaderManager(this.mWho, this.mLoadersStarted, false);
+                this.mLoaderManager = this.mHost.getLoaderManager(this.mWho, this.mLoadersStarted, false);
             }
             if (this.mLoaderManager != null) {
-                if (this.mActivity.mRetaining) {
+                if (this.mRetaining) {
                     this.mLoaderManager.doRetain();
                     return;
                 }
@@ -787,10 +826,10 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     public void startActivityForResult(final Intent intent, final int n) {
-        if (this.mActivity == null) {
+        if (this.mHost == null) {
             throw new IllegalStateException("Fragment " + this + " not attached to Activity");
         }
-        this.mActivity.startActivityFromFragment(this, intent, n);
+        this.mHost.onStartActivityFromFragment(this, intent, n);
     }
     
     @Override

@@ -4,6 +4,7 @@
 
 package android.support.v4.view.accessibility;
 
+import android.os.Bundle;
 import android.graphics.Rect;
 import android.view.View;
 
@@ -116,6 +117,11 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoStubImpl implements Acces
     }
     
     @Override
+    public Object newAccessibilityAction(final int n, final CharSequence charSequence) {
+        return null;
+    }
+    
+    @Override
     public Object obtain(final Object o) {
         return null;
     }
@@ -131,7 +137,22 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoStubImpl implements Acces
     }
     
     @Override
+    public boolean performAction(final Object o, final int n) {
+        return false;
+    }
+    
+    @Override
+    public boolean performAction(final Object o, final int n, final Bundle bundle) {
+        return false;
+    }
+    
+    @Override
     public void recycle(final Object o) {
+    }
+    
+    @Override
+    public boolean removeAction(final Object o, final Object o2) {
+        return false;
     }
     
     @Override

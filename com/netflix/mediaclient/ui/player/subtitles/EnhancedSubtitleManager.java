@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.player.subtitles;
 
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import android.text.TextUtils$TruncateAt;
 import com.netflix.mediaclient.android.widget.AutoResizeTextView;
@@ -34,7 +35,7 @@ import com.netflix.mediaclient.service.player.subtitles.text.Region;
 import com.netflix.mediaclient.util.ViewUtils$ViewComparator;
 import com.netflix.mediaclient.service.player.subtitles.text.TextSubtitleBlock;
 import java.util.HashMap;
-import com.netflix.mediaclient.ui.player.PlayerActivity;
+import com.netflix.mediaclient.ui.player.PlayerFragment;
 import android.widget.TextView;
 import java.util.List;
 import android.widget.RelativeLayout;
@@ -55,25 +56,25 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
     private RelativeLayout mSafeDisplayArea;
     private Map<String, List<TextView>> mVisibleBlocks;
     
-    public EnhancedSubtitleManager(final PlayerActivity playerActivity) {
-        super(playerActivity);
+    public EnhancedSubtitleManager(final PlayerFragment playerFragment) {
+        super(playerFragment);
         this.mRegions = new HashMap<String, LinearLayout>();
         this.mVisibleBlocks = new HashMap<String, List<TextView>>();
         this.mDefaultsInitiated = new AtomicBoolean(false);
         this.mDoNotDraw = (ViewTreeObserver$OnPreDrawListener)new EnhancedSubtitleManager$1(this);
-        if (this.mActivity.isTablet()) {
-            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131296434);
+        if (playerFragment.getNetflixActivity().isTablet()) {
+            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131296580);
         }
         else {
-            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131296433);
+            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131296579);
         }
-        this.mTransparent = playerActivity.getResources().getColor(17170445);
+        this.mTransparent = playerFragment.getActivity().getResources().getColor(17170445);
     }
     
     private void addRegion(final Region initialRegionPosition) {
         final VerticalAlignment verticalAlignment = null;
         Log.d("nf_subtitles_render", "Add region ");
-        final LinearLayout linearLayout = new LinearLayout((Context)this.mActivity);
+        final LinearLayout linearLayout = new LinearLayout((Context)this.mPlayerFragment.getActivity());
         linearLayout.setVisibility(4);
         linearLayout.setTag((Object)initialRegionPosition.getId());
         final RelativeLayout$LayoutParams setInitialRegionPosition = this.setInitialRegionPosition(initialRegionPosition);
@@ -137,7 +138,7 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
             if (SubtitleUtils.isNextNodeInSameLine(textSubtitleBlock.getTextNodes(), i)) {
                 Log.d("nf_subtitles_render", "Next node is in same line, add current node to horizontal LL.");
                 if ((linearLayout2 = (LinearLayout)o) == null) {
-                    linearLayout2 = new LinearLayout((Context)this.mActivity);
+                    linearLayout2 = new LinearLayout((Context)this.mPlayerFragment.getActivity());
                     linearLayout2.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-2, -2));
                     linearLayout2.setOrientation(0);
                     linearLayout.addView((View)linearLayout2);
@@ -472,7 +473,7 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
         }
         if (n == null) {
             Log.d("nf_subtitles_render", "Sets region background color to transparent");
-            linearLayout.setBackgroundColor(this.mActivity.getResources().getColor(17170445));
+            linearLayout.setBackgroundColor(this.mPlayerFragment.getResources().getColor(17170445));
             return;
         }
         if (Log.isLoggable()) {
@@ -487,13 +488,13 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
             return;
         }
         Log.v("nf_subtitles_render", "Create safe display area");
-        this.mSafeDisplayArea = new RelativeLayout((Context)this.mActivity);
+        this.mSafeDisplayArea = new RelativeLayout((Context)this.mPlayerFragment.getActivity());
         final RelativeLayout$LayoutParams relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(-1, -1);
         relativeLayout$LayoutParams.addRule(13);
         this.mDisplayArea.addView((View)this.mSafeDisplayArea, (ViewGroup$LayoutParams)relativeLayout$LayoutParams);
         Log.v("nf_subtitles_render", "Create safe display area done.");
         Log.v("nf_subtitles_render", "Create default region");
-        this.mDefaultRegion = new LinearLayout((Context)this.mActivity);
+        this.mDefaultRegion = new LinearLayout((Context)this.mPlayerFragment.getActivity());
         final RelativeLayout$LayoutParams relativeLayout$LayoutParams2 = new RelativeLayout$LayoutParams(-1, -2);
         this.mDefaultRegion.setOrientation(1);
         relativeLayout$LayoutParams2.addRule(12);
@@ -688,7 +689,7 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
         LinearLayout linearLayout;
         if (n != 0) {
             Log.d("nf_subtitles_render", "Using extent/origin from original region, add wrapper region that will be wrapped around block and that will be used for background color for region");
-            linearLayout = new LinearLayout((Context)this.mActivity);
+            linearLayout = new LinearLayout((Context)this.mPlayerFragment.getActivity());
             SubtitleUtils.setAlignmentToRegion(linearLayout, textSubtitleBlock);
             linearLayout.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-2, -2));
             linearLayout.setPadding(this.mHorizontalRegionPadding, this.mVerticalRegionPadding, this.mHorizontalRegionPadding, this.mVerticalRegionPadding);
@@ -733,10 +734,10 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
         textStyle.merge(subtitleTextNode.getStyle());
         AutoResizeTextView autoResizeTextView;
         if (SubtitleUtils.isStrokeTextViewRequired(textStyle)) {
-            autoResizeTextView = new StrokeTextView((Context)this.mActivity);
+            autoResizeTextView = new StrokeTextView((Context)this.mPlayerFragment.getActivity());
         }
         else {
-            autoResizeTextView = new AutoResizeTextView((Context)this.mActivity);
+            autoResizeTextView = new AutoResizeTextView((Context)this.mPlayerFragment.getActivity());
         }
         autoResizeTextView.setEllipsize((TextUtils$TruncateAt)null);
         autoResizeTextView.setSingleLine(true);

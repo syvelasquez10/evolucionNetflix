@@ -20,12 +20,20 @@ public class TintTypedArray
         this.mWrapped = mWrapped;
     }
     
+    public static TintTypedArray obtainStyledAttributes(final Context context, final AttributeSet set, final int[] array) {
+        return new TintTypedArray(context, context.obtainStyledAttributes(set, array));
+    }
+    
     public static TintTypedArray obtainStyledAttributes(final Context context, final AttributeSet set, final int[] array, final int n, final int n2) {
         return new TintTypedArray(context, context.obtainStyledAttributes(set, array, n, n2));
     }
     
     public boolean getBoolean(final int n, final boolean b) {
         return this.mWrapped.getBoolean(n, b);
+    }
+    
+    public int getColor(final int n, final int n2) {
+        return this.mWrapped.getColor(n, n2);
     }
     
     public int getDimensionPixelOffset(final int n, final int n2) {
@@ -44,6 +52,16 @@ public class TintTypedArray
             }
         }
         return this.mWrapped.getDrawable(n);
+    }
+    
+    public Drawable getDrawableIfKnown(int resourceId) {
+        if (this.mWrapped.hasValue(resourceId)) {
+            resourceId = this.mWrapped.getResourceId(resourceId, 0);
+            if (resourceId != 0) {
+                return this.getTintManager().getDrawable(resourceId, true);
+            }
+        }
+        return null;
     }
     
     public float getFloat(final int n, final float n2) {
@@ -76,7 +94,7 @@ public class TintTypedArray
     
     public TintManager getTintManager() {
         if (this.mTintManager == null) {
-            this.mTintManager = new TintManager(this.mContext);
+            this.mTintManager = TintManager.get(this.mContext);
         }
         return this.mTintManager;
     }

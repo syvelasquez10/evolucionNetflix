@@ -4,20 +4,18 @@
 
 package android.support.v4.app;
 
-import android.os.Build$VERSION;
 import java.io.FileDescriptor;
 import java.io.Writer;
 import java.io.PrintWriter;
 import android.support.v4.util.LogWriter;
 import android.util.Log;
-import android.support.v4.util.SimpleArrayMap;
 import android.view.ViewGroup;
-import java.util.Map;
 import java.util.List;
-import android.content.Context;
-import android.util.SparseArray;
-import android.support.v4.util.ArrayMap;
 import java.util.Collection;
+import android.util.SparseArray;
+import android.os.Build$VERSION;
+import android.support.v4.util.ArrayMap;
+import java.util.Map;
 import java.util.ArrayList;
 import android.view.View;
 import android.view.ViewTreeObserver$OnPreDrawListener;
@@ -50,13 +48,7 @@ class BackStackRecord$2 implements ViewTreeObserver$OnPreDrawListener
             FragmentTransitionCompat21.removeTargets(this.val$sharedElementTransition, this.val$sharedElementTargets);
             this.val$sharedElementTargets.clear();
             final ArrayMap access$000 = this.this$0.mapSharedElementsIn(this.val$state, this.val$isBack, this.val$inFragment);
-            if (access$000.isEmpty()) {
-                this.val$sharedElementTargets.add(this.val$state.nonExistentView);
-            }
-            else {
-                this.val$sharedElementTargets.addAll(access$000.values());
-            }
-            FragmentTransitionCompat21.addTargets(this.val$sharedElementTransition, this.val$sharedElementTargets);
+            FragmentTransitionCompat21.setSharedElementTargets(this.val$sharedElementTransition, this.val$state.nonExistentView, access$000, this.val$sharedElementTargets);
             this.this$0.setEpicenterIn(access$000, this.val$state);
             this.this$0.callSharedElementEnd(this.val$state, this.val$inFragment, this.val$outFragment, this.val$isBack, access$000);
         }

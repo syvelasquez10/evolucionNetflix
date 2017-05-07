@@ -4,24 +4,20 @@
 
 package com.google.android.gms.auth.api;
 
-import com.google.android.gms.common.api.Api$Client;
+import com.google.android.gms.common.api.Api$zzb;
 import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
-import com.google.android.gms.common.internal.zze;
+import com.google.android.gms.common.internal.zzf;
 import android.os.Looper;
 import android.content.Context;
-import com.google.android.gms.common.api.Api$ApiOptions$NoOptions;
-import com.google.android.gms.internal.zzjq;
+import com.google.android.gms.auth.api.signin.zze;
+import com.google.android.gms.auth.api.signin.internal.zzd;
 import com.google.android.gms.common.api.Api$zza;
 
-final class Auth$4 implements Api$zza<zzjq, Api$ApiOptions$NoOptions>
+final class Auth$4 extends Api$zza<zzd, zze>
 {
     @Override
-    public int getPriority() {
-        return Integer.MAX_VALUE;
-    }
-    
-    public zzjq zzf(final Context context, final Looper looper, final zze zze, final Api$ApiOptions$NoOptions api$ApiOptions$NoOptions, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
-        return new zzjq(context, looper, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
+    public zzd zza(final Context context, final Looper looper, final zzf zzf, final zze zze, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
+        return new zzd(context, looper, zzf, zze, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
     }
 }

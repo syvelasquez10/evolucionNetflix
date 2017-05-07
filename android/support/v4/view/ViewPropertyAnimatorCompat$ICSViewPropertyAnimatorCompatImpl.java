@@ -27,8 +27,8 @@ class ViewPropertyAnimatorCompat$ICSViewPropertyAnimatorCompatImpl extends ViewP
     }
     
     @Override
-    public void scaleY(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        ViewPropertyAnimatorCompatICS.scaleY(view, n);
+    public long getDuration(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view) {
+        return ViewPropertyAnimatorCompatICS.getDuration(view);
     }
     
     @Override
@@ -45,6 +45,11 @@ class ViewPropertyAnimatorCompat$ICSViewPropertyAnimatorCompatImpl extends ViewP
     public void setListener(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final ViewPropertyAnimatorListener viewPropertyAnimatorListener) {
         view.setTag(2113929216, (Object)viewPropertyAnimatorListener);
         ViewPropertyAnimatorCompatICS.setListener(view, new ViewPropertyAnimatorCompat$ICSViewPropertyAnimatorCompatImpl$MyVpaListener(viewPropertyAnimatorCompat));
+    }
+    
+    @Override
+    public void setStartDelay(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final long n) {
+        ViewPropertyAnimatorCompatICS.setStartDelay(view, n);
     }
     
     @Override

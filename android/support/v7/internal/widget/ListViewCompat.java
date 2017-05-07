@@ -57,14 +57,16 @@ public class ListViewCompat extends ListView
     protected void drawSelectorCompat(final Canvas canvas) {
         if (!this.mSelectorRect.isEmpty()) {
             final Drawable selector = this.getSelector();
-            selector.setBounds(this.mSelectorRect);
-            selector.draw(canvas);
+            if (selector != null) {
+                selector.setBounds(this.mSelectorRect);
+                selector.draw(canvas);
+            }
         }
     }
     
     protected void drawableStateChanged() {
         super.drawableStateChanged();
-        this.mSelector.setEnabled(true);
+        this.setSelectorEnabled(true);
         this.updateSelectorStateCompat();
     }
     
@@ -195,9 +197,18 @@ public class ListViewCompat extends ListView
     }
     
     public void setSelector(final Drawable drawable) {
-        super.setSelector((Drawable)(this.mSelector = new ListViewCompat$GateKeeperDrawable(drawable)));
+        ListViewCompat$GateKeeperDrawable mSelector;
+        if (drawable != null) {
+            mSelector = new ListViewCompat$GateKeeperDrawable(drawable);
+        }
+        else {
+            mSelector = null;
+        }
+        super.setSelector((Drawable)(this.mSelector = mSelector));
         final Rect rect = new Rect();
-        drawable.getPadding(rect);
+        if (drawable != null) {
+            drawable.getPadding(rect);
+        }
         this.mSelectionLeftPadding = rect.left;
         this.mSelectionTopPadding = rect.top;
         this.mSelectionRightPadding = rect.right;
@@ -205,7 +216,9 @@ public class ListViewCompat extends ListView
     }
     
     protected void setSelectorEnabled(final boolean enabled) {
-        this.mSelector.setEnabled(enabled);
+        if (this.mSelector != null) {
+            this.mSelector.setEnabled(enabled);
+        }
     }
     
     protected boolean shouldShowSelectorCompat() {

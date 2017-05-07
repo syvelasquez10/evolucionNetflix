@@ -117,6 +117,13 @@ class ViewCompat$ICSViewCompatImpl extends ViewCompat$HCViewCompatImpl
     
     @Override
     public void setAccessibilityDelegate(final View view, final AccessibilityDelegateCompat accessibilityDelegateCompat) {
-        ViewCompatICS.setAccessibilityDelegate(view, accessibilityDelegateCompat.getBridge());
+        Object bridge;
+        if (accessibilityDelegateCompat == null) {
+            bridge = null;
+        }
+        else {
+            bridge = accessibilityDelegateCompat.getBridge();
+        }
+        ViewCompatICS.setAccessibilityDelegate(view, bridge);
     }
 }

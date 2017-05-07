@@ -13,11 +13,11 @@ import android.os.Parcelable$Creator;
 
 public class zzb implements Parcelable$Creator<CastDevice>
 {
-    static void zza(final CastDevice castDevice, final Parcel parcel, int zzac) {
-        zzac = com.google.android.gms.common.internal.safeparcel.zzb.zzac(parcel);
+    static void zza(final CastDevice castDevice, final Parcel parcel, int zzak) {
+        zzak = com.google.android.gms.common.internal.safeparcel.zzb.zzak(parcel);
         com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 1, castDevice.getVersionCode());
         com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 2, castDevice.getDeviceId(), false);
-        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 3, castDevice.zzQL, false);
+        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 3, castDevice.zzTo, false);
         com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 4, castDevice.getFriendlyName(), false);
         com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 5, castDevice.getModelName(), false);
         com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 6, castDevice.getDeviceVersion(), false);
@@ -25,13 +25,13 @@ public class zzb implements Parcelable$Creator<CastDevice>
         com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 8, castDevice.getIcons(), false);
         com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 9, castDevice.getCapabilities());
         com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 10, castDevice.getStatus());
-        com.google.android.gms.common.internal.safeparcel.zzb.zzH(parcel, zzac);
+        com.google.android.gms.common.internal.safeparcel.zzb.zzH(parcel, zzak);
     }
     
-    public CastDevice zzK(final Parcel parcel) {
+    public CastDevice zzS(final Parcel parcel) {
         int zzg = 0;
         List<WebImage> zzc = null;
-        final int zzab = zza.zzab(parcel);
+        final int zzaj = zza.zzaj(parcel);
         int zzg2 = 0;
         int zzg3 = 0;
         String zzo = null;
@@ -40,62 +40,62 @@ public class zzb implements Parcelable$Creator<CastDevice>
         String zzo4 = null;
         String zzo5 = null;
         int zzg4 = 0;
-        while (parcel.dataPosition() < zzab) {
-            final int zzaa = zza.zzaa(parcel);
-            switch (zza.zzbA(zzaa)) {
+        while (parcel.dataPosition() < zzaj) {
+            final int zzai = zza.zzai(parcel);
+            switch (zza.zzbH(zzai)) {
                 default: {
-                    zza.zzb(parcel, zzaa);
+                    zza.zzb(parcel, zzai);
                     continue;
                 }
                 case 1: {
-                    zzg4 = zza.zzg(parcel, zzaa);
+                    zzg4 = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 2: {
-                    zzo5 = zza.zzo(parcel, zzaa);
+                    zzo5 = zza.zzo(parcel, zzai);
                     continue;
                 }
                 case 3: {
-                    zzo4 = zza.zzo(parcel, zzaa);
+                    zzo4 = zza.zzo(parcel, zzai);
                     continue;
                 }
                 case 4: {
-                    zzo3 = zza.zzo(parcel, zzaa);
+                    zzo3 = zza.zzo(parcel, zzai);
                     continue;
                 }
                 case 5: {
-                    zzo2 = zza.zzo(parcel, zzaa);
+                    zzo2 = zza.zzo(parcel, zzai);
                     continue;
                 }
                 case 6: {
-                    zzo = zza.zzo(parcel, zzaa);
+                    zzo = zza.zzo(parcel, zzai);
                     continue;
                 }
                 case 7: {
-                    zzg3 = zza.zzg(parcel, zzaa);
+                    zzg3 = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 8: {
-                    zzc = zza.zzc(parcel, zzaa, WebImage.CREATOR);
+                    zzc = zza.zzc(parcel, zzai, WebImage.CREATOR);
                     continue;
                 }
                 case 9: {
-                    zzg2 = zza.zzg(parcel, zzaa);
+                    zzg2 = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 10: {
-                    zzg = zza.zzg(parcel, zzaa);
+                    zzg = zza.zzg(parcel, zzai);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzab) {
-            throw new zza$zza("Overread allowed size end=" + zzab, parcel);
+        if (parcel.dataPosition() != zzaj) {
+            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
         }
         return new CastDevice(zzg4, zzo5, zzo4, zzo3, zzo2, zzo, zzg3, zzc, zzg2, zzg);
     }
     
-    public CastDevice[] zzaA(final int n) {
+    public CastDevice[] zzaI(final int n) {
         return new CastDevice[n];
     }
 }

@@ -92,6 +92,14 @@ public class NativeTransport implements Transport
         native_enable_crash_handler();
     }
     
+    public static void enableDolbyDigitalPlus51() {
+        native_enableDolbyDigitalPlus51();
+    }
+    
+    public static void enableHDPlayback() {
+        native_enableHDPlayback();
+    }
+    
     public static String[] getSupportedVideoProfiles() {
         return native_getSupportedProfiles();
     }
@@ -132,6 +140,10 @@ public class NativeTransport implements Transport
     
     private synchronized native void native_connect(final String p0, final int p1, final String p2, final int p3);
     
+    private static final synchronized native void native_enableDolbyDigitalPlus51();
+    
+    private static final synchronized native void native_enableHDPlayback();
+    
     private static final synchronized native void native_enable_crash_handler();
     
     private static final synchronized native String[] native_getSupportedProfiles();
@@ -147,6 +159,8 @@ public class NativeTransport implements Transport
     private synchronized native void native_release();
     
     private final synchronized native void native_setProperty(final String p0, final String p1, final String p2);
+    
+    private static final synchronized native void native_setSupportMaxVideoHeight(final int p0);
     
     private synchronized native void native_setVOapi(final long p0, final long p1);
     
@@ -184,6 +198,10 @@ public class NativeTransport implements Transport
         Log.e("nf-NativeTransport", "Event handler is NULL. Unable to post handler!");
     }
     
+    public static void setSupportMaxVideoHeight(final int n) {
+        native_setSupportMaxVideoHeight(n);
+    }
+    
     @Override
     public void close() {
         Log.d("nf-NativeTransport", "close:: noop");
@@ -200,7 +218,14 @@ public class NativeTransport implements Transport
         final IpConnectivityPolicy ipConnectivityPolicy = this.bridge.getIpConnectivityPolicy();
         this.mRootFileSystem = StringUtils.notNull("rootFileSystemn", fileSystemRoot);
         this.mEsn = StringUtils.notNull("esn", esnProvider.getEsn());
-        this.mFesn = StringUtils.notNull("fesn", esnProvider.getFesn());
+        String fesn;
+        if (esnProvider.getFesn() == null) {
+            fesn = "";
+        }
+        else {
+            fesn = esnProvider.getFesn();
+        }
+        this.mFesn = fesn;
         this.mFesn2 = StringUtils.notNull("fesn2", esnProvider.getFesn2());
         this.mDeviceId = StringUtils.notNull("deviceId", esnProvider.getDeviceId());
         this.mDeviceModel = StringUtils.notNull("modelId", esnProvider.getDeviceModel());
@@ -295,7 +320,6 @@ public class NativeTransport implements Transport
                 break Label_0081;
             }
             string = "nrdp";
-        Block_5_Outer:
             while (true) {
                 String s3 = s2;
                 if (s2 == null) {
@@ -304,17 +328,14 @@ public class NativeTransport implements Transport
                 try {
                     this.native_invokeMethod(string, s, s3);
                     return;
-                    while (true) {
-                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                        continue Block_5_Outer;
-                        Label_0103: {
-                            string = "nrdp." + string;
-                        }
-                        continue Block_5_Outer;
-                        continue;
+                    Label_0103: {
+                        string = "nrdp." + string;
                     }
+                    continue;
+                    // iftrue(Label_0103:, !string.startsWith("nrdp"))
+                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                    continue;
                 }
-                // iftrue(Label_0103:, !string.startsWith("nrdp"))
                 catch (Throwable t) {
                     Log.w("nf-NativeTransport", "Failure in JNI. It may happend than NRDApp is null!", t);
                 }
@@ -336,16 +357,16 @@ public class NativeTransport implements Transport
             try {
                 // iftrue(Label_0090:, !string.startsWith("nrdp"))
                 while (true) {
-                    while (true) {
-                        this.native_setProperty(string, s, s2);
-                        return;
-                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                        continue;
+                    this.native_setProperty(string, s, s2);
+                    return;
+                    Block_4: {
+                        break Block_4;
                         Label_0090: {
                             string = "nrdp." + string;
                         }
                         continue;
                     }
+                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
                     continue;
                 }
             }

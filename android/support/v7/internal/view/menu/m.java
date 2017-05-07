@@ -6,6 +6,7 @@ package android.support.v7.internal.view.menu;
 
 import android.support.v4.view.ActionProvider$VisibilityListener;
 import android.view.MenuItem$OnActionExpandListener;
+import android.os.Build$VERSION;
 import android.view.SubMenu;
 import android.view.ViewDebug$CapturedViewProperty;
 import android.support.v7.internal.widget.TintManager;
@@ -85,13 +86,13 @@ public final class m implements SupportMenuItem
     }
     
     CharSequence a(final aa aa) {
-        if (aa != null && aa.a()) {
+        if (aa != null && aa.prefersCondensedTitle()) {
             return this.getTitleCondensed();
         }
         return this.getTitle();
     }
     
-    void a(final ad m) {
+    public void a(final ad m) {
         (this.m = m).setHeaderTitle(this.getTitle());
     }
     
@@ -184,6 +185,7 @@ public final class m implements SupportMenuItem
         return b3;
     }
     
+    @Override
     public boolean collapseActionView() {
         if ((this.q & 0x8) != 0x0) {
             if (this.r == null) {
@@ -242,7 +244,7 @@ public final class m implements SupportMenuItem
     
     @Override
     public boolean expandActionView() {
-        return this.n() && (this.t == null || this.t.onMenuItemActionExpand((MenuItem)this)) && this.l.c(this);
+        return this.m() && (this.t == null || this.t.onMenuItemActionExpand((MenuItem)this)) && this.l.c(this);
     }
     
     public boolean f() {
@@ -313,16 +315,32 @@ public final class m implements SupportMenuItem
         return (SubMenu)this.m;
     }
     
+    @Override
+    public ActionProvider getSupportActionProvider() {
+        return this.s;
+    }
+    
     @ViewDebug$CapturedViewProperty
     public CharSequence getTitle() {
         return this.e;
     }
     
     public CharSequence getTitleCondensed() {
+        CharSequence charSequence;
         if (this.f != null) {
-            return this.f;
+            charSequence = this.f;
         }
-        return this.e;
+        else {
+            charSequence = this.e;
+        }
+        CharSequence string = charSequence;
+        if (Build$VERSION.SDK_INT < 18 && (string = charSequence) != null) {
+            string = charSequence;
+            if (!(charSequence instanceof String)) {
+                string = charSequence.toString();
+            }
+        }
+        return string;
     }
     
     public boolean h() {
@@ -378,11 +396,7 @@ public final class m implements SupportMenuItem
         return (this.q & 0x4) == 0x4;
     }
     
-    public ActionProvider m() {
-        return this.s;
-    }
-    
-    public boolean n() {
+    public boolean m() {
         boolean b = false;
         if ((this.q & 0x8) != 0x0) {
             if (this.r == null && this.s != null) {
@@ -508,7 +522,7 @@ public final class m implements SupportMenuItem
     @Override
     public SupportMenuItem setSupportActionProvider(final ActionProvider s) {
         if (this.s != null) {
-            this.s.setVisibilityListener(null);
+            this.s.reset();
         }
         this.r = null;
         this.s = s;
@@ -516,6 +530,12 @@ public final class m implements SupportMenuItem
         if (this.s != null) {
             this.s.setVisibilityListener(new n(this));
         }
+        return this;
+    }
+    
+    @Override
+    public SupportMenuItem setSupportOnActionExpandListener(final MenuItemCompat$OnActionExpandListener t) {
+        this.t = t;
         return this;
     }
     

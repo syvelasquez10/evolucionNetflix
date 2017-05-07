@@ -6,7 +6,7 @@ package android.support.v4.view;
 
 import android.view.MotionEvent;
 
-class MotionEventCompat$EclairMotionEventVersionImpl implements MotionEventCompat$MotionEventVersionImpl
+class MotionEventCompat$EclairMotionEventVersionImpl extends MotionEventCompat$BaseMotionEventVersionImpl
 {
     @Override
     public int findPointerIndex(final MotionEvent motionEvent, final int n) {

@@ -4,9 +4,9 @@
 
 package android.support.v4.text;
 
+import java.util.Locale;
+
 interface ICUCompat$ICUCompatImpl
 {
-    String addLikelySubtags(final String p0);
-    
-    String getScript(final String p0);
+    String maximizeAndGetScript(final Locale p0);
 }

@@ -7,7 +7,8 @@ package com.netflix.mediaclient.service.configuration;
 public enum ImageResolutionClass
 {
     HIGH("high"), 
-    LOW("low");
+    LOW("low"), 
+    MEDIUM("medium");
     
     public final String urlParamValue;
     

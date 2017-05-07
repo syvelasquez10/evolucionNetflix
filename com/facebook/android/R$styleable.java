@@ -18,11 +18,11 @@ public final class R$styleable
     public static final int[] com_facebook_profile_picture_view;
     
     static {
-        com_facebook_friend_picker_fragment = new int[] { 2130772218 };
-        com_facebook_like_view = new int[] { 2130772229, 2130772230, 2130772231, 2130772232, 2130772233 };
-        com_facebook_login_view = new int[] { 2130772223, 2130772224, 2130772225, 2130772226 };
-        com_facebook_picker_fragment = new int[] { 2130772211, 2130772212, 2130772213, 2130772214, 2130772215, 2130772216, 2130772217 };
-        com_facebook_place_picker_fragment = new int[] { 2130772219, 2130772220, 2130772221, 2130772222 };
-        com_facebook_profile_picture_view = new int[] { 2130772227, 2130772228 };
+        com_facebook_friend_picker_fragment = new int[] { 2130772316 };
+        com_facebook_like_view = new int[] { 2130772317, 2130772318, 2130772319, 2130772320, 2130772321 };
+        com_facebook_login_view = new int[] { 2130772322, 2130772323, 2130772324, 2130772325 };
+        com_facebook_picker_fragment = new int[] { 2130772326, 2130772327, 2130772328, 2130772329, 2130772330, 2130772331, 2130772332 };
+        com_facebook_place_picker_fragment = new int[] { 2130772333, 2130772334, 2130772335, 2130772336 };
+        com_facebook_profile_picture_view = new int[] { 2130772337, 2130772338 };
     }
 }

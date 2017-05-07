@@ -12,6 +12,7 @@ import android.app.Notification$Builder;
 import android.support.v4.app.NotificationCompat$Builder;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.IntentFilter;
+import android.graphics.BitmapFactory;
 import android.widget.RemoteViews;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
@@ -22,6 +23,7 @@ import android.app.PendingIntent;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.app.NotificationManager;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import com.netflix.mediaclient.Log;
@@ -38,6 +40,7 @@ class PlayerSuspendNotification$2 implements ImageLoader$ImageLoaderListener
     @Override
     public void onErrorResponse(final String s) {
         Log.e(PlayerSuspendNotification.TAG, "failed to downlod " + s);
+        this.this$0.show(null);
     }
     
     @Override
@@ -51,5 +54,6 @@ class PlayerSuspendNotification$2 implements ImageLoader$ImageLoaderListener
             return;
         }
         Log.e(PlayerSuspendNotification.TAG, "bitmap is not valid " + copy);
+        this.this$0.show(null);
     }
 }

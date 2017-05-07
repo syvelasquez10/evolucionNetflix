@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.ui.social.notifications;
 
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import android.os.Parcelable;
-import android.widget.ListAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
@@ -18,13 +18,19 @@ import android.content.IntentFilter;
 import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
+import com.netflix.mediaclient.ui.common.PlayContextImp;
+import org.json.JSONException;
+import com.netflix.model.leafs.social.SocialNotificationsListSummary;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import android.widget.ListAdapter;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.android.app.Status;
+import org.json.JSONObject;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.android.app.Status;
+import android.view.View$OnClickListener;
 import java.util.HashSet;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -68,7 +74,7 @@ public class NotificationsFrag extends NetflixFrag
         this.mLoadMoreAvailable = true;
         this.mNotificationsToBeRead = new HashSet<SocialNotificationSummary>();
         this.errorCallback = new NotificationsFrag$1(this);
-        this.socialNotificationsListUpdateReceiver = new NotificationsFrag$4(this);
+        this.socialNotificationsListUpdateReceiver = new NotificationsFrag$6(this);
     }
     
     private boolean areMoreNotificationsAvailable() {
@@ -90,39 +96,100 @@ public class NotificationsFrag extends NetflixFrag
     private void completeInitIfPossible() {
         if (!this.mAreViewsCreated) {
             Log.v(NotificationsFrag.TAG, "Can't complete init - views not created");
+            return;
         }
-        else {
-            if (this.mServiceManager == null) {
-                Log.v(NotificationsFrag.TAG, "Can't complete init - manager not ready");
-                return;
-            }
-            if (this.mNotifications == null) {
-                this.fetchNotificationsList(true);
-                return;
-            }
-            this.mIsLoadingData = false;
-            if (this.mAdapter != null) {
-                this.mAdapter.notifyDataSetChanged();
-            }
+        if (this.mServiceManager == null) {
+            Log.v(NotificationsFrag.TAG, "Can't complete init - manager not ready");
+            return;
         }
+        this.mAdapter = new NotificationsFrag$NotificationsListAdapter(this, null);
+        this.mNotificationsList.setAdapter((ListAdapter)this.mAdapter);
+        if (this.mNotifications == null) {
+            this.fetchNotificationsList(true);
+            return;
+        }
+        this.mIsLoadingData = false;
+        this.mAdapter.notifyDataSetChanged();
     }
     
     private void fetchNotificationsList(final boolean b) {
         if (this.mServiceManager != null) {
             this.mIsLoadingData = true;
-            this.mServiceManager.getBrowse().fetchNotificationsList(0, this.getNumNotificationsPerPage() - 1, new NotificationsFrag$2(this, NotificationsFrag.TAG));
+            this.mServiceManager.getBrowse().fetchNotificationsList(0, this.getNumNotificationsPerPage() - 1, new NotificationsFrag$4(this, NotificationsFrag.TAG));
         }
+    }
+    
+    private View$OnClickListener getClickListener(String string, final SocialNotificationSummary socialNotificationSummary, final int n) {
+        if (string == null) {
+            Log.w(NotificationsFrag.TAG, "SPY-8161 - Got null target value");
+            ErrorLoggingManager.logHandledException("SPY-8161 - Got null target value");
+            return this.getDisplayListener(socialNotificationSummary, n);
+        }
+        final String upperCase = string.toUpperCase();
+        switch (upperCase) {
+            default: {
+                string = "SPY-8161 - Got unsupported target value: " + string;
+                Log.w(NotificationsFrag.TAG, string);
+                ErrorLoggingManager.logHandledException(string);
+                return this.getDisplayListener(socialNotificationSummary, n);
+            }
+            case "PLAYBACK": {
+                return this.getPlaybackListener(socialNotificationSummary, n);
+            }
+            case "DISPLAY": {
+                return this.getDisplayListener(socialNotificationSummary, n);
+            }
+        }
+    }
+    
+    private View$OnClickListener getDisplayListener(final SocialNotificationSummary socialNotificationSummary, final int n) {
+        final String videoId = socialNotificationSummary.getVideoId();
+        final VideoType videoType = socialNotificationSummary.getVideoType();
+        final SocialNotificationsListSummary socialNotificationsListSummary = this.mNotifications.getSocialNotificationsListSummary();
+        return (View$OnClickListener)new NotificationsFrag$3(this, socialNotificationSummary, socialNotificationsListSummary.getRequestId(), socialNotificationsListSummary, videoType, videoId, n);
+    }
+    
+    private JSONObject getModelObject(final SocialNotificationSummary socialNotificationSummary, final int n) {
+        final JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("position", n);
+            jsonObject.put("trackId", this.mNotifications.getSocialNotificationsListSummary().getBaseTrackId());
+            jsonObject.put("messageGuid", (Object)socialNotificationSummary.getId());
+            jsonObject.put("titleId", (Object)socialNotificationSummary.getVideoId());
+            return jsonObject;
+        }
+        catch (JSONException ex) {
+            Log.w(NotificationsFrag.TAG, "getModelObject() got an exception", (Throwable)ex);
+            return jsonObject;
+        }
+    }
+    
+    private View$OnClickListener getPlaybackListener(final SocialNotificationSummary socialNotificationSummary, final int n) {
+        final String videoId = socialNotificationSummary.getVideoId();
+        final VideoType videoType = socialNotificationSummary.getVideoType();
+        final SocialNotificationsListSummary socialNotificationsListSummary = this.mNotifications.getSocialNotificationsListSummary();
+        return (View$OnClickListener)new NotificationsFrag$2(this, videoId, new PlayContextImp(socialNotificationsListSummary.getRequestId(), socialNotificationsListSummary.getPlayerTrackId(), 0, 0), videoType, socialNotificationSummary, n);
+    }
+    
+    private int getVisibleNotificationsNumber() {
+        if (this.mNotifications == null || this.mNotifications.getSocialNotifications() == null) {
+            return 0;
+        }
+        if (this.getNumNotificationsPerPage() < this.mNotifications.getSocialNotifications().size()) {
+            return this.getNumNotificationsPerPage();
+        }
+        return this.mNotifications.getSocialNotifications().size();
     }
     
     private void loadMoreNotifications() {
         if (this.mServiceManager != null && this.mNotifications != null && this.mNotifications.getSocialNotifications() != null) {
             this.mIsLoadingData = true;
-            this.mServiceManager.getBrowse().fetchNotificationsList(this.mNotifications.getSocialNotifications().size(), this.mNotifications.getSocialNotifications().size() + this.getNumNotificationsPerPage() - 1, new NotificationsFrag$3(this, NotificationsFrag.TAG));
+            this.mServiceManager.getBrowse().fetchNotificationsList(this.mNotifications.getSocialNotifications().size(), this.mNotifications.getSocialNotifications().size() + this.getNumNotificationsPerPage() - 1, new NotificationsFrag$5(this, NotificationsFrag.TAG));
         }
     }
     
-    private void playVideo(final NetflixActivity netflixActivity, final String s, final PlayContext playContext, final VideoType videoType) {
-        this.startActivity(PlayerActivity.createColdStartIntent(netflixActivity, s, videoType, playContext));
+    private void playVideo(final String s, final PlayContext playContext, final VideoType videoType) {
+        this.startActivity(PlayerActivity.createColdStartIntent(this.getActivity(), s, videoType, playContext));
     }
     
     private void refreshNotificationMyListButtons() {
@@ -182,7 +249,7 @@ public class NotificationsFrag extends NetflixFrag
     }
     
     protected int getRowLayoutResourceId() {
-        return 2130903198;
+        return 2130903234;
     }
     
     protected boolean isListViewStatic() {
@@ -196,14 +263,7 @@ public class NotificationsFrag extends NetflixFrag
     public void markNotificationsAsRead() {
         if (this.mNotifications != null && this.mNotifications.getSocialNotifications() != null && this.mNotifications.getSocialNotifications().size() > 0) {
             final ArrayList<SocialNotificationSummary> list = new ArrayList<SocialNotificationSummary>();
-            int n;
-            if (this.getNumNotificationsPerPage() < this.mNotifications.getSocialNotifications().size()) {
-                n = this.getNumNotificationsPerPage();
-            }
-            else {
-                n = this.mNotifications.getSocialNotifications().size();
-            }
-            for (int i = 0; i < n; ++i) {
+            for (int visibleNotificationsNumber = this.getVisibleNotificationsNumber(), i = 0; i < visibleNotificationsNumber; ++i) {
                 final SocialNotificationSummary socialNotificationSummary = this.mNotifications.getSocialNotifications().get(i);
                 if (!socialNotificationSummary.getWasRead()) {
                     list.add(socialNotificationSummary);
@@ -237,11 +297,9 @@ public class NotificationsFrag extends NetflixFrag
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v(NotificationsFrag.TAG, "Creating new frag view...");
         this.mAreViewsCreated = true;
-        final View inflate = layoutInflater.inflate(2130903197, viewGroup, false);
-        (this.mNotificationsList = (StaticListView)inflate.findViewById(2131427821)).setItemsCanFocus(true);
+        final View inflate = layoutInflater.inflate(2130903233, viewGroup, false);
+        (this.mNotificationsList = (StaticListView)inflate.findViewById(2131624535)).setItemsCanFocus(true);
         this.mNotificationsList.setAsStatic(this.isListViewStatic());
-        this.mAdapter = new NotificationsFrag$NotificationsListAdapter(this);
-        this.mNotificationsList.setAdapter((ListAdapter)this.mAdapter);
         this.mIsLoadingData = true;
         this.completeInitIfPossible();
         return inflate;
@@ -258,6 +316,10 @@ public class NotificationsFrag extends NetflixFrag
         super.onManagerReady(mServiceManager, status);
         this.mServiceManager = mServiceManager;
         this.completeInitIfPossible();
+    }
+    
+    public void onPause() {
+        super.onPause();
     }
     
     public void onResume() {
@@ -278,6 +340,37 @@ public class NotificationsFrag extends NetflixFrag
     
     public void refresh() {
         this.fetchNotificationsList(true);
+    }
+    
+    public void reportNotificationsImpression(final boolean b) {
+        int i = 0;
+    Label_0100_Outer:
+        while (i < this.getVisibleNotificationsNumber()) {
+            final SocialNotificationSummary socialNotificationSummary = this.mNotifications.getSocialNotifications().get(i);
+            while (true) {
+                Label_0115: {
+                    if (!b) {
+                        break Label_0115;
+                    }
+                    final JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("position", i);
+                        jsonObject.put("isRead", socialNotificationSummary.getWasRead());
+                        jsonObject.put("messageGuid", (Object)socialNotificationSummary.getId());
+                        jsonObject.put("titleId", (Object)socialNotificationSummary.getVideoId());
+                        UIViewLogUtils.reportNotificationImpressionStarted((Context)this.getActivity(), jsonObject);
+                        ++i;
+                        continue Label_0100_Outer;
+                    }
+                    catch (JSONException ex) {
+                        ex.printStackTrace();
+                        continue;
+                    }
+                }
+                UIViewLogUtils.reportNotificationImpressionEnded((Context)this.getActivity(), true);
+                continue;
+            }
+        }
     }
     
     public void setNotificationsListStatusListener(final NotificationsFrag$NotificationsListStatusListener mListener) {

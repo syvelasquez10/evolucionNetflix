@@ -6,6 +6,7 @@ package android.support.v7.internal.widget;
 
 import android.view.ViewParent;
 import android.text.TextUtils$TruncateAt;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.support.v7.widget.LinearLayoutCompat$LayoutParams;
@@ -159,7 +160,7 @@ class ScrollingTabContainerView$TabView extends LinearLayoutCompat implements Vi
         }
         if (b) {
             if (this.mTextView == null) {
-                final CompatTextView mTextView = new CompatTextView(this.getContext(), null, R$attr.actionBarTabTextStyle);
+                final AppCompatTextView mTextView = new AppCompatTextView(this.getContext(), null, R$attr.actionBarTabTextStyle);
                 mTextView.setEllipsize(TextUtils$TruncateAt.END);
                 final LinearLayoutCompat$LayoutParams layoutParams2 = new LinearLayoutCompat$LayoutParams(-2, -2);
                 layoutParams2.gravity = 16;

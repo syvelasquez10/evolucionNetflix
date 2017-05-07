@@ -86,8 +86,8 @@ class RecommendToFriendsFrag$FriendsListAdapter extends BaseAdapter
     public View getView(int imageResource, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.mLayoutInflater.inflate(2130903180, viewGroup, false);
-            inflate.setTag((Object)new RecommendToFriendsFrag$FriendsListAdapter$Holder(this, (AdvancedImageView)inflate.findViewById(2131427793), (TextView)inflate.findViewById(2131427794), (ImageView)inflate.findViewById(2131427797), inflate.findViewById(2131427796), (TextView)inflate.findViewById(2131427795)));
+            inflate = this.this$0.mLayoutInflater.inflate(2130903213, viewGroup, false);
+            inflate.setTag((Object)new RecommendToFriendsFrag$FriendsListAdapter$Holder(this, (AdvancedImageView)inflate.findViewById(2131624507), (TextView)inflate.findViewById(2131624508), (ImageView)inflate.findViewById(2131624511), inflate.findViewById(2131624510), (TextView)inflate.findViewById(2131624509)));
         }
         final RecommendToFriendsFrag$FriendsListAdapter$Holder recommendToFriendsFrag$FriendsListAdapter$Holder = (RecommendToFriendsFrag$FriendsListAdapter$Holder)inflate.getTag();
         final FriendForRecommendation item = this.getItem(imageResource);
@@ -96,19 +96,19 @@ class RecommendToFriendsFrag$FriendsListAdapter extends BaseAdapter
         recommendToFriendsFrag$FriendsListAdapter$Holder.fbIcon.setVisibility(8);
         recommendToFriendsFrag$FriendsListAdapter$Holder.friendWatchedStatus.setVisibility(8);
         if (!this.this$0.mLoadMoreAvailable && (this.this$0.mFriends == null || this.this$0.mFriends.size() == 0)) {
-            recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131493346);
+            recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131165380);
             recommendToFriendsFrag$FriendsListAdapter$Holder.name.setSingleLine(false);
             recommendToFriendsFrag$FriendsListAdapter$Holder.name.setGravity(17);
         }
         else {
             if (this.this$0.mLoadMoreAvailable && imageResource == this.getCount() - 1) {
-                recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131493345);
+                recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131165379);
                 recommendToFriendsFrag$FriendsListAdapter$Holder.name.setSingleLine(false);
                 recommendToFriendsFrag$FriendsListAdapter$Holder.name.setGravity(17);
                 this.this$0.loadMoreFriends();
                 return inflate;
             }
-            if (this.this$0.getActivity() != null && NetflixActivity.getImageLoader((Context)this.this$0.getActivity()) != null) {
+            if (this.this$0.getActivity() != null && this.this$0.mServiceManager != null && this.this$0.mServiceManager.isReady() && NetflixActivity.getImageLoader((Context)this.this$0.getActivity()) != null) {
                 recommendToFriendsFrag$FriendsListAdapter$Holder.name.setGravity(19);
                 recommendToFriendsFrag$FriendsListAdapter$Holder.name.setSingleLine(true);
                 recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText((CharSequence)item.getFriendProfile().getFullName());
@@ -123,10 +123,10 @@ class RecommendToFriendsFrag$FriendsListAdapter extends BaseAdapter
                 }
                 final ImageView access$1600 = recommendToFriendsFrag$FriendsListAdapter$Holder.checkMark;
                 if (this.this$0.mCheckedFriends.contains(item)) {
-                    imageResource = 2130837883;
+                    imageResource = 2130837925;
                 }
                 else {
-                    imageResource = 2130837882;
+                    imageResource = 2130837924;
                 }
                 access$1600.setImageResource(imageResource);
                 inflate.setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$FriendsListAdapter$1(this, item, recommendToFriendsFrag$FriendsListAdapter$Holder));

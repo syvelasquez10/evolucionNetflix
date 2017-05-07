@@ -4,6 +4,7 @@
 
 package android.support.v7.internal.view.menu;
 
+import android.support.v4.view.MenuItemCompat$OnActionExpandListener;
 import android.view.MenuItem$OnActionExpandListener;
 import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
@@ -58,6 +59,7 @@ public class a implements SupportMenuItem
         return this;
     }
     
+    @Override
     public boolean collapseActionView() {
         return false;
     }
@@ -109,6 +111,11 @@ public class a implements SupportMenuItem
     }
     
     public SubMenu getSubMenu() {
+        return null;
+    }
+    
+    @Override
+    public android.support.v4.view.ActionProvider getSupportActionProvider() {
         return null;
     }
     
@@ -240,6 +247,11 @@ public class a implements SupportMenuItem
     @Override
     public SupportMenuItem setSupportActionProvider(final android.support.v4.view.ActionProvider actionProvider) {
         throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public SupportMenuItem setSupportOnActionExpandListener(final MenuItemCompat$OnActionExpandListener menuItemCompat$OnActionExpandListener) {
+        return this;
     }
     
     public MenuItem setTitle(final int n) {

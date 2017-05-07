@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.media;
 
-import java.util.Arrays;
 import java.io.Serializable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +33,13 @@ public class Language
     private Subtitle[] mSubtitles;
     private final List<Subtitle> mUsedSubtitles;
     
-    public Language(final AudioSource[] mAltAudios, final int mCurrentNccpAudioIndex, final Subtitle[] mSubtitles, final int mCurrentNccpSubtitleIndex, final boolean mSubtitleVisible) {
+    public Language(final AudioSource[] array, final int mCurrentNccpAudioIndex, final Subtitle[] mSubtitles, final int mCurrentNccpSubtitleIndex, final boolean mSubtitleVisible) {
         this.mPreviousNccpSubtitleIndex = -1;
         this.mPreviousNccpAudioIndex = 0;
         this.mUsedSubtitles = new ArrayList<Subtitle>();
-        if (mAltAudios != null) {
-            this.mAltAudios = mAltAudios;
+        this.mCurrentNccpAudioIndex = mCurrentNccpAudioIndex;
+        if (array != null) {
+            this.dedupAudioTrackOnLanguageDescription(array, mCurrentNccpAudioIndex);
         }
         else {
             this.mAltAudios = new AudioSource[0];
@@ -51,7 +52,6 @@ public class Language
         }
         this.mSubtitleVisible = mSubtitleVisible;
         this.mCurrentNccpSubtitleIndex = mCurrentNccpSubtitleIndex;
-        this.mCurrentNccpAudioIndex = mCurrentNccpAudioIndex;
     }
     
     private static int countAllowedSubtitles(final Subtitle[] array, final AudioSource audioSource) {
@@ -84,6 +84,30 @@ public class Language
             }
         }
         return n2;
+    }
+    
+    private void dedupAudioTrackOnLanguageDescription(final AudioSource[] array, final int n) {
+        Arrays.sort(array);
+        final ArrayList<AudioSource> list = new ArrayList<AudioSource>();
+        String s = new String();
+        final int length = array.length;
+        int i = 0;
+        int nccpOrderNumber = -1;
+        while (i < length) {
+            final AudioSource audioSource = array[i];
+            String languageDescription = s;
+            if (!s.equals(audioSource.getLanguageDescription())) {
+                list.add(audioSource);
+                languageDescription = audioSource.getLanguageDescription();
+                nccpOrderNumber = audioSource.getNccpOrderNumber();
+            }
+            if (nccpOrderNumber != -1 && audioSource.nccpOrderNumber == n) {
+                this.mCurrentNccpAudioIndex = nccpOrderNumber;
+            }
+            ++i;
+            s = languageDescription;
+        }
+        this.mAltAudios = list.toArray(new AudioSource[0]);
     }
     
     private static AudioSource getAudioSource(final AudioSource[] array, final int n) {

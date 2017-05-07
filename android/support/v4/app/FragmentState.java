@@ -4,8 +4,8 @@
 
 package android.support.v4.app;
 
-import android.util.Log;
 import android.content.Context;
+import android.util.Log;
 import android.os.Parcel;
 import android.os.Bundle;
 import android.os.Parcelable$Creator;
@@ -60,16 +60,17 @@ final class FragmentState implements Parcelable
         return 0;
     }
     
-    public Fragment instantiate(final FragmentActivity fragmentActivity, final Fragment fragment) {
+    public Fragment instantiate(final FragmentHostCallback fragmentHostCallback, final Fragment fragment) {
         if (this.mInstance != null) {
             return this.mInstance;
         }
+        final Context context = fragmentHostCallback.getContext();
         if (this.mArguments != null) {
-            this.mArguments.setClassLoader(fragmentActivity.getClassLoader());
+            this.mArguments.setClassLoader(context.getClassLoader());
         }
-        this.mInstance = Fragment.instantiate((Context)fragmentActivity, this.mClassName, this.mArguments);
+        this.mInstance = Fragment.instantiate(context, this.mClassName, this.mArguments);
         if (this.mSavedFragmentState != null) {
-            this.mSavedFragmentState.setClassLoader(fragmentActivity.getClassLoader());
+            this.mSavedFragmentState.setClassLoader(context.getClassLoader());
             this.mInstance.mSavedFragmentState = this.mSavedFragmentState;
         }
         this.mInstance.setIndex(this.mIndex, fragment);
@@ -80,7 +81,7 @@ final class FragmentState implements Parcelable
         this.mInstance.mTag = this.mTag;
         this.mInstance.mRetainInstance = this.mRetainInstance;
         this.mInstance.mDetached = this.mDetached;
-        this.mInstance.mFragmentManager = fragmentActivity.mFragments;
+        this.mInstance.mFragmentManager = fragmentHostCallback.mFragmentManager;
         if (FragmentManagerImpl.DEBUG) {
             Log.v("FragmentManager", "Instantiated fragment " + this.mInstance);
         }

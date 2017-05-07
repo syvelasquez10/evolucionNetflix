@@ -5,9 +5,9 @@
 package com.netflix.mediaclient.util.log;
 
 import java.util.Iterator;
+import com.android.volley.NetworkError;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
-import com.android.volley.NetworkError;
 import com.netflix.mediaclient.service.webclient.volley.FalkorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
 import com.netflix.mediaclient.service.logging.client.model.Error;
@@ -218,15 +218,23 @@ public abstract class ConsolidatedLoggingUtils
         return rootCause;
     }
     
+    protected static boolean isNull(final Object o, final String s) {
+        return o == null;
+    }
+    
     public static void pauseReporting(final Context context) {
-        validateArgument(context, "Context can not be null!");
+        if (isNull(context, "Context can not be null!")) {
+            return;
+        }
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_PAUSE_EVENTS_DELIVERY");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
     public static void resumeReporting(final Context context, final boolean b) {
-        validateArgument(context, "Context can not be null!");
+        if (isNull(context, "Context can not be null!")) {
+            return;
+        }
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_PAUSE_EVENTS_DELIVERY");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intent.putExtra("flush", b);
@@ -270,37 +278,36 @@ public abstract class ConsolidatedLoggingUtils
                                         }
                                         break Label_0324;
                                         // iftrue(Label_0258:, !volleyError instanceof FalkorServerException)
-                                        // iftrue(Label_0109:, !volleyError instanceof NetworkError)
                                         // iftrue(Label_0292:, !volleyError instanceof TimeoutError)
+                                        // iftrue(Label_0275:, !volleyError instanceof ServerError)
                                         while (true) {
-                                            Block_10: {
-                                                break Block_10;
-                                                error.setRootCause(RootCause.serverFailure);
-                                                break;
-                                            Block_13_Outer:
-                                                while (true) {
-                                                    error.setRootCause(RootCause.tcpConnectionTimeout);
-                                                    break;
-                                                    while (true) {
+                                            Block_11: {
+                                                Block_12: {
+                                                    Block_10: {
+                                                        break Block_10;
+                                                        Label_0275: {
+                                                            break Block_12;
+                                                        }
                                                         error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
                                                         break;
-                                                        Label_0292: {
-                                                            continue;
-                                                        }
                                                     }
-                                                    Label_0275: {
-                                                        continue Block_13_Outer;
+                                                    error.setRootCause(RootCause.serverFailure);
+                                                    break;
+                                                    Label_0258: {
+                                                        break Block_11;
                                                     }
                                                 }
+                                                error.setRootCause(RootCause.tcpConnectionTimeout);
+                                                break;
                                             }
                                             error.setRootCause(RootCause.serverFailure);
                                             break;
-                                            Label_0258: {
+                                            Label_0292: {
                                                 continue;
                                             }
                                         }
                                     }
-                                    // iftrue(Label_0275:, !volleyError instanceof ServerError)
+                                    // iftrue(Label_0109:, !volleyError instanceof NetworkError)
                                     catch (Throwable t) {
                                         Log.e("nf_log", "Failed to add body response to JSON object", t);
                                         continue Label_0156;
@@ -492,13 +499,6 @@ public abstract class ConsolidatedLoggingUtils
                 }
                 return new UIError(RootCause.unknownFailure, null, null, null);
             }
-        }
-    }
-    
-    protected static void validateArgument(final Object o, final String s) {
-        if (o == null) {
-            Log.e("nf_log", s);
-            throw new IllegalArgumentException(s);
         }
     }
 }

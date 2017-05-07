@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration.esn;
 
+import com.netflix.mediaclient.util.AndroidUtils;
 import java.util.Locale;
 import java.io.Serializable;
 import java.util.UUID;
@@ -143,7 +144,7 @@ public abstract class BaseEsnProvider implements EsnProvider
         return StringUtils.replaceWhiteSpace(androidId, BaseEsnProvider.DELIM);
     }
     
-    private static String findFutureDeviceId2(final Context context) {
+    protected static String findFutureDeviceId2(final Context context) {
         String s;
         if ((s = getMacAddressAndSerial(context)) == null) {
             s = getAndroidId(context);
@@ -435,7 +436,9 @@ public abstract class BaseEsnProvider implements EsnProvider
             throw new IllegalArgumentException("Context can not be null");
         }
         this.init(context);
-        this.initFutureEsn(context);
+        if (AndroidUtils.getAndroidVersion() <= 22) {
+            this.initFutureEsn(context);
+        }
         this.initFutureEsn2(context);
     }
 }

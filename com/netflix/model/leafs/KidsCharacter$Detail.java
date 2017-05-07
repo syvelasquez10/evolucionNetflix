@@ -14,11 +14,7 @@ import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 public final class KidsCharacter$Detail implements JsonPopulator
 {
     private static final String TAG = "KidsCharacter.Detail";
-    public int episodeCount;
     public boolean hasWatchedRecently;
-    public int movieCount;
-    public String storyImgUrl;
-    public String synopsis;
     
     @Override
     public void populate(final JsonElement jsonElement) {
@@ -30,40 +26,12 @@ public final class KidsCharacter$Detail implements JsonPopulator
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0146: {
+            Label_0114: {
                 switch (s.hashCode()) {
-                    case 1590765524: {
-                        if (s.equals("episodeCount")) {
-                            n = 0;
-                            break Label_0146;
-                        }
-                        break;
-                    }
-                    case -1855447105: {
-                        if (s.equals("movieCount")) {
-                            n = 1;
-                            break Label_0146;
-                        }
-                        break;
-                    }
                     case -2011547908: {
                         if (s.equals("hasWatchedRecently")) {
-                            n = 2;
-                            break Label_0146;
-                        }
-                        break;
-                    }
-                    case 1828656532: {
-                        if (s.equals("synopsis")) {
-                            n = 3;
-                            break Label_0146;
-                        }
-                        break;
-                    }
-                    case -1551264767: {
-                        if (s.equals("storyImgUrl")) {
-                            n = 4;
-                            break Label_0146;
+                            n = 0;
+                            break Label_0114;
                         }
                         break;
                     }
@@ -75,23 +43,7 @@ public final class KidsCharacter$Detail implements JsonPopulator
                     continue;
                 }
                 case 0: {
-                    this.episodeCount = jsonElement2.getAsInt();
-                    continue;
-                }
-                case 1: {
-                    this.movieCount = jsonElement2.getAsInt();
-                    continue;
-                }
-                case 2: {
                     this.hasWatchedRecently = jsonElement2.getAsBoolean();
-                    continue;
-                }
-                case 3: {
-                    this.synopsis = jsonElement2.getAsString();
-                    continue;
-                }
-                case 4: {
-                    this.storyImgUrl = jsonElement2.getAsString();
                     continue;
                 }
             }
@@ -100,6 +52,6 @@ public final class KidsCharacter$Detail implements JsonPopulator
     
     @Override
     public String toString() {
-        return "Detail [episodeCount=" + this.episodeCount + ", movieCount=" + this.movieCount + ", hasWatchedRecently=" + this.hasWatchedRecently + ", synopsis=" + this.synopsis + ", storyImgUrl=" + this.storyImgUrl + "]";
+        return "Detail{hasWatchedRecently=" + this.hasWatchedRecently + '}';
     }
 }

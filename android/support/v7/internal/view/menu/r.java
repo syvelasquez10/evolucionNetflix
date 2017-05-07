@@ -4,29 +4,26 @@
 
 package android.support.v7.internal.view.menu;
 
-import android.view.View;
-import android.view.CollapsibleActionView;
-import android.widget.FrameLayout;
+import android.view.MenuItem;
+import android.support.v4.view.MenuItemCompat$OnActionExpandListener;
+import android.view.MenuItem$OnActionExpandListener;
 
-class r extends FrameLayout implements CollapsibleActionView
+class r extends f<MenuItem$OnActionExpandListener> implements MenuItemCompat$OnActionExpandListener
 {
-    final android.support.v7.view.CollapsibleActionView a;
+    final /* synthetic */ o a;
     
-    r(final View view) {
-        super(view.getContext());
-        this.a = (android.support.v7.view.CollapsibleActionView)view;
-        this.addView(view);
+    r(final o a, final MenuItem$OnActionExpandListener menuItem$OnActionExpandListener) {
+        this.a = a;
+        super(menuItem$OnActionExpandListener);
     }
     
-    View a() {
-        return (View)this.a;
+    @Override
+    public boolean onMenuItemActionCollapse(final MenuItem menuItem) {
+        return ((MenuItem$OnActionExpandListener)this.b).onMenuItemActionCollapse(this.a.a(menuItem));
     }
     
-    public void onActionViewCollapsed() {
-        this.a.onActionViewCollapsed();
-    }
-    
-    public void onActionViewExpanded() {
-        this.a.onActionViewExpanded();
+    @Override
+    public boolean onMenuItemActionExpand(final MenuItem menuItem) {
+        return ((MenuItem$OnActionExpandListener)this.b).onMenuItemActionExpand(this.a.a(menuItem));
     }
 }

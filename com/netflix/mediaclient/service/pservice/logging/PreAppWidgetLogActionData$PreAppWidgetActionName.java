@@ -11,7 +11,7 @@ public enum PreAppWidgetLogActionData$PreAppWidgetActionName
     GO_TO_NEXT("next"), 
     HOME("home"), 
     START_PLAY("startPlay"), 
-    UNKNOWN(""), 
+    UNKNOWN("unknown"), 
     VIEW_TITLE_DETAILS("viewTitleDetails");
     
     @SerializedName("value")

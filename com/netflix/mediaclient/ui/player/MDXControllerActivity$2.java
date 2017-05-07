@@ -21,10 +21,10 @@ import android.text.TextUtils;
 import android.content.IntentFilter;
 import android.content.Context;
 import android.content.Intent;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
 import android.content.BroadcastReceiver;
 import android.annotation.TargetApi;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -44,6 +44,5 @@ class MDXControllerActivity$2 implements ManagerStatusListener
     
     @Override
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-        this.this$0.cleanupAndExit();
     }
 }

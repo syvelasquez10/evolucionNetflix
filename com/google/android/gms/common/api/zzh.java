@@ -6,24 +6,64 @@ package com.google.android.gms.common.api;
 
 import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
+import java.util.Iterator;
+import java.util.Collections;
 
-public interface zzh
+public class zzh implements zzj
 {
-    void begin();
+    private final zzi zzZq;
     
-    void connect();
+    public zzh(final zzi zzZq) {
+        this.zzZq = zzZq;
+    }
     
-    String getName();
+    @Override
+    public void begin() {
+        this.zzZq.zzny();
+        this.zzZq.zzaah = Collections.emptySet();
+    }
     
-    void onConnected(final Bundle p0);
+    @Override
+    public void connect() {
+        this.zzZq.zznz();
+    }
     
-    void onConnectionSuspended(final int p0);
+    @Override
+    public void disconnect() {
+        final Iterator<zzi$zze> iterator = this.zzZq.zzZZ.iterator();
+        while (iterator.hasNext()) {
+            iterator.next().cancel();
+        }
+        this.zzZq.zzZZ.clear();
+        this.zzZq.zzaag.clear();
+        this.zzZq.zznx();
+    }
     
-     <A extends Api$Client, R extends Result, T extends zza$zza<R, A>> T zza(final T p0);
+    @Override
+    public String getName() {
+        return "DISCONNECTED";
+    }
     
-    void zza(final ConnectionResult p0, final Api<?> p1, final int p2);
+    @Override
+    public void onConnected(final Bundle bundle) {
+    }
     
-    void zzaV(final int p0);
+    @Override
+    public void onConnectionSuspended(final int n) {
+    }
     
-     <A extends Api$Client, T extends zza$zza<? extends Result, A>> T zzb(final T p0);
+    @Override
+    public <A extends Api$zzb, R extends Result, T extends zzc$zza<R, A>> T zza(final T t) {
+        this.zzZq.zzZZ.add(t);
+        return t;
+    }
+    
+    @Override
+    public void zza(final ConnectionResult connectionResult, final Api<?> api, final int n) {
+    }
+    
+    @Override
+    public <A extends Api$zzb, T extends zzc$zza<? extends Result, A>> T zzb(final T t) {
+        throw new IllegalStateException("GoogleApiClient is not connected yet.");
+    }
 }

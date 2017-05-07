@@ -5,8 +5,8 @@
 package com.netflix.mediaclient.service.logging.uiview.model;
 
 import com.netflix.mediaclient.util.StringUtils;
-import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
+import org.json.JSONObject;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 
 public class CommandEndedEvent extends BaseUIViewSessionEndedEvent
@@ -17,9 +17,12 @@ public class CommandEndedEvent extends BaseUIViewSessionEndedEvent
     public static final String KEY_INPUT_METHOD = "inputMethod";
     public static final String KEY_INPUT_VALUE = "inputValue";
     public static final String KEY_IS_HOT_BUTTON = "isHotKey";
+    public static final String KEY_MODEL = "model";
     public static final String KEY_NAME = "name";
     public static final String UIVIEW_SESSION_NAME = "command";
     private UIViewLogging$UIViewCommandName mCommandName;
+    private CommandEndedEvent$InputValue mInputValue;
+    private JSONObject mModel;
     private String mUrl;
     
     static {
@@ -40,7 +43,11 @@ public class CommandEndedEvent extends BaseUIViewSessionEndedEvent
         }
         if (this.mCommandName != null) {
             data.put("name", (Object)this.mCommandName.name());
-            if (StringUtils.isNotEmpty(this.mUrl)) {
+            if (this.mInputValue != null) {
+                data.put("inputMethod", (Object)CommandEndedEvent$InputMethod.gesture.name());
+                data.put("inputValue", (Object)this.mInputValue);
+            }
+            else if (StringUtils.isNotEmpty(this.mUrl)) {
                 data.put("inputMethod", (Object)CommandEndedEvent$InputMethod.url.name());
                 data.put("inputValue", (Object)this.mUrl);
             }
@@ -50,7 +57,18 @@ public class CommandEndedEvent extends BaseUIViewSessionEndedEvent
             }
             data.put("isHotKey", (Object)"false");
             data.put("confidence", (Object)CommandEndedEvent.DEF_VALUE_CONFIDENCE);
+            if (this.mModel != null) {
+                data.put("model", (Object)this.mModel);
+            }
         }
         return data;
+    }
+    
+    public void setInputValue(final CommandEndedEvent$InputValue mInputValue) {
+        this.mInputValue = mInputValue;
+    }
+    
+    public void setModel(final JSONObject mModel) {
+        this.mModel = mModel;
     }
 }

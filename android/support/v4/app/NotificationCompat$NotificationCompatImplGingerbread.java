@@ -9,7 +9,7 @@ import android.app.Notification;
 class NotificationCompat$NotificationCompatImplGingerbread extends NotificationCompat$NotificationCompatImplBase
 {
     @Override
-    public Notification build(final NotificationCompat$Builder notificationCompat$Builder) {
+    public Notification build(final NotificationCompat$Builder notificationCompat$Builder, final NotificationCompat$BuilderExtender notificationCompat$BuilderExtender) {
         final Notification mNotification = notificationCompat$Builder.mNotification;
         mNotification.setLatestEventInfo(notificationCompat$Builder.mContext, notificationCompat$Builder.mContentTitle, notificationCompat$Builder.mContentText, notificationCompat$Builder.mContentIntent);
         final Notification add = NotificationCompatGingerbread.add(mNotification, notificationCompat$Builder.mContext, notificationCompat$Builder.mContentTitle, notificationCompat$Builder.mContentText, notificationCompat$Builder.mContentIntent, notificationCompat$Builder.mFullScreenIntent);

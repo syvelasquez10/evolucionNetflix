@@ -20,7 +20,7 @@ class CurrentTimeTablet$2 implements Animator$AnimatorListener
     
     public void onAnimationCancel(final Animator animator) {
         Log.d("CurrentTimeTablet", "startStopAnimation was canceled");
-        this.this$0.context.getState().setTimelineExitOnSnap(false);
+        this.this$0.playerFragment.getState().setTimelineExitOnSnap(false);
     }
     
     public void onAnimationEnd(final Animator animator) {

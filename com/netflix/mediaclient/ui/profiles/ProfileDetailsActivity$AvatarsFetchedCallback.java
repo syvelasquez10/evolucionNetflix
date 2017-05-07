@@ -14,6 +14,7 @@ import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.view.ViewPropertyAnimator;
+import android.app.Activity;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import android.widget.TextView;
@@ -42,7 +43,6 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
-import android.app.Activity;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
@@ -70,7 +70,7 @@ class ProfileDetailsActivity$AvatarsFetchedCallback extends SimpleManagerCallbac
             this.this$0.updateUI();
             return;
         }
-        final UIError uiError = ConsolidatedLoggingUtils.createUIError(status, this.this$0.handleUserAgentErrors(this.this$0, status), ActionOnUIError.displayedError);
+        final UIError uiError = ConsolidatedLoggingUtils.createUIError(status, this.this$0.handleUserAgentErrors(status), ActionOnUIError.displayedError);
         if (this.this$0.mProfileDeletionWasTriggered) {
             UserActionLogUtils.reportDeleteProfileActionEnded((Context)this.this$0, IClientLogging$CompletionReason.failed, IClientLogging$ModalView.profilesGate, uiError);
             return;

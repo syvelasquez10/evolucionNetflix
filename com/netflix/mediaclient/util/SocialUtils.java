@@ -56,7 +56,7 @@ public class SocialUtils
     
     public static void addShareIconIfNeeded(final NetflixActivity netflixActivity, final Menu menu) {
         if (getShareSheetType() == SocialUtils$ShareSheetType.SHARE_IN_HEADER || getShareSheetType() == SocialUtils$ShareSheetType.RECOMMEND_PLUS_SHARE) {
-            menu.add(0, 2131427346, 65536, 2131493357).setIcon(2130837698).setShowAsAction(2);
+            menu.add(0, 2131623953, 65536, 2131165612).setIcon(2130837735).setShowAsAction(2);
         }
     }
     
@@ -87,7 +87,7 @@ public class SocialUtils
     }
     
     private static String getShareText(final Resources resources, final String s, final String s2) {
-        return resources.getString(2131493359, new Object[] { s, s2 });
+        return resources.getString(2131165613, new Object[] { s, s2 });
     }
     
     private static String getShareUrl(final String s, final VideoType videoType) {
@@ -203,8 +203,8 @@ public class SocialUtils
                     return addToMyListWrapper(netflixActivity, serviceManager, textView3, textView4, s);
                 }
                 case 3: {
-                    textView.setText(2131493357);
-                    textView.setCompoundDrawablesWithIntrinsicBounds(2130837735, 0, 0, 0);
+                    textView.setText(2131165612);
+                    textView.setCompoundDrawablesWithIntrinsicBounds(2130837780, 0, 0, 0);
                 }
                 case 4: {
                     textView.setOnClickListener((View$OnClickListener)new SocialUtils$1(netflixActivity, s, s2, videoType));
@@ -226,7 +226,7 @@ public class SocialUtils
                 Log.i("SocialUtils", "We don't have recommend button on tablets yet...");
                 return addToListData$StateListener4;
             }
-            if (RecommendToFriendsFrag.isSocialRecommendationsFeatureSupported(serviceManager)) {
+            if (RecommendToFriendsFrag.isSocialRecommendationsFeatureSupported(serviceManager) && serviceManager.getCurrentProfile().isSocialConnected()) {
                 UIViewLogUtils.reportUIViewImpressionEvent((Context)netflixActivity, UIViewLogging$UIViewCommandName.socialRecommendButton, RecommendToFriendsFrag.getTrackIdStatic(netflixActivity));
                 textView.setOnClickListener((View$OnClickListener)new SocialUtils$2(serviceManager, netflixActivity, s));
                 return addToListData$StateListener4;
@@ -255,7 +255,7 @@ public class SocialUtils
         intent.setFlags(268435456);
         intent.setType("text/plain");
         intent.putExtra("android.intent.extra.TEXT", getShareText(resources, s, shareUrl));
-        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131493358)));
+        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131165614)));
         UserActionLogUtils.reportShareSheetActionEnded(context, IClientLogging$CompletionReason.success, null);
     }
     
@@ -264,7 +264,7 @@ public class SocialUtils
     }
     
     public static boolean tryHandleMenuItemClick(final MenuItem menuItem, final Context context) {
-        if (context instanceof DetailsActivity && menuItem.getItemId() == 2131427346) {
+        if (context instanceof DetailsActivity && menuItem.getItemId() == 2131623953) {
             final DetailsActivity detailsActivity = (DetailsActivity)context;
             final String videoId = detailsActivity.getVideoId();
             final VideoType videoType = detailsActivity.getVideoType();

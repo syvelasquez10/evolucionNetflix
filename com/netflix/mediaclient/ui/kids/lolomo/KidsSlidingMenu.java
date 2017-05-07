@@ -4,76 +4,60 @@
 
 package com.netflix.mediaclient.ui.kids.lolomo;
 
-import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
-import android.view.View$OnClickListener;
-import android.view.ViewStub;
+import android.graphics.Typeface;
 import android.widget.TextView;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.ui.home.OldSlidingMenu$Holder;
+import com.netflix.mediaclient.ui.home.StandardSlidingMenu$GenreRowHolder;
 import android.view.View;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
+import android.widget.FrameLayout$LayoutParams;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.support.v4.widget.DrawerLayout;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.ui.home.OldSlidingMenu;
+import com.netflix.mediaclient.ui.home.StandardSlidingMenu;
 
-public class KidsSlidingMenu extends OldSlidingMenu
+public class KidsSlidingMenu extends StandardSlidingMenu
 {
-    private final int itemTextColor;
-    private final int selectedTextColor;
+    private final int kidsItemTextColor;
     
     public KidsSlidingMenu(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
-        super(netflixActivity, drawerLayout);
-        this.itemTextColor = netflixActivity.getResources().getColor(2131230868);
-        this.selectedTextColor = netflixActivity.getResources().getColor(2131230869);
-        this.home.setTextColor(this.itemTextColor);
-        ViewUtils.removeShadow(this.home);
-        this.home.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131296439)));
-        this.content.setBackgroundResource(2131230867);
+        super(netflixActivity, drawerLayout, false);
+        final View viewById = drawerLayout.findViewById(2131624552);
+        this.kidsItemTextColor = netflixActivity.getResources().getColor(2131558493);
+        viewById.setBackgroundColor(netflixActivity.getResources().getColor(2131558526));
+        this.profileName.setTextColor(this.kidsItemTextColor);
+        this.profileName.setTextSize(netflixActivity.getResources().getDimension(2131296501));
+        ViewUtils.setTextViewToBold(this.profileName);
+        this.homeText.setTextColor(this.kidsItemTextColor);
+        ViewUtils.setTextViewToBold(this.homeText);
+        ((FrameLayout$LayoutParams)this.genresList.getLayoutParams()).bottomMargin = (int)netflixActivity.getResources().getDimension(2131296485);
+        ViewUtils.removeShadow(this.homeText);
+        this.homeText.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131296502)));
+        drawerLayout.findViewById(2131624555).setVisibility(8);
+        drawerLayout.findViewById(2131624547).setBackgroundResource(2131558492);
     }
     
     @Override
-    protected void applySelectionStyle(final View view) {
-        final OldSlidingMenu$Holder oldSlidingMenu$Holder = (OldSlidingMenu$Holder)view.getTag();
-        ViewUtils.setTextViewToBold(oldSlidingMenu$Holder.tv);
-        oldSlidingMenu$Holder.tv.setTextColor(this.selectedTextColor);
-    }
-    
-    @Override
-    public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-        super.onManagerReady(serviceManager, status);
-        if (KubrickUtils.shouldShowKidsEntryInMenu(this.activity)) {
-            final TextView textViewToBold = (TextView)((ViewStub)this.content.findViewById(2131427687)).inflate().findViewById(2131427689);
-            textViewToBold.setText(2131492976);
-            textViewToBold.setTextColor(this.activity.getResources().getColor(2131230822));
-            textViewToBold.setBackgroundResource(2130837757);
-            ViewUtils.setTextViewToBold(textViewToBold);
-            ViewUtils.removeShadow(textViewToBold);
-            textViewToBold.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131296439)));
-            textViewToBold.setOnClickListener((View$OnClickListener)new KidsSlidingMenu$1(this));
+    protected void updateAdapterViews(final StandardSlidingMenu$GenreRowHolder standardSlidingMenu$GenreRowHolder, final boolean b) {
+        super.updateAdapterViews(standardSlidingMenu$GenreRowHolder, b);
+        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.kidsItemTextColor);
+        final TextView tv = standardSlidingMenu$GenreRowHolder.tv;
+        final Typeface typeface = standardSlidingMenu$GenreRowHolder.tv.getTypeface();
+        int n;
+        if (b) {
+            n = 1;
         }
+        else {
+            n = 0;
+        }
+        tv.setTypeface(typeface, n);
+        standardSlidingMenu$GenreRowHolder.tv.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131296502)));
+        ViewUtils.removeShadow(standardSlidingMenu$GenreRowHolder.tv);
     }
     
     @Override
-    protected void removeSelectionStyle(final View view) {
-        final OldSlidingMenu$Holder oldSlidingMenu$Holder = (OldSlidingMenu$Holder)view.getTag();
-        ViewUtils.setTextViewToNormal(oldSlidingMenu$Holder.tv);
-        oldSlidingMenu$Holder.tv.setTextColor(this.itemTextColor);
-    }
-    
-    @Override
-    protected boolean shouldShowChangeProfilesItem() {
-        return false;
-    }
-    
-    @Override
-    protected void updateAdapterViews(final OldSlidingMenu$Holder oldSlidingMenu$Holder, final GenreList list) {
-        super.updateAdapterViews(oldSlidingMenu$Holder, list);
-        oldSlidingMenu$Holder.tv.setTextColor(this.itemTextColor);
-        ViewUtils.removeShadow(oldSlidingMenu$Holder.tv);
-        oldSlidingMenu$Holder.tv.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131296439)));
+    protected void updateSwitchProfileButton() {
+        super.updateSwitchProfileButton();
+        this.switchProfilesIcon.setImageResource(2130837716);
     }
 }

@@ -84,8 +84,8 @@ class ViewPropertyAnimatorCompat$BaseViewPropertyAnimatorCompatImpl implements V
     }
     
     @Override
-    public void scaleY(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
+    public long getDuration(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view) {
+        return 0L;
     }
     
     @Override
@@ -99,6 +99,10 @@ class ViewPropertyAnimatorCompat$BaseViewPropertyAnimatorCompatImpl implements V
     @Override
     public void setListener(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final ViewPropertyAnimatorListener viewPropertyAnimatorListener) {
         view.setTag(2113929216, (Object)viewPropertyAnimatorListener);
+    }
+    
+    @Override
+    public void setStartDelay(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final long n) {
     }
     
     @Override

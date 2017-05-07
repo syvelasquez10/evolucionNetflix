@@ -8,6 +8,7 @@ import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import android.os.Process;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
 import com.netflix.mediaclient.servicemgr.IPushNotification;
 import com.netflix.mediaclient.repository.SecurityRepository;
@@ -15,6 +16,7 @@ import com.netflix.mediaclient.servicemgr.NrdpComponent;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
+import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.servicemgr.IDiagnosis;
 import com.netflix.mediaclient.util.DeviceCategory;
@@ -44,6 +46,7 @@ import com.netflix.mediaclient.Log;
 import android.app.AlarmManager;
 import android.content.Intent;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.service.voip.WhistleVoipAgent;
 import com.netflix.mediaclient.service.user.UserAgent;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
 import com.netflix.mediaclient.service.pushnotification.PushNotificationAgent;
@@ -54,6 +57,7 @@ import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.falkor.FalkorAgent;
 import com.netflix.mediaclient.service.falkor.FalkorAccess;
+import com.netflix.mediaclient.service.error.ErrorAgent;
 import com.netflix.mediaclient.service.diagnostics.DiagnosisAgent;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.service.logging.LoggingAgent;
@@ -75,5 +79,6 @@ class NetflixService$1$2 extends ArrayList<ServiceAgent>
         ((ArrayList<PushNotificationAgent>)this).add(this.this$1.this$0.mPushAgent);
         ((ArrayList<DiagnosisAgent>)this).add(this.this$1.this$0.mDiagnosisAgent);
         ((ArrayList<PreAppAgent>)this).add(this.this$1.this$0.mPreAppAgent);
+        ((ArrayList<WhistleVoipAgent>)this).add(this.this$1.this$0.mVoipAgent);
     }
 }

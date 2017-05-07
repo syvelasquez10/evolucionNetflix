@@ -43,8 +43,8 @@ import android.widget.EditText;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
-import com.netflix.mediaclient.android.activity.ServiceErrorsHandler;
 import android.app.Activity;
+import com.netflix.mediaclient.android.activity.ServiceErrorsHandler;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -64,7 +64,7 @@ class LoginActivity$7 implements ManagerStatusListener
             if (Log.isLoggable()) {
                 Log.w("LoginActivity", "Error status from autologin " + this.this$0.status);
             }
-            this.this$0.handleUserAgentErrors(this.this$0, this.this$0.status);
+            this.this$0.handleUserAgentErrors(this.this$0.status);
             this.this$0.showProgress(false);
             this.this$0.status = null;
         }

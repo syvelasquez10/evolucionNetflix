@@ -23,7 +23,7 @@ import android.annotation.SuppressLint;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
 import android.view.ViewGroup;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.os.Bundle;
 import android.app.Fragment;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag$HeroSlideshow;
@@ -82,15 +82,39 @@ class KubrickKidsShowDetailsFrag$KubrickKidsAdapter extends KubrickShowDetailsFr
     
     @Override
     public int getItemCount() {
-        if (this.this$0.showDetails == null) {
+        int n = 0;
+        if (this.data == null) {
             return 0;
         }
-        return this.this$0.showDetails.getNumOfEpisodes();
+        final int size = this.data.size();
+        final int headerViewsCount = this.getHeaderViewsCount();
+        if (this.hasFooter()) {
+            n = 1;
+        }
+        return n + (size + headerViewsCount);
     }
     
     @Override
-    protected void updateEpisodesData(final List<EpisodeDetails> list, final int n) {
-        super.updateEpisodesData(list, n);
+    protected void initToLoadingState() {
+        Log.v("KubrickEpisodesAdapter", "initToLoadingState");
+        this.isLoading = true;
+        this.hasMoreData = true;
+        this.requestId = -1L;
+        this.fetchMoreData();
+    }
+    
+    public void updateEpisodeStartIndex(final int episodeStartIndex) {
+        this.episodeStartIndex = episodeStartIndex;
+    }
+    
+    @Override
+    protected void updateEpisodesData(final List<EpisodeDetails> items, final int n) {
+        if (this.this$0.isSeasonUserSelected) {
+            super.setItems(items);
+        }
+        else {
+            super.updateEpisodesData(items, n);
+        }
         this.this$0.showViews();
     }
     

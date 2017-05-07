@@ -10,6 +10,11 @@ import android.view.View;
 class ViewCompat$HCViewCompatImpl extends ViewCompat$GBViewCompatImpl
 {
     @Override
+    public int combineMeasuredStates(final int n, final int n2) {
+        return ViewCompatHC.combineMeasuredStates(n, n2);
+    }
+    
+    @Override
     public float getAlpha(final View view) {
         return ViewCompatHC.getAlpha(view);
     }
@@ -17,6 +22,11 @@ class ViewCompat$HCViewCompatImpl extends ViewCompat$GBViewCompatImpl
     @Override
     long getFrameTime() {
         return ViewCompatHC.getFrameTime();
+    }
+    
+    @Override
+    public int getLayerType(final View view) {
+        return ViewCompatHC.getLayerType(view);
     }
     
     @Override
@@ -45,6 +55,11 @@ class ViewCompat$HCViewCompatImpl extends ViewCompat$GBViewCompatImpl
     }
     
     @Override
+    public void setActivated(final View view, final boolean b) {
+        ViewCompatHC.setActivated(view, b);
+    }
+    
+    @Override
     public void setAlpha(final View view, final float n) {
         ViewCompatHC.setAlpha(view, n);
     }
@@ -55,8 +70,8 @@ class ViewCompat$HCViewCompatImpl extends ViewCompat$GBViewCompatImpl
     }
     
     @Override
-    public void setScaleY(final View view, final float n) {
-        ViewCompatHC.setScaleY(view, n);
+    public void setSaveFromParentEnabled(final View view, final boolean b) {
+        ViewCompatHC.setSaveFromParentEnabled(view, b);
     }
     
     @Override

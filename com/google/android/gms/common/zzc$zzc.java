@@ -8,29 +8,29 @@ import java.lang.ref.WeakReference;
 
 abstract class zzc$zzc extends zzc$zza
 {
-    private static final WeakReference<byte[]> zzVP;
-    private WeakReference<byte[]> zzVO;
+    private static final WeakReference<byte[]> zzYs;
+    private WeakReference<byte[]> zzYr;
     
     static {
-        zzVP = new WeakReference<byte[]>(null);
+        zzYs = new WeakReference<byte[]>(null);
     }
     
     zzc$zzc(final byte[] array) {
         super(array);
-        this.zzVO = zzc$zzc.zzVP;
+        this.zzYr = zzc$zzc.zzYs;
     }
     
     @Override
     byte[] getBytes() {
         synchronized (this) {
-            byte[] zzmi;
-            if ((zzmi = this.zzVO.get()) == null) {
-                zzmi = this.zzmi();
-                this.zzVO = new WeakReference<byte[]>(zzmi);
+            byte[] zzmV;
+            if ((zzmV = this.zzYr.get()) == null) {
+                zzmV = this.zzmV();
+                this.zzYr = new WeakReference<byte[]>(zzmV);
             }
-            return zzmi;
+            return zzmV;
         }
     }
     
-    protected abstract byte[] zzmi();
+    protected abstract byte[] zzmV();
 }

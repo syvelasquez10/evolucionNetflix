@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.protocol.netflixcom;
 
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
@@ -36,6 +37,16 @@ class NetflixComVideoDetailsHandler$1 extends SimpleManagerCallback
                 NetflixComUtils.launchBrowser(this.val$activity, Uri.parse(NetflixComVideoDetailsHandler.HANDLER_DETAILS_URL + this.val$videoId));
             }
             else {
+                if (this.val$activity != null && this.val$activity.getServiceManager() != null) {
+                    final IClientLogging clientLogging = this.val$activity.getServiceManager().getClientLogging();
+                    if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
+                        final StringBuilder sb = new StringBuilder();
+                        sb.append("trkid").append('=').append(this.val$trackId);
+                        sb.append('&');
+                        sb.append("movieid").append('=').append(this.val$videoId);
+                        clientLogging.getCustomerEventLogging().reportMdpFromDeepLinking(sb.toString());
+                    }
+                }
                 DetailsActivityLauncher.show(this.val$activity, video$Summary.getType(), this.val$videoId, video$Summary.getTitle(), NflxProtocolUtils.getPlayContext(this.val$trackId), this.this$0.getAction(), this.this$0.getActionToken(), "DeepLink");
             }
         }

@@ -11,7 +11,7 @@ public class ParcelableCompat
 {
     public static <T> Parcelable$Creator<T> newCreator(final ParcelableCompatCreatorCallbacks<T> parcelableCompatCreatorCallbacks) {
         if (Build$VERSION.SDK_INT >= 13) {
-            ParcelableCompatCreatorHoneycombMR2Stub.instantiate(parcelableCompatCreatorCallbacks);
+            return ParcelableCompatCreatorHoneycombMR2Stub.instantiate(parcelableCompatCreatorCallbacks);
         }
         return (Parcelable$Creator<T>)new ParcelableCompat$CompatCreator((ParcelableCompatCreatorCallbacks<Object>)parcelableCompatCreatorCallbacks);
     }

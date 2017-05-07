@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.search;
 
+import android.util.TypedValue;
 import android.graphics.Typeface;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;

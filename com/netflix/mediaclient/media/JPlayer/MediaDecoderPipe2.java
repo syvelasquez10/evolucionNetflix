@@ -55,28 +55,29 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
         USE_ANDROID_L_API = (AndroidUtils.getAndroidVersion() >= 21);
     }
     
-    public MediaDecoderPipe2(final MediaDecoderBase$InputDataSource mDataSource, final String s, final MediaFormat mediaFormat, final Surface surface, final MediaCrypto mediaCrypto, final MediaDecoderBase$EventListener eventListener) {
+    public MediaDecoderPipe2(final MediaDecoderBase$InputDataSource mDataSource, final String mMime, final MediaFormat mediaFormat, final Surface surface, final MediaCrypto mediaCrypto, final MediaDecoderBase$EventListener eventListener) {
         this.mDecoder = null;
         this.mInputState = new MediaDecoderPipe2$LocalStateNotifier(this);
         this.mOutputState = new MediaDecoderPipe2$LocalStateNotifier(this);
+        this.mMime = mMime;
         this.setEventListener(eventListener);
         final StringBuilder sb = new StringBuilder("MediaDecoder2");
-        if (s.startsWith("audio/")) {
+        if (mMime.startsWith("audio/")) {
             this.mIsAudio = true;
             sb.append("Audio");
             this.mTag = sb.toString();
         }
-        else if (s.startsWith("video/")) {
+        else if (mMime.startsWith("video/")) {
             this.mIsAudio = false;
             sb.append("Video");
             this.mTag = sb.toString();
         }
         else if (Log.isLoggable()) {
-            Log.e(this.mTag, s + " is not valid");
+            Log.e(this.mTag, mMime + " is not valid");
         }
         Log.d(this.mTag, "creating ... ");
         this.mDataSource = mDataSource;
-        this.createDecoder(s, mediaCrypto);
+        this.createDecoder(mMime, mediaCrypto);
         if (mediaCrypto != null) {
             this.mEncrypted = true;
         }
@@ -720,6 +721,8 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
     }
     
     abstract void stopRenderer();
+    
+    abstract void terminateRenderer();
     
     @Override
     public void unpause() {

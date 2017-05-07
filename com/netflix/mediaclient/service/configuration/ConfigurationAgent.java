@@ -8,6 +8,7 @@ import android.view.Display;
 import android.util.DisplayMetrics;
 import android.hardware.display.DisplayManager;
 import com.netflix.mediaclient.media.VideoResolutionRange;
+import com.netflix.mediaclient.service.webclient.model.leafs.KubrickKidsConfigData;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
@@ -19,12 +20,14 @@ import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
-import com.netflix.mediaclient.nccp.NccpKeyStore;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.ui.experience.PersistentExperience;
+import com.netflix.mediaclient.javabridge.transport.NativeTransport;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.android.app.BackgroundTask;
+import android.content.pm.PackageManager;
+import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Locale;
 import java.io.IOException;
@@ -84,6 +87,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     private EndpointRegistryProvider mEndpointRegistry;
     private boolean mIsConfigRefreshInBackground;
     private final MdxConfiguration mMdxConfiguration;
+    private boolean mMicrophoneExist;
     private boolean mNeedEsMigration;
     private boolean mNeedLogout;
     private final PlaybackConfiguration mPlaybackConfiguration;
@@ -116,8 +120,8 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             return ImageResolutionClass.LOW;
         }
         if (DeviceUtils.getScreenResolutionDpi(context) <= 160 && DeviceUtils.getScreenSizeCategory(context) == 3) {
-            Log.v("nf_configurationagent", "Device is a low-res, small tablet - use low resolution images");
-            return ImageResolutionClass.LOW;
+            Log.v("nf_configurationagent", "Device is a low-res, small tablet - use medium resolution images");
+            return ImageResolutionClass.MEDIUM;
         }
         Log.v("nf_configurationagent", "Using high resolution images");
         return ImageResolutionClass.HIGH;
@@ -156,7 +160,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     private Status fetchConfigSynchronouslyOnAppStart(String s) {
-        Log.d("nf_configurationagent", "Need to fetchdeviceConfig synchronously ");
         ConfigData configString;
         try {
             if (Log.isLoggable()) {
@@ -184,6 +187,32 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         return CommonStatus.OK;
     }
     
+    private Status fetchVoipAuthorizationSynchronouslyOnAppStart(String s) {
+        try {
+            if (Log.isLoggable()) {
+                Log.d("nf_configurationagent", String.format("configurationUrl %s", s));
+            }
+            s = StringUtils.getRemoteDataAsString(s);
+            if (Log.isLoggable()) {
+                Log.d("nf_configurationagent", String.format("Device config data=%s", s));
+            }
+            final ConfigData configString = FetchConfigDataRequest.parseConfigString(s);
+            if (configString.getCustomerSupportVoipAuthorizations() != null) {
+                Log.d("nf_configurationagent", "Update VOIP authorizations");
+                ((VoipAuthorizationTokensUpdater)this.getService().getVoip()).updateAuthorizationData(configString.getCustomerSupportVoipAuthorizations());
+            }
+            return CommonStatus.OK;
+        }
+        catch (Exception ex) {
+            s = ex.toString().toLowerCase(Locale.US);
+            Log.e("nf_configurationagent", "Could not fetch configuration! " + s);
+            if (s.contains("could not validate certificate") || s.contains("sslhandshakeexception")) {
+                return CommonStatus.HTTP_SSL_DATE_TIME_ERROR;
+            }
+            return CommonStatus.CONFIG_DOWNLOAD_FAILED;
+        }
+    }
+    
     private int getMaxResolutionConfigured() {
         int videoResolutionOverride;
         if ((videoResolutionOverride = this.mDeviceConfigOverride.getVideoResolutionOverride()) <= 0) {
@@ -194,6 +223,28 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     
     public static String getMemLevel() {
         return ConfigurationAgent.sMemLevel;
+    }
+    
+    private boolean hasMicrophone() {
+        final PackageManager packageManager = this.getContext().getPackageManager();
+        if (packageManager == null) {
+            Log.e("nf_configurationagent", "Unable to get PackageManager! This should NOT happen!");
+            return false;
+        }
+        return packageManager.hasSystemFeature("android.hardware.microphone");
+    }
+    
+    private void initVoipSettings() {
+        if (this.shouldDisableVoip()) {
+            Log.d("nf_configurationagent", "VOIP is disabled, no need to retrieve its settings...");
+            return;
+        }
+        Log.d("nf_configurationagent", "VOIP is enabled, retrieving its settings...");
+        if (this.loadVoipAuthorizationsOnAppStart(this.mEndpointRegistry.getCustomerSupportAuthTokensUrl(this.mESN.getEsn())).isError()) {
+            Log.w("nf_configurationagent", "Problem getting non-member VOIP token");
+            return;
+        }
+        Log.d("nf_configurationagent", "VOIP was enabled, its settings retrieved.");
     }
     
     private void launchTask(final ConfigurationAgent$FetchTask configurationAgent$FetchTask) {
@@ -213,7 +264,18 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             Log.d("nf_configurationagent", "Device Config & Streaming Config in cache... proceed!");
             return ok;
         }
+        Log.d("nf_configurationagent", "Need to fetchdeviceConfig synchronously ");
         return this.fetchConfigSynchronouslyOnAppStart(s);
+    }
+    
+    private Status loadVoipAuthorizationsOnAppStart(final String s) {
+        final NetflixImmutableStatus ok = CommonStatus.OK;
+        if (!((VoipAuthorizationTokensUpdater)this.getService().getVoip()).refreshAuthorizationTokens()) {
+            Log.d("nf_configurationagent", "Not first app start... proceed!");
+            return ok;
+        }
+        Log.d("nf_configurationagent", "Need to fetch VOIP authorization tokens synchronously ");
+        return this.fetchVoipAuthorizationSynchronouslyOnAppStart(s);
     }
     
     private void notifyConfigRefreshedAndClearListeners() {
@@ -227,6 +289,14 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         this.mDeviceConfigOverride.persistDeviceConfigOverride(configData.getDeviceConfig());
         this.mStreamingConfigOverride.persistStreamingOverride(configData.getStreamingConfig());
         this.mAccountConfigOverride.persistAccountConfigOverride(configData.getAccountConfig());
+        ((VoipAuthorizationTokensUpdater)this.getService().getVoip()).updateAuthorizationData(configData.getCustomerSupportVoipAuthorizations());
+        if (this.isDolbyDigitalPlus51Supported()) {
+            NativeTransport.enableDolbyDigitalPlus51();
+        }
+        NativeTransport.setSupportMaxVideoHeight(this.getVideoResolutionRange().getMaxHeight());
+        if (this.isDeviceHd()) {
+            NativeTransport.enableHDPlayback();
+        }
         PersistentExperience.update(this.getContext(), this);
     }
     
@@ -307,15 +377,15 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         this.mAccountConfigOverride = new AccountConfiguration(this.getContext());
         this.mStreamingConfigOverride = new StreamingConfiguration(this.getContext());
         this.mEndpointRegistry = new EndpointRegistryProvider(this.getContext(), deviceModel, this.isDeviceHd(), this.mDeviceConfigOverride.getImageRepository(), this.computeImageResolutionClass(this.getContext()));
+        this.mMicrophoneExist = this.hasMicrophone();
         final Status loadConfigOverridesOnAppStart = this.loadConfigOverridesOnAppStart(this.mEndpointRegistry.getAppStartConfigUrl());
         if (loadConfigOverridesOnAppStart.isError()) {
             this.initCompleted(loadConfigOverridesOnAppStart);
             return;
         }
-        final ConfigurationAgent$1 configurationAgent$1 = new ConfigurationAgent$1(this);
-        NccpKeyStore.init(this.getContext());
-        this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), configurationAgent$1);
+        this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), this.getErrorHandler(), new ConfigurationAgent$1(this));
         this.mESN = EsnProviderRegistry.createESN(this.getContext(), this.mDrmManager, this);
+        this.initVoipSettings();
         Log.d("nf_configurationagent", "Inject ESN to PlayerTypeFactory");
         PlayerTypeFactory.initialize(this.mESN);
         this.mDrmManager.init();
@@ -446,6 +516,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public KubrickConfiguration getKubrickConfiguration() {
         return this.mAccountConfigOverride.getKubrickConfig();
+    }
+    
+    @Override
+    public KubrickKidsConfigData getKubrickKidsConfiguration() {
+        return this.mAccountConfigOverride.getKubrickKidsConfig();
     }
     
     @Override
@@ -605,6 +680,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public boolean isDolbyDigitalPlus51Supported() {
+        return (this.mDeviceConfigOverride.getmAudioFormat() & 0x2) != 0x0;
+    }
+    
+    @Override
     public boolean isEsnMigrationRequired() {
         return this.mNeedEsMigration;
     }
@@ -653,6 +733,18 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             }
             // monitorexit(this)
         }
+    }
+    
+    @Override
+    public boolean shouldDisableVoip() {
+        final boolean b = !this.mMicrophoneExist || (this.mDeviceConfigOverride.shouldDisableVoip() && this.mAccountConfigOverride.shouldDisableVoip());
+        if (Log.isLoggable()) {
+            Log.d("nf_configurationagent", "Microfon exist: " + this.mMicrophoneExist);
+            Log.d("nf_configurationagent", "device overide: " + this.mDeviceConfigOverride.shouldDisableVoip());
+            Log.d("nf_configurationagent", "account overide: " + this.mAccountConfigOverride.shouldDisableVoip());
+            Log.d("nf_configurationagent", "Real disable " + b);
+        }
+        return b;
     }
     
     @Override

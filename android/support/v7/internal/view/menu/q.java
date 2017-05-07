@@ -4,35 +4,29 @@
 
 package android.support.v7.internal.view.menu;
 
-import android.view.MenuItem$OnMenuItemClickListener;
-import android.view.MenuItem$OnActionExpandListener;
-import android.support.v7.view.CollapsibleActionView;
-import android.view.SubMenu;
-import android.view.ContextMenu$ContextMenuInfo;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.util.Log;
-import android.support.v4.view.ActionProvider;
-import java.lang.reflect.Method;
-import android.support.v4.internal.view.SupportMenuItem;
-import android.view.MenuItem;
-import android.support.v4.view.ActionProvider$VisibilityListener;
+import android.support.v7.view.CollapsibleActionView;
+import android.widget.FrameLayout;
 
-class q implements ActionProvider$VisibilityListener
+class q extends FrameLayout implements CollapsibleActionView
 {
-    final /* synthetic */ o a;
-    final /* synthetic */ p b;
+    final android.view.CollapsibleActionView a;
     
-    q(final p b, final o a) {
-        this.b = b;
-        this.a = a;
+    q(final View view) {
+        super(view.getContext());
+        this.a = (android.view.CollapsibleActionView)view;
+        this.addView(view);
     }
     
-    @Override
-    public void onActionProviderVisibilityChanged(final boolean b) {
-        if (this.b.a.overridesItemVisibility() && this.b.b.c) {
-            this.b.b.b(b);
-        }
+    View a() {
+        return (View)this.a;
+    }
+    
+    public void onActionViewCollapsed() {
+        this.a.onActionViewCollapsed();
+    }
+    
+    public void onActionViewExpanded() {
+        this.a.onActionViewExpanded();
     }
 }

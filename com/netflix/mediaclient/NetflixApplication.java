@@ -11,6 +11,8 @@ import java.util.Locale;
 import com.netflix.mediaclient.repository.UserLocale;
 import com.netflix.mediaclient.event.UIEvent;
 import android.app.Application$ActivityLifecycleCallbacks;
+import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.res.Configuration;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -145,7 +147,7 @@ public class NetflixApplication extends Application
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837746).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493265, new Object[] { n })).setContentTitle(this.getString(2131493263, new Object[] { n })).setContentText(this.getString(2131493264, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837794).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131165637, new Object[] { n })).setContentTitle(this.getString(2131165638, new Object[] { n })).setContentText(this.getString(2131165392, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");
@@ -187,6 +189,9 @@ public class NetflixApplication extends Application
             Log.d("NetflixApplication", "onConfigurationChanged");
         }
         this.refreshLocale(this.mServiceLocale);
+        if (AndroidUtils.isWidgetInstalled(this.getApplicationContext())) {
+            PServiceWidgetProvider.notifyWidgetsOnConfigurationChange((Context)this);
+        }
     }
     
     public void onCreate() {

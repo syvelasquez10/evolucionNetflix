@@ -57,7 +57,6 @@ import com.netflix.mediaclient.service.logging.client.ClientLoggingWebCallback;
 
 class IntegratedClientLoggingManager$ClientLoggingWebCallbackImpl implements ClientLoggingWebCallback
 {
-    private String payload;
     final /* synthetic */ IntegratedClientLoggingManager this$0;
     
     public IntegratedClientLoggingManager$ClientLoggingWebCallbackImpl(final IntegratedClientLoggingManager this$0, final String s) {

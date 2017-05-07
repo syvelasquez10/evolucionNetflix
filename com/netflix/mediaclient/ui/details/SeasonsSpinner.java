@@ -18,7 +18,9 @@ import android.widget.Spinner;
 
 public class SeasonsSpinner extends Spinner
 {
+    public static final int NON_USER_SELECTED = 0;
     private static final String TAG = "SeasonsSpinner";
+    public static final int USER_SELECTED = 1;
     private Drawable drawableMultipleSeasons;
     private Drawable drawableOneSeason;
     private AdapterView$OnItemSelectedListener itemSelectedListener;
@@ -45,9 +47,10 @@ public class SeasonsSpinner extends Spinner
     }
     
     private void init() {
-        this.drawableMultipleSeasons = this.getResources().getDrawable(2130837907);
-        this.drawableOneSeason = this.getResources().getDrawable(2131230820);
+        this.drawableMultipleSeasons = this.getResources().getDrawable(2130837950);
+        this.drawableOneSeason = this.getResources().getDrawable(2131558590);
         Api16Util.setBackgroundDrawableCompat((View)this, this.drawableMultipleSeasons);
+        this.setId(2131623951);
     }
     
     public void setBackground(final Drawable drawableMultipleSeasons, final Drawable drawableOneSeason) {
@@ -59,7 +62,7 @@ public class SeasonsSpinner extends Spinner
         Log.v("SeasonsSpinner", "Setting selection to position: " + selection);
         super.setSelection(selection);
         if (this.itemSelectedListener != null) {
-            this.itemSelectedListener.onItemSelected((AdapterView)this, (View)this, selection, this.getSelectedItemId());
+            this.itemSelectedListener.onItemSelected((AdapterView)this, (View)this, selection, 0L);
         }
     }
     
@@ -75,7 +78,7 @@ public class SeasonsSpinner extends Spinner
         Log.v("SeasonsSpinner", "Setting selection to position: " + selection);
         super.setSelection(selection);
         if (this.itemSelectedListener != null) {
-            this.itemSelectedListener.onItemSelected((AdapterView)this, (View)this, selection, this.getSelectedItemId());
+            this.itemSelectedListener.onItemSelected((AdapterView)this, (View)this, selection, 1L);
         }
         if (this.touchListener != null) {
             this.touchListener.onItemSelected((AdapterView)this, (View)this, selection, this.getSelectedItemId());

@@ -18,9 +18,13 @@ class NetflixActivity$4 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable()) {
-            Log.v("NetflixActivity", "Finishing activity " + this.this$0.getClass().getSimpleName() + " from intent: " + intent.getAction());
+        if (this.this$0.destroyed()) {
+            return;
         }
-        this.this$0.finish();
+        if (intent == null || !"com.netflix.mediaclient.service.ACTION_EXPAND_MDX_MINI_PLAYER".equals(intent.getAction())) {
+            Log.d("NetflixActivity", "Invalid intent: ", intent);
+            return;
+        }
+        this.this$0.expandMiniPlayerIfVisible();
     }
 }

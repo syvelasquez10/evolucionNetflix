@@ -4,29 +4,29 @@
 
 package com.google.android.gms.cast;
 
-import com.google.android.gms.common.api.Api$Client;
-import com.google.android.gms.common.api.zza$zzb;
+import com.google.android.gms.common.api.Api$zzb;
+import com.google.android.gms.common.api.zzc$zzb;
 import com.google.android.gms.cast.internal.zze;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 class Cast$CastApi$zza$5 extends Cast$zza
 {
-    final /* synthetic */ Cast$CastApi$zza zzQA;
-    final /* synthetic */ String zzQB;
+    final /* synthetic */ Cast$CastApi$zza zzTd;
+    final /* synthetic */ String zzTe;
     
-    Cast$CastApi$zza$5(final Cast$CastApi$zza zzQA, final GoogleApiClient googleApiClient, final String zzQB) {
-        this.zzQA = zzQA;
-        this.zzQB = zzQB;
+    Cast$CastApi$zza$5(final Cast$CastApi$zza zzTd, final GoogleApiClient googleApiClient, final String zzTe) {
+        this.zzTd = zzTd;
+        this.zzTe = zzTe;
         super(googleApiClient);
     }
     
     @Override
     protected void zza(final zze zze) {
         try {
-            zze.zzb(this.zzQB, null, (zza$zzb<Cast$ApplicationConnectionResult>)this);
+            zze.zzb(this.zzTe, null, (zzc$zzb<Cast$ApplicationConnectionResult>)this);
         }
         catch (IllegalStateException ex) {
-            this.zzaL(2001);
+            this.zzaT(2001);
         }
     }
 }

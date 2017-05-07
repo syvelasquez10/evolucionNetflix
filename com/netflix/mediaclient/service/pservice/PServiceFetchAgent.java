@@ -8,8 +8,6 @@ import com.netflix.mediaclient.android.app.BackgroundTask;
 import java.util.ArrayList;
 import com.netflix.mediaclient.Log;
 import java.util.List;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.app.CommonStatus;
 import android.content.Intent;
 
 public class PServiceFetchAgent extends PServiceAgent implements PServiceAgent$PServiceFetchAgentInterface, PServiceAgent$PServicePartnerFetchInterface
@@ -17,6 +15,7 @@ public class PServiceFetchAgent extends PServiceAgent implements PServiceAgent$P
     public static final String PARTNER_EXP_DEFAULT = "default";
     private static final String TAG = "nf_preapp_fetchagent";
     public static final String WIDGET_EXP_DEFAULT = "default";
+    private boolean initDone;
     private PDiskData mDiskData;
     private boolean mLoadFromDiskInProgress;
     
@@ -24,11 +23,8 @@ public class PServiceFetchAgent extends PServiceAgent implements PServiceAgent$P
         return this.mLoadFromDiskInProgress;
     }
     
-    private void loadDefaultData() {
-    }
-    
     private void refreshData() {
-        this.refreshDataAndNotify(new Intent("com.netflix.mediaclient.intent.action.ALL_UPDATED_FROM_PREAPP_AGENT"));
+        this.refreshDataAndNotify(null);
     }
     
     private void setLoadFromDiskInProgress(final boolean mLoadFromDiskInProgress) {
@@ -36,9 +32,7 @@ public class PServiceFetchAgent extends PServiceAgent implements PServiceAgent$P
     }
     
     void completeInit() {
-        this.loadDefaultData();
         this.refreshData();
-        this.initCompleted(CommonStatus.OK);
     }
     
     @Override
@@ -47,23 +41,23 @@ public class PServiceFetchAgent extends PServiceAgent implements PServiceAgent$P
     }
     
     @Override
-    public List<PVideo> fetchVideosForPartner(final PDiskData$ListName pDiskData$ListName) {
+    public List<PVideo> fetchVideosForPartner(final PDiskData$ListType pDiskData$ListType) {
         List<PVideo> list = null;
         if (this.mDiskData == null) {
             Log.w("nf_preapp_fetchagent", "mDiskData is null - ignoring request");
         }
         else {
-            final int videoCountOfListForPartnerExp = PServiceABTest.getVideoCountOfListForPartnerExp(pDiskData$ListName, this.mDiskData);
+            final int videoCountOfListForPartnerExp = PServiceABTest.getVideoCountOfListForPartnerExp(pDiskData$ListType, this.mDiskData);
             if (videoCountOfListForPartnerExp > 0) {
                 final ArrayList<PVideo> list2 = new ArrayList<PVideo>();
-                final List<PVideo> listByName = this.mDiskData.getListByName(pDiskData$ListName);
+                final List<PVideo> videoListByName = this.mDiskData.getVideoListByName(pDiskData$ListType);
                 int n = 0;
                 while (true) {
                     list = list2;
                     if (n >= videoCountOfListForPartnerExp) {
                         break;
                     }
-                    list2.add(listByName.get(n));
+                    list2.add(videoListByName.get(n));
                     ++n;
                 }
             }

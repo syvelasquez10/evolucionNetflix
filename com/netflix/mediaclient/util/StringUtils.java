@@ -5,6 +5,10 @@
 package com.netflix.mediaclient.util;
 
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.regex.Matcher;
 import com.netflix.mediaclient.android.widget.InternalURLSpan;
 import android.text.style.URLSpan;
@@ -17,10 +21,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import android.content.res.Resources;
 import java.util.StringTokenizer;
 import android.util.Pair;
 import android.text.Html;
+import java.util.Iterator;
+import java.util.Collection;
 import android.text.style.StyleSpan;
 import android.text.SpannableStringBuilder;
 import android.content.Context;
@@ -82,11 +89,24 @@ public final class StringUtils
         spannableStringBuilder.setSpan((Object)new StyleSpan(1), 0, string.length(), 0);
         string = s;
         if (isEmpty(s)) {
-            string = context.getString(2131493160);
+            string = context.getString(2131165479);
         }
         spannableStringBuilder.append((CharSequence)" ");
         spannableStringBuilder.append((CharSequence)string);
         return (CharSequence)spannableStringBuilder;
+    }
+    
+    public static <T> String createStringFromCollection(final Collection<T> collection) {
+        if (collection == null || collection.size() == 0) {
+            return "";
+        }
+        final StringBuilder sb = new StringBuilder();
+        final Iterator<T> iterator = collection.iterator();
+        while (iterator.hasNext()) {
+            sb.append(iterator.next());
+            sb.append(", ");
+        }
+        return sb.substring(0, sb.length() - ", ".length());
     }
     
     public static String decodeHtmlEntities(final String s) {
@@ -146,6 +166,23 @@ public final class StringUtils
         return array;
     }
     
+    public static CharSequence getBasicMovieInfoString(final Context context, final int n, final String s) {
+        if (context == null) {
+            return "";
+        }
+        if (context.getResources() == null) {
+            return "";
+        }
+        final StringBuilder sb = new StringBuilder();
+        if (n > 0) {
+            sb.append(n).append("   ");
+        }
+        if (isNotEmpty(s)) {
+            sb.append(s).append("   ");
+        }
+        return sb.toString();
+    }
+    
     public static CharSequence getBasicMovieInfoString(final Context context, final int n, final String s, final int n2) {
         if (context == null) {
             return "";
@@ -161,8 +198,15 @@ public final class StringUtils
         if (isNotEmpty(s)) {
             sb.append(s).append("   ");
         }
-        sb.append(resources.getString(2131493167, new Object[] { TimeUtils.convertSecondsToMinutes(n2) }));
+        sb.append(resources.getString(2131165483, new Object[] { TimeUtils.convertSecondsToMinutes(n2) }));
         return sb.toString();
+    }
+    
+    public static CharSequence getBasicMovieInfoString(final Context context, final MovieDetails movieDetails) {
+        if (context == null) {
+            return "";
+        }
+        return getBasicMovieInfoString(context, movieDetails.getYear(), movieDetails.getCertification());
     }
     
     public static CharSequence getBasicMovieInfoString(final Context context, final VideoDetails videoDetails) {
@@ -180,7 +224,7 @@ public final class StringUtils
         if (resources == null) {
             return "";
         }
-        final String quantityString = resources.getQuantityString(2131623937, n2, new Object[] { n2 });
+        final String quantityString = resources.getQuantityString(2131230722, n2, new Object[] { n2 });
         final StringBuilder sb = new StringBuilder();
         if (n > 0) {
             sb.append(n).append("   ");

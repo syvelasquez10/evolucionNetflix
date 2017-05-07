@@ -115,7 +115,7 @@ public class ViewUtils
     
     public static View createActionBarDummyView(final NetflixActivity netflixActivity) {
         final View view = new View((Context)netflixActivity);
-        view.setId(2131427343);
+        view.setId(2131623938);
         view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, netflixActivity.getActionBarHeight()));
         return view;
     }
@@ -152,7 +152,7 @@ public class ViewUtils
     }
     
     public static int getDefaultActionBarHeight(final Context context) {
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(new TypedValue().data, new int[] { 2130771988 });
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(new TypedValue().data, new int[] { 2130772189 });
         final int n = (int)obtainStyledAttributes.getDimension(0, 0.0f);
         obtainStyledAttributes.recycle();
         return n;

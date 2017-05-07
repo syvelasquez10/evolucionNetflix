@@ -20,9 +20,13 @@ interface DrawableCompat$DrawableImpl
     
     void setHotspotBounds(final Drawable p0, final int p1, final int p2, final int p3, final int p4);
     
+    void setLayoutDirection(final Drawable p0, final int p1);
+    
     void setTint(final Drawable p0, final int p1);
     
     void setTintList(final Drawable p0, final ColorStateList p1);
     
     void setTintMode(final Drawable p0, final PorterDuff$Mode p1);
+    
+    Drawable wrap(final Drawable p0);
 }

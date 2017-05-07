@@ -14,26 +14,26 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class ResolveAccountResponse implements SafeParcelable
 {
     public static final Parcelable$Creator<ResolveAccountResponse> CREATOR;
-    final int zzCY;
-    private boolean zzWX;
-    private ConnectionResult zzYg;
-    IBinder zzZN;
-    private boolean zzabc;
+    final int mVersionCode;
+    private boolean zzZF;
+    private ConnectionResult zzaaV;
+    IBinder zzacC;
+    private boolean zzaen;
     
     static {
-        CREATOR = (Parcelable$Creator)new zzw();
+        CREATOR = (Parcelable$Creator)new zzz();
     }
     
     public ResolveAccountResponse(final int n) {
         this(new ConnectionResult(n, null));
     }
     
-    ResolveAccountResponse(final int zzCY, final IBinder zzZN, final ConnectionResult zzYg, final boolean zzWX, final boolean zzabc) {
-        this.zzCY = zzCY;
-        this.zzZN = zzZN;
-        this.zzYg = zzYg;
-        this.zzWX = zzWX;
-        this.zzabc = zzabc;
+    ResolveAccountResponse(final int mVersionCode, final IBinder zzacC, final ConnectionResult zzaaV, final boolean zzZF, final boolean zzaen) {
+        this.mVersionCode = mVersionCode;
+        this.zzacC = zzacC;
+        this.zzaaV = zzaaV;
+        this.zzZF = zzZF;
+        this.zzaen = zzaen;
     }
     
     public ResolveAccountResponse(final ConnectionResult connectionResult) {
@@ -51,7 +51,7 @@ public class ResolveAccountResponse implements SafeParcelable
                 return false;
             }
             final ResolveAccountResponse resolveAccountResponse = (ResolveAccountResponse)o;
-            if (!this.zzYg.equals(resolveAccountResponse.zzYg) || !this.zznX().equals(resolveAccountResponse.zznX())) {
+            if (!this.zzaaV.equals(resolveAccountResponse.zzaaV) || !this.zzoO().equals(resolveAccountResponse.zzoO())) {
                 return false;
             }
         }
@@ -59,22 +59,22 @@ public class ResolveAccountResponse implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        zzw.zza(this, parcel, n);
+        zzz.zza(this, parcel, n);
     }
     
-    public IAccountAccessor zznX() {
-        return IAccountAccessor$zza.zzaD(this.zzZN);
+    public zzp zzoO() {
+        return zzp$zza.zzaH(this.zzacC);
     }
     
-    public ConnectionResult zznY() {
-        return this.zzYg;
+    public ConnectionResult zzoP() {
+        return this.zzaaV;
     }
     
-    public boolean zznZ() {
-        return this.zzWX;
+    public boolean zzoQ() {
+        return this.zzZF;
     }
     
-    public boolean zzoa() {
-        return this.zzabc;
+    public boolean zzoR() {
+        return this.zzaen;
     }
 }

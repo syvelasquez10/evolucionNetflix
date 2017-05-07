@@ -4,33 +4,54 @@
 
 package com.google.android.gms.common.internal;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.os.Parcel;
+import android.os.IBinder;
+import android.os.IInterface;
+import android.os.Binder;
 
-public final class zzt$zza
+public abstract class zzt$zza extends Binder implements zzt
 {
-    private final Object zzGE;
-    private final List<String> zzaba;
-    
-    private zzt$zza(final Object o) {
-        this.zzGE = zzu.zzu(o);
-        this.zzaba = new ArrayList<String>();
+    public zzt$zza() {
+        this.attachInterface((IInterface)this, "com.google.android.gms.common.internal.IResolveAccountCallbacks");
     }
     
-    @Override
-    public String toString() {
-        final StringBuilder append = new StringBuilder(100).append(this.zzGE.getClass().getSimpleName()).append('{');
-        for (int size = this.zzaba.size(), i = 0; i < size; ++i) {
-            append.append(this.zzaba.get(i));
-            if (i < size - 1) {
-                append.append(", ");
+    public static zzt zzaL(final IBinder binder) {
+        if (binder == null) {
+            return null;
+        }
+        final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.common.internal.IResolveAccountCallbacks");
+        if (queryLocalInterface != null && queryLocalInterface instanceof zzt) {
+            return (zzt)queryLocalInterface;
+        }
+        return new zzt$zza$zza(binder);
+    }
+    
+    public IBinder asBinder() {
+        return (IBinder)this;
+    }
+    
+    public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) {
+        switch (n) {
+            default: {
+                return super.onTransact(n, parcel, parcel2, n2);
+            }
+            case 1598968902: {
+                parcel2.writeString("com.google.android.gms.common.internal.IResolveAccountCallbacks");
+                return true;
+            }
+            case 2: {
+                parcel.enforceInterface("com.google.android.gms.common.internal.IResolveAccountCallbacks");
+                ResolveAccountResponse resolveAccountResponse;
+                if (parcel.readInt() != 0) {
+                    resolveAccountResponse = (ResolveAccountResponse)ResolveAccountResponse.CREATOR.createFromParcel(parcel);
+                }
+                else {
+                    resolveAccountResponse = null;
+                }
+                this.zzb(resolveAccountResponse);
+                parcel2.writeNoException();
+                return true;
             }
         }
-        return append.append('}').toString();
-    }
-    
-    public zzt$zza zzg(final String s, final Object o) {
-        this.zzaba.add(zzu.zzu(s) + "=" + String.valueOf(o));
-        return this;
     }
 }

@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.servicemgr.interface_.FeatureEnabledProvider;
@@ -125,7 +126,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
         else {
             videoType = this.details.getType();
         }
-        final RatingDialogFrag create = RatingDialogFrag.create(parentId, videoType, "", this.rate, 2130903178, false);
+        final RatingDialogFrag create = RatingDialogFrag.create(parentId, videoType, "", this.rate, 2130903211, false);
         final FragmentTransaction beginTransaction = ((NetflixActivity)this.getContext()).getFragmentManager().beginTransaction();
         beginTransaction.add(0, (Fragment)create, "frag_dialog");
         beginTransaction.commit();
@@ -160,7 +161,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
         if (kubrickVideo.getType() == VideoType.SHOW) {
             final int seasonCount = kubrickVideo.getSeasonCount();
             if (seasonCount > 0) {
-                this.durationInfo.setText((CharSequence)resources.getQuantityString(2131623937, seasonCount, new Object[] { seasonCount }));
+                this.durationInfo.setText((CharSequence)resources.getQuantityString(2131230722, seasonCount, new Object[] { seasonCount }));
                 this.durationInfo.setVisibility(0);
                 return;
             }
@@ -169,7 +170,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
         else {
             final int runtime = kubrickVideo.getRuntime();
             if (runtime > 0) {
-                this.durationInfo.setText((CharSequence)resources.getString(2131493167, new Object[] { TimeUtils.convertSecondsToMinutes(runtime) }));
+                this.durationInfo.setText((CharSequence)resources.getString(2131165483, new Object[] { TimeUtils.convertSecondsToMinutes(runtime) }));
                 this.durationInfo.setVisibility(0);
                 return;
             }
@@ -182,7 +183,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             return;
         }
         if (this.evidence != null && this.evidenceText != null && StringUtils.isNotEmpty(evidenceDetails.getEvidenceText())) {
-            this.evidence.setToIcon(evidenceDetails.getEvidenceGlyph(), 2131296459);
+            this.evidence.setToIcon(evidenceDetails.getEvidenceGlyph(), 2131296519);
             this.evidenceText.setText((CharSequence)evidenceDetails.getEvidenceText());
             this.evidenceGroup.setVisibility(0);
             return;
@@ -219,19 +220,24 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
     }
     
     protected void alignHeroImage() {
+        float n = 1.1f;
         if (DeviceUtils.getScreenAspectRatio(this.getContext()) > 1.6f) {
             final ViewGroup$LayoutParams layoutParams = this.horzDispImg.getLayoutParams();
-            final float n = layoutParams.height;
-            float n2;
+            final float n2 = layoutParams.height;
             if (DeviceUtils.isLandscape(this.getContext())) {
-                n2 = 0.75f;
+                n = 0.75f;
             }
-            else {
-                n2 = 1.1f;
-            }
-            layoutParams.height = (int)(n2 * n);
+            layoutParams.height = (int)(n * n2);
             this.horzDispImg.requestLayout();
+            return;
         }
+        final ViewGroup$LayoutParams layoutParams2 = this.horzDispImg.getLayoutParams();
+        final float n3 = layoutParams2.height;
+        if (DeviceUtils.isLandscape(this.getContext())) {
+            n = 1.0f;
+        }
+        layoutParams2.height = (int)(n * n3);
+        this.horzDispImg.requestLayout();
     }
     
     protected void alignLeftGroup() {
@@ -248,7 +254,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             n = 0.0f;
         }
         else {
-            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131296459);
+            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131296519);
         }
         final int n2 = (int)n;
         this.alignHeroImage();
@@ -261,36 +267,45 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
         return (int)(KubrickUtils.getDetailsPageContentWidth(this.getContext()) * 0.5625f);
     }
     
+    public void clearHeroImages() {
+        if (this.horzDispImg != null) {
+            this.horzDispImg.setImageDrawable(null);
+        }
+        if (this.horzDispImg2 != null) {
+            this.horzDispImg2.setImageDrawable(null);
+        }
+    }
+    
     @Override
     protected void findViews() {
         super.findViews();
-        this.dataSelectorEpisodes = (RadioButton)this.findViewById(2131427600);
-        this.dataSelectorRelated = (RadioButton)this.findViewById(2131427602);
-        this.dataSelectorEpisodesTop = this.findViewById(2131427601);
-        this.titleImg = (AdvancedImageView)this.findViewById(2131427535);
-        this.dataSelectorRelatedTop = this.findViewById(2131427603);
-        this.certification = (TextView)this.findViewById(2131427544);
-        this.evidenceGroup = (ViewGroup)this.findViewById(2131427604);
-        this.evidenceText = (TextView)this.findViewById(2131427606);
-        this.hdIcon = (IconFontTextView)this.findViewById(2131427546);
-        this.durationInfo = (TextView)this.findViewById(2131427545);
-        this.evidence = (IconFontTextView)this.findViewById(2131427605);
-        this.dataSelectorGroup = (RadioGroup)this.findViewById(2131427599);
-        this.myListLabel = (TextView)this.findViewById(2131427589);
-        this.shareLabel = (TextView)this.findViewById(2131427586);
-        this.horzDispImg2 = (AdvancedImageView)this.findViewById(2131427533);
-        this.myList = (TextView)this.findViewById(2131427588);
-        this.genres = (TextView)this.findViewById(2131427598);
-        this.year = (TextView)this.findViewById(2131427543);
-        this.share = (TextView)this.findViewById(2131427587);
-        this.leftGroup = this.findViewById(2131427610);
-        this.shadow = this.findViewById(2131427608);
-        this.rate = this.findViewById(2131427590);
-        this.bookMarkTitle = (TextView)this.findViewById(2131427592);
-        this.bookmarkGroup = (ViewGroup)this.findViewById(2131427611);
-        this.bookmarkDuration = (TextView)this.findViewById(2131427594);
-        this.bookmarkValue = (TextView)this.findViewById(2131427593);
-        this.bookmarkProgressBar = (ProgressBar)this.findViewById(2131427595);
+        this.dataSelectorEpisodes = (RadioButton)this.findViewById(2131624278);
+        this.dataSelectorRelated = (RadioButton)this.findViewById(2131624280);
+        this.dataSelectorEpisodesTop = this.findViewById(2131624279);
+        this.titleImg = (AdvancedImageView)this.findViewById(2131624209);
+        this.dataSelectorRelatedTop = this.findViewById(2131624281);
+        this.certification = (TextView)this.findViewById(2131624218);
+        this.evidenceGroup = (ViewGroup)this.findViewById(2131624282);
+        this.evidenceText = (TextView)this.findViewById(2131624284);
+        this.hdIcon = (IconFontTextView)this.findViewById(2131624220);
+        this.durationInfo = (TextView)this.findViewById(2131624219);
+        this.evidence = (IconFontTextView)this.findViewById(2131624283);
+        this.dataSelectorGroup = (RadioGroup)this.findViewById(2131624232);
+        this.myListLabel = (TextView)this.findViewById(2131624268);
+        this.shareLabel = (TextView)this.findViewById(2131624265);
+        this.horzDispImg2 = (AdvancedImageView)this.findViewById(2131624207);
+        this.myList = (TextView)this.findViewById(2131624267);
+        this.genres = (TextView)this.findViewById(2131624277);
+        this.year = (TextView)this.findViewById(2131624217);
+        this.share = (TextView)this.findViewById(2131624266);
+        this.leftGroup = this.findViewById(2131624288);
+        this.shadow = this.findViewById(2131624286);
+        this.rate = this.findViewById(2131624269);
+        this.bookMarkTitle = (TextView)this.findViewById(2131624271);
+        this.bookmarkGroup = (ViewGroup)this.findViewById(2131624289);
+        this.bookmarkDuration = (TextView)this.findViewById(2131624273);
+        this.bookmarkValue = (TextView)this.findViewById(2131624272);
+        this.bookmarkProgressBar = (ProgressBar)this.findViewById(2131624274);
     }
     
     @Override
@@ -324,9 +339,9 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
     @Override
     protected int getlayoutId() {
         if (DeviceUtils.getScreenWidthInDPs(this.getContext()) <= 600) {
-            return 2130903123;
+            return 2130903143;
         }
-        return 2130903122;
+        return 2130903142;
     }
     
     public void hideDataSelector() {
@@ -355,12 +370,12 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
     
     protected void setEpisodesTextAsSelected() {
         if (this.dataSelectorEpisodes != null) {
-            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131230827));
+            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131558527));
             this.dataSelectorEpisodesTop.setVisibility(0);
             this.dataSelectorEpisodes.setTypeface(Typeface.DEFAULT_BOLD);
         }
         if (this.dataSelectorRelated != null) {
-            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131230888));
+            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131558506));
             this.dataSelectorRelatedTop.setVisibility(4);
             this.dataSelectorRelated.setTypeface(Typeface.DEFAULT);
         }
@@ -374,12 +389,12 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
     
     protected void setRelatedTextAsSelected() {
         if (this.dataSelectorRelated != null) {
-            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131230827));
+            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131558527));
             this.dataSelectorRelatedTop.setVisibility(0);
             this.dataSelectorRelated.setTypeface(Typeface.DEFAULT_BOLD);
         }
         if (this.dataSelectorEpisodes != null) {
-            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131230888));
+            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131558506));
             this.dataSelectorEpisodesTop.setVisibility(4);
             this.dataSelectorEpisodes.setTypeface(Typeface.DEFAULT);
         }
@@ -417,16 +432,16 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             this.bookmarkProgressBar.setProgress(progress);
         }
         if (this.bookmarkDuration != null) {
-            this.bookmarkDuration.setText((CharSequence)this.getResources().getString(2131493167, new Object[] { TimeUtils.convertSecondsToMinutes(playable.getRuntime()) }));
+            this.bookmarkDuration.setText((CharSequence)this.getResources().getString(2131165483, new Object[] { TimeUtils.convertSecondsToMinutes(playable.getRuntime()) }));
         }
         if (this.bookmarkValue != null) {
-            this.bookmarkValue.setText((CharSequence)this.getResources().getString(2131493167, new Object[] { TimeUtils.convertSecondsToMinutes(playable.getPlayableBookmarkPosition()) }));
+            this.bookmarkValue.setText((CharSequence)this.getResources().getString(2131165483, new Object[] { TimeUtils.convertSecondsToMinutes(playable.getPlayableBookmarkPosition()) }));
         }
     }
     
     public void updateBookmarkTitle(final EpisodeDetails episodeDetails) {
         if (this.bookMarkTitle != null) {
-            this.bookMarkTitle.setText((CharSequence)this.getResources().getString(2131493238, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() }));
+            this.bookMarkTitle.setText((CharSequence)this.getResources().getString(2131165430, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() }));
             this.bookMarkTitle.setVisibility(0);
         }
     }

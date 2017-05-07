@@ -4,32 +4,32 @@
 
 package com.netflix.mediaclient.service.player.subtitles;
 
-import android.content.Context;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.ui.player.subtitles.SubtitleManagerFactory;
-import com.netflix.mediaclient.ui.player.PlayerActivity;
+import com.netflix.mediaclient.ui.player.PlayerFragment;
 import com.netflix.mediaclient.ui.player.subtitles.SubtitleManager;
 
 public class SafeSubtitleManager implements SubtitleManager
 {
     protected static final String TAG = "nf_subtitles";
-    private PlayerActivity mActivity;
+    private PlayerFragment mPlayerFrag;
     private SubtitleManager mSubtitleManager;
     
-    public SafeSubtitleManager(final PlayerActivity mActivity) {
-        this.mActivity = mActivity;
+    public SafeSubtitleManager(final PlayerFragment mPlayerFrag) {
+        this.mPlayerFrag = mPlayerFrag;
     }
     
     private SubtitleManager getRealSubtitleManager() {
         synchronized (this) {
             if (this.mSubtitleManager == null) {
                 IMedia$SubtitleProfile subtitleProfileFromMetadata = null;
-                if (this.mActivity.getPlayer() != null) {
-                    subtitleProfileFromMetadata = this.mActivity.getPlayer().getSubtitleProfileFromMetadata();
+                if (this.mPlayerFrag.getPlayer() != null) {
+                    subtitleProfileFromMetadata = this.mPlayerFrag.getPlayer().getSubtitleProfileFromMetadata();
                 }
                 if (subtitleProfileFromMetadata != null) {
-                    this.mSubtitleManager = SubtitleManagerFactory.createInstance(subtitleProfileFromMetadata, this.mActivity);
+                    this.mSubtitleManager = SubtitleManagerFactory.createInstance(subtitleProfileFromMetadata, this.mPlayerFrag);
                 }
             }
             return this.mSubtitleManager;
@@ -55,9 +55,11 @@ public class SafeSubtitleManager implements SubtitleManager
     
     @Override
     public void clear() {
-        final SubtitleManager realSubtitleManager = this.getRealSubtitleManager();
-        if (realSubtitleManager != null) {
-            realSubtitleManager.clear();
+        if (this.mSubtitleManager != null) {
+            final SubtitleManager realSubtitleManager = this.getRealSubtitleManager();
+            if (realSubtitleManager != null) {
+                realSubtitleManager.clear();
+            }
         }
     }
     
@@ -70,8 +72,8 @@ public class SafeSubtitleManager implements SubtitleManager
     }
     
     @Override
-    public Context getContext() {
-        return (Context)this.mActivity;
+    public NetflixActivity getContext() {
+        return this.mPlayerFrag.getNetflixActivity();
     }
     
     @Override
@@ -100,7 +102,7 @@ public class SafeSubtitleManager implements SubtitleManager
                 if (this.mSubtitleManager != null) {
                     this.mSubtitleManager.clear();
                 }
-                this.mSubtitleManager = SubtitleManagerFactory.createInstance(subtitleProfile, this.mActivity);
+                this.mSubtitleManager = SubtitleManagerFactory.createInstance(subtitleProfile, this.mPlayerFrag);
             }
             final SubtitleManager realSubtitleManager = this.getRealSubtitleManager();
             if (realSubtitleManager != null) {

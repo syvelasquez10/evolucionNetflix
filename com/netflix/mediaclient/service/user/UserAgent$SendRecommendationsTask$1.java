@@ -44,10 +44,10 @@ class UserAgent$SendRecommendationsTask$1 extends SimpleUserAgentWebCallback
             }
             String s;
             if (n == 0) {
-                s = this.this$1.this$0.getContext().getString(2131493351, new Object[] { firstName });
+                s = this.this$1.this$0.getContext().getString(2131165608, new Object[] { firstName });
             }
             else {
-                s = this.this$1.this$0.getContext().getResources().getQuantityString(2131623938, n, new Object[] { n, firstName });
+                s = this.this$1.this$0.getContext().getResources().getQuantityString(2131230732, n, new Object[] { n, firstName });
             }
             Toast.makeText(this.this$1.this$0.getContext(), (CharSequence)s, 1).show();
             return;

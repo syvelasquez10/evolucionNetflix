@@ -4,19 +4,9 @@
 
 package com.google.android.gms.common.internal;
 
-import java.util.Arrays;
+import android.os.IInterface;
 
-public final class zzt
+public interface zzt extends IInterface
 {
-    public static boolean equal(final Object o, final Object o2) {
-        return o == o2 || (o != null && o.equals(o2));
-    }
-    
-    public static int hashCode(final Object... array) {
-        return Arrays.hashCode(array);
-    }
-    
-    public static zzt$zza zzt(final Object o) {
-        return new zzt$zza(o, null);
-    }
+    void zzb(final ResolveAccountResponse p0);
 }

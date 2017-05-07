@@ -16,6 +16,7 @@ import com.netflix.mediaclient.service.logging.uiaction.model.RegisterEndedEvent
 import com.netflix.mediaclient.service.logging.android.model.RecommendSheetEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.RateTitleEndedEvent;
 import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetActionEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.PostPlayEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.NewLolomoEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.NavigationEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.LoginEndedEvent;
@@ -34,6 +35,7 @@ import com.netflix.mediaclient.service.logging.client.model.Event;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$Streams;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$RememberProfile;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$Profile;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import java.io.Serializable;
@@ -60,6 +62,7 @@ import com.netflix.mediaclient.service.logging.uiaction.RegisterSession;
 import com.netflix.mediaclient.service.logging.android.RecommendSheetSession;
 import com.netflix.mediaclient.service.logging.uiaction.RateTitleSession;
 import com.netflix.mediaclient.service.logging.android.preapp.PreAppWidgetActionSession;
+import com.netflix.mediaclient.service.logging.uiaction.PostPlaySession;
 import com.netflix.mediaclient.service.logging.uiaction.NewLolomoSession;
 import com.netflix.mediaclient.service.logging.uiaction.NavigationSession;
 import com.netflix.mediaclient.service.logging.uiaction.LoginSession;
@@ -84,6 +87,7 @@ final class UserActionLoggingImpl implements UserActionLogging
     private LoginSession mLoginSession;
     private NavigationSession mNavigationSession;
     private NewLolomoSession mNewLolomoSession;
+    private PostPlaySession mPostPlaySession;
     private PreAppWidgetActionSession mPreAppWidgetActionSession;
     private RateTitleSession mRateTitleSession;
     private RecommendSheetSession mRecommendSheetSession;
@@ -498,6 +502,91 @@ final class UserActionLoggingImpl implements UserActionLogging
             value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
         this.startNewLolomoSession(value, value2);
+    }
+    
+    private void handlePostPlayEnded(final Intent intent) {
+        Log.d("nf_log", "POSTPLAY_START_ENDED");
+        Serializable s = intent.getStringExtra("reason");
+        final String stringExtra = intent.getStringExtra("error");
+        Serializable s2 = intent.getStringExtra("view");
+        final boolean booleanExtra = intent.getBooleanExtra("wasAutoPlayCountdownInterrupted", false);
+        final boolean booleanExtra2 = intent.getBooleanExtra("didUserContinueWatching", false);
+        int n = intent.getIntExtra("chosenVideoId", -1);
+        while (true) {
+            while (true) {
+                Label_0068: {
+                    if (n < 0) {
+                        final Integer value = null;
+                        break Label_0068;
+                    }
+                    Label_0147: {
+                        break Label_0147;
+                        Integer value = null;
+                        UIError instance;
+                        Integer value2 = null;
+                        Label_0099_Outer:Label_0114_Outer:
+                        while (true) {
+                            n = intent.getIntExtra("trackId", 0);
+                            while (true) {
+                                Label_0186: {
+                                    while (true) {
+                                    Label_0180:
+                                        while (true) {
+                                            try {
+                                                instance = UIError.createInstance(stringExtra);
+                                                if (!StringUtils.isNotEmpty((String)s)) {
+                                                    break Label_0186;
+                                                }
+                                                s = IClientLogging$CompletionReason.valueOf((String)s);
+                                                if (StringUtils.isNotEmpty((String)s2)) {
+                                                    s2 = IClientLogging$ModalView.valueOf((String)s2);
+                                                    this.endPostPlaySession((IClientLogging$CompletionReason)s, (IClientLogging$ModalView)s2, instance, booleanExtra, booleanExtra2, value, value2, n);
+                                                    return;
+                                                }
+                                                break Label_0180;
+                                                value2 = n;
+                                                continue Label_0099_Outer;
+                                                value = n;
+                                                break;
+                                            }
+                                            catch (JSONException ex) {
+                                                Log.e("nf_log", "Failed JSON", (Throwable)ex);
+                                                instance = null;
+                                                continue Label_0114_Outer;
+                                            }
+                                            break;
+                                        }
+                                        s2 = null;
+                                        continue;
+                                    }
+                                }
+                                s = null;
+                                continue;
+                            }
+                        }
+                    }
+                }
+                n = intent.getIntExtra("chosenIndex", -1);
+                if (n < 0) {
+                    final Integer value2 = null;
+                    continue;
+                }
+                break;
+            }
+            continue;
+        }
+    }
+    
+    private void handlePostPlayStart(final Intent intent) {
+        Log.d("nf_log", "POSTPLAY_START_START");
+        final boolean booleanExtra = intent.getBooleanExtra("isAutoPlayCountdownEnabled", false);
+        final int intExtra = intent.getIntExtra("lengthOfAutoPlayCountdown", 0);
+        final String stringExtra = intent.getStringExtra("postPlayExperience");
+        UserActionLogging$PostPlayExperience value = null;
+        if (StringUtils.isNotEmpty(stringExtra)) {
+            value = UserActionLogging$PostPlayExperience.valueOf(stringExtra);
+        }
+        this.startPostPlaySession(booleanExtra, intExtra, value);
     }
     
     private void handlePreAppWidgetActionEnded(final Intent intent) {
@@ -1311,6 +1400,9 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.endUpgradeStreamsSession(IClientLogging$CompletionReason.canceled, null, null);
             this.endShareSheetOpenSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
             this.endShareSheetSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
+            this.endPostPlaySession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null, false, false, null, null, 0);
+            this.endRecommendSheetSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
+            this.endPreAppWidgetActionSession(IClientLogging$CompletionReason.canceled, null);
             final HashSet<Long> set = new HashSet<Long>(this.mSearchSessions.size());
             set.addAll((Collection<?>)this.mSearchSessions.keySet());
             final Iterator<Object> iterator = set.iterator();
@@ -1417,6 +1509,24 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.post(endedEvent);
         this.mNewLolomoSession = null;
         Log.d("nf_log", "NewLolomoSession end event posted.");
+    }
+    
+    @Override
+    public void endPostPlaySession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError, final boolean b, final boolean b2, final Integer n, final Integer n2, final int n3) {
+        if (this.mPostPlaySession == null) {
+            return;
+        }
+        Log.d("nf_log", "PostPlaySession session ended");
+        final PostPlayEndedEvent endedEvent = this.mPostPlaySession.createEndedEvent(clientLogging$CompletionReason, clientLogging$ModalView, uiError, b, b2, n, n2, n3);
+        if (endedEvent == null) {
+            Log.d("nf_log", "PostPlaySession still waits on session id, do not post at this time.");
+            return;
+        }
+        this.mEventHandler.removeSession(this.mPostPlaySession);
+        Log.d("nf_log", "PostPlaySession end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mPostPlaySession = null;
+        Log.d("nf_log", "PostPlaySession end event posted.");
     }
     
     @Override
@@ -1872,6 +1982,14 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.handlePreAppWidgetActionEnded(intent);
             return true;
         }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_POSTPLAY_START".equals(action)) {
+            this.handlePostPlayStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_POSTPLAY_ENDED".equals(action)) {
+            this.handlePostPlayEnded(intent);
+            return true;
+        }
         if (Log.isLoggable()) {
             Log.d("nf_log", "We do not support action " + action);
         }
@@ -1986,6 +2104,19 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mNewLolomoSession = new NewLolomoSession(userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(this.mNewLolomoSession);
         Log.d("nf_log", "NewLolomoSession session start done.");
+    }
+    
+    @Override
+    public void startPostPlaySession(final boolean b, final int n, final UserActionLogging$PostPlayExperience userActionLogging$PostPlayExperience) {
+        if (this.mPostPlaySession != null) {
+            Log.e("nf_log", "PostPlaySession already started!");
+            return;
+        }
+        Log.d("nf_log", "PostPlaySession starting...");
+        final PostPlaySession mPostPlaySession = new PostPlaySession(null, IClientLogging$ModalView.postPlay, b, n, userActionLogging$PostPlayExperience);
+        this.mEventHandler.addSession(mPostPlaySession);
+        this.mPostPlaySession = mPostPlaySession;
+        Log.d("nf_log", "PostPlaySession start done.");
     }
     
     @Override

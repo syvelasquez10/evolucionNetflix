@@ -74,15 +74,15 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
             n2 = n4;
         }
         if (n2 != 0 && n != 0) {
-            return this.getString(2131493334);
+            return this.getString(2131165566);
         }
         if (n != 0) {
-            return this.getString(2131493336);
+            return this.getString(2131165411);
         }
         if (n2 != 0) {
-            return this.getString(2131493335);
+            return this.getString(2131165472);
         }
-        return this.getString(2131493331);
+        return this.getString(2131165474);
     }
     
     @Override
@@ -105,14 +105,14 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
         super.onCreate(bundle);
         if (DeviceUtils.isTabletByContext((Context)this)) {
             this.setRequestedOrientation(6);
-            this.setContentView(2130903088);
+            this.setContentView(2130903101);
             if (Log.isLoggable("DiagnosisActivity", 3)) {
                 Log.d("DiagnosisActivity", "Setting orientation to landscape");
             }
         }
         else {
             this.setRequestedOrientation(7);
-            this.setContentView(2130903089);
+            this.setContentView(2130903102);
             if (Log.isLoggable("DiagnosisActivity", 3)) {
                 Log.d("DiagnosisActivity", "setting orientation to potrait");
             }
@@ -143,7 +143,7 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
     }
     
     @Override
-    protected boolean showAboutInMenu() {
+    public boolean showAboutInMenu() {
         return false;
     }
     
@@ -152,12 +152,12 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
     }
     
     @Override
-    protected boolean showSettingsInMenu() {
+    public boolean showSettingsInMenu() {
         return false;
     }
     
     @Override
-    protected boolean showSignOutInMenu() {
+    public boolean showSignOutInMenu() {
         return false;
     }
     
@@ -165,24 +165,24 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
         switch (DiagnosisActivity$4.$SwitchMap$com$netflix$mediaclient$ui$diagnosis$DiagnosisActivity$InfoGroupState[diagnosisActivity$InfoGroupState.ordinal()]) {
             default: {}
             case 1: {
-                this.mNetworkStatus.setText(2131493325);
-                this.mTestInfo.setText(2131493326);
-                this.mTestButton.setText(2131493327);
+                this.mNetworkStatus.setText(2131165404);
+                this.mTestInfo.setText(2131165559);
+                this.mTestButton.setText(2131165550);
                 this.mTestButton.setVisibility(0);
                 this.mProgressBar.setVisibility(4);
             }
             case 2: {
-                this.mNetworkStatus.setText(2131493329);
+                this.mNetworkStatus.setText(2131165475);
                 this.mTestInfo.setVisibility(0);
                 this.mTestInfo.setText((CharSequence)this.getStringForFailure());
                 this.mTestButton.setVisibility(0);
-                this.mTestButton.setText(2131493330);
+                this.mTestButton.setText(2131165558);
                 this.mProgressBar.setVisibility(4);
             }
             case 3: {
-                this.mNetworkStatus.setText(2131493331);
+                this.mNetworkStatus.setText(2131165474);
                 this.mTestButton.setVisibility(0);
-                this.mTestButton.setText(2131493330);
+                this.mTestButton.setText(2131165558);
                 this.mProgressBar.setVisibility(4);
             }
             case 4: {
@@ -190,7 +190,7 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
                 this.mStatutListView.setVisibility(0);
                 this.mTestButton.setVisibility(4);
                 this.mProgressBar.setVisibility(0);
-                this.mNetworkStatus.setText(2131493328);
+                this.mNetworkStatus.setText(2131165405);
                 this.mTestInfo.setVisibility(4);
             }
         }

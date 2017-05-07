@@ -22,7 +22,7 @@ final class DeviceUtils$1 implements DeviceCapabilityProvider
     
     @Override
     public boolean is5dot1Supported() {
-        return false;
+        return this.val$serviceManager != null && this.val$serviceManager.isDolbyDigitalPlus51Supported();
     }
     
     @Override

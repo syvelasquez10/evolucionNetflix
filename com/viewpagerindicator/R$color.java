@@ -6,7 +6,7 @@ package com.viewpagerindicator;
 
 public final class R$color
 {
-    public static final int default_circle_indicator_fill_color = 2131230800;
-    public static final int default_circle_indicator_page_color = 2131230801;
-    public static final int default_circle_indicator_stroke_color = 2131230802;
+    public static final int default_circle_indicator_fill_color = 2131558461;
+    public static final int default_circle_indicator_page_color = 2131558462;
+    public static final int default_circle_indicator_stroke_color = 2131558463;
 }

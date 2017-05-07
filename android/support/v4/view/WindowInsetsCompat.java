@@ -6,6 +6,10 @@ package android.support.v4.view;
 
 public class WindowInsetsCompat
 {
+    public WindowInsetsCompat consumeSystemWindowInsets() {
+        return this;
+    }
+    
     public int getSystemWindowInsetBottom() {
         return 0;
     }
@@ -20,6 +24,10 @@ public class WindowInsetsCompat
     
     public int getSystemWindowInsetTop() {
         return 0;
+    }
+    
+    public boolean isConsumed() {
+        return false;
     }
     
     public WindowInsetsCompat replaceSystemWindowInsets(final int n, final int n2, final int n3, final int n4) {

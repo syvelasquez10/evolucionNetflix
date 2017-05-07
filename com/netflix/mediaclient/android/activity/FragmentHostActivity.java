@@ -59,7 +59,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
     }
     
     protected int getContentLayoutId() {
-        return 2130903096;
+        return 2130903109;
     }
     
     public Fragment getPrimaryFrag() {
@@ -78,6 +78,10 @@ public abstract class FragmentHostActivity extends NetflixActivity
         return this.secondaryFragContainer;
     }
     
+    protected boolean hasEmbeddedToolbar() {
+        return true;
+    }
+    
     @Override
     public boolean isLoadingData() {
         final boolean loadingData = ((LoadingStatus)this.primaryFrag).isLoadingData();
@@ -91,16 +95,19 @@ public abstract class FragmentHostActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.setContentView(this.getContentLayoutId());
-        this.contentHost = (LinearLayout)this.findViewById(2131427525);
-        this.primaryFragContainer = (ViewGroup)this.findViewById(2131427526);
-        this.secondaryFragContainer = (ViewGroup)this.findViewById(2131427527);
+        this.contentHost = (LinearLayout)this.findViewById(2131624199);
+        this.primaryFragContainer = (ViewGroup)this.findViewById(2131624200);
+        if (!this.hasEmbeddedToolbar()) {
+            ((LinearLayout$LayoutParams)this.primaryFragContainer.getLayoutParams()).topMargin = 0;
+        }
+        this.secondaryFragContainer = (ViewGroup)this.findViewById(2131624201);
         if (bundle == null) {
             this.primaryFrag = this.createPrimaryFrag();
             this.secondaryFrag = this.createSecondaryFrag();
             final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
-            beginTransaction.add(2131427526, this.primaryFrag, "primary");
+            beginTransaction.add(2131624200, this.primaryFrag, "primary");
             if (this.secondaryFrag != null) {
-                beginTransaction.add(2131427527, this.secondaryFrag, "secondary");
+                beginTransaction.add(2131624201, this.secondaryFrag, "secondary");
             }
             beginTransaction.commit();
         }

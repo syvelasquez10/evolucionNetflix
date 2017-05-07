@@ -8,6 +8,7 @@ import android.support.v7.view.ActionMode;
 import android.support.v7.view.ActionMode$Callback;
 import android.view.View;
 import android.graphics.drawable.Drawable;
+import android.view.KeyEvent;
 import android.content.res.Configuration;
 import android.content.Context;
 
@@ -39,6 +40,10 @@ public abstract class ActionBar
     public abstract boolean isShowing();
     
     public void onConfigurationChanged(final Configuration configuration) {
+    }
+    
+    public boolean onKeyShortcut(final int n, final KeyEvent keyEvent) {
+        return false;
     }
     
     public abstract void setBackgroundDrawable(final Drawable p0);

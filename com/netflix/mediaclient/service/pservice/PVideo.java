@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.pservice;
 
+import com.netflix.mediaclient.util.UriUtil;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
@@ -57,6 +58,10 @@ public class PVideo
     public String synopsis;
     @SerializedName("title")
     public String title;
+    @SerializedName("trickplayUrl")
+    public String trickplayUrl;
+    @SerializedName("tvCardUrl")
+    public String tvCardUrl;
     @SerializedName("videoType")
     public VideoType videoType;
     
@@ -68,12 +73,14 @@ public class PVideo
     public PVideo(final CWVideo cwVideo) {
         this((Video)cwVideo);
         this.copyPlayableInfo(this, cwVideo);
+        this.trickplayUrl = UriUtil.buildStillUrlFromPos(cwVideo, true);
     }
     
     public PVideo(final Video video) {
         this.id = video.getId();
         this.boxartUrl = video.getBoxshotUrl();
         this.storyImgDispUrl = video.getStoryDispUrl();
+        this.tvCardUrl = video.getTvCardUrl();
         this.horzDispUrl = video.getHorzDispUrl();
         this.videoType = video.getType();
         this.title = video.getTitle();

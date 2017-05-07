@@ -4,6 +4,7 @@
 
 package com.google.android.gms.signin.internal;
 
+import com.google.android.gms.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.ConnectionResult;
 import android.os.Parcel;
@@ -17,7 +18,7 @@ public abstract class zze$zza extends Binder implements zze
         this.attachInterface((IInterface)this, "com.google.android.gms.signin.internal.ISignInCallbacks");
     }
     
-    public static zze zzdC(final IBinder binder) {
+    public static zze zzdG(final IBinder binder) {
         if (binder == null) {
             return null;
         }
@@ -70,7 +71,40 @@ public abstract class zze$zza extends Binder implements zze
                 else {
                     status = null;
                 }
-                this.zzaT(status);
+                this.zzbe(status);
+                parcel2.writeNoException();
+                return true;
+            }
+            case 6: {
+                parcel.enforceInterface("com.google.android.gms.signin.internal.ISignInCallbacks");
+                Status status2;
+                if (parcel.readInt() != 0) {
+                    status2 = (Status)Status.CREATOR.createFromParcel(parcel);
+                }
+                else {
+                    status2 = null;
+                }
+                this.zzbf(status2);
+                parcel2.writeNoException();
+                return true;
+            }
+            case 7: {
+                parcel.enforceInterface("com.google.android.gms.signin.internal.ISignInCallbacks");
+                Status status3;
+                if (parcel.readInt() != 0) {
+                    status3 = (Status)Status.CREATOR.createFromParcel(parcel);
+                }
+                else {
+                    status3 = null;
+                }
+                GoogleSignInAccount googleSignInAccount;
+                if (parcel.readInt() != 0) {
+                    googleSignInAccount = (GoogleSignInAccount)GoogleSignInAccount.CREATOR.createFromParcel(parcel);
+                }
+                else {
+                    googleSignInAccount = null;
+                }
+                this.zza(status3, googleSignInAccount);
                 parcel2.writeNoException();
                 return true;
             }

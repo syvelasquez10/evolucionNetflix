@@ -16,9 +16,14 @@ class PostPlay$7 implements Runnable
     
     @Override
     public void run() {
-        Log.d("nf_postplay", "After 60 minutes of waiting for user input, stop player ui");
-        if (!this.this$0.mContext.destroyed()) {
-            this.this$0.mContext.finish();
+        if (this.this$0.mPlayerFragment == null) {
+            Log.e("nf_postplay", "onInterrupterDismiss() - called with null PlayerFragment!");
+        }
+        else {
+            Log.d("nf_postplay", "After 60 minutes of waiting for user input, stop player ui");
+            if (!this.this$0.mPlayerFragment.isActivityValid()) {
+                this.this$0.mPlayerFragment.finish();
+            }
         }
     }
 }

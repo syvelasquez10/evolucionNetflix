@@ -5,7 +5,7 @@
 package com.google.android.gms.common.internal;
 
 import android.os.Parcel;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import android.os.Bundle;
 import com.google.android.gms.common.api.Scope;
 import android.os.IBinder;
@@ -15,34 +15,34 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class ValidateAccountRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<ValidateAccountRequest> CREATOR;
-    final int zzCY;
-    final IBinder zzZN;
-    private final Scope[] zzZO;
-    private final int zzabf;
-    private final Bundle zzabg;
-    private final String zzabh;
+    final int mVersionCode;
+    final IBinder zzacC;
+    private final Scope[] zzacD;
+    private final int zzaeq;
+    private final Bundle zzaer;
+    private final String zzaes;
     
     static {
-        CREATOR = (Parcelable$Creator)new zzab();
+        CREATOR = (Parcelable$Creator)new zzad();
     }
     
-    ValidateAccountRequest(final int zzCY, final int zzabf, final IBinder zzZN, final Scope[] zzZO, final Bundle zzabg, final String zzabh) {
-        this.zzCY = zzCY;
-        this.zzabf = zzabf;
-        this.zzZN = zzZN;
-        this.zzZO = zzZO;
-        this.zzabg = zzabg;
-        this.zzabh = zzabh;
+    ValidateAccountRequest(final int mVersionCode, final int zzaeq, final IBinder zzacC, final Scope[] zzacD, final Bundle zzaer, final String zzaes) {
+        this.mVersionCode = mVersionCode;
+        this.zzaeq = zzaeq;
+        this.zzacC = zzacC;
+        this.zzacD = zzacD;
+        this.zzaer = zzaer;
+        this.zzaes = zzaes;
     }
     
-    public ValidateAccountRequest(final IAccountAccessor accountAccessor, final Scope[] array, final String s, final Bundle bundle) {
-        final int google_PLAY_SERVICES_VERSION_CODE = GooglePlayServicesUtil.GOOGLE_PLAY_SERVICES_VERSION_CODE;
+    public ValidateAccountRequest(final zzp zzp, final Scope[] array, final String s, final Bundle bundle) {
+        final int google_PLAY_SERVICES_VERSION_CODE = GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE;
         IBinder binder;
-        if (accountAccessor == null) {
+        if (zzp == null) {
             binder = null;
         }
         else {
-            binder = accountAccessor.asBinder();
+            binder = zzp.asBinder();
         }
         this(1, google_PLAY_SERVICES_VERSION_CODE, binder, array, bundle, s);
     }
@@ -52,22 +52,22 @@ public class ValidateAccountRequest implements SafeParcelable
     }
     
     public String getCallingPackage() {
-        return this.zzabh;
+        return this.zzaes;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        zzab.zza(this, parcel, n);
+        zzad.zza(this, parcel, n);
     }
     
-    public int zzob() {
-        return this.zzabf;
+    public int zzoS() {
+        return this.zzaeq;
     }
     
-    public Scope[] zzoc() {
-        return this.zzZO;
+    public Scope[] zzoT() {
+        return this.zzacD;
     }
     
-    public Bundle zzod() {
-        return this.zzabg;
+    public Bundle zzoU() {
+        return this.zzaer;
     }
 }

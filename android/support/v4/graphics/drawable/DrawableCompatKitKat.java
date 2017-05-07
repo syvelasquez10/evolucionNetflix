@@ -15,4 +15,12 @@ class DrawableCompatKitKat
     public static void setAutoMirrored(final Drawable drawable, final boolean autoMirrored) {
         drawable.setAutoMirrored(autoMirrored);
     }
+    
+    public static Drawable wrapForTinting(final Drawable drawable) {
+        Drawable drawable2 = drawable;
+        if (!(drawable instanceof DrawableWrapperKitKat)) {
+            drawable2 = new DrawableWrapperKitKat(drawable);
+        }
+        return drawable2;
+    }
 }

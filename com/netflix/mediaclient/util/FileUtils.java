@@ -7,6 +7,7 @@ package com.netflix.mediaclient.util;
 import java.net.URLConnection;
 import java.io.FileWriter;
 import java.io.ByteArrayOutputStream;
+import java.util.Scanner;
 import java.nio.charset.Charset;
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
@@ -363,6 +364,15 @@ public final class FileUtils
     
     public static String readFileWithUTF8Encoding(final String s) {
         return readFile(s, Charset.forName("UTF-8"));
+    }
+    
+    public static String readRawString(final Context context, final int n) {
+        final StringBuilder sb = new StringBuilder();
+        final Scanner scanner = new Scanner(context.getResources().openRawResource(n));
+        while (scanner.hasNextLine()) {
+            sb.append(scanner.nextLine() + "\n");
+        }
+        return sb.toString();
     }
     
     public static void removeFilesFromFS(final Context context, final String[] array) {

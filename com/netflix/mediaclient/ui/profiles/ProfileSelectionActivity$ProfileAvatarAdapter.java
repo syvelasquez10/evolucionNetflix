@@ -35,11 +35,11 @@ import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.ViewPropertyAnimator;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import android.app.Activity;
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.app.Status;
-import android.app.Activity;
 import java.util.List;
 import android.widget.AdapterView$OnItemClickListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -90,14 +90,14 @@ class ProfileSelectionActivity$ProfileAvatarAdapter extends BaseAdapter
     public View getView(int visibility, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.getLayoutInflater().inflate(2130903176, viewGroup, false);
-            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131427451), (TextView)inflate.findViewById(2131427782), inflate.findViewById(2131427781)));
+            inflate = this.this$0.getLayoutInflater().inflate(2130903209, viewGroup, false);
+            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131624072), (TextView)inflate.findViewById(2131624496), inflate.findViewById(2131624495)));
         }
         final ProfileSelectionActivity$Holder profileSelectionActivity$Holder = (ProfileSelectionActivity$Holder)inflate.getTag();
         final UserProfile item = this.getItem(visibility);
         if (visibility == this.this$0.profiles.size()) {
-            profileSelectionActivity$Holder.img.setImageResource(2130837879);
-            profileSelectionActivity$Holder.title.setText(2131493300);
+            profileSelectionActivity$Holder.img.setImageResource(2130837921);
+            profileSelectionActivity$Holder.title.setText(2131165584);
             profileSelectionActivity$Holder.topEditImg.setVisibility(8);
             return inflate;
         }

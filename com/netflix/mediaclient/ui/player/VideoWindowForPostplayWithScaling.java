@@ -24,7 +24,7 @@ public class VideoWindowForPostplayWithScaling implements VideoWindowForPostplay
     private final int END_MARGIN_LEFT_DP;
     private final int END_MARGIN_TOP_DP;
     private final int END_WIDTH_DP;
-    protected PlayerActivity mContext;
+    protected PlayerFragment mContext;
     protected VideoWindowForPostplayWithScaling$SurfaceState mOriginalSurfaceState;
     protected VideoWindowForPostplayWithAnimation$ScaleAnimationParameters mParams;
     protected RelativeLayout mParent;
@@ -35,14 +35,15 @@ public class VideoWindowForPostplayWithScaling implements VideoWindowForPostplay
         VideoWindowForPostplayWithScaling.TAG = "nf_postplay";
     }
     
-    VideoWindowForPostplayWithScaling(final PlayerActivity mContext) {
+    VideoWindowForPostplayWithScaling(final PlayerFragment mContext) {
         this.END_MARGIN_TOP_DP = 12;
         this.END_MARGIN_LEFT_DP = 12;
         this.END_WIDTH_DP = 300;
         this.mContext = mContext;
-        this.mSurface = (TappableSurfaceView)mContext.findViewById(2131427703);
-        this.mSurface2 = (TextureView)mContext.findViewById(2131427708);
-        this.mParent = (RelativeLayout)mContext.findViewById(2131427519);
+        final View view = mContext.getView();
+        this.mSurface = (TappableSurfaceView)view.findViewById(2131624399);
+        this.mSurface2 = (TextureView)view.findViewById(2131624404);
+        this.mParent = (RelativeLayout)view.findViewById(2131624193);
         if (this.mSurface == null) {
             Log.w(VideoWindowForPostplayWithScaling.TAG, "PostPlayWithScaling:: surface not found");
         }
@@ -52,7 +53,7 @@ public class VideoWindowForPostplayWithScaling implements VideoWindowForPostplay
         if (this.mParent == null) {
             Log.w(VideoWindowForPostplayWithScaling.TAG, "PostPlayWithScaling:: rootFrame not found");
         }
-        this.mParams = new VideoWindowForPostplayWithAnimation$ScaleAnimationParameters(0, 0, 0, 1.0f, AndroidUtils.dipToPixels((Context)this.mContext, 12), AndroidUtils.dipToPixels((Context)this.mContext, 12), AndroidUtils.dipToPixels((Context)this.mContext, 300) / DeviceUtils.getScreenWidthInPixels((Context)this.mContext));
+        this.mParams = new VideoWindowForPostplayWithAnimation$ScaleAnimationParameters(0, 0, 0, 1.0f, AndroidUtils.dipToPixels((Context)this.mContext.getActivity(), 12), AndroidUtils.dipToPixels((Context)this.mContext.getActivity(), 12), AndroidUtils.dipToPixels((Context)this.mContext.getActivity(), 300) / DeviceUtils.getScreenWidthInPixels((Context)this.mContext.getActivity()));
     }
     
     protected void addCenterInParent(final View view) {
@@ -151,7 +152,7 @@ public class VideoWindowForPostplayWithScaling implements VideoWindowForPostplay
     }
     
     protected void resizeVideo(final int n, final int n2, final float n3) {
-        this.mContext.runInUiThread(new VideoWindowForPostplayWithScaling$1(this, n, n2, n3));
+        this.mContext.runOnUiThread(new VideoWindowForPostplayWithScaling$1(this, n, n2, n3));
     }
     
     @Override

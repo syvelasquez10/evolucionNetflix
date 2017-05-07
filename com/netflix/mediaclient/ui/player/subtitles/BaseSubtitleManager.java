@@ -12,6 +12,7 @@ import android.app.Activity;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
@@ -19,11 +20,11 @@ import java.util.Collections;
 import java.util.ArrayList;
 import android.view.View;
 import com.netflix.mediaclient.ui.player.PlayScreen;
+import com.netflix.mediaclient.ui.player.PlayerFragment;
 import java.util.List;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
 import android.os.Handler;
 import android.widget.RelativeLayout;
-import com.netflix.mediaclient.ui.player.PlayerActivity;
 
 abstract class BaseSubtitleManager implements SubtitleManager
 {
@@ -33,7 +34,6 @@ abstract class BaseSubtitleManager implements SubtitleManager
     protected static final String TAG = "nf_subtitles_render";
     protected static final int TOP_PADDING = 5;
     protected static final int V_REGION_PADDING = 1;
-    protected PlayerActivity mActivity;
     protected int mBottomPanelHeight;
     protected int mBottomPanelPadding;
     protected RelativeLayout mDisplayArea;
@@ -41,6 +41,7 @@ abstract class BaseSubtitleManager implements SubtitleManager
     protected int mHorizontalRegionPadding;
     protected SubtitleParser mParser;
     protected List<Runnable> mPendingActions;
+    protected PlayerFragment mPlayerFragment;
     protected PlayScreen mScreen;
     protected Integer mSubtitleParserId;
     protected View mTopPanel;
@@ -48,56 +49,58 @@ abstract class BaseSubtitleManager implements SubtitleManager
     protected int mTransparent;
     protected int mVerticalRegionPadding;
     
-    BaseSubtitleManager(final PlayerActivity mActivity) {
+    BaseSubtitleManager(final PlayerFragment mPlayerFragment) {
         this.mPendingActions = Collections.synchronizedList(new ArrayList<Runnable>());
         if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", this.getClass().getSimpleName() + " created");
         }
-        this.mActivity = mActivity;
-        this.mScreen = this.mActivity.getScreen();
+        this.mPlayerFragment = mPlayerFragment;
+        this.mScreen = this.mPlayerFragment.getScreen();
         if (this.mScreen == null) {
             throw new IllegalArgumentException("Player screen is not initialized!");
         }
         Log.v("nf_subtitles_render", "Create handler.");
         this.mHandler = new Handler();
-        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131427705);
+        final View view = this.mPlayerFragment.getView();
+        this.mDisplayArea = (RelativeLayout)view.findViewById(2131624401);
         if (this.mDisplayArea.getWidth() == 0 || this.mDisplayArea.getHeight() == 0) {
             Log.w("nf_subtitles_render", "Display area w/h are 0, display area is not visible yet!");
         }
-        this.mHorizontalRegionPadding = AndroidUtils.dipToPixels((Context)mActivity, 5);
-        this.mVerticalRegionPadding = AndroidUtils.dipToPixels((Context)mActivity, 1);
+        final NetflixActivity netflixActivity = this.mPlayerFragment.getNetflixActivity();
+        this.mHorizontalRegionPadding = AndroidUtils.dipToPixels((Context)netflixActivity, 5);
+        this.mVerticalRegionPadding = AndroidUtils.dipToPixels((Context)netflixActivity, 1);
         int n;
-        if (mActivity.isTablet()) {
+        if (netflixActivity.isTablet()) {
             n = 59;
         }
         else {
             n = 46;
         }
-        this.mBottomPanelPadding = AndroidUtils.dipToPixels((Context)mActivity, n);
-        this.mBottomPanelHeight = mActivity.getResources().getDimensionPixelSize(2131296518);
-        this.mTopPanelPadding = AndroidUtils.dipToPixels((Context)mActivity, 5);
-        this.mTopPanel = mActivity.findViewById(2131427713);
+        this.mBottomPanelPadding = AndroidUtils.dipToPixels((Context)netflixActivity, n);
+        this.mBottomPanelHeight = mPlayerFragment.getResources().getDimensionPixelSize(2131296577);
+        this.mTopPanelPadding = AndroidUtils.dipToPixels((Context)netflixActivity, 5);
+        this.mTopPanel = view.findViewById(2131624408);
     }
     
     protected abstract Runnable createRunnable(final SubtitleBlock p0, final boolean p1);
     
     @Override
-    public Context getContext() {
-        return (Context)this.mActivity;
+    public NetflixActivity getContext() {
+        return this.mPlayerFragment.getNetflixActivity();
     }
     
     protected int getDisplayAreaMarginBottom() {
-        if (DeviceUtils.hasHardwareNavigationKeys() || ViewUtils.isNavigationBarRightOfContent(this.mActivity)) {
+        if (DeviceUtils.hasHardwareNavigationKeys() || ViewUtils.isNavigationBarRightOfContent(this.getContext())) {
             return this.mBottomPanelHeight + this.mBottomPanelPadding;
         }
-        if (ViewUtils.isNavigationBarBelowContent(this.mActivity)) {
-            return this.mBottomPanelHeight + this.mBottomPanelPadding + ViewUtils.getNavigationBarHeight((Context)this.mActivity, false);
+        if (ViewUtils.isNavigationBarBelowContent(this.getContext())) {
+            return this.mBottomPanelHeight + this.mBottomPanelPadding + ViewUtils.getNavigationBarHeight((Context)this.getContext(), false);
         }
         return this.mBottomPanelHeight + this.mBottomPanelPadding;
     }
     
     protected int getDisplayAreaMarginTop() {
-        final int statusBarHeight = ViewUtils.getStatusBarHeight((Context)this.mActivity);
+        final int statusBarHeight = ViewUtils.getStatusBarHeight((Context)this.getContext());
         if (this.mTopPanel == null) {
             Log.w("nf_subtitles_render", "Top panel is null");
             return statusBarHeight + this.mTopPanelPadding;

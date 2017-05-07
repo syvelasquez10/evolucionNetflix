@@ -11,6 +11,7 @@ public interface ISearchLogging
     public static final String[] ACTIONS = { "com.netflix.mediaclient.intent.action.LOG_SUS_SEARCH_SESSION_START", "com.netflix.mediaclient.intent.action.LOG_SUS_SEARCH_SESSION_END", "com.netflix.mediaclient.intent.action.LOG_SUS_FOCUS_SEARCH_SESSION_START", "com.netflix.mediaclient.intent.action.LOG_SUS_FOCUS_SEARCH_SESSION_END", "com.netflix.mediaclient.intent.action.LOG_SUS_FOCUS_SEARCH_EDIT", "com.netflix.mediaclient.intent.action.LOG_SUS_FOCUS_SEARCH_IMPRESSION" };
     public static final String EXTRA_CHILD_IDS = "childIds";
     public static final String EXTRA_FROM = "from";
+    public static final String EXTRA_INPUT_MODE = "input_mode";
     public static final String EXTRA_MODAL_VIEW = "modal_view";
     public static final String EXTRA_PARENT_ID = "parentId";
     public static final String EXTRA_PLAYABLE_ID = "playableId";

@@ -79,9 +79,14 @@ final class RegisteredMediaRouteProvider$Controller extends MediaRouteProvider$R
     
     @Override
     public void onUnselect() {
+        this.onUnselect(0);
+    }
+    
+    @Override
+    public void onUnselect(final int n) {
         this.mSelected = false;
         if (this.mConnection != null) {
-            this.mConnection.unselectRoute(this.mControllerId);
+            this.mConnection.unselectRoute(this.mControllerId, n);
         }
     }
     

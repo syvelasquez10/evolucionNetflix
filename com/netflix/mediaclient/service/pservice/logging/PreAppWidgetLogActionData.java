@@ -39,9 +39,7 @@ public class PreAppWidgetLogActionData
     
     public String toJsonString() {
         final String json = FalkorParseUtils.getGson().toJson(this);
-        if (Log.isLoggable()) {
-            Log.d("nf_preapp_widgetLogActionData", "PreAppWidgetLogActionData as json: " + json);
-        }
+        if (Log.isLoggable()) {}
         return json;
     }
 }

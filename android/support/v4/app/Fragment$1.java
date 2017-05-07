@@ -6,7 +6,7 @@ package android.support.v4.app;
 
 import android.view.View;
 
-class Fragment$1 implements FragmentContainer
+class Fragment$1 extends FragmentContainer
 {
     final /* synthetic */ Fragment this$0;
     
@@ -15,7 +15,7 @@ class Fragment$1 implements FragmentContainer
     }
     
     @Override
-    public View findViewById(final int n) {
+    public View onFindViewById(final int n) {
         if (this.this$0.mView == null) {
             throw new IllegalStateException("Fragment does not have a view");
         }
@@ -23,7 +23,7 @@ class Fragment$1 implements FragmentContainer
     }
     
     @Override
-    public boolean hasView() {
+    public boolean onHasView() {
         return this.this$0.mView != null;
     }
 }

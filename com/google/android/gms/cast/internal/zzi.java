@@ -21,17 +21,17 @@ public interface zzi extends IInterface
     
     void zza(final boolean p0, final double p1, final boolean p2);
     
-    void zzbG(final String p0);
+    void zzbO(final String p0);
     
-    void zzbH(final String p0);
+    void zzbP(final String p0);
     
-    void zzbI(final String p0);
+    void zzbQ(final String p0);
     
     void zzf(final String p0, final boolean p1);
     
-    void zzlL();
+    void zzmI();
     
-    void zzlW();
+    void zzmx();
     
-    void zzr(final String p0, final String p1);
+    void zzt(final String p0, final String p1);
 }

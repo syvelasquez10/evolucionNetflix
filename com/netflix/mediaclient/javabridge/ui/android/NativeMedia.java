@@ -24,6 +24,7 @@ import com.netflix.mediaclient.javabridge.invoke.android.SetBytesReport;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.javabridge.invoke.media.SelectTracks;
 import com.netflix.mediaclient.javabridge.invoke.media.Swim;
+import com.netflix.mediaclient.javabridge.invoke.android.SetFailedSubtitleDownloadUrl;
 import com.netflix.mediaclient.javabridge.invoke.media.Play;
 import com.netflix.mediaclient.javabridge.invoke.media.Pause;
 import com.netflix.mediaclient.javabridge.invoke.media.Open;
@@ -772,6 +773,11 @@ public class NativeMedia extends NativeNrdObject implements IMedia
             Log.e("nf-bridge", "Failed with JSON", ex);
             return 0;
         }
+    }
+    
+    @Override
+    public void reportFailedSubtitleDownload(final String s) {
+        this.bridge.getNrdProxy().invokeMethod(new SetFailedSubtitleDownloadUrl(s));
     }
     
     @Override

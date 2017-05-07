@@ -12,6 +12,7 @@ import android.app.Notification$Builder;
 import android.support.v4.app.NotificationCompat$Builder;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.IntentFilter;
+import android.graphics.BitmapFactory;
 import android.widget.RemoteViews;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
@@ -25,6 +26,7 @@ import android.graphics.Bitmap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.app.NotificationManager;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.annotation.SuppressLint;
 
 @SuppressLint({ "InlinedApi" })
@@ -33,8 +35,8 @@ public final class PlayerSuspendNotification
     private static final int NOTIFICATION_ID = 2;
     private static final String PLAYER_SUSPEND_NOTIFICATION_ACTION_DELETE = "com.netflix.mediaclient.intent.action.PLAYER_DELETE";
     private static final String TAG;
+    private final NetflixActivity mActivity;
     private final NotificationManager mNotificationManager;
-    private final PlayerActivity mPlayerActivity;
     private String mSecondaryTitle;
     private final ServiceManager mServiceManager;
     private AtomicBoolean mShowNotification;
@@ -44,19 +46,19 @@ public final class PlayerSuspendNotification
         TAG = PlayerSuspendNotification.class.getSimpleName();
     }
     
-    PlayerSuspendNotification(final PlayerActivity mPlayerActivity, final ServiceManager mServiceManager) {
+    PlayerSuspendNotification(final NetflixActivity mActivity, final ServiceManager mServiceManager) {
         this.mShowNotification = new AtomicBoolean(false);
-        this.mPlayerActivity = mPlayerActivity;
+        this.mActivity = mActivity;
         this.mServiceManager = mServiceManager;
-        this.mNotificationManager = (NotificationManager)mPlayerActivity.getSystemService("notification");
+        this.mNotificationManager = (NotificationManager)mActivity.getSystemService("notification");
     }
     
     private PendingIntent createNotificationPendingIntentDelete() {
-        return PendingIntent.getBroadcast((Context)this.mPlayerActivity, 0, new Intent("com.netflix.mediaclient.intent.action.PLAYER_DELETE"), 134217728);
+        return PendingIntent.getBroadcast((Context)this.mActivity, 0, new Intent("com.netflix.mediaclient.intent.action.PLAYER_DELETE"), 134217728);
     }
     
     private PendingIntent createNotificationPendingIntentResume() {
-        return PendingIntent.getActivity((Context)this.mPlayerActivity, 0, this.mPlayerActivity.getIntent(), 268435456);
+        return PendingIntent.getActivity((Context)this.mActivity, 0, this.mActivity.getIntent(), 268435456);
     }
     
     private void fetchImageWithLoader(final String s) {
@@ -70,39 +72,44 @@ public final class PlayerSuspendNotification
             return;
         }
         Log.e(PlayerSuspendNotification.TAG, "ImageLoader is null!");
+        this.show(null);
     }
     
     private RemoteViews getContentView(final String s, final String s2, final Bitmap bitmap, final boolean b) {
-        final String packageName = this.mPlayerActivity.getPackageName();
+        final String packageName = this.mActivity.getPackageName();
         final boolean notEmpty = StringUtils.isNotEmpty(s2);
         RemoteViews remoteViews;
         if (b) {
             if (notEmpty) {
-                remoteViews = new RemoteViews(packageName, 2130903201);
+                remoteViews = new RemoteViews(packageName, 2130903237);
             }
             else {
-                remoteViews = new RemoteViews(packageName, 2130903203);
+                remoteViews = new RemoteViews(packageName, 2130903239);
             }
         }
         else if (notEmpty) {
-            remoteViews = new RemoteViews(packageName, 2130903200);
+            remoteViews = new RemoteViews(packageName, 2130903236);
         }
         else {
-            remoteViews = new RemoteViews(packageName, 2130903202);
+            remoteViews = new RemoteViews(packageName, 2130903238);
         }
         if (bitmap != null) {
-            remoteViews.setImageViewBitmap(2131427828, bitmap);
+            remoteViews.setImageViewBitmap(2131624542, bitmap);
         }
         if (StringUtils.isNotEmpty(s)) {
-            remoteViews.setTextViewText(2131427829, (CharSequence)s);
+            remoteViews.setTextViewText(2131624543, (CharSequence)s);
         }
         else {
-            remoteViews.setTextViewText(2131427829, (CharSequence)"");
+            remoteViews.setTextViewText(2131624543, (CharSequence)"");
         }
         if (notEmpty) {
-            remoteViews.setTextViewText(2131427830, (CharSequence)s2);
+            remoteViews.setTextViewText(2131624544, (CharSequence)s2);
         }
         return remoteViews;
+    }
+    
+    private Bitmap getDefaultBoxArt() {
+        return BitmapFactory.decodeResource(this.mActivity.getResources(), 2130837740);
     }
     
     public static IntentFilter getNotificationIntentFilter() {
@@ -121,16 +128,23 @@ public final class PlayerSuspendNotification
         }
         Notification notification2;
         if (AndroidUtils.getAndroidVersion() < 21) {
-            final Notification notification = notification2 = new NotificationCompat$Builder((Context)this.mPlayerActivity).setOngoing(0 != 0).setOnlyAlertOnce(1 != 0).setSmallIcon(2130837830).setTicker(this.mTitle).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setContent(this.getContentView(this.mTitle, this.mSecondaryTitle, largeIcon, (boolean)(0 != 0))).setWhen(System.currentTimeMillis()).build();
+            Bitmap defaultBoxArt;
+            if ((defaultBoxArt = largeIcon) == null) {
+                defaultBoxArt = this.getDefaultBoxArt();
+            }
+            final Notification notification = notification2 = new NotificationCompat$Builder((Context)this.mActivity).setOngoing(0 != 0).setOnlyAlertOnce(1 != 0).setSmallIcon(2130837771).setTicker(this.mTitle).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setContent(this.getContentView(this.mTitle, this.mSecondaryTitle, defaultBoxArt, (boolean)(0 != 0))).setWhen(System.currentTimeMillis()).build();
             if (AndroidUtils.getAndroidVersion() >= 16) {
-                notification.bigContentView = this.getContentView(this.mTitle, this.mSecondaryTitle, largeIcon, true);
+                notification.bigContentView = this.getContentView(this.mTitle, this.mSecondaryTitle, defaultBoxArt, true);
                 notification2 = notification;
             }
         }
         else {
-            final int color = this.mPlayerActivity.getResources().getColor(2131230827);
-            final String string = this.mPlayerActivity.getResources().getString(2131493321);
-            final Notification$Builder setVisibility = new Notification$Builder((Context)this.mPlayerActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837830).setLargeIcon(largeIcon).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
+            final int color = this.mActivity.getResources().getColor(2131558527);
+            final String string = this.mActivity.getResources().getString(2131165555);
+            final Notification$Builder setVisibility = new Notification$Builder((Context)this.mActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837771).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
+            if (largeIcon != null) {
+                setVisibility.setLargeIcon(largeIcon);
+            }
             if (TextUtils.isEmpty((CharSequence)this.mSecondaryTitle)) {
                 setVisibility.setContentText((CharSequence)string);
             }
@@ -155,7 +169,7 @@ public final class PlayerSuspendNotification
         this.mShowNotification.set(true);
         final PlayerSuspendNotification$1 playerSuspendNotification$1 = new PlayerSuspendNotification$1(this);
         if (asset.isEpisode()) {
-            this.mSecondaryTitle = this.mPlayerActivity.getApplicationContext().getString(2131493236, new Object[] { asset.getSeasonNumber(), asset.getEpisodeNumber(), asset.getTitle() });
+            this.mSecondaryTitle = this.mActivity.getApplicationContext().getString(2131165429, new Object[] { asset.getSeasonNumber(), asset.getEpisodeNumber(), asset.getTitle() });
             this.mTitle = asset.getParentTitle();
             this.mServiceManager.getBrowse().fetchEpisodeDetails(String.valueOf(asset.getPlayableId()), playerSuspendNotification$1);
             return;

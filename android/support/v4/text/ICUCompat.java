@@ -4,6 +4,7 @@
 
 package android.support.v4.text;
 
+import java.util.Locale;
 import android.os.Build$VERSION;
 
 public class ICUCompat
@@ -11,18 +12,19 @@ public class ICUCompat
     private static final ICUCompat$ICUCompatImpl IMPL;
     
     static {
-        if (Build$VERSION.SDK_INT >= 14) {
+        final int sdk_INT = Build$VERSION.SDK_INT;
+        if (sdk_INT >= 21) {
+            IMPL = new ICUCompat$ICUCompatImplLollipop();
+            return;
+        }
+        if (sdk_INT >= 14) {
             IMPL = new ICUCompat$ICUCompatImplIcs();
             return;
         }
         IMPL = new ICUCompat$ICUCompatImplBase();
     }
     
-    public static String addLikelySubtags(final String s) {
-        return ICUCompat.IMPL.addLikelySubtags(s);
-    }
-    
-    public static String getScript(final String s) {
-        return ICUCompat.IMPL.getScript(s);
+    public static String maximizeAndGetScript(final Locale locale) {
+        return ICUCompat.IMPL.maximizeAndGetScript(locale);
     }
 }

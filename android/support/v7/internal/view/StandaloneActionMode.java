@@ -5,6 +5,7 @@
 package android.support.v7.internal.view;
 
 import android.view.MenuItem;
+import android.view.MenuInflater;
 import android.view.Menu;
 import android.support.v7.internal.view.menu.i;
 import android.view.View;
@@ -29,7 +30,7 @@ public class StandaloneActionMode extends ActionMode implements j
         this.mContext = mContext;
         this.mContextView = mContextView;
         this.mCallback = mCallback;
-        (this.mMenu = new i(mContext).a(1)).a(this);
+        (this.mMenu = new i(mContextView.getContext()).a(1)).a(this);
         this.mFocusable = mFocusable;
     }
     
@@ -54,6 +55,11 @@ public class StandaloneActionMode extends ActionMode implements j
     @Override
     public Menu getMenu() {
         return (Menu)this.mMenu;
+    }
+    
+    @Override
+    public MenuInflater getMenuInflater() {
+        return new MenuInflater(this.mContextView.getContext());
     }
     
     @Override

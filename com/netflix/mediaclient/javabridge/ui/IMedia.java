@@ -83,6 +83,8 @@ public interface IMedia
     
     void removeEventListener(final String p0, final EventListener p1);
     
+    void reportFailedSubtitleDownload(final String p0);
+    
     void reset();
     
     void seekTo(final int p0, final boolean p1);

@@ -7,16 +7,20 @@ package com.netflix.mediaclient.service.logging.search.utils;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.ISearchLogging$InputMode;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.content.Context;
 
 public class SearchLogUtils
 {
-    public static void reportSearchEditChange(final long n, final Context context, final IClientLogging$ModalView clientLogging$ModalView, final String s) {
+    public static void reportSearchEditChange(final long n, final Context context, final IClientLogging$ModalView clientLogging$ModalView, final String s, final ISearchLogging$InputMode searchLogging$InputMode) {
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_SUS_FOCUS_SEARCH_EDIT");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intent.putExtra("id", n);
         intent.putExtra("query", s);
+        if (searchLogging$InputMode != null) {
+            intent.putExtra("input_mode", searchLogging$InputMode.toString());
+        }
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     

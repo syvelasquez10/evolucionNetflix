@@ -4,51 +4,45 @@
 
 package com.google.android.gms.auth.api.credentials.internal;
 
-import com.google.android.gms.common.internal.safeparcel.zza$zza;
-import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.common.internal.safeparcel.zza;
-import android.os.Parcelable;
-import com.google.android.gms.common.internal.safeparcel.zzb;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import android.os.Bundle;
+import android.os.IInterface;
+import android.os.IBinder;
+import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
+import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
+import com.google.android.gms.common.internal.zzf;
+import android.os.Looper;
+import android.content.Context;
+import com.google.android.gms.auth.api.Auth$AuthCredentialsOptions;
+import com.google.android.gms.common.internal.zzj;
 
-public class zze implements Parcelable$Creator<DeleteRequest>
+public final class zze extends zzj<zzh>
 {
-    static void zza(final DeleteRequest deleteRequest, final Parcel parcel, final int n) {
-        final int zzac = zzb.zzac(parcel);
-        zzb.zza(parcel, 1, (Parcelable)deleteRequest.getCredential(), n, false);
-        zzb.zzc(parcel, 1000, deleteRequest.zzCY);
-        zzb.zzH(parcel, zzac);
+    private final Auth$AuthCredentialsOptions zzRD;
+    
+    public zze(final Context context, final Looper looper, final zzf zzf, final Auth$AuthCredentialsOptions zzRD, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
+        super(context, looper, 68, zzf, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
+        this.zzRD = zzRD;
     }
     
-    public DeleteRequest zzF(final Parcel parcel) {
-        final int zzab = zza.zzab(parcel);
-        int zzg = 0;
-        Credential credential = null;
-        while (parcel.dataPosition() < zzab) {
-            final int zzaa = zza.zzaa(parcel);
-            switch (zza.zzbA(zzaa)) {
-                default: {
-                    zza.zzb(parcel, zzaa);
-                    continue;
-                }
-                case 1: {
-                    credential = zza.zza(parcel, zzaa, Credential.CREATOR);
-                    continue;
-                }
-                case 1000: {
-                    zzg = zza.zzg(parcel, zzaa);
-                    continue;
-                }
-            }
-        }
-        if (parcel.dataPosition() != zzab) {
-            throw new zza$zza("Overread allowed size end=" + zzab, parcel);
-        }
-        return new DeleteRequest(zzg, credential);
+    protected zzh zzar(final IBinder binder) {
+        return zzh$zza.zzat(binder);
     }
     
-    public DeleteRequest[] zzav(final int n) {
-        return new DeleteRequest[n];
+    @Override
+    protected String zzfA() {
+        return "com.google.android.gms.auth.api.credentials.service.START";
+    }
+    
+    @Override
+    protected String zzfB() {
+        return "com.google.android.gms.auth.api.credentials.internal.ICredentialsService";
+    }
+    
+    @Override
+    protected Bundle zzli() {
+        if (this.zzRD == null) {
+            return new Bundle();
+        }
+        return this.zzRD.zzli();
     }
 }

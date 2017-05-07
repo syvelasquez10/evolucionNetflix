@@ -145,19 +145,19 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     }
     
     @Override
-    public void fetchBillboardsFromCache(final int n, final BrowseAgentCallback browseAgentCallback) {
+    public void fetchBillboards(final int n, final boolean b, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchBBVideos(0, n - 1, FalkorAgent.USE_CACHE_ONLY, browseAgentCallback);
+        this.cmp.fetchBBVideos(0, n - 1, b, browseAgentCallback);
     }
     
     @Override
-    public void fetchCWFromCache(final int n, final BrowseAgentCallback browseAgentCallback) {
+    public void fetchCW(final int n, final boolean b, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchCWVideos(0, n - 1, FalkorAgent.USE_CACHE_ONLY, browseAgentCallback);
+        this.cmp.fetchCWVideos(0, n - 1, b, browseAgentCallback);
     }
     
     public void fetchCWVideos(final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
@@ -227,11 +227,11 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     }
     
     @Override
-    public void fetchIQFromCache(final int n, final BrowseAgentCallback browseAgentCallback) {
+    public void fetchIQ(final int n, final boolean b, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchIQVideos(0, n - 1, FalkorAgent.USE_CACHE_ONLY, false, browseAgentCallback);
+        this.cmp.fetchIQVideos(0, n - 1, b, false, browseAgentCallback);
     }
     
     public void fetchIQVideos(final LoMo loMo, final int n, final int n2, final boolean b, final BrowseAgentCallback browseAgentCallback) {
@@ -255,6 +255,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.fetchGenreLoLoMoSummary(s, browseAgentCallback);
     }
     
+    @Override
     public void fetchLoMos(final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
@@ -268,6 +269,14 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
         this.cmp.fetchMovieDetails(s, browseAgentCallback);
+    }
+    
+    @Override
+    public void fetchNonMemberVideos(final int n, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.fetchNonMemberVideos(n - 1, b, browseAgentCallback);
     }
     
     public void fetchNotificationsList(final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
@@ -292,11 +301,11 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     }
     
     @Override
-    public void fetchRecommendedListFromCache(final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
+    public void fetchRecommendedList(final int n, final int n2, final boolean b, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchLoMos(0, 10, new FalkorAgent$10(this, n, n2, browseAgentCallback));
+        this.cmp.fetchLoMos(0, 10, new FalkorAgent$10(this, n, n2, b, browseAgentCallback));
     }
     
     public void fetchSeasonDetails(final String s, final BrowseAgentCallback browseAgentCallback) {

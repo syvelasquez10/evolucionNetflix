@@ -14,9 +14,9 @@ public class PlayScreenJB extends PlayScreen
     private static final int HIDE_FLAGS = 3;
     private static final int SHOW_FLAGS = 0;
     
-    PlayScreenJB(final PlayerActivity playerActivity, final PlayScreen$Listeners playScreen$Listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
-        super(playerActivity, playScreen$Listeners, postPlayFactory$PostPlayType);
-        playerActivity.getWindow().getDecorView().setSystemUiVisibility(1792);
+    PlayScreenJB(final PlayerFragment playerFragment, final PlayScreen$Listeners playScreen$Listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
+        super(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
+        playerFragment.getWindow().getDecorView().setSystemUiVisibility(1792);
     }
     
     @Override

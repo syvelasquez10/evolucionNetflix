@@ -7,56 +7,61 @@ package android.support.v7.internal.view.menu;
 import android.view.View;
 import android.graphics.drawable.Drawable;
 import android.view.MenuItem;
-import android.view.Menu;
-import android.view.SubMenu;
+import android.support.v4.internal.view.SupportMenu;
 import android.support.v4.internal.view.SupportSubMenu;
+import android.content.Context;
+import android.view.SubMenu;
 
-class ae extends ac implements SupportSubMenu
+class ae extends ac implements SubMenu
 {
-    ae(final SubMenu subMenu) {
-        super((Menu)subMenu);
+    ae(final Context context, final SupportSubMenu supportSubMenu) {
+        super(context, supportSubMenu);
+    }
+    
+    public SupportSubMenu b() {
+        return (SupportSubMenu)this.b;
     }
     
     public void clearHeader() {
-        ((SubMenu)this.a).clearHeader();
+        this.b().clearHeader();
     }
     
     public MenuItem getItem() {
-        return (MenuItem)this.a(((SubMenu)this.a).getItem());
+        return this.a(this.b().getItem());
     }
     
     public SubMenu setHeaderIcon(final int headerIcon) {
-        ((SubMenu)this.a).setHeaderIcon(headerIcon);
+        this.b().setHeaderIcon(headerIcon);
         return (SubMenu)this;
     }
     
     public SubMenu setHeaderIcon(final Drawable headerIcon) {
-        ((SubMenu)this.a).setHeaderIcon(headerIcon);
+        this.b().setHeaderIcon(headerIcon);
         return (SubMenu)this;
     }
     
     public SubMenu setHeaderTitle(final int headerTitle) {
-        ((SubMenu)this.a).setHeaderTitle(headerTitle);
+        this.b().setHeaderTitle(headerTitle);
         return (SubMenu)this;
     }
     
     public SubMenu setHeaderTitle(final CharSequence headerTitle) {
-        ((SubMenu)this.a).setHeaderTitle(headerTitle);
+        this.b().setHeaderTitle(headerTitle);
         return (SubMenu)this;
     }
     
     public SubMenu setHeaderView(final View headerView) {
-        ((SubMenu)this.a).setHeaderView(headerView);
+        this.b().setHeaderView(headerView);
         return (SubMenu)this;
     }
     
     public SubMenu setIcon(final int icon) {
-        ((SubMenu)this.a).setIcon(icon);
+        this.b().setIcon(icon);
         return (SubMenu)this;
     }
     
     public SubMenu setIcon(final Drawable icon) {
-        ((SubMenu)this.a).setIcon(icon);
+        this.b().setIcon(icon);
         return (SubMenu)this;
     }
 }

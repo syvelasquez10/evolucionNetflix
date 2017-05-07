@@ -16,64 +16,64 @@ import android.os.Parcelable$Creator;
 public class zzc implements Parcelable$Creator<ProxyResponse>
 {
     static void zza(final ProxyResponse proxyResponse, final Parcel parcel, final int n) {
-        final int zzac = zzb.zzac(parcel);
-        zzb.zzc(parcel, 1, proxyResponse.zzPt);
+        final int zzak = zzb.zzak(parcel);
+        zzb.zzc(parcel, 1, proxyResponse.googlePlayServicesStatusCode);
         zzb.zzc(parcel, 1000, proxyResponse.versionCode);
-        zzb.zza(parcel, 2, (Parcelable)proxyResponse.zzPu, n, false);
-        zzb.zzc(parcel, 3, proxyResponse.zzPv);
-        zzb.zza(parcel, 4, proxyResponse.zzPs, false);
-        zzb.zza(parcel, 5, proxyResponse.zzPr, false);
-        zzb.zzH(parcel, zzac);
+        zzb.zza(parcel, 2, (Parcelable)proxyResponse.recoveryAction, n, false);
+        zzb.zzc(parcel, 3, proxyResponse.statusCode);
+        zzb.zza(parcel, 4, proxyResponse.zzRE, false);
+        zzb.zza(parcel, 5, proxyResponse.body, false);
+        zzb.zzH(parcel, zzak);
     }
     
-    public ProxyResponse zzI(final Parcel parcel) {
+    public ProxyResponse zzM(final Parcel parcel) {
         byte[] zzr = null;
         int zzg = 0;
-        final int zzab = zza.zzab(parcel);
+        final int zzaj = zza.zzaj(parcel);
         Bundle zzq = null;
         PendingIntent pendingIntent = null;
         int zzg2 = 0;
         int zzg3 = 0;
-        while (parcel.dataPosition() < zzab) {
-            final int zzaa = zza.zzaa(parcel);
-            switch (zza.zzbA(zzaa)) {
+        while (parcel.dataPosition() < zzaj) {
+            final int zzai = zza.zzai(parcel);
+            switch (zza.zzbH(zzai)) {
                 default: {
-                    zza.zzb(parcel, zzaa);
+                    zza.zzb(parcel, zzai);
                     continue;
                 }
                 case 1: {
-                    zzg2 = zza.zzg(parcel, zzaa);
+                    zzg2 = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 1000: {
-                    zzg3 = zza.zzg(parcel, zzaa);
+                    zzg3 = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 2: {
-                    pendingIntent = zza.zza(parcel, zzaa, (android.os.Parcelable$Creator<PendingIntent>)PendingIntent.CREATOR);
+                    pendingIntent = zza.zza(parcel, zzai, (android.os.Parcelable$Creator<PendingIntent>)PendingIntent.CREATOR);
                     continue;
                 }
                 case 3: {
-                    zzg = zza.zzg(parcel, zzaa);
+                    zzg = zza.zzg(parcel, zzai);
                     continue;
                 }
                 case 4: {
-                    zzq = zza.zzq(parcel, zzaa);
+                    zzq = zza.zzq(parcel, zzai);
                     continue;
                 }
                 case 5: {
-                    zzr = zza.zzr(parcel, zzaa);
+                    zzr = zza.zzr(parcel, zzai);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzab) {
-            throw new zza$zza("Overread allowed size end=" + zzab, parcel);
+        if (parcel.dataPosition() != zzaj) {
+            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
         }
         return new ProxyResponse(zzg3, zzg2, pendingIntent, zzg, zzq, zzr);
     }
     
-    public ProxyResponse[] zzay(final int n) {
+    public ProxyResponse[] zzaC(final int n) {
         return new ProxyResponse[n];
     }
 }

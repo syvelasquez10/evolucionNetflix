@@ -110,6 +110,11 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoIcsImpl extends Accessibi
     }
     
     @Override
+    public boolean performAction(final Object o, final int n) {
+        return AccessibilityNodeInfoCompatIcs.performAction(o, n);
+    }
+    
+    @Override
     public void recycle(final Object o) {
         AccessibilityNodeInfoCompatIcs.recycle(o);
     }

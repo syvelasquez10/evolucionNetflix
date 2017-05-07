@@ -27,7 +27,6 @@ import com.netflix.mediaclient.service.logging.presentation.PresentationWebCallb
 
 class PresentationTrackingManager$PresentationWebCallbackImpl implements PresentationWebCallback
 {
-    private String payload;
     final /* synthetic */ PresentationTrackingManager this$0;
     
     public PresentationTrackingManager$PresentationWebCallbackImpl(final PresentationTrackingManager this$0, final String s) {

@@ -11,6 +11,7 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import com.android.volley.RetryPolicy;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response$ErrorListener;
+import com.android.volley.Request$Priority;
 import java.io.File;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.android.volley.Request;
@@ -22,11 +23,13 @@ public class FileDownloadRequest extends Request<String>
     private static final String TAG = "nf_service_filedownloadrequest";
     private ResourceFetcherCallback mCallback;
     private File mDirectory;
+    private Request$Priority mPriority;
     
-    public FileDownloadRequest(final String s, final ResourceFetcherCallback mCallback, final Response$ErrorListener response$ErrorListener, final int n, final File mDirectory) {
+    public FileDownloadRequest(final String s, final ResourceFetcherCallback mCallback, final Response$ErrorListener response$ErrorListener, final int n, final Request$Priority mPriority, final File mDirectory) {
         super(0, s, response$ErrorListener);
         this.mCallback = mCallback;
         this.mDirectory = mDirectory;
+        this.mPriority = mPriority;
         this.setShouldCache(false);
         this.setRetryPolicy(new DefaultRetryPolicy(n, 2, 2.0f));
     }
@@ -36,6 +39,11 @@ public class FileDownloadRequest extends Request<String>
         if (this.mCallback != null) {
             this.mCallback.onResourceFetched(this.getUrl(), s, CommonStatus.OK);
         }
+    }
+    
+    @Override
+    public Request$Priority getPriority() {
+        return this.mPriority;
     }
     
     @Override

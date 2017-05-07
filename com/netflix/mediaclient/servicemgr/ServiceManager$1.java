@@ -17,6 +17,7 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.widget.TextView;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.util.ThreadUtils;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.content.Context;
 import android.content.Intent;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -57,5 +58,7 @@ class ServiceManager$1 implements ServiceConnection
         }
         this.this$0.mLocalService = null;
         this.this$0.mService = null;
+        this.this$0.mReady = false;
+        this.this$0.mClientId = -1;
     }
 }

@@ -4,9 +4,9 @@
 
 package com.google.android.gms.signin.internal;
 
-import com.google.android.gms.common.internal.zzq;
+import com.google.android.gms.common.internal.zzp;
+import com.google.android.gms.common.internal.zzt;
 import com.google.android.gms.common.internal.ResolveAccountRequest;
-import com.google.android.gms.common.internal.IAccountAccessor;
 import com.google.android.gms.common.internal.AuthAccountRequest;
 import android.os.Parcel;
 import android.accounts.Account;
@@ -14,14 +14,14 @@ import android.os.IBinder;
 
 class zzf$zza$zza implements zzf
 {
-    private IBinder zznF;
+    private IBinder zznI;
     
-    zzf$zza$zza(final IBinder zznF) {
-        this.zznF = zznF;
+    zzf$zza$zza(final IBinder zznI) {
+        this.zznI = zznI;
     }
     
     public IBinder asBinder() {
-        return this.zznF;
+        return this.zznI;
     }
     
     @Override
@@ -43,7 +43,7 @@ class zzf$zza$zza implements zzf
                     if (zze != null) {
                         final IBinder binder = zze.asBinder();
                         obtain.writeStrongBinder(binder);
-                        this.zznF.transact(8, obtain, obtain2, 0);
+                        this.zznI.transact(8, obtain, obtain2, 0);
                         obtain2.readException();
                         return;
                     }
@@ -76,7 +76,7 @@ class zzf$zza$zza implements zzf
                     if (zze != null) {
                         final IBinder binder = zze.asBinder();
                         obtain.writeStrongBinder(binder);
-                        this.zznF.transact(2, obtain, obtain2, 0);
+                        this.zznI.transact(2, obtain, obtain2, 0);
                         obtain2.readException();
                         return;
                     }
@@ -92,37 +92,7 @@ class zzf$zza$zza implements zzf
     }
     
     @Override
-    public void zza(final IAccountAccessor accountAccessor, int n, final boolean b) {
-        final int n2 = 0;
-        final Parcel obtain = Parcel.obtain();
-        final Parcel obtain2 = Parcel.obtain();
-        try {
-            obtain.writeInterfaceToken("com.google.android.gms.signin.internal.ISignInService");
-            IBinder binder;
-            if (accountAccessor != null) {
-                binder = accountAccessor.asBinder();
-            }
-            else {
-                binder = null;
-            }
-            obtain.writeStrongBinder(binder);
-            obtain.writeInt(n);
-            n = n2;
-            if (b) {
-                n = 1;
-            }
-            obtain.writeInt(n);
-            this.zznF.transact(9, obtain, obtain2, 0);
-            obtain2.readException();
-        }
-        finally {
-            obtain2.recycle();
-            obtain.recycle();
-        }
-    }
-    
-    @Override
-    public void zza(final ResolveAccountRequest resolveAccountRequest, final zzq zzq) {
+    public void zza(final ResolveAccountRequest resolveAccountRequest, final zzt zzt) {
         while (true) {
             final Parcel obtain = Parcel.obtain();
             final Parcel obtain2 = Parcel.obtain();
@@ -136,10 +106,10 @@ class zzf$zza$zza implements zzf
                     else {
                         obtain.writeInt(0);
                     }
-                    if (zzq != null) {
-                        final IBinder binder = zzq.asBinder();
+                    if (zzt != null) {
+                        final IBinder binder = zzt.asBinder();
                         obtain.writeStrongBinder(binder);
-                        this.zznF.transact(5, obtain, obtain2, 0);
+                        this.zznI.transact(5, obtain, obtain2, 0);
                         obtain2.readException();
                         return;
                     }
@@ -151,6 +121,36 @@ class zzf$zza$zza implements zzf
                 final IBinder binder = null;
                 continue;
             }
+        }
+    }
+    
+    @Override
+    public void zza(final zzp zzp, int n, final boolean b) {
+        final int n2 = 0;
+        final Parcel obtain = Parcel.obtain();
+        final Parcel obtain2 = Parcel.obtain();
+        try {
+            obtain.writeInterfaceToken("com.google.android.gms.signin.internal.ISignInService");
+            IBinder binder;
+            if (zzp != null) {
+                binder = zzp.asBinder();
+            }
+            else {
+                binder = null;
+            }
+            obtain.writeStrongBinder(binder);
+            obtain.writeInt(n);
+            n = n2;
+            if (b) {
+                n = 1;
+            }
+            obtain.writeInt(n);
+            this.zznI.transact(9, obtain, obtain2, 0);
+            obtain2.readException();
+        }
+        finally {
+            obtain2.recycle();
+            obtain.recycle();
         }
     }
     
@@ -167,7 +167,7 @@ class zzf$zza$zza implements zzf
             else {
                 obtain.writeInt(0);
             }
-            this.zznF.transact(3, obtain, obtain2, 0);
+            this.zznI.transact(3, obtain, obtain2, 0);
             obtain2.readException();
         }
         finally {
@@ -177,7 +177,63 @@ class zzf$zza$zza implements zzf
     }
     
     @Override
-    public void zzal(final boolean b) {
+    public void zza(final RecordConsentRequest recordConsentRequest, final zze zze) {
+        while (true) {
+            final Parcel obtain = Parcel.obtain();
+            final Parcel obtain2 = Parcel.obtain();
+            while (true) {
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.signin.internal.ISignInService");
+                    if (recordConsentRequest != null) {
+                        obtain.writeInt(1);
+                        recordConsentRequest.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    if (zze != null) {
+                        final IBinder binder = zze.asBinder();
+                        obtain.writeStrongBinder(binder);
+                        this.zznI.transact(10, obtain, obtain2, 0);
+                        obtain2.readException();
+                        return;
+                    }
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+                final IBinder binder = null;
+                continue;
+            }
+        }
+    }
+    
+    @Override
+    public void zza(final zze zze) {
+        final Parcel obtain = Parcel.obtain();
+        final Parcel obtain2 = Parcel.obtain();
+        try {
+            obtain.writeInterfaceToken("com.google.android.gms.signin.internal.ISignInService");
+            IBinder binder;
+            if (zze != null) {
+                binder = zze.asBinder();
+            }
+            else {
+                binder = null;
+            }
+            obtain.writeStrongBinder(binder);
+            this.zznI.transact(11, obtain, obtain2, 0);
+            obtain2.readException();
+        }
+        finally {
+            obtain2.recycle();
+            obtain.recycle();
+        }
+    }
+    
+    @Override
+    public void zzaq(final boolean b) {
         int n = 0;
         final Parcel obtain = Parcel.obtain();
         final Parcel obtain2 = Parcel.obtain();
@@ -187,7 +243,7 @@ class zzf$zza$zza implements zzf
                 n = 1;
             }
             obtain.writeInt(n);
-            this.zznF.transact(4, obtain, obtain2, 0);
+            this.zznI.transact(4, obtain, obtain2, 0);
             obtain2.readException();
         }
         finally {
@@ -197,13 +253,13 @@ class zzf$zza$zza implements zzf
     }
     
     @Override
-    public void zziQ(final int n) {
+    public void zzja(final int n) {
         final Parcel obtain = Parcel.obtain();
         final Parcel obtain2 = Parcel.obtain();
         try {
             obtain.writeInterfaceToken("com.google.android.gms.signin.internal.ISignInService");
             obtain.writeInt(n);
-            this.zznF.transact(7, obtain, obtain2, 0);
+            this.zznI.transact(7, obtain, obtain2, 0);
             obtain2.readException();
         }
         finally {

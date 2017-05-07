@@ -34,7 +34,7 @@ public class KubrickSlidingMenuNotificationsFrag extends NotificationsFrag
     
     @Override
     protected int getRowLayoutResourceId() {
-        return 2130903115;
+        return 2130903135;
     }
     
     @Override

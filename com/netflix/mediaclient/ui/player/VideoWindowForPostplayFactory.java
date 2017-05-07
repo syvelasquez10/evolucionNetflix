@@ -15,12 +15,12 @@ public final class VideoWindowForPostplayFactory
         VideoWindowForPostplayFactory.TAG = "nf_postplay";
     }
     
-    static VideoWindowForPostplay createVideoWindow(final PlayerActivity playerActivity) {
+    static VideoWindowForPostplay createVideoWindow(final PlayerFragment playerFragment) {
         if (AndroidUtils.getAndroidVersion() < 17) {
             Log.d(VideoWindowForPostplayFactory.TAG, "Use simple scaling");
-            return new VideoWindowForPostplayFullScreen(playerActivity);
+            return new VideoWindowForPostplayFullScreen(playerFragment);
         }
         Log.d(VideoWindowForPostplayFactory.TAG, "Use animation");
-        return new VideoWindowForPostplayWithAnimation(playerActivity);
+        return new VideoWindowForPostplayWithAnimation(playerFragment);
     }
 }

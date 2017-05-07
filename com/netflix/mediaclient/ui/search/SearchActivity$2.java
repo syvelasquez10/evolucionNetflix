@@ -15,12 +15,13 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View$OnFocusChangeListener;
 import android.app.Activity;
-import com.netflix.mediaclient.Log;
+import java.util.Iterator;
 import android.content.Context;
 import android.content.Intent;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.SearchView$OnQueryTextListener;
 import com.netflix.mediaclient.android.widget.SearchActionBar;
@@ -29,6 +30,7 @@ import android.view.ViewGroup;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.annotation.TargetApi;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View$OnTouchListener;
@@ -42,6 +44,7 @@ class SearchActivity$2 implements View$OnTouchListener
     }
     
     public boolean onTouch(final View view, final MotionEvent motionEvent) {
+        Log.v("SearchActivity", "onTouch triggering query update");
         this.this$0.handleQueryUpdate(this.this$0.query);
         return false;
     }

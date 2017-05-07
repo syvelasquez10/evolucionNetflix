@@ -5,8 +5,11 @@
 package android.support.v4.app;
 
 import android.app.Notification$Builder;
+import android.app.Notification;
 
-interface NotificationBuilderWithBuilderAccessor
+public interface NotificationBuilderWithBuilderAccessor
 {
+    Notification build();
+    
     Notification$Builder getBuilder();
 }

@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
+import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import android.content.Context;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.Log;

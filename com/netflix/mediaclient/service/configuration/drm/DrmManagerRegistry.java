@@ -4,12 +4,13 @@
 
 package com.netflix.mediaclient.service.configuration.drm;
 
-import com.netflix.mediaclient.util.StringUtils;
 import android.os.Build;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
@@ -19,6 +20,7 @@ public final class DrmManagerRegistry
 {
     private static final String DRM_SYSTEM_ID_FORCE_LEGACY = "FORCE_LEGACY";
     private static final String DRM_SYSTEM_ID_LEGACY = "LEGACY";
+    private static final String DRM_SYSTEM_ID_M_PLUS_MGK = "M_PLUS_MGK";
     private static final String NEXUS7_DEB_DEVICE = "deb";
     private static final String NEXUS7_FLO_DEVICE = "flo";
     protected static final String TAG = "nf_drm";
@@ -45,18 +47,18 @@ public final class DrmManagerRegistry
         getWidevineMediaDrmEngine().clearLicense(array);
     }
     
-    public static DrmManager createDrmManager(Context instance, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface, final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface, final ErrorLogging errorLogging, final DrmManager$DrmReadyCallback drmManager$DrmReadyCallback) {
-    Label_0197_Outer:
+    public static DrmManager createDrmManager(Context instance, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface, final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface, final ErrorLogging errorLogging, final IErrorHandler errorHandler, final DrmManager$DrmReadyCallback drmManager$DrmReadyCallback) {
+    Label_0202_Outer:
         while (true) {
             while (true) {
-                Label_0400: {
+                Label_0405: {
                     while (true) {
-                    Label_0165:
+                    Label_0166:
                         while (true) {
                             final int androidVersion;
                             synchronized (DrmManagerRegistry.class) {
                                 androidVersion = AndroidUtils.getAndroidVersion();
-                                DrmManagerRegistry.previousDrmSystem = PreferenceUtils.getStringPref(instance, "nf_drm_system_id", "LEGACY");
+                                DrmManagerRegistry.previousDrmSystem = PreferenceUtils.getStringPref(instance, "nf_drm_system_id", null);
                                 if (androidVersion >= 19) {
                                     DrmManagerRegistry.mMaxSecurityLevel = WidevineDrmManager.getMediaDrmMaxSecurityLevel();
                                     DrmManagerRegistry.mPlayerRequiredAdaptivePlayback = PlayerTypeFactory.isJPlayer2(PlayerTypeFactory.getCurrentType(instance));
@@ -69,7 +71,7 @@ public final class DrmManagerRegistry
                                         Log.d("nf_drm", "EnableWV L1: " + DrmManagerRegistry.enableWidevineL1 + " EnableWV L3: " + DrmManagerRegistry.enableWidevineL3 + " enableWidevineL3AB: " + DrmManagerRegistry.enableWidevineL3_ABTest);
                                         if (androidVersion >= 18 && isWidevineDrmAllowed() && DrmManagerRegistry.enableWidevineL1) {
                                             Log.d("nf_drm", "WidevineDrmManager L1 created");
-                                            DrmManagerRegistry.instance = new WidevineDrmManager(instance, serviceAgent$UserAgentInterface, errorLogging, drmManager$DrmReadyCallback, false);
+                                            DrmManagerRegistry.instance = new WidevineDrmManager(instance, serviceAgent$UserAgentInterface, errorLogging, errorHandler, drmManager$DrmReadyCallback, false);
                                             DrmManagerRegistry.widevineInstanceL3 = false;
                                         }
                                         else {
@@ -77,30 +79,30 @@ public final class DrmManagerRegistry
                                                 break;
                                             }
                                             Log.d("nf_drm", "WidevineDrmManager L3 created");
-                                            DrmManagerRegistry.instance = new WidevineDrmManager(instance, serviceAgent$UserAgentInterface, errorLogging, drmManager$DrmReadyCallback, true);
+                                            DrmManagerRegistry.instance = new WidevineDrmManager(instance, serviceAgent$UserAgentInterface, errorLogging, errorHandler, drmManager$DrmReadyCallback, true);
                                             DrmManagerRegistry.widevineInstanceL3 = true;
                                         }
                                         if (DrmManagerRegistry.instance.getDrmType() != 0) {
-                                            break Label_0400;
+                                            break Label_0405;
                                         }
-                                        if (!DrmManagerRegistry.enableWidevineL1) {
-                                            DrmManagerRegistry.currentDrmSystem = "FORCE_LEGACY";
-                                            PreferenceUtils.putStringPref(instance, "nf_drm_system_id", DrmManagerRegistry.currentDrmSystem);
+                                        if (AndroidUtils.getAndroidVersion() > 22) {
+                                            final String currentDrmSystem = "M_PLUS_MGK";
+                                            PreferenceUtils.putStringPref(instance, "nf_drm_system_id", DrmManagerRegistry.currentDrmSystem = currentDrmSystem);
                                             if (Log.isLoggable()) {
                                                 Log.d("nf_drm", "currentDrmSystem : " + DrmManagerRegistry.currentDrmSystem + ", previousDrmSystem : " + DrmManagerRegistry.previousDrmSystem);
                                             }
                                             instance = (Context)DrmManagerRegistry.instance;
                                             return (DrmManager)instance;
                                         }
-                                        break Label_0165;
+                                        break Label_0166;
                                     }
                                     catch (Throwable t) {
                                         Log.e("nf_drm", "Unable to create WidevineDrmManager, default to LegacyDrmManager", t);
                                         DrmManagerRegistry.instance = new LegacyDrmManager(drmManager$DrmReadyCallback);
                                         DrmManagerRegistry.widevineInstanceL3 = false;
-                                        continue Label_0165;
+                                        continue Label_0166;
                                     }
-                                    continue Label_0165;
+                                    continue Label_0166;
                                 }
                             }
                             if (Log.isLoggable()) {
@@ -108,10 +110,10 @@ public final class DrmManagerRegistry
                             }
                             DrmManagerRegistry.instance = new LegacyDrmManager(drmManager$DrmReadyCallback);
                             DrmManagerRegistry.widevineInstanceL3 = false;
-                            continue Label_0165;
+                            continue Label_0166;
                         }
-                        DrmManagerRegistry.currentDrmSystem = "LEGACY";
-                        continue Label_0197_Outer;
+                        final String currentDrmSystem = "LEGACY";
+                        continue Label_0202_Outer;
                     }
                 }
                 DrmManagerRegistry.currentDrmSystem = PreferenceUtils.getStringPref(instance, "nf_drm_system_id", null);
@@ -180,26 +182,26 @@ public final class DrmManagerRegistry
         return DrmManagerRegistry.mWidevineMediaDrmEngine;
     }
     
-    public static boolean isCurrentDrmWidevine() {
-        return DrmManagerRegistry.instance != null && DrmManagerRegistry.instance.getDrmType() == 1;
-    }
-    
-    public static boolean isDevicePredeterminedToUseWV() {
-        return "flo".equals(Build.DEVICE) || "deb".equals(Build.DEVICE);
-    }
-    
-    public static boolean isDrmSystemChanged() {
+    public static boolean hasEsnChanged() {
         if (Log.isLoggable()) {
             Log.d("nf_drm", "currentDrmSystem : " + DrmManagerRegistry.currentDrmSystem + ", previousDrmSystem : " + DrmManagerRegistry.previousDrmSystem);
         }
         if (StringUtils.isEmpty(DrmManagerRegistry.currentDrmSystem)) {
             Log.e("nf_drm", "DrmManager instance is not created");
         }
-        else if (!DrmManagerRegistry.currentDrmSystem.equals(DrmManagerRegistry.previousDrmSystem) && (!isLegacyDrmSystem(DrmManagerRegistry.currentDrmSystem) || !isLegacyDrmSystem(DrmManagerRegistry.previousDrmSystem))) {
+        else if (!StringUtils.isEmpty(DrmManagerRegistry.previousDrmSystem) && !DrmManagerRegistry.currentDrmSystem.equals(DrmManagerRegistry.previousDrmSystem) && (!isLegacyDrmSystem(DrmManagerRegistry.currentDrmSystem) || !isLegacyDrmSystem(DrmManagerRegistry.previousDrmSystem))) {
             Log.d("nf_drm", "DrmSystemChanged");
             return true;
         }
         return false;
+    }
+    
+    public static boolean isCurrentDrmWidevine() {
+        return DrmManagerRegistry.instance != null && DrmManagerRegistry.instance.getDrmType() == 1;
+    }
+    
+    public static boolean isDevicePredeterminedToUseWV() {
+        return "flo".equals(Build.DEVICE) || "deb".equals(Build.DEVICE);
     }
     
     private static boolean isLegacyDrmSystem(final String s) {

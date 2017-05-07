@@ -11,35 +11,35 @@ import android.os.Parcelable$Creator;
 
 public class zza implements Parcelable$Creator<AuthAccountResult>
 {
-    static void zza(final AuthAccountResult authAccountResult, final Parcel parcel, int zzac) {
-        zzac = zzb.zzac(parcel);
-        zzb.zzc(parcel, 1, authAccountResult.zzCY);
-        zzb.zzH(parcel, zzac);
+    static void zza(final AuthAccountResult authAccountResult, final Parcel parcel, int zzak) {
+        zzak = zzb.zzak(parcel);
+        zzb.zzc(parcel, 1, authAccountResult.mVersionCode);
+        zzb.zzH(parcel, zzak);
     }
     
-    public AuthAccountResult zzfY(final Parcel parcel) {
-        final int zzab = com.google.android.gms.common.internal.safeparcel.zza.zzab(parcel);
+    public AuthAccountResult zzgj(final Parcel parcel) {
+        final int zzaj = com.google.android.gms.common.internal.safeparcel.zza.zzaj(parcel);
         int zzg = 0;
-        while (parcel.dataPosition() < zzab) {
-            final int zzaa = com.google.android.gms.common.internal.safeparcel.zza.zzaa(parcel);
-            switch (com.google.android.gms.common.internal.safeparcel.zza.zzbA(zzaa)) {
+        while (parcel.dataPosition() < zzaj) {
+            final int zzai = com.google.android.gms.common.internal.safeparcel.zza.zzai(parcel);
+            switch (com.google.android.gms.common.internal.safeparcel.zza.zzbH(zzai)) {
                 default: {
-                    com.google.android.gms.common.internal.safeparcel.zza.zzb(parcel, zzaa);
+                    com.google.android.gms.common.internal.safeparcel.zza.zzb(parcel, zzai);
                     continue;
                 }
                 case 1: {
-                    zzg = com.google.android.gms.common.internal.safeparcel.zza.zzg(parcel, zzaa);
+                    zzg = com.google.android.gms.common.internal.safeparcel.zza.zzg(parcel, zzai);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzab) {
-            throw new zza$zza("Overread allowed size end=" + zzab, parcel);
+        if (parcel.dataPosition() != zzaj) {
+            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
         }
         return new AuthAccountResult(zzg);
     }
     
-    public AuthAccountResult[] zziO(final int n) {
+    public AuthAccountResult[] zziY(final int n) {
         return new AuthAccountResult[n];
     }
 }

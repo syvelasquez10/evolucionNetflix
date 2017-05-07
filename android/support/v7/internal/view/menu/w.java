@@ -96,7 +96,7 @@ class w extends BaseAdapter
         if (this.a.mForceShowIcon) {
             ((ListMenuItemView)inflate).setForceShowIcon(true);
         }
-        aa.a(this.a(n), 0);
+        aa.initialize(this.a(n), 0);
         return inflate;
     }
     

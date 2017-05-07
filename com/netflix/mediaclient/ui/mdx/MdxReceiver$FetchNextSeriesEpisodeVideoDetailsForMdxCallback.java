@@ -29,7 +29,7 @@ class MdxReceiver$FetchNextSeriesEpisodeVideoDetailsForMdxCallback extends Loggi
         super.onPostPlayVideosFetched(postPlayVideosProvider, status);
         if (!this.processed && this.mActivity != null && status.isSucces() && postPlayVideosProvider != null) {
             final List<PostPlayVideo> postPlayVideos = postPlayVideosProvider.getPostPlayVideos();
-            if (postPlayVideos.size() > 0) {
+            if (postPlayVideos != null && postPlayVideos.size() > 0) {
                 final String id = postPlayVideos.get(0).getId();
                 if (!TextUtils.isEmpty((CharSequence)id)) {
                     this.mActivity.getServiceManager().getBrowse().fetchEpisodeDetails(id, new MdxReceiver$FetchPostPlayForPlaybackCallback("nf_mdx", this.mActivity));

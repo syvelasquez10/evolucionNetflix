@@ -4,15 +4,12 @@
 
 package android.support.v4.text;
 
+import java.util.Locale;
+
 class ICUCompat$ICUCompatImplBase implements ICUCompat$ICUCompatImpl
 {
     @Override
-    public String addLikelySubtags(final String s) {
-        return s;
-    }
-    
-    @Override
-    public String getScript(final String s) {
+    public String maximizeAndGetScript(final Locale locale) {
         return null;
     }
 }

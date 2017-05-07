@@ -7,12 +7,11 @@ package com.netflix.mediaclient.service.configuration;
 import com.netflix.mediaclient.service.webclient.model.leafs.DeviceConfigData;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import java.util.Iterator;
 import java.util.List;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import java.util.HashMap;
 import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
@@ -26,9 +25,11 @@ public class DeviceConfiguration
 {
     private static final boolean DISABLE_MDX_DEF = false;
     private static final boolean DISABLE_WEBSOCKET_DEF = true;
+    private static final boolean FORCE_DISABLE_VOIP_IN_CODE = false;
     private static String TAG;
     private int mAppMinimalVersion;
     private int mAppRecommendedVersion;
+    private int mAudioFormat;
     private BreadcrumbLoggingSpecification mBreadcrumbLoggingSpecification;
     private Map<String, ConsolidatedLoggingSessionSpecification> mConsolidatedLoggingSpecification;
     private Context mContext;
@@ -38,6 +39,8 @@ public class DeviceConfiguration
     private IpConnectivityPolicy mIpConnectivityPolicy;
     private boolean mIsDisableMdx;
     private boolean mIsDisableWebsocket;
+    private boolean mIsVoipEnabledOnDevice;
+    private boolean mIsWidevineDisabled;
     private boolean mIsWidevineL1Enabled;
     private boolean mIsWidevineL3Enabled;
     private int mJPlayerErrorRestartCount;
@@ -57,7 +60,6 @@ public class DeviceConfiguration
     }
     
     public DeviceConfiguration(final Context mContext) {
-        final boolean b = true;
         this.mSubtitleConfiguration = SubtitleConfiguration.ENHANCED_XML;
         this.mConsolidatedLoggingSpecification = new HashMap<String, ConsolidatedLoggingSessionSpecification>();
         this.mContext = mContext;
@@ -72,8 +74,19 @@ public class DeviceConfiguration
         this.mAppMinimalVersion = PreferenceUtils.getIntPref(this.mContext, "config_min_version", -1);
         this.mIsDisableMdx = PreferenceUtils.getBooleanPref(this.mContext, "disable_mdx", false);
         this.mIsDisableWebsocket = PreferenceUtils.getBooleanPref(this.mContext, "disable_websocket", true);
-        this.mIsWidevineL1Enabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_widevine_l1", !PreferenceUtils.getBooleanPref(this.mContext, "disable_widevine", !DrmManagerRegistry.isDevicePredeterminedToUseWV()) && b);
-        this.mIsWidevineL3Enabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_widevine_l3", false);
+        this.mIsWidevineDisabled = PreferenceUtils.getBooleanPref(this.mContext, "disable_widevine", false);
+        if (Log.isLoggable()) {
+            Log.d(DeviceConfiguration.TAG, "Disable Widevine is " + this.mIsWidevineDisabled);
+        }
+        if (this.mIsWidevineDisabled) {
+            this.mIsWidevineL1Enabled = false;
+            this.mIsWidevineL3Enabled = false;
+        }
+        else {
+            this.mIsWidevineL1Enabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_widevine_l1", false);
+            this.mIsWidevineL3Enabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_widevine_l3", false);
+        }
+        this.mIsVoipEnabledOnDevice = PreferenceUtils.getBooleanPref(this.mContext, "enable_voip_on_device", false);
         this.mUserSessionDurationInSeconds = this.loadUserSessionTimeoutDuration();
         this.mBreadcrumbLoggingSpecification = BreadcrumbLoggingSpecification.loadFromPreferences(mContext);
         this.mErrorLoggingSpecification = ErrorLoggingSpecification.loadFromPreferences(mContext);
@@ -84,6 +97,9 @@ public class DeviceConfiguration
         this.mMdxRemoteControlLockScreenEnabled = PreferenceUtils.getBooleanPref(this.mContext, "mdx_configuration_remote_lockscreen_enabled", DeviceUtils.isRemoteControlEnabled());
         this.mMdxRemoteControlNotificationEnabled = PreferenceUtils.getBooleanPref(this.mContext, "mdx_configuration_remote_notification_enabled", DeviceUtils.isRemoteControlEnabled());
         this.mJPlayerErrorRestartCount = PreferenceUtils.getIntPref(this.mContext, "jplayer_restart_count", 2);
+        if (Log.isLoggable()) {
+            Log.d(DeviceConfiguration.TAG, "constructor DeviceConfiguration: Disable mIsVoipEnabledOnDevice " + this.mIsVoipEnabledOnDevice + ", disabledInCode? " + false);
+        }
     }
     
     private Map<String, ConsolidatedLoggingSessionSpecification> loadConsolidateLoggingSpecification() {
@@ -122,35 +138,35 @@ public class DeviceConfiguration
         //    55: checkcast       Ljava/util/List;
         //    58: astore_1       
         //    59: getstatic       com/netflix/mediaclient/service/configuration/DeviceConfiguration.TAG:Ljava/lang/String;
-        //    62: ldc             "CL specification loaded from file system"
-        //    64: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    67: pop            
-        //    68: aload_1        
-        //    69: invokestatic    com/netflix/mediaclient/service/configuration/DeviceConfiguration.toMap:(Ljava/util/List;)Ljava/util/Map;
-        //    72: areturn        
-        //    73: astore_2       
-        //    74: aconst_null    
-        //    75: astore_1       
-        //    76: getstatic       com/netflix/mediaclient/service/configuration/DeviceConfiguration.TAG:Ljava/lang/String;
-        //    79: ldc_w           "Failed to load CL specification from file system"
-        //    82: aload_2        
-        //    83: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //    86: pop            
-        //    87: goto            68
-        //    90: astore_2       
-        //    91: goto            76
+        //    62: ldc_w           "CL specification loaded from file system"
+        //    65: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    68: pop            
+        //    69: aload_1        
+        //    70: invokestatic    com/netflix/mediaclient/service/configuration/DeviceConfiguration.toMap:(Ljava/util/List;)Ljava/util/Map;
+        //    73: areturn        
+        //    74: astore_2       
+        //    75: aconst_null    
+        //    76: astore_1       
+        //    77: getstatic       com/netflix/mediaclient/service/configuration/DeviceConfiguration.TAG:Ljava/lang/String;
+        //    80: ldc_w           "Failed to load CL specification from file system"
+        //    83: aload_2        
+        //    84: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //    87: pop            
+        //    88: goto            69
+        //    91: astore_2       
+        //    92: goto            77
         //    Signature:
         //  ()Ljava/util/Map<Ljava/lang/String;Lcom/netflix/mediaclient/service/webclient/model/leafs/ConsolidatedLoggingSessionSpecification;>;
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  35     59     73     76     Ljava/lang/Throwable;
-        //  59     68     90     94     Ljava/lang/Throwable;
+        //  35     59     74     77     Ljava/lang/Throwable;
+        //  59     69     91     95     Ljava/lang/Throwable;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0068:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0069:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -191,6 +207,11 @@ public class DeviceConfiguration
             }
         }
         return hashMap;
+    }
+    
+    private void updateAudioFormat(final int mAudioFormat) {
+        PreferenceUtils.putIntPref(this.mContext, "supported_audio_format", mAudioFormat);
+        this.mAudioFormat = mAudioFormat;
     }
     
     private void updateConsolidatedLoggingSpecification(final List<ConsolidatedLoggingSessionSpecification> list) {
@@ -279,13 +300,26 @@ public class DeviceConfiguration
         }
     }
     
+    private void updateVoipEnabledOnDeviceFlag(final boolean mIsVoipEnabledOnDevice) {
+        PreferenceUtils.putBooleanPref(this.mContext, "enable_voip_on_device", mIsVoipEnabledOnDevice);
+        this.mIsVoipEnabledOnDevice = mIsVoipEnabledOnDevice;
+    }
+    
     private void updateWidevineL1Flag(final boolean mIsWidevineL1Enabled) {
         PreferenceUtils.putBooleanPref(this.mContext, "enable_widevine_l1", mIsWidevineL1Enabled);
+        if (this.mIsWidevineDisabled) {
+            Log.w(DeviceConfiguration.TAG, "Unable to enable Widevine L1 in runtime because of master Widevine disable");
+            return;
+        }
         this.mIsWidevineL1Enabled = mIsWidevineL1Enabled;
     }
     
     private void updateWidevineL3Flag(final boolean mIsWidevineL3Enabled) {
         PreferenceUtils.putBooleanPref(this.mContext, "enable_widevine_l3", mIsWidevineL3Enabled);
+        if (this.mIsWidevineDisabled) {
+            Log.w(DeviceConfiguration.TAG, "Unable to enable Widevine L3 in runtime because of master Widevine disable");
+            return;
+        }
         this.mIsWidevineL3Enabled = mIsWidevineL3Enabled;
     }
     
@@ -370,6 +404,10 @@ public class DeviceConfiguration
         return this.mVideoResolutionOverride;
     }
     
+    public int getmAudioFormat() {
+        return this.mAudioFormat;
+    }
+    
     public boolean isDeviceConfigInCache() {
         return PreferenceUtils.getBooleanPref(this.mContext, "nf_device_config_cached", false);
     }
@@ -408,6 +446,8 @@ public class DeviceConfiguration
             this.updateDisableMdxFlag(deviceConfigData.getMdxDisabled());
             this.updateWidevineL1Flag(deviceConfigData.isWidevineL1Enabled());
             this.updateWidevineL3Flag(deviceConfigData.isWidevineL3Enabled());
+            this.updateVoipEnabledOnDeviceFlag(deviceConfigData.isVoipEnabledOnDevice());
+            this.updateAudioFormat(deviceConfigData.getAudioFormats());
             this.updateConsolidatedLoggingSpecification(deviceConfigData.getConsolidatedloggingSpecification());
             this.mSubtitleConfiguration = SubtitleConfiguration.update(this.mContext, deviceConfigData.getSubtitleConfiguration());
             int int1;
@@ -455,5 +495,9 @@ public class DeviceConfiguration
                 this.updateDeviceConfigFlag(true);
             }
         }
+    }
+    
+    public boolean shouldDisableVoip() {
+        return !this.mIsVoipEnabledOnDevice;
     }
 }

@@ -4,12 +4,7 @@
 
 package com.netflix.mediaclient.android.activity;
 
-import com.netflix.mediaclient.Log;
-import android.content.Intent;
-import android.content.Context;
-import android.content.BroadcastReceiver;
-
-class NetflixActivity$5 extends BroadcastReceiver
+class NetflixActivity$5 implements Runnable
 {
     final /* synthetic */ NetflixActivity this$0;
     
@@ -17,14 +12,7 @@ class NetflixActivity$5 extends BroadcastReceiver
         this.this$0 = this$0;
     }
     
-    public void onReceive(final Context context, final Intent intent) {
-        if (this.this$0.destroyed()) {
-            return;
-        }
-        if (intent == null || !"com.netflix.mediaclient.service.ACTION_EXPAND_MDX_MINI_PLAYER".equals(intent.getAction())) {
-            Log.d("NetflixActivity", "Invalid intent: ", intent);
-            return;
-        }
-        this.this$0.expandMiniPlayerIfVisible();
+    @Override
+    public void run() {
     }
 }

@@ -4,7 +4,8 @@
 
 package com.netflix.mediaclient.service.preapp;
 
-import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
+import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
@@ -12,6 +13,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.service.ServiceAgent$PreAppAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.service.pservice.PService;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
@@ -31,8 +34,12 @@ class PreAppAgent$1 extends BroadcastReceiver
             if (Log.isLoggable()) {
                 Log.d("nf_preappagent", String.format("received intent action: %s", action));
             }
-            if ("com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_ALL_UPDATED".equals(action)) {
-                this.this$0.mPreAppAgentDataHandler.update(PreAppAgentEventType.ALL_UPDATED);
+            if (!AndroidUtils.isWidgetInstalled(context) && !PService.isRemoteUiDevice()) {
+                Log.d("nf_preappagent", "widget not installed - skip fetching data");
+                return;
+            }
+            if ("com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_ALL_MEMBER_UPDATED".equals(action)) {
+                this.this$0.mPreAppAgentDataHandler.update(PreAppAgentEventType.ALL_MEMBER_UPDATED);
                 return;
             }
             if ("com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_CW_UPDATED".equals(action)) {
@@ -41,6 +48,10 @@ class PreAppAgent$1 extends BroadcastReceiver
             }
             if ("com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_IQ_UPDATED".equals(action)) {
                 this.this$0.mPreAppAgentDataHandler.update(PreAppAgentEventType.IQ_UPDATED);
+                return;
+            }
+            if ("com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_NON_MEMBER_UPDATED".equals(action)) {
+                this.this$0.mPreAppAgentDataHandler.update(PreAppAgentEventType.NON_MEMBER_UPDATED);
             }
         }
     }

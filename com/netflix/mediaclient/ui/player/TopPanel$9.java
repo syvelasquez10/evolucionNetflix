@@ -11,9 +11,9 @@ import android.content.DialogInterface$OnCancelListener;
 class TopPanel$9 implements DialogInterface$OnCancelListener
 {
     final /* synthetic */ TopPanel this$0;
-    final /* synthetic */ PlayerActivity val$controller;
+    final /* synthetic */ PlayerFragment val$controller;
     
-    TopPanel$9(final TopPanel this$0, final PlayerActivity val$controller) {
+    TopPanel$9(final TopPanel this$0, final PlayerFragment val$controller) {
         this.this$0 = this$0;
         this.val$controller = val$controller;
     }

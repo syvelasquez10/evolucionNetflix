@@ -17,6 +17,7 @@ import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
 import android.app.Activity;
+import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
@@ -235,7 +236,26 @@ public final class NflxProtocolUtils
                 Log.d("NflxHandler", "Reporting that application is started from deep link. Source: " + source + ", action: " + s);
             }
             if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
-                clientLogging.getCustomerEventLogging().reportApplicationLaunchedFromDeepLinking(source, s, map.toString());
+                final StringBuilder sb = new StringBuilder();
+                final Iterator<String> iterator = map.keySet().iterator();
+                int n = 1;
+                while (iterator.hasNext()) {
+                    final String s2 = iterator.next();
+                    final String s3 = map.get(s2);
+                    int n2 = n;
+                    if (StringUtils.isNotEmpty(s3)) {
+                        if (n != 0) {
+                            n = 0;
+                        }
+                        else {
+                            sb.append('&');
+                        }
+                        sb.append(s2).append('=').append(s3);
+                        n2 = n;
+                    }
+                    n = n2;
+                }
+                clientLogging.getCustomerEventLogging().reportApplicationLaunchedFromDeepLinking(source, s, sb.toString());
             }
             return;
         }

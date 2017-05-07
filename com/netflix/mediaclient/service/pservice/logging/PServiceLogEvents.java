@@ -13,9 +13,14 @@ import java.util.List;
 
 public final class PServiceLogEvents
 {
+    public static final Boolean ENABLE_VERBOSE_LOGGING;
     private static final String TAG = "nf_preapp_logevents";
     @SerializedName("widgetLogEvents")
     private List<PServiceWidgetLogEvent> widgetLogEvents;
+    
+    static {
+        ENABLE_VERBOSE_LOGGING = false;
+    }
     
     public PServiceLogEvents() {
         this.widgetLogEvents = new LinkedList<PServiceWidgetLogEvent>();
@@ -25,7 +30,7 @@ public final class PServiceLogEvents
         if (StringUtils.isEmpty(s)) {
             return newInstance();
         }
-        if (Log.isLoggable()) {
+        if (PServiceLogEvents.ENABLE_VERBOSE_LOGGING && Log.isLoggable()) {
             Log.v("nf_preapp_logevents", "Parsing PServiceLogEvents from json: " + s);
         }
         return FalkorParseUtils.getGson().fromJson(s, PServiceLogEvents.class);
@@ -49,7 +54,7 @@ public final class PServiceLogEvents
     
     public String toJsonString() {
         final String json = FalkorParseUtils.getGson().toJson(this);
-        if (Log.isLoggable()) {
+        if (PServiceLogEvents.ENABLE_VERBOSE_LOGGING && Log.isLoggable()) {
             Log.d("nf_preapp_logevents", "PServiceLogEvents as json: " + json);
         }
         return json;

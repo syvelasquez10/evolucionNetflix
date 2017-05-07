@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.resfetcher;
 import com.netflix.mediaclient.service.resfetcher.volley.PrefetchResourceRequest;
 import com.netflix.mediaclient.service.webclient.WebClient;
 import com.netflix.mediaclient.service.resfetcher.volley.FileDownloadRequest;
+import com.android.volley.Request$Priority;
 import com.android.volley.Request;
 import com.android.volley.Response$ErrorListener;
 import com.netflix.mediaclient.service.resfetcher.volley.HttpRangeRequest;
@@ -24,8 +25,9 @@ import com.netflix.mediaclient.util.gfx.BitmapLruCache;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.service.resfetcher.volley.ImageLoader$ImageCache;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.content.Context;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.HttpStack;
@@ -71,7 +73,13 @@ public class ResourceFetcher extends ServiceAgent
     }
     
     private ImageLoader createImageLoader(final Context context) {
+        final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = null;
         Log.d("nf_service_resourcefetcher", "ResourceFetcher creating ImageLoader");
+        if (this.mRequestQueue == null) {
+            Log.w("nf_service_resourcefetcher", "Attempting to create an ImageLoader with a null RequestQueue");
+            ErrorLoggingManager.logHandledException("Attempting to create an ImageLoader with a null RequestQueue");
+            return null;
+        }
         final ServiceAgent$ConfigurationAgentInterface configurationAgent = this.getConfigurationAgent();
         long imageCacheMinimumTtl = 1209600000L;
         int resourceRequestTimeout = 1000;
@@ -82,14 +90,14 @@ public class ResourceFetcher extends ServiceAgent
         if (Log.isLoggable()) {
             Log.d("nf_service_resourcefetcher", "Received request to create new ImageLoader with socketTimeout = " + resourceRequestTimeout + " and minimumTtl = " + imageCacheMinimumTtl + "ms");
         }
-        ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = null;
+        ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging2 = applicationPerformanceMetricsLogging;
         if (this.getService() != null) {
-            applicationPerformanceMetricsLogging = applicationPerformanceMetricsLogging;
+            applicationPerformanceMetricsLogging2 = applicationPerformanceMetricsLogging;
             if (this.getService().getClientLogging() != null) {
-                applicationPerformanceMetricsLogging = this.getService().getClientLogging().getApplicationPerformanceMetricsLogging();
+                applicationPerformanceMetricsLogging2 = this.getService().getClientLogging().getApplicationPerformanceMetricsLogging();
             }
         }
-        return new ImageLoader(this.mRequestQueue, this.getImageCache(context), resourceRequestTimeout, imageCacheMinimumTtl, applicationPerformanceMetricsLogging, configurationAgent);
+        return new ImageLoader(this.mRequestQueue, this.getImageCache(context), resourceRequestTimeout, imageCacheMinimumTtl, applicationPerformanceMetricsLogging2, configurationAgent);
     }
     
     private static FalkorVolleyWebClient createWebClient() {
@@ -187,13 +195,20 @@ public class ResourceFetcher extends ServiceAgent
         this.mRequestQueue.add(new HttpRangeRequest(s, n, n2, resourceFetcherCallback2, new ResourceFetcher$2(this, resourceFetcherCallback2, s), this.getConfigurationAgent().getResourceRequestTimeout()));
     }
     
-    public void fetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ResourceFetcherCallback resourceFetcherCallback) {
+    public void fetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final Request$Priority request$Priority, final ResourceFetcherCallback resourceFetcherCallback) {
         if (Log.isLoggable()) {
             Log.i("nf_service_resourcefetcher", "Received request to fetch resource at " + s);
         }
         ApmLogUtils.reportAssetRequest(s, clientLogging$AssetType, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
         final ResourceFetcherCallback resourceFetcherCallback2 = this.getResourceFetcherCallback(resourceFetcherCallback);
-        this.mRequestQueue.add(new FileDownloadRequest(s, resourceFetcherCallback2, new ResourceFetcher$1(this, resourceFetcherCallback2, s), this.getConfigurationAgent().getResourceRequestTimeout(), this.mDownloadsDir));
+        this.mRequestQueue.add(new FileDownloadRequest(s, resourceFetcherCallback2, new ResourceFetcher$1(this, resourceFetcherCallback2, s), this.getConfigurationAgent().getResourceRequestTimeout(), request$Priority, this.mDownloadsDir));
+    }
+    
+    public void fetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ResourceFetcherCallback resourceFetcherCallback) {
+        if (Log.isLoggable()) {
+            Log.i("nf_service_resourcefetcher", "Received request to fetch resource at " + s);
+        }
+        this.fetchResource(s, clientLogging$AssetType, Request$Priority.NORMAL, resourceFetcherCallback);
     }
     
     public WebClient getApiNextWebClient() {

@@ -12,16 +12,16 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class SaveRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<SaveRequest> CREATOR;
-    final int zzCY;
-    private final Credential zzPa;
+    final int mVersionCode;
+    private final Credential zzRx;
     
     static {
-        CREATOR = (Parcelable$Creator)new zzf();
+        CREATOR = (Parcelable$Creator)new zzi();
     }
     
-    SaveRequest(final int zzCY, final Credential zzPa) {
-        this.zzCY = zzCY;
-        this.zzPa = zzPa;
+    SaveRequest(final int mVersionCode, final Credential zzRx) {
+        this.mVersionCode = mVersionCode;
+        this.zzRx = zzRx;
     }
     
     public SaveRequest(final Credential credential) {
@@ -33,10 +33,10 @@ public final class SaveRequest implements SafeParcelable
     }
     
     public Credential getCredential() {
-        return this.zzPa;
+        return this.zzRx;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        zzf.zza(this, parcel, n);
+        zzi.zza(this, parcel, n);
     }
 }

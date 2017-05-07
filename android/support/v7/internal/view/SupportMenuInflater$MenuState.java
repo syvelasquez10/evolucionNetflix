@@ -25,6 +25,7 @@ import android.support.v7.internal.view.menu.m;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.support.v4.view.MenuItemCompat;
 import android.view.MenuItem;
+import java.lang.reflect.Constructor;
 import android.util.Log;
 import android.view.Menu;
 import android.support.v4.view.ActionProvider;
@@ -73,7 +74,9 @@ class SupportMenuInflater$MenuState
     
     private <T> T newInstance(final String s, final Class<?>[] array, final Object[] array2) {
         try {
-            return (T)this.this$0.mContext.getClassLoader().loadClass(s).getConstructor(array).newInstance(array2);
+            final Constructor<?> constructor = this.this$0.mContext.getClassLoader().loadClass(s).getConstructor(array);
+            constructor.setAccessible(true);
+            return (T)constructor.newInstance(array2);
         }
         catch (Exception ex) {
             Log.w("SupportMenuInflater", "Cannot instantiate class: " + s, (Throwable)ex);

@@ -9,9 +9,9 @@ import com.google.android.gms.common.api.Api$ApiOptions$Optional;
 
 public final class Auth$zza implements Api$ApiOptions$Optional
 {
-    private final Bundle zzOR;
+    private final Bundle zzQZ;
     
-    public Bundle zzkY() {
-        return new Bundle(this.zzOR);
+    public Bundle zzlq() {
+        return new Bundle(this.zzQZ);
     }
 }

@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 public class UserActionLogging$Profile
 {
+    public static final String PRIVACY_VIOLATION_PLACEHOLDER = "PRIVACY_VIOLATION_PROFILE_NAME";
     public static final String PROFILE = "profile";
     public static final String PROFILE_AGE = "age";
     public static final String PROFILE_ID = "profileId";

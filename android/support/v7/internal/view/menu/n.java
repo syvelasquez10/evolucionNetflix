@@ -5,6 +5,7 @@
 package android.support.v7.internal.view.menu;
 
 import android.view.MenuItem$OnActionExpandListener;
+import android.os.Build$VERSION;
 import android.view.SubMenu;
 import android.view.ViewDebug$CapturedViewProperty;
 import android.support.v7.internal.widget.TintManager;

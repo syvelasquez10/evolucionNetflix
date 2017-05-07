@@ -50,10 +50,10 @@ class ImageSubtitleParser$2 extends LoggingResourceFetcherCallback
         Log.d("nf_subtitles", "Ready to serve subtitles...");
         this.this$0.mReady = true;
         this.this$0.saveFileSafelyToCache("segment.idx", array);
-        final int access$500 = this.this$0.getCurrentSegmentIndex();
+        final int access$600 = this.this$0.getCurrentSegmentIndex();
         if (Log.isLoggable()) {
-            Log.d("nf_subtitles", "Download segment " + access$500 + " on start");
+            Log.d("nf_subtitles", "Download segment " + access$600 + " on start");
         }
-        this.this$0.downloadNextRange(access$500);
+        this.this$0.downloadNextRange(access$600);
     }
 }

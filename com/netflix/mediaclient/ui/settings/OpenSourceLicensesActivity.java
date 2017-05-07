@@ -33,7 +33,7 @@ public class OpenSourceLicensesActivity extends NetflixActivity
     }
     
     private String createHeaderText(final String s) {
-        return String.format(this.getString(2131493189), s);
+        return String.format(this.getString(2131165489), s);
     }
     
     private void createOslInfo() {
@@ -67,7 +67,7 @@ public class OpenSourceLicensesActivity extends NetflixActivity
         this.createOslInfo();
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
-            netflixActionBar.setTitle(this.getString(2131493188));
+            netflixActionBar.setTitle(this.getString(2131165488));
         }
         final ListView contentView = new ListView((Context)this);
         contentView.setDividerHeight(0);
@@ -77,17 +77,17 @@ public class OpenSourceLicensesActivity extends NetflixActivity
     }
     
     @Override
-    protected boolean showAboutInMenu() {
+    public boolean showAboutInMenu() {
         return false;
     }
     
     @Override
-    protected boolean showSettingsInMenu() {
+    public boolean showSettingsInMenu() {
         return false;
     }
     
     @Override
-    protected boolean showSignOutInMenu() {
+    public boolean showSignOutInMenu() {
         return false;
     }
 }

@@ -24,13 +24,13 @@ final class PDiskDataRepository$2 extends PDiskDataRepository$FileDataLoadedCall
         else {
             s = s2;
             try {
-                final String s3 = s = (String)(fromJsonString = PDiskData.fromJsonString(new String(array, "utf-8")));
+                final Object o = s = (String)(fromJsonString = PDiskData.fromJsonString(new String(array, "utf-8")));
                 if (PDiskDataRepository.ENABLE_VERBOSE_LOGGING) {
-                    s = s3;
-                    Log.d("nf_preapp_dataRepo", String.format("read from file payload: %s", ((PDiskData)s3).toJsonString()));
-                    s = s3;
-                    Log.d("nf_preapp_dataRepo", String.format("urlMap:%s", ((PDiskData)s3).urlMap));
-                    fromJsonString = s3;
+                    s = (String)o;
+                    Log.d("nf_preapp_dataRepo", "onDataLoaded - diskData.print");
+                    s = (String)o;
+                    ((PDiskData)o).print();
+                    fromJsonString = o;
                 }
             }
             catch (Throwable t) {
