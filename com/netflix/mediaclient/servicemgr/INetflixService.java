@@ -42,6 +42,8 @@ public interface INetflixService
     
     void fetchIQVideos(final int p0, final int p1, final int p2, final int p3);
     
+    void fetchKidsCharacterDetails(final String p0, final int p1, final int p2);
+    
     void fetchLoLoMoSummary(final String p0, final int p1, final int p2);
     
     void fetchLoMos(final String p0, final int p1, final int p2, final int p3, final int p4);

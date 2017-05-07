@@ -7,28 +7,25 @@ package com.google.android.gms.maps.internal;
 import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
-import android.graphics.Bitmap;
 import android.os.RemoteException;
-import com.google.android.gms.dynamic.b;
+import com.google.android.gms.dynamic.d;
 import android.os.IInterface;
 
 public interface o extends IInterface
 {
-    void c(final b p0) throws RemoteException;
-    
-    void onSnapshotReady(final Bitmap p0) throws RemoteException;
+    void e(final d p0) throws RemoteException;
     
     public abstract static class a extends Binder implements o
     {
         public a() {
-            this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.ISnapshotReadyCallback");
+            this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnMyLocationChangeListener");
         }
         
-        public static o ah(final IBinder binder) {
+        public static o ar(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.maps.internal.ISnapshotReadyCallback");
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.maps.internal.IOnMyLocationChangeListener");
             if (queryLocalInterface != null && queryLocalInterface instanceof o) {
                 return (o)queryLocalInterface;
             }
@@ -45,25 +42,12 @@ public interface o extends IInterface
                     return super.onTransact(n, parcel, parcel2, n2);
                 }
                 case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.maps.internal.ISnapshotReadyCallback");
+                    parcel2.writeString("com.google.android.gms.maps.internal.IOnMyLocationChangeListener");
                     return true;
                 }
                 case 1: {
-                    parcel.enforceInterface("com.google.android.gms.maps.internal.ISnapshotReadyCallback");
-                    Bitmap bitmap;
-                    if (parcel.readInt() != 0) {
-                        bitmap = (Bitmap)Bitmap.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        bitmap = null;
-                    }
-                    this.onSnapshotReady(bitmap);
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 2: {
-                    parcel.enforceInterface("com.google.android.gms.maps.internal.ISnapshotReadyCallback");
-                    this.c(b.a.E(parcel.readStrongBinder()));
+                    parcel.enforceInterface("com.google.android.gms.maps.internal.IOnMyLocationChangeListener");
+                    this.e(d.a.K(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
@@ -72,53 +56,31 @@ public interface o extends IInterface
         
         private static class a implements o
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
             }
             
             public IBinder asBinder() {
-                return this.dU;
+                return this.kn;
             }
             
             @Override
-            public void c(final b b) throws RemoteException {
+            public void e(final d d) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ISnapshotReadyCallback");
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IOnMyLocationChangeListener");
                     IBinder binder;
-                    if (b != null) {
-                        binder = b.asBinder();
+                    if (d != null) {
+                        binder = d.asBinder();
                     }
                     else {
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.dU.transact(2, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void onSnapshotReady(final Bitmap bitmap) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ISnapshotReadyCallback");
-                    if (bitmap != null) {
-                        obtain.writeInt(1);
-                        bitmap.writeToParcel(obtain, 0);
-                    }
-                    else {
-                        obtain.writeInt(0);
-                    }
-                    this.dU.transact(1, obtain, obtain2, 0);
+                    this.kn.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

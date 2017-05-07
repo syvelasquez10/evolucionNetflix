@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 
 public class DialogMessageReceiver extends BroadcastReceiver
 {
+    private static final String TAG = "DialogMessageReceiver";
     private final Callback callback;
     
     public DialogMessageReceiver(final Callback callback) {
@@ -18,8 +19,8 @@ public class DialogMessageReceiver extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable("mdxui", 2)) {
-            Log.v("mdxui", "Received intent " + intent);
+        if (Log.isLoggable("DialogMessageReceiver", 2)) {
+            Log.v("DialogMessageReceiver", "Received intent " + intent);
         }
         final String action = intent.getAction();
         if ("ui_rating".equals(action)) {
@@ -34,8 +35,8 @@ public class DialogMessageReceiver extends BroadcastReceiver
                 this.callback.handleDialogCancel(intent.getExtras().getString("nflx_dialog_id"));
                 return;
             }
-            if (Log.isLoggable("mdxui", 3)) {
-                Log.d("mdxui", "We do not support action " + action);
+            if (Log.isLoggable("DialogMessageReceiver", 3)) {
+                Log.d("DialogMessageReceiver", "We do not support action " + action);
             }
         }
     }

@@ -11,43 +11,43 @@ import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class t implements Parcelable$Creator<OnDriveIdResponse>
+public class t implements Parcelable$Creator<GetMetadataRequest>
 {
-    static void a(final OnDriveIdResponse onDriveIdResponse, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
-        b.c(parcel, 1, onDriveIdResponse.kg);
-        b.a(parcel, 2, (Parcelable)onDriveIdResponse.rr, n, false);
-        b.D(parcel, o);
+    static void a(final GetMetadataRequest getMetadataRequest, final Parcel parcel, final int n) {
+        final int p3 = b.p(parcel);
+        b.c(parcel, 1, getMetadataRequest.xH);
+        b.a(parcel, 2, (Parcelable)getMetadataRequest.EV, n, false);
+        b.F(parcel, p3);
     }
     
-    public OnDriveIdResponse I(final Parcel parcel) {
-        final int n = a.n(parcel);
+    public GetMetadataRequest L(final Parcel parcel) {
+        final int o = a.o(parcel);
         int g = 0;
         DriveId driveId = null;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
                 default: {
-                    a.b(parcel, m);
+                    a.b(parcel, n);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, m);
+                    g = a.g(parcel, n);
                     continue;
                 }
                 case 2: {
-                    driveId = a.a(parcel, m, DriveId.CREATOR);
+                    driveId = a.a(parcel, n, DriveId.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new OnDriveIdResponse(g, driveId);
+        return new GetMetadataRequest(g, driveId);
     }
     
-    public OnDriveIdResponse[] ai(final int n) {
-        return new OnDriveIdResponse[n];
+    public GetMetadataRequest[] ap(final int n) {
+        return new GetMetadataRequest[n];
     }
 }

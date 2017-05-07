@@ -4,121 +4,61 @@
 
 package com.google.android.gms.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a;
+import android.os.Parcelable;
+import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
-import android.os.IBinder;
-import android.os.Binder;
-import android.os.RemoteException;
-import android.os.Bundle;
-import android.net.Uri;
-import android.os.IInterface;
+import android.os.Parcelable$Creator;
 
-public interface hl extends IInterface
+public class hl implements Parcelable$Creator<hk>
 {
-    void a(final hk p0, final Uri p1, final Bundle p2, final boolean p3) throws RemoteException;
+    static void a(final hk hk, final Parcel parcel, final int n) {
+        final int p3 = b.p(parcel);
+        b.c(parcel, 1000, hk.xH);
+        b.a(parcel, 2, (Parcelable)hk.hZ(), n, false);
+        b.a(parcel, 3, hk.getInterval());
+        b.c(parcel, 4, hk.getPriority());
+        b.F(parcel, p3);
+    }
     
-    public abstract static class a extends Binder implements hl
-    {
-        public static hl as(final IBinder binder) {
-            if (binder == null) {
-                return null;
-            }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.panorama.internal.IPanoramaService");
-            if (queryLocalInterface != null && queryLocalInterface instanceof hl) {
-                return (hl)queryLocalInterface;
-            }
-            return new hl.a.a(binder);
-        }
-        
-        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            switch (n) {
+    public hk aF(final Parcel parcel) {
+        final int o = a.o(parcel);
+        int g = 0;
+        hg hg = null;
+        long n = hk.OF;
+        int g2 = 102;
+        while (parcel.dataPosition() < o) {
+            final int n2 = a.n(parcel);
+            switch (a.R(n2)) {
                 default: {
-                    return super.onTransact(n, parcel, parcel2, n2);
+                    a.b(parcel, n2);
+                    continue;
                 }
-                case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.panorama.internal.IPanoramaService");
-                    return true;
+                case 1000: {
+                    g = a.g(parcel, n2);
+                    continue;
                 }
-                case 1: {
-                    parcel.enforceInterface("com.google.android.gms.panorama.internal.IPanoramaService");
-                    final hk ar = hk.a.ar(parcel.readStrongBinder());
-                    Uri uri;
-                    if (parcel.readInt() != 0) {
-                        uri = (Uri)Uri.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        uri = null;
-                    }
-                    Bundle bundle;
-                    if (parcel.readInt() != 0) {
-                        bundle = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        bundle = null;
-                    }
-                    this.a(ar, uri, bundle, parcel.readInt() != 0);
-                    return true;
+                case 2: {
+                    hg = a.a(parcel, n2, (android.os.Parcelable$Creator<hg>)com.google.android.gms.internal.hg.CREATOR);
+                    continue;
+                }
+                case 3: {
+                    n = a.i(parcel, n2);
+                    continue;
+                }
+                case 4: {
+                    g2 = a.g(parcel, n2);
+                    continue;
                 }
             }
         }
-        
-        private static class a implements hl
-        {
-            private IBinder dU;
-            
-            a(final IBinder du) {
-                this.dU = du;
-            }
-            
-            @Override
-            public void a(final hk hk, final Uri uri, final Bundle bundle, final boolean b) throws RemoteException {
-                while (true) {
-                    IBinder binder = null;
-                    int n = 1;
-                    final Parcel obtain = Parcel.obtain();
-                    while (true) {
-                        Label_0134: {
-                            Label_0119: {
-                                try {
-                                    obtain.writeInterfaceToken("com.google.android.gms.panorama.internal.IPanoramaService");
-                                    if (hk != null) {
-                                        binder = hk.asBinder();
-                                    }
-                                    obtain.writeStrongBinder(binder);
-                                    if (uri != null) {
-                                        obtain.writeInt(1);
-                                        uri.writeToParcel(obtain, 0);
-                                    }
-                                    else {
-                                        obtain.writeInt(0);
-                                    }
-                                    if (bundle != null) {
-                                        obtain.writeInt(1);
-                                        bundle.writeToParcel(obtain, 0);
-                                        break Label_0134;
-                                    }
-                                    break Label_0119;
-                                    obtain.writeInt(n);
-                                    this.dU.transact(1, obtain, (Parcel)null, 1);
-                                    return;
-                                }
-                                finally {
-                                    obtain.recycle();
-                                }
-                            }
-                            obtain.writeInt(0);
-                        }
-                        if (b) {
-                            continue;
-                        }
-                        n = 0;
-                        continue;
-                    }
-                }
-            }
-            
-            public IBinder asBinder() {
-                return this.dU;
-            }
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
+        return new hk(g, hg, n, g2);
+    }
+    
+    public hk[] bG(final int n) {
+        return new hk[n];
     }
 }

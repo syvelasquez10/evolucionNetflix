@@ -4,203 +4,78 @@
 
 package com.google.android.gms.internal;
 
-import android.view.ViewTreeObserver;
-import android.content.Context;
-import android.app.Activity;
-import android.view.Display;
-import java.lang.ref.WeakReference;
-import android.view.ViewTreeObserver$OnGlobalLayoutListener;
-import android.view.View$OnAttachStateChangeListener;
-import android.view.View;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.os.Binder;
+import android.text.TextUtils;
+import android.os.Looper;
 
-public class fq
+public final class fq
 {
-    protected fl te;
-    protected a uI;
-    
-    private fq(final fl te, final int n) {
-        this.te = te;
-        this.aF(n);
-    }
-    
-    public static fq a(final fl fl, final int n) {
-        if (fg.cE()) {
-            return new b(fl, n);
-        }
-        return new fq(fl, n);
-    }
-    
-    protected void aF(final int n) {
-        this.uI = new a(n, (IBinder)new Binder());
-    }
-    
-    public void dl() {
-        this.te.a(this.uI.uJ, this.uI.do());
-    }
-    
-    public Bundle dm() {
-        return this.uI.do();
-    }
-    
-    public IBinder dn() {
-        return this.uI.uJ;
-    }
-    
-    public void e(final View view) {
-    }
-    
-    public void setGravity(final int gravity) {
-        this.uI.gravity = gravity;
-    }
-    
-    public static final class a
-    {
-        public int bottom;
-        public int gravity;
-        public int left;
-        public int right;
-        public int top;
-        public IBinder uJ;
-        public int uK;
-        
-        private a(final int gravity, final IBinder uj) {
-            this.uK = -1;
-            this.left = 0;
-            this.top = 0;
-            this.right = 0;
-            this.bottom = 0;
-            this.gravity = gravity;
-            this.uJ = uj;
-        }
-        
-        public Bundle do() {
-            final Bundle bundle = new Bundle();
-            bundle.putInt("popupLocationInfo.gravity", this.gravity);
-            bundle.putInt("popupLocationInfo.displayId", this.uK);
-            bundle.putInt("popupLocationInfo.left", this.left);
-            bundle.putInt("popupLocationInfo.top", this.top);
-            bundle.putInt("popupLocationInfo.right", this.right);
-            bundle.putInt("popupLocationInfo.bottom", this.bottom);
-            return bundle;
+    public static void a(final boolean b, final Object o) {
+        if (!b) {
+            throw new IllegalStateException(String.valueOf(o));
         }
     }
     
-    private static final class b extends fq implements View$OnAttachStateChangeListener, ViewTreeObserver$OnGlobalLayoutListener
-    {
-        private boolean tT;
-        private WeakReference<View> uL;
-        
-        protected b(final fl fl, final int n) {
-            super(fl, n, null);
-            this.tT = false;
+    public static void a(final boolean b, final String s, final Object... array) {
+        if (!b) {
+            throw new IllegalArgumentException(String.format(s, array));
         }
-        
-        private void f(final View view) {
-            int displayId = -1;
-            if (fg.cI()) {
-                final Display display = view.getDisplay();
-                displayId = displayId;
-                if (display != null) {
-                    displayId = display.getDisplayId();
-                }
-            }
-            final IBinder windowToken = view.getWindowToken();
-            final int[] array = new int[2];
-            view.getLocationInWindow(array);
-            final int width = view.getWidth();
-            final int height = view.getHeight();
-            this.uI.uK = displayId;
-            this.uI.uJ = windowToken;
-            this.uI.left = array[0];
-            this.uI.top = array[1];
-            this.uI.right = array[0] + width;
-            this.uI.bottom = array[1] + height;
-            if (this.tT) {
-                this.dl();
-                this.tT = false;
-            }
+    }
+    
+    public static void aj(final String s) {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            throw new IllegalStateException(s);
         }
-        
-        @Override
-        protected void aF(final int n) {
-            this.uI = new a(n, (IBinder)null);
+    }
+    
+    public static void ak(final String s) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            throw new IllegalStateException(s);
         }
-        
-        @Override
-        public void dl() {
-            if (this.uI.uJ != null) {
-                super.dl();
-                return;
-            }
-            this.tT = (this.uL != null);
+    }
+    
+    public static String ap(final String s) {
+        if (TextUtils.isEmpty((CharSequence)s)) {
+            throw new IllegalArgumentException("Given String is empty or null");
         }
-        
-        @Override
-        public void e(View view) {
-            this.te.df();
-            if (this.uL != null) {
-                final View view2 = this.uL.get();
-                final Context context = this.te.getContext();
-                View decorView;
-                if ((decorView = view2) == null) {
-                    decorView = view2;
-                    if (context instanceof Activity) {
-                        decorView = ((Activity)context).getWindow().getDecorView();
-                    }
-                }
-                if (decorView != null) {
-                    decorView.removeOnAttachStateChangeListener((View$OnAttachStateChangeListener)this);
-                    final ViewTreeObserver viewTreeObserver = decorView.getViewTreeObserver();
-                    if (fg.cH()) {
-                        viewTreeObserver.removeOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)this);
-                    }
-                    else {
-                        viewTreeObserver.removeGlobalOnLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)this);
-                    }
-                }
-            }
-            this.uL = null;
-            final Context context2 = this.te.getContext();
-            View view3;
-            if ((view3 = view) == null) {
-                view3 = view;
-                if (context2 instanceof Activity) {
-                    if ((view = ((Activity)context2).findViewById(16908290)) == null) {
-                        view = ((Activity)context2).getWindow().getDecorView();
-                    }
-                    fn.c("PopupManager", "You have not specified a View to use as content view for popups. Falling back to the Activity content view which may not work properly in future versions of the API. Use setViewForPopups() to set your content view.");
-                    view3 = view;
-                }
-            }
-            if (view3 != null) {
-                this.f(view3);
-                this.uL = new WeakReference<View>(view3);
-                view3.addOnAttachStateChangeListener((View$OnAttachStateChangeListener)this);
-                view3.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)this);
-                return;
-            }
-            fn.d("PopupManager", "No content view usable to display popups. Popups will not be displayed in response to this client's calls. Use setViewForPopups() to set your content view.");
+        return s;
+    }
+    
+    public static <T> T b(final T t, final Object o) {
+        if (t == null) {
+            throw new NullPointerException(String.valueOf(o));
         }
-        
-        public void onGlobalLayout() {
-            if (this.uL != null) {
-                final View view = this.uL.get();
-                if (view != null) {
-                    this.f(view);
-                }
-            }
+        return t;
+    }
+    
+    public static String b(final String s, final Object o) {
+        if (TextUtils.isEmpty((CharSequence)s)) {
+            throw new IllegalArgumentException(String.valueOf(o));
         }
-        
-        public void onViewAttachedToWindow(final View view) {
-            this.f(view);
+        return s;
+    }
+    
+    public static void b(final boolean b, final Object o) {
+        if (!b) {
+            throw new IllegalArgumentException(String.valueOf(o));
         }
-        
-        public void onViewDetachedFromWindow(final View view) {
-            this.te.df();
-            view.removeOnAttachStateChangeListener((View$OnAttachStateChangeListener)this);
+    }
+    
+    public static <T> T f(final T t) {
+        if (t == null) {
+            throw new NullPointerException("null reference");
+        }
+        return t;
+    }
+    
+    public static void x(final boolean b) {
+        if (!b) {
+            throw new IllegalStateException();
+        }
+    }
+    
+    public static void z(final boolean b) {
+        if (!b) {
+            throw new IllegalArgumentException();
         }
     }
 }

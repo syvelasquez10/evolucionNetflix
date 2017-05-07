@@ -4,57 +4,46 @@
 
 package com.google.android.gms.dynamic;
 
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.internal.eg;
-import android.content.Context;
+import java.lang.reflect.Field;
 import android.os.IBinder;
 
-public abstract class e<T>
+public final class e<T> extends d.a
 {
-    private final String sF;
-    private T sG;
+    private final T Hw;
     
-    protected e(final String sf) {
-        this.sF = sf;
+    private e(final T hw) {
+        this.Hw = hw;
     }
     
-    protected abstract T d(final IBinder p0);
-    
-    protected final T t(Context remoteContext) throws a {
-        Label_0058: {
-            if (this.sG != null) {
-                break Label_0058;
-            }
-            eg.f(remoteContext);
-            remoteContext = GooglePlayServicesUtil.getRemoteContext(remoteContext);
-            if (remoteContext == null) {
-                throw new a("Could not get remote context.");
-            }
-            final ClassLoader classLoader = remoteContext.getClassLoader();
-            try {
-                this.sG = this.d((IBinder)classLoader.loadClass(this.sF).newInstance());
-                return this.sG;
-            }
-            catch (ClassNotFoundException ex) {
-                throw new a("Could not load creator class.");
-            }
-            catch (InstantiationException ex2) {
-                throw new a("Could not instantiate creator.");
-            }
-            catch (IllegalAccessException ex3) {
-                throw new a("Could not access creator.");
-            }
+    public static <T> T d(final d d) {
+        if (d instanceof e) {
+            return (T)((e)d).Hw;
         }
+        final IBinder binder = d.asBinder();
+        final Field[] declaredFields = binder.getClass().getDeclaredFields();
+        if (declaredFields.length == 1) {
+            final Field field = declaredFields[0];
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
+                try {
+                    return (T)field.get(binder);
+                }
+                catch (NullPointerException ex) {
+                    throw new IllegalArgumentException("Binder object is null.", ex);
+                }
+                catch (IllegalArgumentException ex2) {
+                    throw new IllegalArgumentException("remoteBinder is the wrong class.", ex2);
+                }
+                catch (IllegalAccessException ex3) {
+                    throw new IllegalArgumentException("Could not access the field in remoteBinder.", ex3);
+                }
+            }
+            throw new IllegalArgumentException("The concrete class implementing IObjectWrapper must have exactly one declared *private* field for the wrapped object. Preferably, this is an instance of the ObjectWrapper<T> class.");
+        }
+        throw new IllegalArgumentException("The concrete class implementing IObjectWrapper must have exactly *one* declared private field for the wrapped object.  Preferably, this is an instance of the ObjectWrapper<T> class.");
     }
     
-    public static class a extends Exception
-    {
-        public a(final String s) {
-            super(s);
-        }
-        
-        public a(final String s, final Throwable t) {
-            super(s, t);
-        }
+    public static <T> d h(final T t) {
+        return new e<Object>(t);
     }
 }

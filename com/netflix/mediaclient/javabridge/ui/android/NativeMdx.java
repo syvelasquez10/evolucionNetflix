@@ -316,14 +316,32 @@ public final class NativeMdx extends NativeNrdObject implements MdxController
     
     class SessionControllerImpl implements SessionController
     {
-        @Override
-        public void endSession(final int n) {
-            NativeMdx.this.invokeNrdMethod(new EndSession(n));
+        private String mMessageName;
+        private int mSessionId;
+        
+        SessionControllerImpl() {
+            this.mSessionId = -1;
         }
         
         @Override
-        public long sendMessage(final int n, final String s, final JSONObject jsonObject) {
-            final SendMessage sendMessage = new SendMessage(n, s, jsonObject);
+        public void endSession(final int n) {
+            NativeMdx.this.invokeNrdMethod(new EndSession(n));
+            this.mSessionId = -1;
+        }
+        
+        @Override
+        public String getLastMessageName(final int n) {
+            if (this.mSessionId == n) {
+                return this.mMessageName;
+            }
+            return null;
+        }
+        
+        @Override
+        public long sendMessage(final int mSessionId, final String mMessageName, final JSONObject jsonObject) {
+            this.mMessageName = mMessageName;
+            this.mSessionId = mSessionId;
+            final SendMessage sendMessage = new SendMessage(mSessionId, mMessageName, jsonObject);
             NativeMdx.this.invokeNrdMethod(sendMessage);
             return sendMessage.getXid();
         }

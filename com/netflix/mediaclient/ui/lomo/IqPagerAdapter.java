@@ -12,8 +12,10 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 
 public class IqPagerAdapter extends ProgressiveLoMoPagerAdapter
 {
-    public IqPagerAdapter(final ServiceManager serviceManager, final PagerAdapterCallbacks pagerAdapterCallbacks, final ViewRecycler viewRecycler) {
-        super(serviceManager, pagerAdapterCallbacks, viewRecycler);
+    public static final String IQ_CACHE_TAG = "IQ";
+    
+    public IqPagerAdapter(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ViewRecycler viewRecycler) {
+        super(serviceManager, rowAdapterCallbacks, viewRecycler);
     }
     
     @Override

@@ -26,6 +26,8 @@ public interface BrowseWebClient
     
     void fetchIQVideos(final int p0, final int p1, final BrowseAgentCallback p2);
     
+    void fetchKidsCharacterDetails(final String p0, final BrowseAgentCallback p1);
+    
     void fetchLoLoMoSummary(final String p0, final BrowseAgentCallback p1);
     
     void fetchLoMos(final String p0, final int p1, final int p2, final BrowseAgentCallback p3);
@@ -59,6 +61,8 @@ public interface BrowseWebClient
     void refreshCWList(final int p0, final int p1, final BrowseAgentCallback p2);
     
     void refreshIQList(final int p0, final int p1, final BrowseAgentCallback p2);
+    
+    void refreshKidsCharacterDetils(final String p0, final BrowseAgentCallback p1);
     
     void removeFromQueue(final String p0, final int p1, final int p2, final boolean p3, final BrowseAgentCallback p4);
     

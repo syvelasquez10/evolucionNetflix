@@ -98,7 +98,7 @@ public abstract class SocialPlaceholder implements VideoDetails
     
     @Override
     public String getHorzDispUrl() {
-        throw new RuntimeException("Not implemented");
+        return null;
     }
     
     @Override
@@ -158,7 +158,7 @@ public abstract class SocialPlaceholder implements VideoDetails
     
     @Override
     public String getStoryUrl() {
-        throw new RuntimeException("Not implemented");
+        return null;
     }
     
     @Override

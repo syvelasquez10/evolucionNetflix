@@ -4,6 +4,10 @@
 
 package com.netflix.mediaclient.service.webclient.volley;
 
+import com.netflix.mediaclient.servicemgr.VideoType;
+import java.util.Iterator;
+import java.util.Map;
+import com.google.gson.JsonElement;
 import com.netflix.mediaclient.Log;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonObject;
@@ -83,6 +87,21 @@ public class FalcorParseUtils
         return null;
     }
     
+    public static JsonObject getFirstJsonObject(final JsonObject jsonObject) {
+        if (jsonObject != null) {
+            final JsonElement jsonElement = null;
+            final Iterator<Map.Entry<String, JsonElement>> iterator = jsonObject.entrySet().iterator();
+            JsonElement jsonElement2 = jsonElement;
+            if (iterator.hasNext()) {
+                jsonElement2 = ((Map.Entry<String, JsonElement>)iterator.next()).getValue();
+            }
+            if (jsonElement2 != null) {
+                return jsonElement2.getAsJsonObject();
+            }
+        }
+        return null;
+    }
+    
     public static Gson getGson() {
         return FalcorParseUtils.gson;
     }
@@ -122,6 +141,16 @@ public class FalcorParseUtils
             return FalcorParseUtils.gson.fromJson(jsonObject.get(s), clazz);
         }
         return null;
+    }
+    
+    public static VideoType getTypeFromPath(final String s, final JsonObject jsonObject) throws FalcorParseException, FalcorServerException {
+        try {
+            return VideoType.create(jsonObject.getAsJsonArray("path").get(0).getAsString());
+        }
+        catch (Exception ex) {
+            Log.v(s, "String jsonObj to parse = " + jsonObject.toString());
+            throw new FalcorParseException("Missing path/type in jsonObj", ex);
+        }
     }
     
     public static boolean isEmpty(final JsonObject jsonObject) {

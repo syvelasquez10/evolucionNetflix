@@ -9,6 +9,7 @@ import android.widget.AdapterView$OnItemClickListener;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.LinearLayout;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.content.DialogInterface;
@@ -146,7 +147,7 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
     
     public static NetflixDialogFrag create(final String s, final String s2, final boolean b) {
         final EpisodeListFrag episodeListFrag = new EpisodeListFrag();
-        episodeListFrag.setStyle(1, 2131558594);
+        episodeListFrag.setStyle(1, 2131558600);
         return applyCreateArgs(episodeListFrag, s, s2, b);
     }
     
@@ -167,7 +168,7 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
                 Log.v("EpisodeListFrag", "Season spinner - Nothing selected");
             }
         });
-        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131165255);
+        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131296340);
         this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         this.spinnerViewGroup.addView((View)this.spinner, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2));
         return this.spinnerViewGroup;
@@ -312,13 +313,14 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("EpisodeListFrag", "onCreateView called");
-        final View inflate = layoutInflater.inflate(2130903096, (ViewGroup)null, false);
-        inflate.findViewById(2131230901).setVisibility(0);
+        final View inflate = layoutInflater.inflate(2130903107, (ViewGroup)null, false);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
         (this.listView = (ListView)inflate.findViewById(16908298)).setChoiceMode(1);
         this.listView.setDivider((Drawable)null);
         this.listView.setFocusable(false);
-        this.detailsViewGroup = new VideoDetailsViewGroup((Context)this.getActivity());
+        this.listView.setVerticalScrollBarEnabled(false);
+        ViewUtils.addActionBarPaddingView(this.listView);
+        (this.detailsViewGroup = new VideoDetailsViewGroup((Context)this.getActivity())).removeActionBarDummyView();
         final LinearLayout linearLayout = new LinearLayout((Context)this.getActivity());
         linearLayout.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         linearLayout.setOrientation(1);

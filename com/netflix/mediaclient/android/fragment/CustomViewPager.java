@@ -64,7 +64,7 @@ public class CustomViewPager extends ViewPager
     }
     
     public static void applyContentOverlapPadding(final Context context, final View view) {
-        final int dimensionPixelOffset = context.getResources().getDimensionPixelOffset(2131492938);
+        final int dimensionPixelOffset = context.getResources().getDimensionPixelOffset(2131361868);
         view.setPadding(dimensionPixelOffset, 0, dimensionPixelOffset, 0);
     }
     
@@ -76,7 +76,7 @@ public class CustomViewPager extends ViewPager
     
     private void init() {
         Log.v("CustomViewPager", "Created view pager");
-        this.pageMarginOffset = this.getResources().getDimensionPixelOffset(2131492938) * -2;
+        this.pageMarginOffset = this.getResources().getDimensionPixelOffset(2131361868) * -2;
         this.setPagesToOverlap(true);
     }
     

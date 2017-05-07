@@ -8,24 +8,24 @@ import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
 import android.os.RemoteException;
-import com.google.android.gms.maps.model.internal.d;
+import com.google.android.gms.maps.model.LatLng;
 import android.os.IInterface;
 
 public interface k extends IInterface
 {
-    boolean a(final d p0) throws RemoteException;
+    void onMapLongClick(final LatLng p0) throws RemoteException;
     
     public abstract static class a extends Binder implements k
     {
         public a() {
-            this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnMarkerClickListener");
+            this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnMapLongClickListener");
         }
         
-        public static k ac(final IBinder binder) {
+        public static k an(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.maps.internal.IOnMarkerClickListener");
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.maps.internal.IOnMapLongClickListener");
             if (queryLocalInterface != null && queryLocalInterface instanceof k) {
                 return (k)queryLocalInterface;
             }
@@ -36,26 +36,26 @@ public interface k extends IInterface
             return (IBinder)this;
         }
         
-        public boolean onTransact(int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
             switch (n) {
                 default: {
                     return super.onTransact(n, parcel, parcel2, n2);
                 }
                 case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.maps.internal.IOnMarkerClickListener");
+                    parcel2.writeString("com.google.android.gms.maps.internal.IOnMapLongClickListener");
                     return true;
                 }
                 case 1: {
-                    parcel.enforceInterface("com.google.android.gms.maps.internal.IOnMarkerClickListener");
-                    final boolean a = this.a(d.a.am(parcel.readStrongBinder()));
-                    parcel2.writeNoException();
-                    if (a) {
-                        n = 1;
+                    parcel.enforceInterface("com.google.android.gms.maps.internal.IOnMapLongClickListener");
+                    LatLng fromParcel;
+                    if (parcel.readInt() != 0) {
+                        fromParcel = LatLng.CREATOR.createFromParcel(parcel);
                     }
                     else {
-                        n = 0;
+                        fromParcel = null;
                     }
-                    parcel2.writeInt(n);
+                    this.onMapLongClick(fromParcel);
+                    parcel2.writeNoException();
                     return true;
                 }
             }
@@ -63,42 +63,36 @@ public interface k extends IInterface
         
         private static class a implements k
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
+            }
+            
+            public IBinder asBinder() {
+                return this.kn;
             }
             
             @Override
-            public boolean a(final d d) throws RemoteException {
-                boolean b = true;
+            public void onMapLongClick(final LatLng latLng) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IOnMarkerClickListener");
-                    IBinder binder;
-                    if (d != null) {
-                        binder = d.asBinder();
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IOnMapLongClickListener");
+                    if (latLng != null) {
+                        obtain.writeInt(1);
+                        latLng.writeToParcel(obtain, 0);
                     }
                     else {
-                        binder = null;
+                        obtain.writeInt(0);
                     }
-                    obtain.writeStrongBinder(binder);
-                    this.dU.transact(1, obtain, obtain2, 0);
+                    this.kn.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
-                    if (obtain2.readInt() == 0) {
-                        b = false;
-                    }
-                    return b;
                 }
                 finally {
                     obtain2.recycle();
                     obtain.recycle();
                 }
-            }
-            
-            public IBinder asBinder() {
-                return this.dU;
             }
         }
     }

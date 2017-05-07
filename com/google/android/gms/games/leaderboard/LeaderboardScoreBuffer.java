@@ -9,19 +9,19 @@ import com.google.android.gms.common.data.DataBuffer;
 
 public final class LeaderboardScoreBuffer extends DataBuffer<LeaderboardScore>
 {
-    private final c vI;
+    private final LeaderboardScoreBufferHeader LT;
     
     public LeaderboardScoreBuffer(final DataHolder dataHolder) {
         super(dataHolder);
-        this.vI = new c(dataHolder.getMetadata());
-    }
-    
-    public c dq() {
-        return this.vI;
+        this.LT = new LeaderboardScoreBufferHeader(dataHolder.getMetadata());
     }
     
     @Override
     public LeaderboardScore get(final int n) {
-        return new e(this.nE, n);
+        return new LeaderboardScoreRef(this.BB, n);
+    }
+    
+    public LeaderboardScoreBufferHeader hD() {
+        return this.LT;
     }
 }

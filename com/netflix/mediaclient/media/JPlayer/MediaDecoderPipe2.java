@@ -9,11 +9,11 @@ import android.media.MediaCodecList;
 import android.media.MediaCodec$CryptoInfo;
 import android.os.Message;
 import android.os.Looper;
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import android.media.MediaCrypto;
 import android.view.Surface;
 import android.media.MediaFormat;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.media.MediaCodec$BufferInfo;
 import android.os.HandlerThread;
 import android.os.Handler;
@@ -31,6 +31,7 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
     private static final long OUTPUTBUFFER_TO = -1L;
     private static final String TAG = "MediaDecoder2";
     protected static final long TIME_TO_NEXT_RETRY = 20L;
+    protected static final boolean USE_ANDROID_L_API;
     private InputDataSource mDataSource;
     protected MediaCodec mDecoder;
     private boolean mDecoderPause;
@@ -50,6 +51,10 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
     private LocalStateNotifier mOutputState;
     private HandlerThread mOutputThread;
     private String mTag;
+    
+    static {
+        USE_ANDROID_L_API = (AndroidUtils.getAndroidVersion() > 19);
+    }
     
     public MediaDecoderPipe2(final InputDataSource mDataSource, final String s, final MediaFormat mediaFormat, final Surface surface, final MediaCrypto mediaCrypto) throws Exception {
         this.mDecoder = null;
@@ -289,7 +294,6 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
                         }
                         while (true) {
                             final MediaCodec$BufferInfo mediaCodec$BufferInfo = new MediaCodec$BufferInfo();
-                        Label_0104:
                             while (true) {
                                 int dequeueOutputBuffer;
                                 try {
@@ -307,64 +311,51 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
                                 if (dequeueOutputBuffer == -3) {
                                     Log.d(MediaDecoderPipe2.this.mTag, "OUTPUT_BUFFERS_CHANGED");
                                     MediaDecoderPipe2.this.configureOutputBuffers();
-                                    continue Label_0104;
+                                    continue;
                                 }
                                 if (dequeueOutputBuffer == -2) {
                                     final MediaFormat outputFormat = MediaDecoderPipe2.this.mDecoder.getOutputFormat();
                                     if (Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
                                         Log.d(MediaDecoderPipe2.this.mTag, "OUTPUT_FORMAT_CHANGED " + outputFormat);
-                                        continue Label_0104;
+                                        continue;
                                     }
-                                    continue Label_0104;
+                                    continue;
                                 }
                                 else {
                                     if (dequeueOutputBuffer < 0 || dequeueOutputBuffer >= MediaDecoderPipe2.this.mOutputBufferCnt) {
                                         Log.e(MediaDecoderPipe2.this.mTag, dequeueOutputBuffer + " is not valid");
-                                        continue Label_0104;
+                                        continue;
                                     }
-                                Label_0587_Outer:
-                                    while (true) {
-                                        while (true) {
-                                        Label_0641:
-                                            while (true) {
-                                                synchronized (MediaDecoderPipe2.this.mOutputBuffersQ) {
-                                                    MediaDecoderPipe2.this.mOutputBuffersQ.add(dequeueOutputBuffer);
-                                                    MediaDecoderPipe2.this.mOutputBufferInfo[dequeueOutputBuffer] = mediaCodec$BufferInfo;
-                                                    // monitorexit(this.this$0.mOutputBuffersQ)
-                                                    if ((mediaCodec$BufferInfo.flags & 0x4) != 0x0) {
-                                                        Log.d(MediaDecoderPipe2.this.mTag, "got decoder output BUFFER_FLAG_END_OF_STREAM");
-                                                    }
-                                                    if (this.frameDecoded <= 0L && Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
-                                                        Log.d(MediaDecoderPipe2.this.mTag, "DequeueOutputBuffer " + dequeueOutputBuffer + " size= " + mediaCodec$BufferInfo.size + " @" + mediaCodec$BufferInfo.presentationTimeUs / 1000L + " ms");
-                                                    }
-                                                    if (MediaDecoderPipe2.this.mRefClock != null && mediaCodec$BufferInfo.presentationTimeUs / 1000L <= MediaDecoderPipe2.this.mRefClock.get() && Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
-                                                        Log.d(MediaDecoderPipe2.this.mTag, "STAT:DEC output late " + this.frameDecoded + " at " + MediaDecoderPipe2.this.mRefClock.get() + " by " + (mediaCodec$BufferInfo.presentationTimeUs / 1000L - MediaDecoderPipe2.this.mRefClock.get()) + " ms");
-                                                    }
-                                                    ++this.frameDecoded;
-                                                    if (MediaDecoderPipe2.this.mIsAudio) {
-                                                        dequeueOutputBuffer = MediaDecoderPipe2.this.mOutputBufferCnt - 1;
-                                                        if (dequeueOutputBuffer > 0) {
-                                                            break Label_0641;
-                                                        }
-                                                        final int n = 1;
-                                                        if (this.frameDecoded == n && MediaDecoderPipe2.this.mEventListener != null) {
-                                                            MediaDecoderPipe2.this.mEventListener.onDecoderStarted(MediaDecoderPipe2.this.mIsAudio);
-                                                            continue Label_0104;
-                                                        }
-                                                        continue Label_0104;
-                                                    }
-                                                }
-                                                dequeueOutputBuffer = 1;
-                                                continue Label_0587_Outer;
-                                            }
-                                            int n;
-                                            if ((n = dequeueOutputBuffer) >= 4) {
-                                                n = 4;
-                                                continue;
-                                            }
-                                            continue;
-                                        }
+                                    MediaDecoderPipe2.this.addToRenderer(dequeueOutputBuffer, mediaCodec$BufferInfo);
+                                    if ((mediaCodec$BufferInfo.flags & 0x4) != 0x0) {
+                                        Log.d(MediaDecoderPipe2.this.mTag, "got decoder output BUFFER_FLAG_END_OF_STREAM");
                                     }
+                                    if (this.frameDecoded <= 0L && Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
+                                        Log.d(MediaDecoderPipe2.this.mTag, "DequeueOutputBuffer " + dequeueOutputBuffer + " size= " + mediaCodec$BufferInfo.size + " @" + mediaCodec$BufferInfo.presentationTimeUs / 1000L + " ms");
+                                    }
+                                    if (MediaDecoderPipe2.this.mRefClock != null && mediaCodec$BufferInfo.presentationTimeUs / 1000L <= MediaDecoderPipe2.this.mRefClock.get() && Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
+                                        Log.d(MediaDecoderPipe2.this.mTag, "STAT:DEC output late " + this.frameDecoded + " at " + MediaDecoderPipe2.this.mRefClock.get() + " by " + (mediaCodec$BufferInfo.presentationTimeUs / 1000L - MediaDecoderPipe2.this.mRefClock.get()) + " ms");
+                                    }
+                                    ++this.frameDecoded;
+                                    int n;
+                                    if (MediaDecoderPipe2.this.mIsAudio) {
+                                        n = MediaDecoderPipe2.this.mOutputBufferCnt - 1;
+                                    }
+                                    else {
+                                        n = 1;
+                                    }
+                                    int n2;
+                                    if (n <= 0) {
+                                        n2 = 1;
+                                    }
+                                    else if ((n2 = n) >= 4) {
+                                        n2 = 4;
+                                    }
+                                    if (this.frameDecoded == n2 && MediaDecoderPipe2.this.mEventListener != null) {
+                                        MediaDecoderPipe2.this.mEventListener.onDecoderStarted(MediaDecoderPipe2.this.mIsAudio);
+                                        continue;
+                                    }
+                                    continue;
                                 }
                                 break;
                             }
@@ -619,6 +610,8 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
         this.mInputHandler.sendEmptyMessageDelayed(3, 20L);
         return true;
     }
+    
+    abstract void addToRenderer(final int p0, final MediaCodec$BufferInfo p1);
     
     abstract void createRenderer();
     

@@ -4,537 +4,1114 @@
 
 package com.google.android.gms.internal;
 
-import java.util.List;
-import java.util.HashSet;
-import com.google.android.gms.common.internal.safeparcel.a;
-import java.util.Set;
-import android.os.Parcelable;
-import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.HashMap;
+import com.google.android.gms.plus.model.moments.ItemScope;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public class ic implements Parcelable$Creator<ib>
+public final class ic extends ga implements SafeParcelable, ItemScope
 {
-    static void a(final ib ib, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
-        final Set<Integer> fa = ib.fa();
-        if (fa.contains(1)) {
-            b.c(parcel, 1, ib.getVersionCode());
-        }
-        if (fa.contains(2)) {
-            b.a(parcel, 2, (Parcelable)ib.fb(), n, true);
-        }
-        if (fa.contains(3)) {
-            b.a(parcel, 3, ib.getAdditionalName(), true);
-        }
-        if (fa.contains(4)) {
-            b.a(parcel, 4, (Parcelable)ib.fc(), n, true);
-        }
-        if (fa.contains(5)) {
-            b.a(parcel, 5, ib.getAddressCountry(), true);
-        }
-        if (fa.contains(6)) {
-            b.a(parcel, 6, ib.getAddressLocality(), true);
-        }
-        if (fa.contains(7)) {
-            b.a(parcel, 7, ib.getAddressRegion(), true);
-        }
-        if (fa.contains(8)) {
-            b.b(parcel, 8, ib.fd(), true);
-        }
-        if (fa.contains(9)) {
-            b.c(parcel, 9, ib.getAttendeeCount());
-        }
-        if (fa.contains(10)) {
-            b.b(parcel, 10, ib.fe(), true);
-        }
-        if (fa.contains(11)) {
-            b.a(parcel, 11, (Parcelable)ib.ff(), n, true);
-        }
-        if (fa.contains(12)) {
-            b.b(parcel, 12, ib.fg(), true);
-        }
-        if (fa.contains(13)) {
-            b.a(parcel, 13, ib.getBestRating(), true);
-        }
-        if (fa.contains(14)) {
-            b.a(parcel, 14, ib.getBirthDate(), true);
-        }
-        if (fa.contains(15)) {
-            b.a(parcel, 15, (Parcelable)ib.fh(), n, true);
-        }
-        if (fa.contains(17)) {
-            b.a(parcel, 17, ib.getContentSize(), true);
-        }
-        if (fa.contains(16)) {
-            b.a(parcel, 16, ib.getCaption(), true);
-        }
-        if (fa.contains(19)) {
-            b.b(parcel, 19, ib.fi(), true);
-        }
-        if (fa.contains(18)) {
-            b.a(parcel, 18, ib.getContentUrl(), true);
-        }
-        if (fa.contains(21)) {
-            b.a(parcel, 21, ib.getDateModified(), true);
-        }
-        if (fa.contains(20)) {
-            b.a(parcel, 20, ib.getDateCreated(), true);
-        }
-        if (fa.contains(23)) {
-            b.a(parcel, 23, ib.getDescription(), true);
-        }
-        if (fa.contains(22)) {
-            b.a(parcel, 22, ib.getDatePublished(), true);
-        }
-        if (fa.contains(25)) {
-            b.a(parcel, 25, ib.getEmbedUrl(), true);
-        }
-        if (fa.contains(24)) {
-            b.a(parcel, 24, ib.getDuration(), true);
-        }
-        if (fa.contains(27)) {
-            b.a(parcel, 27, ib.getFamilyName(), true);
-        }
-        if (fa.contains(26)) {
-            b.a(parcel, 26, ib.getEndDate(), true);
-        }
-        if (fa.contains(29)) {
-            b.a(parcel, 29, (Parcelable)ib.fj(), n, true);
-        }
-        if (fa.contains(28)) {
-            b.a(parcel, 28, ib.getGender(), true);
-        }
-        if (fa.contains(31)) {
-            b.a(parcel, 31, ib.getHeight(), true);
-        }
-        if (fa.contains(30)) {
-            b.a(parcel, 30, ib.getGivenName(), true);
-        }
-        if (fa.contains(34)) {
-            b.a(parcel, 34, (Parcelable)ib.fk(), n, true);
-        }
-        if (fa.contains(32)) {
-            b.a(parcel, 32, ib.getId(), true);
-        }
-        if (fa.contains(33)) {
-            b.a(parcel, 33, ib.getImage(), true);
-        }
-        if (fa.contains(38)) {
-            b.a(parcel, 38, ib.getLongitude());
-        }
-        if (fa.contains(39)) {
-            b.a(parcel, 39, ib.getName(), true);
-        }
-        if (fa.contains(36)) {
-            b.a(parcel, 36, ib.getLatitude());
-        }
-        if (fa.contains(37)) {
-            b.a(parcel, 37, (Parcelable)ib.fl(), n, true);
-        }
-        if (fa.contains(42)) {
-            b.a(parcel, 42, ib.getPlayerType(), true);
-        }
-        if (fa.contains(43)) {
-            b.a(parcel, 43, ib.getPostOfficeBoxNumber(), true);
-        }
-        if (fa.contains(40)) {
-            b.a(parcel, 40, (Parcelable)ib.fm(), n, true);
-        }
-        if (fa.contains(41)) {
-            b.b(parcel, 41, ib.fn(), true);
-        }
-        if (fa.contains(46)) {
-            b.a(parcel, 46, (Parcelable)ib.fo(), n, true);
-        }
-        if (fa.contains(47)) {
-            b.a(parcel, 47, ib.getStartDate(), true);
-        }
-        if (fa.contains(44)) {
-            b.a(parcel, 44, ib.getPostalCode(), true);
-        }
-        if (fa.contains(45)) {
-            b.a(parcel, 45, ib.getRatingValue(), true);
-        }
-        if (fa.contains(51)) {
-            b.a(parcel, 51, ib.getThumbnailUrl(), true);
-        }
-        if (fa.contains(50)) {
-            b.a(parcel, 50, (Parcelable)ib.fp(), n, true);
-        }
-        if (fa.contains(49)) {
-            b.a(parcel, 49, ib.getText(), true);
-        }
-        if (fa.contains(48)) {
-            b.a(parcel, 48, ib.getStreetAddress(), true);
-        }
-        if (fa.contains(55)) {
-            b.a(parcel, 55, ib.getWidth(), true);
-        }
-        if (fa.contains(54)) {
-            b.a(parcel, 54, ib.getUrl(), true);
-        }
-        if (fa.contains(53)) {
-            b.a(parcel, 53, ib.getType(), true);
-        }
-        if (fa.contains(52)) {
-            b.a(parcel, 52, ib.getTickerSymbol(), true);
-        }
-        if (fa.contains(56)) {
-            b.a(parcel, 56, ib.getWorstRating(), true);
-        }
-        b.D(parcel, o);
+    public static final id CREATOR;
+    private static final HashMap<String, a<?, ?>> UI;
+    private String HD;
+    private double NX;
+    private double NY;
+    private String Rd;
+    private final Set<Integer> UJ;
+    private ic UK;
+    private List<String> UL;
+    private ic UM;
+    private String UN;
+    private String UO;
+    private String UP;
+    private List<ic> UQ;
+    private int UR;
+    private List<ic> US;
+    private ic UT;
+    private List<ic> UU;
+    private String UV;
+    private String UW;
+    private ic UX;
+    private String UY;
+    private String UZ;
+    private String VA;
+    private String VB;
+    private String VC;
+    private String VD;
+    private List<ic> Va;
+    private String Vb;
+    private String Vc;
+    private String Vd;
+    private String Ve;
+    private String Vf;
+    private String Vg;
+    private String Vh;
+    private String Vi;
+    private ic Vj;
+    private String Vk;
+    private String Vl;
+    private String Vm;
+    private ic Vn;
+    private ic Vo;
+    private ic Vp;
+    private List<ic> Vq;
+    private String Vr;
+    private String Vs;
+    private String Vt;
+    private String Vu;
+    private ic Vv;
+    private String Vw;
+    private String Vx;
+    private String Vy;
+    private ic Vz;
+    private String lY;
+    private String mName;
+    private String ro;
+    private String wp;
+    private final int xH;
+    
+    static {
+        CREATOR = new id();
+        (UI = new HashMap<String, a<?, ?>>()).put("about", a.a("about", 2, (Class<?>)ic.class));
+        ic.UI.put("additionalName", (a<?, ?>)a.k("additionalName", 3));
+        ic.UI.put("address", a.a("address", 4, (Class<?>)ic.class));
+        ic.UI.put("addressCountry", (a<?, ?>)a.j("addressCountry", 5));
+        ic.UI.put("addressLocality", (a<?, ?>)a.j("addressLocality", 6));
+        ic.UI.put("addressRegion", (a<?, ?>)a.j("addressRegion", 7));
+        ic.UI.put("associated_media", (a<?, ?>)a.b("associated_media", 8, ic.class));
+        ic.UI.put("attendeeCount", (a<?, ?>)a.g("attendeeCount", 9));
+        ic.UI.put("attendees", (a<?, ?>)a.b("attendees", 10, ic.class));
+        ic.UI.put("audio", a.a("audio", 11, (Class<?>)ic.class));
+        ic.UI.put("author", (a<?, ?>)a.b("author", 12, ic.class));
+        ic.UI.put("bestRating", (a<?, ?>)a.j("bestRating", 13));
+        ic.UI.put("birthDate", (a<?, ?>)a.j("birthDate", 14));
+        ic.UI.put("byArtist", a.a("byArtist", 15, (Class<?>)ic.class));
+        ic.UI.put("caption", (a<?, ?>)a.j("caption", 16));
+        ic.UI.put("contentSize", (a<?, ?>)a.j("contentSize", 17));
+        ic.UI.put("contentUrl", (a<?, ?>)a.j("contentUrl", 18));
+        ic.UI.put("contributor", (a<?, ?>)a.b("contributor", 19, ic.class));
+        ic.UI.put("dateCreated", (a<?, ?>)a.j("dateCreated", 20));
+        ic.UI.put("dateModified", (a<?, ?>)a.j("dateModified", 21));
+        ic.UI.put("datePublished", (a<?, ?>)a.j("datePublished", 22));
+        ic.UI.put("description", (a<?, ?>)a.j("description", 23));
+        ic.UI.put("duration", (a<?, ?>)a.j("duration", 24));
+        ic.UI.put("embedUrl", (a<?, ?>)a.j("embedUrl", 25));
+        ic.UI.put("endDate", (a<?, ?>)a.j("endDate", 26));
+        ic.UI.put("familyName", (a<?, ?>)a.j("familyName", 27));
+        ic.UI.put("gender", (a<?, ?>)a.j("gender", 28));
+        ic.UI.put("geo", a.a("geo", 29, (Class<?>)ic.class));
+        ic.UI.put("givenName", (a<?, ?>)a.j("givenName", 30));
+        ic.UI.put("height", (a<?, ?>)a.j("height", 31));
+        ic.UI.put("id", (a<?, ?>)a.j("id", 32));
+        ic.UI.put("image", (a<?, ?>)a.j("image", 33));
+        ic.UI.put("inAlbum", a.a("inAlbum", 34, (Class<?>)ic.class));
+        ic.UI.put("latitude", (a<?, ?>)a.h("latitude", 36));
+        ic.UI.put("location", a.a("location", 37, (Class<?>)ic.class));
+        ic.UI.put("longitude", (a<?, ?>)a.h("longitude", 38));
+        ic.UI.put("name", (a<?, ?>)a.j("name", 39));
+        ic.UI.put("partOfTVSeries", a.a("partOfTVSeries", 40, (Class<?>)ic.class));
+        ic.UI.put("performers", (a<?, ?>)a.b("performers", 41, ic.class));
+        ic.UI.put("playerType", (a<?, ?>)a.j("playerType", 42));
+        ic.UI.put("postOfficeBoxNumber", (a<?, ?>)a.j("postOfficeBoxNumber", 43));
+        ic.UI.put("postalCode", (a<?, ?>)a.j("postalCode", 44));
+        ic.UI.put("ratingValue", (a<?, ?>)a.j("ratingValue", 45));
+        ic.UI.put("reviewRating", a.a("reviewRating", 46, (Class<?>)ic.class));
+        ic.UI.put("startDate", (a<?, ?>)a.j("startDate", 47));
+        ic.UI.put("streetAddress", (a<?, ?>)a.j("streetAddress", 48));
+        ic.UI.put("text", (a<?, ?>)a.j("text", 49));
+        ic.UI.put("thumbnail", a.a("thumbnail", 50, (Class<?>)ic.class));
+        ic.UI.put("thumbnailUrl", (a<?, ?>)a.j("thumbnailUrl", 51));
+        ic.UI.put("tickerSymbol", (a<?, ?>)a.j("tickerSymbol", 52));
+        ic.UI.put("type", (a<?, ?>)a.j("type", 53));
+        ic.UI.put("url", (a<?, ?>)a.j("url", 54));
+        ic.UI.put("width", (a<?, ?>)a.j("width", 55));
+        ic.UI.put("worstRating", (a<?, ?>)a.j("worstRating", 56));
     }
     
-    public ib as(final Parcel parcel) {
-        final int n = a.n(parcel);
-        final HashSet<Integer> set = new HashSet<Integer>();
-        int g = 0;
-        ib ib = null;
-        List<String> y = null;
-        ib ib2 = null;
-        String m = null;
-        String i = null;
-        String j = null;
-        List<ib> c = null;
-        int g2 = 0;
-        List<ib> c2 = null;
-        ib ib3 = null;
-        List<ib> c3 = null;
-        String k = null;
-        String l = null;
-        ib ib4 = null;
-        String m2 = null;
-        String m3 = null;
-        String m4 = null;
-        List<ib> c4 = null;
-        String m5 = null;
-        String m6 = null;
-        String m7 = null;
-        String m8 = null;
-        String m9 = null;
-        String m10 = null;
-        String m11 = null;
-        String m12 = null;
-        String m13 = null;
-        ib ib5 = null;
-        String m14 = null;
-        String m15 = null;
-        String m16 = null;
-        String m17 = null;
-        ib ib6 = null;
-        double k2 = 0.0;
-        ib ib7 = null;
-        double k3 = 0.0;
-        String m18 = null;
-        ib ib8 = null;
-        List<ib> c5 = null;
-        String m19 = null;
-        String m20 = null;
-        String m21 = null;
-        String m22 = null;
-        ib ib9 = null;
-        String m23 = null;
-        String m24 = null;
-        String m25 = null;
-        ib ib10 = null;
-        String m26 = null;
-        String m27 = null;
-        String m28 = null;
-        String m29 = null;
-        String m30 = null;
-        String m31 = null;
-        while (parcel.dataPosition() < n) {
-            final int m32 = a.m(parcel);
-            switch (a.M(m32)) {
-                default: {
-                    a.b(parcel, m32);
-                    continue;
-                }
-                case 1: {
-                    g = a.g(parcel, m32);
-                    set.add(1);
-                    continue;
-                }
-                case 2: {
-                    ib = a.a(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(2);
-                    continue;
-                }
-                case 3: {
-                    y = a.y(parcel, m32);
-                    set.add(3);
-                    continue;
-                }
-                case 4: {
-                    ib2 = a.a(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(4);
-                    continue;
-                }
-                case 5: {
-                    m = a.m(parcel, m32);
-                    set.add(5);
-                    continue;
-                }
-                case 6: {
-                    i = a.m(parcel, m32);
-                    set.add(6);
-                    continue;
-                }
-                case 7: {
-                    j = a.m(parcel, m32);
-                    set.add(7);
-                    continue;
-                }
-                case 8: {
-                    c = a.c(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(8);
-                    continue;
-                }
-                case 9: {
-                    g2 = a.g(parcel, m32);
-                    set.add(9);
-                    continue;
-                }
-                case 10: {
-                    c2 = a.c(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(10);
-                    continue;
-                }
-                case 11: {
-                    ib3 = a.a(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(11);
-                    continue;
-                }
-                case 12: {
-                    c3 = a.c(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(12);
-                    continue;
-                }
-                case 13: {
-                    k = a.m(parcel, m32);
-                    set.add(13);
-                    continue;
-                }
-                case 14: {
-                    l = a.m(parcel, m32);
-                    set.add(14);
-                    continue;
-                }
-                case 15: {
-                    ib4 = a.a(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(15);
-                    continue;
-                }
-                case 17: {
-                    m3 = a.m(parcel, m32);
-                    set.add(17);
-                    continue;
-                }
-                case 16: {
-                    m2 = a.m(parcel, m32);
-                    set.add(16);
-                    continue;
-                }
-                case 19: {
-                    c4 = a.c(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(19);
-                    continue;
-                }
-                case 18: {
-                    m4 = a.m(parcel, m32);
-                    set.add(18);
-                    continue;
-                }
-                case 21: {
-                    m6 = a.m(parcel, m32);
-                    set.add(21);
-                    continue;
-                }
-                case 20: {
-                    m5 = a.m(parcel, m32);
-                    set.add(20);
-                    continue;
-                }
-                case 23: {
-                    m8 = a.m(parcel, m32);
-                    set.add(23);
-                    continue;
-                }
-                case 22: {
-                    m7 = a.m(parcel, m32);
-                    set.add(22);
-                    continue;
-                }
-                case 25: {
-                    m10 = a.m(parcel, m32);
-                    set.add(25);
-                    continue;
-                }
-                case 24: {
-                    m9 = a.m(parcel, m32);
-                    set.add(24);
-                    continue;
-                }
-                case 27: {
-                    m12 = a.m(parcel, m32);
-                    set.add(27);
-                    continue;
-                }
-                case 26: {
-                    m11 = a.m(parcel, m32);
-                    set.add(26);
-                    continue;
-                }
-                case 29: {
-                    ib5 = a.a(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(29);
-                    continue;
-                }
-                case 28: {
-                    m13 = a.m(parcel, m32);
-                    set.add(28);
-                    continue;
-                }
-                case 31: {
-                    m15 = a.m(parcel, m32);
-                    set.add(31);
-                    continue;
-                }
-                case 30: {
-                    m14 = a.m(parcel, m32);
-                    set.add(30);
-                    continue;
-                }
-                case 34: {
-                    ib6 = a.a(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(34);
-                    continue;
-                }
-                case 32: {
-                    m16 = a.m(parcel, m32);
-                    set.add(32);
-                    continue;
-                }
-                case 33: {
-                    m17 = a.m(parcel, m32);
-                    set.add(33);
-                    continue;
-                }
-                case 38: {
-                    k3 = a.k(parcel, m32);
-                    set.add(38);
-                    continue;
-                }
-                case 39: {
-                    m18 = a.m(parcel, m32);
-                    set.add(39);
-                    continue;
-                }
-                case 36: {
-                    k2 = a.k(parcel, m32);
-                    set.add(36);
-                    continue;
-                }
-                case 37: {
-                    ib7 = a.a(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(37);
-                    continue;
-                }
-                case 42: {
-                    m19 = a.m(parcel, m32);
-                    set.add(42);
-                    continue;
-                }
-                case 43: {
-                    m20 = a.m(parcel, m32);
-                    set.add(43);
-                    continue;
-                }
-                case 40: {
-                    ib8 = a.a(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(40);
-                    continue;
-                }
-                case 41: {
-                    c5 = a.c(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(41);
-                    continue;
-                }
-                case 46: {
-                    ib9 = a.a(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(46);
-                    continue;
-                }
-                case 47: {
-                    m23 = a.m(parcel, m32);
-                    set.add(47);
-                    continue;
-                }
-                case 44: {
-                    m21 = a.m(parcel, m32);
-                    set.add(44);
-                    continue;
-                }
-                case 45: {
-                    m22 = a.m(parcel, m32);
-                    set.add(45);
-                    continue;
-                }
-                case 51: {
-                    m26 = a.m(parcel, m32);
-                    set.add(51);
-                    continue;
-                }
-                case 50: {
-                    ib10 = a.a(parcel, m32, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(50);
-                    continue;
-                }
-                case 49: {
-                    m25 = a.m(parcel, m32);
-                    set.add(49);
-                    continue;
-                }
-                case 48: {
-                    m24 = a.m(parcel, m32);
-                    set.add(48);
-                    continue;
-                }
-                case 55: {
-                    m30 = a.m(parcel, m32);
-                    set.add(55);
-                    continue;
-                }
-                case 54: {
-                    m29 = a.m(parcel, m32);
-                    set.add(54);
-                    continue;
-                }
-                case 53: {
-                    m28 = a.m(parcel, m32);
-                    set.add(53);
-                    continue;
-                }
-                case 52: {
-                    m27 = a.m(parcel, m32);
-                    set.add(52);
-                    continue;
-                }
-                case 56: {
-                    m31 = a.m(parcel, m32);
-                    set.add(56);
-                    continue;
-                }
+    public ic() {
+        this.xH = 1;
+        this.UJ = new HashSet<Integer>();
+    }
+    
+    ic(final Set<Integer> uj, final int xh, final ic uk, final List<String> ul, final ic um, final String un, final String uo, final String up, final List<ic> uq, final int ur, final List<ic> us, final ic ut, final List<ic> uu, final String uv, final String uw, final ic ux, final String uy, final String uz, final String ly, final List<ic> va, final String vb, final String vc, final String vd, final String hd, final String ve, final String vf, final String vg, final String vh, final String vi, final ic vj, final String vk, final String vl, final String wp, final String vm, final ic vn, final double nx, final ic vo, final double ny, final String mName, final ic vp, final List<ic> vq, final String vr, final String vs, final String vt, final String vu, final ic vv, final String vw, final String vx, final String vy, final ic vz, final String va2, final String vb2, final String rd, final String ro, final String vc2, final String vd2) {
+        this.UJ = uj;
+        this.xH = xh;
+        this.UK = uk;
+        this.UL = ul;
+        this.UM = um;
+        this.UN = un;
+        this.UO = uo;
+        this.UP = up;
+        this.UQ = uq;
+        this.UR = ur;
+        this.US = us;
+        this.UT = ut;
+        this.UU = uu;
+        this.UV = uv;
+        this.UW = uw;
+        this.UX = ux;
+        this.UY = uy;
+        this.UZ = uz;
+        this.lY = ly;
+        this.Va = va;
+        this.Vb = vb;
+        this.Vc = vc;
+        this.Vd = vd;
+        this.HD = hd;
+        this.Ve = ve;
+        this.Vf = vf;
+        this.Vg = vg;
+        this.Vh = vh;
+        this.Vi = vi;
+        this.Vj = vj;
+        this.Vk = vk;
+        this.Vl = vl;
+        this.wp = wp;
+        this.Vm = vm;
+        this.Vn = vn;
+        this.NX = nx;
+        this.Vo = vo;
+        this.NY = ny;
+        this.mName = mName;
+        this.Vp = vp;
+        this.Vq = vq;
+        this.Vr = vr;
+        this.Vs = vs;
+        this.Vt = vt;
+        this.Vu = vu;
+        this.Vv = vv;
+        this.Vw = vw;
+        this.Vx = vx;
+        this.Vy = vy;
+        this.Vz = vz;
+        this.VA = va2;
+        this.VB = vb2;
+        this.Rd = rd;
+        this.ro = ro;
+        this.VC = vc2;
+        this.VD = vd2;
+    }
+    
+    public ic(final Set<Integer> uj, final ic uk, final List<String> ul, final ic um, final String un, final String uo, final String up, final List<ic> uq, final int ur, final List<ic> us, final ic ut, final List<ic> uu, final String uv, final String uw, final ic ux, final String uy, final String uz, final String ly, final List<ic> va, final String vb, final String vc, final String vd, final String hd, final String ve, final String vf, final String vg, final String vh, final String vi, final ic vj, final String vk, final String vl, final String wp, final String vm, final ic vn, final double nx, final ic vo, final double ny, final String mName, final ic vp, final List<ic> vq, final String vr, final String vs, final String vt, final String vu, final ic vv, final String vw, final String vx, final String vy, final ic vz, final String va2, final String vb2, final String rd, final String ro, final String vc2, final String vd2) {
+        this.UJ = uj;
+        this.xH = 1;
+        this.UK = uk;
+        this.UL = ul;
+        this.UM = um;
+        this.UN = un;
+        this.UO = uo;
+        this.UP = up;
+        this.UQ = uq;
+        this.UR = ur;
+        this.US = us;
+        this.UT = ut;
+        this.UU = uu;
+        this.UV = uv;
+        this.UW = uw;
+        this.UX = ux;
+        this.UY = uy;
+        this.UZ = uz;
+        this.lY = ly;
+        this.Va = va;
+        this.Vb = vb;
+        this.Vc = vc;
+        this.Vd = vd;
+        this.HD = hd;
+        this.Ve = ve;
+        this.Vf = vf;
+        this.Vg = vg;
+        this.Vh = vh;
+        this.Vi = vi;
+        this.Vj = vj;
+        this.Vk = vk;
+        this.Vl = vl;
+        this.wp = wp;
+        this.Vm = vm;
+        this.Vn = vn;
+        this.NX = nx;
+        this.Vo = vo;
+        this.NY = ny;
+        this.mName = mName;
+        this.Vp = vp;
+        this.Vq = vq;
+        this.Vr = vr;
+        this.Vs = vs;
+        this.Vt = vt;
+        this.Vu = vu;
+        this.Vv = vv;
+        this.Vw = vw;
+        this.Vx = vx;
+        this.Vy = vy;
+        this.Vz = vz;
+        this.VA = va2;
+        this.VB = vb2;
+        this.Rd = rd;
+        this.ro = ro;
+        this.VC = vc2;
+        this.VD = vd2;
+    }
+    
+    @Override
+    protected boolean a(final a a) {
+        return this.UJ.contains(a.ff());
+    }
+    
+    @Override
+    protected Object aq(final String s) {
+        return null;
+    }
+    
+    @Override
+    protected boolean ar(final String s) {
+        return false;
+    }
+    
+    @Override
+    protected Object b(final a a) {
+        switch (a.ff()) {
+            default: {
+                throw new IllegalStateException("Unknown safe parcelable id=" + a.ff());
+            }
+            case 2: {
+                return this.UK;
+            }
+            case 3: {
+                return this.UL;
+            }
+            case 4: {
+                return this.UM;
+            }
+            case 5: {
+                return this.UN;
+            }
+            case 6: {
+                return this.UO;
+            }
+            case 7: {
+                return this.UP;
+            }
+            case 8: {
+                return this.UQ;
+            }
+            case 9: {
+                return this.UR;
+            }
+            case 10: {
+                return this.US;
+            }
+            case 11: {
+                return this.UT;
+            }
+            case 12: {
+                return this.UU;
+            }
+            case 13: {
+                return this.UV;
+            }
+            case 14: {
+                return this.UW;
+            }
+            case 15: {
+                return this.UX;
+            }
+            case 16: {
+                return this.UY;
+            }
+            case 17: {
+                return this.UZ;
+            }
+            case 18: {
+                return this.lY;
+            }
+            case 19: {
+                return this.Va;
+            }
+            case 20: {
+                return this.Vb;
+            }
+            case 21: {
+                return this.Vc;
+            }
+            case 22: {
+                return this.Vd;
+            }
+            case 23: {
+                return this.HD;
+            }
+            case 24: {
+                return this.Ve;
+            }
+            case 25: {
+                return this.Vf;
+            }
+            case 26: {
+                return this.Vg;
+            }
+            case 27: {
+                return this.Vh;
+            }
+            case 28: {
+                return this.Vi;
+            }
+            case 29: {
+                return this.Vj;
+            }
+            case 30: {
+                return this.Vk;
+            }
+            case 31: {
+                return this.Vl;
+            }
+            case 32: {
+                return this.wp;
+            }
+            case 33: {
+                return this.Vm;
+            }
+            case 34: {
+                return this.Vn;
+            }
+            case 36: {
+                return this.NX;
+            }
+            case 37: {
+                return this.Vo;
+            }
+            case 38: {
+                return this.NY;
+            }
+            case 39: {
+                return this.mName;
+            }
+            case 40: {
+                return this.Vp;
+            }
+            case 41: {
+                return this.Vq;
+            }
+            case 42: {
+                return this.Vr;
+            }
+            case 43: {
+                return this.Vs;
+            }
+            case 44: {
+                return this.Vt;
+            }
+            case 45: {
+                return this.Vu;
+            }
+            case 46: {
+                return this.Vv;
+            }
+            case 47: {
+                return this.Vw;
+            }
+            case 48: {
+                return this.Vx;
+            }
+            case 49: {
+                return this.Vy;
+            }
+            case 50: {
+                return this.Vz;
+            }
+            case 51: {
+                return this.VA;
+            }
+            case 52: {
+                return this.VB;
+            }
+            case 53: {
+                return this.Rd;
+            }
+            case 54: {
+                return this.ro;
+            }
+            case 55: {
+                return this.VC;
+            }
+            case 56: {
+                return this.VD;
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
-        }
-        return new ib(set, g, ib, y, ib2, m, i, j, c, g2, c2, ib3, c3, k, l, ib4, m2, m3, m4, c4, m5, m6, m7, m8, m9, m10, m11, m12, m13, ib5, m14, m15, m16, m17, ib6, k2, ib7, k3, m18, ib8, c5, m19, m20, m21, m22, ib9, m23, m24, m25, ib10, m26, m27, m28, m29, m30, m31);
     }
     
-    public ib[] bk(final int n) {
-        return new ib[n];
+    public int describeContents() {
+        final id creator = ic.CREATOR;
+        return 0;
+    }
+    
+    @Override
+    public HashMap<String, a<?, ?>> eY() {
+        return ic.UI;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof ic)) {
+            return false;
+        }
+        if (this == o) {
+            return true;
+        }
+        final ic ic = (ic)o;
+        for (final a a : com.google.android.gms.internal.ic.UI.values()) {
+            if (this.a((a)a)) {
+                if (!ic.a((a)a)) {
+                    return false;
+                }
+                if (!this.b((a)a).equals(ic.b((a)a))) {
+                    return false;
+                }
+                continue;
+            }
+            else {
+                if (ic.a((a)a)) {
+                    return false;
+                }
+                continue;
+            }
+        }
+        return true;
+    }
+    
+    @Override
+    public ItemScope getAbout() {
+        return this.UK;
+    }
+    
+    @Override
+    public List<String> getAdditionalName() {
+        return this.UL;
+    }
+    
+    @Override
+    public ItemScope getAddress() {
+        return this.UM;
+    }
+    
+    @Override
+    public String getAddressCountry() {
+        return this.UN;
+    }
+    
+    @Override
+    public String getAddressLocality() {
+        return this.UO;
+    }
+    
+    @Override
+    public String getAddressRegion() {
+        return this.UP;
+    }
+    
+    @Override
+    public List<ItemScope> getAssociated_media() {
+        return (List<ItemScope>)(ArrayList)this.UQ;
+    }
+    
+    @Override
+    public int getAttendeeCount() {
+        return this.UR;
+    }
+    
+    @Override
+    public List<ItemScope> getAttendees() {
+        return (List<ItemScope>)(ArrayList)this.US;
+    }
+    
+    @Override
+    public ItemScope getAudio() {
+        return this.UT;
+    }
+    
+    @Override
+    public List<ItemScope> getAuthor() {
+        return (List<ItemScope>)(ArrayList)this.UU;
+    }
+    
+    @Override
+    public String getBestRating() {
+        return this.UV;
+    }
+    
+    @Override
+    public String getBirthDate() {
+        return this.UW;
+    }
+    
+    @Override
+    public ItemScope getByArtist() {
+        return this.UX;
+    }
+    
+    @Override
+    public String getCaption() {
+        return this.UY;
+    }
+    
+    @Override
+    public String getContentSize() {
+        return this.UZ;
+    }
+    
+    @Override
+    public String getContentUrl() {
+        return this.lY;
+    }
+    
+    @Override
+    public List<ItemScope> getContributor() {
+        return (List<ItemScope>)(ArrayList)this.Va;
+    }
+    
+    @Override
+    public String getDateCreated() {
+        return this.Vb;
+    }
+    
+    @Override
+    public String getDateModified() {
+        return this.Vc;
+    }
+    
+    @Override
+    public String getDatePublished() {
+        return this.Vd;
+    }
+    
+    @Override
+    public String getDescription() {
+        return this.HD;
+    }
+    
+    @Override
+    public String getDuration() {
+        return this.Ve;
+    }
+    
+    @Override
+    public String getEmbedUrl() {
+        return this.Vf;
+    }
+    
+    @Override
+    public String getEndDate() {
+        return this.Vg;
+    }
+    
+    @Override
+    public String getFamilyName() {
+        return this.Vh;
+    }
+    
+    @Override
+    public String getGender() {
+        return this.Vi;
+    }
+    
+    @Override
+    public ItemScope getGeo() {
+        return this.Vj;
+    }
+    
+    @Override
+    public String getGivenName() {
+        return this.Vk;
+    }
+    
+    @Override
+    public String getHeight() {
+        return this.Vl;
+    }
+    
+    @Override
+    public String getId() {
+        return this.wp;
+    }
+    
+    @Override
+    public String getImage() {
+        return this.Vm;
+    }
+    
+    @Override
+    public ItemScope getInAlbum() {
+        return this.Vn;
+    }
+    
+    @Override
+    public double getLatitude() {
+        return this.NX;
+    }
+    
+    @Override
+    public ItemScope getLocation() {
+        return this.Vo;
+    }
+    
+    @Override
+    public double getLongitude() {
+        return this.NY;
+    }
+    
+    @Override
+    public String getName() {
+        return this.mName;
+    }
+    
+    @Override
+    public ItemScope getPartOfTVSeries() {
+        return this.Vp;
+    }
+    
+    @Override
+    public List<ItemScope> getPerformers() {
+        return (List<ItemScope>)(ArrayList)this.Vq;
+    }
+    
+    @Override
+    public String getPlayerType() {
+        return this.Vr;
+    }
+    
+    @Override
+    public String getPostOfficeBoxNumber() {
+        return this.Vs;
+    }
+    
+    @Override
+    public String getPostalCode() {
+        return this.Vt;
+    }
+    
+    @Override
+    public String getRatingValue() {
+        return this.Vu;
+    }
+    
+    @Override
+    public ItemScope getReviewRating() {
+        return this.Vv;
+    }
+    
+    @Override
+    public String getStartDate() {
+        return this.Vw;
+    }
+    
+    @Override
+    public String getStreetAddress() {
+        return this.Vx;
+    }
+    
+    @Override
+    public String getText() {
+        return this.Vy;
+    }
+    
+    @Override
+    public ItemScope getThumbnail() {
+        return this.Vz;
+    }
+    
+    @Override
+    public String getThumbnailUrl() {
+        return this.VA;
+    }
+    
+    @Override
+    public String getTickerSymbol() {
+        return this.VB;
+    }
+    
+    @Override
+    public String getType() {
+        return this.Rd;
+    }
+    
+    @Override
+    public String getUrl() {
+        return this.ro;
+    }
+    
+    int getVersionCode() {
+        return this.xH;
+    }
+    
+    @Override
+    public String getWidth() {
+        return this.VC;
+    }
+    
+    @Override
+    public String getWorstRating() {
+        return this.VD;
+    }
+    
+    @Override
+    public boolean hasAbout() {
+        return this.UJ.contains(2);
+    }
+    
+    @Override
+    public boolean hasAdditionalName() {
+        return this.UJ.contains(3);
+    }
+    
+    @Override
+    public boolean hasAddress() {
+        return this.UJ.contains(4);
+    }
+    
+    @Override
+    public boolean hasAddressCountry() {
+        return this.UJ.contains(5);
+    }
+    
+    @Override
+    public boolean hasAddressLocality() {
+        return this.UJ.contains(6);
+    }
+    
+    @Override
+    public boolean hasAddressRegion() {
+        return this.UJ.contains(7);
+    }
+    
+    @Override
+    public boolean hasAssociated_media() {
+        return this.UJ.contains(8);
+    }
+    
+    @Override
+    public boolean hasAttendeeCount() {
+        return this.UJ.contains(9);
+    }
+    
+    @Override
+    public boolean hasAttendees() {
+        return this.UJ.contains(10);
+    }
+    
+    @Override
+    public boolean hasAudio() {
+        return this.UJ.contains(11);
+    }
+    
+    @Override
+    public boolean hasAuthor() {
+        return this.UJ.contains(12);
+    }
+    
+    @Override
+    public boolean hasBestRating() {
+        return this.UJ.contains(13);
+    }
+    
+    @Override
+    public boolean hasBirthDate() {
+        return this.UJ.contains(14);
+    }
+    
+    @Override
+    public boolean hasByArtist() {
+        return this.UJ.contains(15);
+    }
+    
+    @Override
+    public boolean hasCaption() {
+        return this.UJ.contains(16);
+    }
+    
+    @Override
+    public boolean hasContentSize() {
+        return this.UJ.contains(17);
+    }
+    
+    @Override
+    public boolean hasContentUrl() {
+        return this.UJ.contains(18);
+    }
+    
+    @Override
+    public boolean hasContributor() {
+        return this.UJ.contains(19);
+    }
+    
+    @Override
+    public boolean hasDateCreated() {
+        return this.UJ.contains(20);
+    }
+    
+    @Override
+    public boolean hasDateModified() {
+        return this.UJ.contains(21);
+    }
+    
+    @Override
+    public boolean hasDatePublished() {
+        return this.UJ.contains(22);
+    }
+    
+    @Override
+    public boolean hasDescription() {
+        return this.UJ.contains(23);
+    }
+    
+    @Override
+    public boolean hasDuration() {
+        return this.UJ.contains(24);
+    }
+    
+    @Override
+    public boolean hasEmbedUrl() {
+        return this.UJ.contains(25);
+    }
+    
+    @Override
+    public boolean hasEndDate() {
+        return this.UJ.contains(26);
+    }
+    
+    @Override
+    public boolean hasFamilyName() {
+        return this.UJ.contains(27);
+    }
+    
+    @Override
+    public boolean hasGender() {
+        return this.UJ.contains(28);
+    }
+    
+    @Override
+    public boolean hasGeo() {
+        return this.UJ.contains(29);
+    }
+    
+    @Override
+    public boolean hasGivenName() {
+        return this.UJ.contains(30);
+    }
+    
+    @Override
+    public boolean hasHeight() {
+        return this.UJ.contains(31);
+    }
+    
+    @Override
+    public boolean hasId() {
+        return this.UJ.contains(32);
+    }
+    
+    @Override
+    public boolean hasImage() {
+        return this.UJ.contains(33);
+    }
+    
+    @Override
+    public boolean hasInAlbum() {
+        return this.UJ.contains(34);
+    }
+    
+    @Override
+    public boolean hasLatitude() {
+        return this.UJ.contains(36);
+    }
+    
+    @Override
+    public boolean hasLocation() {
+        return this.UJ.contains(37);
+    }
+    
+    @Override
+    public boolean hasLongitude() {
+        return this.UJ.contains(38);
+    }
+    
+    @Override
+    public boolean hasName() {
+        return this.UJ.contains(39);
+    }
+    
+    @Override
+    public boolean hasPartOfTVSeries() {
+        return this.UJ.contains(40);
+    }
+    
+    @Override
+    public boolean hasPerformers() {
+        return this.UJ.contains(41);
+    }
+    
+    @Override
+    public boolean hasPlayerType() {
+        return this.UJ.contains(42);
+    }
+    
+    @Override
+    public boolean hasPostOfficeBoxNumber() {
+        return this.UJ.contains(43);
+    }
+    
+    @Override
+    public boolean hasPostalCode() {
+        return this.UJ.contains(44);
+    }
+    
+    @Override
+    public boolean hasRatingValue() {
+        return this.UJ.contains(45);
+    }
+    
+    @Override
+    public boolean hasReviewRating() {
+        return this.UJ.contains(46);
+    }
+    
+    @Override
+    public boolean hasStartDate() {
+        return this.UJ.contains(47);
+    }
+    
+    @Override
+    public boolean hasStreetAddress() {
+        return this.UJ.contains(48);
+    }
+    
+    @Override
+    public boolean hasText() {
+        return this.UJ.contains(49);
+    }
+    
+    @Override
+    public boolean hasThumbnail() {
+        return this.UJ.contains(50);
+    }
+    
+    @Override
+    public boolean hasThumbnailUrl() {
+        return this.UJ.contains(51);
+    }
+    
+    @Override
+    public boolean hasTickerSymbol() {
+        return this.UJ.contains(52);
+    }
+    
+    @Override
+    public boolean hasType() {
+        return this.UJ.contains(53);
+    }
+    
+    @Override
+    public boolean hasUrl() {
+        return this.UJ.contains(54);
+    }
+    
+    @Override
+    public boolean hasWidth() {
+        return this.UJ.contains(55);
+    }
+    
+    @Override
+    public boolean hasWorstRating() {
+        return this.UJ.contains(56);
+    }
+    
+    @Override
+    public int hashCode() {
+        final Iterator<a<?, ?>> iterator = ic.UI.values().iterator();
+        int n = 0;
+        while (iterator.hasNext()) {
+            final a a = (a)iterator.next();
+            if (this.a((a)a)) {
+                n = this.b((a)a).hashCode() + (n + a.ff());
+            }
+        }
+        return n;
+    }
+    
+    public boolean isDataValid() {
+        return true;
+    }
+    
+    Set<Integer> ja() {
+        return this.UJ;
+    }
+    
+    ic jb() {
+        return this.UK;
+    }
+    
+    ic jc() {
+        return this.UM;
+    }
+    
+    List<ic> jd() {
+        return this.UQ;
+    }
+    
+    List<ic> je() {
+        return this.US;
+    }
+    
+    ic jf() {
+        return this.UT;
+    }
+    
+    List<ic> jg() {
+        return this.UU;
+    }
+    
+    ic jh() {
+        return this.UX;
+    }
+    
+    List<ic> ji() {
+        return this.Va;
+    }
+    
+    ic jj() {
+        return this.Vj;
+    }
+    
+    ic jk() {
+        return this.Vn;
+    }
+    
+    ic jl() {
+        return this.Vo;
+    }
+    
+    ic jm() {
+        return this.Vp;
+    }
+    
+    List<ic> jn() {
+        return this.Vq;
+    }
+    
+    ic jo() {
+        return this.Vv;
+    }
+    
+    ic jp() {
+        return this.Vz;
+    }
+    
+    public ic jq() {
+        return this;
+    }
+    
+    public void writeToParcel(final Parcel parcel, final int n) {
+        final id creator = ic.CREATOR;
+        id.a(this, parcel, n);
     }
 }

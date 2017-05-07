@@ -4,66 +4,126 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.internal.safeparcel.a;
-import com.google.android.gms.common.internal.safeparcel.b;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import com.google.android.gms.common.ConnectionResult;
+import android.os.Bundle;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import android.content.Context;
+import android.os.RemoteException;
 
-public class cv implements Parcelable$Creator<cu>
+public abstract class cv extends do
 {
-    static void a(final cu cu, final Parcel parcel, int o) {
-        o = b.o(parcel);
-        b.c(parcel, 1, cu.versionCode);
-        b.a(parcel, 2, cu.iJ, false);
-        b.c(parcel, 3, cu.iK);
-        b.c(parcel, 4, cu.iL);
-        b.a(parcel, 5, cu.iM);
-        b.D(parcel, o);
+    private final cx mQ;
+    private final cu.a pc;
+    
+    public cv(final cx mq, final cu.a pc) {
+        this.mQ = mq;
+        this.pc = pc;
     }
     
-    public cu h(final Parcel parcel) {
-        boolean c = false;
-        final int n = a.n(parcel);
-        String m = null;
-        int g = 0;
-        int g2 = 0;
-        int g3 = 0;
-        while (parcel.dataPosition() < n) {
-            final int i = a.m(parcel);
-            switch (a.M(i)) {
-                default: {
-                    a.b(parcel, i);
-                    continue;
-                }
-                case 1: {
-                    g3 = a.g(parcel, i);
-                    continue;
-                }
-                case 2: {
-                    m = a.m(parcel, i);
-                    continue;
-                }
-                case 3: {
-                    g2 = a.g(parcel, i);
-                    continue;
-                }
-                case 4: {
-                    g = a.g(parcel, i);
-                    continue;
-                }
-                case 5: {
-                    c = a.c(parcel, i);
-                    continue;
+    private static cz a(final db db, final cx cx) {
+        try {
+            return db.b(cx);
+        }
+        catch (RemoteException ex) {
+            dw.c("Could not fetch ad response from ad request service.", (Throwable)ex);
+            return null;
+        }
+    }
+    
+    @Override
+    public final void aY() {
+        try {
+            final db bf = this.bf();
+            cz a;
+            if (bf == null) {
+                a = new cz(0);
+            }
+            else if ((a = a(bf, this.mQ)) == null) {
+                a = new cz(0);
+            }
+            this.be();
+            this.pc.a(a);
+        }
+        finally {
+            this.be();
+        }
+    }
+    
+    public abstract void be();
+    
+    public abstract db bf();
+    
+    @Override
+    public final void onStop() {
+        this.be();
+    }
+    
+    public static final class a extends cv
+    {
+        private final Context mContext;
+        
+        public a(final Context mContext, final cx cx, final cu.a a) {
+            super(cx, a);
+            this.mContext = mContext;
+        }
+        
+        @Override
+        public void be() {
+        }
+        
+        @Override
+        public db bf() {
+            return dc.a(this.mContext, new ax(), new bg());
+        }
+    }
+    
+    public static final class b extends cv implements ConnectionCallbacks, OnConnectionFailedListener
+    {
+        private final Object li;
+        private final cu.a pc;
+        private final cw pd;
+        
+        public b(final Context context, final cx cx, final cu.a pc) {
+            super(cx, pc);
+            this.li = new Object();
+            this.pc = pc;
+            (this.pd = new cw(context, this, this, cx.kK.rs)).connect();
+        }
+        
+        @Override
+        public void be() {
+            synchronized (this.li) {
+                if (this.pd.isConnected() || this.pd.isConnecting()) {
+                    this.pd.disconnect();
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        
+        @Override
+        public db bf() {
+            synchronized (this.li) {
+                try {
+                    return this.pd.bi();
+                }
+                catch (IllegalStateException ex) {
+                    return null;
+                }
+            }
         }
-        return new cu(g3, m, g2, g, c);
-    }
-    
-    public cu[] o(final int n) {
-        return new cu[n];
+        
+        @Override
+        public void onConnected(final Bundle bundle) {
+            this.start();
+        }
+        
+        @Override
+        public void onConnectionFailed(final ConnectionResult connectionResult) {
+            this.pc.a(new cz(0));
+        }
+        
+        @Override
+        public void onDisconnected() {
+            dw.v("Disconnected from remote ad request service.");
+        }
     }
 }

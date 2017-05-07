@@ -28,6 +28,7 @@ import com.netflix.mediaclient.service.logging.apm.model.UserSessionStartedEvent
 import com.netflix.mediaclient.service.logging.client.model.Event;
 import java.util.Collections;
 import java.util.HashMap;
+import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.service.logging.apm.UserSession;
 import com.netflix.mediaclient.service.logging.apm.UIStartupSession;
 import com.netflix.mediaclient.service.logging.apm.UIBrowseStartupSession;
@@ -35,7 +36,6 @@ import com.netflix.mediaclient.service.logging.apm.UIModelessViewSession;
 import com.netflix.mediaclient.service.logging.apm.UIDataRequestSession;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.service.logging.apm.UIAssetRequestSession;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.apm.ApplicationSession;
@@ -46,7 +46,6 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     private static final String TAG = "nf_log";
     private ApplicationSession mApplicationSession;
     private Map<String, UIAssetRequestSession> mAssetRequests;
-    private ServiceAgent.ConfigurationAgentInterface mConfig;
     private IClientLogging.ModalView mCurrentUiView;
     private DataContext mDataContext;
     private Map<String, UIDataRequestSession> mDataRequests;
@@ -57,12 +56,11 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     private UIStartupSession mUIStartupSession;
     private UserSession mUserSession;
     
-    ApmLoggingImpl(final EventHandler mEventHandler, final ServiceAgent.ConfigurationAgentInterface mConfig) {
+    ApmLoggingImpl(final EventHandler mEventHandler, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface) {
         this.mDataRequests = Collections.synchronizedMap(new HashMap<String, UIDataRequestSession>());
         this.mAssetRequests = Collections.synchronizedMap(new HashMap<String, UIAssetRequestSession>());
         this.mDialogSessions = Collections.synchronizedMap(new HashMap<String, UIModelessViewSession>());
         this.mEventHandler = mEventHandler;
-        this.mConfig = mConfig;
     }
     
     private void populateEvent(final Event event, final DataContext dataContext, final IClientLogging.ModalView modalView) {

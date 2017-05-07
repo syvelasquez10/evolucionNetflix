@@ -9,8 +9,8 @@ import android.os.Parcel;
 
 public class h
 {
-    static void a(final PolylineOptions polylineOptions, final Parcel parcel, int o) {
-        o = b.o(parcel);
+    static void a(final PolylineOptions polylineOptions, final Parcel parcel, int p3) {
+        p3 = b.p(parcel);
         b.c(parcel, 1, polylineOptions.getVersionCode());
         b.b(parcel, 2, polylineOptions.getPoints(), false);
         b.a(parcel, 3, polylineOptions.getWidth());
@@ -18,6 +18,6 @@ public class h
         b.a(parcel, 5, polylineOptions.getZIndex());
         b.a(parcel, 6, polylineOptions.isVisible());
         b.a(parcel, 7, polylineOptions.isGeodesic());
-        b.D(parcel, o);
+        b.F(parcel, p3);
     }
 }

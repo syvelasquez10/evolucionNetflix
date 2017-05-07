@@ -9,18 +9,18 @@ import android.os.Bundle;
 
 public abstract class DataBuffer<T> implements Iterable<T>
 {
-    protected final DataHolder nE;
+    protected final DataHolder BB;
     
-    protected DataBuffer(final DataHolder ne) {
-        this.nE = ne;
-        if (this.nE != null) {
-            this.nE.c(this);
+    protected DataBuffer(final DataHolder bb) {
+        this.BB = bb;
+        if (this.BB != null) {
+            this.BB.c(this);
         }
     }
     
     public void close() {
-        if (this.nE != null) {
-            this.nE.close();
+        if (this.BB != null) {
+            this.BB.close();
         }
     }
     
@@ -31,18 +31,18 @@ public abstract class DataBuffer<T> implements Iterable<T>
     public abstract T get(final int p0);
     
     public int getCount() {
-        if (this.nE == null) {
+        if (this.BB == null) {
             return 0;
         }
-        return this.nE.getCount();
+        return this.BB.getCount();
     }
     
     public Bundle getMetadata() {
-        return this.nE.getMetadata();
+        return this.BB.getMetadata();
     }
     
     public boolean isClosed() {
-        return this.nE == null || this.nE.isClosed();
+        return this.BB == null || this.BB.isClosed();
     }
     
     @Override

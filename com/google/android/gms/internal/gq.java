@@ -4,11 +4,32 @@
 
 package com.google.android.gms.internal;
 
-import android.os.IInterface;
+import java.util.Iterator;
+import java.util.HashMap;
 
-public interface gq<T extends IInterface>
+public class gq
 {
-    void bP();
-    
-    T bQ();
+    public static void a(final StringBuilder sb, final HashMap<String, String> hashMap) {
+        sb.append("{");
+        final Iterator<String> iterator = hashMap.keySet().iterator();
+        int n = 1;
+        while (iterator.hasNext()) {
+            final String s = iterator.next();
+            if (n == 0) {
+                sb.append(",");
+            }
+            else {
+                n = 0;
+            }
+            final String s2 = hashMap.get(s);
+            sb.append("\"").append(s).append("\":");
+            if (s2 == null) {
+                sb.append("null");
+            }
+            else {
+                sb.append("\"").append(s2).append("\"");
+            }
+        }
+        sb.append("}");
+    }
 }

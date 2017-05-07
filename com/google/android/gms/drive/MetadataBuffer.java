@@ -15,61 +15,71 @@ import com.google.android.gms.common.data.DataBuffer;
 
 public final class MetadataBuffer extends DataBuffer<Metadata>
 {
-    private static final String[] qS;
-    private final String qT;
+    private static final String[] EL;
+    private final String EM;
+    private a EN;
     
     static {
         final ArrayList list = new ArrayList();
-        final Iterator<MetadataField<?>> iterator = c.cW().iterator();
+        final Iterator<MetadataField<?>> iterator = c.fS().iterator();
         while (iterator.hasNext()) {
-            list.addAll(iterator.next().cV());
+            list.addAll(iterator.next().fR());
         }
-        qS = (String[])list.toArray(new String[0]);
+        EL = (String[])list.toArray(new String[0]);
     }
     
-    public MetadataBuffer(final DataHolder dataHolder, final String qt) {
+    public MetadataBuffer(final DataHolder dataHolder, final String em) {
         super(dataHolder);
-        this.qT = qt;
+        this.EM = em;
     }
     
     @Override
     public Metadata get(final int n) {
-        return new a(this.nE, n);
+        final a en = this.EN;
+        if (en != null) {
+            final a en2 = en;
+            if (en.EO == n) {
+                return en2;
+            }
+        }
+        final a en2 = new a(this.BB, n);
+        this.EN = en2;
+        return en2;
     }
     
     public String getNextPageToken() {
-        return this.qT;
+        return this.EM;
     }
     
     private static class a extends Metadata
     {
-        private final DataHolder nE;
-        private final int nH;
-        private final int qU;
+        private final DataHolder BB;
+        private final int BE;
+        private final int EO;
         
-        public a(final DataHolder ne, final int qu) {
-            this.nE = ne;
-            this.qU = qu;
-            this.nH = ne.C(qu);
+        public a(final DataHolder bb, final int eo) {
+            this.BB = bb;
+            this.EO = eo;
+            this.BE = bb.G(eo);
         }
         
         @Override
         protected <T> T a(final MetadataField<T> metadataField) {
-            return metadataField.c(this.nE, this.qU, this.nH);
+            return metadataField.a(this.BB, this.EO, this.BE);
         }
         
-        public Metadata cK() {
-            final MetadataBundle cx = MetadataBundle.cX();
-            final Iterator<MetadataField<?>> iterator = c.cW().iterator();
+        public Metadata fB() {
+            final MetadataBundle ft = MetadataBundle.fT();
+            final Iterator<MetadataField<?>> iterator = c.fS().iterator();
             while (iterator.hasNext()) {
-                iterator.next().a(this.nE, cx, this.qU, this.nH);
+                iterator.next().a(this.BB, ft, this.EO, this.BE);
             }
-            return new b(cx);
+            return new b(ft);
         }
         
         @Override
         public boolean isDataValid() {
-            return !this.nE.isClosed();
+            return !this.BB.isClosed();
         }
     }
 }

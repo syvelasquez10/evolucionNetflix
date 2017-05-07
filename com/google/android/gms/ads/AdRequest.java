@@ -4,12 +4,15 @@
 
 package com.google.android.gms.ads;
 
+import com.google.android.gms.internal.fq;
 import android.content.Context;
+import android.os.Bundle;
+import com.google.android.gms.ads.mediation.MediationAdapter;
 import com.google.android.gms.ads.mediation.NetworkExtras;
 import android.location.Location;
 import java.util.Set;
 import java.util.Date;
-import com.google.android.gms.internal.af;
+import com.google.android.gms.internal.as;
 
 public final class AdRequest
 {
@@ -21,64 +24,79 @@ public final class AdRequest
     public static final int GENDER_FEMALE = 2;
     public static final int GENDER_MALE = 1;
     public static final int GENDER_UNKNOWN = 0;
-    private final af dW;
+    public static final int MAX_CONTENT_URL_LENGTH = 512;
+    private final as kp;
     
     static {
-        DEVICE_ID_EMULATOR = af.DEVICE_ID_EMULATOR;
+        DEVICE_ID_EMULATOR = as.DEVICE_ID_EMULATOR;
     }
     
     private AdRequest(final Builder builder) {
-        this.dW = new af(builder.dX);
+        this.kp = new as(builder.kq);
+    }
+    
+    as O() {
+        return this.kp;
     }
     
     public Date getBirthday() {
-        return this.dW.getBirthday();
+        return this.kp.getBirthday();
+    }
+    
+    public String getContentUrl() {
+        return this.kp.getContentUrl();
     }
     
     public int getGender() {
-        return this.dW.getGender();
+        return this.kp.getGender();
     }
     
     public Set<String> getKeywords() {
-        return this.dW.getKeywords();
+        return this.kp.getKeywords();
     }
     
     public Location getLocation() {
-        return this.dW.getLocation();
+        return this.kp.getLocation();
     }
     
+    @Deprecated
     public <T extends NetworkExtras> T getNetworkExtras(final Class<T> clazz) {
-        return this.dW.getNetworkExtras(clazz);
+        return this.kp.getNetworkExtras(clazz);
+    }
+    
+    public <T extends MediationAdapter> Bundle getNetworkExtrasBundle(final Class<T> clazz) {
+        return this.kp.getNetworkExtrasBundle(clazz);
     }
     
     public boolean isTestDevice(final Context context) {
-        return this.dW.isTestDevice(context);
-    }
-    
-    af v() {
-        return this.dW;
+        return this.kp.isTestDevice(context);
     }
     
     public static final class Builder
     {
-        private final af.a dX;
+        private final as.a kq;
         
         public Builder() {
-            this.dX = new af.a();
+            this.kq = new as.a();
         }
         
         public Builder addKeyword(final String s) {
-            this.dX.g(s);
+            this.kq.g(s);
             return this;
         }
         
         public Builder addNetworkExtras(final NetworkExtras networkExtras) {
-            this.dX.a(networkExtras);
+            this.kq.a(networkExtras);
+            return this;
+        }
+        
+        public Builder addNetworkExtrasBundle(final Class<? extends MediationAdapter> clazz, final Bundle bundle) {
+            this.kq.a(clazz, bundle);
             return this;
         }
         
         public Builder addTestDevice(final String s) {
-            this.dX.h(s);
+            this.kq.h(s);
             return this;
         }
         
@@ -87,22 +105,30 @@ public final class AdRequest
         }
         
         public Builder setBirthday(final Date date) {
-            this.dX.a(date);
+            this.kq.a(date);
+            return this;
+        }
+        
+        public Builder setContentUrl(final String s) {
+            fq.b(s, (Object)"Content URL must be non-null.");
+            fq.b(s, (Object)"Content URL must be non-empty.");
+            fq.a(s.length() <= 512, "Content URL must not exceed %d in length.  Provided length was %d.", 512, s.length());
+            this.kq.i(s);
             return this;
         }
         
         public Builder setGender(final int n) {
-            this.dX.d(n);
+            this.kq.d(n);
             return this;
         }
         
         public Builder setLocation(final Location location) {
-            this.dX.a(location);
+            this.kq.a(location);
             return this;
         }
         
         public Builder tagForChildDirectedTreatment(final boolean b) {
-            this.dX.e(b);
+            this.kq.g(b);
             return this;
         }
     }

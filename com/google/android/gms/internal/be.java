@@ -4,142 +4,121 @@
 
 package com.google.android.gms.internal;
 
-import com.google.ads.mediation.MediationBannerListener;
-import com.google.ads.mediation.MediationBannerAdapter;
-import com.google.ads.mediation.MediationInterstitialListener;
-import com.google.android.gms.dynamic.c;
-import android.app.Activity;
-import com.google.ads.mediation.MediationInterstitialAdapter;
-import com.google.android.gms.dynamic.b;
-import java.util.Iterator;
-import com.google.ads.mediation.admob.AdMobServerParameters;
+import android.view.MotionEvent;
+import android.os.SystemClock;
 import java.util.Map;
-import android.os.RemoteException;
-import java.util.HashMap;
-import org.json.JSONObject;
-import com.google.ads.mediation.MediationAdapter;
-import com.google.ads.mediation.MediationServerParameters;
-import com.google.ads.mediation.NetworkExtras;
+import android.util.DisplayMetrics;
 
-public final class be<NETWORK_EXTRAS extends NetworkExtras, SERVER_PARAMETERS extends MediationServerParameters> extends bc.a
+public final class be implements bb
 {
-    private final MediationAdapter<NETWORK_EXTRAS, SERVER_PARAMETERS> gg;
-    private final NETWORK_EXTRAS gh;
-    
-    public be(final MediationAdapter<NETWORK_EXTRAS, SERVER_PARAMETERS> gg, final NETWORK_EXTRAS gh) {
-        this.gg = gg;
-        this.gh = gh;
+    private static int a(final DisplayMetrics displayMetrics, Map<String, String> s, final String s2, final int n) {
+        s = ((Map<String, String>)s).get(s2);
+        int a = n;
+        if (s == null) {
+            return a;
+        }
+        try {
+            a = dv.a(displayMetrics, Integer.parseInt(s));
+            return a;
+        }
+        catch (NumberFormatException ex) {
+            dw.z("Could not parse " + s2 + " in a video GMSG: " + s);
+            return n;
+        }
     }
     
-    private SERVER_PARAMETERS a(final String s, final int tagForChildDirectedTreatment, final String adJson) throws RemoteException {
-        HashMap<String, String> hashMap;
-        if (s != null) {
-            try {
-                final JSONObject jsonObject = new JSONObject(s);
-                hashMap = new HashMap<String, String>(jsonObject.length());
-                final Iterator keys = jsonObject.keys();
-                while (keys.hasNext()) {
-                    final String s2 = keys.next();
-                    hashMap.put(s2, jsonObject.getString(s2));
-                }
+    @Override
+    public void b(dz dz, final Map<String, String> map) {
+        final String s = map.get("action");
+        if (s == null) {
+            dw.z("Action missing from video GMSG.");
+            return;
+        }
+        final cc bh = dz.bH();
+        if (bh == null) {
+            dw.z("Could not get ad overlay for a video GMSG.");
+            return;
+        }
+        final boolean equalsIgnoreCase = "new".equalsIgnoreCase(s);
+        final boolean equalsIgnoreCase2 = "position".equalsIgnoreCase(s);
+        if (equalsIgnoreCase || equalsIgnoreCase2) {
+            final DisplayMetrics displayMetrics = dz.getContext().getResources().getDisplayMetrics();
+            final int a = a(displayMetrics, map, "x", 0);
+            final int a2 = a(displayMetrics, map, "y", 0);
+            final int a3 = a(displayMetrics, map, "w", -1);
+            final int a4 = a(displayMetrics, map, "h", -1);
+            if (equalsIgnoreCase && bh.aK() == null) {
+                bh.c(a, a2, a3, a4);
+                return;
             }
-            catch (Throwable t) {
-                ct.b("Could not get MediationServerParameters.", t);
-                throw new RemoteException();
-            }
+            bh.b(a, a2, a3, a4);
         }
         else {
-            hashMap = new HashMap<String, String>(0);
-        }
-        final Class<SERVER_PARAMETERS> serverParametersType = this.gg.getServerParametersType();
-        MediationServerParameters mediationServerParameters = null;
-        if (serverParametersType != null) {
-            mediationServerParameters = serverParametersType.newInstance();
-            mediationServerParameters.load(hashMap);
-        }
-        if (mediationServerParameters instanceof AdMobServerParameters) {
-            final AdMobServerParameters adMobServerParameters = (AdMobServerParameters)mediationServerParameters;
-            adMobServerParameters.adJson = adJson;
-            adMobServerParameters.tagForChildDirectedTreatment = tagForChildDirectedTreatment;
-            return (SERVER_PARAMETERS)mediationServerParameters;
-        }
-        return (SERVER_PARAMETERS)mediationServerParameters;
-    }
-    
-    public void a(final b b, final v v, final String s, final bd bd) throws RemoteException {
-        this.a(b, v, s, null, bd);
-    }
-    
-    public void a(final b b, final v v, final String s, final String s2, final bd bd) throws RemoteException {
-        if (!(this.gg instanceof MediationInterstitialAdapter)) {
-            ct.v("MediationAdapter is not a MediationInterstitialAdapter: " + this.gg.getClass().getCanonicalName());
-            throw new RemoteException();
-        }
-        ct.r("Requesting interstitial ad from adapter.");
-        try {
-            ((MediationInterstitialAdapter)this.gg).requestInterstitialAd(new bf<Object, Object>(bd), c.b(b), this.a(s, v.tagForChildDirectedTreatment, s2), bg.e(v), this.gh);
-        }
-        catch (Throwable t) {
-            ct.b("Could not request interstitial ad from adapter.", t);
-            throw new RemoteException();
-        }
-    }
-    
-    public void a(final b b, final x x, final v v, final String s, final bd bd) throws RemoteException {
-        this.a(b, x, v, s, null, bd);
-    }
-    
-    public void a(final b b, final x x, final v v, final String s, final String s2, final bd bd) throws RemoteException {
-        if (!(this.gg instanceof MediationBannerAdapter)) {
-            ct.v("MediationAdapter is not a MediationBannerAdapter: " + this.gg.getClass().getCanonicalName());
-            throw new RemoteException();
-        }
-        ct.r("Requesting banner ad from adapter.");
-        try {
-            ((MediationBannerAdapter)this.gg).requestBannerAd(new bf<Object, Object>(bd), c.b(b), this.a(s, v.tagForChildDirectedTreatment, s2), bg.b(x), bg.e(v), this.gh);
-        }
-        catch (Throwable t) {
-            ct.b("Could not request banner ad from adapter.", t);
-            throw new RemoteException();
-        }
-    }
-    
-    public void destroy() throws RemoteException {
-        try {
-            this.gg.destroy();
-        }
-        catch (Throwable t) {
-            ct.b("Could not destroy adapter.", t);
-            throw new RemoteException();
-        }
-    }
-    
-    public b getView() throws RemoteException {
-        if (!(this.gg instanceof MediationBannerAdapter)) {
-            ct.v("MediationAdapter is not a MediationBannerAdapter: " + this.gg.getClass().getCanonicalName());
-            throw new RemoteException();
-        }
-        try {
-            return c.h(((MediationBannerAdapter)this.gg).getBannerView());
-        }
-        catch (Throwable t) {
-            ct.b("Could not get banner view from adapter.", t);
-            throw new RemoteException();
-        }
-    }
-    
-    public void showInterstitial() throws RemoteException {
-        if (!(this.gg instanceof MediationInterstitialAdapter)) {
-            ct.v("MediationAdapter is not a MediationInterstitialAdapter: " + this.gg.getClass().getCanonicalName());
-            throw new RemoteException();
-        }
-        ct.r("Showing interstitial from adapter.");
-        try {
-            ((MediationInterstitialAdapter)this.gg).showInterstitial();
-        }
-        catch (Throwable t) {
-            ct.b("Could not show interstitial from adapter.", t);
-            throw new RemoteException();
+            final cg ak = bh.aK();
+            if (ak == null) {
+                cg.a(dz, "no_video_view", (String)null);
+                return;
+            }
+            if ("click".equalsIgnoreCase(s)) {
+                final DisplayMetrics displayMetrics2 = dz.getContext().getResources().getDisplayMetrics();
+                final int a5 = a(displayMetrics2, map, "x", 0);
+                final int a6 = a(displayMetrics2, map, "y", 0);
+                final long uptimeMillis = SystemClock.uptimeMillis();
+                final MotionEvent obtain = MotionEvent.obtain(uptimeMillis, uptimeMillis, 0, (float)a5, (float)a6, 0);
+                ak.b(obtain);
+                obtain.recycle();
+                return;
+            }
+            if ("controls".equalsIgnoreCase(s)) {
+                final String s2 = map.get("enabled");
+                if (s2 == null) {
+                    dw.z("Enabled parameter missing from controls video GMSG.");
+                    return;
+                }
+                ak.k(Boolean.parseBoolean(s2));
+            }
+            else {
+                if ("currentTime".equalsIgnoreCase(s)) {
+                    dz = (dz)map.get("time");
+                    if (dz == null) {
+                        dw.z("Time parameter missing from currentTime video GMSG.");
+                        return;
+                    }
+                    try {
+                        ak.seekTo((int)(Float.parseFloat((String)dz) * 1000.0f));
+                        return;
+                    }
+                    catch (NumberFormatException ex) {
+                        dw.z("Could not parse time parameter from currentTime video GMSG: " + (String)dz);
+                        return;
+                    }
+                }
+                if ("hide".equalsIgnoreCase(s)) {
+                    ak.setVisibility(4);
+                    return;
+                }
+                if ("load".equalsIgnoreCase(s)) {
+                    ak.aU();
+                    return;
+                }
+                if ("pause".equalsIgnoreCase(s)) {
+                    ak.pause();
+                    return;
+                }
+                if ("play".equalsIgnoreCase(s)) {
+                    ak.play();
+                    return;
+                }
+                if ("show".equalsIgnoreCase(s)) {
+                    ak.setVisibility(0);
+                    return;
+                }
+                if ("src".equalsIgnoreCase(s)) {
+                    ak.o(map.get("src"));
+                    return;
+                }
+                dw.z("Unknown video action: " + s);
+            }
         }
     }
 }

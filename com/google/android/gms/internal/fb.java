@@ -4,21 +4,40 @@
 
 package com.google.android.gms.internal;
 
-import android.util.Base64;
+import android.util.Log;
+import android.os.Looper;
 
 public final class fb
 {
-    public static String b(final byte[] array) {
-        if (array == null) {
-            return null;
+    public static void a(final boolean b, final Object o) {
+        if (!b) {
+            throw new IllegalStateException(String.valueOf(o));
         }
-        return Base64.encodeToString(array, 0);
     }
     
-    public static String c(final byte[] array) {
-        if (array == null) {
-            return null;
+    public static void aj(final String s) {
+        if (Looper.getMainLooper().getThread() != Thread.currentThread()) {
+            Log.e("Asserts", "checkMainThread: current thread " + Thread.currentThread() + " IS NOT the main thread " + Looper.getMainLooper().getThread() + "!");
+            throw new IllegalStateException(s);
         }
-        return Base64.encodeToString(array, 10);
+    }
+    
+    public static void ak(final String s) {
+        if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+            Log.e("Asserts", "checkNotMainThread: current thread " + Thread.currentThread() + " IS the main thread " + Looper.getMainLooper().getThread() + "!");
+            throw new IllegalStateException(s);
+        }
+    }
+    
+    public static void d(final Object o) {
+        if (o == null) {
+            throw new IllegalArgumentException("null reference");
+        }
+    }
+    
+    public static void x(final boolean b) {
+        if (!b) {
+            throw new IllegalStateException();
+        }
     }
 }

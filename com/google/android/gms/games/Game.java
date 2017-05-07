@@ -11,6 +11,14 @@ import android.os.Parcelable;
 
 public interface Game extends Parcelable, Freezable<Game>
 {
+    boolean gb();
+    
+    boolean gc();
+    
+    boolean gd();
+    
+    String ge();
+    
     int getAchievementTotalCount();
     
     String getApplicationId();
@@ -29,13 +37,18 @@ public interface Game extends Parcelable, Freezable<Game>
     
     Uri getFeaturedImageUri();
     
-    int getGameplayAclStatus();
+    @Deprecated
+    String getFeaturedImageUrl();
     
     Uri getHiResImageUri();
     
+    @Deprecated
+    String getHiResImageUrl();
+    
     Uri getIconImageUri();
     
-    String getInstancePackageName();
+    @Deprecated
+    String getIconImageUrl();
     
     int getLeaderboardCount();
     
@@ -43,9 +56,9 @@ public interface Game extends Parcelable, Freezable<Game>
     
     String getSecondaryCategory();
     
-    boolean isInstanceInstalled();
+    int gf();
     
-    boolean isPlayEnabledGame();
+    boolean isMuted();
     
     boolean isRealTimeMultiplayerEnabled();
     

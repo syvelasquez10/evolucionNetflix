@@ -4,55 +4,55 @@
 
 package com.google.android.gms.drive.internal;
 
-import com.google.android.gms.drive.Contents;
+import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class b implements Parcelable$Creator<CloseContentsRequest>
+public class b implements Parcelable$Creator<AuthorizeAccessRequest>
 {
-    static void a(final CloseContentsRequest closeContentsRequest, final Parcel parcel, final int n) {
-        final int o = com.google.android.gms.common.internal.safeparcel.b.o(parcel);
-        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1, closeContentsRequest.kg);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 2, (Parcelable)closeContentsRequest.qX, n, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 3, closeContentsRequest.qY, false);
-        com.google.android.gms.common.internal.safeparcel.b.D(parcel, o);
+    static void a(final AuthorizeAccessRequest authorizeAccessRequest, final Parcel parcel, final int n) {
+        final int p3 = com.google.android.gms.common.internal.safeparcel.b.p(parcel);
+        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1, authorizeAccessRequest.xH);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 2, authorizeAccessRequest.EU);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 3, (Parcelable)authorizeAccessRequest.Ew, n, false);
+        com.google.android.gms.common.internal.safeparcel.b.F(parcel, p3);
     }
     
-    public CloseContentsRequest A(final Parcel parcel) {
-        Boolean d = null;
-        final int n = a.n(parcel);
+    public AuthorizeAccessRequest D(final Parcel parcel) {
+        final int o = a.o(parcel);
         int g = 0;
-        Contents contents = null;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
+        long i = 0L;
+        DriveId driveId = null;
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
                 default: {
-                    a.b(parcel, m);
+                    a.b(parcel, n);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, m);
+                    g = a.g(parcel, n);
                     continue;
                 }
                 case 2: {
-                    contents = a.a(parcel, m, Contents.CREATOR);
+                    i = a.i(parcel, n);
                     continue;
                 }
                 case 3: {
-                    d = a.d(parcel, m);
+                    driveId = a.a(parcel, n, DriveId.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new CloseContentsRequest(g, contents, d);
+        return new AuthorizeAccessRequest(g, i, driveId);
     }
     
-    public CloseContentsRequest[] aa(final int n) {
-        return new CloseContentsRequest[n];
+    public AuthorizeAccessRequest[] ah(final int n) {
+        return new AuthorizeAccessRequest[n];
     }
 }

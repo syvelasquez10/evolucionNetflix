@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Collections;
 import java.util.Iterator;
-import com.google.android.gms.internal.dh;
+import com.google.android.gms.internal.eo;
 import android.os.Bundle;
 import java.net.UnknownHostException;
 import java.net.InetAddress;
@@ -22,15 +22,15 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class CastDevice implements SafeParcelable
 {
     public static final Parcelable$Creator<CastDevice> CREATOR;
-    String kA;
-    private Inet4Address kB;
-    private String kC;
-    private String kD;
-    private String kE;
-    private int kF;
-    private List<WebImage> kG;
-    private final int kg;
-    private String kz;
+    private final int xH;
+    private String ya;
+    String yb;
+    private Inet4Address yc;
+    private String yd;
+    private String ye;
+    private String yf;
+    private int yg;
+    private List<WebImage> yh;
     
     static {
         CREATOR = (Parcelable$Creator)new b();
@@ -40,27 +40,27 @@ public class CastDevice implements SafeParcelable
         this(1, null, null, null, null, null, -1, new ArrayList<WebImage>());
     }
     
-    CastDevice(final int kg, final String kz, final String ka, final String kc, final String kd, final String ke, final int kf, final List<WebImage> kg2) {
-        this.kg = kg;
-        this.kz = kz;
-        this.kA = ka;
+    CastDevice(final int xh, final String ya, final String yb, final String yd, final String ye, final String yf, final int yg, final List<WebImage> yh) {
+        this.xH = xh;
+        this.ya = ya;
+        this.yb = yb;
         while (true) {
-            if (this.kA == null) {
+            if (this.yb == null) {
                 break Label_0049;
             }
             try {
-                final InetAddress byName = InetAddress.getByName(this.kA);
+                final InetAddress byName = InetAddress.getByName(this.yb);
                 if (byName instanceof Inet4Address) {
-                    this.kB = (Inet4Address)byName;
+                    this.yc = (Inet4Address)byName;
                 }
-                this.kC = kc;
-                this.kD = kd;
-                this.kE = ke;
-                this.kF = kf;
-                this.kG = kg2;
+                this.yd = yd;
+                this.ye = ye;
+                this.yf = yf;
+                this.yg = yg;
+                this.yh = yh;
             }
             catch (UnknownHostException ex) {
-                this.kB = null;
+                this.yc = null;
                 continue;
             }
             break;
@@ -91,7 +91,7 @@ public class CastDevice implements SafeParcelable
                     return false;
                 }
             }
-            else if (!dh.a(this.kz, castDevice.kz) || !dh.a(this.kB, castDevice.kB) || !dh.a(this.kD, castDevice.kD) || !dh.a(this.kC, castDevice.kC) || !dh.a(this.kE, castDevice.kE) || this.kF != castDevice.kF || !dh.a(this.kG, castDevice.kG)) {
+            else if (!eo.a(this.ya, castDevice.ya) || !eo.a(this.yc, castDevice.yc) || !eo.a(this.ye, castDevice.ye) || !eo.a(this.yd, castDevice.yd) || !eo.a(this.yf, castDevice.yf) || this.yg != castDevice.yg || !eo.a(this.yh, castDevice.yh)) {
                 return false;
             }
         }
@@ -99,26 +99,26 @@ public class CastDevice implements SafeParcelable
     }
     
     public String getDeviceId() {
-        return this.kz;
+        return this.ya;
     }
     
     public String getDeviceVersion() {
-        return this.kE;
+        return this.yf;
     }
     
     public String getFriendlyName() {
-        return this.kC;
+        return this.yd;
     }
     
     public WebImage getIcon(final int n, final int n2) {
         WebImage webImage = null;
-        if (this.kG.isEmpty()) {
+        if (this.yh.isEmpty()) {
             return null;
         }
         if (n <= 0 || n2 <= 0) {
-            return this.kG.get(0);
+            return this.yh.get(0);
         }
-        final Iterator<WebImage> iterator = this.kG.iterator();
+        final Iterator<WebImage> iterator = this.yh.iterator();
         WebImage webImage2 = null;
     Label_0127_Outer:
         while (iterator.hasNext()) {
@@ -147,48 +147,48 @@ public class CastDevice implements SafeParcelable
                 webImage2 = webImage;
             }
             else {
-                webImage2 = this.kG.get(0);
+                webImage2 = this.yh.get(0);
             }
         }
         return webImage2;
     }
     
     public List<WebImage> getIcons() {
-        return Collections.unmodifiableList((List<? extends WebImage>)this.kG);
+        return Collections.unmodifiableList((List<? extends WebImage>)this.yh);
     }
     
     public Inet4Address getIpAddress() {
-        return this.kB;
+        return this.yc;
     }
     
     public String getModelName() {
-        return this.kD;
+        return this.ye;
     }
     
     public int getServicePort() {
-        return this.kF;
+        return this.yg;
     }
     
     int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public boolean hasIcons() {
-        return !this.kG.isEmpty();
+        return !this.yh.isEmpty();
     }
     
     @Override
     public int hashCode() {
-        if (this.kz == null) {
+        if (this.ya == null) {
             return 0;
         }
-        return this.kz.hashCode();
+        return this.ya.hashCode();
     }
     
     public boolean isSameDevice(final CastDevice castDevice) {
         if (castDevice != null) {
             if (this.getDeviceId() != null) {
-                return dh.a(this.getDeviceId(), castDevice.getDeviceId());
+                return eo.a(this.getDeviceId(), castDevice.getDeviceId());
             }
             if (castDevice.getDeviceId() == null) {
                 return true;
@@ -206,7 +206,7 @@ public class CastDevice implements SafeParcelable
     
     @Override
     public String toString() {
-        return String.format("\"%s\" (%s)", this.kC, this.kz);
+        return String.format("\"%s\" (%s)", this.yd, this.ya);
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

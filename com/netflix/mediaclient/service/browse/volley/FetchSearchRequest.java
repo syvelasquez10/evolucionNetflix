@@ -117,16 +117,16 @@ public class FetchSearchRequest extends FalcorVolleyWebClientRequest<SearchResul
         while (true) {
             while (true) {
                 JsonArray asJsonArray = null;
-                Label_0187: {
+                Label_0183: {
                     try {
-                        asJsonObject = dataObj.getAsJsonObject("search").getAsJsonObject("videos,people,suggestions").getAsJsonObject(this.searchQuery).getAsJsonObject(this.profileType.toString());
+                        asJsonObject = FalcorParseUtils.getFirstJsonObject(dataObj.getAsJsonObject("search").getAsJsonObject("videos,people,suggestions")).getAsJsonObject(this.profileType.toString());
                         for (int i = this.fromIndex; i <= this.toIndex; ++i) {
                             o = Integer.toString(i);
                             if (asJsonObject.has((String)o)) {
                                 o = asJsonObject.getAsJsonObject((String)o);
                                 asJsonArray = ((JsonObject)o).getAsJsonArray("path");
                                 if (asJsonArray != null && asJsonArray.size() != 0) {
-                                    break Label_0187;
+                                    break Label_0183;
                                 }
                                 Log.w("nf_service_browse_fetchsearchrequest", "Invalid search path: " + asJsonArray);
                             }

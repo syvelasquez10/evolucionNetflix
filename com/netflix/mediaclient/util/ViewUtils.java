@@ -20,13 +20,26 @@ import com.netflix.mediaclient.Log;
 import android.graphics.Typeface;
 import android.util.DisplayMetrics;
 import android.graphics.Point;
-import android.view.View;
 import android.view.View$OnClickListener;
-import android.content.Context;
 import android.widget.Toast;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.app.Activity;
+import android.view.ViewParent;
+import android.widget.LinearLayout$LayoutParams;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout$LayoutParams;
+import android.widget.RelativeLayout;
+import android.widget.FrameLayout$LayoutParams;
+import android.widget.FrameLayout;
+import android.view.ViewGroup$LayoutParams;
+import android.widget.AbsListView$LayoutParams;
+import android.content.Context;
+import android.view.View;
+import android.widget.TextView;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.widget.ListView;
 import android.graphics.Rect;
 import java.util.Comparator;
 
@@ -52,6 +65,43 @@ public class ViewUtils
                 return 0;
             }
         };
+    }
+    
+    public static void addActionBarPaddingView(final ListView listView) {
+        if (listView.getContext() instanceof NetflixActivity) {
+            listView.addHeaderView(createActionBarDummyView((NetflixActivity)listView.getContext()));
+        }
+    }
+    
+    public static void addActionBarPaddingView(final StickyListHeadersListView stickyListHeadersListView) {
+        if (stickyListHeadersListView.getContext() instanceof NetflixActivity) {
+            stickyListHeadersListView.addHeaderView(createActionBarDummyView((NetflixActivity)stickyListHeadersListView.getContext()));
+        }
+    }
+    
+    public static void clearShadow(final TextView textView) {
+        textView.setShadowLayer(0.0f, 0.0f, 0.0f, 0);
+    }
+    
+    public static View createActionBarDummyView(final NetflixActivity netflixActivity) {
+        final View view = new View((Context)netflixActivity);
+        view.setId(2131165241);
+        view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, netflixActivity.getActionBarHeight()));
+        return view;
+    }
+    
+    public static ViewGroup$LayoutParams createLayoutParams(final View view, final int n, final int n2) {
+        final ViewParent parent = view.getParent();
+        if (parent instanceof FrameLayout) {
+            return (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(n, n2);
+        }
+        if (parent instanceof RelativeLayout) {
+            return (ViewGroup$LayoutParams)new RelativeLayout$LayoutParams(n, n2);
+        }
+        if (parent instanceof LinearLayout) {
+            return (ViewGroup$LayoutParams)new LinearLayout$LayoutParams(n, n2);
+        }
+        return new ViewGroup$LayoutParams(n, n2);
     }
     
     public static MenuItem$OnMenuItemClickListener createShowToastMenuClickListener(final Activity activity) {

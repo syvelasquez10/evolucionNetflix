@@ -4,71 +4,128 @@
 
 package com.google.android.gms.internal;
 
-import android.text.TextUtils;
-import android.os.Looper;
+import android.os.Parcelable$Creator;
+import android.os.Parcel;
+import android.os.IBinder;
+import android.os.Binder;
+import android.os.RemoteException;
+import java.util.List;
+import java.util.Map;
+import android.os.IInterface;
 
-public final class eg
+public interface eg extends IInterface
 {
-    public static void N(final String s) {
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            throw new IllegalStateException(s);
-        }
-    }
+    void a(final Map p0, final long p1, final String p2, final List<ef> p3) throws RemoteException;
     
-    public static void O(final String s) {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            throw new IllegalStateException(s);
-        }
-    }
+    void bR() throws RemoteException;
     
-    public static String U(final String s) {
-        if (TextUtils.isEmpty((CharSequence)s)) {
-            throw new IllegalArgumentException("Given String is empty or null");
-        }
-        return s;
-    }
+    String getVersion() throws RemoteException;
     
-    public static void a(final boolean b, final Object o) {
-        if (!b) {
-            throw new IllegalStateException(String.valueOf(o));
+    public abstract static class a extends Binder implements eg
+    {
+        public static eg t(final IBinder binder) {
+            if (binder == null) {
+                return null;
+            }
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.analytics.internal.IAnalyticsService");
+            if (queryLocalInterface != null && queryLocalInterface instanceof eg) {
+                return (eg)queryLocalInterface;
+            }
+            return new eg.a.a(binder);
         }
-    }
-    
-    public static void a(final boolean b, final String s, final Object... array) {
-        if (!b) {
-            throw new IllegalArgumentException(String.format(s, array));
+        
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            switch (n) {
+                default: {
+                    return super.onTransact(n, parcel, parcel2, n2);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.analytics.internal.IAnalyticsService");
+                    return true;
+                }
+                case 1: {
+                    parcel.enforceInterface("com.google.android.gms.analytics.internal.IAnalyticsService");
+                    this.a(parcel.readHashMap(this.getClass().getClassLoader()), parcel.readLong(), parcel.readString(), parcel.createTypedArrayList((Parcelable$Creator)ef.CREATOR));
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 2: {
+                    parcel.enforceInterface("com.google.android.gms.analytics.internal.IAnalyticsService");
+                    this.bR();
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 3: {
+                    parcel.enforceInterface("com.google.android.gms.analytics.internal.IAnalyticsService");
+                    final String version = this.getVersion();
+                    parcel2.writeNoException();
+                    parcel2.writeString(version);
+                    return true;
+                }
+            }
         }
-    }
-    
-    public static <T> T b(final T t, final Object o) {
-        if (t == null) {
-            throw new NullPointerException(String.valueOf(o));
-        }
-        return t;
-    }
-    
-    public static void b(final boolean b, final Object o) {
-        if (!b) {
-            throw new IllegalArgumentException(String.valueOf(o));
-        }
-    }
-    
-    public static <T> T f(final T t) {
-        if (t == null) {
-            throw new NullPointerException("null reference");
-        }
-        return t;
-    }
-    
-    public static void p(final boolean b) {
-        if (!b) {
-            throw new IllegalStateException();
-        }
-    }
-    
-    public static void r(final boolean b) {
-        if (!b) {
-            throw new IllegalArgumentException();
+        
+        private static class a implements eg
+        {
+            private IBinder kn;
+            
+            a(final IBinder kn) {
+                this.kn = kn;
+            }
+            
+            @Override
+            public void a(final Map map, final long n, final String s, final List<ef> list) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.analytics.internal.IAnalyticsService");
+                    obtain.writeMap(map);
+                    obtain.writeLong(n);
+                    obtain.writeString(s);
+                    obtain.writeTypedList((List)list);
+                    this.kn.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            public IBinder asBinder() {
+                return this.kn;
+            }
+            
+            @Override
+            public void bR() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.analytics.internal.IAnalyticsService");
+                    this.kn.transact(2, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public String getVersion() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.analytics.internal.IAnalyticsService");
+                    this.kn.transact(3, obtain, obtain2, 0);
+                    obtain2.readException();
+                    return obtain2.readString();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
         }
     }
 }

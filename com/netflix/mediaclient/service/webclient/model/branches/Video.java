@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.webclient.model.branches;
 
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.VideoType;
 
 public class Video
@@ -100,6 +99,7 @@ public class Video
     
     public static class SearchTitle
     {
+        public String certification;
         public int releaseYear;
         public String title;
         
@@ -111,26 +111,30 @@ public class Video
     
     public static class Summary implements Video
     {
-        protected String boxart;
+        protected String boxartUrl;
         protected VideoType enumType;
         public VideoType errorType;
+        public String horzDispUrl;
         protected String id;
         protected boolean isEpisode;
         protected String title;
+        public String tvCardUrl;
         protected String type;
-        protected String vertArtUrl;
+        public int videoYear;
         
         @Override
         public String getBoxshotURL() {
-            if (StringUtils.isEmpty(this.vertArtUrl)) {
-                return this.boxart;
-            }
-            return this.vertArtUrl;
+            return this.boxartUrl;
         }
         
         @Override
         public VideoType getErrorType() {
             return this.errorType;
+        }
+        
+        @Override
+        public String getHorzDispUrl() {
+            return this.horzDispUrl;
         }
         
         @Override
@@ -141,6 +145,11 @@ public class Video
         @Override
         public String getTitle() {
             return this.title;
+        }
+        
+        @Override
+        public String getTvCardUrl() {
+            return this.tvCardUrl;
         }
         
         @Override

@@ -6,7 +6,7 @@ package com.google.android.gms.location;
 
 import android.os.Parcel;
 import android.os.SystemClock;
-import com.google.android.gms.internal.ee;
+import com.google.android.gms.internal.fo;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class LocationRequest implements SafeParcelable
@@ -16,39 +16,39 @@ public final class LocationRequest implements SafeParcelable
     public static final int PRIORITY_HIGH_ACCURACY = 100;
     public static final int PRIORITY_LOW_POWER = 104;
     public static final int PRIORITY_NO_POWER = 105;
-    private final int kg;
+    long NV;
+    long Oc;
+    long Od;
+    boolean Oe;
+    int Of;
+    float Og;
     int mPriority;
-    long xB;
-    long xC;
-    boolean xD;
-    int xE;
-    float xF;
-    long xu;
+    private final int xH;
     
     static {
         CREATOR = new LocationRequestCreator();
     }
     
     public LocationRequest() {
-        this.kg = 1;
+        this.xH = 1;
         this.mPriority = 102;
-        this.xB = 3600000L;
-        this.xC = 600000L;
-        this.xD = false;
-        this.xu = Long.MAX_VALUE;
-        this.xE = Integer.MAX_VALUE;
-        this.xF = 0.0f;
+        this.Oc = 3600000L;
+        this.Od = 600000L;
+        this.Oe = false;
+        this.NV = Long.MAX_VALUE;
+        this.Of = Integer.MAX_VALUE;
+        this.Og = 0.0f;
     }
     
-    LocationRequest(final int kg, final int mPriority, final long xb, final long xc, final boolean xd, final long xu, final int xe, final float xf) {
-        this.kg = kg;
+    LocationRequest(final int xh, final int mPriority, final long oc, final long od, final boolean oe, final long nv, final int of, final float og) {
+        this.xH = xh;
         this.mPriority = mPriority;
-        this.xB = xb;
-        this.xC = xc;
-        this.xD = xd;
-        this.xu = xu;
-        this.xE = xe;
-        this.xF = xf;
+        this.Oc = oc;
+        this.Od = od;
+        this.Oe = oe;
+        this.NV = nv;
+        this.Of = of;
+        this.Og = og;
     }
     
     private static void a(final float n) {
@@ -57,7 +57,7 @@ public final class LocationRequest implements SafeParcelable
         }
     }
     
-    private static void aO(final int n) {
+    private static void bw(final int n) {
         switch (n) {
             default: {
                 throw new IllegalArgumentException("invalid quality: " + n);
@@ -69,7 +69,7 @@ public final class LocationRequest implements SafeParcelable
         }
     }
     
-    public static String aP(final int n) {
+    public static String bx(final int n) {
         switch (n) {
             default: {
                 return "???";
@@ -93,7 +93,7 @@ public final class LocationRequest implements SafeParcelable
         return new LocationRequest();
     }
     
-    private static void m(final long n) {
+    private static void s(final long n) {
         if (n < 0L) {
             throw new IllegalArgumentException("invalid interval: " + n);
         }
@@ -110,7 +110,7 @@ public final class LocationRequest implements SafeParcelable
                 return false;
             }
             final LocationRequest locationRequest = (LocationRequest)o;
-            if (this.mPriority != locationRequest.mPriority || this.xB != locationRequest.xB || this.xC != locationRequest.xC || this.xD != locationRequest.xD || this.xu != locationRequest.xu || this.xE != locationRequest.xE || this.xF != locationRequest.xF) {
+            if (this.mPriority != locationRequest.mPriority || this.Oc != locationRequest.Oc || this.Od != locationRequest.Od || this.Oe != locationRequest.Oe || this.NV != locationRequest.NV || this.Of != locationRequest.Of || this.Og != locationRequest.Og) {
                 return false;
             }
         }
@@ -118,19 +118,19 @@ public final class LocationRequest implements SafeParcelable
     }
     
     public long getExpirationTime() {
-        return this.xu;
+        return this.NV;
     }
     
     public long getFastestInterval() {
-        return this.xC;
+        return this.Od;
     }
     
     public long getInterval() {
-        return this.xB;
+        return this.Oc;
     }
     
     public int getNumUpdates() {
-        return this.xE;
+        return this.Of;
     }
     
     public int getPriority() {
@@ -138,94 +138,94 @@ public final class LocationRequest implements SafeParcelable
     }
     
     public float getSmallestDisplacement() {
-        return this.xF;
+        return this.Og;
     }
     
     int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     @Override
     public int hashCode() {
-        return ee.hashCode(this.mPriority, this.xB, this.xC, this.xD, this.xu, this.xE, this.xF);
+        return fo.hashCode(this.mPriority, this.Oc, this.Od, this.Oe, this.NV, this.Of, this.Og);
     }
     
     public LocationRequest setExpirationDuration(final long n) {
         final long elapsedRealtime = SystemClock.elapsedRealtime();
         if (n > Long.MAX_VALUE - elapsedRealtime) {
-            this.xu = Long.MAX_VALUE;
+            this.NV = Long.MAX_VALUE;
         }
         else {
-            this.xu = elapsedRealtime + n;
+            this.NV = elapsedRealtime + n;
         }
-        if (this.xu < 0L) {
-            this.xu = 0L;
-        }
-        return this;
-    }
-    
-    public LocationRequest setExpirationTime(final long xu) {
-        this.xu = xu;
-        if (this.xu < 0L) {
-            this.xu = 0L;
+        if (this.NV < 0L) {
+            this.NV = 0L;
         }
         return this;
     }
     
-    public LocationRequest setFastestInterval(final long xc) {
-        m(xc);
-        this.xD = true;
-        this.xC = xc;
-        return this;
-    }
-    
-    public LocationRequest setInterval(final long xb) {
-        m(xb);
-        this.xB = xb;
-        if (!this.xD) {
-            this.xC = (long)(this.xB / 6.0);
+    public LocationRequest setExpirationTime(final long nv) {
+        this.NV = nv;
+        if (this.NV < 0L) {
+            this.NV = 0L;
         }
         return this;
     }
     
-    public LocationRequest setNumUpdates(final int xe) {
-        if (xe <= 0) {
-            throw new IllegalArgumentException("invalid numUpdates: " + xe);
+    public LocationRequest setFastestInterval(final long od) {
+        s(od);
+        this.Oe = true;
+        this.Od = od;
+        return this;
+    }
+    
+    public LocationRequest setInterval(final long oc) {
+        s(oc);
+        this.Oc = oc;
+        if (!this.Oe) {
+            this.Od = (long)(this.Oc / 6.0);
         }
-        this.xE = xe;
+        return this;
+    }
+    
+    public LocationRequest setNumUpdates(final int of) {
+        if (of <= 0) {
+            throw new IllegalArgumentException("invalid numUpdates: " + of);
+        }
+        this.Of = of;
         return this;
     }
     
     public LocationRequest setPriority(final int mPriority) {
-        aO(mPriority);
+        bw(mPriority);
         this.mPriority = mPriority;
         return this;
     }
     
-    public LocationRequest setSmallestDisplacement(final float xf) {
-        a(xf);
-        this.xF = xf;
+    public LocationRequest setSmallestDisplacement(final float og) {
+        a(og);
+        this.Og = og;
         return this;
     }
     
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("Request[").append(aP(this.mPriority));
+        sb.append("Request[").append(bx(this.mPriority));
         if (this.mPriority != 105) {
             sb.append(" requested=");
-            sb.append(this.xB + "ms");
+            sb.append(this.Oc + "ms");
         }
         sb.append(" fastest=");
-        sb.append(this.xC + "ms");
-        if (this.xu != Long.MAX_VALUE) {
-            final long xu = this.xu;
+        sb.append(this.Od + "ms");
+        if (this.NV != Long.MAX_VALUE) {
+            final long nv = this.NV;
             final long elapsedRealtime = SystemClock.elapsedRealtime();
             sb.append(" expireIn=");
-            sb.append(xu - elapsedRealtime + "ms");
+            sb.append(nv - elapsedRealtime + "ms");
         }
-        if (this.xE != Integer.MAX_VALUE) {
-            sb.append(" num=").append(this.xE);
+        if (this.Of != Integer.MAX_VALUE) {
+            sb.append(" num=").append(this.Of);
         }
         sb.append(']');
         return sb.toString();

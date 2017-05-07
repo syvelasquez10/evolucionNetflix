@@ -12,25 +12,25 @@ import android.content.ServiceConnection;
 
 public class a implements ServiceConnection
 {
-    private final BlockingQueue<IBinder> mA;
-    boolean mz;
+    boolean Ae;
+    private final BlockingQueue<IBinder> Af;
     
     public a() {
-        this.mz = false;
-        this.mA = new LinkedBlockingQueue<IBinder>();
+        this.Ae = false;
+        this.Af = new LinkedBlockingQueue<IBinder>();
     }
     
-    public IBinder bg() throws InterruptedException {
-        if (this.mz) {
+    public IBinder dV() throws InterruptedException {
+        if (this.Ae) {
             throw new IllegalStateException();
         }
-        this.mz = true;
-        return this.mA.take();
+        this.Ae = true;
+        return this.Af.take();
     }
     
     public void onServiceConnected(final ComponentName componentName, final IBinder binder) {
         try {
-            this.mA.put(binder);
+            this.Af.put(binder);
         }
         catch (InterruptedException ex) {}
     }

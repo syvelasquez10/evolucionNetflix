@@ -16,6 +16,8 @@ public interface DriveFile extends DriveResource
     
     PendingResult<Status> commitAndCloseContents(final GoogleApiClient p0, final Contents p1);
     
+    PendingResult<Status> commitAndCloseContents(final GoogleApiClient p0, final Contents p1, final MetadataChangeSet p2);
+    
     PendingResult<Status> discardContents(final GoogleApiClient p0, final Contents p1);
     
     PendingResult<DriveApi.ContentsResult> openContents(final GoogleApiClient p0, final int p1, final DownloadProgressListener p2);

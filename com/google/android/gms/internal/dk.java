@@ -4,49 +4,72 @@
 
 package com.google.android.gms.internal;
 
-import android.util.Log;
+import android.os.Bundle;
 
 public class dk
 {
-    private static boolean mb;
-    private String mTag;
-    private boolean mc;
-    private boolean md;
+    private final Object li;
+    private final String qL;
+    private int qQ;
+    private long qR;
+    private long qS;
+    private int qT;
+    private int qU;
     
-    static {
-        dk.mb = false;
+    public dk(final String ql) {
+        this.li = new Object();
+        this.qQ = 0;
+        this.qR = -1L;
+        this.qS = -1L;
+        this.qT = 0;
+        this.qU = -1;
+        this.qL = ql;
     }
     
-    public dk(final String s) {
-        this(s, bc());
+    public void b(final ah ah, final long n) {
+        synchronized (this.li) {
+            if (this.qS == -1L) {
+                this.qS = n;
+                this.qR = this.qS;
+            }
+            else {
+                this.qR = n;
+            }
+            if (ah.extras != null && ah.extras.getInt("gw", 2) == 1) {
+                return;
+            }
+        }
+        ++this.qU;
     }
+    // monitorexit(o)
     
-    public dk(final String mTag, final boolean mc) {
-        this.mTag = mTag;
-        this.mc = mc;
-    }
-    
-    public static boolean bc() {
-        return dk.mb;
-    }
-    
-    public void a(final String s, final Object... array) {
-        if (this.md) {
-            Log.v(this.mTag, String.format(s, array));
+    public void bk() {
+        synchronized (this.li) {
+            ++this.qT;
         }
     }
     
-    public void b(final String s, final Object... array) {
-        if (this.mc || dk.mb) {
-            Log.d(this.mTag, String.format(s, array));
+    public void bl() {
+        synchronized (this.li) {
+            ++this.qQ;
         }
     }
     
-    public void c(final String s, final Object... array) {
-        Log.i(this.mTag, String.format(s, array));
+    public long bw() {
+        return this.qS;
     }
     
-    public void d(final String s, final Object... array) {
-        Log.w(this.mTag, String.format(s, array));
+    public Bundle q(final String s) {
+        synchronized (this.li) {
+            final Bundle bundle = new Bundle();
+            bundle.putString("session_id", this.qL);
+            bundle.putLong("basets", this.qS);
+            bundle.putLong("currts", this.qR);
+            bundle.putString("seq_num", s);
+            bundle.putInt("preqs", this.qU);
+            bundle.putInt("pclick", this.qQ);
+            bundle.putInt("pimp", this.qT);
+            return bundle;
+        }
     }
 }

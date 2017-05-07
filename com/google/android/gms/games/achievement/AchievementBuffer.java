@@ -15,6 +15,6 @@ public final class AchievementBuffer extends DataBuffer<Achievement>
     
     @Override
     public Achievement get(final int n) {
-        return new a(this.nE, n);
+        return new AchievementRef(this.BB, n);
     }
 }

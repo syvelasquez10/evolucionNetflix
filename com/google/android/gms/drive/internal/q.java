@@ -4,83 +4,169 @@
 
 package com.google.android.gms.drive.internal;
 
-import com.google.android.gms.internal.ix;
-import java.io.IOException;
-import com.google.android.gms.internal.jb;
-import com.google.android.gms.internal.iw;
-import com.google.android.gms.internal.iy;
-import com.google.android.gms.internal.iz;
+import com.google.android.gms.drive.query.Filters;
+import com.google.android.gms.drive.query.SearchableField;
+import com.google.android.gms.drive.query.Query;
+import com.google.android.gms.drive.DriveApi;
+import com.google.android.gms.drive.DriveFile;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.api.a;
+import android.os.RemoteException;
+import com.google.android.gms.common.api.Api;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.drive.Contents;
+import com.google.android.gms.drive.MetadataChangeSet;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.drive.DriveFolder;
 
-public final class q extends iz
+public class q extends r implements DriveFolder
 {
-    public static final q[] rs;
-    public String rt;
-    public long ru;
-    public long rv;
-    private int rw;
-    public int versionCode;
-    
-    static {
-        rs = new q[0];
+    public q(final DriveId driveId) {
+        super(driveId);
     }
     
-    public q() {
-        this.versionCode = 1;
-        this.rt = "";
-        this.ru = -1L;
-        this.rv = -1L;
-        this.rw = -1;
-    }
-    
-    public static q e(final byte[] array) throws iy {
-        return iz.a(new q(), array);
-    }
-    
-    public q a(final iw iw) throws IOException {
-    Label_0064:
-        while (true) {
-            final int fu = iw.fU();
-            switch (fu) {
-                default: {
-                    if (!jb.a(iw, fu)) {
-                        break Label_0064;
-                    }
-                    continue;
-                }
-                case 0: {
-                    break Label_0064;
-                }
-                case 8: {
-                    this.versionCode = iw.fW();
-                    continue;
-                }
-                case 18: {
-                    this.rt = iw.readString();
-                    continue;
-                }
-                case 24: {
-                    this.ru = iw.fX();
-                    continue;
-                }
-                case 32: {
-                    this.rv = iw.fX();
-                    continue;
-                }
-            }
+    @Override
+    public PendingResult<DriveFileResult> createFile(final GoogleApiClient googleApiClient, final MetadataChangeSet set, final Contents contents) {
+        if (set == null) {
+            throw new IllegalArgumentException("MetatadataChangeSet must be provided.");
         }
-        return this;
+        if (contents == null) {
+            throw new IllegalArgumentException("Contents must be provided.");
+        }
+        if ("application/vnd.google-apps.folder".equals(set.getMimeType())) {
+            throw new IllegalArgumentException("May not create folders (mimetype: application/vnd.google-apps.folder) using this method. Use DriveFolder.createFolder() instead.");
+        }
+        return googleApiClient.b((PendingResult<DriveFileResult>)new m<DriveFileResult>() {
+            protected void a(final n n) throws RemoteException {
+                contents.close();
+                n.fE().a(new CreateFileRequest(q.this.getDriveId(), set.fD(), contents), new q.a((a.d<DriveFileResult>)this));
+            }
+            
+            public DriveFileResult q(final Status status) {
+                return new q.d(status, null);
+            }
+        });
     }
     
     @Override
-    public void a(final ix ix) throws IOException {
-        ix.d(1, this.versionCode);
-        ix.b(2, this.rt);
-        ix.c(3, this.ru);
-        ix.c(4, this.rv);
+    public PendingResult<DriveFolderResult> createFolder(final GoogleApiClient googleApiClient, final MetadataChangeSet set) {
+        if (set == null) {
+            throw new IllegalArgumentException("MetatadataChangeSet must be provided.");
+        }
+        if (set.getMimeType() != null && !set.getMimeType().equals("application/vnd.google-apps.folder")) {
+            throw new IllegalArgumentException("The mimetype must be of type application/vnd.google-apps.folder");
+        }
+        return googleApiClient.b((PendingResult<DriveFolderResult>)new c() {
+            protected void a(final n n) throws RemoteException {
+                n.fE().a(new CreateFolderRequest(q.this.getDriveId(), set.fD()), new q.b((a.d<DriveFolderResult>)this));
+            }
+        });
     }
     
     @Override
-    public int cP() {
-        return this.rw = 0 + ix.e(1, this.versionCode) + ix.e(2, this.rt) + ix.d(3, this.ru) + ix.d(4, this.rv);
+    public PendingResult<DriveApi.MetadataBufferResult> listChildren(final GoogleApiClient googleApiClient) {
+        return this.queryChildren(googleApiClient, null);
+    }
+    
+    @Override
+    public PendingResult<DriveApi.MetadataBufferResult> queryChildren(final GoogleApiClient googleApiClient, final Query query) {
+        final Query.Builder addFilter = new Query.Builder().addFilter(Filters.in(SearchableField.PARENTS, this.getDriveId()));
+        if (query != null) {
+            if (query.getFilter() != null) {
+                addFilter.addFilter(query.getFilter());
+            }
+            addFilter.setPageToken(query.getPageToken());
+            addFilter.a(query.fV());
+        }
+        return new l().query(googleApiClient, addFilter.build());
+    }
+    
+    private static class a extends c
+    {
+        private final com.google.android.gms.common.api.a.d<DriveFileResult> wH;
+        
+        public a(final com.google.android.gms.common.api.a.d<DriveFileResult> wh) {
+            this.wH = wh;
+        }
+        
+        @Override
+        public void a(final OnDriveIdResponse onDriveIdResponse) throws RemoteException {
+            this.wH.b(new d(Status.Bv, new o(onDriveIdResponse.getDriveId())));
+        }
+        
+        @Override
+        public void m(final Status status) throws RemoteException {
+            this.wH.b(new d(status, null));
+        }
+    }
+    
+    private static class b extends c
+    {
+        private final com.google.android.gms.common.api.a.d<DriveFolderResult> wH;
+        
+        public b(final com.google.android.gms.common.api.a.d<DriveFolderResult> wh) {
+            this.wH = wh;
+        }
+        
+        @Override
+        public void a(final OnDriveIdResponse onDriveIdResponse) throws RemoteException {
+            this.wH.b(new e(Status.Bv, new q(onDriveIdResponse.getDriveId())));
+        }
+        
+        @Override
+        public void m(final Status status) throws RemoteException {
+            this.wH.b(new e(status, null));
+        }
+    }
+    
+    private abstract class c extends m<DriveFolderResult>
+    {
+        public DriveFolderResult r(final Status status) {
+            return new e(status, null);
+        }
+    }
+    
+    private static class d implements DriveFileResult
+    {
+        private final DriveFile Fv;
+        private final Status wJ;
+        
+        public d(final Status wj, final DriveFile fv) {
+            this.wJ = wj;
+            this.Fv = fv;
+        }
+        
+        @Override
+        public DriveFile getDriveFile() {
+            return this.Fv;
+        }
+        
+        @Override
+        public Status getStatus() {
+            return this.wJ;
+        }
+    }
+    
+    private static class e implements DriveFolderResult
+    {
+        private final DriveFolder Fw;
+        private final Status wJ;
+        
+        public e(final Status wj, final DriveFolder fw) {
+            this.wJ = wj;
+            this.Fw = fw;
+        }
+        
+        @Override
+        public DriveFolder getDriveFolder() {
+            return this.Fw;
+        }
+        
+        @Override
+        public Status getStatus() {
+            return this.wJ;
+        }
     }
 }

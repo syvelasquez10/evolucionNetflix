@@ -4,274 +4,334 @@
 
 package com.google.android.gms.internal;
 
-import android.graphics.ColorFilter;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable$ConstantState;
-import android.os.SystemClock;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable$Callback;
-import android.graphics.drawable.Drawable;
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
+import android.content.pm.ResolveInfo;
+import android.content.Intent;
+import android.net.UrlQuerySanitizer$ParameterValuePair;
+import android.net.UrlQuerySanitizer;
+import java.util.HashMap;
+import android.net.Uri;
+import android.content.pm.PackageManager;
+import java.util.Arrays;
+import java.util.Map;
+import android.os.Build$VERSION;
+import android.webkit.WebView;
+import java.net.HttpURLConnection;
+import java.util.List;
+import android.webkit.WebSettings;
+import android.content.Context;
+import org.json.JSONObject;
+import android.os.Bundle;
+import org.json.JSONException;
+import java.util.Iterator;
+import org.json.JSONArray;
+import java.util.Collection;
+import java.io.IOException;
+import java.nio.CharBuffer;
 
-public final class dq extends Drawable implements Drawable$Callback
+public final class dq
 {
-    private int oB;
-    private long oC;
-    private int oD;
-    private int oE;
-    private int oF;
-    private int oG;
-    private int oH;
-    private boolean oI;
-    private b oJ;
-    private Drawable oK;
-    private Drawable oL;
-    private boolean oM;
-    private boolean oN;
-    private boolean oO;
-    private int oP;
-    private boolean oy;
+    private static final Object px;
+    private static boolean re;
+    private static String rf;
+    private static boolean rg;
     
-    public dq(Drawable bd, final Drawable drawable) {
-        this(null);
-        Drawable bd2 = bd;
-        if (bd == null) {
-            bd2 = a.oQ;
-        }
-        (this.oK = bd2).setCallback((Drawable$Callback)this);
-        final b oj = this.oJ;
-        oj.oT |= bd2.getChangingConfigurations();
-        if ((bd = drawable) == null) {
-            bd = a.oQ;
-        }
-        (this.oL = bd).setCallback((Drawable$Callback)this);
-        final b oj2 = this.oJ;
-        oj2.oT |= bd.getChangingConfigurations();
+    static {
+        px = new Object();
+        dq.re = true;
+        dq.rg = false;
     }
     
-    dq(final b b) {
-        this.oB = 0;
-        this.oF = 255;
-        this.oH = 0;
-        this.oy = true;
-        this.oJ = new b(b);
-    }
-    
-    public Drawable bC() {
-        return this.oL;
-    }
-    
-    public boolean canConstantState() {
-        if (!this.oM) {
-            this.oN = (this.oK.getConstantState() != null && this.oL.getConstantState() != null);
-            this.oM = true;
-        }
-        return this.oN;
-    }
-    
-    public void draw(final Canvas canvas) {
-        final boolean b = true;
-        boolean b2 = true;
-        final boolean b3 = false;
-        switch (this.oB) {
-            case 1: {
-                this.oC = SystemClock.uptimeMillis();
-                this.oB = 2;
-                b2 = b3;
+    public static String a(final Readable readable) throws IOException {
+        final StringBuilder sb = new StringBuilder();
+        final CharBuffer allocate = CharBuffer.allocate(2048);
+        while (true) {
+            final int read = readable.read(allocate);
+            if (read == -1) {
                 break;
             }
-            case 2: {
-                if (this.oC >= 0L) {
-                    final float n = (SystemClock.uptimeMillis() - this.oC) / this.oG;
-                    b2 = (n >= 1.0f && b);
-                    if (b2) {
-                        this.oB = 0;
-                    }
-                    this.oH = (int)(Math.min(n, 1.0f) * (this.oE - this.oD) + this.oD);
-                    break;
-                }
-                break;
-            }
+            allocate.flip();
+            sb.append(allocate, 0, read);
         }
-        final int oh = this.oH;
-        final boolean oy = this.oy;
-        final Drawable ok = this.oK;
-        final Drawable ol = this.oL;
-        if (b2) {
-            if (!oy || oh == 0) {
-                ok.draw(canvas);
-            }
-            if (oh == this.oF) {
-                ol.setAlpha(this.oF);
-                ol.draw(canvas);
-            }
+        return sb.toString();
+    }
+    
+    private static JSONArray a(final Collection<?> collection) throws JSONException {
+        final JSONArray jsonArray = new JSONArray();
+        final Iterator<?> iterator = collection.iterator();
+        while (iterator.hasNext()) {
+            a(jsonArray, iterator.next());
+        }
+        return jsonArray;
+    }
+    
+    static JSONArray a(final Object[] array) throws JSONException {
+        final JSONArray jsonArray = new JSONArray();
+        for (int length = array.length, i = 0; i < length; ++i) {
+            a(jsonArray, array[i]);
+        }
+        return jsonArray;
+    }
+    
+    private static JSONObject a(final Bundle bundle) throws JSONException {
+        final JSONObject jsonObject = new JSONObject();
+        for (final String s : bundle.keySet()) {
+            a(jsonObject, s, bundle.get(s));
+        }
+        return jsonObject;
+    }
+    
+    public static void a(final Context context, final String s, final WebSettings webSettings) {
+        webSettings.setUserAgentString(b(context, s));
+    }
+    
+    public static void a(final Context context, final String s, final List<String> list) {
+        final Iterator<String> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            new du(context, s, iterator.next()).start();
+        }
+    }
+    
+    public static void a(final Context context, final String s, final boolean instanceFollowRedirects, final HttpURLConnection httpURLConnection) {
+        httpURLConnection.setConnectTimeout(60000);
+        httpURLConnection.setInstanceFollowRedirects(instanceFollowRedirects);
+        httpURLConnection.setReadTimeout(60000);
+        httpURLConnection.setRequestProperty("User-Agent", b(context, s));
+        httpURLConnection.setUseCaches(false);
+    }
+    
+    public static void a(final WebView webView) {
+        if (Build$VERSION.SDK_INT >= 11) {
+            ds.a(webView);
+        }
+    }
+    
+    private static void a(final JSONArray jsonArray, final Object o) throws JSONException {
+        if (o instanceof Bundle) {
+            jsonArray.put((Object)a((Bundle)o));
             return;
         }
-        if (oy) {
-            ok.setAlpha(this.oF - oh);
+        if (o instanceof Map) {
+            jsonArray.put((Object)p((Map<String, ?>)o));
+            return;
         }
-        ok.draw(canvas);
-        if (oy) {
-            ok.setAlpha(this.oF);
+        if (o instanceof Collection) {
+            jsonArray.put((Object)a((Collection<?>)o));
+            return;
         }
-        if (oh > 0) {
-            ol.setAlpha(oh);
-            ol.draw(canvas);
-            ol.setAlpha(this.oF);
+        if (o instanceof Object[]) {
+            jsonArray.put((Object)a((Object[])o));
+            return;
         }
-        this.invalidateSelf();
+        jsonArray.put(o);
     }
     
-    public int getChangingConfigurations() {
-        return super.getChangingConfigurations() | this.oJ.oS | this.oJ.oT;
-    }
-    
-    public Drawable$ConstantState getConstantState() {
-        if (this.canConstantState()) {
-            this.oJ.oS = this.getChangingConfigurations();
-            return this.oJ;
+    private static void a(final JSONObject jsonObject, String s, final Object o) throws JSONException {
+        if (o instanceof Bundle) {
+            jsonObject.put(s, (Object)a((Bundle)o));
+            return;
         }
-        return null;
-    }
-    
-    public int getIntrinsicHeight() {
-        return Math.max(this.oK.getIntrinsicHeight(), this.oL.getIntrinsicHeight());
-    }
-    
-    public int getIntrinsicWidth() {
-        return Math.max(this.oK.getIntrinsicWidth(), this.oL.getIntrinsicWidth());
-    }
-    
-    public int getOpacity() {
-        if (!this.oO) {
-            this.oP = Drawable.resolveOpacity(this.oK.getOpacity(), this.oL.getOpacity());
-            this.oO = true;
+        if (o instanceof Map) {
+            jsonObject.put(s, (Object)p((Map<String, ?>)o));
+            return;
         }
-        return this.oP;
+        if (o instanceof Collection) {
+            if (s == null) {
+                s = "null";
+            }
+            jsonObject.put(s, (Object)a((Collection<?>)o));
+            return;
+        }
+        if (o instanceof Object[]) {
+            jsonObject.put(s, (Object)a(Arrays.asList((Object[])o)));
+            return;
+        }
+        jsonObject.put(s, o);
     }
     
-    public void invalidateDrawable(final Drawable drawable) {
-        if (fg.cD()) {
-            final Drawable$Callback callback = this.getCallback();
-            if (callback != null) {
-                callback.invalidateDrawable((Drawable)this);
+    public static boolean a(final PackageManager packageManager, final String s, final String s2) {
+        return packageManager.checkPermission(s2, s) == 0;
+    }
+    
+    public static boolean a(final ClassLoader classLoader, final Class<?> clazz, final String s) {
+        try {
+            return clazz.isAssignableFrom(Class.forName(s, false, classLoader));
+        }
+        catch (Throwable t) {
+            return false;
+        }
+    }
+    
+    private static String b(final Context context, final String s) {
+    Label_0035_Outer:
+        while (true) {
+            while (true) {
+                synchronized (dq.px) {
+                    if (dq.rf != null) {
+                        return dq.rf;
+                    }
+                    if (Build$VERSION.SDK_INT >= 17) {
+                        dq.rf = dt.getDefaultUserAgent(context);
+                        return dq.rf = dq.rf + " (Mobile; " + s + ")";
+                    }
+                }
+                final Context context2;
+                Label_0128: {
+                    if (!dv.bD()) {
+                        dv.rp.post((Runnable)new Runnable() {
+                            @Override
+                            public void run() {
+                                synchronized (dq.px) {
+                                    dq.rf = j(context2);
+                                    dq.px.notifyAll();
+                                }
+                            }
+                        });
+                        while (dq.rf == null) {
+                            try {
+                                dq.px.wait();
+                                continue Label_0035_Outer;
+                            }
+                            catch (InterruptedException ex) {
+                                // monitorexit(o)
+                                return dq.rf;
+                            }
+                            break Label_0128;
+                        }
+                        continue;
+                    }
+                }
+                dq.rf = j(context2);
+                continue;
             }
         }
     }
     
-    public Drawable mutate() {
-        if (!this.oI && super.mutate() == this) {
-            if (!this.canConstantState()) {
-                throw new IllegalStateException("One or more children of this LayerDrawable does not have constant state; this drawable cannot be mutated.");
+    public static Map<String, String> b(final Uri uri) {
+        if (uri == null) {
+            return null;
+        }
+        final HashMap<String, String> hashMap = new HashMap<String, String>();
+        final UrlQuerySanitizer urlQuerySanitizer = new UrlQuerySanitizer();
+        urlQuerySanitizer.setAllowUnregisteredParamaters(true);
+        urlQuerySanitizer.setUnregisteredParameterValueSanitizer(UrlQuerySanitizer.getAllButNulLegal());
+        urlQuerySanitizer.parseUrl(uri.toString());
+        for (final UrlQuerySanitizer$ParameterValuePair urlQuerySanitizer$ParameterValuePair : urlQuerySanitizer.getParameterList()) {
+            hashMap.put(urlQuerySanitizer$ParameterValuePair.mParameter, urlQuerySanitizer$ParameterValuePair.mValue);
+        }
+        return hashMap;
+    }
+    
+    public static void b(final WebView webView) {
+        if (Build$VERSION.SDK_INT >= 11) {
+            ds.b(webView);
+        }
+    }
+    
+    public static int bA() {
+        if (Build$VERSION.SDK_INT >= 9) {
+            return 7;
+        }
+        return 1;
+    }
+    
+    public static boolean by() {
+        return dq.re;
+    }
+    
+    public static int bz() {
+        if (Build$VERSION.SDK_INT >= 9) {
+            return 6;
+        }
+        return 0;
+    }
+    
+    public static boolean h(final Context context) {
+        final Intent intent = new Intent();
+        intent.setClassName(context, "com.google.android.gms.ads.AdActivity");
+        final ResolveInfo resolveActivity = context.getPackageManager().resolveActivity(intent, 65536);
+        if (resolveActivity == null || resolveActivity.activityInfo == null) {
+            dw.z("Could not find com.google.android.gms.ads.AdActivity, please make sure it is declared in AndroidManifest.xml.");
+            return false;
+        }
+        boolean b;
+        if ((resolveActivity.activityInfo.configChanges & 0x10) == 0x0) {
+            dw.z(String.format("com.google.android.gms.ads.AdActivity requires the android:configChanges value to contain \"%s\".", "keyboard"));
+            b = false;
+        }
+        else {
+            b = true;
+        }
+        if ((resolveActivity.activityInfo.configChanges & 0x20) == 0x0) {
+            dw.z(String.format("com.google.android.gms.ads.AdActivity requires the android:configChanges value to contain \"%s\".", "keyboardHidden"));
+            b = false;
+        }
+        if ((resolveActivity.activityInfo.configChanges & 0x80) == 0x0) {
+            dw.z(String.format("com.google.android.gms.ads.AdActivity requires the android:configChanges value to contain \"%s\".", "orientation"));
+            b = false;
+        }
+        if ((resolveActivity.activityInfo.configChanges & 0x100) == 0x0) {
+            dw.z(String.format("com.google.android.gms.ads.AdActivity requires the android:configChanges value to contain \"%s\".", "screenLayout"));
+            b = false;
+        }
+        if ((resolveActivity.activityInfo.configChanges & 0x200) == 0x0) {
+            dw.z(String.format("com.google.android.gms.ads.AdActivity requires the android:configChanges value to contain \"%s\".", "uiMode"));
+            b = false;
+        }
+        if ((resolveActivity.activityInfo.configChanges & 0x400) == 0x0) {
+            dw.z(String.format("com.google.android.gms.ads.AdActivity requires the android:configChanges value to contain \"%s\".", "screenSize"));
+            b = false;
+        }
+        if ((resolveActivity.activityInfo.configChanges & 0x800) == 0x0) {
+            dw.z(String.format("com.google.android.gms.ads.AdActivity requires the android:configChanges value to contain \"%s\".", "smallestScreenSize"));
+            return false;
+        }
+        return b;
+    }
+    
+    public static void i(final Context context) {
+        if (dq.rg) {
+            return;
+        }
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.intent.action.USER_PRESENT");
+        intentFilter.addAction("android.intent.action.SCREEN_OFF");
+        context.getApplicationContext().registerReceiver((BroadcastReceiver)new a(), intentFilter);
+        dq.rg = true;
+    }
+    
+    private static String j(final Context context) {
+        return new WebView(context).getSettings().getUserAgentString();
+    }
+    
+    public static JSONObject p(final Map<String, ?> map) throws JSONException {
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject();
+            for (final String s : map.keySet()) {
+                a(jsonObject, s, map.get(s));
             }
-            this.oK.mutate();
-            this.oL.mutate();
-            this.oI = true;
         }
-        return this;
-    }
-    
-    protected void onBoundsChange(final Rect rect) {
-        this.oK.setBounds(rect);
-        this.oL.setBounds(rect);
-    }
-    
-    public void scheduleDrawable(final Drawable drawable, final Runnable runnable, final long n) {
-        if (fg.cD()) {
-            final Drawable$Callback callback = this.getCallback();
-            if (callback != null) {
-                callback.scheduleDrawable((Drawable)this, runnable, n);
-            }
+        catch (ClassCastException ex) {
+            throw new JSONException("Could not convert map to JSON: " + ex.getMessage());
         }
+        return jsonObject;
     }
     
-    public void setAlpha(final int n) {
-        if (this.oH == this.oF) {
-            this.oH = n;
-        }
-        this.oF = n;
-        this.invalidateSelf();
+    public static String r(final String s) {
+        return Uri.parse(s).buildUpon().query((String)null).build().toString();
     }
     
-    public void setColorFilter(final ColorFilter colorFilter) {
-        this.oK.setColorFilter(colorFilter);
-        this.oL.setColorFilter(colorFilter);
-    }
-    
-    public void startTransition(final int og) {
-        this.oD = 0;
-        this.oE = this.oF;
-        this.oH = 0;
-        this.oG = og;
-        this.oB = 1;
-        this.invalidateSelf();
-    }
-    
-    public void unscheduleDrawable(final Drawable drawable, final Runnable runnable) {
-        if (fg.cD()) {
-            final Drawable$Callback callback = this.getCallback();
-            if (callback != null) {
-                callback.unscheduleDrawable((Drawable)this, runnable);
-            }
-        }
-    }
-    
-    private static final class a extends Drawable
+    private static final class a extends BroadcastReceiver
     {
-        private static final dq.a oQ;
-        private static final dq.a.a oR;
-        
-        static {
-            oQ = new dq.a();
-            oR = new dq.a.a();
-        }
-        
-        public void draw(final Canvas canvas) {
-        }
-        
-        public Drawable$ConstantState getConstantState() {
-            return dq.a.oR;
-        }
-        
-        public int getOpacity() {
-            return -2;
-        }
-        
-        public void setAlpha(final int n) {
-        }
-        
-        public void setColorFilter(final ColorFilter colorFilter) {
-        }
-        
-        private static final class a extends Drawable$ConstantState
-        {
-            public int getChangingConfigurations() {
-                return 0;
+        public void onReceive(final Context context, final Intent intent) {
+            if ("android.intent.action.USER_PRESENT".equals(intent.getAction())) {
+                dq.re = true;
             }
-            
-            public Drawable newDrawable() {
-                return dq.a.oQ;
+            else if ("android.intent.action.SCREEN_OFF".equals(intent.getAction())) {
+                dq.re = false;
             }
-        }
-    }
-    
-    static final class b extends Drawable$ConstantState
-    {
-        int oS;
-        int oT;
-        
-        b(final b b) {
-            if (b != null) {
-                this.oS = b.oS;
-                this.oT = b.oT;
-            }
-        }
-        
-        public int getChangingConfigurations() {
-            return this.oS;
-        }
-        
-        public Drawable newDrawable() {
-            return new dq(this);
         }
     }
 }

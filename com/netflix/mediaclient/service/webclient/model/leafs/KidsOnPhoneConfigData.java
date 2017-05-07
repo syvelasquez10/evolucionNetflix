@@ -1,0 +1,71 @@
+// 
+// Decompiled by Procyon v0.5.30
+// 
+
+package com.netflix.mediaclient.service.webclient.model.leafs;
+
+import com.google.gson.annotations.SerializedName;
+import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration;
+
+public class KidsOnPhoneConfigData implements KidsOnPhoneConfiguration
+{
+    public static final KidsOnPhoneConfigData DEFAULT_KIDS_CONFIG;
+    @SerializedName("imageType")
+    private LolomoImageType imageType;
+    @SerializedName("inKopTest")
+    private boolean inKopTest;
+    @SerializedName("isEntryInActionBar")
+    private boolean isEntryInActionBar;
+    @SerializedName("isEntryInGenreLolomo")
+    private boolean isEntryInGenreLolomo;
+    @SerializedName("isEntryInMenu")
+    private boolean isEntryInMenu;
+    @SerializedName("isKidsOnPhoneEnabled")
+    private boolean isKidsOnPhoneEnabled;
+    @SerializedName("scrollBehavior")
+    private ScrollBehavior scrollBehavior;
+    
+    static {
+        DEFAULT_KIDS_CONFIG = new KidsOnPhoneConfigData();
+    }
+    
+    public KidsOnPhoneConfigData() {
+        this.scrollBehavior = ScrollBehavior.LRUD;
+        this.imageType = LolomoImageType.HORIZONTAL;
+    }
+    
+    @Override
+    public LolomoImageType getLolomoImageType() {
+        return this.imageType;
+    }
+    
+    @Override
+    public ScrollBehavior getScrollBehavior() {
+        return this.scrollBehavior;
+    }
+    
+    @Override
+    public boolean isInKidsOnPhoneTest() {
+        return this.inKopTest;
+    }
+    
+    @Override
+    public boolean isKidsOnPhoneEnabled() {
+        return this.isKidsOnPhoneEnabled;
+    }
+    
+    @Override
+    public boolean shouldShowKidsEntryInActionBar() {
+        return this.isEntryInActionBar;
+    }
+    
+    @Override
+    public boolean shouldShowKidsEntryInGenreLomo() {
+        return this.isEntryInGenreLolomo;
+    }
+    
+    @Override
+    public boolean shouldShowKidsEntryInMenu() {
+        return this.isEntryInMenu;
+    }
+}

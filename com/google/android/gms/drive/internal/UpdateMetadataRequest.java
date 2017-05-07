@@ -5,26 +5,26 @@
 package com.google.android.gms.drive.internal;
 
 import android.os.Parcel;
-import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.metadata.internal.MetadataBundle;
+import com.google.android.gms.drive.DriveId;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public class UpdateMetadataRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<UpdateMetadataRequest> CREATOR;
-    final int kg;
-    final MetadataBundle rB;
-    final DriveId rr;
+    final DriveId EV;
+    final MetadataBundle EW;
+    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new aa();
+        CREATOR = (Parcelable$Creator)new an();
     }
     
-    UpdateMetadataRequest(final int kg, final DriveId rr, final MetadataBundle rb) {
-        this.kg = kg;
-        this.rr = rr;
-        this.rB = rb;
+    UpdateMetadataRequest(final int xh, final DriveId ev, final MetadataBundle ew) {
+        this.xH = xh;
+        this.EV = ev;
+        this.EW = ew;
     }
     
     public UpdateMetadataRequest(final DriveId driveId, final MetadataBundle metadataBundle) {
@@ -36,6 +36,6 @@ public class UpdateMetadataRequest implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        aa.a(this, parcel, n);
+        an.a(this, parcel, n);
     }
 }

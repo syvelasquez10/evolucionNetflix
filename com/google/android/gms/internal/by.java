@@ -4,42 +4,66 @@
 
 package com.google.android.gms.internal;
 
-import android.os.IInterface;
-import android.os.IBinder;
-import android.os.RemoteException;
-import android.os.Bundle;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import android.content.Context;
+import java.util.Set;
+import java.util.Date;
+import java.util.Collection;
+import java.util.HashSet;
+import com.google.ads.mediation.MediationAdRequest;
+import com.google.android.gms.ads.a;
+import com.google.ads.AdSize;
+import com.google.ads.AdRequest;
 
-public class by extends dw<cd>
+public final class by
 {
-    private final int hp;
-    
-    public by(final Context context, final ConnectionCallbacks connectionCallbacks, final OnConnectionFailedListener onConnectionFailedListener, final int hp) {
-        super(context, connectionCallbacks, onConnectionFailedListener, new String[0]);
-        this.hp = hp;
+    public static int a(final AdRequest.ErrorCode errorCode) {
+        switch (by$1.nM[errorCode.ordinal()]) {
+            default: {
+                return 0;
+            }
+            case 2: {
+                return 1;
+            }
+            case 3: {
+                return 2;
+            }
+            case 4: {
+                return 3;
+            }
+        }
     }
     
-    @Override
-    protected void a(final ec ec, final e e) throws RemoteException {
-        ec.g(e, this.hp, this.getContext().getPackageName(), new Bundle());
+    public static AdSize b(final ak ak) {
+        int i = 0;
+        for (AdSize[] array = { AdSize.SMART_BANNER, AdSize.BANNER, AdSize.IAB_MRECT, AdSize.IAB_BANNER, AdSize.IAB_LEADERBOARD, AdSize.IAB_WIDE_SKYSCRAPER }; i < array.length; ++i) {
+            if (array[i].getWidth() == ak.width && array[i].getHeight() == ak.height) {
+                return array[i];
+            }
+        }
+        return new AdSize(a.a(ak.width, ak.height, ak.lS));
     }
     
-    @Override
-    protected String am() {
-        return "com.google.android.gms.ads.service.START";
+    public static MediationAdRequest e(final ah ah) {
+        HashSet<String> set;
+        if (ah.lJ != null) {
+            set = new HashSet<String>(ah.lJ);
+        }
+        else {
+            set = null;
+        }
+        return new MediationAdRequest(new Date(ah.lH), g(ah.lI), set, ah.lK, ah.lP);
     }
     
-    @Override
-    protected String an() {
-        return "com.google.android.gms.ads.internal.request.IAdRequestService";
-    }
-    
-    public cd ao() {
-        return super.bQ();
-    }
-    
-    protected cd o(final IBinder binder) {
-        return cd.a.q(binder);
+    public static AdRequest.Gender g(final int n) {
+        switch (n) {
+            default: {
+                return AdRequest.Gender.UNKNOWN;
+            }
+            case 2: {
+                return AdRequest.Gender.FEMALE;
+            }
+            case 1: {
+                return AdRequest.Gender.MALE;
+            }
+        }
     }
 }

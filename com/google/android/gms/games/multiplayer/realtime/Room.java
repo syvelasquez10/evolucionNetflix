@@ -18,7 +18,7 @@ public interface Room extends Parcelable, Freezable<Room>, Participatable
     public static final int ROOM_STATUS_AUTO_MATCHING = 1;
     public static final int ROOM_STATUS_CONNECTING = 2;
     public static final int ROOM_STATUS_INVITING = 0;
-    public static final int ROOM_VARIANT_ANY = -1;
+    public static final int ROOM_VARIANT_DEFAULT = -1;
     
     Bundle getAutoMatchCriteria();
     

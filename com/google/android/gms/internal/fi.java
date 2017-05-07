@@ -4,21 +4,39 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.drive.metadata.internal.b;
-import java.util.Date;
-import com.google.android.gms.drive.metadata.OrderedMetadataField;
+import android.content.Intent;
+import android.net.Uri;
 
 public class fi
 {
-    public static final OrderedMetadataField<Date> rJ;
-    public static final OrderedMetadataField<Date> rK;
-    public static final OrderedMetadataField<Date> rL;
-    public static final OrderedMetadataField<Date> rM;
+    private static final Uri DF;
+    private static final Uri DG;
     
     static {
-        rJ = new b("modified");
-        rK = new b("modifiedByMe");
-        rL = new b("created");
-        rM = new b("sharedWithMe");
+        DF = Uri.parse("http://plus.google.com/");
+        DG = fi.DF.buildUpon().appendPath("circles").appendPath("find").build();
+    }
+    
+    public static Intent am(final String s) {
+        final Uri fromParts = Uri.fromParts("package", s, (String)null);
+        final Intent intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS");
+        intent.setData(fromParts);
+        return intent;
+    }
+    
+    private static Uri an(final String s) {
+        return Uri.parse("market://details").buildUpon().appendQueryParameter("id", s).build();
+    }
+    
+    public static Intent ao(final String s) {
+        final Intent intent = new Intent("android.intent.action.VIEW");
+        intent.setData(an(s));
+        intent.setPackage("com.android.vending");
+        intent.addFlags(524288);
+        return intent;
+    }
+    
+    public static Intent eS() {
+        return new Intent("android.settings.DATE_SETTINGS");
     }
 }

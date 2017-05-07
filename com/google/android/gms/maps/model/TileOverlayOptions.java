@@ -4,50 +4,50 @@
 
 package com.google.android.gms.maps.model;
 
-import com.google.android.gms.maps.internal.r;
+import com.google.android.gms.maps.internal.v;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.os.IBinder;
-import com.google.android.gms.maps.model.internal.g;
+import com.google.android.gms.maps.model.internal.i;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class TileOverlayOptions implements SafeParcelable
 {
     public static final TileOverlayOptionsCreator CREATOR;
-    private float Cw;
-    private boolean Cx;
-    private g Da;
-    private TileProvider Db;
-    private boolean Dc;
-    private final int kg;
+    private float SN;
+    private boolean SO;
+    private i Tt;
+    private TileProvider Tu;
+    private boolean Tv;
+    private final int xH;
     
     static {
         CREATOR = new TileOverlayOptionsCreator();
     }
     
     public TileOverlayOptions() {
-        this.Cx = true;
-        this.Dc = true;
-        this.kg = 1;
+        this.SO = true;
+        this.Tv = true;
+        this.xH = 1;
     }
     
-    TileOverlayOptions(final int kg, final IBinder binder, final boolean cx, final float cw, final boolean dc) {
-        this.Cx = true;
-        this.Dc = true;
-        this.kg = kg;
-        this.Da = g.a.aq(binder);
-        TileProvider db;
-        if (this.Da == null) {
-            db = null;
+    TileOverlayOptions(final int xh, final IBinder binder, final boolean so, final float sn, final boolean tv) {
+        this.SO = true;
+        this.Tv = true;
+        this.xH = xh;
+        this.Tt = i.a.aK(binder);
+        TileProvider tu;
+        if (this.Tt == null) {
+            tu = null;
         }
         else {
-            db = new TileProvider() {
-                private final g Dd = TileOverlayOptions.this.Da;
+            tu = new TileProvider() {
+                private final i Tw = TileOverlayOptions.this.Tt;
                 
                 @Override
                 public Tile getTile(final int n, final int n2, final int n3) {
                     try {
-                        return this.Dd.getTile(n, n2, n3);
+                        return this.Tw.getTile(n, n2, n3);
                     }
                     catch (RemoteException ex) {
                         return null;
@@ -55,77 +55,77 @@ public final class TileOverlayOptions implements SafeParcelable
                 }
             };
         }
-        this.Db = db;
-        this.Cx = cx;
-        this.Cw = cw;
-        this.Dc = dc;
+        this.Tu = tu;
+        this.SO = so;
+        this.SN = sn;
+        this.Tv = tv;
     }
     
     public int describeContents() {
         return 0;
     }
     
-    IBinder eI() {
-        return this.Da.asBinder();
-    }
-    
-    public TileOverlayOptions fadeIn(final boolean dc) {
-        this.Dc = dc;
+    public TileOverlayOptions fadeIn(final boolean tv) {
+        this.Tv = tv;
         return this;
     }
     
     public boolean getFadeIn() {
-        return this.Dc;
+        return this.Tv;
     }
     
     public TileProvider getTileProvider() {
-        return this.Db;
+        return this.Tu;
     }
     
     int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public float getZIndex() {
-        return this.Cw;
+        return this.SN;
+    }
+    
+    IBinder iG() {
+        return this.Tt.asBinder();
     }
     
     public boolean isVisible() {
-        return this.Cx;
+        return this.SO;
     }
     
-    public TileOverlayOptions tileProvider(final TileProvider db) {
-        this.Db = db;
-        g da;
-        if (this.Db == null) {
-            da = null;
+    public TileOverlayOptions tileProvider(final TileProvider tu) {
+        this.Tu = tu;
+        i tt;
+        if (this.Tu == null) {
+            tt = null;
         }
         else {
-            da = new g.a() {
+            tt = new i.a() {
                 public Tile getTile(final int n, final int n2, final int n3) {
-                    return db.getTile(n, n2, n3);
+                    return tu.getTile(n, n2, n3);
                 }
             };
         }
-        this.Da = da;
+        this.Tt = tt;
         return this;
     }
     
-    public TileOverlayOptions visible(final boolean cx) {
-        this.Cx = cx;
+    public TileOverlayOptions visible(final boolean so) {
+        this.SO = so;
         return this;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (r.eD()) {
+        if (v.iB()) {
             j.a(this, parcel, n);
             return;
         }
         TileOverlayOptionsCreator.a(this, parcel, n);
     }
     
-    public TileOverlayOptions zIndex(final float cw) {
-        this.Cw = cw;
+    public TileOverlayOptions zIndex(final float sn) {
+        this.SN = sn;
         return this;
     }
 }

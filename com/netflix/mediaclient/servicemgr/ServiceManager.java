@@ -17,13 +17,14 @@ import com.netflix.mediaclient.ui.details.DetailsActivity;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.util.StringUtils;
+import android.content.Context;
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
 import android.os.IBinder;
 import android.content.ComponentName;
 import com.netflix.mediaclient.service.NetflixService;
-import android.content.Context;
 import android.content.ServiceConnection;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public final class ServiceManager
 {
@@ -37,17 +38,17 @@ public final class ServiceManager
     public static final String LOCAL_PLAYER_PLAY_STOP = "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP";
     private static final String TAG = "ServiceManager";
     private AddToMyListWrapper addToMyListWrapper;
+    private final NetflixActivity mActivity;
     private ManagerStatusListener mCallback;
     private final CallbackMuxer mCallbackMuxer;
     private int mClientId;
     private final ServiceConnection mConnection;
-    private final Context mContext;
     private NetflixService mLocalService;
     private boolean mReady;
     private INetflixService mService;
     private ServiceListener mServiceListener;
     
-    public ServiceManager(final Context mContext, final ManagerStatusListener mCallback) {
+    public ServiceManager(final NetflixActivity mActivity, final ManagerStatusListener mCallback) {
         this.mClientId = -1;
         this.mCallbackMuxer = new CallbackMuxer();
         this.mConnection = (ServiceConnection)new ServiceConnection() {
@@ -78,8 +79,8 @@ public final class ServiceManager
         }
         Log.d("ServiceManager", "ServiceManager created");
         this.mCallback = mCallback;
-        (this.mContext = mContext).startService(new Intent(this.mContext, (Class)NetflixService.class));
-        if (!this.mContext.bindService(this.getServiceIntent(), this.mConnection, 1)) {
+        (this.mActivity = mActivity).startService(new Intent((Context)this.mActivity, (Class)NetflixService.class));
+        if (!this.mActivity.bindService(this.getServiceIntent(), this.mConnection, 1)) {
             Log.e("ServiceManager", "ServiceManager could not bind to NetflixService!");
         }
     }
@@ -97,7 +98,7 @@ public final class ServiceManager
     }
     
     private Intent getServiceIntent() {
-        return new Intent(this.mContext, (Class)NetflixService.class);
+        return new Intent((Context)this.mActivity, (Class)NetflixService.class);
     }
     
     private INetflixService validateService() {
@@ -342,6 +343,29 @@ public final class ServiceManager
             }
             return b;
         }
+    }
+    
+    public boolean fetchKidsCharacterDetails(final String s, final ManagerCallback managerCallback) {
+        boolean b = true;
+        synchronized (this) {
+            if (StringUtils.isEmpty(s)) {
+                throw new IllegalArgumentException("Parameter cannot be null");
+            }
+        }
+        final int addCallback = this.addCallback(managerCallback);
+        final String s2;
+        if (Log.isLoggable("ServiceManager", 3)) {
+            Log.d("ServiceManager", String.format("fetchKidsCharacterDetails requestId=%d,  characterId=%s", addCallback, s2));
+        }
+        if (this.validateService() != null) {
+            this.mService.fetchKidsCharacterDetails(s2, this.mClientId, addCallback);
+        }
+        else {
+            Log.w("ServiceManager", "fetchKidsCharacterDetails:: service is not available");
+            b = false;
+        }
+        // monitorexit(this)
+        return b;
     }
     
     public boolean fetchLoLoMoSummary(final String s, final ManagerCallback managerCallback) {
@@ -617,6 +641,10 @@ public final class ServiceManager
         return false;
     }
     
+    public NetflixActivity getActivity() {
+        return this.mActivity;
+    }
+    
     public List<? extends UserProfile> getAllProfiles() {
         final INetflixService mService = this.mService;
         if (mService != null) {
@@ -642,10 +670,6 @@ public final class ServiceManager
         }
         Log.w("ServiceManager", "getConfiguration: service is not available");
         return null;
-    }
-    
-    public Context getContext() {
-        return this.mContext;
     }
     
     public String getCurrentAppLocale() {
@@ -919,7 +943,7 @@ public final class ServiceManager
                     this.mService.unregisterCallback(this.mServiceListener);
                 }
                 Log.d("ServiceManager", "ServiceManager unbindService");
-                this.mContext.unbindService(this.mConnection);
+                this.mActivity.unbindService(this.mConnection);
                 if (this.mCallbackMuxer != null) {
                     this.mCallbackMuxer.reset();
                 }
@@ -1236,6 +1260,24 @@ public final class ServiceManager
                 return;
             }
             access$400.onGenresFetched(list, n2);
+        }
+        
+        @Override
+        public void onKidsCharacterDetailsFetched(final int n, final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final int n2) {
+            if (Log.isLoggable("ServiceManager", 3)) {
+                Log.d("ServiceManager", "onKidsCharacterDetailsFetched requestId=" + n + " erroCode=" + n2);
+                Log.d("ServiceManager", "onKidsCharacterDetailsFetched kidsCharacterDetails=" + kidsCharacterDetails);
+                if (kidsCharacterDetails != null) {
+                    Log.d("ServiceManager", "onKidsCharacterDetailsFetched gallery size=" + kidsCharacterDetails.getGallery().size());
+                    Log.d("ServiceManager", "onKidsCharacterDetailsFetched gallery track id=" + kidsCharacterDetails.getGalleryTrackId());
+                }
+            }
+            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
+            if (access$400 == null) {
+                Log.d("ServiceManager", "No callback for onKidsCharacterDetailsFetched requestId " + n);
+                return;
+            }
+            access$400.onKidsCharacterDetailsFetched(kidsCharacterDetails, b, n2);
         }
         
         @Override

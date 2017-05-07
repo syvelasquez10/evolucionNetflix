@@ -4,7 +4,7 @@
 
 package com.google.android.gms.common;
 
-import com.google.android.gms.internal.ee;
+import com.google.android.gms.internal.fo;
 import android.content.IntentSender$SendIntentException;
 import android.content.Intent;
 import android.app.Activity;
@@ -12,10 +12,14 @@ import android.app.PendingIntent;
 
 public final class ConnectionResult
 {
+    public static final int API_UNAVAILABLE = 16;
+    public static final ConnectionResult Ag;
+    public static final int CANCELED = 13;
     public static final int DATE_INVALID = 12;
     public static final int DEVELOPER_ERROR = 10;
     public static final int DRIVE_EXTERNAL_STORAGE_REQUIRED = 1500;
     public static final int INTERNAL_ERROR = 8;
+    public static final int INTERRUPTED = 15;
     public static final int INVALID_ACCOUNT = 5;
     public static final int LICENSE_CHECK_FAILED = 11;
     public static final int NETWORK_ERROR = 7;
@@ -26,23 +30,23 @@ public final class ConnectionResult
     public static final int SERVICE_VERSION_UPDATE_REQUIRED = 2;
     public static final int SIGN_IN_REQUIRED = 4;
     public static final int SUCCESS = 0;
-    public static final ConnectionResult mB;
-    private final int mC;
+    public static final int TIMEOUT = 14;
+    private final int Ah;
     private final PendingIntent mPendingIntent;
     
     static {
-        mB = new ConnectionResult(0, null);
+        Ag = new ConnectionResult(0, null);
     }
     
-    public ConnectionResult(final int mc, final PendingIntent mPendingIntent) {
-        this.mC = mc;
+    public ConnectionResult(final int ah, final PendingIntent mPendingIntent) {
+        this.Ah = ah;
         this.mPendingIntent = mPendingIntent;
     }
     
-    private String bh() {
-        switch (this.mC) {
+    private String dW() {
+        switch (this.Ah) {
             default: {
-                return "unknown status code " + this.mC;
+                return "unknown status code " + this.Ah;
             }
             case 0: {
                 return "SUCCESS";
@@ -80,11 +84,20 @@ public final class ConnectionResult
             case 11: {
                 return "LICENSE_CHECK_FAILED";
             }
+            case 13: {
+                return "CANCELED";
+            }
+            case 14: {
+                return "TIMEOUT";
+            }
+            case 15: {
+                return "INTERRUPTED";
+            }
         }
     }
     
     public int getErrorCode() {
-        return this.mC;
+        return this.Ah;
     }
     
     public PendingIntent getResolution() {
@@ -92,11 +105,11 @@ public final class ConnectionResult
     }
     
     public boolean hasResolution() {
-        return this.mC != 0 && this.mPendingIntent != null;
+        return this.Ah != 0 && this.mPendingIntent != null;
     }
     
     public boolean isSuccess() {
-        return this.mC == 0;
+        return this.Ah == 0;
     }
     
     public void startResolutionForResult(final Activity activity, final int n) throws IntentSender$SendIntentException {
@@ -108,6 +121,6 @@ public final class ConnectionResult
     
     @Override
     public String toString() {
-        return ee.e(this).a("statusCode", this.bh()).a("resolution", this.mPendingIntent).toString();
+        return fo.e(this).a("statusCode", this.dW()).a("resolution", this.mPendingIntent).toString();
     }
 }

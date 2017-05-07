@@ -5,14 +5,15 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import java.util.Iterator;
+import com.netflix.mediaclient.servicemgr.Trackable;
 import com.netflix.mediaclient.servicemgr.UiLocation;
 import com.netflix.mediaclient.servicemgr.LoMoUtils;
 import com.netflix.mediaclient.servicemgr.VideoType;
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.BasicLoMo;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
+import android.app.Activity;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.DataUtil;
@@ -21,7 +22,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
 import java.util.List;
-import android.app.Activity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.Video;
 
 public abstract class BasePaginatedAdapter<T extends Video>
@@ -29,14 +30,14 @@ public abstract class BasePaginatedAdapter<T extends Video>
     protected static final boolean DO_NOT_OVERLAP_PAGES = false;
     protected static final boolean OVERLAP_PAGES = true;
     private static final String TAG = "BasePaginatedAdapter";
-    private final Activity activity;
+    protected final NetflixActivity activity;
     private String currTitle;
     private List<T> data;
     private int listViewPos;
     private final int numItemsPerPage;
     
     public BasePaginatedAdapter(final Context context) {
-        this.activity = (Activity)context;
+        this.activity = (NetflixActivity)context;
         final int basicScreenOrientation = DeviceUtils.getBasicScreenOrientation(context);
         final int screenSizeCategory = DeviceUtils.getScreenSizeCategory(context);
         this.numItemsPerPage = this.computeNumItemsPerPage(basicScreenOrientation, screenSizeCategory);
@@ -62,9 +63,9 @@ public abstract class BasePaginatedAdapter<T extends Video>
         return MathUtils.ceiling(this.data.size(), this.numItemsPerPage);
     }
     
-    protected static int computeViewPagerWidth(final Context context, final boolean b) {
+    public static int computeViewPagerWidth(final Context context, final boolean b) {
         if (b) {
-            return DeviceUtils.getScreenWidthInPixels(context) - context.getResources().getDimensionPixelOffset(2131492938) * 2;
+            return DeviceUtils.getScreenWidthInPixels(context) - context.getResources().getDimensionPixelOffset(2131361868) * 2;
         }
         return DeviceUtils.getScreenWidthInPixels(context);
     }
@@ -138,12 +139,18 @@ public abstract class BasePaginatedAdapter<T extends Video>
         return this.listViewPos;
     }
     
-    public View getView(final ViewRecycler viewRecycler, final Trackable trackable, final int n) {
-        Log.v("BasePaginatedAdapter", this.printLomo() + " Getting page for position: " + n);
-        return this.getView(viewRecycler, this.getDataForPage(n), this.numItemsPerPage, n, trackable);
+    public int getRowHeightInPx() {
+        final int n = (int)(computeViewPagerWidth((Context)this.activity, true) / this.computeNumItemsPerPage(DeviceUtils.getBasicScreenOrientation((Context)this.activity), DeviceUtils.getScreenSizeCategory((Context)this.activity)) * 1.43f + 0.5f);
+        Log.v("BasePaginatedAdapter", "Computed view height: " + n);
+        return n;
     }
     
-    protected abstract View getView(final ViewRecycler p0, final List<T> p1, final int p2, final int p3, final Trackable p4);
+    public View getView(final ViewRecycler viewRecycler, final BasicLoMo basicLoMo, final int n) {
+        Log.v("BasePaginatedAdapter", this.printLomo() + " Getting page for position: " + n);
+        return this.getView(viewRecycler, this.getDataForPage(n), this.numItemsPerPage, n, basicLoMo);
+    }
+    
+    protected abstract View getView(final ViewRecycler p0, final List<T> p1, final int p2, final int p3, final BasicLoMo p4);
     
     public boolean isLastItem(final int n) {
         return n == this.computeNumPages() - 1;

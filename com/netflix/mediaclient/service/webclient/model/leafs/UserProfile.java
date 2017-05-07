@@ -62,7 +62,7 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.UserProfi
             this.summary.isPrimaryProfile = JsonUtils.getBoolean(jsonObject, "isPrimaryProfile", false);
             this.summary.isAutoPlayEnabled = JsonUtils.getBoolean(jsonObject, "autoPlayOn", false);
             this.summary.experienceType = JsonUtils.getString(jsonObject, "experienceType", null);
-            this.summary.social.socialStatus = JsonUtils.getBoolean(jsonObject, "socialStatus", false);
+            this.summary.social.isConnected = JsonUtils.getBoolean(jsonObject, "socialStatus", false);
             this.summary.avatarUrl = JsonUtils.getString(jsonObject, "avatarUrl", null);
             final String string = JsonUtils.getString(jsonObject, "languages", null);
             if (StringUtils.isNotEmpty(string)) {
@@ -242,17 +242,22 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.UserProfi
     }
     
     @Override
+    public boolean isKidsProfile() {
+        return this.getProfileType() == ProfileType.JFK;
+    }
+    
+    @Override
     public boolean isPrimaryProfile() {
         return this.summary != null && this.summary.isPrimaryProfile;
     }
     
     @Override
     public boolean isSocialConnected() {
-        return this.summary != null && this.summary.social.socialStatus;
+        return this.summary != null && this.summary.social.isConnected;
     }
     
-    public void setFacebookConnectStatus(final boolean socialStatus) {
-        this.summary.social.socialStatus = socialStatus;
+    public void setFacebookConnectStatus(final boolean isConnected) {
+        this.summary.social.isConnected = isConnected;
     }
     
     @Override
@@ -304,7 +309,7 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.UserProfi
     
     public class Social
     {
-        public boolean socialStatus;
+        public boolean isConnected;
     }
     
     public class Summary

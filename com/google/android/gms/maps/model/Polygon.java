@@ -6,15 +6,15 @@ package com.google.android.gms.maps.model;
 
 import java.util.List;
 import android.os.RemoteException;
-import com.google.android.gms.internal.eg;
-import com.google.android.gms.maps.model.internal.e;
+import com.google.android.gms.internal.fq;
+import com.google.android.gms.maps.model.internal.g;
 
 public final class Polygon
 {
-    private final e CU;
+    private final g Tm;
     
-    public Polygon(final e e) {
-        this.CU = eg.f(e);
+    public Polygon(final g g) {
+        this.Tm = fq.f(g);
     }
     
     @Override
@@ -23,7 +23,7 @@ public final class Polygon
             return false;
         }
         try {
-            return this.CU.a(((Polygon)o).CU);
+            return this.Tm.a(((Polygon)o).Tm);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -32,7 +32,7 @@ public final class Polygon
     
     public int getFillColor() {
         try {
-            return this.CU.getFillColor();
+            return this.Tm.getFillColor();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -41,7 +41,7 @@ public final class Polygon
     
     public List<List<LatLng>> getHoles() {
         try {
-            return (List<List<LatLng>>)this.CU.getHoles();
+            return (List<List<LatLng>>)this.Tm.getHoles();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -50,7 +50,7 @@ public final class Polygon
     
     public String getId() {
         try {
-            return this.CU.getId();
+            return this.Tm.getId();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -59,7 +59,7 @@ public final class Polygon
     
     public List<LatLng> getPoints() {
         try {
-            return this.CU.getPoints();
+            return this.Tm.getPoints();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -68,7 +68,7 @@ public final class Polygon
     
     public int getStrokeColor() {
         try {
-            return this.CU.getStrokeColor();
+            return this.Tm.getStrokeColor();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -77,7 +77,7 @@ public final class Polygon
     
     public float getStrokeWidth() {
         try {
-            return this.CU.getStrokeWidth();
+            return this.Tm.getStrokeWidth();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -86,7 +86,7 @@ public final class Polygon
     
     public float getZIndex() {
         try {
-            return this.CU.getZIndex();
+            return this.Tm.getZIndex();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -96,7 +96,7 @@ public final class Polygon
     @Override
     public int hashCode() {
         try {
-            return this.CU.hashCodeRemote();
+            return this.Tm.hashCodeRemote();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -105,7 +105,7 @@ public final class Polygon
     
     public boolean isGeodesic() {
         try {
-            return this.CU.isGeodesic();
+            return this.Tm.isGeodesic();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -114,7 +114,7 @@ public final class Polygon
     
     public boolean isVisible() {
         try {
-            return this.CU.isVisible();
+            return this.Tm.isVisible();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -123,7 +123,7 @@ public final class Polygon
     
     public void remove() {
         try {
-            this.CU.remove();
+            this.Tm.remove();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -132,7 +132,7 @@ public final class Polygon
     
     public void setFillColor(final int fillColor) {
         try {
-            this.CU.setFillColor(fillColor);
+            this.Tm.setFillColor(fillColor);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -141,7 +141,7 @@ public final class Polygon
     
     public void setGeodesic(final boolean geodesic) {
         try {
-            this.CU.setGeodesic(geodesic);
+            this.Tm.setGeodesic(geodesic);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -150,7 +150,7 @@ public final class Polygon
     
     public void setHoles(final List<? extends List<LatLng>> holes) {
         try {
-            this.CU.setHoles(holes);
+            this.Tm.setHoles(holes);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -159,7 +159,7 @@ public final class Polygon
     
     public void setPoints(final List<LatLng> points) {
         try {
-            this.CU.setPoints(points);
+            this.Tm.setPoints(points);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -168,7 +168,7 @@ public final class Polygon
     
     public void setStrokeColor(final int strokeColor) {
         try {
-            this.CU.setStrokeColor(strokeColor);
+            this.Tm.setStrokeColor(strokeColor);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -177,7 +177,7 @@ public final class Polygon
     
     public void setStrokeWidth(final float strokeWidth) {
         try {
-            this.CU.setStrokeWidth(strokeWidth);
+            this.Tm.setStrokeWidth(strokeWidth);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -186,7 +186,7 @@ public final class Polygon
     
     public void setVisible(final boolean visible) {
         try {
-            this.CU.setVisible(visible);
+            this.Tm.setVisible(visible);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -195,7 +195,7 @@ public final class Polygon
     
     public void setZIndex(final float zIndex) {
         try {
-            this.CU.setZIndex(zIndex);
+            this.Tm.setZIndex(zIndex);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);

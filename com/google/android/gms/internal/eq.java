@@ -4,50 +4,132 @@
 
 package com.google.android.gms.internal;
 
-import java.util.ArrayList;
-import com.google.android.gms.common.internal.safeparcel.a;
-import java.util.List;
-import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import android.os.IBinder;
+import android.os.Binder;
+import com.google.android.gms.cast.ApplicationMetadata;
+import android.os.RemoteException;
+import android.os.IInterface;
 
-public class eq implements Parcelable$Creator<ep>
+public interface eq extends IInterface
 {
-    static void a(final ep ep, final Parcel parcel, int o) {
-        o = b.o(parcel);
-        b.c(parcel, 1, ep.getVersionCode());
-        b.b(parcel, 2, ep.cg(), false);
-        b.D(parcel, o);
-    }
+    void A(final int p0) throws RemoteException;
     
-    public ep[] P(final int n) {
-        return new ep[n];
-    }
+    void B(final int p0) throws RemoteException;
     
-    public ep r(final Parcel parcel) {
-        final int n = a.n(parcel);
-        int g = 0;
-        ArrayList<ep.a> c = null;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
+    void C(final int p0) throws RemoteException;
+    
+    void a(final ApplicationMetadata p0, final String p1, final String p2, final boolean p3) throws RemoteException;
+    
+    void a(final String p0, final long p1) throws RemoteException;
+    
+    void a(final String p0, final long p1, final int p2) throws RemoteException;
+    
+    void b(final String p0, final double p1, final boolean p2) throws RemoteException;
+    
+    void b(final String p0, final byte[] p1) throws RemoteException;
+    
+    void d(final String p0, final String p1) throws RemoteException;
+    
+    void onApplicationDisconnected(final int p0) throws RemoteException;
+    
+    void z(final int p0) throws RemoteException;
+    
+    public abstract static class a extends Binder implements eq
+    {
+        public a() {
+            this.attachInterface((IInterface)this, "com.google.android.gms.cast.internal.ICastDeviceControllerListener");
+        }
+        
+        public IBinder asBinder() {
+            return (IBinder)this;
+        }
+        
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            final boolean b = false;
+            boolean b2 = false;
+            switch (n) {
                 default: {
-                    a.b(parcel, m);
-                    continue;
+                    return super.onTransact(n, parcel, parcel2, n2);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
+                    return true;
                 }
                 case 1: {
-                    g = a.g(parcel, m);
-                    continue;
+                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
+                    this.z(parcel.readInt());
+                    return true;
                 }
                 case 2: {
-                    c = a.c(parcel, m, (android.os.Parcelable$Creator<ep.a>)ep.a.CREATOR);
-                    continue;
+                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
+                    ApplicationMetadata applicationMetadata;
+                    if (parcel.readInt() != 0) {
+                        applicationMetadata = (ApplicationMetadata)ApplicationMetadata.CREATOR.createFromParcel(parcel);
+                    }
+                    else {
+                        applicationMetadata = null;
+                    }
+                    final String string = parcel.readString();
+                    final String string2 = parcel.readString();
+                    if (parcel.readInt() != 0) {
+                        b2 = true;
+                    }
+                    this.a(applicationMetadata, string, string2, b2);
+                    return true;
+                }
+                case 3: {
+                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
+                    this.A(parcel.readInt());
+                    return true;
+                }
+                case 4: {
+                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
+                    final String string3 = parcel.readString();
+                    final double double1 = parcel.readDouble();
+                    boolean b3 = b;
+                    if (parcel.readInt() != 0) {
+                        b3 = true;
+                    }
+                    this.b(string3, double1, b3);
+                    return true;
+                }
+                case 5: {
+                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
+                    this.d(parcel.readString(), parcel.readString());
+                    return true;
+                }
+                case 6: {
+                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
+                    this.b(parcel.readString(), parcel.createByteArray());
+                    return true;
+                }
+                case 7: {
+                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
+                    this.C(parcel.readInt());
+                    return true;
+                }
+                case 8: {
+                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
+                    this.B(parcel.readInt());
+                    return true;
+                }
+                case 9: {
+                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
+                    this.onApplicationDisconnected(parcel.readInt());
+                    return true;
+                }
+                case 10: {
+                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
+                    this.a(parcel.readString(), parcel.readLong(), parcel.readInt());
+                    return true;
+                }
+                case 11: {
+                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
+                    this.a(parcel.readString(), parcel.readLong());
+                    return true;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
-        }
-        return new ep(g, c);
     }
 }

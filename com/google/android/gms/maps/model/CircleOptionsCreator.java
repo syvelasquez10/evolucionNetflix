@@ -15,7 +15,7 @@ public class CircleOptionsCreator implements Parcelable$Creator<CircleOptions>
     public static final int CONTENT_DESCRIPTION = 0;
     
     static void a(final CircleOptions circleOptions, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
+        final int p3 = b.p(parcel);
         b.c(parcel, 1, circleOptions.getVersionCode());
         b.a(parcel, 2, (Parcelable)circleOptions.getCenter(), n, false);
         b.a(parcel, 3, circleOptions.getRadius());
@@ -24,64 +24,64 @@ public class CircleOptionsCreator implements Parcelable$Creator<CircleOptions>
         b.c(parcel, 6, circleOptions.getFillColor());
         b.a(parcel, 7, circleOptions.getZIndex());
         b.a(parcel, 8, circleOptions.isVisible());
-        b.D(parcel, o);
+        b.F(parcel, p3);
     }
     
     public CircleOptions createFromParcel(final Parcel parcel) {
-        float j = 0.0f;
+        float k = 0.0f;
         boolean c = false;
-        final int n = a.n(parcel);
+        final int o = a.o(parcel);
         LatLng latLng = null;
-        double k = 0.0;
+        double l = 0.0;
         int g = 0;
         int g2 = 0;
         float i = 0.0f;
         int g3 = 0;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
                 default: {
-                    a.b(parcel, m);
+                    a.b(parcel, n);
                     continue;
                 }
                 case 1: {
-                    g3 = a.g(parcel, m);
+                    g3 = a.g(parcel, n);
                     continue;
                 }
                 case 2: {
-                    latLng = a.a(parcel, m, (android.os.Parcelable$Creator<LatLng>)LatLng.CREATOR);
+                    latLng = a.a(parcel, n, (android.os.Parcelable$Creator<LatLng>)LatLng.CREATOR);
                     continue;
                 }
                 case 3: {
-                    k = a.k(parcel, m);
+                    l = a.l(parcel, n);
                     continue;
                 }
                 case 4: {
-                    i = a.j(parcel, m);
+                    i = a.k(parcel, n);
                     continue;
                 }
                 case 5: {
-                    g2 = a.g(parcel, m);
+                    g2 = a.g(parcel, n);
                     continue;
                 }
                 case 6: {
-                    g = a.g(parcel, m);
+                    g = a.g(parcel, n);
                     continue;
                 }
                 case 7: {
-                    j = a.j(parcel, m);
+                    k = a.k(parcel, n);
                     continue;
                 }
                 case 8: {
-                    c = a.c(parcel, m);
+                    c = a.c(parcel, n);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new CircleOptions(g3, latLng, k, i, g2, g, j, c);
+        return new CircleOptions(g3, latLng, l, i, g2, g, k, c);
     }
     
     public CircleOptions[] newArray(final int n) {

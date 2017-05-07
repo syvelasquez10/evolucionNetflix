@@ -16,32 +16,28 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class Contents implements SafeParcelable
 {
     public static final Parcelable$Creator<Contents> CREATOR;
-    final int kg;
+    final ParcelFileDescriptor Cj;
+    final int Eu;
+    final int Ev;
+    final DriveId Ew;
+    private boolean Ex;
+    private boolean Ey;
     private boolean mClosed;
-    final ParcelFileDescriptor om;
-    final int qE;
-    final int qF;
-    final DriveId qG;
-    private boolean qH;
-    private boolean qI;
+    final int xH;
     
     static {
         CREATOR = (Parcelable$Creator)new a();
     }
     
-    Contents(final int kg, final ParcelFileDescriptor om, final int qe, final int qf, final DriveId qg) {
+    Contents(final int xh, final ParcelFileDescriptor cj, final int eu, final int ev, final DriveId ew) {
         this.mClosed = false;
-        this.qH = false;
-        this.qI = false;
-        this.kg = kg;
-        this.om = om;
-        this.qE = qe;
-        this.qF = qf;
-        this.qG = qg;
-    }
-    
-    public int cJ() {
-        return this.qE;
+        this.Ex = false;
+        this.Ey = false;
+        this.xH = xh;
+        this.Cj = cj;
+        this.Eu = eu;
+        this.Ev = ev;
+        this.Ew = ew;
     }
     
     public void close() {
@@ -52,47 +48,51 @@ public class Contents implements SafeParcelable
         return 0;
     }
     
+    public int fA() {
+        return this.Eu;
+    }
+    
     public DriveId getDriveId() {
-        return this.qG;
+        return this.Ew;
     }
     
     public InputStream getInputStream() {
         if (this.mClosed) {
             throw new IllegalStateException("Contents have been closed, cannot access the input stream.");
         }
-        if (this.qF != 268435456) {
+        if (this.Ev != 268435456) {
             throw new IllegalStateException("getInputStream() can only be used with contents opened with MODE_READ_ONLY.");
         }
-        if (this.qH) {
+        if (this.Ex) {
             throw new IllegalStateException("getInputStream() can only be called once per Contents instance.");
         }
-        this.qH = true;
-        return new FileInputStream(this.om.getFileDescriptor());
+        this.Ex = true;
+        return new FileInputStream(this.Cj.getFileDescriptor());
     }
     
     public int getMode() {
-        return this.qF;
+        return this.Ev;
     }
     
     public OutputStream getOutputStream() {
         if (this.mClosed) {
             throw new IllegalStateException("Contents have been closed, cannot access the output stream.");
         }
-        if (this.qF != 536870912) {
+        if (this.Ev != 536870912) {
             throw new IllegalStateException("getOutputStream() can only be used with contents opened with MODE_WRITE_ONLY.");
         }
-        if (this.qI) {
+        if (this.Ey) {
             throw new IllegalStateException("getOutputStream() can only be called once per Contents instance.");
         }
-        this.qI = true;
-        return new FileOutputStream(this.om.getFileDescriptor());
+        this.Ey = true;
+        return new FileOutputStream(this.Cj.getFileDescriptor());
     }
     
     public ParcelFileDescriptor getParcelFileDescriptor() {
         if (this.mClosed) {
             throw new IllegalStateException("Contents have been closed, cannot access the output stream.");
         }
-        return this.om;
+        return this.Cj;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

@@ -155,7 +155,7 @@ public final class PlaybackLauncher
             }
             if (n != 0 || videoDetails == null) {
                 Log.w("nf_play", "Error loading video details for MDX launch - hiding mini player");
-                Toast.makeText((Context)this.activity, 2131296491, 1).show();
+                Toast.makeText((Context)this.activity, 2131493111, 1).show();
                 this.activity.hideMdxMiniPlayer();
                 return;
             }

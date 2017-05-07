@@ -6,44 +6,67 @@ package com.google.android.gms.drive.metadata.internal;
 
 import java.util.Collections;
 import java.util.Collection;
-import com.google.android.gms.internal.fi;
-import com.google.android.gms.internal.fh;
+import com.google.android.gms.internal.gv;
+import com.google.android.gms.internal.gt;
+import com.google.android.gms.internal.gs;
 import java.util.HashMap;
 import com.google.android.gms.drive.metadata.MetadataField;
 import java.util.Map;
 
 public final class c
 {
-    private static Map<String, MetadataField<?>> rE;
+    private static Map<String, MetadataField<?>> FP;
     
     static {
-        c.rE = new HashMap<String, MetadataField<?>>();
-        b(fh.rG);
-        b(fh.TITLE);
-        b(fh.MIME_TYPE);
-        b(fh.STARRED);
-        b(fh.TRASHED);
-        b(fh.rH);
-        b(fh.rI);
-        b(fh.PARENTS);
-        b(fi.rL);
-        b(fi.rJ);
-        b(fi.rK);
-        b(fi.rM);
+        c.FP = new HashMap<String, MetadataField<?>>();
+        b(gs.FR);
+        b(gs.Go);
+        b(gs.Gh);
+        b(gs.Gm);
+        b(gs.Gp);
+        b(gs.Gb);
+        b(gs.Gc);
+        b(gs.FZ);
+        b(gs.Ge);
+        b(gs.Gk);
+        b(gs.FS);
+        b(gs.Gj);
+        b(gs.FT);
+        b(gs.Ga);
+        b(gs.FU);
+        b(gs.FV);
+        b(gs.FW);
+        b(gs.Gg);
+        b(gs.Gd);
+        b(gs.Gi);
+        b(gs.Gl);
+        b(gs.Gq);
+        b(gs.Gr);
+        b(gs.FY);
+        b(gs.FX);
+        b(gs.Gn);
+        b(gs.Gf);
+        b(gt.Gs);
+        b(gt.Gu);
+        b(gt.Gv);
+        b(gt.Gw);
+        b(gt.Gt);
+        b(gv.Gy);
+        b(gv.Gz);
     }
     
-    public static MetadataField<?> ac(final String s) {
-        return c.rE.get(s);
+    public static MetadataField<?> ax(final String s) {
+        return c.FP.get(s);
     }
     
     private static void b(final MetadataField<?> metadataField) {
-        if (c.rE.containsKey(metadataField.getName())) {
+        if (c.FP.containsKey(metadataField.getName())) {
             throw new IllegalArgumentException("Duplicate field name registered: " + metadataField.getName());
         }
-        c.rE.put(metadataField.getName(), metadataField);
+        c.FP.put(metadataField.getName(), metadataField);
     }
     
-    public static Collection<MetadataField<?>> cW() {
-        return Collections.unmodifiableCollection((Collection<? extends MetadataField<?>>)c.rE.values());
+    public static Collection<MetadataField<?>> fS() {
+        return Collections.unmodifiableCollection((Collection<? extends MetadataField<?>>)c.FP.values());
     }
 }

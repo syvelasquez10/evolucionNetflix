@@ -10,6 +10,7 @@ import com.netflix.mediaclient.servicemgr.UserProfile;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.media.bitrate.VideoBitrateRange;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
+import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration;
 import org.json.JSONObject;
 import com.netflix.mediaclient.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
@@ -208,7 +209,7 @@ public abstract class ServiceAgent
         
         int getBitrateCap();
         
-        JSONArray getCastBlackList();
+        JSONArray getCastWhiteList();
         
         ConsolidatedLoggingSessionSpecification getConsolidatedLoggingSessionSpecification(final String p0);
         
@@ -231,6 +232,8 @@ public abstract class ServiceAgent
         IpConnectivityPolicy getIpConnectivityPolicy();
         
         JSONObject getJPlayerConfig();
+        
+        KidsOnPhoneConfiguration getKidsOnPhoneConfiguration();
         
         JSONArray getMdxBlackListTargets();
         

@@ -15,6 +15,18 @@ public interface GamesMetadata
     
     PendingResult<LoadGamesResult> loadGame(final GoogleApiClient p0);
     
+    public interface LoadExtendedGamesResult extends Releasable, Result
+    {
+    }
+    
+    public interface LoadGameInstancesResult extends Releasable, Result
+    {
+    }
+    
+    public interface LoadGameSearchSuggestionsResult extends Releasable, Result
+    {
+    }
+    
     public interface LoadGamesResult extends Releasable, Result
     {
         GameBuffer getGames();

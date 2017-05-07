@@ -4,7 +4,7 @@
 
 package com.google.android.gms.maps.model;
 
-import com.google.android.gms.maps.internal.r;
+import com.google.android.gms.maps.internal.v;
 import android.os.Parcel;
 import java.util.Iterator;
 import java.util.Collection;
@@ -16,64 +16,64 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class PolygonOptions implements SafeParcelable
 {
     public static final PolygonOptionsCreator CREATOR;
-    private final List<LatLng> CV;
-    private final List<List<LatLng>> CW;
-    private boolean CX;
-    private float Ct;
-    private int Cu;
-    private int Cv;
-    private float Cw;
-    private boolean Cx;
-    private final int kg;
+    private float SK;
+    private int SL;
+    private int SM;
+    private float SN;
+    private boolean SO;
+    private final List<LatLng> Tn;
+    private final List<List<LatLng>> To;
+    private boolean Tp;
+    private final int xH;
     
     static {
         CREATOR = new PolygonOptionsCreator();
     }
     
     public PolygonOptions() {
-        this.Ct = 10.0f;
-        this.Cu = -16777216;
-        this.Cv = 0;
-        this.Cw = 0.0f;
-        this.Cx = true;
-        this.CX = false;
-        this.kg = 1;
-        this.CV = new ArrayList<LatLng>();
-        this.CW = new ArrayList<List<LatLng>>();
+        this.SK = 10.0f;
+        this.SL = -16777216;
+        this.SM = 0;
+        this.SN = 0.0f;
+        this.SO = true;
+        this.Tp = false;
+        this.xH = 1;
+        this.Tn = new ArrayList<LatLng>();
+        this.To = new ArrayList<List<LatLng>>();
     }
     
-    PolygonOptions(final int kg, final List<LatLng> cv, final List cw, final float ct, final int cu, final int cv2, final float cw2, final boolean cx, final boolean cx2) {
-        this.Ct = 10.0f;
-        this.Cu = -16777216;
-        this.Cv = 0;
-        this.Cw = 0.0f;
-        this.Cx = true;
-        this.CX = false;
-        this.kg = kg;
-        this.CV = cv;
-        this.CW = (List<List<LatLng>>)cw;
-        this.Ct = ct;
-        this.Cu = cu;
-        this.Cv = cv2;
-        this.Cw = cw2;
-        this.Cx = cx;
-        this.CX = cx2;
+    PolygonOptions(final int xh, final List<LatLng> tn, final List to, final float sk, final int sl, final int sm, final float sn, final boolean so, final boolean tp) {
+        this.SK = 10.0f;
+        this.SL = -16777216;
+        this.SM = 0;
+        this.SN = 0.0f;
+        this.SO = true;
+        this.Tp = false;
+        this.xH = xh;
+        this.Tn = tn;
+        this.To = (List<List<LatLng>>)to;
+        this.SK = sk;
+        this.SL = sl;
+        this.SM = sm;
+        this.SN = sn;
+        this.SO = so;
+        this.Tp = tp;
     }
     
     public PolygonOptions add(final LatLng latLng) {
-        this.CV.add(latLng);
+        this.Tn.add(latLng);
         return this;
     }
     
     public PolygonOptions add(final LatLng... array) {
-        this.CV.addAll(Arrays.asList(array));
+        this.Tn.addAll(Arrays.asList(array));
         return this;
     }
     
     public PolygonOptions addAll(final Iterable<LatLng> iterable) {
         final Iterator<LatLng> iterator = iterable.iterator();
         while (iterator.hasNext()) {
-            this.CV.add(iterator.next());
+            this.Tn.add(iterator.next());
         }
         return this;
     }
@@ -84,7 +84,7 @@ public final class PolygonOptions implements SafeParcelable
         while (iterator.hasNext()) {
             list.add(iterator.next());
         }
-        this.CW.add(list);
+        this.To.add(list);
         return this;
     }
     
@@ -92,81 +92,81 @@ public final class PolygonOptions implements SafeParcelable
         return 0;
     }
     
-    List eH() {
-        return this.CW;
-    }
-    
-    public PolygonOptions fillColor(final int cv) {
-        this.Cv = cv;
+    public PolygonOptions fillColor(final int sm) {
+        this.SM = sm;
         return this;
     }
     
-    public PolygonOptions geodesic(final boolean cx) {
-        this.CX = cx;
+    public PolygonOptions geodesic(final boolean tp) {
+        this.Tp = tp;
         return this;
     }
     
     public int getFillColor() {
-        return this.Cv;
+        return this.SM;
     }
     
     public List<List<LatLng>> getHoles() {
-        return this.CW;
+        return this.To;
     }
     
     public List<LatLng> getPoints() {
-        return this.CV;
+        return this.Tn;
     }
     
     public int getStrokeColor() {
-        return this.Cu;
+        return this.SL;
     }
     
     public float getStrokeWidth() {
-        return this.Ct;
+        return this.SK;
     }
     
     int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public float getZIndex() {
-        return this.Cw;
+        return this.SN;
+    }
+    
+    List iF() {
+        return this.To;
     }
     
     public boolean isGeodesic() {
-        return this.CX;
+        return this.Tp;
     }
     
     public boolean isVisible() {
-        return this.Cx;
+        return this.SO;
     }
     
-    public PolygonOptions strokeColor(final int cu) {
-        this.Cu = cu;
+    public PolygonOptions strokeColor(final int sl) {
+        this.SL = sl;
         return this;
     }
     
-    public PolygonOptions strokeWidth(final float ct) {
-        this.Ct = ct;
+    public PolygonOptions strokeWidth(final float sk) {
+        this.SK = sk;
         return this;
     }
     
-    public PolygonOptions visible(final boolean cx) {
-        this.Cx = cx;
+    public PolygonOptions visible(final boolean so) {
+        this.SO = so;
         return this;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (r.eD()) {
+        if (v.iB()) {
             g.a(this, parcel, n);
             return;
         }
         PolygonOptionsCreator.a(this, parcel, n);
     }
     
-    public PolygonOptions zIndex(final float cw) {
-        this.Cw = cw;
+    public PolygonOptions zIndex(final float sn) {
+        this.SN = sn;
         return this;
     }
 }

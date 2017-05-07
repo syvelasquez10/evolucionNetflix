@@ -52,12 +52,12 @@ public final class PostPlayForEpisodes extends PostPlay
     }
     
     private void init() {
-        this.mTimerValue = this.mContext.getResources().getInteger(2131361799);
+        this.mTimerValue = this.mContext.getResources().getInteger(2131427335);
         if (Log.isLoggable("nf_postplay", 3)) {
             Log.d("nf_postplay", "PostPlayForEpisodes:: timer max value " + this.mTimerValue);
         }
-        this.mTimerView = (TextView)this.mContext.findViewById(2131231044);
-        this.mPlayButtonImage = (AdvancedImageView)this.mContext.findViewById(2131231047);
+        this.mTimerView = (TextView)this.mContext.findViewById(2131165528);
+        this.mPlayButtonImage = (AdvancedImageView)this.mContext.findViewById(2131165531);
     }
     
     @Override
@@ -123,7 +123,7 @@ public final class PostPlayForEpisodes extends PostPlay
             }
             final String storyUrl = postPlayVideo.getStoryUrl();
             final String interestingUrl = postPlayVideo.getInterestingUrl();
-            final String string = this.mContext.getResources().getString(2131296684, new Object[] { title });
+            final String string = this.mContext.getResources().getString(2131493303, new Object[] { title });
             if (this.mBackground != null) {
                 if (!StringUtils.isEmpty(storyUrl) && this.mContext.isTablet()) {
                     NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, storyUrl, IClientLogging.AssetType.merchStill, string, true, true, 1);
@@ -135,7 +135,7 @@ public final class PostPlayForEpisodes extends PostPlay
             if (!StringUtils.isEmpty(interestingUrl) && this.mPlayButtonImage != null) {
                 NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mPlayButtonImage, interestingUrl, IClientLogging.AssetType.merchStill, string, true, true, 1);
             }
-            final String string2 = this.mContext.getResources().getString(2131296687, new Object[] { postPlayVideo.getSeasonNumber(), postPlayVideo.getEpisodeNumber(), title });
+            final String string2 = this.mContext.getResources().getString(2131493306, new Object[] { postPlayVideo.getSeasonNumber(), postPlayVideo.getEpisodeNumber(), title });
             if (Log.isLoggable("nf_postplay", 3)) {
                 Log.d("nf_postplay", "Title: " + string2);
             }

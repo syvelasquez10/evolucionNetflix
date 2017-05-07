@@ -5,81 +5,55 @@
 package com.google.android.gms.drive.internal;
 
 import com.google.android.gms.drive.Contents;
-import com.google.android.gms.drive.metadata.internal.MetadataBundle;
-import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class e implements Parcelable$Creator<CreateFileRequest>
+public class e implements Parcelable$Creator<CloseContentsRequest>
 {
-    static void a(final CreateFileRequest createFileRequest, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
-        b.c(parcel, 1, createFileRequest.kg);
-        b.a(parcel, 2, (Parcelable)createFileRequest.ra, n, false);
-        b.a(parcel, 3, (Parcelable)createFileRequest.qZ, n, false);
-        b.a(parcel, 4, (Parcelable)createFileRequest.qX, n, false);
-        b.D(parcel, o);
+    static void a(final CloseContentsRequest closeContentsRequest, final Parcel parcel, final int n) {
+        final int p3 = b.p(parcel);
+        b.c(parcel, 1, closeContentsRequest.xH);
+        b.a(parcel, 2, (Parcelable)closeContentsRequest.EX, n, false);
+        b.a(parcel, 3, closeContentsRequest.EY, false);
+        b.F(parcel, p3);
     }
     
-    public CreateFileRequest D(final Parcel parcel) {
-        Contents contents = null;
-        final int n = a.n(parcel);
+    public CloseContentsRequest F(final Parcel parcel) {
+        Boolean d = null;
+        final int o = a.o(parcel);
         int g = 0;
-        MetadataBundle metadataBundle = null;
-        DriveId driveId = null;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            DriveId driveId2 = null;
-            MetadataBundle metadataBundle3 = null;
-            switch (a.M(m)) {
+        Contents contents = null;
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
                 default: {
-                    a.b(parcel, m);
-                    final MetadataBundle metadataBundle2 = metadataBundle;
-                    driveId2 = driveId;
-                    metadataBundle3 = metadataBundle2;
-                    break;
+                    a.b(parcel, n);
+                    continue;
                 }
                 case 1: {
-                    g = a.g(parcel, m);
-                    final DriveId driveId3 = driveId;
-                    metadataBundle3 = metadataBundle;
-                    driveId2 = driveId3;
-                    break;
+                    g = a.g(parcel, n);
+                    continue;
                 }
                 case 2: {
-                    final DriveId driveId4 = a.a(parcel, m, DriveId.CREATOR);
-                    metadataBundle3 = metadataBundle;
-                    driveId2 = driveId4;
-                    break;
+                    contents = a.a(parcel, n, Contents.CREATOR);
+                    continue;
                 }
                 case 3: {
-                    final MetadataBundle metadataBundle4 = a.a(parcel, m, MetadataBundle.CREATOR);
-                    driveId2 = driveId;
-                    metadataBundle3 = metadataBundle4;
-                    break;
-                }
-                case 4: {
-                    contents = a.a(parcel, m, Contents.CREATOR);
-                    final DriveId driveId5 = driveId;
-                    metadataBundle3 = metadataBundle;
-                    driveId2 = driveId5;
-                    break;
+                    d = a.d(parcel, n);
+                    continue;
                 }
             }
-            final DriveId driveId6 = driveId2;
-            metadataBundle = metadataBundle3;
-            driveId = driveId6;
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new CreateFileRequest(g, driveId, metadataBundle, contents);
+        return new CloseContentsRequest(g, contents, d);
     }
     
-    public CreateFileRequest[] ad(final int n) {
-        return new CreateFileRequest[n];
+    public CloseContentsRequest[] aj(final int n) {
+        return new CloseContentsRequest[n];
     }
 }

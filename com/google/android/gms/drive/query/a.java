@@ -13,46 +13,70 @@ import android.os.Parcelable$Creator;
 public class a implements Parcelable$Creator<Query>
 {
     static void a(final Query query, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
-        b.c(parcel, 1000, query.kg);
-        b.a(parcel, 1, (Parcelable)query.rO, n, false);
-        b.a(parcel, 3, query.rP, false);
-        b.D(parcel, o);
+        final int p3 = b.p(parcel);
+        b.c(parcel, 1000, query.xH);
+        b.a(parcel, 1, (Parcelable)query.GA, n, false);
+        b.a(parcel, 3, query.GB, false);
+        b.a(parcel, 4, (Parcelable)query.GC, n, false);
+        b.F(parcel, p3);
     }
     
-    public Query Q(final Parcel parcel) {
-        String m = null;
-        final int n = com.google.android.gms.common.internal.safeparcel.a.n(parcel);
+    public Query[] aG(final int n) {
+        return new Query[n];
+    }
+    
+    public Query ac(final Parcel parcel) {
+        SortOrder sortOrder = null;
+        final int o = com.google.android.gms.common.internal.safeparcel.a.o(parcel);
         int g = 0;
+        String s = null;
         LogicalFilter logicalFilter = null;
-        while (parcel.dataPosition() < n) {
-            final int i = com.google.android.gms.common.internal.safeparcel.a.m(parcel);
-            switch (com.google.android.gms.common.internal.safeparcel.a.M(i)) {
+        while (parcel.dataPosition() < o) {
+            final int n = com.google.android.gms.common.internal.safeparcel.a.n(parcel);
+            LogicalFilter logicalFilter2 = null;
+            String s3 = null;
+            switch (com.google.android.gms.common.internal.safeparcel.a.R(n)) {
                 default: {
-                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, i);
-                    continue;
+                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, n);
+                    final String s2 = s;
+                    logicalFilter2 = logicalFilter;
+                    s3 = s2;
+                    break;
                 }
                 case 1000: {
-                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, i);
-                    continue;
+                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, n);
+                    final LogicalFilter logicalFilter3 = logicalFilter;
+                    s3 = s;
+                    logicalFilter2 = logicalFilter3;
+                    break;
                 }
                 case 1: {
-                    logicalFilter = com.google.android.gms.common.internal.safeparcel.a.a(parcel, i, LogicalFilter.CREATOR);
-                    continue;
+                    final LogicalFilter logicalFilter4 = com.google.android.gms.common.internal.safeparcel.a.a(parcel, n, LogicalFilter.CREATOR);
+                    s3 = s;
+                    logicalFilter2 = logicalFilter4;
+                    break;
                 }
                 case 3: {
-                    m = com.google.android.gms.common.internal.safeparcel.a.m(parcel, i);
-                    continue;
+                    final String n2 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n);
+                    logicalFilter2 = logicalFilter;
+                    s3 = n2;
+                    break;
+                }
+                case 4: {
+                    sortOrder = com.google.android.gms.common.internal.safeparcel.a.a(parcel, n, SortOrder.CREATOR);
+                    final LogicalFilter logicalFilter5 = logicalFilter;
+                    s3 = s;
+                    logicalFilter2 = logicalFilter5;
+                    break;
                 }
             }
+            final LogicalFilter logicalFilter6 = logicalFilter2;
+            s = s3;
+            logicalFilter = logicalFilter6;
         }
-        if (parcel.dataPosition() != n) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + o, parcel);
         }
-        return new Query(g, logicalFilter, m);
-    }
-    
-    public Query[] aq(final int n) {
-        return new Query[n];
+        return new Query(g, logicalFilter, s, sortOrder);
     }
 }

@@ -72,6 +72,9 @@ public class TargetStateManager
             }
             --this.mRetryCurrentAction;
             this.mRetryCurrentInterval += this.mRetryCurrentInterval;
+            this.mListener.removeEvents(TargetContextEvent.Timeout);
+            this.mListener.removeEvents(TargetContextEvent.SessionRetry);
+            this.mListener.removeEvents(TargetContextEvent.PairingRetry);
         }
         else {
             this.mListener.removeEvents(TargetContextEvent.Timeout);
@@ -233,7 +236,7 @@ public class TargetStateManager
                             this.scheduleRetry(TargetContextEvent.PairingRetry);
                             return;
                         }
-                        if (TargetContextEvent.PairingRetry.equals(targetContextEvent)) {
+                        if (TargetContextEvent.PairingRetry.equals(targetContextEvent) || TargetContextEvent.RegistrationInProgress.equals(targetContextEvent)) {
                             this.transitionStateTo(TargetState.StateNoPair);
                             return;
                         }
@@ -267,12 +270,16 @@ public class TargetStateManager
                         this.mListener.stateHasTimedOut(this.mPreviousState);
                         return;
                     }
-                    if (TargetContextEvent.PairFailed.equals(targetContextEvent)) {
+                    if (TargetContextEvent.PairFailed.equals(targetContextEvent) || TargetContextEvent.PairFailedNeedRegPair.equals(targetContextEvent)) {
                         this.scheduleRetry(TargetContextEvent.PairingRetry);
                         return;
                     }
                     if (TargetContextEvent.PairingRetry.equals(targetContextEvent)) {
                         this.transitionStateTo(TargetState.StateNeedRegPair);
+                        return;
+                    }
+                    if (TargetContextEvent.RegistrationInProgress.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateNoPair);
                         return;
                     }
                     break;
@@ -470,6 +477,7 @@ public class TargetStateManager
         PairNotAllowed, 
         PairSucceed, 
         PairingRetry, 
+        RegistrationInProgress, 
         SendMessageFailed, 
         SendMessageFailedNeedNewSession, 
         SendMessageFailedNeedRepair, 

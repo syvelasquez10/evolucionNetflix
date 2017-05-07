@@ -5,8 +5,8 @@
 package com.google.android.gms.plus.model.moments;
 
 import java.util.HashSet;
+import com.google.android.gms.internal.ic;
 import java.util.Set;
-import com.google.android.gms.internal.ib;
 import java.util.List;
 import com.google.android.gms.common.data.Freezable;
 
@@ -230,391 +230,391 @@ public interface ItemScope extends Freezable<ItemScope>
     
     public static class Builder
     {
-        private String AI;
-        private ib EA;
-        private List<ib> EB;
-        private String EC;
-        private String ED;
-        private ib EE;
-        private String EF;
-        private String EG;
-        private String EH;
-        private List<ib> EI;
-        private String EJ;
-        private String EK;
-        private String EL;
-        private String EM;
-        private String EN;
-        private String EO;
-        private String EP;
-        private String EQ;
-        private ib ER;
-        private String ES;
-        private String ET;
-        private String EU;
-        private ib EV;
-        private ib EW;
-        private ib EX;
-        private List<ib> EY;
-        private String EZ;
-        private final Set<Integer> Eq;
-        private ib Er;
-        private List<String> Es;
-        private ib Et;
-        private String Eu;
-        private String Ev;
-        private String Ew;
-        private List<ib> Ex;
-        private int Ey;
-        private List<ib> Ez;
-        private String Fa;
-        private String Fb;
-        private String Fc;
-        private ib Fd;
-        private String Fe;
-        private String Ff;
-        private String Fg;
-        private ib Fh;
-        private String Fi;
-        private String Fj;
-        private String Fk;
-        private String Fl;
-        private String iH;
+        private String HD;
+        private double NX;
+        private double NY;
+        private String Rd;
+        private final Set<Integer> UJ;
+        private ic UK;
+        private List<String> UL;
+        private ic UM;
+        private String UN;
+        private String UO;
+        private String UP;
+        private List<ic> UQ;
+        private int UR;
+        private List<ic> US;
+        private ic UT;
+        private List<ic> UU;
+        private String UV;
+        private String UW;
+        private ic UX;
+        private String UY;
+        private String UZ;
+        private String VA;
+        private String VB;
+        private String VC;
+        private String VD;
+        private List<ic> Va;
+        private String Vb;
+        private String Vc;
+        private String Vd;
+        private String Ve;
+        private String Vf;
+        private String Vg;
+        private String Vh;
+        private String Vi;
+        private ic Vj;
+        private String Vk;
+        private String Vl;
+        private String Vm;
+        private ic Vn;
+        private ic Vo;
+        private ic Vp;
+        private List<ic> Vq;
+        private String Vr;
+        private String Vs;
+        private String Vt;
+        private String Vu;
+        private ic Vv;
+        private String Vw;
+        private String Vx;
+        private String Vy;
+        private ic Vz;
+        private String lY;
         private String mName;
-        private String sJ;
-        private String uS;
-        private double xw;
-        private double xx;
+        private String ro;
+        private String wp;
         
         public Builder() {
-            this.Eq = new HashSet<Integer>();
+            this.UJ = new HashSet<Integer>();
         }
         
         public ItemScope build() {
-            return new ib(this.Eq, this.Er, this.Es, this.Et, this.Eu, this.Ev, this.Ew, this.Ex, this.Ey, this.Ez, this.EA, this.EB, this.EC, this.ED, this.EE, this.EF, this.EG, this.EH, this.EI, this.EJ, this.EK, this.EL, this.sJ, this.EM, this.EN, this.EO, this.EP, this.EQ, this.ER, this.ES, this.ET, this.uS, this.EU, this.EV, this.xw, this.EW, this.xx, this.mName, this.EX, this.EY, this.EZ, this.Fa, this.Fb, this.Fc, this.Fd, this.Fe, this.Ff, this.Fg, this.Fh, this.Fi, this.Fj, this.AI, this.iH, this.Fk, this.Fl);
+            return new ic(this.UJ, this.UK, this.UL, this.UM, this.UN, this.UO, this.UP, this.UQ, this.UR, this.US, this.UT, this.UU, this.UV, this.UW, this.UX, this.UY, this.UZ, this.lY, this.Va, this.Vb, this.Vc, this.Vd, this.HD, this.Ve, this.Vf, this.Vg, this.Vh, this.Vi, this.Vj, this.Vk, this.Vl, this.wp, this.Vm, this.Vn, this.NX, this.Vo, this.NY, this.mName, this.Vp, this.Vq, this.Vr, this.Vs, this.Vt, this.Vu, this.Vv, this.Vw, this.Vx, this.Vy, this.Vz, this.VA, this.VB, this.Rd, this.ro, this.VC, this.VD);
         }
         
         public Builder setAbout(final ItemScope itemScope) {
-            this.Er = (ib)itemScope;
-            this.Eq.add(2);
+            this.UK = (ic)itemScope;
+            this.UJ.add(2);
             return this;
         }
         
-        public Builder setAdditionalName(final List<String> es) {
-            this.Es = es;
-            this.Eq.add(3);
+        public Builder setAdditionalName(final List<String> ul) {
+            this.UL = ul;
+            this.UJ.add(3);
             return this;
         }
         
         public Builder setAddress(final ItemScope itemScope) {
-            this.Et = (ib)itemScope;
-            this.Eq.add(4);
+            this.UM = (ic)itemScope;
+            this.UJ.add(4);
             return this;
         }
         
-        public Builder setAddressCountry(final String eu) {
-            this.Eu = eu;
-            this.Eq.add(5);
+        public Builder setAddressCountry(final String un) {
+            this.UN = un;
+            this.UJ.add(5);
             return this;
         }
         
-        public Builder setAddressLocality(final String ev) {
-            this.Ev = ev;
-            this.Eq.add(6);
+        public Builder setAddressLocality(final String uo) {
+            this.UO = uo;
+            this.UJ.add(6);
             return this;
         }
         
-        public Builder setAddressRegion(final String ew) {
-            this.Ew = ew;
-            this.Eq.add(7);
+        public Builder setAddressRegion(final String up) {
+            this.UP = up;
+            this.UJ.add(7);
             return this;
         }
         
-        public Builder setAssociated_media(final List<ItemScope> ex) {
-            this.Ex = (List<ib>)ex;
-            this.Eq.add(8);
+        public Builder setAssociated_media(final List<ItemScope> uq) {
+            this.UQ = (List<ic>)uq;
+            this.UJ.add(8);
             return this;
         }
         
-        public Builder setAttendeeCount(final int ey) {
-            this.Ey = ey;
-            this.Eq.add(9);
+        public Builder setAttendeeCount(final int ur) {
+            this.UR = ur;
+            this.UJ.add(9);
             return this;
         }
         
-        public Builder setAttendees(final List<ItemScope> ez) {
-            this.Ez = (List<ib>)ez;
-            this.Eq.add(10);
+        public Builder setAttendees(final List<ItemScope> us) {
+            this.US = (List<ic>)us;
+            this.UJ.add(10);
             return this;
         }
         
         public Builder setAudio(final ItemScope itemScope) {
-            this.EA = (ib)itemScope;
-            this.Eq.add(11);
+            this.UT = (ic)itemScope;
+            this.UJ.add(11);
             return this;
         }
         
-        public Builder setAuthor(final List<ItemScope> eb) {
-            this.EB = (List<ib>)eb;
-            this.Eq.add(12);
+        public Builder setAuthor(final List<ItemScope> uu) {
+            this.UU = (List<ic>)uu;
+            this.UJ.add(12);
             return this;
         }
         
-        public Builder setBestRating(final String ec) {
-            this.EC = ec;
-            this.Eq.add(13);
+        public Builder setBestRating(final String uv) {
+            this.UV = uv;
+            this.UJ.add(13);
             return this;
         }
         
-        public Builder setBirthDate(final String ed) {
-            this.ED = ed;
-            this.Eq.add(14);
+        public Builder setBirthDate(final String uw) {
+            this.UW = uw;
+            this.UJ.add(14);
             return this;
         }
         
         public Builder setByArtist(final ItemScope itemScope) {
-            this.EE = (ib)itemScope;
-            this.Eq.add(15);
+            this.UX = (ic)itemScope;
+            this.UJ.add(15);
             return this;
         }
         
-        public Builder setCaption(final String ef) {
-            this.EF = ef;
-            this.Eq.add(16);
+        public Builder setCaption(final String uy) {
+            this.UY = uy;
+            this.UJ.add(16);
             return this;
         }
         
-        public Builder setContentSize(final String eg) {
-            this.EG = eg;
-            this.Eq.add(17);
+        public Builder setContentSize(final String uz) {
+            this.UZ = uz;
+            this.UJ.add(17);
             return this;
         }
         
-        public Builder setContentUrl(final String eh) {
-            this.EH = eh;
-            this.Eq.add(18);
+        public Builder setContentUrl(final String ly) {
+            this.lY = ly;
+            this.UJ.add(18);
             return this;
         }
         
-        public Builder setContributor(final List<ItemScope> ei) {
-            this.EI = (List<ib>)ei;
-            this.Eq.add(19);
+        public Builder setContributor(final List<ItemScope> va) {
+            this.Va = (List<ic>)va;
+            this.UJ.add(19);
             return this;
         }
         
-        public Builder setDateCreated(final String ej) {
-            this.EJ = ej;
-            this.Eq.add(20);
+        public Builder setDateCreated(final String vb) {
+            this.Vb = vb;
+            this.UJ.add(20);
             return this;
         }
         
-        public Builder setDateModified(final String ek) {
-            this.EK = ek;
-            this.Eq.add(21);
+        public Builder setDateModified(final String vc) {
+            this.Vc = vc;
+            this.UJ.add(21);
             return this;
         }
         
-        public Builder setDatePublished(final String el) {
-            this.EL = el;
-            this.Eq.add(22);
+        public Builder setDatePublished(final String vd) {
+            this.Vd = vd;
+            this.UJ.add(22);
             return this;
         }
         
-        public Builder setDescription(final String sj) {
-            this.sJ = sj;
-            this.Eq.add(23);
+        public Builder setDescription(final String hd) {
+            this.HD = hd;
+            this.UJ.add(23);
             return this;
         }
         
-        public Builder setDuration(final String em) {
-            this.EM = em;
-            this.Eq.add(24);
+        public Builder setDuration(final String ve) {
+            this.Ve = ve;
+            this.UJ.add(24);
             return this;
         }
         
-        public Builder setEmbedUrl(final String en) {
-            this.EN = en;
-            this.Eq.add(25);
+        public Builder setEmbedUrl(final String vf) {
+            this.Vf = vf;
+            this.UJ.add(25);
             return this;
         }
         
-        public Builder setEndDate(final String eo) {
-            this.EO = eo;
-            this.Eq.add(26);
+        public Builder setEndDate(final String vg) {
+            this.Vg = vg;
+            this.UJ.add(26);
             return this;
         }
         
-        public Builder setFamilyName(final String ep) {
-            this.EP = ep;
-            this.Eq.add(27);
+        public Builder setFamilyName(final String vh) {
+            this.Vh = vh;
+            this.UJ.add(27);
             return this;
         }
         
-        public Builder setGender(final String eq) {
-            this.EQ = eq;
-            this.Eq.add(28);
+        public Builder setGender(final String vi) {
+            this.Vi = vi;
+            this.UJ.add(28);
             return this;
         }
         
         public Builder setGeo(final ItemScope itemScope) {
-            this.ER = (ib)itemScope;
-            this.Eq.add(29);
+            this.Vj = (ic)itemScope;
+            this.UJ.add(29);
             return this;
         }
         
-        public Builder setGivenName(final String es) {
-            this.ES = es;
-            this.Eq.add(30);
+        public Builder setGivenName(final String vk) {
+            this.Vk = vk;
+            this.UJ.add(30);
             return this;
         }
         
-        public Builder setHeight(final String et) {
-            this.ET = et;
-            this.Eq.add(31);
+        public Builder setHeight(final String vl) {
+            this.Vl = vl;
+            this.UJ.add(31);
             return this;
         }
         
-        public Builder setId(final String us) {
-            this.uS = us;
-            this.Eq.add(32);
+        public Builder setId(final String wp) {
+            this.wp = wp;
+            this.UJ.add(32);
             return this;
         }
         
-        public Builder setImage(final String eu) {
-            this.EU = eu;
-            this.Eq.add(33);
+        public Builder setImage(final String vm) {
+            this.Vm = vm;
+            this.UJ.add(33);
             return this;
         }
         
         public Builder setInAlbum(final ItemScope itemScope) {
-            this.EV = (ib)itemScope;
-            this.Eq.add(34);
+            this.Vn = (ic)itemScope;
+            this.UJ.add(34);
             return this;
         }
         
-        public Builder setLatitude(final double xw) {
-            this.xw = xw;
-            this.Eq.add(36);
+        public Builder setLatitude(final double nx) {
+            this.NX = nx;
+            this.UJ.add(36);
             return this;
         }
         
         public Builder setLocation(final ItemScope itemScope) {
-            this.EW = (ib)itemScope;
-            this.Eq.add(37);
+            this.Vo = (ic)itemScope;
+            this.UJ.add(37);
             return this;
         }
         
-        public Builder setLongitude(final double xx) {
-            this.xx = xx;
-            this.Eq.add(38);
+        public Builder setLongitude(final double ny) {
+            this.NY = ny;
+            this.UJ.add(38);
             return this;
         }
         
         public Builder setName(final String mName) {
             this.mName = mName;
-            this.Eq.add(39);
+            this.UJ.add(39);
             return this;
         }
         
         public Builder setPartOfTVSeries(final ItemScope itemScope) {
-            this.EX = (ib)itemScope;
-            this.Eq.add(40);
+            this.Vp = (ic)itemScope;
+            this.UJ.add(40);
             return this;
         }
         
-        public Builder setPerformers(final List<ItemScope> ey) {
-            this.EY = (List<ib>)ey;
-            this.Eq.add(41);
+        public Builder setPerformers(final List<ItemScope> vq) {
+            this.Vq = (List<ic>)vq;
+            this.UJ.add(41);
             return this;
         }
         
-        public Builder setPlayerType(final String ez) {
-            this.EZ = ez;
-            this.Eq.add(42);
+        public Builder setPlayerType(final String vr) {
+            this.Vr = vr;
+            this.UJ.add(42);
             return this;
         }
         
-        public Builder setPostOfficeBoxNumber(final String fa) {
-            this.Fa = fa;
-            this.Eq.add(43);
+        public Builder setPostOfficeBoxNumber(final String vs) {
+            this.Vs = vs;
+            this.UJ.add(43);
             return this;
         }
         
-        public Builder setPostalCode(final String fb) {
-            this.Fb = fb;
-            this.Eq.add(44);
+        public Builder setPostalCode(final String vt) {
+            this.Vt = vt;
+            this.UJ.add(44);
             return this;
         }
         
-        public Builder setRatingValue(final String fc) {
-            this.Fc = fc;
-            this.Eq.add(45);
+        public Builder setRatingValue(final String vu) {
+            this.Vu = vu;
+            this.UJ.add(45);
             return this;
         }
         
         public Builder setReviewRating(final ItemScope itemScope) {
-            this.Fd = (ib)itemScope;
-            this.Eq.add(46);
+            this.Vv = (ic)itemScope;
+            this.UJ.add(46);
             return this;
         }
         
-        public Builder setStartDate(final String fe) {
-            this.Fe = fe;
-            this.Eq.add(47);
+        public Builder setStartDate(final String vw) {
+            this.Vw = vw;
+            this.UJ.add(47);
             return this;
         }
         
-        public Builder setStreetAddress(final String ff) {
-            this.Ff = ff;
-            this.Eq.add(48);
+        public Builder setStreetAddress(final String vx) {
+            this.Vx = vx;
+            this.UJ.add(48);
             return this;
         }
         
-        public Builder setText(final String fg) {
-            this.Fg = fg;
-            this.Eq.add(49);
+        public Builder setText(final String vy) {
+            this.Vy = vy;
+            this.UJ.add(49);
             return this;
         }
         
         public Builder setThumbnail(final ItemScope itemScope) {
-            this.Fh = (ib)itemScope;
-            this.Eq.add(50);
+            this.Vz = (ic)itemScope;
+            this.UJ.add(50);
             return this;
         }
         
-        public Builder setThumbnailUrl(final String fi) {
-            this.Fi = fi;
-            this.Eq.add(51);
+        public Builder setThumbnailUrl(final String va) {
+            this.VA = va;
+            this.UJ.add(51);
             return this;
         }
         
-        public Builder setTickerSymbol(final String fj) {
-            this.Fj = fj;
-            this.Eq.add(52);
+        public Builder setTickerSymbol(final String vb) {
+            this.VB = vb;
+            this.UJ.add(52);
             return this;
         }
         
-        public Builder setType(final String ai) {
-            this.AI = ai;
-            this.Eq.add(53);
+        public Builder setType(final String rd) {
+            this.Rd = rd;
+            this.UJ.add(53);
             return this;
         }
         
-        public Builder setUrl(final String ih) {
-            this.iH = ih;
-            this.Eq.add(54);
+        public Builder setUrl(final String ro) {
+            this.ro = ro;
+            this.UJ.add(54);
             return this;
         }
         
-        public Builder setWidth(final String fk) {
-            this.Fk = fk;
-            this.Eq.add(55);
+        public Builder setWidth(final String vc) {
+            this.VC = vc;
+            this.UJ.add(55);
             return this;
         }
         
-        public Builder setWorstRating(final String fl) {
-            this.Fl = fl;
-            this.Eq.add(56);
+        public Builder setWorstRating(final String vd) {
+            this.VD = vd;
+            this.UJ.add(56);
             return this;
         }
     }

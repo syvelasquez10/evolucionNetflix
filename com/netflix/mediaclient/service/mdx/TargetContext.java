@@ -17,6 +17,7 @@ import com.netflix.mediaclient.service.mdx.message.target.HandshakeAccepted;
 import org.json.JSONObject;
 import java.security.InvalidParameterException;
 import com.netflix.mediaclient.util.WebApiUtils;
+import com.netflix.mediaclient.service.mdx.message.MdxMessage;
 import android.os.Message;
 import android.os.Looper;
 import com.netflix.mediaclient.util.StringUtils;
@@ -115,6 +116,30 @@ public class TargetContext implements TargetStateManagerListener
         this.mStateMachine.addSessionRequest(new GetCapabilies());
         this.mStateMachine.addSessionRequest(new GetState());
         this.mStateMachine.start(notEmpty, this.mRegistrationAcceptance, this.mActivated, this.mLaunchStatus);
+    }
+    
+    private int determineStateErrorCode(final TargetState targetState, final String s) {
+        final int n = 300;
+        int n2;
+        if (TargetState.StateNoPair.equals(targetState) || TargetState.StateNoPairNeedRegPair.equals(targetState)) {
+            n2 = 104;
+        }
+        else {
+            if (TargetState.StateHasPair.equals(targetState) || TargetState.StateNeedHandShake.equals(targetState)) {
+                return 105;
+            }
+            n2 = n;
+            if (TargetState.StateSendingMessage.equals(targetState)) {
+                n2 = n;
+                if (StringUtils.isNotEmpty(s)) {
+                    n2 = n;
+                    if (MdxMessage.isUserCommand(s)) {
+                        return 105;
+                    }
+                }
+            }
+        }
+        return n2;
     }
     
     private String getTargetProperty(final String s) {
@@ -416,6 +441,10 @@ public class TargetContext implements TargetStateManagerListener
             Log.d("nf_mdx", "TargetContext:  PAIRING NOERROR error ");
             message.obj = TargetContextEvent.PairSucceed;
         }
+        else if ("42".equals(s)) {
+            Log.d("nf_mdx", "TargetContext:  MDX_REGISTRATION_PAIRING_IN_PROGRESS error ");
+            message.obj = TargetContextEvent.RegistrationInProgress;
+        }
         else {
             Log.d("nf_mdx", "TargetContext:  PAIRING unknown error ");
             message.obj = TargetContextEvent.PairFailedNeedRegPair;
@@ -552,15 +581,12 @@ public class TargetContext implements TargetStateManagerListener
         else {
             s = this.mUuid;
         }
-        int n = 105;
-        if (TargetState.StateNoPair.equals(targetState) || TargetState.StateNoPairNeedRegPair.equals(targetState)) {
-            n = 104;
-        }
+        final int determineStateErrorCode = this.determineStateErrorCode(targetState, this.mController.getSession().getLastMessageName(this.mSessionId));
         String string = new String();
         if (targetState != null) {
             string = targetState.getName() + " target error";
         }
-        this.mNotifier.error(s, n, string);
+        this.mNotifier.error(s, determineStateErrorCode, string);
     }
     
     @Override
@@ -572,15 +598,12 @@ public class TargetContext implements TargetStateManagerListener
         else {
             s = this.mUuid;
         }
-        int n = 105;
-        if (TargetState.StateNoPair.equals(targetState) || TargetState.StateNoPairNeedRegPair.equals(targetState)) {
-            n = 104;
-        }
+        final int determineStateErrorCode = this.determineStateErrorCode(targetState, this.mController.getSession().getLastMessageName(this.mSessionId));
         String string = new String();
         if (targetState != null) {
             string = targetState.getName() + ", failed: " + this.mLastError;
         }
-        this.mNotifier.error(s, n, string);
+        this.mNotifier.error(s, determineStateErrorCode, string);
     }
     
     @Override

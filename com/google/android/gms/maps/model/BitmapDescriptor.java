@@ -4,18 +4,18 @@
 
 package com.google.android.gms.maps.model;
 
-import com.google.android.gms.internal.eg;
-import com.google.android.gms.dynamic.b;
+import com.google.android.gms.internal.fq;
+import com.google.android.gms.dynamic.d;
 
 public final class BitmapDescriptor
 {
-    private final b Bp;
+    private final d Rn;
     
-    BitmapDescriptor(final b b) {
-        this.Bp = eg.f(b);
+    BitmapDescriptor(final d d) {
+        this.Rn = fq.f(d);
     }
     
-    public b el() {
-        return this.Bp;
+    public d id() {
+        return this.Rn;
     }
 }

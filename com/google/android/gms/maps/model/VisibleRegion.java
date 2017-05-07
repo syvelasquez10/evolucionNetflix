@@ -4,9 +4,9 @@
 
 package com.google.android.gms.maps.model;
 
-import com.google.android.gms.maps.internal.r;
+import com.google.android.gms.maps.internal.v;
 import android.os.Parcel;
-import com.google.android.gms.internal.ee;
+import com.google.android.gms.internal.fo;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class VisibleRegion implements SafeParcelable
@@ -14,17 +14,17 @@ public final class VisibleRegion implements SafeParcelable
     public static final VisibleRegionCreator CREATOR;
     public final LatLng farLeft;
     public final LatLng farRight;
-    private final int kg;
     public final LatLngBounds latLngBounds;
     public final LatLng nearLeft;
     public final LatLng nearRight;
+    private final int xH;
     
     static {
         CREATOR = new VisibleRegionCreator();
     }
     
-    VisibleRegion(final int kg, final LatLng nearLeft, final LatLng nearRight, final LatLng farLeft, final LatLng farRight, final LatLngBounds latLngBounds) {
-        this.kg = kg;
+    VisibleRegion(final int xh, final LatLng nearLeft, final LatLng nearRight, final LatLng farLeft, final LatLng farRight, final LatLngBounds latLngBounds) {
+        this.xH = xh;
         this.nearLeft = nearLeft;
         this.nearRight = nearRight;
         this.farLeft = farLeft;
@@ -55,21 +55,21 @@ public final class VisibleRegion implements SafeParcelable
     }
     
     int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     @Override
     public int hashCode() {
-        return ee.hashCode(this.nearLeft, this.nearRight, this.farLeft, this.farRight, this.latLngBounds);
+        return fo.hashCode(this.nearLeft, this.nearRight, this.farLeft, this.farRight, this.latLngBounds);
     }
     
     @Override
     public String toString() {
-        return ee.e(this).a("nearLeft", this.nearLeft).a("nearRight", this.nearRight).a("farLeft", this.farLeft).a("farRight", this.farRight).a("latLngBounds", this.latLngBounds).toString();
+        return fo.e(this).a("nearLeft", this.nearLeft).a("nearRight", this.nearRight).a("farLeft", this.farLeft).a("farRight", this.farRight).a("latLngBounds", this.latLngBounds).toString();
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (r.eD()) {
+        if (v.iB()) {
             k.a(this, parcel, n);
             return;
         }

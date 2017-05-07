@@ -41,6 +41,9 @@ public class AnimationUtils
     }
     
     public static void hideView(final View view, final boolean b) {
+        if (view == null) {
+            return;
+        }
         view.clearAnimation();
         if (b) {
             animateAndChangeVisibility(view, 17432577, 62, (Animation$AnimationListener)new HideViewOnAnimationEnd(view));
@@ -71,12 +74,21 @@ public class AnimationUtils
     }
     
     public static void showView(final View view, final boolean b) {
+        if (view == null) {
+            return;
+        }
         view.clearAnimation();
         if (b) {
             animateAndChangeVisibility(view, 17432576, 125, (Animation$AnimationListener)new ShowViewOnAnimationStart(view));
             return;
         }
         view.setVisibility(0);
+    }
+    
+    public static void showViewIfHidden(final View view, final boolean b) {
+        if (view != null && view.getVisibility() != 0) {
+            showView(view, b);
+        }
     }
     
     public static void startAlphaFadeInAnimation(final View view) {

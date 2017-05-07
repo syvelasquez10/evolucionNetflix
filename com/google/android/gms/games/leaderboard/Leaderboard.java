@@ -23,6 +23,9 @@ public interface Leaderboard extends Freezable<Leaderboard>
     
     Uri getIconImageUri();
     
+    @Deprecated
+    String getIconImageUrl();
+    
     String getLeaderboardId();
     
     int getScoreOrder();

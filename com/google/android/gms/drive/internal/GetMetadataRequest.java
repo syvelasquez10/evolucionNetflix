@@ -12,16 +12,16 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class GetMetadataRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<GetMetadataRequest> CREATOR;
-    final int kg;
-    final DriveId rr;
+    final DriveId EV;
+    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new n();
+        CREATOR = (Parcelable$Creator)new t();
     }
     
-    GetMetadataRequest(final int kg, final DriveId rr) {
-        this.kg = kg;
-        this.rr = rr;
+    GetMetadataRequest(final int xh, final DriveId ev) {
+        this.xH = xh;
+        this.EV = ev;
     }
     
     public GetMetadataRequest(final DriveId driveId) {
@@ -33,6 +33,6 @@ public class GetMetadataRequest implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        n.a(this, parcel, n);
+        t.a(this, parcel, n);
     }
 }

@@ -4,146 +4,324 @@
 
 package com.google.android.gms.internal;
 
-import java.util.Map;
-import java.util.LinkedHashMap;
+import android.os.Parcel;
+import android.os.IBinder;
+import android.os.Binder;
+import android.os.RemoteException;
+import android.os.IInterface;
 
-public class ek<K, V>
+public interface ek extends IInterface
 {
-    private final LinkedHashMap<K, V> pQ;
-    private int pR;
-    private int pS;
-    private int pT;
-    private int pU;
-    private int pV;
-    private int pW;
-    private int size;
+    void a(final ej p0) throws RemoteException;
     
-    public ek(final int pr) {
-        if (pr <= 0) {
-            throw new IllegalArgumentException("maxSize <= 0");
-        }
-        this.pR = pr;
-        this.pQ = new LinkedHashMap<K, V>(0, 0.75f, true);
-    }
+    void a(final ej p0, final int p1) throws RemoteException;
     
-    private int c(final K k, final V v) {
-        final int size = this.sizeOf(k, v);
-        if (size < 0) {
-            throw new IllegalStateException("Negative size: " + k + "=" + v);
-        }
-        return size;
-    }
+    void a(final ej p0, final int p1, final String p2, final byte[] p3) throws RemoteException;
     
-    protected V create(final K k) {
-        return null;
-    }
+    void a(final ej p0, final int p1, final byte[] p2) throws RemoteException;
     
-    protected void entryRemoved(final boolean b, final K k, final V v, final V v2) {
-    }
+    void b(final ej p0) throws RemoteException;
     
-    public final void evictAll() {
-        this.trimToSize(-1);
-    }
+    void b(final ej p0, final int p1) throws RemoteException;
     
-    public final V get(final K k) {
-        if (k == null) {
-            throw new NullPointerException("key == null");
-        }
-        V v;
-        synchronized (this) {
-            v = this.pQ.get(k);
-            if (v != null) {
-                ++this.pV;
-                return v;
-            }
-            ++this.pW;
-            // monitorexit(this)
-            v = this.create(k);
-            if (v == null) {
+    void c(final ej p0) throws RemoteException;
+    
+    int dv() throws RemoteException;
+    
+    int dw() throws RemoteException;
+    
+    public abstract static class a extends Binder implements ek
+    {
+        public static ek w(final IBinder binder) {
+            if (binder == null) {
                 return null;
             }
-        }
-        synchronized (this) {
-            ++this.pT;
-            final K i;
-            final V put = this.pQ.put(i, v);
-            if (put != null) {
-                this.pQ.put(i, put);
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.appstate.internal.IAppStateService");
+            if (queryLocalInterface != null && queryLocalInterface instanceof ek) {
+                return (ek)queryLocalInterface;
             }
-            else {
-                this.size += this.c(i, v);
-            }
-            // monitorexit(this)
-            if (put != null) {
-                this.entryRemoved(false, i, v, put);
-                return put;
-            }
+            return new ek.a.a(binder);
         }
-        this.trimToSize(this.pR);
-        return v;
-    }
-    
-    public final V put(final K k, final V v) {
-        if (k == null || v == null) {
-            throw new NullPointerException("key == null || value == null");
-        }
-        synchronized (this) {
-            ++this.pS;
-            this.size += this.c(k, v);
-            final V put = this.pQ.put(k, v);
-            if (put != null) {
-                this.size -= this.c(k, put);
-            }
-            // monitorexit(this)
-            if (put != null) {
-                this.entryRemoved(false, k, put, v);
-            }
-            this.trimToSize(this.pR);
-            return put;
-        }
-    }
-    
-    public final int size() {
-        synchronized (this) {
-            return this.size;
-        }
-    }
-    
-    protected int sizeOf(final K k, final V v) {
-        return 1;
-    }
-    
-    @Override
-    public final String toString() {
-        int n = 0;
-        synchronized (this) {
-            final int n2 = this.pV + this.pW;
-            if (n2 != 0) {
-                n = this.pV * 100 / n2;
-            }
-            return String.format("LruCache[maxSize=%d,hits=%d,misses=%d,hitRate=%d%%]", this.pR, this.pV, this.pW, n);
-        }
-    }
-    
-    public void trimToSize(final int n) {
-        while (true) {
-            synchronized (this) {
-                if (this.size < 0 || (this.pQ.isEmpty() && this.size != 0)) {
-                    throw new IllegalStateException(this.getClass().getName() + ".sizeOf() is reporting inconsistent results!");
+        
+        public boolean onTransact(int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            switch (n) {
+                default: {
+                    return super.onTransact(n, parcel, parcel2, n2);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.appstate.internal.IAppStateService");
+                    return true;
+                }
+                case 5001: {
+                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
+                    n = this.dv();
+                    parcel2.writeNoException();
+                    parcel2.writeInt(n);
+                    return true;
+                }
+                case 5002: {
+                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
+                    n = this.dw();
+                    parcel2.writeNoException();
+                    parcel2.writeInt(n);
+                    return true;
+                }
+                case 5003: {
+                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
+                    this.a(ej.a.v(parcel.readStrongBinder()), parcel.readInt(), parcel.createByteArray());
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 5004: {
+                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
+                    this.a(ej.a.v(parcel.readStrongBinder()), parcel.readInt());
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 5005: {
+                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
+                    this.a(ej.a.v(parcel.readStrongBinder()));
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 5006: {
+                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
+                    this.a(ej.a.v(parcel.readStrongBinder()), parcel.readInt(), parcel.readString(), parcel.createByteArray());
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 5007: {
+                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
+                    this.b(ej.a.v(parcel.readStrongBinder()), parcel.readInt());
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 5008: {
+                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
+                    this.b(ej.a.v(parcel.readStrongBinder()));
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 5009: {
+                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
+                    this.c(ej.a.v(parcel.readStrongBinder()));
+                    parcel2.writeNoException();
+                    return true;
                 }
             }
-            if (this.size <= n || this.pQ.isEmpty()) {
-                break;
+        }
+        
+        private static class a implements ek
+        {
+            private IBinder kn;
+            
+            a(final IBinder kn) {
+                this.kn = kn;
             }
-            final Map.Entry<K, V> entry = this.pQ.entrySet().iterator().next();
-            final K key = entry.getKey();
-            final V value = entry.getValue();
-            this.pQ.remove(key);
-            this.size -= this.c(key, value);
-            ++this.pU;
-            // monitorexit(this)
-            this.entryRemoved(true, key, value, null);
+            
+            @Override
+            public void a(final ej ej) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
+                    IBinder binder;
+                    if (ej != null) {
+                        binder = ej.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    this.kn.transact(5005, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void a(final ej ej, final int n) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
+                    IBinder binder;
+                    if (ej != null) {
+                        binder = ej.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    obtain.writeInt(n);
+                    this.kn.transact(5004, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void a(final ej ej, final int n, final String s, final byte[] array) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
+                    IBinder binder;
+                    if (ej != null) {
+                        binder = ej.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    obtain.writeInt(n);
+                    obtain.writeString(s);
+                    obtain.writeByteArray(array);
+                    this.kn.transact(5006, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void a(final ej ej, final int n, final byte[] array) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
+                    IBinder binder;
+                    if (ej != null) {
+                        binder = ej.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    obtain.writeInt(n);
+                    obtain.writeByteArray(array);
+                    this.kn.transact(5003, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            public IBinder asBinder() {
+                return this.kn;
+            }
+            
+            @Override
+            public void b(final ej ej) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
+                    IBinder binder;
+                    if (ej != null) {
+                        binder = ej.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    this.kn.transact(5008, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void b(final ej ej, final int n) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
+                    IBinder binder;
+                    if (ej != null) {
+                        binder = ej.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    obtain.writeInt(n);
+                    this.kn.transact(5007, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void c(final ej ej) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
+                    IBinder binder;
+                    if (ej != null) {
+                        binder = ej.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    this.kn.transact(5009, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public int dv() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
+                    this.kn.transact(5001, obtain, obtain2, 0);
+                    obtain2.readException();
+                    return obtain2.readInt();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public int dw() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
+                    this.kn.transact(5002, obtain, obtain2, 0);
+                    obtain2.readException();
+                    return obtain2.readInt();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
         }
     }
-    // monitorexit(this)
 }

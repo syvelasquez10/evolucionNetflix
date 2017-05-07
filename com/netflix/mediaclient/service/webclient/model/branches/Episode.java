@@ -13,6 +13,7 @@ public class Episode extends Video
     
     public static class Detail extends Video.Detail
     {
+        public String boxartUrl;
         private int episodeNumber;
         private String id;
         private String intrUrl;
@@ -24,14 +25,13 @@ public class Episode extends Video
         private String showRestUrl;
         private String showTitle;
         private String title;
-        public String vertArtUrl;
         
         public String getBaseUrl() {
             return this.baseUrl;
         }
         
         public String getBoxshotURL() {
-            return this.vertArtUrl;
+            return this.boxartUrl;
         }
         
         public int getEpisodeNumber() {
@@ -93,7 +93,7 @@ public class Episode extends Video
         
         @Override
         public String toString() {
-            return "Detail [id=" + this.id + ", episodeNumber=" + this.episodeNumber + ", seasonNumber=" + this.seasonNumber + ", seasonId=" + this.seasonId + ", showId=" + this.showId + ", showTitle=" + this.showTitle + ", showRestUrl=" + this.showRestUrl + ", title=" + this.title + ", vertArtUrl=" + this.vertArtUrl + ", nextEpisodeId=" + this.nextEpisodeId + ", nextEpisodeTitle=" + this.nextEpisodeTitle + ", intrUrl=" + this.intrUrl + "]";
+            return "Detail [super=" + super.toString() + ", id=" + this.id + ", seasonNumber=" + this.seasonNumber + ", episodeNumber=" + this.episodeNumber + ", showTitle=" + this.showTitle + ", title=" + this.title + ", nextEpisodeId=" + this.nextEpisodeId + ", nextEpisodeTitle=" + this.nextEpisodeTitle + "]";
         }
     }
 }

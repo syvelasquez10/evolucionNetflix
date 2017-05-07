@@ -27,7 +27,7 @@ public final class CastMediaControlIntent
         final StringBuffer sb = new StringBuffer(s);
         if (s2 != null) {
             if (!s2.matches("[A-F0-9]+")) {
-                throw new IllegalArgumentException("Invalid appliation ID: " + s2);
+                throw new IllegalArgumentException("Invalid application ID: " + s2);
             }
             sb.append("/").append(s2);
         }

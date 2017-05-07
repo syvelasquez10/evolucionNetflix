@@ -13,50 +13,50 @@ public class TileCreator implements Parcelable$Creator<Tile>
 {
     public static final int CONTENT_DESCRIPTION = 0;
     
-    static void a(final Tile tile, final Parcel parcel, int o) {
-        o = b.o(parcel);
+    static void a(final Tile tile, final Parcel parcel, int p3) {
+        p3 = b.p(parcel);
         b.c(parcel, 1, tile.getVersionCode());
         b.c(parcel, 2, tile.width);
         b.c(parcel, 3, tile.height);
         b.a(parcel, 4, tile.data, false);
-        b.D(parcel, o);
+        b.F(parcel, p3);
     }
     
     public Tile createFromParcel(final Parcel parcel) {
         int g = 0;
-        final int n = a.n(parcel);
-        byte[] p = null;
+        final int o = a.o(parcel);
+        byte[] q = null;
         int g2 = 0;
         int g3 = 0;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
                 default: {
-                    a.b(parcel, m);
+                    a.b(parcel, n);
                     continue;
                 }
                 case 1: {
-                    g3 = a.g(parcel, m);
+                    g3 = a.g(parcel, n);
                     continue;
                 }
                 case 2: {
-                    g2 = a.g(parcel, m);
+                    g2 = a.g(parcel, n);
                     continue;
                 }
                 case 3: {
-                    g = a.g(parcel, m);
+                    g = a.g(parcel, n);
                     continue;
                 }
                 case 4: {
-                    p = a.p(parcel, m);
+                    q = a.q(parcel, n);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new Tile(g3, g2, g, p);
+        return new Tile(g3, g2, g, q);
     }
     
     public Tile[] newArray(final int n) {

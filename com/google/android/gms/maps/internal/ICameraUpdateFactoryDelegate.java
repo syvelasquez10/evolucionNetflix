@@ -10,37 +10,37 @@ import android.os.Binder;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.LatLng;
 import android.os.RemoteException;
-import com.google.android.gms.dynamic.b;
+import com.google.android.gms.dynamic.d;
 import com.google.android.gms.maps.model.CameraPosition;
 import android.os.IInterface;
 
 public interface ICameraUpdateFactoryDelegate extends IInterface
 {
-    b newCameraPosition(final CameraPosition p0) throws RemoteException;
+    d newCameraPosition(final CameraPosition p0) throws RemoteException;
     
-    b newLatLng(final LatLng p0) throws RemoteException;
+    d newLatLng(final LatLng p0) throws RemoteException;
     
-    b newLatLngBounds(final LatLngBounds p0, final int p1) throws RemoteException;
+    d newLatLngBounds(final LatLngBounds p0, final int p1) throws RemoteException;
     
-    b newLatLngBoundsWithSize(final LatLngBounds p0, final int p1, final int p2, final int p3) throws RemoteException;
+    d newLatLngBoundsWithSize(final LatLngBounds p0, final int p1, final int p2, final int p3) throws RemoteException;
     
-    b newLatLngZoom(final LatLng p0, final float p1) throws RemoteException;
+    d newLatLngZoom(final LatLng p0, final float p1) throws RemoteException;
     
-    b scrollBy(final float p0, final float p1) throws RemoteException;
+    d scrollBy(final float p0, final float p1) throws RemoteException;
     
-    b zoomBy(final float p0) throws RemoteException;
+    d zoomBy(final float p0) throws RemoteException;
     
-    b zoomByWithFocus(final float p0, final int p1, final int p2) throws RemoteException;
+    d zoomByWithFocus(final float p0, final int p1, final int p2) throws RemoteException;
     
-    b zoomIn() throws RemoteException;
+    d zoomIn() throws RemoteException;
     
-    b zoomOut() throws RemoteException;
+    d zoomOut() throws RemoteException;
     
-    b zoomTo(final float p0) throws RemoteException;
+    d zoomTo(final float p0) throws RemoteException;
     
     public abstract static class a extends Binder implements ICameraUpdateFactoryDelegate
     {
-        public static ICameraUpdateFactoryDelegate O(final IBinder binder) {
+        public static ICameraUpdateFactoryDelegate Z(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -73,7 +73,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 }
                 case 1: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    final b zoomIn = this.zoomIn();
+                    final d zoomIn = this.zoomIn();
                     parcel2.writeNoException();
                     IBinder binder12 = binder11;
                     if (zoomIn != null) {
@@ -84,7 +84,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 }
                 case 2: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    final b zoomOut = this.zoomOut();
+                    final d zoomOut = this.zoomOut();
                     parcel2.writeNoException();
                     IBinder binder13 = binder;
                     if (zoomOut != null) {
@@ -95,7 +95,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 }
                 case 3: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    final b scrollBy = this.scrollBy(parcel.readFloat(), parcel.readFloat());
+                    final d scrollBy = this.scrollBy(parcel.readFloat(), parcel.readFloat());
                     parcel2.writeNoException();
                     IBinder binder14 = binder2;
                     if (scrollBy != null) {
@@ -106,7 +106,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 }
                 case 4: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    final b zoomTo = this.zoomTo(parcel.readFloat());
+                    final d zoomTo = this.zoomTo(parcel.readFloat());
                     parcel2.writeNoException();
                     IBinder binder15 = binder3;
                     if (zoomTo != null) {
@@ -117,7 +117,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 }
                 case 5: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    final b zoomBy = this.zoomBy(parcel.readFloat());
+                    final d zoomBy = this.zoomBy(parcel.readFloat());
                     parcel2.writeNoException();
                     IBinder binder16 = binder4;
                     if (zoomBy != null) {
@@ -128,7 +128,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 }
                 case 6: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    final b zoomByWithFocus = this.zoomByWithFocus(parcel.readFloat(), parcel.readInt(), parcel.readInt());
+                    final d zoomByWithFocus = this.zoomByWithFocus(parcel.readFloat(), parcel.readInt(), parcel.readInt());
                     parcel2.writeNoException();
                     IBinder binder17 = binder5;
                     if (zoomByWithFocus != null) {
@@ -146,7 +146,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                     else {
                         fromParcel = null;
                     }
-                    final b cameraPosition = this.newCameraPosition(fromParcel);
+                    final d cameraPosition = this.newCameraPosition(fromParcel);
                     parcel2.writeNoException();
                     IBinder binder18 = binder6;
                     if (cameraPosition != null) {
@@ -164,7 +164,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                     else {
                         fromParcel2 = null;
                     }
-                    final b latLng = this.newLatLng(fromParcel2);
+                    final d latLng = this.newLatLng(fromParcel2);
                     parcel2.writeNoException();
                     IBinder binder19 = binder7;
                     if (latLng != null) {
@@ -182,7 +182,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                     else {
                         fromParcel3 = null;
                     }
-                    final b latLngZoom = this.newLatLngZoom(fromParcel3, parcel.readFloat());
+                    final d latLngZoom = this.newLatLngZoom(fromParcel3, parcel.readFloat());
                     parcel2.writeNoException();
                     IBinder binder20 = binder8;
                     if (latLngZoom != null) {
@@ -200,7 +200,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                     else {
                         fromParcel4 = null;
                     }
-                    final b latLngBounds = this.newLatLngBounds(fromParcel4, parcel.readInt());
+                    final d latLngBounds = this.newLatLngBounds(fromParcel4, parcel.readInt());
                     parcel2.writeNoException();
                     IBinder binder21 = binder9;
                     if (latLngBounds != null) {
@@ -218,7 +218,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                     else {
                         fromParcel5 = null;
                     }
-                    final b latLngBoundsWithSize = this.newLatLngBoundsWithSize(fromParcel5, parcel.readInt(), parcel.readInt(), parcel.readInt());
+                    final d latLngBoundsWithSize = this.newLatLngBoundsWithSize(fromParcel5, parcel.readInt(), parcel.readInt(), parcel.readInt());
                     parcel2.writeNoException();
                     IBinder binder22 = binder10;
                     if (latLngBoundsWithSize != null) {
@@ -232,18 +232,18 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
         
         private static class a implements ICameraUpdateFactoryDelegate
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
             }
             
             public IBinder asBinder() {
-                return this.dU;
+                return this.kn;
             }
             
             @Override
-            public b newCameraPosition(final CameraPosition cameraPosition) throws RemoteException {
+            public d newCameraPosition(final CameraPosition cameraPosition) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
@@ -255,9 +255,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.dU.transact(7, obtain, obtain2, 0);
+                    this.kn.transact(7, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -266,7 +266,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
             }
             
             @Override
-            public b newLatLng(final LatLng latLng) throws RemoteException {
+            public d newLatLng(final LatLng latLng) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
@@ -278,9 +278,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.dU.transact(8, obtain, obtain2, 0);
+                    this.kn.transact(8, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -289,7 +289,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
             }
             
             @Override
-            public b newLatLngBounds(final LatLngBounds latLngBounds, final int n) throws RemoteException {
+            public d newLatLngBounds(final LatLngBounds latLngBounds, final int n) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
@@ -302,9 +302,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                         obtain.writeInt(0);
                     }
                     obtain.writeInt(n);
-                    this.dU.transact(10, obtain, obtain2, 0);
+                    this.kn.transact(10, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -313,7 +313,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
             }
             
             @Override
-            public b newLatLngBoundsWithSize(final LatLngBounds latLngBounds, final int n, final int n2, final int n3) throws RemoteException {
+            public d newLatLngBoundsWithSize(final LatLngBounds latLngBounds, final int n, final int n2, final int n3) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
@@ -328,9 +328,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                     obtain.writeInt(n);
                     obtain.writeInt(n2);
                     obtain.writeInt(n3);
-                    this.dU.transact(11, obtain, obtain2, 0);
+                    this.kn.transact(11, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -339,7 +339,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
             }
             
             @Override
-            public b newLatLngZoom(final LatLng latLng, final float n) throws RemoteException {
+            public d newLatLngZoom(final LatLng latLng, final float n) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
@@ -352,9 +352,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                         obtain.writeInt(0);
                     }
                     obtain.writeFloat(n);
-                    this.dU.transact(9, obtain, obtain2, 0);
+                    this.kn.transact(9, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -363,16 +363,16 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
             }
             
             @Override
-            public b scrollBy(final float n, final float n2) throws RemoteException {
+            public d scrollBy(final float n, final float n2) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
                     obtain.writeFloat(n);
                     obtain.writeFloat(n2);
-                    this.dU.transact(3, obtain, obtain2, 0);
+                    this.kn.transact(3, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -381,15 +381,15 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
             }
             
             @Override
-            public b zoomBy(final float n) throws RemoteException {
+            public d zoomBy(final float n) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
                     obtain.writeFloat(n);
-                    this.dU.transact(5, obtain, obtain2, 0);
+                    this.kn.transact(5, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -398,7 +398,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
             }
             
             @Override
-            public b zoomByWithFocus(final float n, final int n2, final int n3) throws RemoteException {
+            public d zoomByWithFocus(final float n, final int n2, final int n3) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
@@ -406,9 +406,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                     obtain.writeFloat(n);
                     obtain.writeInt(n2);
                     obtain.writeInt(n3);
-                    this.dU.transact(6, obtain, obtain2, 0);
+                    this.kn.transact(6, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -417,14 +417,14 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
             }
             
             @Override
-            public b zoomIn() throws RemoteException {
+            public d zoomIn() throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    this.dU.transact(1, obtain, obtain2, 0);
+                    this.kn.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -433,14 +433,14 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
             }
             
             @Override
-            public b zoomOut() throws RemoteException {
+            public d zoomOut() throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    this.dU.transact(2, obtain, obtain2, 0);
+                    this.kn.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -449,15 +449,15 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
             }
             
             @Override
-            public b zoomTo(final float n) throws RemoteException {
+            public d zoomTo(final float n) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
                     obtain.writeFloat(n);
-                    this.dU.transact(4, obtain, obtain2, 0);
+                    this.kn.transact(4, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();

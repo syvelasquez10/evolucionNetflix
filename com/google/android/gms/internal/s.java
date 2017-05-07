@@ -4,46 +4,152 @@
 
 package com.google.android.gms.internal;
 
-import java.lang.ref.WeakReference;
+import android.os.Parcel;
+import android.os.IBinder;
+import android.os.Binder;
+import android.os.RemoteException;
+import android.os.Bundle;
+import android.os.IInterface;
 
-public final class s
+public interface s extends IInterface
 {
-    private final Runnable ep;
-    private v eq;
-    private boolean er;
+    Bundle a(final String p0, final Bundle p1) throws RemoteException;
     
-    public s(final r r) {
-        this.er = false;
-        this.ep = new Runnable() {
-            private final WeakReference<r> es = new WeakReference<r>(r);
-            
-            @Override
-            public void run() {
-                s.this.er = false;
-                final r r = this.es.get();
-                if (r != null) {
-                    r.b(s.this.eq);
+    Bundle a(final String p0, final String p1, final Bundle p2) throws RemoteException;
+    
+    public abstract static class a extends Binder implements s
+    {
+        public static s a(final IBinder binder) {
+            if (binder == null) {
+                return null;
+            }
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.auth.IAuthManagerService");
+            if (queryLocalInterface != null && queryLocalInterface instanceof s) {
+                return (s)queryLocalInterface;
+            }
+            return new s.a.a(binder);
+        }
+        
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            final Bundle bundle = null;
+            Bundle bundle2 = null;
+            switch (n) {
+                default: {
+                    return super.onTransact(n, parcel, parcel2, n2);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.auth.IAuthManagerService");
+                    return true;
+                }
+                case 1: {
+                    parcel.enforceInterface("com.google.android.auth.IAuthManagerService");
+                    final String string = parcel.readString();
+                    final String string2 = parcel.readString();
+                    if (parcel.readInt() != 0) {
+                        bundle2 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
+                    }
+                    final Bundle a = this.a(string, string2, bundle2);
+                    parcel2.writeNoException();
+                    if (a != null) {
+                        parcel2.writeInt(1);
+                        a.writeToParcel(parcel2, 1);
+                    }
+                    else {
+                        parcel2.writeInt(0);
+                    }
+                    return true;
+                }
+                case 2: {
+                    parcel.enforceInterface("com.google.android.auth.IAuthManagerService");
+                    final String string3 = parcel.readString();
+                    Bundle bundle3 = bundle;
+                    if (parcel.readInt() != 0) {
+                        bundle3 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
+                    }
+                    final Bundle a2 = this.a(string3, bundle3);
+                    parcel2.writeNoException();
+                    if (a2 != null) {
+                        parcel2.writeInt(1);
+                        a2.writeToParcel(parcel2, 1);
+                    }
+                    else {
+                        parcel2.writeInt(0);
+                    }
+                    return true;
                 }
             }
-        };
-    }
-    
-    public void a(final v eq, final long n) {
-        if (this.er) {
-            ct.v("An ad refresh is already scheduled.");
-            return;
         }
-        ct.t("Scheduling ad refresh " + n + " milliseconds from now.");
-        this.eq = eq;
-        this.er = true;
-        cs.iI.postDelayed(this.ep, n);
-    }
-    
-    public void cancel() {
-        cs.iI.removeCallbacks(this.ep);
-    }
-    
-    public void d(final v v) {
-        this.a(v, 60000L);
+        
+        private static class a implements s
+        {
+            private IBinder kn;
+            
+            a(final IBinder kn) {
+                this.kn = kn;
+            }
+            
+            @Override
+            public Bundle a(final String s, final Bundle bundle) throws RemoteException {
+                while (true) {
+                    final Parcel obtain = Parcel.obtain();
+                    final Parcel obtain2 = Parcel.obtain();
+                    try {
+                        obtain.writeInterfaceToken("com.google.android.auth.IAuthManagerService");
+                        obtain.writeString(s);
+                        if (bundle != null) {
+                            obtain.writeInt(1);
+                            bundle.writeToParcel(obtain, 0);
+                        }
+                        else {
+                            obtain.writeInt(0);
+                        }
+                        this.kn.transact(2, obtain, obtain2, 0);
+                        obtain2.readException();
+                        if (obtain2.readInt() != 0) {
+                            return (Bundle)Bundle.CREATOR.createFromParcel(obtain2);
+                        }
+                    }
+                    finally {
+                        obtain2.recycle();
+                        obtain.recycle();
+                    }
+                    return null;
+                }
+            }
+            
+            @Override
+            public Bundle a(final String s, final String s2, final Bundle bundle) throws RemoteException {
+                while (true) {
+                    final Parcel obtain = Parcel.obtain();
+                    final Parcel obtain2 = Parcel.obtain();
+                    try {
+                        obtain.writeInterfaceToken("com.google.android.auth.IAuthManagerService");
+                        obtain.writeString(s);
+                        obtain.writeString(s2);
+                        if (bundle != null) {
+                            obtain.writeInt(1);
+                            bundle.writeToParcel(obtain, 0);
+                        }
+                        else {
+                            obtain.writeInt(0);
+                        }
+                        this.kn.transact(1, obtain, obtain2, 0);
+                        obtain2.readException();
+                        if (obtain2.readInt() != 0) {
+                            return (Bundle)Bundle.CREATOR.createFromParcel(obtain2);
+                        }
+                    }
+                    finally {
+                        obtain2.recycle();
+                        obtain.recycle();
+                    }
+                    return null;
+                }
+            }
+            
+            public IBinder asBinder() {
+                return this.kn;
+            }
+        }
     }
 }

@@ -11,10 +11,10 @@ import android.os.Parcel;
 public class d
 {
     static void a(final LatLngBounds latLngBounds, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
+        final int p3 = b.p(parcel);
         b.c(parcel, 1, latLngBounds.getVersionCode());
         b.a(parcel, 2, (Parcelable)latLngBounds.southwest, n, false);
         b.a(parcel, 3, (Parcelable)latLngBounds.northeast, n, false);
-        b.D(parcel, o);
+        b.F(parcel, p3);
     }
 }

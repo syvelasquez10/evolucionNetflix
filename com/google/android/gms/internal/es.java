@@ -4,371 +4,517 @@
 
 package com.google.android.gms.internal;
 
-import java.io.ObjectInputStream;
+import com.google.android.gms.cast.MediaInfo;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import android.os.Parcel;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONException;
+import android.os.SystemClock;
+import org.json.JSONObject;
+import android.os.Looper;
+import java.util.concurrent.TimeUnit;
+import com.google.android.gms.cast.MediaStatus;
+import android.os.Handler;
 
-public abstract class es
+public class es extends em
 {
-    private void a(final StringBuilder sb, final a a, final Object o) {
-        if (a.ch() == 11) {
-            sb.append(((es)a.cr().cast(o)).toString());
-            return;
+    private static final String NAMESPACE;
+    private static final long zG;
+    private static final long zH;
+    private static final long zI;
+    private static final long zJ;
+    private final Handler mHandler;
+    private long zK;
+    private MediaStatus zL;
+    private final ev zM;
+    private final ev zN;
+    private final ev zO;
+    private final ev zP;
+    private final ev zQ;
+    private final ev zR;
+    private final ev zS;
+    private final ev zT;
+    private final Runnable zU;
+    private boolean zV;
+    
+    static {
+        NAMESPACE = eo.X("com.google.cast.media");
+        zG = TimeUnit.HOURS.toMillis(24L);
+        zH = TimeUnit.HOURS.toMillis(24L);
+        zI = TimeUnit.HOURS.toMillis(24L);
+        zJ = TimeUnit.SECONDS.toMillis(1L);
+    }
+    
+    public es() {
+        this(null);
+    }
+    
+    public es(final String s) {
+        super(es.NAMESPACE, "MediaControlChannel", s);
+        this.mHandler = new Handler(Looper.getMainLooper());
+        this.zU = new a();
+        this.zM = new ev(es.zH);
+        this.zN = new ev(es.zG);
+        this.zO = new ev(es.zG);
+        this.zP = new ev(es.zG);
+        this.zQ = new ev(es.zI);
+        this.zR = new ev(es.zG);
+        this.zS = new ev(es.zG);
+        this.zT = new ev(es.zG);
+        this.dS();
+    }
+    
+    private void a(final long n, final JSONObject jsonObject) throws JSONException {
+        final boolean b = true;
+        final boolean n2 = this.zM.n(n);
+        int n3;
+        if (this.zQ.dU() && !this.zQ.n(n)) {
+            n3 = 1;
         }
-        if (a.ch() == 7) {
-            sb.append("\"");
-            sb.append(fe.aa((String)o));
-            sb.append("\"");
-            return;
+        else {
+            n3 = 0;
         }
-        sb.append(o);
-    }
-    
-    private void a(final StringBuilder sb, final a a, final ArrayList<Object> list) {
-        sb.append("[");
-        for (int i = 0; i < list.size(); ++i) {
-            if (i > 0) {
-                sb.append(",");
+        boolean b2 = false;
+        Label_0087: {
+            if (this.zR.dU()) {
+                b2 = b;
+                if (!this.zR.n(n)) {
+                    break Label_0087;
+                }
             }
-            final Object value = list.get(i);
-            if (value != null) {
-                this.a(sb, a, value);
-            }
+            b2 = (this.zS.dU() && !this.zS.n(n) && b);
         }
-        sb.append("]");
-    }
-    
-    protected abstract Object V(final String p0);
-    
-    protected abstract boolean W(final String p0);
-    
-    protected boolean X(final String s) {
-        throw new UnsupportedOperationException("Concrete types not supported");
-    }
-    
-    protected boolean Y(final String s) {
-        throw new UnsupportedOperationException("Concrete type arrays not supported");
-    }
-    
-    protected <O, I> I a(final a<I, O> a, final Object o) {
-        Object g = o;
-        if (((a<Object, Object>)a).qr != null) {
-            g = a.g(o);
+        int n4;
+        if (n3 != 0) {
+            n4 = 2;
         }
-        return (I)g;
-    }
-    
-    protected boolean a(final a a) {
-        if (a.ci() != 11) {
-            return this.W(a.cp());
+        else {
+            n4 = 0;
         }
-        if (a.co()) {
-            return this.Y(a.cp());
+        int n5 = n4;
+        if (b2) {
+            n5 = (n4 | 0x1);
         }
-        return this.X(a.cp());
-    }
-    
-    protected Object b(final a a) {
-        boolean b = true;
-        final String cp = a.cp();
-        if (a.cr() != null) {
-            if (this.V(a.cp()) != null) {
-                b = false;
-            }
-            eg.a(b, (Object)("Concrete field shouldn't be value object: " + a.cp()));
-            HashMap<String, Object> hashMap;
-            if (a.co()) {
-                hashMap = this.cl();
-            }
-            else {
-                hashMap = this.ck();
-            }
-            if (hashMap != null) {
-                return hashMap.get(cp);
-            }
-            try {
-                return this.getClass().getMethod("get" + Character.toUpperCase(cp.charAt(0)) + cp.substring(1), (Class<?>[])new Class[0]).invoke(this, new Object[0]);
-            }
-            catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
+        int a;
+        if (n2 || this.zL == null) {
+            this.zL = new MediaStatus(jsonObject);
+            this.zK = SystemClock.elapsedRealtime();
+            a = 7;
         }
-        return this.V(a.cp());
+        else {
+            a = this.zL.a(jsonObject, n5);
+        }
+        if ((a & 0x1) != 0x0) {
+            this.zK = SystemClock.elapsedRealtime();
+            this.onStatusUpdated();
+        }
+        if ((a & 0x2) != 0x0) {
+            this.zK = SystemClock.elapsedRealtime();
+            this.onStatusUpdated();
+        }
+        if ((a & 0x4) != 0x0) {
+            this.onMetadataUpdated();
+        }
+        this.zM.c(n, 0);
+        this.zN.c(n, 0);
+        this.zO.c(n, 0);
+        this.zP.c(n, 0);
+        this.zQ.c(n, 0);
+        this.zR.c(n, 0);
+        this.zS.c(n, 0);
+        this.zT.c(n, 0);
     }
     
-    public abstract HashMap<String, a<?, ?>> cj();
-    
-    public HashMap<String, Object> ck() {
-        return null;
+    private void dS() {
+        this.w(false);
+        this.zK = 0L;
+        this.zL = null;
+        this.zM.clear();
+        this.zQ.clear();
+        this.zR.clear();
     }
     
-    public HashMap<String, Object> cl() {
-        return null;
+    private void w(final boolean zv) {
+        if (this.zV != zv) {
+            this.zV = zv;
+            if (!zv) {
+                this.mHandler.removeCallbacks(this.zU);
+                return;
+            }
+            this.mHandler.postDelayed(this.zU, es.zJ);
+        }
     }
     
     @Override
-    public String toString() {
-        final HashMap<String, a<?, ?>> cj = this.cj();
-        final StringBuilder sb = new StringBuilder(100);
-        for (final String s : cj.keySet()) {
-            final a<Object, Object> a = cj.get(s);
-            if (this.a(a)) {
-                final HashMap<String, String> a2 = this.a((a<HashMap<String, String>, Object>)a, this.b(a));
-                if (sb.length() == 0) {
-                    sb.append("{");
+    public final void U(final String s) {
+        this.yY.b("message received: %s", s);
+        JSONObject jsonObject;
+        String string;
+        long optLong;
+        try {
+            jsonObject = new JSONObject(s);
+            string = jsonObject.getString("type");
+            optLong = jsonObject.optLong("requestId", -1L);
+            if (string.equals("MEDIA_STATUS")) {
+                final JSONArray jsonArray = jsonObject.getJSONArray("status");
+                if (jsonArray.length() > 0) {
+                    this.a(optLong, jsonArray.getJSONObject(0));
+                    return;
                 }
-                else {
-                    sb.append(",");
-                }
-                sb.append("\"").append(s).append("\":");
-                if (a2 == null) {
-                    sb.append("null");
-                }
-                else {
-                    switch (a.ci()) {
-                        default: {
-                            if (a.cn()) {
-                                this.a(sb, a, (ArrayList<Object>)a2);
-                                continue;
-                            }
-                            this.a(sb, a, a2);
-                            continue;
-                        }
-                        case 8: {
-                            sb.append("\"").append(fb.b((byte[])(Object)a2)).append("\"");
-                            continue;
-                        }
-                        case 9: {
-                            sb.append("\"").append(fb.c((byte[])(Object)a2)).append("\"");
-                            continue;
-                        }
-                        case 10: {
-                            ff.a(sb, a2);
-                            continue;
-                        }
-                    }
-                }
-            }
-        }
-        if (sb.length() > 0) {
-            sb.append("}");
-        }
-        else {
-            sb.append("{}");
-        }
-        return sb.toString();
-    }
-    
-    public static class a<I, O> implements SafeParcelable
-    {
-        public static final et CREATOR;
-        private final int kg;
-        protected final int qi;
-        protected final boolean qj;
-        protected final int qk;
-        protected final boolean ql;
-        protected final String qm;
-        protected final int qn;
-        protected final Class<? extends es> qo;
-        protected final String qp;
-        private ev qq;
-        private b<I, O> qr;
-        
-        static {
-            CREATOR = new et();
-        }
-        
-        a(final int kg, final int qi, final boolean qj, final int qk, final boolean ql, final String qm, final int qn, final String qp, final en en) {
-            this.kg = kg;
-            this.qi = qi;
-            this.qj = qj;
-            this.qk = qk;
-            this.ql = ql;
-            this.qm = qm;
-            this.qn = qn;
-            if (qp == null) {
-                this.qo = null;
-                this.qp = null;
-            }
-            else {
-                this.qo = ey.class;
-                this.qp = qp;
-            }
-            if (en == null) {
-                this.qr = null;
+                this.zL = null;
+                this.onStatusUpdated();
+                this.onMetadataUpdated();
+                this.zT.c(optLong, 0);
                 return;
             }
-            this.qr = (b<I, O>)en.cf();
         }
-        
-        protected a(final int qi, final boolean qj, final int qk, final boolean ql, final String qm, final int qn, final Class<? extends es> qo, final b<I, O> qr) {
-            this.kg = 1;
-            this.qi = qi;
-            this.qj = qj;
-            this.qk = qk;
-            this.ql = ql;
-            this.qm = qm;
-            this.qn = qn;
-            this.qo = qo;
-            if (qo == null) {
-                this.qp = null;
-            }
-            else {
-                this.qp = qo.getCanonicalName();
-            }
-            this.qr = qr;
+        catch (JSONException ex) {
+            this.yY.d("Message is malformed (%s); ignoring: %s", ex.getMessage(), s);
+            return;
         }
-        
-        public static a a(final String s, final int n, final b<?, ?> b, final boolean b2) {
-            return new a(b.ch(), b2, b.ci(), false, s, n, null, (b<I, O>)b);
+        if (string.equals("INVALID_PLAYER_STATE")) {
+            this.yY.d("received unexpected error: Invalid Player State.", new Object[0]);
+            final JSONObject optJSONObject = jsonObject.optJSONObject("customData");
+            this.zM.b(optLong, 1, optJSONObject);
+            this.zN.b(optLong, 1, optJSONObject);
+            this.zO.b(optLong, 1, optJSONObject);
+            this.zP.b(optLong, 1, optJSONObject);
+            this.zQ.b(optLong, 1, optJSONObject);
+            this.zR.b(optLong, 1, optJSONObject);
+            this.zS.b(optLong, 1, optJSONObject);
+            this.zT.b(optLong, 1, optJSONObject);
+            return;
         }
-        
-        public static <T extends es> a<T, T> a(final String s, final int n, final Class<T> clazz) {
-            return new a<T, T>(11, false, 11, false, s, n, clazz, null);
+        if (string.equals("LOAD_FAILED")) {
+            this.zM.b(optLong, 1, jsonObject.optJSONObject("customData"));
+            return;
         }
-        
-        public static <T extends es> a<ArrayList<T>, ArrayList<T>> b(final String s, final int n, final Class<T> clazz) {
-            return new a<ArrayList<T>, ArrayList<T>>(11, true, 11, true, s, n, clazz, null);
+        if (string.equals("LOAD_CANCELLED")) {
+            this.zM.b(optLong, 2, jsonObject.optJSONObject("customData"));
+            return;
         }
-        
-        public static a<Integer, Integer> d(final String s, final int n) {
-            return new a<Integer, Integer>(0, false, 0, false, s, n, null, null);
-        }
-        
-        public static a<Double, Double> e(final String s, final int n) {
-            return new a<Double, Double>(4, false, 4, false, s, n, null, null);
-        }
-        
-        public static a<Boolean, Boolean> f(final String s, final int n) {
-            return new a<Boolean, Boolean>(6, false, 6, false, s, n, null, null);
-        }
-        
-        public static a<String, String> g(final String s, final int n) {
-            return new a<String, String>(7, false, 7, false, s, n, null, null);
-        }
-        
-        public static a<ArrayList<String>, ArrayList<String>> h(final String s, final int n) {
-            return new a<ArrayList<String>, ArrayList<String>>(7, true, 7, true, s, n, null, null);
-        }
-        
-        public void a(final ev qq) {
-            this.qq = qq;
-        }
-        
-        public int ch() {
-            return this.qi;
-        }
-        
-        public int ci() {
-            return this.qk;
-        }
-        
-        public a<I, O> cm() {
-            return new a<I, O>(this.kg, this.qi, this.qj, this.qk, this.ql, this.qm, this.qn, this.qp, this.cu());
-        }
-        
-        public boolean cn() {
-            return this.qj;
-        }
-        
-        public boolean co() {
-            return this.ql;
-        }
-        
-        public String cp() {
-            return this.qm;
-        }
-        
-        public int cq() {
-            return this.qn;
-        }
-        
-        public Class<? extends es> cr() {
-            return this.qo;
-        }
-        
-        String cs() {
-            if (this.qp == null) {
-                return null;
-            }
-            return this.qp;
-        }
-        
-        public boolean ct() {
-            return this.qr != null;
-        }
-        
-        en cu() {
-            if (this.qr == null) {
-                return null;
-            }
-            return en.a(this.qr);
-        }
-        
-        public HashMap<String, a<?, ?>> cv() {
-            eg.f(this.qp);
-            eg.f(this.qq);
-            return this.qq.Z(this.qp);
-        }
-        
-        public int describeContents() {
-            final et creator = a.CREATOR;
-            return 0;
-        }
-        
-        public I g(final O o) {
-            return this.qr.g(o);
-        }
-        
-        public int getVersionCode() {
-            return this.kg;
-        }
-        
-        @Override
-        public String toString() {
-            final StringBuilder sb = new StringBuilder();
-            sb.append("Field\n");
-            sb.append("            versionCode=").append(this.kg).append('\n');
-            sb.append("                 typeIn=").append(this.qi).append('\n');
-            sb.append("            typeInArray=").append(this.qj).append('\n');
-            sb.append("                typeOut=").append(this.qk).append('\n');
-            sb.append("           typeOutArray=").append(this.ql).append('\n');
-            sb.append("        outputFieldName=").append(this.qm).append('\n');
-            sb.append("      safeParcelFieldId=").append(this.qn).append('\n');
-            sb.append("       concreteTypeName=").append(this.cs()).append('\n');
-            if (this.cr() != null) {
-                sb.append("     concreteType.class=").append(this.cr().getCanonicalName()).append('\n');
-            }
-            final StringBuilder append = sb.append("          converterName=");
-            String canonicalName;
-            if (this.qr == null) {
-                canonicalName = "null";
-            }
-            else {
-                canonicalName = this.qr.getClass().getCanonicalName();
-            }
-            append.append(canonicalName).append('\n');
-            return sb.toString();
-        }
-        
-        public void writeToParcel(final Parcel parcel, final int n) {
-            final et creator = a.CREATOR;
-            et.a(this, parcel, n);
+        if (string.equals("INVALID_REQUEST")) {
+            this.yY.d("received unexpected error: Invalid Request.", new Object[0]);
+            final JSONObject optJSONObject2 = jsonObject.optJSONObject("customData");
+            this.zM.b(optLong, 1, optJSONObject2);
+            this.zN.b(optLong, 1, optJSONObject2);
+            this.zO.b(optLong, 1, optJSONObject2);
+            this.zP.b(optLong, 1, optJSONObject2);
+            this.zQ.b(optLong, 1, optJSONObject2);
+            this.zR.b(optLong, 1, optJSONObject2);
+            this.zS.b(optLong, 1, optJSONObject2);
+            this.zT.b(optLong, 1, optJSONObject2);
         }
     }
     
-    public interface b<I, O>
+    public long a(final eu eu) throws IOException {
+        final JSONObject jsonObject = new JSONObject();
+        final long de = this.dE();
+        this.zT.a(de, eu);
+        this.w(true);
+        while (true) {
+            try {
+                jsonObject.put("requestId", de);
+                jsonObject.put("type", (Object)"GET_STATUS");
+                if (this.zL != null) {
+                    jsonObject.put("mediaSessionId", this.zL.dC());
+                }
+                this.a(jsonObject.toString(), de, null);
+                return de;
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    public long a(final eu eu, final double n, final JSONObject jsonObject) throws IOException, IllegalStateException, IllegalArgumentException {
+        if (Double.isInfinite(n) || Double.isNaN(n)) {
+            throw new IllegalArgumentException("Volume cannot be " + n);
+        }
+        final JSONObject jsonObject2 = new JSONObject();
+        final long de = this.dE();
+        this.zR.a(de, eu);
+        this.w(true);
+        while (true) {
+            try {
+                jsonObject2.put("requestId", de);
+                jsonObject2.put("type", (Object)"SET_VOLUME");
+                jsonObject2.put("mediaSessionId", this.dC());
+                final JSONObject jsonObject3 = new JSONObject();
+                jsonObject3.put("level", n);
+                jsonObject2.put("volume", (Object)jsonObject3);
+                if (jsonObject != null) {
+                    jsonObject2.put("customData", (Object)jsonObject);
+                }
+                this.a(jsonObject2.toString(), de, null);
+                return de;
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    public long a(final eu eu, final long n, final int n2, final JSONObject jsonObject) throws IOException, IllegalStateException {
+        final JSONObject jsonObject2 = new JSONObject();
+        final long de = this.dE();
+        this.zQ.a(de, eu);
+        this.w(true);
+        while (true) {
+            try {
+                jsonObject2.put("requestId", de);
+                jsonObject2.put("type", (Object)"SEEK");
+                jsonObject2.put("mediaSessionId", this.dC());
+                jsonObject2.put("currentTime", eo.m(n));
+                if (n2 == 1) {
+                    jsonObject2.put("resumeState", (Object)"PLAYBACK_START");
+                }
+                else if (n2 == 2) {
+                    jsonObject2.put("resumeState", (Object)"PLAYBACK_PAUSE");
+                }
+                if (jsonObject != null) {
+                    jsonObject2.put("customData", (Object)jsonObject);
+                }
+                this.a(jsonObject2.toString(), de, null);
+                return de;
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    public long a(final eu eu, final MediaInfo mediaInfo, final boolean b, final long n, final JSONObject jsonObject) throws IOException {
+        final JSONObject jsonObject2 = new JSONObject();
+        final long de = this.dE();
+        this.zM.a(de, eu);
+        this.w(true);
+        while (true) {
+            try {
+                jsonObject2.put("requestId", de);
+                jsonObject2.put("type", (Object)"LOAD");
+                jsonObject2.put("media", (Object)mediaInfo.dB());
+                jsonObject2.put("autoplay", b);
+                jsonObject2.put("currentTime", eo.m(n));
+                if (jsonObject != null) {
+                    jsonObject2.put("customData", (Object)jsonObject);
+                }
+                this.a(jsonObject2.toString(), de, null);
+                return de;
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    public long a(final eu eu, final JSONObject jsonObject) throws IOException {
+        final JSONObject jsonObject2 = new JSONObject();
+        final long de = this.dE();
+        this.zN.a(de, eu);
+        this.w(true);
+        while (true) {
+            try {
+                jsonObject2.put("requestId", de);
+                jsonObject2.put("type", (Object)"PAUSE");
+                jsonObject2.put("mediaSessionId", this.dC());
+                if (jsonObject != null) {
+                    jsonObject2.put("customData", (Object)jsonObject);
+                }
+                this.a(jsonObject2.toString(), de, null);
+                return de;
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    public long a(final eu eu, final boolean b, final JSONObject jsonObject) throws IOException, IllegalStateException {
+        final JSONObject jsonObject2 = new JSONObject();
+        final long de = this.dE();
+        this.zS.a(de, eu);
+        this.w(true);
+        while (true) {
+            try {
+                jsonObject2.put("requestId", de);
+                jsonObject2.put("type", (Object)"SET_VOLUME");
+                jsonObject2.put("mediaSessionId", this.dC());
+                final JSONObject jsonObject3 = new JSONObject();
+                jsonObject3.put("muted", b);
+                jsonObject2.put("volume", (Object)jsonObject3);
+                if (jsonObject != null) {
+                    jsonObject2.put("customData", (Object)jsonObject);
+                }
+                this.a(jsonObject2.toString(), de, null);
+                return de;
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    @Override
+    public void a(final long n, final int n2) {
+        this.zM.c(n, n2);
+        this.zN.c(n, n2);
+        this.zO.c(n, n2);
+        this.zP.c(n, n2);
+        this.zQ.c(n, n2);
+        this.zR.c(n, n2);
+        this.zS.c(n, n2);
+        this.zT.c(n, n2);
+    }
+    
+    public long b(final eu eu, final JSONObject jsonObject) throws IOException {
+        final JSONObject jsonObject2 = new JSONObject();
+        final long de = this.dE();
+        this.zP.a(de, eu);
+        this.w(true);
+        while (true) {
+            try {
+                jsonObject2.put("requestId", de);
+                jsonObject2.put("type", (Object)"STOP");
+                jsonObject2.put("mediaSessionId", this.dC());
+                if (jsonObject != null) {
+                    jsonObject2.put("customData", (Object)jsonObject);
+                }
+                this.a(jsonObject2.toString(), de, null);
+                return de;
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    public long c(final eu eu, final JSONObject jsonObject) throws IOException, IllegalStateException {
+        final JSONObject jsonObject2 = new JSONObject();
+        final long de = this.dE();
+        this.zO.a(de, eu);
+        this.w(true);
+        while (true) {
+            try {
+                jsonObject2.put("requestId", de);
+                jsonObject2.put("type", (Object)"PLAY");
+                jsonObject2.put("mediaSessionId", this.dC());
+                if (jsonObject != null) {
+                    jsonObject2.put("customData", (Object)jsonObject);
+                }
+                this.a(jsonObject2.toString(), de, null);
+                return de;
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    public long dC() throws IllegalStateException {
+        if (this.zL == null) {
+            throw new IllegalStateException("No current media session");
+        }
+        return this.zL.dC();
+    }
+    
+    @Override
+    public void dF() {
+        this.dS();
+    }
+    
+    public long getApproximateStreamPosition() {
+        final MediaInfo mediaInfo = this.getMediaInfo();
+        if (mediaInfo == null || this.zK == 0L) {
+            return 0L;
+        }
+        final double playbackRate = this.zL.getPlaybackRate();
+        final long streamPosition = this.zL.getStreamPosition();
+        final int playerState = this.zL.getPlayerState();
+        if (playbackRate == 0.0 || playerState != 2) {
+            return streamPosition;
+        }
+        long n = SystemClock.elapsedRealtime() - this.zK;
+        if (n < 0L) {
+            n = 0L;
+        }
+        if (n == 0L) {
+            return streamPosition;
+        }
+        final long streamDuration = mediaInfo.getStreamDuration();
+        long n2 = streamPosition + (long)(n * playbackRate);
+        if (n2 > streamDuration) {
+            n2 = streamDuration;
+        }
+        else if (n2 < 0L) {
+            n2 = 0L;
+        }
+        return n2;
+    }
+    
+    public MediaInfo getMediaInfo() {
+        if (this.zL == null) {
+            return null;
+        }
+        return this.zL.getMediaInfo();
+    }
+    
+    public MediaStatus getMediaStatus() {
+        return this.zL;
+    }
+    
+    public long getStreamDuration() {
+        final MediaInfo mediaInfo = this.getMediaInfo();
+        if (mediaInfo != null) {
+            return mediaInfo.getStreamDuration();
+        }
+        return 0L;
+    }
+    
+    protected void onMetadataUpdated() {
+    }
+    
+    protected void onStatusUpdated() {
+    }
+    
+    private class a implements Runnable
     {
-        int ch();
-        
-        int ci();
-        
-        I g(final O p0);
+        @Override
+        public void run() {
+            while (true) {
+                boolean b = false;
+                es.this.zV = false;
+                final long elapsedRealtime = SystemClock.elapsedRealtime();
+                es.this.zM.d(elapsedRealtime, 3);
+                es.this.zN.d(elapsedRealtime, 3);
+                es.this.zO.d(elapsedRealtime, 3);
+                es.this.zP.d(elapsedRealtime, 3);
+                es.this.zQ.d(elapsedRealtime, 3);
+                es.this.zR.d(elapsedRealtime, 3);
+                es.this.zS.d(elapsedRealtime, 3);
+                es.this.zT.d(elapsedRealtime, 3);
+                while (true) {
+                    synchronized (ev.Ab) {
+                        if (!es.this.zM.dU() && !es.this.zQ.dU() && !es.this.zR.dU() && !es.this.zS.dU()) {
+                            if (!es.this.zT.dU()) {
+                                // monitorexit(ev.Ab)
+                                es.this.w(b);
+                                return;
+                            }
+                        }
+                    }
+                    b = true;
+                    continue;
+                }
+            }
+        }
     }
 }

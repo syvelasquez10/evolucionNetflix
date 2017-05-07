@@ -10,18 +10,18 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class hi implements SafeParcelable
 {
     public static final hj CREATOR;
-    public final String Bn;
-    public final String Bo;
-    public final int versionCode;
+    private final String OE;
+    private final String mTag;
+    final int xH;
     
     static {
         CREATOR = new hj();
     }
     
-    public hi(final int versionCode, final String bn, final String bo) {
-        this.versionCode = versionCode;
-        this.Bn = bn;
-        this.Bo = bo;
+    hi(final int xh, final String oe, final String mTag) {
+        this.xH = xh;
+        this.OE = oe;
+        this.mTag = mTag;
     }
     
     public int describeContents() {
@@ -31,26 +31,31 @@ public class hi implements SafeParcelable
     
     @Override
     public boolean equals(final Object o) {
-        if (this != o) {
-            if (o == null || !(o instanceof hi)) {
-                return false;
-            }
+        if (o instanceof hi) {
             final hi hi = (hi)o;
-            if (!this.Bo.equals(hi.Bo) || !this.Bn.equals(hi.Bn)) {
-                return false;
+            if (fo.equal(this.OE, hi.OE) && fo.equal(this.mTag, hi.mTag)) {
+                return true;
             }
         }
-        return true;
+        return false;
+    }
+    
+    public String getTag() {
+        return this.mTag;
+    }
+    
+    public String hY() {
+        return this.OE;
     }
     
     @Override
     public int hashCode() {
-        return ee.hashCode(this.Bn, this.Bo);
+        return fo.hashCode(this.OE, this.mTag);
     }
     
     @Override
     public String toString() {
-        return ee.e(this).a("clientPackageName", this.Bn).a("locale", this.Bo).toString();
+        return fo.e(this).a("mPlaceId", this.OE).a("mTag", this.mTag).toString();
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

@@ -14,7 +14,7 @@ public final class LeaderboardBuffer extends d<Leaderboard>
     }
     
     protected Leaderboard getEntry(final int n, final int n2) {
-        return new b(this.nE, n, n2);
+        return new LeaderboardRef(this.BB, n, n2);
     }
     
     @Override

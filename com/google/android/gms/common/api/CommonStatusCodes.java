@@ -6,6 +6,7 @@ package com.google.android.gms.common.api;
 
 public class CommonStatusCodes
 {
+    public static final int CANCELED = 16;
     public static final int DATE_INVALID = 12;
     public static final int DEVELOPER_ERROR = 10;
     public static final int ERROR = 13;
@@ -67,6 +68,24 @@ public class CommonStatusCodes
             }
             case 11: {
                 return "LICENSE_CHECK_FAILED";
+            }
+            case 3000: {
+                return "AUTH_API_INVALID_CREDENTIALS";
+            }
+            case 3001: {
+                return "AUTH_API_ACCESS_FORBIDDEN";
+            }
+            case 3002: {
+                return "AUTH_API_CLIENT_ERROR";
+            }
+            case 3003: {
+                return "AUTH_API_SERVER_ERROR";
+            }
+            case 3004: {
+                return "AUTH_TOKEN_ERROR";
+            }
+            case 3005: {
+                return "AUTH_URL_RESOLUTION";
             }
         }
     }

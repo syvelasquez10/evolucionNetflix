@@ -4,168 +4,73 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
-import android.os.Bundle;
-import com.google.android.gms.common.data.DataHolder;
+import android.os.Parcel;
+import android.os.IBinder;
+import android.os.Binder;
+import android.os.RemoteException;
+import android.os.IInterface;
 
-public abstract class fk extends fo.a
+public interface fk extends IInterface
 {
-    public void A(final DataHolder dataHolder) {
-    }
+    void cancel() throws RemoteException;
     
-    public void B(final DataHolder dataHolder) {
-    }
-    
-    public void C(final DataHolder dataHolder) {
-    }
-    
-    public void D(final DataHolder dataHolder) {
-    }
-    
-    public void a(final int n, final Bundle bundle) {
-    }
-    
-    public void a(final int n, final String s, final boolean b) {
-    }
-    
-    public void a(final DataHolder dataHolder, final DataHolder dataHolder2) {
-    }
-    
-    public void a(final DataHolder dataHolder, final String[] array) {
-    }
-    
-    public void aB(final int n) {
-    }
-    
-    public void aC(final int n) {
-    }
-    
-    public void aD(final int n) {
-    }
-    
-    public void aE(final int n) {
-    }
-    
-    public void b(final int n, final int n2, final String s) {
-    }
-    
-    public void b(final DataHolder dataHolder) {
-    }
-    
-    public void b(final DataHolder dataHolder, final String[] array) {
-    }
-    
-    public void c(final DataHolder dataHolder) {
-    }
-    
-    public void c(final DataHolder dataHolder, final String[] array) {
-    }
-    
-    public void d(final int n, final String s) {
-    }
-    
-    public void d(final DataHolder dataHolder) {
-    }
-    
-    public void d(final DataHolder dataHolder, final String[] array) {
-    }
-    
-    public void e(final DataHolder dataHolder) {
-    }
-    
-    public void e(final DataHolder dataHolder, final String[] array) {
-    }
-    
-    public void f(final DataHolder dataHolder) {
-    }
-    
-    public void f(final DataHolder dataHolder, final String[] array) {
-    }
-    
-    public void g(final DataHolder dataHolder) {
-    }
-    
-    public void h(final DataHolder dataHolder) {
-    }
-    
-    public void i(final DataHolder dataHolder) {
-    }
-    
-    public void j(final DataHolder dataHolder) {
-    }
-    
-    public void k(final DataHolder dataHolder) {
-    }
-    
-    public void l(final DataHolder dataHolder) {
-    }
-    
-    public void m(final DataHolder dataHolder) {
-    }
-    
-    public void n(final DataHolder dataHolder) {
-    }
-    
-    public void o(final DataHolder dataHolder) {
-    }
-    
-    public void onAchievementUpdated(final int n, final String s) {
-    }
-    
-    public void onInvitationRemoved(final String s) {
-    }
-    
-    public void onLeftRoom(final int n, final String s) {
-    }
-    
-    public void onP2PConnected(final String s) {
-    }
-    
-    public void onP2PDisconnected(final String s) {
-    }
-    
-    public void onRealTimeMessageReceived(final RealTimeMessage realTimeMessage) {
-    }
-    
-    public void onSignOutComplete() {
-    }
-    
-    public void onTurnBasedMatchCanceled(final int n, final String s) {
-    }
-    
-    public void onTurnBasedMatchRemoved(final String s) {
-    }
-    
-    public void p(final DataHolder dataHolder) {
-    }
-    
-    public void q(final DataHolder dataHolder) {
-    }
-    
-    public void r(final DataHolder dataHolder) {
-    }
-    
-    public void s(final DataHolder dataHolder) {
-    }
-    
-    public void t(final DataHolder dataHolder) {
-    }
-    
-    public void u(final DataHolder dataHolder) {
-    }
-    
-    public void v(final DataHolder dataHolder) {
-    }
-    
-    public void w(final DataHolder dataHolder) {
-    }
-    
-    public void x(final DataHolder dataHolder) {
-    }
-    
-    public void y(final DataHolder dataHolder) {
-    }
-    
-    public void z(final DataHolder dataHolder) {
+    public abstract static class a extends Binder implements fk
+    {
+        public static fk A(final IBinder binder) {
+            if (binder == null) {
+                return null;
+            }
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.common.internal.ICancelToken");
+            if (queryLocalInterface != null && queryLocalInterface instanceof fk) {
+                return (fk)queryLocalInterface;
+            }
+            return new fk.a.a(binder);
+        }
+        
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            switch (n) {
+                default: {
+                    return super.onTransact(n, parcel, parcel2, n2);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.common.internal.ICancelToken");
+                    return true;
+                }
+                case 2: {
+                    parcel.enforceInterface("com.google.android.gms.common.internal.ICancelToken");
+                    this.cancel();
+                    parcel2.writeNoException();
+                    return true;
+                }
+            }
+        }
+        
+        private static class a implements fk
+        {
+            private IBinder kn;
+            
+            a(final IBinder kn) {
+                this.kn = kn;
+            }
+            
+            public IBinder asBinder() {
+                return this.kn;
+            }
+            
+            @Override
+            public void cancel() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.common.internal.ICancelToken");
+                    this.kn.transact(2, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+        }
     }
 }

@@ -6,66 +6,69 @@ package com.google.android.gms.games;
 
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.a;
+import android.os.RemoteException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.api.PendingResult;
 import android.view.View;
 import android.content.Intent;
-import com.google.android.gms.internal.ft;
-import com.google.android.gms.internal.fy;
-import com.google.android.gms.internal.fz;
-import com.google.android.gms.internal.fx;
-import com.google.android.gms.internal.ga;
-import com.google.android.gms.internal.gb;
-import com.google.android.gms.internal.fv;
-import com.google.android.gms.internal.fw;
-import com.google.android.gms.internal.fs;
-import com.google.android.gms.internal.fu;
-import com.google.android.gms.internal.eg;
+import com.google.android.gms.internal.fq;
+import com.google.android.gms.games.internal.api.AclsImpl;
+import com.google.android.gms.games.internal.api.RequestsImpl;
+import com.google.android.gms.games.internal.api.NotificationsImpl;
+import com.google.android.gms.games.internal.api.PlayersImpl;
+import com.google.android.gms.games.internal.api.MultiplayerImpl;
+import com.google.android.gms.games.internal.api.RealTimeMultiplayerImpl;
+import com.google.android.gms.games.internal.api.TurnBasedMultiplayerImpl;
+import com.google.android.gms.games.internal.api.InvitationsImpl;
+import com.google.android.gms.games.internal.api.LeaderboardsImpl;
+import com.google.android.gms.games.internal.api.AchievementsImpl;
+import com.google.android.gms.games.internal.api.GamesMetadataImpl;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.internal.dt;
+import com.google.android.gms.internal.fc;
+import android.os.Looper;
 import android.content.Context;
-import com.google.android.gms.internal.gg;
-import com.google.android.gms.games.multiplayer.Multiplayer;
-import com.google.android.gms.internal.fl;
+import com.google.android.gms.games.internal.GamesClientImpl;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMultiplayer;
-import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.games.request.Requests;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMultiplayer;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.android.gms.games.multiplayer.Invitations;
+import com.google.android.gms.games.internal.game.Acls;
+import com.google.android.gms.games.multiplayer.Multiplayer;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.games.achievement.Achievements;
 import com.google.android.gms.common.api.Api;
 
 public final class Games
 {
-    public static final Api API;
+    public static final Api<GamesOptions> API;
     public static final Achievements Achievements;
+    public static final String EXTRA_PLAYER_IDS = "players";
     public static final GamesMetadata GamesMetadata;
+    public static final Scope HV;
+    public static final Api<GamesOptions> HW;
+    public static final Multiplayer HX;
+    public static final Acls HY;
     public static final Invitations Invitations;
     public static final Leaderboards Leaderboards;
     public static final Notifications Notifications;
     public static final Players Players;
     public static final RealTimeMultiplayer RealTimeMultiplayer;
+    public static final Requests Requests;
     public static final Scope SCOPE_GAMES;
     public static final TurnBasedMultiplayer TurnBasedMultiplayer;
-    static final Api.b<fl> jO;
-    public static final Scope sW;
-    public static final Api sX;
-    public static final Multiplayer sY;
-    public static final gg sZ;
+    static final Api.c<GamesClientImpl> wx;
+    private static final Api.b<GamesClientImpl, GamesOptions> wy;
     
     static {
-        jO = new Api.b<fl>() {
-            public fl e(final Context context, final dt dt, final GoogleApiClient.ApiOptions apiOptions, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener) {
-                final GamesOptions gamesOptions = new GamesOptions();
-                GamesOptions gamesOptions2;
-                if (apiOptions != null) {
-                    eg.b(apiOptions instanceof GamesOptions, "Must provide valid GamesOptions!");
-                    gamesOptions2 = (GamesOptions)apiOptions;
+        wx = new Api.c();
+        wy = new Api.b<GamesClientImpl, GamesOptions>() {
+            public GamesClientImpl a(final Context context, final Looper looper, final fc fc, final GamesOptions gamesOptions, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener) {
+                GamesOptions gamesOptions2 = gamesOptions;
+                if (gamesOptions == null) {
+                    gamesOptions2 = new GamesOptions();
                 }
-                else {
-                    gamesOptions2 = gamesOptions;
-                }
-                return new fl(context, dt.bJ(), dt.bF(), connectionCallbacks, onConnectionFailedListener, dt.bI(), dt.bG(), dt.bK(), gamesOptions2.ta, gamesOptions2.tb, gamesOptions2.tc, gamesOptions2.td);
+                return new GamesClientImpl(context, looper, fc.eG(), fc.eC(), connectionCallbacks, onConnectionFailedListener, fc.eF(), fc.eD(), fc.eH(), gamesOptions2.HZ, gamesOptions2.Ia, gamesOptions2.Ib, gamesOptions2.Ic, gamesOptions2.Id);
             }
             
             @Override
@@ -74,82 +77,93 @@ public final class Games
             }
         };
         SCOPE_GAMES = new Scope("https://www.googleapis.com/auth/games");
-        API = new Api((Api.b<?>)Games.jO, new Scope[] { Games.SCOPE_GAMES });
-        sW = new Scope("https://www.googleapis.com/auth/games.firstparty");
-        sX = new Api((Api.b<?>)Games.jO, new Scope[] { Games.sW });
-        GamesMetadata = new fu();
-        Achievements = new fs();
-        Leaderboards = new fw();
-        Invitations = new fv();
-        TurnBasedMultiplayer = new gb();
-        RealTimeMultiplayer = new ga();
-        sY = new fx();
-        Players = new fz();
-        Notifications = new fy();
-        sZ = new ft();
+        API = new Api<GamesOptions>((Api.b<C, GamesOptions>)Games.wy, (Api.c<C>)Games.wx, new Scope[] { Games.SCOPE_GAMES });
+        HV = new Scope("https://www.googleapis.com/auth/games.firstparty");
+        HW = new Api<GamesOptions>((Api.b<C, GamesOptions>)Games.wy, (Api.c<C>)Games.wx, new Scope[] { Games.HV });
+        GamesMetadata = new GamesMetadataImpl();
+        Achievements = new AchievementsImpl();
+        Leaderboards = new LeaderboardsImpl();
+        Invitations = new InvitationsImpl();
+        TurnBasedMultiplayer = new TurnBasedMultiplayerImpl();
+        RealTimeMultiplayer = new RealTimeMultiplayerImpl();
+        HX = new MultiplayerImpl();
+        Players = new PlayersImpl();
+        Notifications = new NotificationsImpl();
+        Requests = new RequestsImpl();
+        HY = new AclsImpl();
+    }
+    
+    public static GamesClientImpl c(final GoogleApiClient googleApiClient) {
+        final boolean b = true;
+        fq.b(googleApiClient != null, "GoogleApiClient parameter is required.");
+        fq.a(googleApiClient.isConnected(), (Object)"GoogleApiClient must be connected.");
+        final GamesClientImpl gamesClientImpl = googleApiClient.a(Games.wx);
+        fq.a(gamesClientImpl != null && b, (Object)"GoogleApiClient is not configured to use the Games Api. Pass Games.API into GoogleApiClient.Builder#addApi() to use this feature.");
+        return gamesClientImpl;
     }
     
     public static String getAppId(final GoogleApiClient googleApiClient) {
-        return j(googleApiClient).getAppId();
+        return c(googleApiClient).gz();
     }
     
     public static String getCurrentAccountName(final GoogleApiClient googleApiClient) {
-        return j(googleApiClient).getCurrentAccountName();
+        return c(googleApiClient).gl();
     }
     
     public static int getSdkVariant(final GoogleApiClient googleApiClient) {
-        return j(googleApiClient).dd();
+        return c(googleApiClient).gy();
     }
     
     public static Intent getSettingsIntent(final GoogleApiClient googleApiClient) {
-        return j(googleApiClient).getSettingsIntent();
+        return c(googleApiClient).gx();
     }
     
-    public static fl j(final GoogleApiClient googleApiClient) {
-        final boolean b = true;
-        eg.b(googleApiClient != null, "GoogleApiClient parameter is required.");
-        eg.a(googleApiClient.isConnected(), (Object)"GoogleApiClient must be connected.");
-        final fl fl = googleApiClient.a(Games.jO);
-        eg.a(fl != null && b, (Object)"GoogleApiClient is not configured to use the Games Api. Pass Games.API into GoogleApiClient.Builder#addApi() to use this feature.");
-        return fl;
+    public static void setGravityForPopups(final GoogleApiClient googleApiClient, final int n) {
+        c(googleApiClient).aX(n);
     }
     
-    public static void setGravityForPopups(final GoogleApiClient googleApiClient, final int gravityForPopups) {
-        j(googleApiClient).setGravityForPopups(gravityForPopups);
-    }
-    
-    public static void setViewForPopups(final GoogleApiClient googleApiClient, final View viewForPopups) {
-        eg.f(viewForPopups);
-        j(googleApiClient).setViewForPopups(viewForPopups);
+    public static void setViewForPopups(final GoogleApiClient googleApiClient, final View view) {
+        fq.f(view);
+        c(googleApiClient).f(view);
     }
     
     public static PendingResult<Status> signOut(final GoogleApiClient googleApiClient) {
-        return googleApiClient.b((PendingResult<Status>)new b() {
-            protected void a(final fl fl) {
-                fl.b((c<Status>)this);
+        return googleApiClient.b((PendingResult<Status>)new SignOutImpl() {
+            protected void a(final GamesClientImpl gamesClientImpl) {
+                gamesClientImpl.b((d<Status>)this);
             }
         });
     }
     
-    public static final class GamesOptions implements ApiOptions
+    public abstract static class BaseGamesApiMethodImpl<R extends Result> extends b<R, GamesClientImpl>
     {
-        final boolean ta;
-        final boolean tb;
-        final int tc;
-        final int td;
+        public BaseGamesApiMethodImpl() {
+            super(Games.wx);
+        }
+    }
+    
+    public static final class GamesOptions implements Optional
+    {
+        final boolean HZ;
+        final boolean Ia;
+        final int Ib;
+        final boolean Ic;
+        final int Id;
         
         private GamesOptions() {
-            this.ta = false;
-            this.tb = true;
-            this.tc = 17;
-            this.td = 4368;
+            this.HZ = false;
+            this.Ia = true;
+            this.Ib = 17;
+            this.Ic = false;
+            this.Id = 4368;
         }
         
         private GamesOptions(final Builder builder) {
-            this.ta = builder.ta;
-            this.tb = builder.tb;
-            this.tc = builder.tc;
-            this.td = builder.td;
+            this.HZ = builder.HZ;
+            this.Ia = builder.Ia;
+            this.Ib = builder.Ib;
+            this.Ic = builder.Ic;
+            this.Id = builder.Id;
         }
         
         public static Builder builder() {
@@ -158,51 +172,46 @@ public final class Games
         
         public static final class Builder
         {
-            boolean ta;
-            boolean tb;
-            int tc;
-            int td;
+            boolean HZ;
+            boolean Ia;
+            int Ib;
+            boolean Ic;
+            int Id;
             
             private Builder() {
-                this.ta = false;
-                this.tb = true;
-                this.tc = 17;
-                this.td = 4368;
+                this.HZ = false;
+                this.Ia = true;
+                this.Ib = 17;
+                this.Ic = false;
+                this.Id = 4368;
             }
             
             public GamesOptions build() {
                 return new GamesOptions(this);
             }
             
-            public Builder setSdkVariant(final int td) {
-                this.td = td;
+            public Builder setSdkVariant(final int id) {
+                this.Id = id;
                 return this;
             }
             
-            public Builder setShowConnectingPopup(final boolean tb) {
-                this.tb = tb;
-                this.tc = 17;
+            public Builder setShowConnectingPopup(final boolean ia) {
+                this.Ia = ia;
+                this.Ib = 17;
                 return this;
             }
             
-            public Builder setShowConnectingPopup(final boolean tb, final int tc) {
-                this.tb = tb;
-                this.tc = tc;
+            public Builder setShowConnectingPopup(final boolean ia, final int ib) {
+                this.Ia = ia;
+                this.Ib = ib;
                 return this;
             }
         }
     }
     
-    public abstract static class a<R extends Result> extends com.google.android.gms.common.api.a.a<R, fl> implements PendingResult<R>
+    private abstract static class SignOutImpl extends BaseGamesApiMethodImpl<Status>
     {
-        public a() {
-            super(Games.jO);
-        }
-    }
-    
-    private abstract static class b extends a<Status>
-    {
-        public Status g(final Status status) {
+        public Status f(final Status status) {
             return status;
         }
     }

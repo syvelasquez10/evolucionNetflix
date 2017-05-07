@@ -4,75 +4,54 @@
 
 package com.google.android.gms.internal;
 
-import android.os.IBinder;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.dynamic.c;
-import com.google.android.gms.plus.PlusOneDummyView;
-import android.view.View;
-import android.content.Context;
+import com.google.android.gms.common.internal.safeparcel.a;
+import com.google.android.gms.common.internal.safeparcel.b;
+import android.os.Parcel;
+import android.os.Parcelable$Creator;
 
-public final class ht
+public class ht implements Parcelable$Creator<hs>
 {
-    private static Context Ci;
-    private static hp DQ;
-    
-    public static View a(final Context context, final int n, final int n2, final String s, final int n3) {
-        if (s == null) {
-            try {
-                throw new NullPointerException();
-            }
-            catch (Exception ex) {
-                return (View)new PlusOneDummyView(context, n);
-            }
-        }
-        return c.b(x(context).a(c.h(context), n, n2, s, n3));
+    static void a(final hs hs, final Parcel parcel, int p3) {
+        p3 = b.p(parcel);
+        b.a(parcel, 1, hs.Rl, false);
+        b.c(parcel, 1000, hs.versionCode);
+        b.a(parcel, 2, hs.Rm, false);
+        b.F(parcel, p3);
     }
     
-    public static View a(final Context context, final int n, final int n2, final String s, final String s2) {
-        if (s == null) {
-            try {
-                throw new NullPointerException();
-            }
-            catch (Exception ex) {
-                return (View)new PlusOneDummyView(context, n);
-            }
-        }
-        return c.b(x(context).a(c.h(context), n, n2, s, s2));
-    }
-    
-    private static hp x(final Context context) throws a {
-        eg.f(context);
-        Label_0065: {
-            if (ht.DQ != null) {
-                break Label_0065;
-            }
-            if (ht.Ci == null) {
-                ht.Ci = GooglePlayServicesUtil.getRemoteContext(context);
-                if (ht.Ci == null) {
-                    throw new a("Could not get remote context.");
+    public hs aI(final Parcel parcel) {
+        String n = null;
+        final int o = a.o(parcel);
+        int g = 0;
+        String n2 = null;
+        while (parcel.dataPosition() < o) {
+            final int n3 = a.n(parcel);
+            switch (a.R(n3)) {
+                default: {
+                    a.b(parcel, n3);
+                    continue;
+                }
+                case 1: {
+                    n2 = a.n(parcel, n3);
+                    continue;
+                }
+                case 1000: {
+                    g = a.g(parcel, n3);
+                    continue;
+                }
+                case 2: {
+                    n = a.n(parcel, n3);
+                    continue;
                 }
             }
-            final ClassLoader classLoader = ht.Ci.getClassLoader();
-            try {
-                ht.DQ = hp.a.av((IBinder)classLoader.loadClass("com.google.android.gms.plus.plusone.PlusOneButtonCreatorImpl").newInstance());
-                return ht.DQ;
-            }
-            catch (ClassNotFoundException ex) {
-                throw new a("Could not load creator class.");
-            }
-            catch (InstantiationException ex2) {
-                throw new a("Could not instantiate creator.");
-            }
-            catch (IllegalAccessException ex3) {
-                throw new a("Could not access creator.");
-            }
         }
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
+        }
+        return new hs(g, n2, n);
     }
     
-    public static class a extends Exception
-    {
-        public a(final String s) {
-            super(s);
-        }
+    public hs[] bJ(final int n) {
+        return new hs[n];
     }
 }

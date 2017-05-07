@@ -507,7 +507,7 @@ public final class LogUtils
     {
         private UIError error;
         private IClientLogging.CompletionReason reason;
-        private int statusCode;
+        private final int statusCode;
         
         public LogReportErrorArgs(final int statusCode, final ActionOnUIError actionOnUIError, final String s, final List<DeepErrorElement> list) {
             this.statusCode = statusCode;

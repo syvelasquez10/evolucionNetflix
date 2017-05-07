@@ -8,28 +8,33 @@ import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
 import com.google.android.gms.maps.model.internal.a;
+import com.google.android.gms.maps.StreetViewPanoramaOptions;
 import android.os.RemoteException;
 import com.google.android.gms.maps.GoogleMapOptions;
-import com.google.android.gms.dynamic.b;
+import com.google.android.gms.dynamic.d;
 import android.os.IInterface;
 
 public interface c extends IInterface
 {
-    IMapViewDelegate a(final b p0, final GoogleMapOptions p1) throws RemoteException;
+    IMapViewDelegate a(final d p0, final GoogleMapOptions p1) throws RemoteException;
     
-    void a(final b p0, final int p1) throws RemoteException;
+    IStreetViewPanoramaViewDelegate a(final d p0, final StreetViewPanoramaOptions p1) throws RemoteException;
     
-    void e(final b p0) throws RemoteException;
+    void a(final d p0, final int p1) throws RemoteException;
     
-    com.google.android.gms.maps.model.internal.a eA() throws RemoteException;
+    void g(final d p0) throws RemoteException;
     
-    ICameraUpdateFactoryDelegate ez() throws RemoteException;
+    IMapFragmentDelegate h(final d p0) throws RemoteException;
     
-    IMapFragmentDelegate f(final b p0) throws RemoteException;
+    IStreetViewPanoramaFragmentDelegate i(final d p0) throws RemoteException;
+    
+    ICameraUpdateFactoryDelegate ix() throws RemoteException;
+    
+    com.google.android.gms.maps.model.internal.a iy() throws RemoteException;
     
     public abstract static class a extends Binder implements c
     {
-        public static c Q(final IBinder binder) {
+        public static c ab(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -45,6 +50,8 @@ public interface c extends IInterface
             final IBinder binder2 = null;
             final IBinder binder3 = null;
             final IBinder binder4 = null;
+            final IBinder binder5 = null;
+            final IBinder binder6 = null;
             switch (n) {
                 default: {
                     return super.onTransact(n, parcel, parcel2, n2);
@@ -55,24 +62,24 @@ public interface c extends IInterface
                 }
                 case 1: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICreator");
-                    this.e(b.a.E(parcel.readStrongBinder()));
+                    this.g(d.a.K(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 2: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICreator");
-                    final IMapFragmentDelegate f = this.f(b.a.E(parcel.readStrongBinder()));
+                    final IMapFragmentDelegate h = this.h(d.a.K(parcel.readStrongBinder()));
                     parcel2.writeNoException();
-                    IBinder binder5 = binder4;
-                    if (f != null) {
-                        binder5 = f.asBinder();
+                    IBinder binder7 = binder6;
+                    if (h != null) {
+                        binder7 = h.asBinder();
                     }
-                    parcel2.writeStrongBinder(binder5);
+                    parcel2.writeStrongBinder(binder7);
                     return true;
                 }
                 case 3: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICreator");
-                    final b e = b.a.E(parcel.readStrongBinder());
+                    final d k = d.a.K(parcel.readStrongBinder());
                     GoogleMapOptions fromParcel;
                     if (parcel.readInt() != 0) {
                         fromParcel = GoogleMapOptions.CREATOR.createFromParcel(parcel);
@@ -80,41 +87,71 @@ public interface c extends IInterface
                     else {
                         fromParcel = null;
                     }
-                    final IMapViewDelegate a = this.a(e, fromParcel);
+                    final IMapViewDelegate a = this.a(k, fromParcel);
                     parcel2.writeNoException();
-                    IBinder binder6 = binder;
+                    IBinder binder8 = binder;
                     if (a != null) {
-                        binder6 = a.asBinder();
-                    }
-                    parcel2.writeStrongBinder(binder6);
-                    return true;
-                }
-                case 4: {
-                    parcel.enforceInterface("com.google.android.gms.maps.internal.ICreator");
-                    final ICameraUpdateFactoryDelegate ez = this.ez();
-                    parcel2.writeNoException();
-                    IBinder binder7 = binder2;
-                    if (ez != null) {
-                        binder7 = ez.asBinder();
-                    }
-                    parcel2.writeStrongBinder(binder7);
-                    return true;
-                }
-                case 5: {
-                    parcel.enforceInterface("com.google.android.gms.maps.internal.ICreator");
-                    final a ea = this.eA();
-                    parcel2.writeNoException();
-                    IBinder binder8 = binder3;
-                    if (ea != null) {
-                        binder8 = ea.asBinder();
+                        binder8 = a.asBinder();
                     }
                     parcel2.writeStrongBinder(binder8);
                     return true;
                 }
+                case 4: {
+                    parcel.enforceInterface("com.google.android.gms.maps.internal.ICreator");
+                    final ICameraUpdateFactoryDelegate ix = this.ix();
+                    parcel2.writeNoException();
+                    IBinder binder9 = binder2;
+                    if (ix != null) {
+                        binder9 = ix.asBinder();
+                    }
+                    parcel2.writeStrongBinder(binder9);
+                    return true;
+                }
+                case 5: {
+                    parcel.enforceInterface("com.google.android.gms.maps.internal.ICreator");
+                    final a iy = this.iy();
+                    parcel2.writeNoException();
+                    IBinder binder10 = binder3;
+                    if (iy != null) {
+                        binder10 = iy.asBinder();
+                    }
+                    parcel2.writeStrongBinder(binder10);
+                    return true;
+                }
                 case 6: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICreator");
-                    this.a(b.a.E(parcel.readStrongBinder()), parcel.readInt());
+                    this.a(d.a.K(parcel.readStrongBinder()), parcel.readInt());
                     parcel2.writeNoException();
+                    return true;
+                }
+                case 7: {
+                    parcel.enforceInterface("com.google.android.gms.maps.internal.ICreator");
+                    final d i = d.a.K(parcel.readStrongBinder());
+                    StreetViewPanoramaOptions fromParcel2;
+                    if (parcel.readInt() != 0) {
+                        fromParcel2 = StreetViewPanoramaOptions.CREATOR.createFromParcel(parcel);
+                    }
+                    else {
+                        fromParcel2 = null;
+                    }
+                    final IStreetViewPanoramaViewDelegate a2 = this.a(i, fromParcel2);
+                    parcel2.writeNoException();
+                    IBinder binder11 = binder4;
+                    if (a2 != null) {
+                        binder11 = a2.asBinder();
+                    }
+                    parcel2.writeStrongBinder(binder11);
+                    return true;
+                }
+                case 8: {
+                    parcel.enforceInterface("com.google.android.gms.maps.internal.ICreator");
+                    final IStreetViewPanoramaFragmentDelegate j = this.i(d.a.K(parcel.readStrongBinder()));
+                    parcel2.writeNoException();
+                    IBinder binder12 = binder5;
+                    if (j != null) {
+                        binder12 = j.asBinder();
+                    }
+                    parcel2.writeStrongBinder(binder12);
                     return true;
                 }
             }
@@ -122,21 +159,21 @@ public interface c extends IInterface
         
         private static class a implements c
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
             }
             
             @Override
-            public IMapViewDelegate a(final b b, final GoogleMapOptions googleMapOptions) throws RemoteException {
+            public IMapViewDelegate a(final d d, final GoogleMapOptions googleMapOptions) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICreator");
                     IBinder binder;
-                    if (b != null) {
-                        binder = b.asBinder();
+                    if (d != null) {
+                        binder = d.asBinder();
                     }
                     else {
                         binder = null;
@@ -149,9 +186,9 @@ public interface c extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.dU.transact(3, obtain, obtain2, 0);
+                    this.kn.transact(3, obtain, obtain2, 0);
                     obtain2.readException();
-                    return IMapViewDelegate.a.V(obtain2.readStrongBinder());
+                    return IMapViewDelegate.a.ag(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -160,21 +197,52 @@ public interface c extends IInterface
             }
             
             @Override
-            public void a(final b b, final int n) throws RemoteException {
+            public IStreetViewPanoramaViewDelegate a(final d d, final StreetViewPanoramaOptions streetViewPanoramaOptions) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICreator");
                     IBinder binder;
-                    if (b != null) {
-                        binder = b.asBinder();
+                    if (d != null) {
+                        binder = d.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    if (streetViewPanoramaOptions != null) {
+                        obtain.writeInt(1);
+                        streetViewPanoramaOptions.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.kn.transact(7, obtain, obtain2, 0);
+                    obtain2.readException();
+                    return IStreetViewPanoramaViewDelegate.a.az(obtain2.readStrongBinder());
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void a(final d d, final int n) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICreator");
+                    IBinder binder;
+                    if (d != null) {
+                        binder = d.asBinder();
                     }
                     else {
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
                     obtain.writeInt(n);
-                    this.dU.transact(6, obtain, obtain2, 0);
+                    this.kn.transact(6, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -184,24 +252,24 @@ public interface c extends IInterface
             }
             
             public IBinder asBinder() {
-                return this.dU;
+                return this.kn;
             }
             
             @Override
-            public void e(final b b) throws RemoteException {
+            public void g(final d d) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICreator");
                     IBinder binder;
-                    if (b != null) {
-                        binder = b.asBinder();
+                    if (d != null) {
+                        binder = d.asBinder();
                     }
                     else {
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.dU.transact(1, obtain, obtain2, 0);
+                    this.kn.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -211,54 +279,78 @@ public interface c extends IInterface
             }
             
             @Override
-            public com.google.android.gms.maps.model.internal.a eA() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICreator");
-                    this.dU.transact(5, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return com.google.android.gms.maps.model.internal.a.a.aj(obtain2.readStrongBinder());
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public ICameraUpdateFactoryDelegate ez() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICreator");
-                    this.dU.transact(4, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return ICameraUpdateFactoryDelegate.a.O(obtain2.readStrongBinder());
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public IMapFragmentDelegate f(final b b) throws RemoteException {
+            public IMapFragmentDelegate h(final d d) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICreator");
                     IBinder binder;
-                    if (b != null) {
-                        binder = b.asBinder();
+                    if (d != null) {
+                        binder = d.asBinder();
                     }
                     else {
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.dU.transact(2, obtain, obtain2, 0);
+                    this.kn.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
-                    return IMapFragmentDelegate.a.U(obtain2.readStrongBinder());
+                    return IMapFragmentDelegate.a.af(obtain2.readStrongBinder());
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public IStreetViewPanoramaFragmentDelegate i(final d d) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICreator");
+                    IBinder binder;
+                    if (d != null) {
+                        binder = d.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    this.kn.transact(8, obtain, obtain2, 0);
+                    obtain2.readException();
+                    return IStreetViewPanoramaFragmentDelegate.a.ay(obtain2.readStrongBinder());
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public ICameraUpdateFactoryDelegate ix() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICreator");
+                    this.kn.transact(4, obtain, obtain2, 0);
+                    obtain2.readException();
+                    return ICameraUpdateFactoryDelegate.a.Z(obtain2.readStrongBinder());
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public com.google.android.gms.maps.model.internal.a iy() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICreator");
+                    this.kn.transact(5, obtain, obtain2, 0);
+                    obtain2.readException();
+                    return com.google.android.gms.maps.model.internal.a.a.aB(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();

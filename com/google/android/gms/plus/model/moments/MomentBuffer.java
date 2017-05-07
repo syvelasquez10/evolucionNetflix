@@ -4,7 +4,7 @@
 
 package com.google.android.gms.plus.model.moments;
 
-import com.google.android.gms.internal.if;
+import com.google.android.gms.internal.ig;
 import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.common.data.DataBuffer;
 
@@ -16,6 +16,6 @@ public final class MomentBuffer extends DataBuffer<Moment>
     
     @Override
     public Moment get(final int n) {
-        return new if(this.nE, n);
+        return new ig(this.BB, n);
     }
 }

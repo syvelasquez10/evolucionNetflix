@@ -23,6 +23,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 public class OpenSourceLicensesActivity extends NetflixActivity
 {
     private static final String APACHE_LICENSE_20 = "\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at:\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License.";
+    private static final String ROUNDED_IMAGE_VIEW_LICENSE = "Copyright (c) 2013, Vincent Mi\n\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at:\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License.";
     private static final String STICKY_GRID_HEADERS_LICENSE = "Copyright 2013 Tonic Artos\n\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at:\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License.";
     private static final List<OslInfo> oslInfo;
     
@@ -35,12 +36,13 @@ public class OpenSourceLicensesActivity extends NetflixActivity
     }
     
     private String createHeaderText(final String s) {
-        return String.format(this.getString(2131296577), s);
+        return String.format(this.getString(2131493196), s);
     }
     
     private void createOslInfo() {
         OpenSourceLicensesActivity.oslInfo.clear();
         OpenSourceLicensesActivity.oslInfo.add(new OslInfo(this.createHeaderText("StickyGridHeaders"), "Copyright 2013 Tonic Artos\n\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at:\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License."));
+        OpenSourceLicensesActivity.oslInfo.add(new OslInfo(this.createHeaderText("RoundedImageView"), "Copyright (c) 2013, Vincent Mi\n\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at:\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License."));
     }
     
     @Override
@@ -58,7 +60,7 @@ public class OpenSourceLicensesActivity extends NetflixActivity
         this.createOslInfo();
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
-            netflixActionBar.setTitle(this.getString(2131296576));
+            netflixActionBar.setTitle(this.getString(2131493195));
         }
         final ListView contentView = new ListView((Context)this);
         contentView.setAdapter((ListAdapter)new OslAdapter());
@@ -103,8 +105,8 @@ public class OpenSourceLicensesActivity extends NetflixActivity
         public View getView(final int n, final View view, final ViewGroup viewGroup) {
             View inflate = view;
             if (view == null) {
-                inflate = OpenSourceLicensesActivity.this.getLayoutInflater().inflate(2130903124, (ViewGroup)null);
-                inflate.setTag((Object)new Holder((TextView)inflate.findViewById(2131231015), (TextView)inflate.findViewById(2131231016)));
+                inflate = OpenSourceLicensesActivity.this.getLayoutInflater().inflate(2130903133, (ViewGroup)null);
+                inflate.setTag((Object)new Holder((TextView)inflate.findViewById(2131165478), (TextView)inflate.findViewById(2131165479)));
             }
             final Holder holder = (Holder)inflate.getTag();
             final OslInfo item = this.getItem(n);

@@ -21,7 +21,7 @@ public interface e extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnCameraChangeListener");
         }
         
-        public static e W(final IBinder binder) {
+        public static e ah(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -63,14 +63,14 @@ public interface e extends IInterface
         
         private static class a implements e
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
             }
             
             public IBinder asBinder() {
-                return this.dU;
+                return this.kn;
             }
             
             @Override
@@ -86,7 +86,7 @@ public interface e extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.dU.transact(1, obtain, obtain2, 0);
+                    this.kn.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

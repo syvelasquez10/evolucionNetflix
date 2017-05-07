@@ -8,24 +8,23 @@ import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
 import android.os.RemoteException;
-import com.google.android.gms.maps.model.LatLng;
 import android.os.IInterface;
 
 public interface j extends IInterface
 {
-    void onMapLongClick(final LatLng p0) throws RemoteException;
+    void onMapLoaded() throws RemoteException;
     
     public abstract static class a extends Binder implements j
     {
         public a() {
-            this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnMapLongClickListener");
+            this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnMapLoadedCallback");
         }
         
-        public static j ab(final IBinder binder) {
+        public static j am(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.maps.internal.IOnMapLongClickListener");
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.maps.internal.IOnMapLoadedCallback");
             if (queryLocalInterface != null && queryLocalInterface instanceof j) {
                 return (j)queryLocalInterface;
             }
@@ -42,19 +41,12 @@ public interface j extends IInterface
                     return super.onTransact(n, parcel, parcel2, n2);
                 }
                 case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.maps.internal.IOnMapLongClickListener");
+                    parcel2.writeString("com.google.android.gms.maps.internal.IOnMapLoadedCallback");
                     return true;
                 }
                 case 1: {
-                    parcel.enforceInterface("com.google.android.gms.maps.internal.IOnMapLongClickListener");
-                    LatLng fromParcel;
-                    if (parcel.readInt() != 0) {
-                        fromParcel = LatLng.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        fromParcel = null;
-                    }
-                    this.onMapLongClick(fromParcel);
+                    parcel.enforceInterface("com.google.android.gms.maps.internal.IOnMapLoadedCallback");
+                    this.onMapLoaded();
                     parcel2.writeNoException();
                     return true;
                 }
@@ -63,30 +55,23 @@ public interface j extends IInterface
         
         private static class a implements j
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
             }
             
             public IBinder asBinder() {
-                return this.dU;
+                return this.kn;
             }
             
             @Override
-            public void onMapLongClick(final LatLng latLng) throws RemoteException {
+            public void onMapLoaded() throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IOnMapLongClickListener");
-                    if (latLng != null) {
-                        obtain.writeInt(1);
-                        latLng.writeToParcel(obtain, 0);
-                    }
-                    else {
-                        obtain.writeInt(0);
-                    }
-                    this.dU.transact(1, obtain, obtain2, 0);
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IOnMapLoadedCallback");
+                    this.kn.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

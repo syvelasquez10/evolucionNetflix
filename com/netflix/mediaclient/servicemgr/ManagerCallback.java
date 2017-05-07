@@ -22,6 +22,8 @@ public interface ManagerCallback
     
     void onGenresFetched(final List<Genre> p0, final int p1);
     
+    void onKidsCharacterDetailsFetched(final KidsCharacterDetails p0, final Boolean p1, final int p2);
+    
     void onLoLoMoPrefetched(final int p0);
     
     void onLoLoMoSummaryFetched(final LoLoMo p0, final int p1);

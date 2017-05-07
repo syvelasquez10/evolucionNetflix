@@ -5,84 +5,99 @@
 package com.google.android.gms.games;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.fc;
+import com.google.android.gms.internal.gm;
 import android.database.CharArrayBuffer;
-import com.google.android.gms.internal.dv;
-import com.google.android.gms.internal.ee;
+import com.google.android.gms.internal.fe;
+import com.google.android.gms.internal.fo;
 import android.net.Uri;
 import android.os.Parcelable$Creator;
-import com.google.android.gms.internal.fm;
+import com.google.android.gms.games.internal.GamesDowngradeableSafeParcel;
 
-public final class GameEntity extends fm implements Game
+public final class GameEntity extends GamesDowngradeableSafeParcel implements Game
 {
     public static final Parcelable$Creator<GameEntity> CREATOR;
-    private final int kg;
-    private final String kh;
-    private final String qa;
-    private final String sH;
-    private final String sI;
-    private final String sJ;
-    private final String sK;
-    private final Uri sL;
-    private final Uri sM;
-    private final Uri sN;
-    private final boolean sO;
-    private final boolean sP;
-    private final String sQ;
-    private final int sR;
-    private final int sS;
-    private final int sT;
-    private final boolean sU;
-    private final boolean sV;
+    private final String HA;
+    private final String HB;
+    private final String HC;
+    private final String HD;
+    private final String HE;
+    private final Uri HF;
+    private final Uri HG;
+    private final Uri HH;
+    private final boolean HI;
+    private final boolean HJ;
+    private final String HK;
+    private final int HL;
+    private final int HM;
+    private final int HN;
+    private final boolean HO;
+    private final boolean HP;
+    private final String HQ;
+    private final String HR;
+    private final String HS;
+    private final boolean HT;
+    private final boolean HU;
+    private final int xH;
+    private final String xI;
     
     static {
-        CREATOR = (Parcelable$Creator)new a();
+        CREATOR = (Parcelable$Creator)new GameEntityCreatorCompat();
     }
     
-    GameEntity(final int kg, final String kh, final String qa, final String sh, final String si, final String sj, final String sk, final Uri sl, final Uri sm, final Uri sn, final boolean so, final boolean sp, final String sq, final int sr, final int ss, final int st, final boolean su, final boolean sv) {
-        this.kg = kg;
-        this.kh = kh;
-        this.qa = qa;
-        this.sH = sh;
-        this.sI = si;
-        this.sJ = sj;
-        this.sK = sk;
-        this.sL = sl;
-        this.sM = sm;
-        this.sN = sn;
-        this.sO = so;
-        this.sP = sp;
-        this.sQ = sq;
-        this.sR = sr;
-        this.sS = ss;
-        this.sT = st;
-        this.sU = su;
-        this.sV = sv;
+    GameEntity(final int xh, final String xi, final String ha, final String hb, final String hc, final String hd, final String he, final Uri hf, final Uri hg, final Uri hh, final boolean hi, final boolean hj, final String hk, final int hl, final int hm, final int hn, final boolean ho, final boolean hp, final String hq, final String hr, final String hs, final boolean ht, final boolean hu) {
+        this.xH = xh;
+        this.xI = xi;
+        this.HA = ha;
+        this.HB = hb;
+        this.HC = hc;
+        this.HD = hd;
+        this.HE = he;
+        this.HF = hf;
+        this.HQ = hq;
+        this.HG = hg;
+        this.HR = hr;
+        this.HH = hh;
+        this.HS = hs;
+        this.HI = hi;
+        this.HJ = hj;
+        this.HK = hk;
+        this.HL = hl;
+        this.HM = hm;
+        this.HN = hn;
+        this.HO = ho;
+        this.HP = hp;
+        this.HT = ht;
+        this.HU = hu;
     }
     
     public GameEntity(final Game game) {
-        this.kg = 2;
-        this.kh = game.getApplicationId();
-        this.sH = game.getPrimaryCategory();
-        this.sI = game.getSecondaryCategory();
-        this.sJ = game.getDescription();
-        this.sK = game.getDeveloperName();
-        this.qa = game.getDisplayName();
-        this.sL = game.getIconImageUri();
-        this.sM = game.getHiResImageUri();
-        this.sN = game.getFeaturedImageUri();
-        this.sO = game.isPlayEnabledGame();
-        this.sP = game.isInstanceInstalled();
-        this.sQ = game.getInstancePackageName();
-        this.sR = game.getGameplayAclStatus();
-        this.sS = game.getAchievementTotalCount();
-        this.sT = game.getLeaderboardCount();
-        this.sU = game.isRealTimeMultiplayerEnabled();
-        this.sV = game.isTurnBasedMultiplayerEnabled();
+        this.xH = 3;
+        this.xI = game.getApplicationId();
+        this.HB = game.getPrimaryCategory();
+        this.HC = game.getSecondaryCategory();
+        this.HD = game.getDescription();
+        this.HE = game.getDeveloperName();
+        this.HA = game.getDisplayName();
+        this.HF = game.getIconImageUri();
+        this.HQ = game.getIconImageUrl();
+        this.HG = game.getHiResImageUri();
+        this.HR = game.getHiResImageUrl();
+        this.HH = game.getFeaturedImageUri();
+        this.HS = game.getFeaturedImageUrl();
+        this.HI = game.gb();
+        this.HJ = game.gd();
+        this.HK = game.ge();
+        this.HL = game.gf();
+        this.HM = game.getAchievementTotalCount();
+        this.HN = game.getLeaderboardCount();
+        this.HO = game.isRealTimeMultiplayerEnabled();
+        this.HP = game.isTurnBasedMultiplayerEnabled();
+        this.HT = game.isMuted();
+        this.HU = game.gc();
     }
     
     static int a(final Game game) {
-        return ee.hashCode(game.getApplicationId(), game.getDisplayName(), game.getPrimaryCategory(), game.getSecondaryCategory(), game.getDescription(), game.getDeveloperName(), game.getIconImageUri(), game.getHiResImageUri(), game.getFeaturedImageUri(), game.isPlayEnabledGame(), game.isInstanceInstalled(), game.getInstancePackageName(), game.getGameplayAclStatus(), game.getAchievementTotalCount(), game.getLeaderboardCount(), game.isRealTimeMultiplayerEnabled(), game.isTurnBasedMultiplayerEnabled());
+        return fo.hashCode(game.getApplicationId(), game.getDisplayName(), game.getPrimaryCategory(), game.getSecondaryCategory(), game.getDescription(), game.getDeveloperName(), game.getIconImageUri(), game.getHiResImageUri(), game.getFeaturedImageUri(), game.gb(), game.gd(), game.ge(), game.gf(), game.getAchievementTotalCount(), game.getLeaderboardCount(), game.isRealTimeMultiplayerEnabled(), game.isTurnBasedMultiplayerEnabled(), game.isMuted(), game.gc());
     }
     
     static boolean a(final Game game, final Object o) {
@@ -95,9 +110,11 @@ public final class GameEntity extends fm implements Game
             b2 = b;
             if (game != o) {
                 final Game game2 = (Game)o;
-                if (ee.equal(game2.getApplicationId(), game.getApplicationId()) && ee.equal(game2.getDisplayName(), game.getDisplayName()) && ee.equal(game2.getPrimaryCategory(), game.getPrimaryCategory()) && ee.equal(game2.getSecondaryCategory(), game.getSecondaryCategory()) && ee.equal(game2.getDescription(), game.getDescription()) && ee.equal(game2.getDeveloperName(), game.getDeveloperName()) && ee.equal(game2.getIconImageUri(), game.getIconImageUri()) && ee.equal(game2.getHiResImageUri(), game.getHiResImageUri()) && ee.equal(game2.getFeaturedImageUri(), game.getFeaturedImageUri()) && ee.equal(game2.isPlayEnabledGame(), game.isPlayEnabledGame()) && ee.equal(game2.isInstanceInstalled(), game.isInstanceInstalled()) && ee.equal(game2.getInstancePackageName(), game.getInstancePackageName()) && ee.equal(game2.getGameplayAclStatus(), game.getGameplayAclStatus()) && ee.equal(game2.getAchievementTotalCount(), game.getAchievementTotalCount()) && ee.equal(game2.getLeaderboardCount(), game.getLeaderboardCount()) && ee.equal(game2.isRealTimeMultiplayerEnabled(), game.isRealTimeMultiplayerEnabled())) {
+                if (fo.equal(game2.getApplicationId(), game.getApplicationId()) && fo.equal(game2.getDisplayName(), game.getDisplayName()) && fo.equal(game2.getPrimaryCategory(), game.getPrimaryCategory()) && fo.equal(game2.getSecondaryCategory(), game.getSecondaryCategory()) && fo.equal(game2.getDescription(), game.getDescription()) && fo.equal(game2.getDeveloperName(), game.getDeveloperName()) && fo.equal(game2.getIconImageUri(), game.getIconImageUri()) && fo.equal(game2.getHiResImageUri(), game.getHiResImageUri()) && fo.equal(game2.getFeaturedImageUri(), game.getFeaturedImageUri()) && fo.equal(game2.gb(), game.gb()) && fo.equal(game2.gd(), game.gd()) && fo.equal(game2.ge(), game.ge()) && fo.equal(game2.gf(), game.gf()) && fo.equal(game2.getAchievementTotalCount(), game.getAchievementTotalCount()) && fo.equal(game2.getLeaderboardCount(), game.getLeaderboardCount()) && fo.equal(game2.isRealTimeMultiplayerEnabled(), game.isRealTimeMultiplayerEnabled())) {
+                    final boolean turnBasedMultiplayerEnabled = game2.isTurnBasedMultiplayerEnabled();
+                    final boolean b3 = game.isTurnBasedMultiplayerEnabled() && fo.equal(game2.isMuted(), game.isMuted()) && fo.equal(game2.gc(), game.gc());
                     b2 = b;
-                    if (ee.equal(game2.isTurnBasedMultiplayerEnabled(), game.isTurnBasedMultiplayerEnabled())) {
+                    if (fo.equal(turnBasedMultiplayerEnabled, b3)) {
                         return b2;
                     }
                 }
@@ -108,7 +125,7 @@ public final class GameEntity extends fm implements Game
     }
     
     static String b(final Game game) {
-        return ee.e(game).a("ApplicationId", game.getApplicationId()).a("DisplayName", game.getDisplayName()).a("PrimaryCategory", game.getPrimaryCategory()).a("SecondaryCategory", game.getSecondaryCategory()).a("Description", game.getDescription()).a("DeveloperName", game.getDeveloperName()).a("IconImageUri", game.getIconImageUri()).a("HiResImageUri", game.getHiResImageUri()).a("FeaturedImageUri", game.getFeaturedImageUri()).a("PlayEnabledGame", game.isPlayEnabledGame()).a("InstanceInstalled", game.isInstanceInstalled()).a("InstancePackageName", game.getInstancePackageName()).a("GameplayAclStatus", game.getGameplayAclStatus()).a("AchievementTotalCount", game.getAchievementTotalCount()).a("LeaderboardCount", game.getLeaderboardCount()).a("RealTimeMultiplayerEnabled", game.isRealTimeMultiplayerEnabled()).a("TurnBasedMultiplayerEnabled", game.isTurnBasedMultiplayerEnabled()).toString();
+        return fo.e(game).a("ApplicationId", game.getApplicationId()).a("DisplayName", game.getDisplayName()).a("PrimaryCategory", game.getPrimaryCategory()).a("SecondaryCategory", game.getSecondaryCategory()).a("Description", game.getDescription()).a("DeveloperName", game.getDeveloperName()).a("IconImageUri", game.getIconImageUri()).a("IconImageUrl", game.getIconImageUrl()).a("HiResImageUri", game.getHiResImageUri()).a("HiResImageUrl", game.getHiResImageUrl()).a("FeaturedImageUri", game.getFeaturedImageUri()).a("FeaturedImageUrl", game.getFeaturedImageUrl()).a("PlayEnabledGame", game.gb()).a("InstanceInstalled", game.gd()).a("InstancePackageName", game.ge()).a("AchievementTotalCount", game.getAchievementTotalCount()).a("LeaderboardCount", game.getLeaderboardCount()).a("RealTimeMultiplayerEnabled", game.isRealTimeMultiplayerEnabled()).a("TurnBasedMultiplayerEnabled", game.isTurnBasedMultiplayerEnabled()).toString();
     }
     
     public int describeContents() {
@@ -125,87 +142,117 @@ public final class GameEntity extends fm implements Game
     }
     
     @Override
+    public boolean gb() {
+        return this.HI;
+    }
+    
+    @Override
+    public boolean gc() {
+        return this.HU;
+    }
+    
+    @Override
+    public boolean gd() {
+        return this.HJ;
+    }
+    
+    @Override
+    public String ge() {
+        return this.HK;
+    }
+    
+    @Override
     public int getAchievementTotalCount() {
-        return this.sS;
+        return this.HM;
     }
     
     @Override
     public String getApplicationId() {
-        return this.kh;
+        return this.xI;
     }
     
     @Override
     public String getDescription() {
-        return this.sJ;
+        return this.HD;
     }
     
     @Override
     public void getDescription(final CharArrayBuffer charArrayBuffer) {
-        fc.b(this.sJ, charArrayBuffer);
+        gm.b(this.HD, charArrayBuffer);
     }
     
     @Override
     public String getDeveloperName() {
-        return this.sK;
+        return this.HE;
     }
     
     @Override
     public void getDeveloperName(final CharArrayBuffer charArrayBuffer) {
-        fc.b(this.sK, charArrayBuffer);
+        gm.b(this.HE, charArrayBuffer);
     }
     
     @Override
     public String getDisplayName() {
-        return this.qa;
+        return this.HA;
     }
     
     @Override
     public void getDisplayName(final CharArrayBuffer charArrayBuffer) {
-        fc.b(this.qa, charArrayBuffer);
+        gm.b(this.HA, charArrayBuffer);
     }
     
     @Override
     public Uri getFeaturedImageUri() {
-        return this.sN;
+        return this.HH;
     }
     
     @Override
-    public int getGameplayAclStatus() {
-        return this.sR;
+    public String getFeaturedImageUrl() {
+        return this.HS;
     }
     
     @Override
     public Uri getHiResImageUri() {
-        return this.sM;
+        return this.HG;
+    }
+    
+    @Override
+    public String getHiResImageUrl() {
+        return this.HR;
     }
     
     @Override
     public Uri getIconImageUri() {
-        return this.sL;
+        return this.HF;
     }
     
     @Override
-    public String getInstancePackageName() {
-        return this.sQ;
+    public String getIconImageUrl() {
+        return this.HQ;
     }
     
     @Override
     public int getLeaderboardCount() {
-        return this.sT;
+        return this.HN;
     }
     
     @Override
     public String getPrimaryCategory() {
-        return this.sH;
+        return this.HB;
     }
     
     @Override
     public String getSecondaryCategory() {
-        return this.sI;
+        return this.HC;
     }
     
     public int getVersionCode() {
-        return this.kg;
+        return this.xH;
+    }
+    
+    @Override
+    public int gf() {
+        return this.HL;
     }
     
     @Override
@@ -218,23 +265,18 @@ public final class GameEntity extends fm implements Game
     }
     
     @Override
-    public boolean isInstanceInstalled() {
-        return this.sP;
-    }
-    
-    @Override
-    public boolean isPlayEnabledGame() {
-        return this.sO;
+    public boolean isMuted() {
+        return this.HT;
     }
     
     @Override
     public boolean isRealTimeMultiplayerEnabled() {
-        return this.sU;
+        return this.HO;
     }
     
     @Override
     public boolean isTurnBasedMultiplayerEnabled() {
-        return this.sV;
+        return this.HP;
     }
     
     @Override
@@ -245,66 +287,66 @@ public final class GameEntity extends fm implements Game
     public void writeToParcel(final Parcel parcel, int n) {
         final int n2 = 1;
         final String s = null;
-        if (!this.bN()) {
-            com.google.android.gms.games.a.a(this, parcel, n);
+        if (!this.eK()) {
+            GameEntityCreator.a(this, parcel, n);
             return;
         }
-        parcel.writeString(this.kh);
-        parcel.writeString(this.qa);
-        parcel.writeString(this.sH);
-        parcel.writeString(this.sI);
-        parcel.writeString(this.sJ);
-        parcel.writeString(this.sK);
+        parcel.writeString(this.xI);
+        parcel.writeString(this.HA);
+        parcel.writeString(this.HB);
+        parcel.writeString(this.HC);
+        parcel.writeString(this.HD);
+        parcel.writeString(this.HE);
         String string;
-        if (this.sL == null) {
+        if (this.HF == null) {
             string = null;
         }
         else {
-            string = this.sL.toString();
+            string = this.HF.toString();
         }
         parcel.writeString(string);
         String string2;
-        if (this.sM == null) {
+        if (this.HG == null) {
             string2 = null;
         }
         else {
-            string2 = this.sM.toString();
+            string2 = this.HG.toString();
         }
         parcel.writeString(string2);
         String string3;
-        if (this.sN == null) {
+        if (this.HH == null) {
             string3 = s;
         }
         else {
-            string3 = this.sN.toString();
+            string3 = this.HH.toString();
         }
         parcel.writeString(string3);
-        if (this.sO) {
+        if (this.HI) {
             n = 1;
         }
         else {
             n = 0;
         }
         parcel.writeInt(n);
-        if (this.sP) {
+        if (this.HJ) {
             n = n2;
         }
         else {
             n = 0;
         }
         parcel.writeInt(n);
-        parcel.writeString(this.sQ);
-        parcel.writeInt(this.sR);
-        parcel.writeInt(this.sS);
-        parcel.writeInt(this.sT);
+        parcel.writeString(this.HK);
+        parcel.writeInt(this.HL);
+        parcel.writeInt(this.HM);
+        parcel.writeInt(this.HN);
     }
     
-    static final class a extends com.google.android.gms.games.a
+    static final class GameEntityCreatorCompat extends GameEntityCreator
     {
         @Override
-        public GameEntity Y(final Parcel parcel) {
-            if (fm.c(dv.bM()) || dv.P(GameEntity.class.getCanonicalName())) {
-                return super.Y(parcel);
+        public GameEntity an(final Parcel parcel) {
+            if (GamesDowngradeableSafeParcel.c(fe.eJ()) || fe.al(GameEntity.class.getCanonicalName())) {
+                return super.an(parcel);
             }
             final String string = parcel.readString();
             final String string2 = parcel.readString();
@@ -336,7 +378,7 @@ public final class GameEntity extends fm implements Game
             else {
                 parse3 = Uri.parse(string9);
             }
-            return new GameEntity(2, string, string2, string3, string4, string5, string6, parse, parse2, parse3, parcel.readInt() > 0, parcel.readInt() > 0, parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt(), false, false);
+            return new GameEntity(3, string, string2, string3, string4, string5, string6, parse, parse2, parse3, parcel.readInt() > 0, parcel.readInt() > 0, parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt(), false, false, null, null, null, false, false);
         }
     }
 }

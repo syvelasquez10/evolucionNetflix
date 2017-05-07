@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 import android.view.TouchDelegate;
 import android.graphics.Rect;
 import com.netflix.mediaclient.Log;
-import android.app.ActionBar;
 import android.widget.TextView;
+import android.app.ActionBar;
 import android.widget.ImageView;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.View;
@@ -30,10 +30,11 @@ public class NetflixActionBar
     private final ViewTreeObserver$OnGlobalLayoutListener globalLayoutListener;
     private View homeView;
     private final ImageView logo;
-    private final AccessibilityRunnable runnable;
+    private final ActionBar systemActionBar;
     private final TextView title;
+    private final AccessibilityRunnable upRunnable;
     
-    public NetflixActionBar(final Activity activity, final ActionBar actionBar, final AccessibilityRunnable runnable) {
+    public NetflixActionBar(final Activity activity, final ActionBar systemActionBar, final AccessibilityRunnable upRunnable) {
         this.globalLayoutListener = (ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
             private void applyUpButtonTouchDelegate() {
                 final View homeView = this.getHomeView((View)NetflixActionBar.this.content.getParent());
@@ -84,26 +85,29 @@ public class NetflixActionBar
                 this.applyUpButtonTouchDelegate();
             }
         };
-        if (actionBar == null) {
+        if (systemActionBar == null) {
             throw new InvalidParameterException("ActionBar is null");
         }
         this.activity = activity;
-        this.runnable = runnable;
-        actionBar.setCustomView(this.getLayoutId());
-        actionBar.setDisplayHomeAsUpEnabled(runnable != null);
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setDisplayUseLogoEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(2131165219);
-        actionBar.setTitle((CharSequence)"");
-        this.content = actionBar.getCustomView();
-        this.logo = (ImageView)this.content.findViewById(2131230798);
-        this.title = (TextView)this.content.findViewById(2131230799);
+        this.systemActionBar = systemActionBar;
+        this.upRunnable = upRunnable;
+        systemActionBar.setCustomView(this.getLayoutId());
+        systemActionBar.setDisplayHomeAsUpEnabled(upRunnable != null);
+        systemActionBar.setDisplayShowCustomEnabled(true);
+        systemActionBar.setDisplayShowHomeEnabled(true);
+        systemActionBar.setDisplayShowTitleEnabled(true);
+        systemActionBar.setDisplayUseLogoEnabled(true);
+        systemActionBar.setHomeButtonEnabled(true);
+        systemActionBar.setBackgroundDrawable(activity.getResources().getDrawable(2130837596));
+        systemActionBar.setLogo(2131296304);
+        systemActionBar.setTitle((CharSequence)"");
+        this.content = systemActionBar.getCustomView();
+        this.logo = (ImageView)this.content.findViewById(2131165277);
+        this.title = (TextView)this.content.findViewById(2131165278);
         this.fixBackgroundRepeat(this.content);
         this.setupFocusability();
-        if (runnable != null) {
+        this.setLogoType(LogoType.FULL_SIZE);
+        if (upRunnable != null) {
             this.content.getViewTreeObserver().addOnGlobalLayoutListener(this.globalLayoutListener);
         }
     }
@@ -116,9 +120,9 @@ public class NetflixActionBar
     }
     
     private boolean performUpAction() {
-        if (this.runnable != null) {
+        if (this.upRunnable != null) {
             Log.v("NetflixActionBar", "perform up action");
-            this.activity.runOnUiThread((Runnable)this.runnable);
+            this.activity.runOnUiThread((Runnable)this.upRunnable);
             return true;
         }
         return false;
@@ -144,16 +148,16 @@ public class NetflixActionBar
         return this.content;
     }
     
+    protected int getFullSizeLogoId() {
+        return 2130837504;
+    }
+    
     public View getHomeView() {
         return this.homeView;
     }
     
     protected int getLayoutId() {
-        return 2130903064;
-    }
-    
-    protected View getLogo() {
-        return (View)this.logo;
+        return 2130903063;
     }
     
     public boolean handleHomeButtonSelected(final MenuItem menuItem) {
@@ -165,9 +169,25 @@ public class NetflixActionBar
         this.content.setVisibility(8);
     }
     
-    public void setLogo(final int imageResource) {
-        Log.v("NetflixActionBar", "set logo: " + imageResource);
-        this.logo.setImageResource(imageResource);
+    public void setBackgroundResource(final int n) {
+        this.systemActionBar.setBackgroundDrawable(this.activity.getResources().getDrawable(n));
+    }
+    
+    public void setLogoType(final LogoType logoType) {
+        if (this.logo == null) {
+            return;
+        }
+        if (logoType == LogoType.GONE) {
+            this.logo.setVisibility(8);
+            return;
+        }
+        int fullSizeLogoId = -1;
+        if (logoType == LogoType.FULL_SIZE) {
+            fullSizeLogoId = this.getFullSizeLogoId();
+        }
+        Log.v("NetflixActionBar", "set logo: " + fullSizeLogoId);
+        this.logo.setImageResource(fullSizeLogoId);
+        this.logo.setVisibility(0);
     }
     
     public void setTitle(final String text) {
@@ -177,5 +197,11 @@ public class NetflixActionBar
     
     public void show() {
         this.content.setVisibility(0);
+    }
+    
+    public enum LogoType
+    {
+        FULL_SIZE, 
+        GONE;
     }
 }

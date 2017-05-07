@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.PostPlayVideo;
 import com.netflix.mediaclient.servicemgr.MovieDetails;
 import com.netflix.mediaclient.servicemgr.LoMo;
 import com.netflix.mediaclient.servicemgr.LoLoMo;
+import com.netflix.mediaclient.servicemgr.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.Genre;
 import com.netflix.mediaclient.servicemgr.GenreList;
 import com.netflix.mediaclient.servicemgr.EpisodeDetails;
@@ -89,6 +90,12 @@ public class BrowseAgentCallbackWrapper implements BrowseAgentCallback
     public void onIQListRefresh(final int n) {
         this.handleResultTiming("onIQListRefresh");
         this.callback.onIQListRefresh(this.wrapStatus(n));
+    }
+    
+    @Override
+    public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final int n) {
+        this.handleResultTiming("onKidsCharacterDetailsFetched");
+        this.callback.onKidsCharacterDetailsFetched(kidsCharacterDetails, b, this.wrapStatus(n));
     }
     
     @Override

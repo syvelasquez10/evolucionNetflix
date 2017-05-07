@@ -16,52 +16,52 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class ApplicationMetadata implements SafeParcelable
 {
     public static final Parcelable$Creator<ApplicationMetadata> CREATOR;
-    private final int kg;
-    String kh;
-    List<WebImage> ki;
-    List<String> kj;
-    String kk;
-    Uri kl;
     String mName;
+    private final int xH;
+    String xI;
+    List<WebImage> xJ;
+    List<String> xK;
+    String xL;
+    Uri xM;
     
     static {
         CREATOR = (Parcelable$Creator)new a();
     }
     
     private ApplicationMetadata() {
-        this.kg = 1;
-        this.ki = new ArrayList<WebImage>();
-        this.kj = new ArrayList<String>();
+        this.xH = 1;
+        this.xJ = new ArrayList<WebImage>();
+        this.xK = new ArrayList<String>();
     }
     
-    ApplicationMetadata(final int kg, final String kh, final String mName, final List<WebImage> ki, final List<String> kj, final String kk, final Uri kl) {
-        this.kg = kg;
-        this.kh = kh;
+    ApplicationMetadata(final int xh, final String xi, final String mName, final List<WebImage> xj, final List<String> xk, final String xl, final Uri xm) {
+        this.xH = xh;
+        this.xI = xi;
         this.mName = mName;
-        this.ki = ki;
-        this.kj = kj;
-        this.kk = kk;
-        this.kl = kl;
-    }
-    
-    public Uri aN() {
-        return this.kl;
+        this.xJ = xj;
+        this.xK = xk;
+        this.xL = xl;
+        this.xM = xm;
     }
     
     public boolean areNamespacesSupported(final List<String> list) {
-        return this.kj != null && this.kj.containsAll(list);
+        return this.xK != null && this.xK.containsAll(list);
     }
     
     public int describeContents() {
         return 0;
     }
     
+    public Uri dz() {
+        return this.xM;
+    }
+    
     public String getApplicationId() {
-        return this.kh;
+        return this.xI;
     }
     
     public List<WebImage> getImages() {
-        return this.ki;
+        return this.xJ;
     }
     
     public String getName() {
@@ -69,15 +69,15 @@ public final class ApplicationMetadata implements SafeParcelable
     }
     
     public String getSenderAppIdentifier() {
-        return this.kk;
+        return this.xL;
     }
     
     int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public boolean isNamespaceSupported(final String s) {
-        return this.kj != null && this.kj.contains(s);
+        return this.xK != null && this.xK.contains(s);
     }
     
     @Override

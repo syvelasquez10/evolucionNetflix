@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.player;
 
 import com.netflix.mediaclient.event.nrdp.media.UpdatePts;
 import com.netflix.mediaclient.event.UIEvent;
+import android.view.SurfaceHolder;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.media.Subtitle;
 import java.nio.ByteBuffer;
@@ -48,7 +49,6 @@ import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import android.content.BroadcastReceiver;
 import android.os.PowerManager$WakeLock;
 import java.util.Timer;
-import android.view.SurfaceHolder;
 import android.view.Surface;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
@@ -122,7 +122,6 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private SubtitleConfiguration mSubtitleConfiguration;
     private SubtitleParser mSubtitles;
     private Surface mSurface;
-    private SurfaceHolder mSurfaceHolder;
     private Timer mTimer;
     private final PowerManager$WakeLock mWakeLock;
     private boolean muted;
@@ -139,7 +138,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private boolean seeking;
     private boolean splashScreenRemoved;
     private boolean toCancelOpen;
-    private boolean toOpenAfterClose;
+    private volatile boolean toOpenAfterClose;
     private boolean toPlayAfterStop;
     private boolean validPtsRecieved;
     private final UserAgentWebCallback webClientCallback;
@@ -418,9 +417,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private void handleBufferingComplete() {
         Log.d(PlayerAgent.TAG, "BUFFERING COMPLETE 100");
         this.mBufferingCompleted = true;
-        if (this.mPlayerType != PlayerType.device9) {
-            this.handlePlayback();
-        }
+        this.handlePlayback();
     }
     
     private void handleBufferring(final Buffering buffering) {
@@ -816,11 +813,6 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     
     private void handleUnderflow() {
         Log.w(PlayerAgent.TAG, "MEDIA_PLAYBACK_STALLED 7");
-        if (this.mPlayerType == PlayerType.device9) {
-            this.prevEndPosition = this.getCurrentPositionMs();
-            this.seekedToPosition = this.prevEndPosition;
-            this.mInPlayback = false;
-        }
         this.mBufferingCompleted = false;
         final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
         while (iterator.hasNext()) {
@@ -836,24 +828,8 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     }
     
     private void handleUpdatePts(final int n) {
-        if (this.mPlayerType == PlayerType.device9) {
-            int n2;
-            if (this.seekedToPosition > 1000) {
-                n2 = this.seekedToPosition - 1000;
-            }
-            else {
-                n2 = 0;
-            }
-            if (this.mBufferingCompleted && n > n2 && !this.mInPlayback && (this.prevEndPosition <= this.seekedToPosition || n < this.prevEndPosition)) {
-                this.handlePlayback();
-                this.mInPlayback = true;
-                this.inPlaybackSession = true;
-            }
-        }
-        else {
-            this.mInPlayback = true;
-            this.inPlaybackSession = true;
-        }
+        this.mInPlayback = true;
+        this.inPlaybackSession = true;
         if (!this.splashScreenRemoved) {
             this.muteAudio(false);
             this.splashScreenRemoved = true;
@@ -899,7 +875,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     
     private void muteAudio(final boolean muted) {
         synchronized (this) {
-            if (muted != this.muted) {
+            if (muted != this.muted && this.getContext() != null) {
                 final AudioManager audioManager = (AudioManager)this.getContext().getSystemService("audio");
                 if (audioManager != null) {
                     audioManager.setStreamMute(3, muted);
@@ -988,11 +964,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
             this.mHelper.prepareJPlayer(this.mMedia, this.mSurface, this.mJPlayerListener, this.isPropertyStreamingVideoDrs(), this.getConfigurationAgent().getJPlayerConfig());
             return;
         }
-        if (playerType != PlayerType.device9) {
-            this.mHelper.prepare(this.mMedia, this.mSurface, this.getContext());
-            return;
-        }
-        this.mHelper.prepare(this.mMedia, this.mSurfaceHolder, this.getContext());
+        this.mHelper.prepare(this.mMedia, this.mSurface, this.getContext());
     }
     
     private void registerReceivers() {
@@ -1202,7 +1174,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         this.toCancelOpen = false;
         if (this.mPlayerType == null) {
             Log.e(PlayerAgent.TAG, "This should not happen, player type was null at this point! Use default.");
-            this.mPlayerType = PlayerType.device6;
+            this.mPlayerType = PlayerTypeFactory.findDefaultPlayerType();
         }
         else if (Log.isLoggable(PlayerAgent.TAG, 3)) {
             Log.d(PlayerAgent.TAG, "Player type is " + this.mPlayerType.getDescription());
@@ -1447,7 +1419,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         //   133: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
         //   136: pop            
         //   137: aload_0        
-        //   138: getstatic       com/netflix/mediaclient/media/PlayerType.device6:Lcom/netflix/mediaclient/media/PlayerType;
+        //   138: invokestatic    com/netflix/mediaclient/service/configuration/PlayerTypeFactory.findDefaultPlayerType:()Lcom/netflix/mediaclient/media/PlayerType;
         //   141: putfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
         //   144: aload_0        
         //   145: aload_0        
@@ -1603,9 +1575,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     }
     
     @Override
-    public void setSurfaceHolder(final SurfaceHolder mSurfaceHolder) {
-        Log.d(PlayerAgent.TAG, "Surface Holder is being set");
-        this.mSurfaceHolder = mSurfaceHolder;
+    public void setSurfaceHolder(final SurfaceHolder surfaceHolder) {
     }
     
     public void setVOapi(final long n, final long n2) {

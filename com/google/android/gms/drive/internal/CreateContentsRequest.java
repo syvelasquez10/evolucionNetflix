@@ -11,18 +11,18 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class CreateContentsRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<CreateContentsRequest> CREATOR;
-    final int kg;
+    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new c();
+        CREATOR = (Parcelable$Creator)new f();
     }
     
     public CreateContentsRequest() {
         this(1);
     }
     
-    CreateContentsRequest(final int kg) {
-        this.kg = kg;
+    CreateContentsRequest(final int xh) {
+        this.xH = xh;
     }
     
     public int describeContents() {
@@ -30,6 +30,6 @@ public class CreateContentsRequest implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        c.a(this, parcel, n);
+        f.a(this, parcel, n);
     }
 }

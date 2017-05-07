@@ -67,6 +67,11 @@ class TitlePlayable implements Playable
     }
     
     @Override
+    public String getHorzDispUrl() {
+        return null;
+    }
+    
+    @Override
     public String getId() {
         return this.mPlayableId;
     }
@@ -114,6 +119,11 @@ class TitlePlayable implements Playable
     @Override
     public String getTitle() {
         return this.mTitle;
+    }
+    
+    @Override
+    public String getTvCardUrl() {
+        return null;
     }
     
     @Override

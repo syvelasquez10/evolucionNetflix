@@ -5,112 +5,118 @@
 package com.google.android.gms.internal;
 
 import android.os.Parcel;
-import java.util.Arrays;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import android.os.IBinder;
+import android.os.Binder;
+import android.os.RemoteException;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.IInterface;
 
-public class hu implements SafeParcelable
+public interface hu extends IInterface
 {
-    public static final hw CREATOR;
-    private final String[] DR;
-    private final String[] DS;
-    private final String[] DT;
-    private final String DU;
-    private final String DV;
-    private final String DW;
-    private final String DX;
-    private final String jG;
-    private final int kg;
+    void a(final int p0, final Bundle p1, final int p2, final Intent p3) throws RemoteException;
     
-    static {
-        CREATOR = new hw();
-    }
-    
-    hu(final int kg, final String jg, final String[] dr, final String[] ds, final String[] dt, final String du, final String dv, final String dw, final String dx) {
-        this.kg = kg;
-        this.jG = jg;
-        this.DR = dr;
-        this.DS = ds;
-        this.DT = dt;
-        this.DU = du;
-        this.DV = dv;
-        this.DW = dw;
-        this.DX = dx;
-    }
-    
-    public hu(final String jg, final String[] dr, final String[] ds, final String[] dt, final String du, final String dv, final String dw) {
-        this.kg = 1;
-        this.jG = jg;
-        this.DR = dr;
-        this.DS = ds;
-        this.DT = dt;
-        this.DU = du;
-        this.DV = dv;
-        this.DW = dw;
-        this.DX = null;
-    }
-    
-    public int describeContents() {
-        return 0;
-    }
-    
-    public String[] eR() {
-        return this.DR;
-    }
-    
-    public String[] eS() {
-        return this.DS;
-    }
-    
-    public String[] eT() {
-        return this.DT;
-    }
-    
-    public String eU() {
-        return this.DU;
-    }
-    
-    public String eV() {
-        return this.DV;
-    }
-    
-    public String eW() {
-        return this.DW;
-    }
-    
-    public String eX() {
-        return this.DX;
-    }
-    
-    @Override
-    public boolean equals(final Object o) {
-        if (o instanceof hu) {
-            final hu hu = (hu)o;
-            if (this.kg == hu.kg && ee.equal(this.jG, hu.jG) && Arrays.equals(this.DR, hu.DR) && Arrays.equals(this.DS, hu.DS) && Arrays.equals(this.DT, hu.DT) && ee.equal(this.DU, hu.DU) && ee.equal(this.DV, hu.DV) && ee.equal(this.DW, hu.DW) && ee.equal(this.DX, hu.DX)) {
-                return true;
+    public abstract static class a extends Binder implements hu
+    {
+        public a() {
+            this.attachInterface((IInterface)this, "com.google.android.gms.panorama.internal.IPanoramaCallbacks");
+        }
+        
+        public static hu aL(final IBinder binder) {
+            if (binder == null) {
+                return null;
+            }
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.panorama.internal.IPanoramaCallbacks");
+            if (queryLocalInterface != null && queryLocalInterface instanceof hu) {
+                return (hu)queryLocalInterface;
+            }
+            return new hu.a.a(binder);
+        }
+        
+        public IBinder asBinder() {
+            return (IBinder)this;
+        }
+        
+        public boolean onTransact(int int1, final Parcel parcel, final Parcel parcel2, int int2) throws RemoteException {
+            switch (int1) {
+                default: {
+                    return super.onTransact(int1, parcel, parcel2, int2);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.panorama.internal.IPanoramaCallbacks");
+                    return true;
+                }
+                case 1: {
+                    parcel.enforceInterface("com.google.android.gms.panorama.internal.IPanoramaCallbacks");
+                    int1 = parcel.readInt();
+                    Bundle bundle;
+                    if (parcel.readInt() != 0) {
+                        bundle = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
+                    }
+                    else {
+                        bundle = null;
+                    }
+                    int2 = parcel.readInt();
+                    Intent intent;
+                    if (parcel.readInt() != 0) {
+                        intent = (Intent)Intent.CREATOR.createFromParcel(parcel);
+                    }
+                    else {
+                        intent = null;
+                    }
+                    this.a(int1, bundle, int2, intent);
+                    parcel2.writeNoException();
+                    return true;
+                }
             }
         }
-        return false;
-    }
-    
-    public String getAccountName() {
-        return this.jG;
-    }
-    
-    public int getVersionCode() {
-        return this.kg;
-    }
-    
-    @Override
-    public int hashCode() {
-        return ee.hashCode(this.kg, this.jG, this.DR, this.DS, this.DT, this.DU, this.DV, this.DW, this.DX);
-    }
-    
-    @Override
-    public String toString() {
-        return ee.e(this).a("versionCode", this.kg).a("accountName", this.jG).a("requestedScopes", this.DR).a("visibleActivities", this.DS).a("requiredFeatures", this.DT).a("packageNameForAuth", this.DU).a("callingPackageName", this.DV).a("applicationName", this.DW).toString();
-    }
-    
-    public void writeToParcel(final Parcel parcel, final int n) {
-        hw.a(this, parcel, n);
+        
+        private static class a implements hu
+        {
+            private IBinder kn;
+            
+            a(final IBinder kn) {
+                this.kn = kn;
+            }
+            
+            @Override
+            public void a(final int n, final Bundle bundle, final int n2, final Intent intent) throws RemoteException {
+                while (true) {
+                    final Parcel obtain = Parcel.obtain();
+                    final Parcel obtain2 = Parcel.obtain();
+                    while (true) {
+                        try {
+                            obtain.writeInterfaceToken("com.google.android.gms.panorama.internal.IPanoramaCallbacks");
+                            obtain.writeInt(n);
+                            if (bundle != null) {
+                                obtain.writeInt(1);
+                                bundle.writeToParcel(obtain, 0);
+                            }
+                            else {
+                                obtain.writeInt(0);
+                            }
+                            obtain.writeInt(n2);
+                            if (intent != null) {
+                                obtain.writeInt(1);
+                                intent.writeToParcel(obtain, 0);
+                                this.kn.transact(1, obtain, obtain2, 0);
+                                obtain2.readException();
+                                return;
+                            }
+                        }
+                        finally {
+                            obtain2.recycle();
+                            obtain.recycle();
+                        }
+                        obtain.writeInt(0);
+                        continue;
+                    }
+                }
+            }
+            
+            public IBinder asBinder() {
+                return this.kn;
+            }
+        }
     }
 }

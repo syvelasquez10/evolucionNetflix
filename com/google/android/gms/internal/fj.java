@@ -4,34 +4,41 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.data.DataHolder;
-import java.util.Collection;
-import java.util.Arrays;
-import com.google.android.gms.drive.DriveId;
-import com.google.android.gms.drive.metadata.internal.f;
+import android.util.Log;
 
-public class fj extends f<DriveId>
+public final class fj
 {
-    public static final fj rN;
+    private final String DH;
     
-    static {
-        rN = new fj();
+    public fj(final String s) {
+        this.DH = fq.f(s);
     }
     
-    private fj() {
-        super("driveId", Arrays.asList("sqlId", "resourceId"));
+    public boolean P(final int n) {
+        return Log.isLoggable(this.DH, n);
     }
     
-    protected DriveId g(final DataHolder dataHolder, final int n, final int n2) {
-        final long long1 = dataHolder.getMetadata().getLong("dbInstanceId");
-        String string;
-        final String s = string = dataHolder.getString("resourceId", n, n2);
-        if (s != null) {
-            string = s;
-            if (s.startsWith("generated-android-")) {
-                string = null;
-            }
+    public void a(final String s, final String s2, final Throwable t) {
+        if (this.P(6)) {
+            Log.e(s, s2, t);
         }
-        return new DriveId(string, Long.valueOf(dataHolder.getLong("sqlId", n, n2)), long1);
+    }
+    
+    public void f(final String s, final String s2) {
+        if (this.P(2)) {
+            Log.v(s, s2);
+        }
+    }
+    
+    public void g(final String s, final String s2) {
+        if (this.P(5)) {
+            Log.w(s, s2);
+        }
+    }
+    
+    public void h(final String s, final String s2) {
+        if (this.P(6)) {
+            Log.e(s, s2);
+        }
     }
 }

@@ -12,6 +12,7 @@ import com.google.gson.JsonElement;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.service.webclient.model.BillboardDetails;
 import com.netflix.mediaclient.service.browse.BrowseVideoSentinels;
+import com.netflix.mediaclient.util.StringUtils;
 import java.util.ArrayList;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.servicemgr.LoMoType;
@@ -56,46 +57,61 @@ public class FetchVideosRequest extends FalcorVolleyWebClientRequest<List<Video>
         n2 = n4;
         while (i >= n) {
             final String string = Integer.toString(i);
+            int n6;
             int n7;
             int n8;
-            int n9;
             if (jsonObject.has(string)) {
                 final boolean b2 = true;
                 final Video summaryByLomoType = getSummaryByLomoType(loMoType, jsonObject.getAsJsonObject(string));
                 list.add(0, (com.netflix.mediaclient.service.webclient.model.branches.Video.Summary)summaryByLomoType);
-                final int n6 = n3 + 1;
-                n7 = (b2 ? 1 : 0);
-                n8 = n6;
-                n9 = n2;
-                if (summaryByLomoType.getBoxshotURL().contains(".webp")) {
-                    n9 = n2 + 1;
-                    n8 = n6;
-                    n7 = (b2 ? 1 : 0);
+                n6 = (b2 ? 1 : 0);
+                n7 = n3;
+                n8 = n2;
+                if (Log.isLoggable("nf_service_browse_fetchvideosrequest", 2)) {
+                    final int n9 = n3 + 1;
+                    n6 = (b2 ? 1 : 0);
+                    n7 = n9;
+                    n8 = n2;
+                    if (summaryByLomoType != null) {
+                        n6 = (b2 ? 1 : 0);
+                        n7 = n9;
+                        n8 = n2;
+                        if (StringUtils.isNotEmpty(summaryByLomoType.getBoxshotURL())) {
+                            n6 = (b2 ? 1 : 0);
+                            n7 = n9;
+                            n8 = n2;
+                            if (summaryByLomoType.getBoxshotURL().contains(".webp")) {
+                                n8 = n2 + 1;
+                                n7 = n9;
+                                n6 = (b2 ? 1 : 0);
+                            }
+                        }
+                    }
                 }
             }
             else {
-                n7 = n5;
-                n8 = n3;
-                n9 = n2;
+                n6 = n5;
+                n7 = n3;
+                n8 = n2;
                 if (n5 != 0) {
-                    n7 = n5;
-                    n8 = n3;
-                    n9 = n2;
+                    n6 = n5;
+                    n7 = n3;
+                    n8 = n2;
                     if (b) {
                         Log.d("nf_service_browse_fetchvideosrequest", String.format("Adding sentinel at index %s", string));
                         list.add(0, BrowseVideoSentinels.getUnavailableVideoSummary());
-                        n7 = n5;
-                        n8 = n3;
-                        n9 = n2;
+                        n6 = n5;
+                        n7 = n3;
+                        n8 = n2;
                     }
                 }
             }
             --i;
-            n5 = n7;
-            n3 = n8;
-            n2 = n9;
+            n5 = n6;
+            n3 = n7;
+            n2 = n8;
         }
-        if (n3 > 0 && n2 > 0) {
+        if (Log.isLoggable("nf_service_browse_fetchvideosrequest", 2) && n3 > 0 && n2 > 0) {
             Log.d("nf_service_browse_fetchvideosrequest", String.format("videoCount:%d webpCount %d (%d%%)", n3, n2, n2 * 100 / n3));
         }
         return (List<Video>)list;

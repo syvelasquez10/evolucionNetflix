@@ -11,33 +11,33 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class OnDownloadProgressResponse implements SafeParcelable
 {
     public static final Parcelable$Creator<OnDownloadProgressResponse> CREATOR;
-    final int kg;
-    final long rx;
-    final long ry;
+    final long FF;
+    final long FG;
+    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new s();
+        CREATOR = (Parcelable$Creator)new aa();
     }
     
-    OnDownloadProgressResponse(final int kg, final long rx, final long ry) {
-        this.kg = kg;
-        this.rx = rx;
-        this.ry = ry;
-    }
-    
-    public long cR() {
-        return this.rx;
-    }
-    
-    public long cS() {
-        return this.ry;
+    OnDownloadProgressResponse(final int xh, final long ff, final long fg) {
+        this.xH = xh;
+        this.FF = ff;
+        this.FG = fg;
     }
     
     public int describeContents() {
         return 0;
     }
     
+    public long fJ() {
+        return this.FF;
+    }
+    
+    public long fK() {
+        return this.FG;
+    }
+    
     public void writeToParcel(final Parcel parcel, final int n) {
-        s.a(this, parcel, n);
+        aa.a(this, parcel, n);
     }
 }

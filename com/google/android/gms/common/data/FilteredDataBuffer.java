@@ -5,7 +5,7 @@
 package com.google.android.gms.common.data;
 
 import android.os.Bundle;
-import com.google.android.gms.internal.ds;
+import com.google.android.gms.internal.fb;
 
 public abstract class FilteredDataBuffer<T> extends DataBuffer<T>
 {
@@ -13,8 +13,8 @@ public abstract class FilteredDataBuffer<T> extends DataBuffer<T>
     
     public FilteredDataBuffer(final DataBuffer<T> mDataBuffer) {
         super(null);
-        ds.d(mDataBuffer);
-        ds.a(!(mDataBuffer instanceof FilteredDataBuffer), "Not possible to have nested FilteredDataBuffers.");
+        fb.d(mDataBuffer);
+        fb.a(!(mDataBuffer instanceof FilteredDataBuffer), "Not possible to have nested FilteredDataBuffers.");
         this.mDataBuffer = mDataBuffer;
     }
     

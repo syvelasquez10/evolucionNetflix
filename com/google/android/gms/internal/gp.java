@@ -4,96 +4,157 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.internal.safeparcel.a;
-import com.google.android.gms.common.internal.safeparcel.b;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import java.util.Iterator;
+import org.json.JSONException;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.util.regex.Matcher;
+import android.text.TextUtils;
+import java.util.regex.Pattern;
 
-public class gp implements Parcelable$Creator<go>
+public final class gp
 {
-    static void a(final go go, final Parcel parcel, int o) {
-        o = b.o(parcel);
-        b.a(parcel, 1, go.getRequestId(), false);
-        b.c(parcel, 1000, go.getVersionCode());
-        b.a(parcel, 2, go.getExpirationTime());
-        b.a(parcel, 3, go.dK());
-        b.a(parcel, 4, go.getLatitude());
-        b.a(parcel, 5, go.getLongitude());
-        b.a(parcel, 6, go.dL());
-        b.c(parcel, 7, go.dM());
-        b.c(parcel, 8, go.getNotificationResponsiveness());
-        b.c(parcel, 9, go.dN());
-        b.D(parcel, o);
+    private static final Pattern Es;
+    private static final Pattern Et;
+    
+    static {
+        Es = Pattern.compile("\\\\.");
+        Et = Pattern.compile("[\\\\\"/\b\f\n\r\t]");
     }
     
-    public go[] aX(final int n) {
-        return new go[n];
-    }
-    
-    public go ai(final Parcel parcel) {
-        final int n = a.n(parcel);
-        int g = 0;
-        String m = null;
-        int g2 = 0;
-        short f = 0;
-        double k = 0.0;
-        double i = 0.0;
-        float j = 0.0f;
-        long h = 0L;
-        int g3 = 0;
-        int g4 = -1;
-        while (parcel.dataPosition() < n) {
-            final int l = a.m(parcel);
-            switch (a.M(l)) {
-                default: {
-                    a.b(parcel, l);
-                    continue;
+    public static String av(final String s) {
+        if (!TextUtils.isEmpty((CharSequence)s)) {
+            final Matcher matcher = gp.Et.matcher(s);
+            StringBuffer sb = null;
+            while (matcher.find()) {
+                StringBuffer sb2;
+                if ((sb2 = sb) == null) {
+                    sb2 = new StringBuffer();
                 }
-                case 1: {
-                    m = a.m(parcel, l);
-                    continue;
-                }
-                case 1000: {
-                    g = a.g(parcel, l);
-                    continue;
-                }
-                case 2: {
-                    h = a.h(parcel, l);
-                    continue;
-                }
-                case 3: {
-                    f = a.f(parcel, l);
-                    continue;
-                }
-                case 4: {
-                    k = a.k(parcel, l);
-                    continue;
-                }
-                case 5: {
-                    i = a.k(parcel, l);
-                    continue;
-                }
-                case 6: {
-                    j = a.j(parcel, l);
-                    continue;
-                }
-                case 7: {
-                    g2 = a.g(parcel, l);
-                    continue;
-                }
-                case 8: {
-                    g3 = a.g(parcel, l);
-                    continue;
-                }
-                case 9: {
-                    g4 = a.g(parcel, l);
-                    continue;
+                switch (matcher.group().charAt(0)) {
+                    default: {
+                        sb = sb2;
+                        continue;
+                    }
+                    case '\b': {
+                        matcher.appendReplacement(sb2, "\\\\b");
+                        sb = sb2;
+                        continue;
+                    }
+                    case '\"': {
+                        matcher.appendReplacement(sb2, "\\\\\\\"");
+                        sb = sb2;
+                        continue;
+                    }
+                    case '\\': {
+                        matcher.appendReplacement(sb2, "\\\\\\\\");
+                        sb = sb2;
+                        continue;
+                    }
+                    case '/': {
+                        matcher.appendReplacement(sb2, "\\\\/");
+                        sb = sb2;
+                        continue;
+                    }
+                    case '\f': {
+                        matcher.appendReplacement(sb2, "\\\\f");
+                        sb = sb2;
+                        continue;
+                    }
+                    case '\n': {
+                        matcher.appendReplacement(sb2, "\\\\n");
+                        sb = sb2;
+                        continue;
+                    }
+                    case '\r': {
+                        matcher.appendReplacement(sb2, "\\\\r");
+                        sb = sb2;
+                        continue;
+                    }
+                    case '\t': {
+                        matcher.appendReplacement(sb2, "\\\\t");
+                        sb = sb2;
+                        continue;
+                    }
                 }
             }
+            if (sb != null) {
+                matcher.appendTail(sb);
+                return sb.toString();
+            }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        return s;
+    }
+    
+    public static boolean d(final Object o, final Object o2) {
+        Label_0098: {
+            if (!(o instanceof JSONObject) || !(o2 instanceof JSONObject)) {
+                break Label_0098;
+            }
+            final JSONObject jsonObject = (JSONObject)o;
+            final JSONObject jsonObject2 = (JSONObject)o2;
+        Block_9_Outer:
+            while (true) {
+                final Iterator keys;
+                if (jsonObject.length() == jsonObject2.length()) {
+                    keys = jsonObject.keys();
+                    break Label_0043;
+                }
+                Label_0035: {
+                    return false;
+                }
+                if (!keys.hasNext()) {
+                    return true;
+                }
+                final String s = keys.next();
+                if (!jsonObject2.has(s)) {
+                    return false;
+                }
+                try {
+                    if (!d(jsonObject.get(s), jsonObject2.get(s))) {
+                        return false;
+                    }
+                    continue Block_9_Outer;
+                    while (true) {
+                        int n = 0;
+                        Block_8: {
+                            while (true) {
+                                Label_0135: {
+                                    break Label_0135;
+                                    break Block_8;
+                                    try {
+                                        final JSONArray jsonArray;
+                                        final JSONArray jsonArray2;
+                                        if (d(jsonArray.get(n), jsonArray2.get(n))) {
+                                            ++n;
+                                            break Label_0135;
+                                        }
+                                        return false;
+                                        Label_0170:
+                                        return o.equals(o2);
+                                        Label_0168:
+                                        return true;
+                                    }
+                                    catch (JSONException ex) {
+                                        return false;
+                                    }
+                                }
+                                continue;
+                            }
+                        }
+                        final JSONArray jsonArray = (JSONArray)o;
+                        final JSONArray jsonArray2 = (JSONArray)o2;
+                        continue;
+                    }
+                }
+                // iftrue(Label_0170:, !o instanceof JSONArray || !o2 instanceof JSONArray)
+                // iftrue(Label_0168:, n >= jsonArray.length())
+                // iftrue(Label_0035:, jsonArray.length() != jsonArray2.length())
+                catch (JSONException ex2) {
+                    return false;
+                }
+                break;
+            }
         }
-        return new go(g, m, g2, f, k, i, j, h, g3, g4);
     }
 }

@@ -36,7 +36,7 @@ public interface RealTimeMultiplayer
     
     int sendUnreliableMessage(final GoogleApiClient p0, final byte[] p1, final String p2, final List<String> p3);
     
-    int sendUnreliableMessageToAll(final GoogleApiClient p0, final byte[] p1, final String p2);
+    int sendUnreliableMessageToOthers(final GoogleApiClient p0, final byte[] p1, final String p2);
     
     public interface ReliableMessageSentCallback
     {

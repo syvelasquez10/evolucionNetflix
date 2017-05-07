@@ -8,76 +8,76 @@ import java.util.ArrayList;
 
 public abstract class d<T> extends DataBuffer<T>
 {
-    private boolean nZ;
-    private ArrayList<Integer> oa;
+    private boolean BW;
+    private ArrayList<Integer> BX;
     
     protected d(final DataHolder dataHolder) {
         super(dataHolder);
-        this.nZ = false;
+        this.BW = false;
     }
     
-    private int E(final int n) {
-        if (n < 0 || n == this.oa.size()) {
-            return 0;
-        }
-        if (n == this.oa.size() - 1) {
-            return this.nE.getCount() - this.oa.get(n);
-        }
-        return this.oa.get(n + 1) - this.oa.get(n);
-    }
-    
-    private void by() {
+    private void eu() {
         while (true) {
             while (true) {
-                int c = 0;
+                int g = 0;
                 Label_0145: {
                     synchronized (this) {
-                        if (!this.nZ) {
-                            final int count = this.nE.getCount();
-                            this.oa = new ArrayList<Integer>();
+                        if (!this.BW) {
+                            final int count = this.BB.getCount();
+                            this.BX = new ArrayList<Integer>();
                             if (count > 0) {
-                                this.oa.add(0);
+                                this.BX.add(0);
                                 final String primaryDataMarkerColumn = this.getPrimaryDataMarkerColumn();
-                                c = this.nE.C(0);
-                                final String string = this.nE.getString(primaryDataMarkerColumn, 0, c);
-                                c = 1;
-                                if (c < count) {
-                                    if (!this.nE.getString(primaryDataMarkerColumn, c, this.nE.C(c)).equals(string)) {
-                                        this.oa.add(c);
+                                g = this.BB.G(0);
+                                final String string = this.BB.getString(primaryDataMarkerColumn, 0, g);
+                                g = 1;
+                                if (g < count) {
+                                    if (!this.BB.getString(primaryDataMarkerColumn, g, this.BB.G(g)).equals(string)) {
+                                        this.BX.add(g);
                                     }
                                     break Label_0145;
                                 }
                             }
-                            this.nZ = true;
+                            this.BW = true;
                         }
                         return;
                     }
                 }
-                ++c;
+                ++g;
                 continue;
             }
         }
     }
     
-    int D(final int n) {
-        if (n < 0 || n >= this.oa.size()) {
+    int H(final int n) {
+        if (n < 0 || n >= this.BX.size()) {
             throw new IllegalArgumentException("Position " + n + " is out of bounds for this buffer");
         }
-        return this.oa.get(n);
+        return this.BX.get(n);
     }
     
-    protected abstract T a(final int p0, final int p1);
+    protected int I(final int n) {
+        if (n < 0 || n == this.BX.size()) {
+            return 0;
+        }
+        if (n == this.BX.size() - 1) {
+            return this.BB.getCount() - this.BX.get(n);
+        }
+        return this.BX.get(n + 1) - this.BX.get(n);
+    }
+    
+    protected abstract T c(final int p0, final int p1);
     
     @Override
     public final T get(final int n) {
-        this.by();
-        return this.a(this.D(n), this.E(n));
+        this.eu();
+        return this.c(this.H(n), this.I(n));
     }
     
     @Override
     public int getCount() {
-        this.by();
-        return this.oa.size();
+        this.eu();
+        return this.BX.size();
     }
     
     protected abstract String getPrimaryDataMarkerColumn();

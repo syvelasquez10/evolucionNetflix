@@ -16,9 +16,9 @@ public class GroundOverlayOptionsCreator implements Parcelable$Creator<GroundOve
     public static final int CONTENT_DESCRIPTION = 0;
     
     static void a(final GroundOverlayOptions groundOverlayOptions, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
+        final int p3 = b.p(parcel);
         b.c(parcel, 1, groundOverlayOptions.getVersionCode());
-        b.a(parcel, 2, groundOverlayOptions.eF(), false);
+        b.a(parcel, 2, groundOverlayOptions.iD(), false);
         b.a(parcel, 3, (Parcelable)groundOverlayOptions.getLocation(), n, false);
         b.a(parcel, 4, groundOverlayOptions.getWidth());
         b.a(parcel, 5, groundOverlayOptions.getHeight());
@@ -29,84 +29,84 @@ public class GroundOverlayOptionsCreator implements Parcelable$Creator<GroundOve
         b.a(parcel, 10, groundOverlayOptions.getTransparency());
         b.a(parcel, 11, groundOverlayOptions.getAnchorU());
         b.a(parcel, 12, groundOverlayOptions.getAnchorV());
-        b.D(parcel, o);
+        b.F(parcel, p3);
     }
     
     public GroundOverlayOptions createFromParcel(final Parcel parcel) {
-        final int n = a.n(parcel);
+        final int o = a.o(parcel);
         int g = 0;
-        IBinder n2 = null;
+        IBinder o2 = null;
         LatLng latLng = null;
-        float j = 0.0f;
+        float k = 0.0f;
         float i = 0.0f;
         LatLngBounds latLngBounds = null;
-        float k = 0.0f;
+        float j = 0.0f;
         float l = 0.0f;
         boolean c = false;
         float m = 0.0f;
-        float j2 = 0.0f;
-        float j3 = 0.0f;
-        while (parcel.dataPosition() < n) {
-            final int m2 = a.m(parcel);
-            switch (a.M(m2)) {
+        float k2 = 0.0f;
+        float k3 = 0.0f;
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
                 default: {
-                    a.b(parcel, m2);
+                    a.b(parcel, n);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, m2);
+                    g = a.g(parcel, n);
                     continue;
                 }
                 case 2: {
-                    n2 = a.n(parcel, m2);
+                    o2 = a.o(parcel, n);
                     continue;
                 }
                 case 3: {
-                    latLng = a.a(parcel, m2, (android.os.Parcelable$Creator<LatLng>)LatLng.CREATOR);
+                    latLng = a.a(parcel, n, (android.os.Parcelable$Creator<LatLng>)LatLng.CREATOR);
                     continue;
                 }
                 case 4: {
-                    j = a.j(parcel, m2);
+                    k = a.k(parcel, n);
                     continue;
                 }
                 case 5: {
-                    i = a.j(parcel, m2);
+                    i = a.k(parcel, n);
                     continue;
                 }
                 case 6: {
-                    latLngBounds = a.a(parcel, m2, (android.os.Parcelable$Creator<LatLngBounds>)LatLngBounds.CREATOR);
+                    latLngBounds = a.a(parcel, n, (android.os.Parcelable$Creator<LatLngBounds>)LatLngBounds.CREATOR);
                     continue;
                 }
                 case 7: {
-                    k = a.j(parcel, m2);
+                    j = a.k(parcel, n);
                     continue;
                 }
                 case 8: {
-                    l = a.j(parcel, m2);
+                    l = a.k(parcel, n);
                     continue;
                 }
                 case 9: {
-                    c = a.c(parcel, m2);
+                    c = a.c(parcel, n);
                     continue;
                 }
                 case 10: {
-                    m = a.j(parcel, m2);
+                    m = a.k(parcel, n);
                     continue;
                 }
                 case 11: {
-                    j2 = a.j(parcel, m2);
+                    k2 = a.k(parcel, n);
                     continue;
                 }
                 case 12: {
-                    j3 = a.j(parcel, m2);
+                    k3 = a.k(parcel, n);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new GroundOverlayOptions(g, n2, latLng, j, i, latLngBounds, k, l, c, m, j2, j3);
+        return new GroundOverlayOptions(g, o2, latLng, k, i, latLngBounds, j, l, c, m, k2, k3);
     }
     
     public GroundOverlayOptions[] newArray(final int n) {

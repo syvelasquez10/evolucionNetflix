@@ -12,16 +12,16 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class QueryRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<QueryRequest> CREATOR;
-    final int kg;
-    final Query rA;
+    final Query FL;
+    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new y();
+        CREATOR = (Parcelable$Creator)new aj();
     }
     
-    QueryRequest(final int kg, final Query ra) {
-        this.kg = kg;
-        this.rA = ra;
+    QueryRequest(final int xh, final Query fl) {
+        this.xH = xh;
+        this.FL = fl;
     }
     
     public QueryRequest(final Query query) {
@@ -33,6 +33,6 @@ public class QueryRequest implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        y.a(this, parcel, n);
+        aj.a(this, parcel, n);
     }
 }

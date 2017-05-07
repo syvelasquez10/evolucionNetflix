@@ -4,9 +4,24 @@
 
 package com.netflix.mediaclient.util;
 
+import com.netflix.mediaclient.service.logging.client.model.UIError;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement;
+import java.util.List;
+import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
+import android.widget.Toast;
+import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.servicemgr.Playable;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import android.widget.SeekBar;
+import android.support.v4.content.LocalBroadcastManager;
+import android.content.IntentFilter;
+import android.content.BroadcastReceiver;
+import com.netflix.mediaclient.servicemgr.IMdx;
 import android.util.Pair;
+import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import com.netflix.mediaclient.ui.common.RatingDialogFrag;
+import com.netflix.mediaclient.servicemgr.VideoDetails;
 import com.netflix.mediaclient.ui.mdx.RemotePlayer;
 import com.netflix.mediaclient.ui.mdx.MdxTarget;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
@@ -34,13 +49,13 @@ public final class MdxUtils
         targetSelection.setTarget(devicePositionByUUID);
         final MdxTargetSelectionDialog.Builder builder = new MdxTargetSelectionDialog.Builder(netflixActivity);
         builder.setCancelable(true);
-        builder.setTitle(2131296524);
+        builder.setTitle(2131493143);
         builder.setAdapterData(targetSelection.getTargets((Context)netflixActivity));
         String format = "";
         if (mdxTargetSelectionDialogInterface.getVideoDetails() != null) {
             format = format;
             if (StringUtils.isNotEmpty(mdxTargetSelectionDialogInterface.getVideoDetails().getTitle())) {
-                format = String.format(netflixActivity.getString(2131296615), mdxTargetSelectionDialogInterface.getVideoDetails().getTitle());
+                format = String.format(netflixActivity.getString(2131493234), mdxTargetSelectionDialogInterface.getVideoDetails().getTitle());
             }
         }
         builder.setSelection(devicePositionByUUID, format);
@@ -112,6 +127,49 @@ public final class MdxUtils
         return builder.create();
     }
     
+    public static RatingDialogFrag.Rating getRating(final VideoDetails videoDetails, float value) {
+        final float n = 0.0f;
+        final float n2 = 0.0f;
+        final RatingDialogFrag.Rating rating = new RatingDialogFrag.Rating();
+        if (videoDetails.getUserRating() <= 0.0f && value <= 0.0f) {
+            Log.d("MdxUtils", "User did not changed ratings before, use predicted rating");
+            if (videoDetails.getPredictedRating() < 0.0f) {
+                value = n2;
+            }
+            else {
+                value = videoDetails.getPredictedRating();
+            }
+            rating.value = value;
+            rating.user = false;
+            return rating;
+        }
+        if (value > 0.0f && videoDetails.getUserRating() != value) {
+            Log.d("MdxUtils", "User changed ratings, but video object is not updated on callback from web api, use user set rating");
+            rating.value = value;
+            rating.user = true;
+            return rating;
+        }
+        Log.d("MdxUtils", "User changed rating before, use user rating");
+        if (videoDetails.getUserRating() < 0.0f) {
+            value = n;
+        }
+        else {
+            value = videoDetails.getUserRating();
+        }
+        rating.value = value;
+        rating.user = true;
+        return rating;
+    }
+    
+    public static String getVideoId(final VideoDetails videoDetails) {
+        if (videoDetails instanceof EpisodeDetails) {
+            Log.d("MdxUtils", "Episode, use show ID as video ID");
+            return ((EpisodeDetails)videoDetails).getShowId();
+        }
+        Log.d("MdxUtils", "Movie, use movie ID as video ID");
+        return videoDetails.getPlayableId();
+    }
+    
     public static boolean isCurrentMdxTargetAvailable(final ServiceManager serviceManager) {
         if (serviceManager == null || !serviceManager.isReady() || serviceManager.getMdx() == null || !serviceManager.getMdx().isReady()) {
             Log.d("MdxUtils", "MDX service is NOT ready");
@@ -147,6 +205,70 @@ public final class MdxUtils
         return false;
     }
     
+    public static boolean isSameVideoPlaying(final IMdx mdx, final String s) {
+        final VideoDetails videoDetail = mdx.getVideoDetail();
+        if (Log.isLoggable("MdxUtils", 3)) {
+            if (StringUtils.isNotEmpty(s)) {
+                Log.d("MdxUtils", "mCurrentPlayout.getPlayableId(): " + s);
+            }
+            else {
+                Log.d("MdxUtils", "mCurrentPlayout is empty");
+            }
+            if (videoDetail != null) {
+                Log.d("MdxUtils", "currentVideo.getPlayableId(): " + videoDetail.getPlayableId());
+            }
+            else {
+                Log.d("MdxUtils", "currentVideo is null ");
+            }
+        }
+        if (videoDetail != null && videoDetail.getPlayableId() != null && videoDetail.getPlayableId().equals(s)) {
+            Log.d("MdxUtils", "Same video is playing, just sync...");
+            return true;
+        }
+        Log.d("MdxUtils", "Video is not currently playing or different video, start play if play is not already pending...");
+        return false;
+    }
+    
+    public static void registerReceiver(final Activity activity, final BroadcastReceiver broadcastReceiver) {
+        Log.d("MdxUtils", "Register receiver");
+        final IntentFilter intentFilter = new IntentFilter("ui_rating");
+        intentFilter.addAction("nflx_button_selected");
+        intentFilter.addAction("nflx_button_canceled");
+        intentFilter.addCategory("LocalIntentNflxUi");
+        intentFilter.setPriority(999);
+        try {
+            LocalBroadcastManager.getInstance((Context)activity).registerReceiver(broadcastReceiver, intentFilter);
+        }
+        catch (Throwable t) {
+            Log.e("MdxUtils", "Failed to register ", t);
+        }
+    }
+    
+    public static int setProgressByBif(final SeekBar seekBar) {
+        final int progress = seekBar.getProgress();
+        final int progress2 = progress / 10 * 10;
+        if (progress2 == progress) {
+            if (Log.isLoggable("MdxUtils", 3)) {
+                Log.d("MdxUtils", "Right on target, no need to ajust seekbar position " + progress + " [sec]");
+            }
+            return progress2;
+        }
+        if (Log.isLoggable("MdxUtils", 3)) {
+            Log.d("MdxUtils", "Progres : " + progress + " [sec] vs. bif position " + progress2 + " [sec]");
+        }
+        seekBar.setProgress(progress2);
+        return progress2;
+    }
+    
+    public static void unregisterReceiver(final Activity activity, final BroadcastReceiver broadcastReceiver) {
+        try {
+            LocalBroadcastManager.getInstance((Context)activity).unregisterReceiver(broadcastReceiver);
+        }
+        catch (Throwable t) {
+            Log.e("MdxUtils", "Failed to unregister ", t);
+        }
+    }
+    
     public interface MdxTargetSelectionDialogInterface
     {
         long getCurrentPositionMs();
@@ -166,5 +288,36 @@ public final class MdxUtils
         void notifyPlayingBackLocal();
         
         void notifyPlayingBackRemote();
+    }
+    
+    public static class SetVideoRatingCallback extends LoggingManagerCallback
+    {
+        private final NetflixActivity activity;
+        private final float rating;
+        
+        public SetVideoRatingCallback(final NetflixActivity activity, final float rating) {
+            super("MdxUtils");
+            this.activity = activity;
+            this.rating = rating;
+        }
+        
+        @Override
+        public void onVideoRatingSet(final int n) {
+            super.onVideoRatingSet(n);
+            if (this.activity.destroyed()) {
+                return;
+            }
+            if (n != 0) {
+                Log.w("MdxUtils", "Invalid status code failed");
+                Toast.makeText((Context)this.activity, 2131493193, 1).show();
+                Log.d("MdxUtils", "Report rate action ended");
+                final LogUtils.LogReportErrorArgs logReportErrorArgs = new LogUtils.LogReportErrorArgs(n, ActionOnUIError.displayedError, "", null);
+                LogUtils.reportRateActionEnded((Context)this.activity, logReportErrorArgs.getReason(), logReportErrorArgs.getError(), null, (int)this.rating);
+                return;
+            }
+            Log.v("MdxUtils", "Rating has been updated ok");
+            Toast.makeText((Context)this.activity, 2131493194, 1).show();
+            LogUtils.reportRateActionEnded((Context)this.activity, IClientLogging.CompletionReason.success, null, null, (int)this.rating);
+        }
     }
 }

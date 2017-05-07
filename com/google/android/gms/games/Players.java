@@ -20,6 +20,8 @@ public interface Players
     
     Intent getPlayerSearchIntent(final GoogleApiClient p0);
     
+    PendingResult<LoadPlayersResult> loadConnectedPlayers(final GoogleApiClient p0, final boolean p1);
+    
     PendingResult<LoadPlayersResult> loadInvitablePlayers(final GoogleApiClient p0, final int p1, final boolean p2);
     
     PendingResult<LoadPlayersResult> loadMoreInvitablePlayers(final GoogleApiClient p0, final int p1);
@@ -29,6 +31,14 @@ public interface Players
     PendingResult<LoadPlayersResult> loadPlayer(final GoogleApiClient p0, final String p1);
     
     PendingResult<LoadPlayersResult> loadRecentlyPlayedWithPlayers(final GoogleApiClient p0, final int p1, final boolean p2);
+    
+    public interface LoadExtendedPlayersResult extends Releasable, Result
+    {
+    }
+    
+    public interface LoadOwnerCoverPhotoUrisResult extends Result
+    {
+    }
     
     public interface LoadPlayersResult extends Releasable, Result
     {

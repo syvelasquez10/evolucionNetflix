@@ -191,12 +191,12 @@ public class ErrorManager
     
     private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId1(final NccpActionId nccpActionId, final String s) {
         Log.d("ErrorManager", "actionID 1 NFErr_MC_NCCP_NonRecoverableError");
-        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131296362), null, this.exit);
+        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131492985), null, this.exit);
     }
     
     private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId10(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 10 NFErr_MC_NCCP_CustomerCredentialsRenewalRequired");
-        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131296368), null, this.unregister);
+        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131492991), null, this.unregister);
     }
     
     private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId11(final NccpActionId nccpActionId, final String s) {
@@ -208,17 +208,17 @@ public class ErrorManager
                 return new AlertDialogFactory.AlertDialogDescriptor(s, string, null, this.exit);
             }
         }
-        final String string = this.context.getString(2131296369);
+        final String string = this.context.getString(2131492992);
         return new AlertDialogFactory.AlertDialogDescriptor(s, string, null, this.exit);
     }
     
     private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId12(final NccpActionId nccpActionId, final String s) {
-        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131296370), null, this.exit);
+        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131492993), null, this.exit);
     }
     
     private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId2(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 2 NFErr_MC_NCCP_PotentiallyRecoverableError");
-        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131296363), null, this.exit);
+        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131492986), null, this.exit);
     }
     
     private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId3(final NccpActionId nccpActionId, final String s) {
@@ -226,7 +226,7 @@ public class ErrorManager
         final Runnable exit = this.exit;
         String string;
         if (message == null) {
-            string = this.context.getString(2131296364);
+            string = this.context.getString(2131492987);
             Log.e("ErrorManager", "ActionID 3 NFErr_MC_NCCP_CustomError: Error message expected, but not received, displaying generic error");
         }
         else {
@@ -245,34 +245,34 @@ public class ErrorManager
     
     private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId4(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 4 NFErr_MC_NCCP_RegistrationRequired");
-        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131296463), null, this.unregister);
+        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131493086), null, this.unregister);
     }
     
     private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId5(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 5 NFErr_MC_NCCP_CTicketRenewalRequired, AUTHENTICATION_RENEW_REQUIRE");
-        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131296365), null, this.unregister);
+        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131492988), null, this.unregister);
     }
     
     private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId6(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 6 NFErr_MC_NCCP_MTicketRenewalRequired, AUTHORIZATION_RENEW_REQUIRED");
-        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131296465), null, this.unregister);
+        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131493088), null, this.unregister);
     }
     
     private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId7(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 7 NFErr_MC_NCCP_ImpossibleImpossibility, logout");
-        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131296466), null, this.unregister);
+        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131493089), null, this.unregister);
     }
     
     private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId8(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 8 NFErr_MC_NCCP_GetNewCredentials");
-        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131296366), null, this.unregister);
+        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131492989), null, this.unregister);
     }
     
     private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId9(final NccpActionId nccpActionId, final String s) {
         final String message = nccpActionId.getMessage();
         String string;
         if (message == null) {
-            string = this.context.getString(2131296367);
+            string = this.context.getString(2131492990);
             Log.e("ErrorManager", "ActionID 9 NFErr_MC_NCCP_UnsupportedVersion: force exit app, generic message");
         }
         else {
@@ -311,9 +311,9 @@ public class ErrorManager
                     break Label_0200;
                 }
             }
-            string = this.context.getString(2131296481);
+            string = this.context.getString(2131493104);
         }
-        final String string2 = this.context.getString(2131296482);
+        final String string2 = this.context.getString(2131493105);
         Log.d("ErrorManager", "Check if link contains NCCP reason code");
         if (link.href.startsWith("RC:")) {
             Log.d("ErrorManager", "NCCP reason code found");
@@ -483,12 +483,12 @@ public class ErrorManager
             Log.d("ErrorManager", "checkForOpenDeviceFailureInStack : " + checkForOpenDeviceFailureInStack);
         }
         if (error.getError() == -268369916) {
-            return new AlertDialogFactory.AlertDialogDescriptor("", this.context.getString(2131296458), null, this.restartApp);
+            return new AlertDialogFactory.AlertDialogDescriptor("", this.context.getString(2131493081), null, this.restartApp);
         }
         if (error.getError() != -268369915 || !checkForOpenDeviceFailureInStack) {
-            return new AlertDialogFactory.AlertDialogDescriptor("", this.context.getString(2131296401), null, this.exit);
+            return new AlertDialogFactory.AlertDialogDescriptor("", this.context.getString(2131493024), null, this.exit);
         }
-        final String string = this.context.getString(2131296458);
+        final String string = this.context.getString(2131493081);
         if (this.mConfig.getCurrentPlayerType() == PlayerType.device12 && this.mConfig.isCurrentDrmWidevine()) {
             return new AlertDialogFactory.AlertDialogDescriptor("", string, null, this.restartApp);
         }
@@ -499,19 +499,19 @@ public class ErrorManager
         if (Log.isLoggable("ErrorManager", 3)) {
             Log.d("ErrorManager", "NetworkError " + networkError);
         }
-        return new AlertDialogFactory.AlertDialogDescriptor("", this.context.getString(2131296507), null, this.exit);
+        return new AlertDialogFactory.AlertDialogDescriptor("", this.context.getString(2131493127), null, this.exit);
     }
     
     private AlertDialogFactory.AlertDialogDescriptor getHandlerForNetworkingError(final NccpNetworkingError nccpNetworkingError) {
         if (Log.isLoggable("ErrorManager", 3)) {
             Log.d("ErrorManager", "NccpNetworkingError " + nccpNetworkingError);
         }
-        return new AlertDialogFactory.AlertDialogDescriptor("", this.context.getString(2131296429), null, this.exit);
+        return new AlertDialogFactory.AlertDialogDescriptor("", this.context.getString(2131493052), null, this.exit);
     }
     
     private AlertDialogFactory.AlertDialogDescriptor getUknownErrorDescriptor(final MediaEvent mediaEvent, final String s) {
         Log.w("ErrorManager", "Uknown error");
-        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131296361), null, this.exit);
+        return new AlertDialogFactory.AlertDialogDescriptor(s, this.context.getString(2131492984), null, this.exit);
     }
     
     private Runnable handle(final MediaEvent mediaEvent) {

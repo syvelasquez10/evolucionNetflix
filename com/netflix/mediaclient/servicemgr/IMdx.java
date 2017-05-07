@@ -37,9 +37,9 @@ public interface IMdx
     @SuppressLint({ "UseSparseArrays" })
     public static final Map<Integer, Integer> MDX_ERROR_MAP = new HashMap<Integer, Integer>() {
         {
-            this.put(100, 2131296607);
-            this.put(104, 2131296608);
-            this.put(105, 2131296609);
+            this.put(100, 2131493226);
+            this.put(104, 2131493227);
+            this.put(105, 2131493228);
         }
     };
     public static final int MDX_ERROR_PAIR_ERROR = 104;

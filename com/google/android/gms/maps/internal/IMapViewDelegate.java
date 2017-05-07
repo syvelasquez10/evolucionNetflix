@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
 import android.os.Bundle;
-import com.google.android.gms.dynamic.b;
+import com.google.android.gms.dynamic.d;
 import android.os.RemoteException;
 import android.os.IInterface;
 
@@ -16,7 +16,7 @@ public interface IMapViewDelegate extends IInterface
 {
     IGoogleMapDelegate getMap() throws RemoteException;
     
-    b getView() throws RemoteException;
+    d getView() throws RemoteException;
     
     void onCreate(final Bundle p0) throws RemoteException;
     
@@ -32,7 +32,7 @@ public interface IMapViewDelegate extends IInterface
     
     public abstract static class a extends Binder implements IMapViewDelegate
     {
-        public static IMapViewDelegate V(final IBinder binder) {
+        public static IMapViewDelegate ag(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -120,7 +120,7 @@ public interface IMapViewDelegate extends IInterface
                 }
                 case 8: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IMapViewDelegate");
-                    final b view = this.getView();
+                    final d view = this.getView();
                     parcel2.writeNoException();
                     IBinder binder4 = binder;
                     if (view != null) {
@@ -134,14 +134,14 @@ public interface IMapViewDelegate extends IInterface
         
         private static class a implements IMapViewDelegate
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
             }
             
             public IBinder asBinder() {
-                return this.dU;
+                return this.kn;
             }
             
             @Override
@@ -150,9 +150,9 @@ public interface IMapViewDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapViewDelegate");
-                    this.dU.transact(1, obtain, obtain2, 0);
+                    this.kn.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
-                    return IGoogleMapDelegate.a.R(obtain2.readStrongBinder());
+                    return IGoogleMapDelegate.a.ac(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -161,14 +161,14 @@ public interface IMapViewDelegate extends IInterface
             }
             
             @Override
-            public b getView() throws RemoteException {
+            public d getView() throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapViewDelegate");
-                    this.dU.transact(8, obtain, obtain2, 0);
+                    this.kn.transact(8, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -189,7 +189,7 @@ public interface IMapViewDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.dU.transact(2, obtain, obtain2, 0);
+                    this.kn.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -204,7 +204,7 @@ public interface IMapViewDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapViewDelegate");
-                    this.dU.transact(5, obtain, obtain2, 0);
+                    this.kn.transact(5, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -219,7 +219,7 @@ public interface IMapViewDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapViewDelegate");
-                    this.dU.transact(6, obtain, obtain2, 0);
+                    this.kn.transact(6, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -234,7 +234,7 @@ public interface IMapViewDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapViewDelegate");
-                    this.dU.transact(4, obtain, obtain2, 0);
+                    this.kn.transact(4, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -249,7 +249,7 @@ public interface IMapViewDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapViewDelegate");
-                    this.dU.transact(3, obtain, obtain2, 0);
+                    this.kn.transact(3, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -271,7 +271,7 @@ public interface IMapViewDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.dU.transact(7, obtain, obtain2, 0);
+                    this.kn.transact(7, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         bundle.readFromParcel(obtain2);

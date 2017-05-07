@@ -15,55 +15,55 @@ public class CameraPositionCreator implements Parcelable$Creator<CameraPosition>
     public static final int CONTENT_DESCRIPTION = 0;
     
     static void a(final CameraPosition cameraPosition, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
+        final int p3 = b.p(parcel);
         b.c(parcel, 1, cameraPosition.getVersionCode());
         b.a(parcel, 2, (Parcelable)cameraPosition.target, n, false);
         b.a(parcel, 3, cameraPosition.zoom);
         b.a(parcel, 4, cameraPosition.tilt);
         b.a(parcel, 5, cameraPosition.bearing);
-        b.D(parcel, o);
+        b.F(parcel, p3);
     }
     
     public CameraPosition createFromParcel(final Parcel parcel) {
-        float j = 0.0f;
-        final int n = a.n(parcel);
+        float k = 0.0f;
+        final int o = a.o(parcel);
         int g = 0;
         LatLng latLng = null;
         float i = 0.0f;
-        float k = 0.0f;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
+        float j = 0.0f;
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
                 default: {
-                    a.b(parcel, m);
+                    a.b(parcel, n);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, m);
+                    g = a.g(parcel, n);
                     continue;
                 }
                 case 2: {
-                    latLng = a.a(parcel, m, (android.os.Parcelable$Creator<LatLng>)LatLng.CREATOR);
+                    latLng = a.a(parcel, n, (android.os.Parcelable$Creator<LatLng>)LatLng.CREATOR);
                     continue;
                 }
                 case 3: {
-                    k = a.j(parcel, m);
+                    j = a.k(parcel, n);
                     continue;
                 }
                 case 4: {
-                    i = a.j(parcel, m);
+                    i = a.k(parcel, n);
                     continue;
                 }
                 case 5: {
-                    j = a.j(parcel, m);
+                    k = a.k(parcel, n);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new CameraPosition(g, latLng, k, i, j);
+        return new CameraPosition(g, latLng, j, i, k);
     }
     
     public CameraPosition[] newArray(final int n) {

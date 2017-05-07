@@ -10,15 +10,24 @@ import com.google.android.gms.maps.internal.IUiSettingsDelegate;
 
 public final class UiSettings
 {
-    private final IUiSettingsDelegate Ch;
+    private final IUiSettingsDelegate Sy;
     
-    UiSettings(final IUiSettingsDelegate ch) {
-        this.Ch = ch;
+    UiSettings(final IUiSettingsDelegate sy) {
+        this.Sy = sy;
     }
     
     public boolean isCompassEnabled() {
         try {
-            return this.Ch.isCompassEnabled();
+            return this.Sy.isCompassEnabled();
+        }
+        catch (RemoteException ex) {
+            throw new RuntimeRemoteException(ex);
+        }
+    }
+    
+    public boolean isIndoorLevelPickerEnabled() {
+        try {
+            return this.Sy.isIndoorLevelPickerEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -27,7 +36,7 @@ public final class UiSettings
     
     public boolean isMyLocationButtonEnabled() {
         try {
-            return this.Ch.isMyLocationButtonEnabled();
+            return this.Sy.isMyLocationButtonEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -36,7 +45,7 @@ public final class UiSettings
     
     public boolean isRotateGesturesEnabled() {
         try {
-            return this.Ch.isRotateGesturesEnabled();
+            return this.Sy.isRotateGesturesEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -45,7 +54,7 @@ public final class UiSettings
     
     public boolean isScrollGesturesEnabled() {
         try {
-            return this.Ch.isScrollGesturesEnabled();
+            return this.Sy.isScrollGesturesEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -54,7 +63,7 @@ public final class UiSettings
     
     public boolean isTiltGesturesEnabled() {
         try {
-            return this.Ch.isTiltGesturesEnabled();
+            return this.Sy.isTiltGesturesEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -63,7 +72,7 @@ public final class UiSettings
     
     public boolean isZoomControlsEnabled() {
         try {
-            return this.Ch.isZoomControlsEnabled();
+            return this.Sy.isZoomControlsEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -72,7 +81,7 @@ public final class UiSettings
     
     public boolean isZoomGesturesEnabled() {
         try {
-            return this.Ch.isZoomGesturesEnabled();
+            return this.Sy.isZoomGesturesEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -81,7 +90,7 @@ public final class UiSettings
     
     public void setAllGesturesEnabled(final boolean allGesturesEnabled) {
         try {
-            this.Ch.setAllGesturesEnabled(allGesturesEnabled);
+            this.Sy.setAllGesturesEnabled(allGesturesEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -90,7 +99,16 @@ public final class UiSettings
     
     public void setCompassEnabled(final boolean compassEnabled) {
         try {
-            this.Ch.setCompassEnabled(compassEnabled);
+            this.Sy.setCompassEnabled(compassEnabled);
+        }
+        catch (RemoteException ex) {
+            throw new RuntimeRemoteException(ex);
+        }
+    }
+    
+    public void setIndoorLevelPickerEnabled(final boolean indoorLevelPickerEnabled) {
+        try {
+            this.Sy.setIndoorLevelPickerEnabled(indoorLevelPickerEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -99,7 +117,7 @@ public final class UiSettings
     
     public void setMyLocationButtonEnabled(final boolean myLocationButtonEnabled) {
         try {
-            this.Ch.setMyLocationButtonEnabled(myLocationButtonEnabled);
+            this.Sy.setMyLocationButtonEnabled(myLocationButtonEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -108,7 +126,7 @@ public final class UiSettings
     
     public void setRotateGesturesEnabled(final boolean rotateGesturesEnabled) {
         try {
-            this.Ch.setRotateGesturesEnabled(rotateGesturesEnabled);
+            this.Sy.setRotateGesturesEnabled(rotateGesturesEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -117,7 +135,7 @@ public final class UiSettings
     
     public void setScrollGesturesEnabled(final boolean scrollGesturesEnabled) {
         try {
-            this.Ch.setScrollGesturesEnabled(scrollGesturesEnabled);
+            this.Sy.setScrollGesturesEnabled(scrollGesturesEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -126,7 +144,7 @@ public final class UiSettings
     
     public void setTiltGesturesEnabled(final boolean tiltGesturesEnabled) {
         try {
-            this.Ch.setTiltGesturesEnabled(tiltGesturesEnabled);
+            this.Sy.setTiltGesturesEnabled(tiltGesturesEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -135,7 +153,7 @@ public final class UiSettings
     
     public void setZoomControlsEnabled(final boolean zoomControlsEnabled) {
         try {
-            this.Ch.setZoomControlsEnabled(zoomControlsEnabled);
+            this.Sy.setZoomControlsEnabled(zoomControlsEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -144,7 +162,7 @@ public final class UiSettings
     
     public void setZoomGesturesEnabled(final boolean zoomGesturesEnabled) {
         try {
-            this.Ch.setZoomGesturesEnabled(zoomGesturesEnabled);
+            this.Sy.setZoomGesturesEnabled(zoomGesturesEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);

@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.logging.customerevents.legacy;
 
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.webapi.AuthorizationCredentials;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -18,6 +19,7 @@ public abstract class BaseCustomerEvent
     protected static final String DATA = "data";
     protected static final String DATA_APP_VERSION = "app_version";
     protected static final String DATA_COUNTRY = "country";
+    protected static final String DATA_DEEPLINK_MSG_PARAMS = "deeplinkMsgParams";
     protected static final String DATA_DEVICETOKEN = "deviceToken";
     protected static final String DATA_DEVICE_CAT = "device_cat";
     protected static final String DATA_DEVICE_TYPE = "device_type";
@@ -62,7 +64,7 @@ public abstract class BaseCustomerEvent
         return instanceWithCredentials;
     }
     
-    protected JSONObject getEvent(final String s, final CommonRequestParameters commonRequestParameters, final AuthorizationCredentials authorizationCredentials, final long n) throws JSONException {
+    protected JSONObject getEvent(final String s, final CommonRequestParameters commonRequestParameters, final AuthorizationCredentials authorizationCredentials, final long n, final String s2) throws JSONException {
         final JSONObject jsonObject = new JSONObject();
         addIfNotNull(jsonObject, "user_id", commonRequestParameters.userId);
         addIfNotNull(jsonObject, "app_version", commonRequestParameters.appVersion);
@@ -77,6 +79,9 @@ public abstract class BaseCustomerEvent
         if (authorizationCredentials != null) {
             addIfNotNull(jsonObject, "netflixId", authorizationCredentials.netflixId);
             addIfNotNull(jsonObject, "secureNetflixId", authorizationCredentials.secureNetflixId);
+        }
+        if (StringUtils.isNotEmpty(s2)) {
+            addIfNotNull(jsonObject, "deeplinkMsgParams", s2);
         }
         return jsonObject;
     }

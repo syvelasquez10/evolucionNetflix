@@ -5,7 +5,7 @@
 package com.google.android.gms.drive.internal;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.eg;
+import com.google.android.gms.internal.fq;
 import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.metadata.internal.MetadataBundle;
 import com.google.android.gms.drive.Contents;
@@ -15,20 +15,20 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class CreateFileRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<CreateFileRequest> CREATOR;
-    final int kg;
-    final Contents qX;
-    final MetadataBundle qZ;
-    final DriveId ra;
+    final Contents EX;
+    final MetadataBundle EZ;
+    final DriveId Fa;
+    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new e();
+        CREATOR = (Parcelable$Creator)new h();
     }
     
-    CreateFileRequest(final int kg, final DriveId driveId, final MetadataBundle metadataBundle, final Contents contents) {
-        this.kg = kg;
-        this.ra = eg.f(driveId);
-        this.qZ = eg.f(metadataBundle);
-        this.qX = eg.f(contents);
+    CreateFileRequest(final int xh, final DriveId driveId, final MetadataBundle metadataBundle, final Contents contents) {
+        this.xH = xh;
+        this.Fa = fq.f(driveId);
+        this.EZ = fq.f(metadataBundle);
+        this.EX = fq.f(contents);
     }
     
     public CreateFileRequest(final DriveId driveId, final MetadataBundle metadataBundle, final Contents contents) {
@@ -40,6 +40,6 @@ public class CreateFileRequest implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        e.a(this, parcel, n);
+        h.a(this, parcel, n);
     }
 }

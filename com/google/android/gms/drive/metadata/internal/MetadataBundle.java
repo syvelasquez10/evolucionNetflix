@@ -5,14 +5,14 @@
 package com.google.android.gms.drive.metadata.internal;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.ee;
 import java.util.HashSet;
 import java.util.Set;
+import com.google.android.gms.internal.fo;
 import com.google.android.gms.drive.metadata.MetadataField;
 import java.util.Iterator;
 import android.util.Log;
 import java.util.ArrayList;
-import com.google.android.gms.internal.eg;
+import com.google.android.gms.internal.fq;
 import android.os.Bundle;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
@@ -20,26 +20,26 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class MetadataBundle implements SafeParcelable
 {
     public static final Parcelable$Creator<MetadataBundle> CREATOR;
-    final int kg;
-    final Bundle rF;
+    final Bundle FQ;
+    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new d();
+        CREATOR = (Parcelable$Creator)new f();
     }
     
-    MetadataBundle(final int kg, final Bundle bundle) {
-        this.kg = kg;
-        (this.rF = eg.f(bundle)).setClassLoader(this.getClass().getClassLoader());
+    MetadataBundle(final int xh, final Bundle bundle) {
+        this.xH = xh;
+        (this.FQ = fq.f(bundle)).setClassLoader(this.getClass().getClassLoader());
         final ArrayList<String> list = new ArrayList<String>();
-        for (final String s : this.rF.keySet()) {
-            if (c.ac(s) == null) {
+        for (final String s : this.FQ.keySet()) {
+            if (c.ax(s) == null) {
                 list.add(s);
                 Log.w("MetadataBundle", "Ignored unknown metadata field in bundle: " + s);
             }
         }
         final Iterator<Object> iterator2 = list.iterator();
         while (iterator2.hasNext()) {
-            this.rF.remove((String)iterator2.next());
+            this.FQ.remove((String)iterator2.next());
         }
     }
     
@@ -48,37 +48,28 @@ public final class MetadataBundle implements SafeParcelable
     }
     
     public static <T> MetadataBundle a(final MetadataField<T> metadataField, final T t) {
-        final MetadataBundle cx = cX();
-        cx.b(metadataField, t);
-        return cx;
+        final MetadataBundle ft = fT();
+        ft.b(metadataField, t);
+        return ft;
     }
     
     public static MetadataBundle a(final MetadataBundle metadataBundle) {
-        return new MetadataBundle(new Bundle(metadataBundle.rF));
+        return new MetadataBundle(new Bundle(metadataBundle.FQ));
     }
     
-    public static MetadataBundle cX() {
+    public static MetadataBundle fT() {
         return new MetadataBundle(new Bundle());
     }
     
     public <T> T a(final MetadataField<T> metadataField) {
-        return metadataField.d(this.rF);
+        return metadataField.d(this.FQ);
     }
     
     public <T> void b(final MetadataField<T> metadataField, final T t) {
-        if (c.ac(metadataField.getName()) == null) {
+        if (c.ax(metadataField.getName()) == null) {
             throw new IllegalArgumentException("Unregistered field: " + metadataField.getName());
         }
-        metadataField.a(t, this.rF);
-    }
-    
-    public Set<MetadataField<?>> cY() {
-        final HashSet<MetadataField<?>> set = new HashSet<MetadataField<?>>();
-        final Iterator<String> iterator = this.rF.keySet().iterator();
-        while (iterator.hasNext()) {
-            set.add(c.ac(iterator.next()));
-        }
-        return set;
+        metadataField.a(t, this.FQ);
     }
     
     public int describeContents() {
@@ -94,34 +85,43 @@ public final class MetadataBundle implements SafeParcelable
             return false;
         }
         final MetadataBundle metadataBundle = (MetadataBundle)o;
-        final Set keySet = this.rF.keySet();
-        if (!keySet.equals(metadataBundle.rF.keySet())) {
+        final Set keySet = this.FQ.keySet();
+        if (!keySet.equals(metadataBundle.FQ.keySet())) {
             return false;
         }
         for (final String s : keySet) {
-            if (!ee.equal(this.rF.get(s), metadataBundle.rF.get(s))) {
+            if (!fo.equal(this.FQ.get(s), metadataBundle.FQ.get(s))) {
                 return false;
             }
         }
         return true;
     }
     
+    public Set<MetadataField<?>> fU() {
+        final HashSet<MetadataField<?>> set = new HashSet<MetadataField<?>>();
+        final Iterator<String> iterator = this.FQ.keySet().iterator();
+        while (iterator.hasNext()) {
+            set.add(c.ax(iterator.next()));
+        }
+        return set;
+    }
+    
     @Override
     public int hashCode() {
-        final Iterator<String> iterator = this.rF.keySet().iterator();
+        final Iterator<String> iterator = this.FQ.keySet().iterator();
         int n = 1;
         while (iterator.hasNext()) {
-            n = this.rF.get((String)iterator.next()).hashCode() + n * 31;
+            n = this.FQ.get((String)iterator.next()).hashCode() + n * 31;
         }
         return n;
     }
     
     @Override
     public String toString() {
-        return "MetadataBundle [values=" + this.rF + "]";
+        return "MetadataBundle [values=" + this.FQ + "]";
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        d.a(this, parcel, n);
+        f.a(this, parcel, n);
     }
 }

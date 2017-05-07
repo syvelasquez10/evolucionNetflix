@@ -91,6 +91,19 @@ public class LoggingManagerCallback implements ManagerCallback
     }
     
     @Override
+    public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final int n) {
+        final String tag = this.tag;
+        String title;
+        if (kidsCharacterDetails == null) {
+            title = "null";
+        }
+        else {
+            title = kidsCharacterDetails.getTitle();
+        }
+        Log.v(tag, String.format("onKidsCharacterDetailsFetched, title: %s, status: %d", title, n));
+    }
+    
+    @Override
     public void onLoLoMoPrefetched(final int n) {
         Log.v(this.tag, String.format("onLoLoMoPrefetched, status: %d", n));
     }

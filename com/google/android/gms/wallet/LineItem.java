@@ -11,31 +11,31 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class LineItem implements SafeParcelable
 {
     public static final Parcelable$Creator<LineItem> CREATOR;
-    String Gj;
-    String Gk;
-    String Gw;
-    String Gx;
-    int Gy;
+    String abc;
+    String abd;
+    String abv;
+    String abw;
+    int abx;
     String description;
-    private final int kg;
+    private final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new f();
+        CREATOR = (Parcelable$Creator)new i();
     }
     
     LineItem() {
-        this.kg = 1;
-        this.Gy = 0;
+        this.xH = 1;
+        this.abx = 0;
     }
     
-    LineItem(final int kg, final String description, final String gw, final String gx, final String gj, final int gy, final String gk) {
-        this.kg = kg;
+    LineItem(final int xh, final String description, final String abv, final String abw, final String abc, final int abx, final String abd) {
+        this.xH = xh;
         this.description = description;
-        this.Gw = gw;
-        this.Gx = gx;
-        this.Gj = gj;
-        this.Gy = gy;
-        this.Gk = gk;
+        this.abv = abv;
+        this.abw = abw;
+        this.abc = abc;
+        this.abx = abx;
+        this.abd = abd;
     }
     
     public static Builder newBuilder() {
@@ -49,7 +49,7 @@ public final class LineItem implements SafeParcelable
     }
     
     public String getCurrencyCode() {
-        return this.Gk;
+        return this.abd;
     }
     
     public String getDescription() {
@@ -57,27 +57,27 @@ public final class LineItem implements SafeParcelable
     }
     
     public String getQuantity() {
-        return this.Gw;
+        return this.abv;
     }
     
     public int getRole() {
-        return this.Gy;
+        return this.abx;
     }
     
     public String getTotalPrice() {
-        return this.Gj;
+        return this.abc;
     }
     
     public String getUnitPrice() {
-        return this.Gx;
+        return this.abw;
     }
     
     public int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        f.a(this, parcel, n);
+        i.a(this, parcel, n);
     }
     
     public final class Builder
@@ -86,8 +86,8 @@ public final class LineItem implements SafeParcelable
             return LineItem.this;
         }
         
-        public Builder setCurrencyCode(final String gk) {
-            LineItem.this.Gk = gk;
+        public Builder setCurrencyCode(final String abd) {
+            LineItem.this.abd = abd;
             return this;
         }
         
@@ -96,23 +96,23 @@ public final class LineItem implements SafeParcelable
             return this;
         }
         
-        public Builder setQuantity(final String gw) {
-            LineItem.this.Gw = gw;
+        public Builder setQuantity(final String abv) {
+            LineItem.this.abv = abv;
             return this;
         }
         
-        public Builder setRole(final int gy) {
-            LineItem.this.Gy = gy;
+        public Builder setRole(final int abx) {
+            LineItem.this.abx = abx;
             return this;
         }
         
-        public Builder setTotalPrice(final String gj) {
-            LineItem.this.Gj = gj;
+        public Builder setTotalPrice(final String abc) {
+            LineItem.this.abc = abc;
             return this;
         }
         
-        public Builder setUnitPrice(final String gx) {
-            LineItem.this.Gx = gx;
+        public Builder setUnitPrice(final String abw) {
+            LineItem.this.abw = abw;
             return this;
         }
     }

@@ -4,49 +4,93 @@
 
 package com.google.android.gms.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
+import android.webkit.WebView;
+import java.net.URISyntaxException;
+import java.net.URI;
+import android.text.TextUtils;
+import android.webkit.WebViewClient;
 
-public final class ee
+public class ee extends WebViewClient
 {
-    public static a e(final Object o) {
-        return new a(o);
+    private final dz lC;
+    private final String rM;
+    private boolean rN;
+    private final ct rO;
+    
+    public ee(final ct ro, final dz lc, final String s) {
+        this.rM = this.B(s);
+        this.rN = false;
+        this.lC = lc;
+        this.rO = ro;
     }
     
-    public static boolean equal(final Object o, final Object o2) {
-        return o == o2 || (o != null && o.equals(o2));
-    }
-    
-    public static int hashCode(final Object... array) {
-        return Arrays.hashCode(array);
-    }
-    
-    public static final class a
-    {
-        private final List<String> pN;
-        private final Object pO;
-        
-        private a(final Object o) {
-            this.pO = eg.f(o);
-            this.pN = new ArrayList<String>();
-        }
-        
-        public a a(final String s, final Object o) {
-            this.pN.add(eg.f(s) + "=" + String.valueOf(o));
-            return this;
-        }
-        
-        @Override
-        public String toString() {
-            final StringBuilder append = new StringBuilder(100).append(this.pO.getClass().getSimpleName()).append('{');
-            for (int size = this.pN.size(), i = 0; i < size; ++i) {
-                append.append(this.pN.get(i));
-                if (i < size - 1) {
-                    append.append(", ");
+    private String B(final String s) {
+        if (!TextUtils.isEmpty((CharSequence)s)) {
+            try {
+                if (s.endsWith("/")) {
+                    return s.substring(0, s.length() - 1);
                 }
             }
-            return append.append('}').toString();
+            catch (IndexOutOfBoundsException ex) {
+                dw.w(ex.getMessage());
+                return s;
+            }
         }
+        return s;
+    }
+    
+    protected boolean A(String s) {
+        s = this.B(s);
+        if (!TextUtils.isEmpty((CharSequence)s)) {
+            try {
+                final URI uri = new URI(s);
+                if ("passback".equals(uri.getScheme())) {
+                    dw.v("Passback received");
+                    this.rO.bb();
+                    return true;
+                }
+                if (!TextUtils.isEmpty((CharSequence)this.rM)) {
+                    final URI uri2 = new URI(this.rM);
+                    s = uri2.getHost();
+                    final String host = uri.getHost();
+                    final String path = uri2.getPath();
+                    final String path2 = uri.getPath();
+                    if (fo.equal(s, host) && fo.equal(path, path2)) {
+                        dw.v("Passback received");
+                        this.rO.bb();
+                        return true;
+                    }
+                }
+            }
+            catch (URISyntaxException ex) {
+                dw.w(ex.getMessage());
+                return false;
+            }
+        }
+        return false;
+    }
+    
+    public void onLoadResource(final WebView webView, final String s) {
+        dw.v("JavascriptAdWebViewClient::onLoadResource: " + s);
+        if (!this.A(s)) {
+            this.lC.bI().onLoadResource(this.lC, s);
+        }
+    }
+    
+    public void onPageFinished(final WebView webView, final String s) {
+        dw.v("JavascriptAdWebViewClient::onPageFinished: " + s);
+        if (!this.rN) {
+            this.rO.ba();
+            this.rN = true;
+        }
+    }
+    
+    public boolean shouldOverrideUrlLoading(final WebView webView, final String s) {
+        dw.v("JavascriptAdWebViewClient::shouldOverrideUrlLoading: " + s);
+        if (this.A(s)) {
+            dw.v("shouldOverrideUrlLoading: received passback url");
+            return true;
+        }
+        return this.lC.bI().shouldOverrideUrlLoading(this.lC, s);
     }
 }

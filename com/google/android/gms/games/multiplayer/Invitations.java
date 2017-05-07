@@ -16,6 +16,8 @@ public interface Invitations
     
     PendingResult<LoadInvitationsResult> loadInvitations(final GoogleApiClient p0);
     
+    PendingResult<LoadInvitationsResult> loadInvitations(final GoogleApiClient p0, final int p1);
+    
     void registerInvitationListener(final GoogleApiClient p0, final OnInvitationReceivedListener p1);
     
     void unregisterInvitationListener(final GoogleApiClient p0);

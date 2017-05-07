@@ -17,6 +17,8 @@ public interface DriveApi
     
     PendingResult<DriveIdResult> fetchDriveId(final GoogleApiClient p0, final String p1);
     
+    DriveFolder getAppFolder(final GoogleApiClient p0);
+    
     DriveFile getFile(final GoogleApiClient p0, final DriveId p1);
     
     DriveFolder getFolder(final GoogleApiClient p0, final DriveId p1);

@@ -56,4 +56,9 @@ public class ViewRecycler
         list.add(view);
         this.logVerbose("+ Added view to scrap heap with tag: " + canonicalName + ", scrapHeap size:" + list.size());
     }
+    
+    public interface ViewRecyclerProvider
+    {
+        ViewRecycler getViewRecycler();
+    }
 }

@@ -16,12 +16,14 @@ public final class MediationAdRequest
     private final AdRequest.Gender e;
     private final Set<String> f;
     private final boolean g;
+    private final Location h;
     
-    public MediationAdRequest(final Date d, final AdRequest.Gender e, final Set<String> f, final boolean g) {
+    public MediationAdRequest(final Date d, final AdRequest.Gender e, final Set<String> f, final boolean g, final Location h) {
         this.d = d;
         this.e = e;
         this.f = f;
         this.g = g;
+        this.h = h;
     }
     
     public Integer getAgeInYears() {
@@ -41,7 +43,7 @@ public final class MediationAdRequest
     }
     
     public Location getLocation() {
-        return null;
+        return this.h;
     }
     
     public boolean isTesting() {

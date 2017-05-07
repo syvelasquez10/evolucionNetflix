@@ -42,8 +42,8 @@ public abstract class LanguageSelector
     LanguageSelector(final NetflixActivity mController, final LanguageSelectorCallback mCallback) {
         this.mController = mController;
         this.mCallback = mCallback;
-        this.mSelectedRowColor = this.mController.getResources().getColor(2131165266);
-        this.mRowColor = this.mController.getResources().getColor(2131165265);
+        this.mSelectedRowColor = this.mController.getResources().getColor(2131296351);
+        this.mRowColor = this.mController.getResources().getColor(2131296350);
     }
     
     public static LanguageSelector createInstance(final NetflixActivity netflixActivity, final boolean b, final LanguageSelectorCallback languageSelectorCallback) {
@@ -76,7 +76,7 @@ public abstract class LanguageSelector
         final LanguageAlertDialog languageAlertDialog = new LanguageAlertDialog((Context)this.mController);
         languageAlertDialog.setView(view);
         languageAlertDialog.setCancelable(true);
-        languageAlertDialog.setButton(-1, (CharSequence)this.mController.getString(2131296347), (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        languageAlertDialog.setButton(-1, (CharSequence)this.mController.getString(2131492970), (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             final /* synthetic */ boolean val$wasPlaying = LanguageSelector.this.mCallback.wasPlaying();
             
             public void onClick(final DialogInterface dialogInterface, final int n) {
@@ -115,9 +115,9 @@ public abstract class LanguageSelector
                 return;
             }
             Log.d("nf_language_selector", "Button found!");
-            button.setBackgroundColor(this.mController.getResources().getColor(2131165265));
-            button.setTextColor(this.mController.getResources().getColor(2131165227));
-            button.setTextAppearance((Context)this.mController, 2131558584);
+            button.setBackgroundColor(this.mController.getResources().getColor(2131296350));
+            button.setTextColor(this.mController.getResources().getColor(2131296312));
+            button.setTextAppearance((Context)this.mController, 2131558590);
         }
     }
     
@@ -230,10 +230,10 @@ public abstract class LanguageSelector
     }
     
     protected void initLists(final View view, final Language language) {
-        (this.mAudiosListView = (ListView)view.findViewById(2131230894)).setChoiceMode(1);
+        (this.mAudiosListView = (ListView)view.findViewById(2131165399)).setChoiceMode(1);
         final AudioAdapter adapter = new AudioAdapter(language);
         this.mAudiosListView.setAdapter((ListAdapter)adapter);
-        (this.mSubtitlesListView = (ListView)view.findViewById(2131230895)).setChoiceMode(1);
+        (this.mSubtitlesListView = (ListView)view.findViewById(2131165400)).setChoiceMode(1);
         final SubtitleAdapter adapter2 = new SubtitleAdapter(language);
         this.mSubtitlesListView.setAdapter((ListAdapter)adapter2);
         this.mAudiosListView.setOnItemClickListener((AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
@@ -293,7 +293,7 @@ public abstract class LanguageSelector
             View inflate = view;
             if (view == null) {
                 Log.d("nf_language_selector", "Audio create row " + n);
-                inflate = LanguageSelector.this.mController.getLayoutInflater().inflate(2130903093, viewGroup, false);
+                inflate = LanguageSelector.this.mController.getLayoutInflater().inflate(2130903103, viewGroup, false);
                 inflate.setTag((Object)new RowHolder(inflate));
             }
             final RowHolder rowHolder = (RowHolder)inflate.getTag();
@@ -343,8 +343,8 @@ public abstract class LanguageSelector
         TextView name;
         
         RowHolder(final View view) {
-            this.name = (TextView)view.findViewById(2131230896);
-            this.choice = (RadioButton)view.findViewById(2131230897);
+            this.name = (TextView)view.findViewById(2131165401);
+            this.choice = (RadioButton)view.findViewById(2131165402);
         }
     }
     
@@ -373,7 +373,7 @@ public abstract class LanguageSelector
             View inflate = view;
             if (view == null) {
                 Log.d("nf_language_selector", "Subtitle create row " + n);
-                inflate = LanguageSelector.this.mController.getLayoutInflater().inflate(2130903093, viewGroup, false);
+                inflate = LanguageSelector.this.mController.getLayoutInflater().inflate(2130903103, viewGroup, false);
                 inflate.setTag((Object)new RowHolder(inflate));
             }
             final RowHolder rowHolder = (RowHolder)inflate.getTag();
@@ -389,14 +389,14 @@ public abstract class LanguageSelector
                 if (item.isCC()) {
                     Log.d("nf_language_selector", "Add CC");
                     sb.append(' ');
-                    sb.append(LanguageSelector.this.mController.getText(2131296505));
+                    sb.append(LanguageSelector.this.mController.getText(2131493125));
                 }
                 final String string = sb.toString();
                 equals = item.equals(subtitle);
                 text = string;
             }
             else {
-                final String string2 = LanguageSelector.this.mController.getString(2131296498);
+                final String string2 = LanguageSelector.this.mController.getString(2131493118);
                 if (subtitle == null) {
                     equals = true;
                 }

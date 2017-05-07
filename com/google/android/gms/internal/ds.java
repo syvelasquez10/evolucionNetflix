@@ -4,40 +4,44 @@
 
 package com.google.android.gms.internal;
 
-import android.util.Log;
-import android.os.Looper;
+import android.graphics.Paint;
+import android.view.View;
+import android.webkit.WebView;
+import android.view.Window;
+import android.webkit.WebSettings;
+import android.content.Context;
 
 public final class ds
 {
-    public static void N(final String s) {
-        if (Looper.getMainLooper().getThread() != Thread.currentThread()) {
-            Log.e("Asserts", "checkMainThread: current thread " + Thread.currentThread() + " IS NOT the main thread " + Looper.getMainLooper().getThread() + "!");
-            throw new IllegalStateException(s);
-        }
+    public static void a(final Context context, final WebSettings webSettings) {
+        webSettings.setAppCachePath(context.getCacheDir().getAbsolutePath());
+        webSettings.setAppCacheMaxSize(0L);
+        webSettings.setAppCacheEnabled(true);
+        webSettings.setDatabasePath(context.getDatabasePath("com.google.android.gms.ads.db").getAbsolutePath());
+        webSettings.setDatabaseEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setDisplayZoomControls(false);
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setSupportZoom(true);
     }
     
-    public static void O(final String s) {
-        if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
-            Log.e("Asserts", "checkNotMainThread: current thread " + Thread.currentThread() + " IS the main thread " + Looper.getMainLooper().getThread() + "!");
-            throw new IllegalStateException(s);
-        }
+    public static void a(final Window window) {
+        window.setFlags(16777216, 16777216);
     }
     
-    public static void a(final boolean b, final Object o) {
-        if (!b) {
-            throw new IllegalStateException(String.valueOf(o));
-        }
+    public static void a(final WebView webView) {
+        webView.onPause();
     }
     
-    public static void d(final Object o) {
-        if (o == null) {
-            throw new IllegalArgumentException("null reference");
-        }
+    public static void b(final WebView webView) {
+        webView.onResume();
     }
     
-    public static void p(final boolean b) {
-        if (!b) {
-            throw new IllegalStateException();
-        }
+    public static void d(final View view) {
+        view.setLayerType(1, (Paint)null);
+    }
+    
+    public static void e(final View view) {
+        view.setLayerType(0, (Paint)null);
     }
 }

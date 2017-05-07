@@ -6,6 +6,7 @@ package com.netflix.mediaclient.servicemgr;
 
 public enum VideoType
 {
+    CHARACTERS("characters"), 
     EPISODE("episodes"), 
     MOVIE("movies"), 
     SEASON("seasons"), 

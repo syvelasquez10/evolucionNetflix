@@ -10,55 +10,43 @@ import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class e implements Parcelable$Creator<FullWalletRequest>
+public class e implements Parcelable$Creator<d>
 {
-    static void a(final FullWalletRequest fullWalletRequest, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
-        b.c(parcel, 1, fullWalletRequest.getVersionCode());
-        b.a(parcel, 2, fullWalletRequest.Gn, false);
-        b.a(parcel, 3, fullWalletRequest.Go, false);
-        b.a(parcel, 4, (Parcelable)fullWalletRequest.Gu, n, false);
-        b.D(parcel, o);
+    static void a(final d d, final Parcel parcel, final int n) {
+        final int p3 = b.p(parcel);
+        b.c(parcel, 1, d.getVersionCode());
+        b.a(parcel, 2, (Parcelable)d.abg, n, false);
+        b.F(parcel, p3);
     }
     
-    public FullWalletRequest aI(final Parcel parcel) {
-        Cart cart = null;
-        final int n = a.n(parcel);
+    public d ba(final Parcel parcel) {
+        final int o = a.o(parcel);
         int g = 0;
-        String m = null;
-        String i = null;
-        while (parcel.dataPosition() < n) {
-            final int j = a.m(parcel);
-            switch (a.M(j)) {
+        LoyaltyWalletObject loyaltyWalletObject = null;
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
                 default: {
-                    a.b(parcel, j);
+                    a.b(parcel, n);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, j);
+                    g = a.g(parcel, n);
                     continue;
                 }
                 case 2: {
-                    i = a.m(parcel, j);
-                    continue;
-                }
-                case 3: {
-                    m = a.m(parcel, j);
-                    continue;
-                }
-                case 4: {
-                    cart = a.a(parcel, j, Cart.CREATOR);
+                    loyaltyWalletObject = a.a(parcel, n, LoyaltyWalletObject.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new FullWalletRequest(g, i, m, cart);
+        return new d(g, loyaltyWalletObject);
     }
     
-    public FullWalletRequest[] bA(final int n) {
-        return new FullWalletRequest[n];
+    public d[] cm(final int n) {
+        return new d[n];
     }
 }

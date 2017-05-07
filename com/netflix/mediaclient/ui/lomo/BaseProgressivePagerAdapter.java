@@ -6,7 +6,6 @@ package com.netflix.mediaclient.ui.lomo;
 
 import java.util.List;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.Trackable;
 import android.view.View;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
@@ -15,10 +14,10 @@ import com.netflix.mediaclient.servicemgr.BasicLoMo;
 import com.netflix.mediaclient.servicemgr.FetchVideosHandler;
 import com.netflix.mediaclient.servicemgr.Video;
 
-public abstract class BaseProgressivePagerAdapter<T extends Video> implements ProgressiveAdapterProvider, FetchCallback<T>
+public abstract class BaseProgressivePagerAdapter<T extends Video> implements RowAdapter, FetchCallback<T>
 {
     protected static final String TAG = "BaseProgressivePagerAdapter";
-    private final PagerAdapterCallbacks adapterCallbacks;
+    private final RowAdapterCallbacks adapterCallbacks;
     private int currDataIndex;
     private boolean hasMoreData;
     private BasicLoMo lomo;
@@ -27,11 +26,11 @@ public abstract class BaseProgressivePagerAdapter<T extends Video> implements Pr
     private long requestId;
     private final ViewRecycler viewRecycler;
     
-    public BaseProgressivePagerAdapter(final ServiceManager manager, final PagerAdapterCallbacks adapterCallbacks, final ViewRecycler viewRecycler) {
-        this.paginatedAdapter = this.createPaginatedAdapter(manager.getContext());
+    public BaseProgressivePagerAdapter(final ServiceManager manager, final RowAdapterCallbacks adapterCallbacks, final ViewRecycler viewRecycler) {
         this.adapterCallbacks = adapterCallbacks;
         this.manager = manager;
         this.viewRecycler = viewRecycler;
+        this.paginatedAdapter = this.createPaginatedAdapter((Context)manager.getActivity());
     }
     
     private void fetchMoreData() {
@@ -57,12 +56,17 @@ public abstract class BaseProgressivePagerAdapter<T extends Video> implements Pr
     }
     
     protected int getNumVideosToFetchPerBatch() {
-        return this.paginatedAdapter.computeNumVideosToFetchPerBatch(this.manager.getContext());
+        return this.paginatedAdapter.computeNumVideosToFetchPerBatch((Context)this.manager.getActivity());
     }
     
     @Override
     public long getRequestId() {
         return this.requestId;
+    }
+    
+    @Override
+    public int getRowHeightInPx() {
+        return this.paginatedAdapter.getRowHeightInPx();
     }
     
     @Override
@@ -117,7 +121,8 @@ public abstract class BaseProgressivePagerAdapter<T extends Video> implements Pr
     }
     
     @Override
-    public void restoreFromMemento(final Memento memento) {
+    public void restoreFromMemento(final Object o) {
+        final Memento memento = (Memento)o;
         this.invalidateRequestId();
         this.lomo = memento.lomo;
         this.hasMoreData = memento.hasMoreData;

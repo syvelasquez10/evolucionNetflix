@@ -13,8 +13,8 @@ import com.netflix.mediaclient.service.webclient.model.BillboardDetails;
 public class BillboardViewGroup extends VideoViewGroup<BillboardDetails, BillboardView>
 {
     public BillboardViewGroup(final Context context) {
-        super(context);
-        this.setId(2131230760);
+        super(context, false);
+        this.setId(2131165239);
     }
     
     @Override
@@ -24,11 +24,6 @@ public class BillboardViewGroup extends VideoViewGroup<BillboardDetails, Billboa
     
     @Override
     protected boolean shouldApplyPaddingToChildren() {
-        return false;
-    }
-    
-    @Override
-    protected boolean shouldOverlapPages() {
         return false;
     }
     

@@ -12,21 +12,21 @@ import android.os.Parcel;
 
 public class b
 {
-    private static int B(final Parcel parcel, final int n) {
+    private static int D(final Parcel parcel, final int n) {
         parcel.writeInt(0xFFFF0000 | n);
         parcel.writeInt(0);
         return parcel.dataPosition();
     }
     
-    private static void C(final Parcel parcel, final int n) {
+    private static void E(final Parcel parcel, final int n) {
         final int dataPosition = parcel.dataPosition();
         parcel.setDataPosition(n - 4);
         parcel.writeInt(dataPosition - n);
         parcel.setDataPosition(dataPosition);
     }
     
-    public static void D(final Parcel parcel, final int n) {
-        C(parcel, n);
+    public static void F(final Parcel parcel, final int n) {
+        E(parcel, n);
     }
     
     public static void a(final Parcel parcel, final int n, final byte b) {
@@ -49,52 +49,52 @@ public class b
         parcel.writeLong(n2);
     }
     
-    public static void a(final Parcel parcel, int b, final Bundle bundle, final boolean b2) {
+    public static void a(final Parcel parcel, int d, final Bundle bundle, final boolean b) {
         if (bundle == null) {
-            if (b2) {
-                b(parcel, b, 0);
+            if (b) {
+                b(parcel, d, 0);
             }
             return;
         }
-        b = B(parcel, b);
+        d = D(parcel, d);
         parcel.writeBundle(bundle);
-        C(parcel, b);
+        E(parcel, d);
     }
     
-    public static void a(final Parcel parcel, int b, final IBinder binder, final boolean b2) {
+    public static void a(final Parcel parcel, int d, final IBinder binder, final boolean b) {
         if (binder == null) {
-            if (b2) {
-                b(parcel, b, 0);
+            if (b) {
+                b(parcel, d, 0);
             }
             return;
         }
-        b = B(parcel, b);
+        d = D(parcel, d);
         parcel.writeStrongBinder(binder);
-        C(parcel, b);
+        E(parcel, d);
     }
     
-    public static void a(final Parcel parcel, int b, final Parcel parcel2, final boolean b2) {
+    public static void a(final Parcel parcel, int d, final Parcel parcel2, final boolean b) {
         if (parcel2 == null) {
-            if (b2) {
-                b(parcel, b, 0);
+            if (b) {
+                b(parcel, d, 0);
             }
             return;
         }
-        b = B(parcel, b);
+        d = D(parcel, d);
         parcel.appendFrom(parcel2, 0, parcel2.dataSize());
-        C(parcel, b);
+        E(parcel, d);
     }
     
-    public static void a(final Parcel parcel, int b, final Parcelable parcelable, final int n, final boolean b2) {
+    public static void a(final Parcel parcel, int d, final Parcelable parcelable, final int n, final boolean b) {
         if (parcelable == null) {
-            if (b2) {
-                b(parcel, b, 0);
+            if (b) {
+                b(parcel, d, 0);
             }
             return;
         }
-        b = B(parcel, b);
+        d = D(parcel, d);
         parcelable.writeToParcel(parcel, n);
-        C(parcel, b);
+        E(parcel, d);
     }
     
     public static void a(final Parcel parcel, int n, final Boolean b, final boolean b2) {
@@ -113,28 +113,39 @@ public class b
         parcel.writeInt(n);
     }
     
-    public static void a(final Parcel parcel, int b, final String s, final boolean b2) {
-        if (s == null) {
-            if (b2) {
-                b(parcel, b, 0);
+    public static void a(final Parcel parcel, final int n, final Integer n2, final boolean b) {
+        if (n2 == null) {
+            if (b) {
+                b(parcel, n, 0);
             }
             return;
         }
-        b = B(parcel, b);
-        parcel.writeString(s);
-        C(parcel, b);
+        b(parcel, n, 4);
+        parcel.writeInt((int)n2);
     }
     
-    public static void a(final Parcel parcel, int b, final List<String> list, final boolean b2) {
-        if (list == null) {
-            if (b2) {
-                b(parcel, b, 0);
+    public static void a(final Parcel parcel, int d, final String s, final boolean b) {
+        if (s == null) {
+            if (b) {
+                b(parcel, d, 0);
             }
             return;
         }
-        b = B(parcel, b);
+        d = D(parcel, d);
+        parcel.writeString(s);
+        E(parcel, d);
+    }
+    
+    public static void a(final Parcel parcel, int d, final List<String> list, final boolean b) {
+        if (list == null) {
+            if (b) {
+                b(parcel, d, 0);
+            }
+            return;
+        }
+        d = D(parcel, d);
         parcel.writeStringList((List)list);
-        C(parcel, b);
+        E(parcel, d);
     }
     
     public static void a(final Parcel parcel, final int n, final short n2) {
@@ -153,28 +164,28 @@ public class b
         parcel.writeInt(n);
     }
     
-    public static void a(final Parcel parcel, int b, final byte[] array, final boolean b2) {
+    public static void a(final Parcel parcel, int d, final byte[] array, final boolean b) {
         if (array == null) {
-            if (b2) {
-                b(parcel, b, 0);
+            if (b) {
+                b(parcel, d, 0);
             }
             return;
         }
-        b = B(parcel, b);
+        d = D(parcel, d);
         parcel.writeByteArray(array);
-        C(parcel, b);
+        E(parcel, d);
     }
     
-    public static void a(final Parcel parcel, int b, final float[] array, final boolean b2) {
+    public static void a(final Parcel parcel, int d, final int[] array, final boolean b) {
         if (array == null) {
-            if (b2) {
-                b(parcel, b, 0);
+            if (b) {
+                b(parcel, d, 0);
             }
             return;
         }
-        b = B(parcel, b);
-        parcel.writeFloatArray(array);
-        C(parcel, b);
+        d = D(parcel, d);
+        parcel.writeIntArray(array);
+        E(parcel, d);
     }
     
     public static <T extends Parcelable> void a(final Parcel parcel, int i, final T[] array, final int n, final boolean b) {
@@ -184,7 +195,7 @@ public class b
             }
             return;
         }
-        final int b2 = B(parcel, i);
+        final int d = D(parcel, i);
         final int length = array.length;
         parcel.writeInt(length);
         Parcelable parcelable;
@@ -197,19 +208,36 @@ public class b
                 a(parcel, parcelable, n);
             }
         }
-        C(parcel, b2);
+        E(parcel, d);
     }
     
-    public static void a(final Parcel parcel, int b, final String[] array, final boolean b2) {
+    public static void a(final Parcel parcel, int d, final String[] array, final boolean b) {
         if (array == null) {
-            if (b2) {
-                b(parcel, b, 0);
+            if (b) {
+                b(parcel, d, 0);
             }
             return;
         }
-        b = B(parcel, b);
+        d = D(parcel, d);
         parcel.writeStringArray(array);
-        C(parcel, b);
+        E(parcel, d);
+    }
+    
+    public static void a(final Parcel parcel, int i, final byte[][] array, final boolean b) {
+        final int n = 0;
+        if (array == null) {
+            if (b) {
+                b(parcel, i, 0);
+            }
+            return;
+        }
+        final int d = D(parcel, i);
+        final int length = array.length;
+        parcel.writeInt(length);
+        for (i = n; i < length; ++i) {
+            parcel.writeByteArray(array[i]);
+        }
+        E(parcel, d);
     }
     
     private static <T extends Parcelable> void a(final Parcel parcel, final T t, int dataPosition) {
@@ -239,7 +267,7 @@ public class b
             }
             return;
         }
-        final int b2 = B(parcel, i);
+        final int d = D(parcel, i);
         final int size = list.size();
         parcel.writeInt(size);
         Parcelable parcelable;
@@ -252,7 +280,7 @@ public class b
                 a(parcel, parcelable, 0);
             }
         }
-        C(parcel, b2);
+        E(parcel, d);
     }
     
     public static void c(final Parcel parcel, final int n, final int n2) {
@@ -260,19 +288,19 @@ public class b
         parcel.writeInt(n2);
     }
     
-    public static void c(final Parcel parcel, int b, final List list, final boolean b2) {
+    public static void c(final Parcel parcel, int d, final List list, final boolean b) {
         if (list == null) {
-            if (b2) {
-                b(parcel, b, 0);
+            if (b) {
+                b(parcel, d, 0);
             }
             return;
         }
-        b = B(parcel, b);
+        d = D(parcel, d);
         parcel.writeList(list);
-        C(parcel, b);
+        E(parcel, d);
     }
     
-    public static int o(final Parcel parcel) {
-        return B(parcel, 20293);
+    public static int p(final Parcel parcel) {
+        return D(parcel, 20293);
     }
 }

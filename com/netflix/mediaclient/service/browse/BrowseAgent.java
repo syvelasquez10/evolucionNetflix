@@ -40,6 +40,7 @@ import java.util.Random;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.ShowDetails;
+import com.netflix.mediaclient.servicemgr.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.SeasonDetails;
 import android.os.Handler;
 import java.util.ArrayList;
@@ -72,6 +73,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     public static final String CACHE_KEY_PREFIX_GENRE_LOMO;
     public static final String CACHE_KEY_PREFIX_GENRE_VIDEOS;
     public static final String CACHE_KEY_PREFIX_IQ_VIDEOS;
+    public static final String CACHE_KEY_PREFIX_KIDS_CDP;
     public static final String CACHE_KEY_PREFIX_LOMO;
     public static final String CACHE_KEY_PREFIX_MDP;
     public static final String CACHE_KEY_PREFIX_SDP;
@@ -130,6 +132,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         CACHE_KEY_PREFIX_LOMO = getCacheKeyFromClassName(FetchLoMosTask.class);
         CACHE_KEY_PREFIX_MDP = getCacheKeyFromClassName(FetchMovieDetailsTask.class);
         CACHE_KEY_PREFIX_SDP = getCacheKeyFromClassName(FetchShowDetailsTask.class);
+        CACHE_KEY_PREFIX_KIDS_CDP = getCacheKeyFromClassName(FetchKidsCharacterDetailsTask.class);
         CACHE_KEY_PREFIX_EPISODES = getCacheKeyFromClassName(FetchEpisodesTask.class);
         CACHE_KEY_PREFIX_EPISODE_DETAILS = getCacheKeyFromClassName(FetchEpisodeDetailsTask.class);
         CACHE_KEY_PREFIX_GENRE_LOMO = getCacheKeyFromClassName(FetchGenresTask.class);
@@ -214,11 +217,31 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         return append.toString();
     }
     
+    private boolean cacheHasLolomoId(final HardCache hardCache) {
+        if (StringUtils.isEmpty(getLoLoMoId(hardCache))) {
+            Log.d("nf_service_browseagent", "LoLoMoId missing in cache");
+            return false;
+        }
+        return true;
+    }
+    
     private static boolean canDoDataFetches() {
         if (!BrowseAgent.isCurrentProfileActive) {
             Log.d("nf_service_browseagent", "wrong state - canDoDataFetches false - skipping browse request");
         }
         return BrowseAgent.isCurrentProfileActive;
+    }
+    
+    private boolean canRefreshCW(final HardCache hardCache) {
+        if (StringUtils.isEmpty(getCWLoMoIndex(hardCache))) {
+            Log.d("nf_service_browseagent", "CW index missing in cache - cannot refresh CW");
+            return false;
+        }
+        if (StringUtils.isEmpty(getCWLoMoId(hardCache))) {
+            Log.d("nf_service_browseagent", "CW id missing in cache - cannot refresh CW");
+            return false;
+        }
+        return true;
     }
     
     public static int computePlayPos(final int n, int n2, final int n3) {
@@ -276,6 +299,10 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         return (ListOfMoviesSummary)hardCache.get("iq_lomo_summary");
     }
     
+    public static com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails getKidsCharacterDetailsFromCache(final String s, final HardCache hardCache, final SoftCache softCache) {
+        return (com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails)getFromCaches(hardCache, softCache, buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_KIDS_CDP, s, "0", "0"));
+    }
+    
     public static String getLoLoMoId(final HardCache hardCache) {
         return (String)hardCache.get("lolomo_id");
     }
@@ -315,6 +342,15 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     
     private void handleProfileDeactive() {
         BrowseAgent.isCurrentProfileActive = false;
+    }
+    
+    private Boolean isKidsCharacterDetailsNew(final KidsCharacterDetails kidsCharacterDetails, final KidsCharacterDetails kidsCharacterDetails2) {
+        boolean b = true;
+        Log.d("nf_service_browseagent", String.format("charId: %s, cachePlayableId:%s, newPlayableId:%s", kidsCharacterDetails.getCharacterId(), kidsCharacterDetails.getPlayableId(), kidsCharacterDetails2.getPlayableId()));
+        if (StringUtils.safeEquals(kidsCharacterDetails.getPlayableId(), kidsCharacterDetails2.getPlayableId())) {
+            b = false;
+        }
+        return b;
     }
     
     private void launchTask(final Runnable runnable) {
@@ -641,22 +677,6 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         return areIqIdsInCache(this.hardCache);
     }
     
-    public boolean canRefreshCW(final HardCache hardCache) {
-        if (StringUtils.isEmpty(getLoLoMoId(hardCache))) {
-            Log.d("nf_service_browseagent", "LoLoMoId missing in cache - cannot refresh");
-            return false;
-        }
-        if (StringUtils.isEmpty(getCWLoMoIndex(hardCache))) {
-            Log.d("nf_service_browseagent", "CW index missing in cache - cannot refresh");
-            return false;
-        }
-        if (StringUtils.isEmpty(getCWLoMoId(hardCache))) {
-            Log.d("nf_service_browseagent", "CW Id missing in cache - cannot refresh");
-            return false;
-        }
-        return true;
-    }
-    
     @Override
     public void destroy() {
         this.unregisterUserAgentIntentReceiver();
@@ -712,6 +732,10 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     
     public void fetchIQVideos(final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
         this.launchTask(new FetchIQVideosTask(n, n2, browseAgentCallback, true));
+    }
+    
+    public void fetchKidsCharacterDetails(final String s, final BrowseAgentCallback browseAgentCallback) {
+        this.launchTask(new FetchKidsCharacterDetailsTask(s, browseAgentCallback));
     }
     
     public void fetchLoLoMoSummary(final String s, final BrowseAgentCallback browseAgentCallback) {
@@ -842,6 +866,17 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                 }
             });
         }
+    }
+    
+    public void refreshKidsCharacterDetail(final String s, final BrowseAgentCallback browseAgentCallback) {
+        Log.d("nf_service_browseagent", "refreshKidsCharacterDetail id:" + s);
+        final com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails kidsCharacterDetailsFromCache = getKidsCharacterDetailsFromCache(s, this.hardCache, this.softCache);
+        if (kidsCharacterDetailsFromCache == null) {
+            Log.d("nf_service_browseagent", String.format("refreshKidsCharacterDetail id:%s, cache null - skip", s));
+            browseAgentCallback.onKidsCharacterDetailsFetched(kidsCharacterDetailsFromCache, true, 0);
+            return;
+        }
+        this.launchTask(new RefreshKidsCharacterDetailsTask(s, browseAgentCallback));
     }
     
     public void removeFromQueue(final String s, final BrowseAgentCallback browseAgentCallback) {
@@ -1077,11 +1112,11 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                 this.webClientCallback.onEpisodeDetailsFetched(episodeDetails, 0);
                 return;
             }
-            final String access$2000 = buildEpisodeCacheKey(((FetchTask)this).getCategory());
+            final String access$2300 = buildEpisodeCacheKey(((FetchTask)this).getCategory());
             if (Log.isLoggable("nf_service_browseagent", 3)) {
-                Log.d("nf_bookmark", "looking for episode with key: " + access$2000);
+                Log.d("nf_bookmark", "looking for episode with key: " + access$2300);
             }
-            final WeakReference weakReference = (WeakReference)BrowseAgent.this.weakEpisodesCache.get(access$2000);
+            final WeakReference weakReference = (WeakReference)BrowseAgent.this.weakEpisodesCache.get(access$2300);
             if (weakReference != null && weakReference.get() != null) {
                 final EpisodeDetails episodeDetails2 = weakReference.get();
                 BrowseAgent.this.updateEpisodeWithLatestShowInformation(BrowseAgent.this.hardCache, BrowseAgent.this.softCache, episodeDetails2);
@@ -1256,6 +1291,38 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                 return;
             }
             this.webClientCallback.onVideosFetched(list, 0);
+        }
+    }
+    
+    private class FetchKidsCharacterDetailsTask extends CachedFetchTask<KidsCharacterDetails>
+    {
+        String mCharacterId;
+        private final BrowseAgentCallback webClientCallback;
+        
+        public FetchKidsCharacterDetailsTask(final String mCharacterId, final BrowseAgentCallback browseAgentCallback) {
+            super(mCharacterId, 0, 0, browseAgentCallback);
+            this.webClientCallback = new SimpleBrowseAgentCallback() {
+                @Override
+                public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final int n) {
+                    ((CachedFetchTask<KidsCharacterDetails>)FetchKidsCharacterDetailsTask.this).updateCacheIfNecessary(kidsCharacterDetails, n);
+                    BrowseAgent.this.getMainHandler().post((Runnable)new Runnable() {
+                        @Override
+                        public void run() {
+                            ((FetchTask)FetchKidsCharacterDetailsTask.this).getCallback().onKidsCharacterDetailsFetched(kidsCharacterDetails, b, n);
+                        }
+                    });
+                }
+            };
+            this.mCharacterId = mCharacterId;
+        }
+        
+        @Override
+        public void run() {
+            if (((CachedFetchTask<KidsCharacterDetails>)this).getCachedValue() == null) {
+                BrowseAgent.this.mBrowseWebClient.fetchKidsCharacterDetails(((FetchTask)this).getCategory(), this.webClientCallback);
+                return;
+            }
+            BrowseAgent.this.refreshKidsCharacterDetail(this.mCharacterId, this.webClientCallback);
         }
     }
     
@@ -1771,8 +1838,45 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                 BrowseAgent.this.mBrowseWebClient.refreshCWList(((FetchTask)this).getFromIndex(), ((FetchTask)this).getToIndex(), this.webClientCallback);
                 return;
             }
-            Log.d("nf_service_browseagent", "Cannot refresh CW (does not exist) - refresh Home lolomo");
-            BrowseAgent.this.sendHomeRefreshBrodcast();
+            if (BrowseAgent.this.cacheHasLolomoId(BrowseAgent.this.hardCache)) {
+                Log.d("nf_service_browseagent", "No CW in cache but we have a lolomo id in the cache - refresh home instead");
+                BrowseAgent.this.sendHomeRefreshBrodcast();
+                return;
+            }
+            Log.d("nf_service_browseagent", "Cache has no CW item or lolomo item so doing nothing for CW refresh");
+        }
+    }
+    
+    private class RefreshKidsCharacterDetailsTask extends FetchTask<KidsCharacterDetails>
+    {
+        String mCharacterId;
+        private final BrowseAgentCallback webClientCallback;
+        
+        public RefreshKidsCharacterDetailsTask(final String mCharacterId, final BrowseAgentCallback browseAgentCallback) {
+            super(mCharacterId, 0, 0, browseAgentCallback);
+            this.webClientCallback = new SimpleBrowseAgentCallback() {
+                @Override
+                public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final int n) {
+                    final com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails kidsCharacterDetailsFromCache = BrowseAgent.getKidsCharacterDetailsFromCache(RefreshKidsCharacterDetailsTask.this.mCharacterId, BrowseAgent.this.hardCache, BrowseAgent.this.softCache);
+                    final com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails kidsCharacterDetails2 = (com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails)kidsCharacterDetails;
+                    final Boolean access$2000 = BrowseAgent.this.isKidsCharacterDetailsNew(kidsCharacterDetailsFromCache, kidsCharacterDetails);
+                    if (b && kidsCharacterDetailsFromCache != null) {
+                        kidsCharacterDetailsFromCache.updateWatchNext(kidsCharacterDetails2);
+                    }
+                    BrowseAgent.this.getMainHandler().post((Runnable)new Runnable() {
+                        @Override
+                        public void run() {
+                            ((FetchTask)RefreshKidsCharacterDetailsTask.this).getCallback().onKidsCharacterDetailsFetched(kidsCharacterDetailsFromCache, access$2000, n);
+                        }
+                    });
+                }
+            };
+            this.mCharacterId = mCharacterId;
+        }
+        
+        @Override
+        public void run() {
+            BrowseAgent.this.mBrowseWebClient.refreshKidsCharacterDetils(((FetchTask)this).getCategory(), this.webClientCallback);
         }
     }
     

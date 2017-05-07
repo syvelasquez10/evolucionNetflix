@@ -20,9 +20,18 @@ import com.netflix.mediaclient.javabridge.transport.NativeTransport;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.Activity;
-import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.media.PlayerType;
+import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
+import android.graphics.Xfermode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.PorterDuff$Mode;
+import android.graphics.RectF;
+import android.graphics.Rect;
+import android.graphics.Paint;
+import android.graphics.Canvas;
+import android.graphics.Bitmap$Config;
+import android.graphics.Bitmap;
 import android.text.format.Formatter;
 import android.os.StatFs;
 import android.content.pm.PackageInfo;
@@ -464,13 +473,32 @@ public final class AndroidUtils
         }
     }
     
+    public static Bitmap getRoundedCornerBitmap(final Bitmap bitmap, final int n, final int n2, final int n3) {
+        if (n3 == 0) {
+            return bitmap;
+        }
+        final Bitmap bitmap2 = Bitmap.createBitmap(n, n2, Bitmap$Config.ARGB_8888);
+        final Canvas canvas = new Canvas(bitmap2);
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, n, n2);
+        final RectF rectF = new RectF(rect);
+        final float n4 = n3;
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(-12434878);
+        canvas.drawRoundRect(rectF, n4, n4, paint);
+        paint.setXfermode((Xfermode)new PorterDuffXfermode(PorterDuff$Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), rect, paint);
+        return bitmap2;
+    }
+    
     public static String getUserAgent(final Context context) {
         final String version = AndroidManifestUtils.getVersion(context);
         final int versionCode = AndroidManifestUtils.getVersionCode(context);
         PlayerType playerType;
         if ((playerType = PlayerTypeFactory.getCurrentType(context)) == null) {
             Log.e("nf_utils", "This should not happen, player type was null at this point! Use default.");
-            playerType = PlayerType.device6;
+            playerType = PlayerTypeFactory.findDefaultPlayerType();
         }
         final String mapPlayerType = mapPlayerType(playerType);
         final StringBuilder sb = new StringBuilder();
@@ -723,23 +751,11 @@ public final class AndroidUtils
     }
     
     public static String mapPlayerType(final PlayerType playerType) {
-        if (playerType == PlayerType.device2 || playerType == PlayerType.device3 || playerType == PlayerType.device5) {
-            return "drmplay";
-        }
-        if (playerType == PlayerType.device1 || playerType == PlayerType.device4) {
-            return "omx";
-        }
-        if (playerType == PlayerType.device6) {
-            return "visualon";
-        }
         if (playerType == PlayerType.device7) {
             return "XAL";
         }
         if (playerType == PlayerType.device8) {
             return "XALMP";
-        }
-        if (playerType == PlayerType.device9) {
-            return "NFAMP";
         }
         if (playerType == PlayerType.device10) {
             return "JPLAYER";

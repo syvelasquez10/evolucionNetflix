@@ -16,55 +16,55 @@ public class DataHolderCreator implements Parcelable$Creator<DataHolder>
     public static final int CONTENT_DESCRIPTION = 0;
     
     static void a(final DataHolder dataHolder, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
-        b.a(parcel, 1, dataHolder.bv(), false);
+        final int p3 = b.p(parcel);
+        b.a(parcel, 1, dataHolder.er(), false);
         b.c(parcel, 1000, dataHolder.getVersionCode());
-        b.a(parcel, 2, dataHolder.bw(), n, false);
+        b.a(parcel, 2, dataHolder.es(), n, false);
         b.c(parcel, 3, dataHolder.getStatusCode());
         b.a(parcel, 4, dataHolder.getMetadata(), false);
-        b.D(parcel, o);
+        b.F(parcel, p3);
     }
     
     public DataHolder createFromParcel(final Parcel parcel) {
         int g = 0;
-        Bundle o = null;
-        final int n = a.n(parcel);
+        Bundle p = null;
+        final int o = a.o(parcel);
         CursorWindow[] array = null;
-        String[] x = null;
+        String[] z = null;
         int g2 = 0;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
                 default: {
-                    a.b(parcel, m);
+                    a.b(parcel, n);
                     continue;
                 }
                 case 1: {
-                    x = a.x(parcel, m);
+                    z = a.z(parcel, n);
                     continue;
                 }
                 case 1000: {
-                    g2 = a.g(parcel, m);
+                    g2 = a.g(parcel, n);
                     continue;
                 }
                 case 2: {
-                    array = a.b(parcel, m, (android.os.Parcelable$Creator<CursorWindow>)CursorWindow.CREATOR);
+                    array = a.b(parcel, n, (android.os.Parcelable$Creator<CursorWindow>)CursorWindow.CREATOR);
                     continue;
                 }
                 case 3: {
-                    g = a.g(parcel, m);
+                    g = a.g(parcel, n);
                     continue;
                 }
                 case 4: {
-                    o = a.o(parcel, m);
+                    p = a.p(parcel, n);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        final DataHolder dataHolder = new DataHolder(g2, x, array, g, o);
+        final DataHolder dataHolder = new DataHolder(g2, z, array, g, p);
         dataHolder.validateContents();
         return dataHolder;
     }

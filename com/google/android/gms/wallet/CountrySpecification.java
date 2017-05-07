@@ -8,24 +8,25 @@ import android.os.Parcel;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
+@Deprecated
 public class CountrySpecification implements SafeParcelable
 {
     public static final Parcelable$Creator<CountrySpecification> CREATOR;
-    String id;
-    private final int kg;
+    String qd;
+    private final int xH;
     
     static {
         CREATOR = (Parcelable$Creator)new c();
     }
     
-    CountrySpecification(final int kg, final String id) {
-        this.kg = kg;
-        this.id = id;
+    CountrySpecification(final int xh, final String qd) {
+        this.xH = xh;
+        this.qd = qd;
     }
     
-    public CountrySpecification(final String id) {
-        this.kg = 1;
-        this.id = id;
+    public CountrySpecification(final String qd) {
+        this.xH = 1;
+        this.qd = qd;
     }
     
     public int describeContents() {
@@ -33,11 +34,11 @@ public class CountrySpecification implements SafeParcelable
     }
     
     public String getCountryCode() {
-        return this.id;
+        return this.qd;
     }
     
     public int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

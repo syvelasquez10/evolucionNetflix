@@ -4,42 +4,35 @@
 
 package com.google.android.gms.drive.internal;
 
-import com.google.android.gms.common.internal.safeparcel.a;
-import com.google.android.gms.common.internal.safeparcel.b;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import com.google.android.gms.common.api.Status;
+import android.os.RemoteException;
 
-public class c implements Parcelable$Creator<CreateContentsRequest>
+public class c extends v.a
 {
-    static void a(final CreateContentsRequest createContentsRequest, final Parcel parcel, int o) {
-        o = b.o(parcel);
-        b.c(parcel, 1, createContentsRequest.kg);
-        b.D(parcel, o);
+    public void a(final OnContentsResponse onContentsResponse) throws RemoteException {
     }
     
-    public CreateContentsRequest B(final Parcel parcel) {
-        final int n = a.n(parcel);
-        int g = 0;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
-                default: {
-                    a.b(parcel, m);
-                    continue;
-                }
-                case 1: {
-                    g = a.g(parcel, m);
-                    continue;
-                }
-            }
-        }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
-        }
-        return new CreateContentsRequest(g);
+    public void a(final OnDownloadProgressResponse onDownloadProgressResponse) throws RemoteException {
     }
     
-    public CreateContentsRequest[] ab(final int n) {
-        return new CreateContentsRequest[n];
+    public void a(final OnDriveIdResponse onDriveIdResponse) throws RemoteException {
+    }
+    
+    public void a(final OnListEntriesResponse onListEntriesResponse) throws RemoteException {
+    }
+    
+    public void a(final OnListParentsResponse onListParentsResponse) throws RemoteException {
+    }
+    
+    public void a(final OnMetadataResponse onMetadataResponse) throws RemoteException {
+    }
+    
+    public void a(final OnSyncMoreResponse onSyncMoreResponse) throws RemoteException {
+    }
+    
+    public void m(final Status status) throws RemoteException {
+    }
+    
+    public void onSuccess() throws RemoteException {
     }
 }

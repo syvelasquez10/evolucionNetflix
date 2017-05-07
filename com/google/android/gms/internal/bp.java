@@ -4,45 +4,46 @@
 
 package com.google.android.gms.internal;
 
-import android.view.ViewGroup$LayoutParams;
-import android.view.View;
-import android.widget.FrameLayout$LayoutParams;
-import android.content.Context;
-import android.app.Activity;
-import android.widget.ImageButton;
-import android.view.View$OnClickListener;
-import android.widget.FrameLayout;
+import android.os.RemoteException;
+import com.google.ads.mediation.MediationServerParameters;
+import android.os.Bundle;
+import com.google.android.gms.ads.mediation.MediationAdapter;
+import com.google.android.gms.ads.mediation.NetworkExtras;
+import java.util.Map;
 
-public final class bp extends FrameLayout implements View$OnClickListener
+public final class bp extends bq.a
 {
-    private final ImageButton gZ;
-    private final Activity gs;
+    private Map<Class<? extends NetworkExtras>, NetworkExtras> nB;
+    private Map<Class<? extends MediationAdapter>, Bundle> nC;
     
-    public bp(final Activity gs, int a) {
-        super((Context)gs);
-        this.gs = gs;
-        this.setOnClickListener((View$OnClickListener)this);
-        (this.gZ = new ImageButton((Context)gs)).setImageResource(17301527);
-        this.gZ.setBackgroundColor(0);
-        this.gZ.setOnClickListener((View$OnClickListener)this);
-        this.gZ.setPadding(0, 0, 0, 0);
-        a = cs.a((Context)gs, a);
-        this.addView((View)this.gZ, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(a, a, 17));
+    private <NETWORK_EXTRAS extends com.google.ads.mediation.NetworkExtras, SERVER_PARAMETERS extends MediationServerParameters> br n(final String s) throws RemoteException {
+        try {
+            final Class<?> forName = Class.forName(s, false, bp.class.getClassLoader());
+            if (com.google.ads.mediation.MediationAdapter.class.isAssignableFrom(forName)) {
+                final com.google.ads.mediation.MediationAdapter mediationAdapter = (com.google.ads.mediation.MediationAdapter)forName.newInstance();
+                return new bw<Object, Object>(mediationAdapter, (com.google.ads.mediation.NetworkExtras)this.nB.get(mediationAdapter.getAdditionalParametersType()));
+            }
+            if (MediationAdapter.class.isAssignableFrom(forName)) {
+                return new bu((MediationAdapter)forName.newInstance(), this.nC.get(forName));
+            }
+            dw.z("Could not instantiate mediation adapter: " + s + " (not a valid adapter).");
+            throw new RemoteException();
+        }
+        catch (Throwable t) {
+            dw.z("Could not instantiate mediation adapter: " + s + ". " + t.getMessage());
+            throw new RemoteException();
+        }
     }
     
-    public void g(final boolean b) {
-        final ImageButton gz = this.gZ;
-        int visibility;
-        if (b) {
-            visibility = 4;
-        }
-        else {
-            visibility = 0;
-        }
-        gz.setVisibility(visibility);
+    public void c(final Map<Class<? extends NetworkExtras>, NetworkExtras> nb) {
+        this.nB = nb;
     }
     
-    public void onClick(final View view) {
-        this.gs.finish();
+    public void d(final Map<Class<? extends MediationAdapter>, Bundle> nc) {
+        this.nC = nc;
+    }
+    
+    public br m(final String s) throws RemoteException {
+        return this.n(s);
     }
 }

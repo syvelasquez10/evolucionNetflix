@@ -5,8 +5,9 @@
 package com.netflix.mediaclient.servicemgr;
 
 import java.util.List;
+import android.os.Parcelable;
 
-public interface LoMo extends BasicLoMo
+public interface LoMo extends BasicLoMo, Parcelable
 {
     List<FriendProfile> getFacebookFriends();
     

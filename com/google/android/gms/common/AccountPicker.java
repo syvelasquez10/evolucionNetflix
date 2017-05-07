@@ -20,6 +20,7 @@ public final class AccountPicker
     public static Intent a(final Account account, final ArrayList<Account> list, final String[] array, final boolean b, final String s, final String s2, final String[] array2, final Bundle bundle, final boolean b2, final int n, final int n2) {
         final Intent intent = new Intent();
         intent.setAction("com.google.android.gms.common.account.CHOOSE_ACCOUNT");
+        intent.setPackage("com.google.android.gms");
         intent.putExtra("allowableAccounts", (Serializable)list);
         intent.putExtra("allowableAccountTypes", array);
         intent.putExtra("addAccountOptions", bundle);

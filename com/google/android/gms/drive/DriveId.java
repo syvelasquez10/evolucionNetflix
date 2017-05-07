@@ -5,97 +5,81 @@
 package com.google.android.gms.drive;
 
 import android.os.Parcel;
+import com.google.android.gms.internal.kt;
 import android.util.Log;
-import com.google.android.gms.internal.iz;
+import com.google.android.gms.internal.ks;
+import com.google.android.gms.drive.internal.y;
 import android.util.Base64;
-import com.google.android.gms.internal.iy;
-import com.google.android.gms.drive.internal.q;
-import com.google.android.gms.internal.eg;
+import com.google.android.gms.internal.fq;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public class DriveId implements SafeParcelable
 {
     public static final Parcelable$Creator<DriveId> CREATOR;
-    final int kg;
-    final String qO;
-    final long qP;
-    final long qQ;
-    private volatile String qR;
+    final String EH;
+    final long EI;
+    final long EJ;
+    private volatile String EK;
+    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new c();
+        CREATOR = (Parcelable$Creator)new d();
     }
     
-    DriveId(final int kg, final String qo, final long qp, final long qq) {
+    DriveId(final int xh, final String eh, final long ei, final long ej) {
         final boolean b = false;
-        this.qR = null;
-        this.kg = kg;
-        this.qO = qo;
-        eg.r(!"".equals(qo));
+        this.EK = null;
+        this.xH = xh;
+        this.EH = eh;
+        fq.z(!"".equals(eh));
         boolean b2 = false;
         Label_0058: {
-            if (qo == null) {
+            if (eh == null) {
                 b2 = b;
-                if (qp == -1L) {
+                if (ei == -1L) {
                     break Label_0058;
                 }
             }
             b2 = true;
         }
-        eg.r(b2);
-        this.qP = qp;
-        this.qQ = qq;
+        fq.z(b2);
+        this.EI = ei;
+        this.EJ = ej;
     }
     
     public DriveId(final String s, final long n, final long n2) {
         this(1, s, n, n2);
     }
     
-    public static DriveId ab(final String s) {
-        eg.f(s);
+    public static DriveId aw(final String s) {
+        fq.f(s);
         return new DriveId(s, -1L, -1L);
     }
     
-    static DriveId d(final byte[] array) {
+    public static DriveId decodeFromString(final String s) {
+        fq.b(s.startsWith("DriveId:"), "Invalid DriveId: " + s);
+        return f(Base64.decode(s.substring("DriveId:".length()), 10));
+    }
+    
+    static DriveId f(final byte[] array) {
         while (true) {
             while (true) {
-                q e;
+                y g;
                 try {
-                    e = q.e(array);
-                    if ("".equals(e.rt)) {
-                        final String rt = null;
-                        return new DriveId(e.versionCode, rt, e.ru, e.rv);
+                    g = y.g(array);
+                    if ("".equals(g.FC)) {
+                        final String fc = null;
+                        return new DriveId(g.versionCode, fc, g.FD, g.FE);
                     }
                 }
-                catch (iy iy) {
+                catch (ks ks) {
                     throw new IllegalArgumentException();
                 }
-                final String rt = e.rt;
+                final String fc = g.FC;
                 continue;
             }
         }
-    }
-    
-    public static DriveId decodeFromString(final String s) {
-        eg.b(s.startsWith("DriveId:"), "Invalid DriveId: " + s);
-        return d(Base64.decode(s.substring("DriveId:".length()), 10));
-    }
-    
-    final byte[] cL() {
-        final q q = new q();
-        q.versionCode = this.kg;
-        String qo;
-        if (this.qO == null) {
-            qo = "";
-        }
-        else {
-            qo = this.qO;
-        }
-        q.rt = qo;
-        q.ru = this.qP;
-        q.rv = this.qQ;
-        return iz.a(q);
     }
     
     public int describeContents() {
@@ -103,40 +87,56 @@ public class DriveId implements SafeParcelable
     }
     
     public final String encodeToString() {
-        if (this.qR == null) {
-            this.qR = "DriveId:" + Base64.encodeToString(this.cL(), 10);
+        if (this.EK == null) {
+            this.EK = "DriveId:" + Base64.encodeToString(this.fC(), 10);
         }
-        return this.qR;
+        return this.EK;
     }
     
     @Override
     public boolean equals(final Object o) {
         if (o instanceof DriveId) {
             final DriveId driveId = (DriveId)o;
-            if (driveId.qQ != this.qQ) {
+            if (driveId.EJ != this.EJ) {
                 Log.w("DriveId", "Attempt to compare invalid DriveId detected. Has local storage been cleared?");
                 return false;
             }
-            if (driveId.qP == -1L && this.qP == -1L) {
-                return driveId.qO.equals(this.qO);
+            if (driveId.EI == -1L && this.EI == -1L) {
+                return driveId.EH.equals(this.EH);
             }
-            if (driveId.qP == this.qP) {
+            if (driveId.EI == this.EI) {
                 return true;
             }
         }
         return false;
     }
     
+    final byte[] fC() {
+        final y y = new y();
+        y.versionCode = this.xH;
+        String eh;
+        if (this.EH == null) {
+            eh = "";
+        }
+        else {
+            eh = this.EH;
+        }
+        y.FC = eh;
+        y.FD = this.EI;
+        y.FE = this.EJ;
+        return kt.d(y);
+    }
+    
     public String getResourceId() {
-        return this.qO;
+        return this.EH;
     }
     
     @Override
     public int hashCode() {
-        if (this.qP == -1L) {
-            return this.qO.hashCode();
+        if (this.EI == -1L) {
+            return this.EH.hashCode();
         }
-        return (String.valueOf(this.qQ) + String.valueOf(this.qP)).hashCode();
+        return (String.valueOf(this.EJ) + String.valueOf(this.EI)).hashCode();
     }
     
     @Override
@@ -145,6 +145,6 @@ public class DriveId implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        c.a(this, parcel, n);
+        d.a(this, parcel, n);
     }
 }

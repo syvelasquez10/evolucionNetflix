@@ -9,9 +9,8 @@ import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.Trackable;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
-import android.app.Activity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.util.AttributeSet;
 import android.content.Context;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -22,7 +21,7 @@ public class VideoView extends AdvancedImageView implements IVideoView<Video>
 {
     public static final float LOMO_BOXART_HEIGHT_TO_WIDTH_RATIO = 1.43f;
     protected VideoDetailsClickListener clicker;
-    private PlayContext playContext;
+    protected PlayContext playContext;
     
     public VideoView(final Context context) {
         super(context);
@@ -42,8 +41,7 @@ public class VideoView extends AdvancedImageView implements IVideoView<Video>
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
-        this.setBackgroundResource(2130837831);
-        this.clicker = new VideoDetailsClickListener((Activity)this.getContext(), this);
+        this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
     }
     
     @Override

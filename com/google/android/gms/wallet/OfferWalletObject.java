@@ -11,22 +11,22 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class OfferWalletObject implements SafeParcelable
 {
     public static final Parcelable$Creator<OfferWalletObject> CREATOR;
-    String GA;
-    String GX;
-    private final int kg;
+    String acj;
+    String eC;
+    private final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new k();
+        CREATOR = (Parcelable$Creator)new n();
     }
     
     OfferWalletObject() {
-        this.kg = 2;
+        this.xH = 2;
     }
     
-    OfferWalletObject(final int kg, final String ga, final String gx) {
-        this.kg = kg;
-        this.GA = ga;
-        this.GX = gx;
+    OfferWalletObject(final int xh, final String ec, final String acj) {
+        this.xH = xh;
+        this.eC = ec;
+        this.acj = acj;
     }
     
     public int describeContents() {
@@ -34,18 +34,18 @@ public final class OfferWalletObject implements SafeParcelable
     }
     
     public String getId() {
-        return this.GA;
+        return this.eC;
     }
     
     public String getRedemptionCode() {
-        return this.GX;
+        return this.acj;
     }
     
     public int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        k.a(this, parcel, n);
+        n.a(this, parcel, n);
     }
 }

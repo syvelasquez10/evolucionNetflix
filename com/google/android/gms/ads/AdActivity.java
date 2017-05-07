@@ -4,32 +4,46 @@
 
 package com.google.android.gms.ads;
 
-import android.os.RemoteException;
-import com.google.android.gms.internal.ct;
-import com.google.android.gms.internal.br;
+import android.view.ViewGroup$LayoutParams;
+import android.view.View;
+import com.google.android.gms.internal.cj;
 import android.os.Bundle;
-import com.google.android.gms.internal.bs;
+import android.os.RemoteException;
+import com.google.android.gms.internal.dw;
+import com.google.android.gms.internal.ck;
 import android.app.Activity;
 
 public final class AdActivity extends Activity
 {
     public static final String CLASS_NAME = "com.google.android.gms.ads.AdActivity";
     public static final String SIMPLE_CLASS_NAME = "AdActivity";
-    private bs dV;
+    private ck ko;
+    
+    private void N() {
+        if (this.ko == null) {
+            return;
+        }
+        try {
+            this.ko.N();
+        }
+        catch (RemoteException ex) {
+            dw.c("Could not forward setContentViewSet to ad overlay:", (Throwable)ex);
+        }
+    }
     
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.dV = br.a(this);
-        if (this.dV == null) {
-            ct.v("Could not create ad overlay.");
+        this.ko = cj.a(this);
+        if (this.ko == null) {
+            dw.z("Could not create ad overlay.");
             this.finish();
             return;
         }
         try {
-            this.dV.onCreate(bundle);
+            this.ko.onCreate(bundle);
         }
         catch (RemoteException ex) {
-            ct.b("Could not forward onCreate to ad overlay:", (Throwable)ex);
+            dw.c("Could not forward onCreate to ad overlay:", (Throwable)ex);
             this.finish();
         }
     }
@@ -37,13 +51,13 @@ public final class AdActivity extends Activity
     protected void onDestroy() {
         while (true) {
             try {
-                if (this.dV != null) {
-                    this.dV.onDestroy();
+                if (this.ko != null) {
+                    this.ko.onDestroy();
                 }
                 super.onDestroy();
             }
             catch (RemoteException ex) {
-                ct.b("Could not forward onDestroy to ad overlay:", (Throwable)ex);
+                dw.c("Could not forward onDestroy to ad overlay:", (Throwable)ex);
                 continue;
             }
             break;
@@ -53,13 +67,13 @@ public final class AdActivity extends Activity
     protected void onPause() {
         while (true) {
             try {
-                if (this.dV != null) {
-                    this.dV.onPause();
+                if (this.ko != null) {
+                    this.ko.onPause();
                 }
                 super.onPause();
             }
             catch (RemoteException ex) {
-                ct.b("Could not forward onPause to ad overlay:", (Throwable)ex);
+                dw.c("Could not forward onPause to ad overlay:", (Throwable)ex);
                 this.finish();
                 continue;
             }
@@ -70,12 +84,12 @@ public final class AdActivity extends Activity
     protected void onRestart() {
         super.onRestart();
         try {
-            if (this.dV != null) {
-                this.dV.onRestart();
+            if (this.ko != null) {
+                this.ko.onRestart();
             }
         }
         catch (RemoteException ex) {
-            ct.b("Could not forward onRestart to ad overlay:", (Throwable)ex);
+            dw.c("Could not forward onRestart to ad overlay:", (Throwable)ex);
             this.finish();
         }
     }
@@ -83,12 +97,12 @@ public final class AdActivity extends Activity
     protected void onResume() {
         super.onResume();
         try {
-            if (this.dV != null) {
-                this.dV.onResume();
+            if (this.ko != null) {
+                this.ko.onResume();
             }
         }
         catch (RemoteException ex) {
-            ct.b("Could not forward onResume to ad overlay:", (Throwable)ex);
+            dw.c("Could not forward onResume to ad overlay:", (Throwable)ex);
             this.finish();
         }
     }
@@ -96,13 +110,13 @@ public final class AdActivity extends Activity
     protected void onSaveInstanceState(final Bundle bundle) {
         while (true) {
             try {
-                if (this.dV != null) {
-                    this.dV.onSaveInstanceState(bundle);
+                if (this.ko != null) {
+                    this.ko.onSaveInstanceState(bundle);
                 }
                 super.onSaveInstanceState(bundle);
             }
             catch (RemoteException ex) {
-                ct.b("Could not forward onSaveInstanceState to ad overlay:", (Throwable)ex);
+                dw.c("Could not forward onSaveInstanceState to ad overlay:", (Throwable)ex);
                 this.finish();
                 continue;
             }
@@ -113,12 +127,12 @@ public final class AdActivity extends Activity
     protected void onStart() {
         super.onStart();
         try {
-            if (this.dV != null) {
-                this.dV.onStart();
+            if (this.ko != null) {
+                this.ko.onStart();
             }
         }
         catch (RemoteException ex) {
-            ct.b("Could not forward onStart to ad overlay:", (Throwable)ex);
+            dw.c("Could not forward onStart to ad overlay:", (Throwable)ex);
             this.finish();
         }
     }
@@ -126,17 +140,32 @@ public final class AdActivity extends Activity
     protected void onStop() {
         while (true) {
             try {
-                if (this.dV != null) {
-                    this.dV.onStop();
+                if (this.ko != null) {
+                    this.ko.onStop();
                 }
                 super.onStop();
             }
             catch (RemoteException ex) {
-                ct.b("Could not forward onStop to ad overlay:", (Throwable)ex);
+                dw.c("Could not forward onStop to ad overlay:", (Throwable)ex);
                 this.finish();
                 continue;
             }
             break;
         }
+    }
+    
+    public void setContentView(final int contentView) {
+        super.setContentView(contentView);
+        this.N();
+    }
+    
+    public void setContentView(final View contentView) {
+        super.setContentView(contentView);
+        this.N();
+    }
+    
+    public void setContentView(final View view, final ViewGroup$LayoutParams viewGroup$LayoutParams) {
+        super.setContentView(view, viewGroup$LayoutParams);
+        this.N();
     }
 }

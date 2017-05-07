@@ -14,7 +14,6 @@ import com.netflix.mediaclient.Log;
 public class VideoWindowForPostplayWithAnimation extends VideoWindowForPostplayWithScaling
 {
     protected static final int ANIMATION_DURATION = 500;
-    private final int END_HEIGHT_DP;
     private final int END_MARGIN_LEFT_DP;
     private final int END_MARGIN_TOP_DP;
     private final int END_WIDTH_DP;
@@ -25,7 +24,6 @@ public class VideoWindowForPostplayWithAnimation extends VideoWindowForPostplayW
         this.END_MARGIN_TOP_DP = 12;
         this.END_MARGIN_LEFT_DP = 12;
         this.END_WIDTH_DP = 300;
-        this.END_HEIGHT_DP = 169;
         Log.d(VideoWindowForPostplayWithAnimation.TAG, "PostPlayWithAnimation");
         this.init();
     }
@@ -39,7 +37,7 @@ public class VideoWindowForPostplayWithAnimation extends VideoWindowForPostplayW
         this.removeCenterInParent((View)this.mSurface);
         this.removeCenterInParent((View)this.mSurface2);
         if (this.mSurface != null) {
-            this.mSurface.setBackgroundResource(2130837819);
+            this.mSurface.setBackgroundResource(2130837816);
             this.mSurface.setPadding(1, 1, 1, 1);
         }
         this.mOriginalSurfaceState = this.getCurrentSurfaceState();
@@ -69,10 +67,6 @@ public class VideoWindowForPostplayWithAnimation extends VideoWindowForPostplayW
         
         private float calculateOffset(final float n, final float n2, final float n3) {
             return n * n2 * n3;
-        }
-        
-        public void cancel() {
-            this.mRunning = false;
         }
         
         @Override

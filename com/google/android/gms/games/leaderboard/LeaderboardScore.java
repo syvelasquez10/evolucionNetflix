@@ -33,7 +33,13 @@ public interface LeaderboardScore extends Freezable<LeaderboardScore>
     
     Uri getScoreHolderHiResImageUri();
     
+    @Deprecated
+    String getScoreHolderHiResImageUrl();
+    
     Uri getScoreHolderIconImageUri();
+    
+    @Deprecated
+    String getScoreHolderIconImageUrl();
     
     String getScoreTag();
     

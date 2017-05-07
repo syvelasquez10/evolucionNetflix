@@ -7,20 +7,29 @@ package com.google.android.gms.internal;
 import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
+import android.app.PendingIntent;
 import android.os.RemoteException;
 import android.os.IInterface;
 
 public interface gz extends IInterface
 {
-    void a(final int p0, final hb p1) throws RemoteException;
+    void onAddGeofencesResult(final int p0, final String[] p1) throws RemoteException;
+    
+    void onRemoveGeofencesByPendingIntentResult(final int p0, final PendingIntent p1) throws RemoteException;
+    
+    void onRemoveGeofencesByRequestIdsResult(final int p0, final String[] p1) throws RemoteException;
     
     public abstract static class a extends Binder implements gz
     {
-        public static gz N(final IBinder binder) {
+        public a() {
+            this.attachInterface((IInterface)this, "com.google.android.gms.location.internal.IGeofencerCallbacks");
+        }
+        
+        public static gz V(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.location.places.internal.IPlacesCallbacks");
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.location.internal.IGeofencerCallbacks");
             if (queryLocalInterface != null && queryLocalInterface instanceof gz) {
                 return (gz)queryLocalInterface;
             }
@@ -37,20 +46,33 @@ public interface gz extends IInterface
                     return super.onTransact(int1, parcel, parcel2, n);
                 }
                 case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.location.places.internal.IPlacesCallbacks");
+                    parcel2.writeString("com.google.android.gms.location.internal.IGeofencerCallbacks");
                     return true;
                 }
                 case 1: {
-                    parcel.enforceInterface("com.google.android.gms.location.places.internal.IPlacesCallbacks");
+                    parcel.enforceInterface("com.google.android.gms.location.internal.IGeofencerCallbacks");
+                    this.onAddGeofencesResult(parcel.readInt(), parcel.createStringArray());
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 2: {
+                    parcel.enforceInterface("com.google.android.gms.location.internal.IGeofencerCallbacks");
+                    this.onRemoveGeofencesByRequestIdsResult(parcel.readInt(), parcel.createStringArray());
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 3: {
+                    parcel.enforceInterface("com.google.android.gms.location.internal.IGeofencerCallbacks");
                     int1 = parcel.readInt();
-                    hb an;
+                    PendingIntent pendingIntent;
                     if (parcel.readInt() != 0) {
-                        an = hb.CREATOR.an(parcel);
+                        pendingIntent = (PendingIntent)PendingIntent.CREATOR.createFromParcel(parcel);
                     }
                     else {
-                        an = null;
+                        pendingIntent = null;
                     }
-                    this.a(int1, an);
+                    this.onRemoveGeofencesByPendingIntentResult(int1, pendingIntent);
+                    parcel2.writeNoException();
                     return true;
                 }
             }
@@ -58,34 +80,71 @@ public interface gz extends IInterface
         
         private static class a implements gz
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
+            }
+            
+            public IBinder asBinder() {
+                return this.kn;
             }
             
             @Override
-            public void a(final int n, final hb hb) throws RemoteException {
+            public void onAddGeofencesResult(final int n, final String[] array) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken("com.google.android.gms.location.places.internal.IPlacesCallbacks");
+                    obtain.writeInterfaceToken("com.google.android.gms.location.internal.IGeofencerCallbacks");
                     obtain.writeInt(n);
-                    if (hb != null) {
-                        obtain.writeInt(1);
-                        hb.writeToParcel(obtain, 0);
-                    }
-                    else {
-                        obtain.writeInt(0);
-                    }
-                    this.dU.transact(1, obtain, (Parcel)null, 1);
+                    obtain.writeStringArray(array);
+                    this.kn.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
                 }
                 finally {
+                    obtain2.recycle();
                     obtain.recycle();
                 }
             }
             
-            public IBinder asBinder() {
-                return this.dU;
+            @Override
+            public void onRemoveGeofencesByPendingIntentResult(final int n, final PendingIntent pendingIntent) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.location.internal.IGeofencerCallbacks");
+                    obtain.writeInt(n);
+                    if (pendingIntent != null) {
+                        obtain.writeInt(1);
+                        pendingIntent.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.kn.transact(3, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void onRemoveGeofencesByRequestIdsResult(final int n, final String[] array) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.location.internal.IGeofencerCallbacks");
+                    obtain.writeInt(n);
+                    obtain.writeStringArray(array);
+                    this.kn.transact(2, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
             }
         }
     }

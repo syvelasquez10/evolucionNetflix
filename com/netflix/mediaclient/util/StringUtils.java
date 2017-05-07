@@ -70,7 +70,7 @@ public final class StringUtils
         spannableStringBuilder.setSpan((Object)new StyleSpan(1), 0, string.length(), 0);
         String string2 = s;
         if (isEmpty(s)) {
-            string2 = context.getString(2131296548);
+            string2 = context.getString(2131493167);
         }
         spannableStringBuilder.append((CharSequence)" ");
         spannableStringBuilder.append((CharSequence)string2);
@@ -160,7 +160,7 @@ public final class StringUtils
         if (videoDetails.getCertification() != null) {
             sb.append(videoDetails.getCertification()).append("   ");
         }
-        sb.append(String.format(context.getResources().getString(2131296553), TimeUtils.convertSecondsToMinutes(videoDetails.getRuntime())));
+        sb.append(String.format(context.getResources().getString(2131493172), TimeUtils.convertSecondsToMinutes(videoDetails.getRuntime())));
         return sb.toString();
     }
     

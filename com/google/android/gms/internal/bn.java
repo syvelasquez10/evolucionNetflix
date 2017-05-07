@@ -4,9 +4,28 @@
 
 package com.google.android.gms.internal;
 
-public interface bn
+public final class bn
 {
-    void A();
+    public final bl nA;
+    public final int nw;
+    public final bi nx;
+    public final br ny;
+    public final String nz;
     
-    void B();
+    public bn(final int n) {
+        this(null, null, null, null, n);
+    }
+    
+    public bn(final bi nx, final br ny, final String nz, final bl na, final int nw) {
+        this.nx = nx;
+        this.ny = ny;
+        this.nz = nz;
+        this.nA = na;
+        this.nw = nw;
+    }
+    
+    public interface a
+    {
+        void f(final int p0);
+    }
 }

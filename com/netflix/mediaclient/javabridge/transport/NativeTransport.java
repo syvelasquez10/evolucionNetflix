@@ -11,6 +11,7 @@ import android.os.Handler;
 import com.netflix.mediaclient.javabridge.invoke.media.Play;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
+import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.error.CrashReport;
 import android.os.Process;
@@ -220,7 +221,7 @@ public class NativeTransport implements Transport
         this.playerType = this.bridge.getCurrentPlayerType();
         if (this.playerType == null) {
             Log.e("nf-NativeTransport", "This should not happen, player type was null at this point! Use default.");
-            this.playerType = PlayerType.device6;
+            this.playerType = PlayerTypeFactory.findDefaultPlayerType();
         }
         else if (Log.isLoggable("nf-NativeTransport", 3)) {
             Log.d("nf-NativeTransport", "Player type is " + this.playerType.getDescription());
@@ -229,7 +230,7 @@ public class NativeTransport implements Transport
         if (Log.isLoggable("nf-NativeTransport", 3)) {
             Log.d("nf-NativeTransport", "bitrate cap is " + this.mBitrateCap);
         }
-        if (this.playerType == PlayerType.device9 || this.playerType == PlayerType.device12 || this.playerType == PlayerType.device10 || this.playerType == PlayerType.device11) {
+        if (this.playerType == PlayerType.device12 || this.playerType == PlayerType.device10 || this.playerType == PlayerType.device11) {
             MediaPlayerHelperFactory.getInstance(this.playerType);
             Log.d("nf-NativeTransport", this.playerType.getDescription() + "helper initialized");
         }
@@ -312,11 +313,14 @@ public class NativeTransport implements Transport
                     this.native_invokeMethod(string, s, s3);
                     return;
                     // iftrue(Label_0142:, !string.startsWith("nrdp"))
-                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                    continue;
-                    Label_0142: {
-                        string = "nrdp." + string;
+                    Block_6: {
+                        break Block_6;
+                        Label_0142: {
+                            string = "nrdp." + string;
+                        }
+                        continue;
                     }
+                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
                     continue;
                 }
                 catch (Throwable t) {
@@ -342,11 +346,11 @@ public class NativeTransport implements Transport
                 while (true) {
                     this.native_setProperty(string, s, s2);
                     return;
+                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                    continue;
                     Label_0093: {
                         string = "nrdp." + string;
                     }
-                    continue;
-                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
                     continue;
                 }
             }

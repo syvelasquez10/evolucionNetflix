@@ -73,7 +73,7 @@ public class PlayScreen implements Screen
         this.listeners = listeners;
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
-        this.mSurface = (TappableSurfaceView)mController.findViewById(2131231025);
+        this.mSurface = (TappableSurfaceView)mController.findViewById(2131165488);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -82,10 +82,10 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)mController.findViewById(2131231026);
-        this.mBackground = (RelativeLayout)mController.findViewById(2131231024);
-        this.mBufferingOverlay = mController.findViewById(2131231002);
-        this.mBif = (ImageView)mController.findViewById(2131230967);
+        this.mFlipper = (ViewFlipper)mController.findViewById(2131165490);
+        this.mBackground = (RelativeLayout)mController.findViewById(2131165487);
+        this.mBufferingOverlay = mController.findViewById(2131165519);
+        this.mBif = (ImageView)mController.findViewById(2131165489);
         this.mPostPlayManager = PostPlay.createPostPlay(mController, postPlayType);
         this.moveToState(PlayerUiState.Loading);
     }
@@ -133,7 +133,7 @@ public class PlayScreen implements Screen
     private void moveToLoaded() {
         Log.d("screen", "STATE_LOADED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131165219);
+        final int color = this.mController.getResources().getColor(2131296304);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -152,7 +152,7 @@ public class PlayScreen implements Screen
     private void moveToLoadedTapped() {
         Log.d("screen", "STATE_LOADED_TAPPED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131165219);
+        final int color = this.mController.getResources().getColor(2131296304);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -184,18 +184,18 @@ public class PlayScreen implements Screen
     static int resolveContentView(final PostPlay.PostPlayType postPlayType) {
         if (postPlayType == PostPlay.PostPlayType.EpisodesForPhone) {
             Log.d("screen", "playout_phone_episode");
-            return 2130903128;
+            return 2130903137;
         }
         if (postPlayType == PostPlay.PostPlayType.EpisodesForTablet) {
             Log.d("screen", "playout_tablet_episode");
-            return 2130903134;
+            return 2130903142;
         }
         if (postPlayType == PostPlay.PostPlayType.RecommendationForTablet) {
             Log.d("screen", "playout_tablet_movie");
-            return 2130903135;
+            return 2130903143;
         }
         Log.d("screen", "playout_phone_movie");
-        return 2130903129;
+        return 2130903138;
     }
     
     public boolean canExitPlaybackEndOfPlay() {

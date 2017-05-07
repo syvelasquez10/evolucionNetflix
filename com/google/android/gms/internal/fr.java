@@ -4,53 +4,38 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import java.io.OutputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import android.net.LocalSocket;
-import android.os.ParcelFileDescriptor;
-import com.google.android.gms.games.multiplayer.realtime.RealTimeSocket;
+import android.os.IBinder;
+import com.google.android.gms.dynamic.e;
+import android.view.View;
+import android.content.Context;
+import com.google.android.gms.dynamic.g;
 
-final class fr implements RealTimeSocket
+public final class fr extends g<fn>
 {
-    private ParcelFileDescriptor om;
-    private final LocalSocket uM;
-    private final String up;
+    private static final fr DK;
     
-    fr(final LocalSocket um, final String up) {
-        this.uM = um;
-        this.up = up;
+    static {
+        DK = new fr();
     }
     
-    @Override
-    public void close() throws IOException {
-        this.uM.close();
+    private fr() {
+        super("com.google.android.gms.common.ui.SignInButtonCreatorImpl");
     }
     
-    @Override
-    public InputStream getInputStream() throws IOException {
-        return this.uM.getInputStream();
+    public static View b(final Context context, final int n, final int n2) throws a {
+        return fr.DK.c(context, n, n2);
     }
     
-    @Override
-    public OutputStream getOutputStream() throws IOException {
-        return this.uM.getOutputStream();
-    }
-    
-    @Override
-    public ParcelFileDescriptor getParcelFileDescriptor() throws IOException {
-        if (this.om == null && !this.isClosed()) {
-            final Parcel obtain = Parcel.obtain();
-            obtain.writeFileDescriptor(this.uM.getFileDescriptor());
-            obtain.setDataPosition(0);
-            this.om = obtain.readFileDescriptor();
+    private View c(final Context context, final int n, final int n2) throws a {
+        try {
+            return e.d(this.z(context).a(e.h(context), n, n2));
         }
-        return this.om;
+        catch (Exception ex) {
+            throw new a("Could not get button with size " + n + " and color " + n2, ex);
+        }
     }
     
-    @Override
-    public boolean isClosed() {
-        return !this.uM.isConnected() && !this.uM.isBound();
+    public fn E(final IBinder binder) {
+        return fn.a.D(binder);
     }
 }

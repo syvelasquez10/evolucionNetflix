@@ -4,8 +4,9 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import android.view.View;
 import com.netflix.mediaclient.servicemgr.Trackable;
+import android.view.View;
+import com.netflix.mediaclient.servicemgr.BasicLoMo;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
 import com.netflix.mediaclient.Log;
@@ -41,13 +42,7 @@ public class PaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
     }
     
     public static int computeNumVideosToFetchPerBatch(final int n) {
-        return ((SparseIntArray)PaginatedCwAdapter.numVideosPerPageTable.get(1)).get(n) * ((SparseIntArray)PaginatedCwAdapter.numVideosPerPageTable.get(2)).get(n) * 2;
-    }
-    
-    public static int getViewHeightInPixels(final Context context) {
-        final int n = (int)(BasePaginatedAdapter.computeViewPagerWidth(context, true) / ((SparseIntArray)PaginatedCwAdapter.numVideosPerPageTable.get(DeviceUtils.getBasicScreenOrientation(context))).get(DeviceUtils.getScreenSizeCategory(context)) * 0.562f + 0.5f) + context.getResources().getDimensionPixelOffset(2131492948);
-        Log.v("PaginatedCwAdapter", "Computed view height: " + n);
-        return n;
+        return Math.max(((SparseIntArray)PaginatedCwAdapter.numVideosPerPageTable.get(1)).get(n) * ((SparseIntArray)PaginatedCwAdapter.numVideosPerPageTable.get(2)).get(n), 4);
     }
     
     @Override
@@ -61,13 +56,20 @@ public class PaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
     }
     
     @Override
-    protected View getView(final ViewRecycler viewRecycler, final List<CWVideo> list, final int n, final int n2, final Trackable trackable) {
+    public int getRowHeightInPx() {
+        final int n = (int)(BasePaginatedAdapter.computeViewPagerWidth((Context)this.activity, true) / this.computeNumItemsPerPage(DeviceUtils.getBasicScreenOrientation((Context)this.activity), DeviceUtils.getScreenSizeCategory((Context)this.activity)) * 0.5625f + 0.5f) + this.activity.getResources().getDimensionPixelOffset(2131361878);
+        Log.v("PaginatedCwAdapter", "Computed view height: " + n);
+        return n;
+    }
+    
+    @Override
+    protected View getView(final ViewRecycler viewRecycler, final List<CWVideo> list, final int n, final int n2, final BasicLoMo basicLoMo) {
         CwViewGroup cwViewGroup;
         if ((cwViewGroup = (CwViewGroup)viewRecycler.pop(CwViewGroup.class)) == null) {
             cwViewGroup = new CwViewGroup((Context)this.getActivity());
             cwViewGroup.init(n);
         }
-        ((VideoViewGroup<CWVideo, V>)cwViewGroup).updateDataThenViews(list, n, n2, this.getListViewPos(), trackable);
+        ((VideoViewGroup<CWVideo, V>)cwViewGroup).updateDataThenViews(list, n, n2, this.getListViewPos(), basicLoMo);
         return (View)cwViewGroup;
     }
 }

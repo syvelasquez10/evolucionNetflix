@@ -4,18 +4,18 @@
 
 package com.google.android.gms.maps;
 
-import com.google.android.gms.internal.eg;
-import com.google.android.gms.dynamic.b;
+import com.google.android.gms.internal.fq;
+import com.google.android.gms.dynamic.d;
 
 public final class CameraUpdate
 {
-    private final b Bp;
+    private final d Rn;
     
-    CameraUpdate(final b b) {
-        this.Bp = eg.f(b);
+    CameraUpdate(final d d) {
+        this.Rn = fq.f(d);
     }
     
-    b el() {
-        return this.Bp;
+    d id() {
+        return this.Rn;
     }
 }

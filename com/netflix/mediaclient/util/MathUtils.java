@@ -24,6 +24,10 @@ public class MathUtils
         return (int)(n / n2 + 0.5f);
     }
     
+    public static boolean isEven(final int n) {
+        return (n & 0x1) == 0x0;
+    }
+    
     public static class Range
     {
         private final int end;

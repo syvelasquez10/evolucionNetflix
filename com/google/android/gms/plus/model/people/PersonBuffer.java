@@ -4,31 +4,31 @@
 
 package com.google.android.gms.plus.model.people;
 
-import com.google.android.gms.internal.ir;
+import com.google.android.gms.internal.is;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.internal.ig;
+import com.google.android.gms.internal.ih;
 import com.google.android.gms.common.data.c;
 import com.google.android.gms.common.data.DataBuffer;
 
 public final class PersonBuffer extends DataBuffer<Person>
 {
-    private final c<ig> FZ;
+    private final c<ih> Wr;
     
     public PersonBuffer(final DataHolder dataHolder) {
         super(dataHolder);
         if (dataHolder.getMetadata() != null && dataHolder.getMetadata().getBoolean("com.google.android.gms.plus.IsSafeParcelable", false)) {
-            this.FZ = new c<ig>(dataHolder, (android.os.Parcelable$Creator<ig>)ig.CREATOR);
+            this.Wr = new c<ih>(dataHolder, (android.os.Parcelable$Creator<ih>)ih.CREATOR);
             return;
         }
-        this.FZ = null;
+        this.Wr = null;
     }
     
     @Override
     public Person get(final int n) {
-        if (this.FZ != null) {
-            return this.FZ.B(n);
+        if (this.Wr != null) {
+            return this.Wr.F(n);
         }
-        return new ir(this.nE, n);
+        return new is(this.BB, n);
     }
 }

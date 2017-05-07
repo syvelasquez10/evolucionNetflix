@@ -37,17 +37,17 @@ public class MdxErrorHandler
                 return s;
             }
             case 100: {
-                return this.activity.getString(2131296607);
+                return this.activity.getString(2131493226);
             }
             case 104: {
-                return this.activity.getString(2131296608);
+                return this.activity.getString(2131493227);
             }
             case 105: {
-                return this.activity.getString(2131296609);
+                return this.activity.getString(2131493228);
             }
             case 200:
             case 201: {
-                return this.activity.getString(2131296610);
+                return this.activity.getString(2131493229);
             }
         }
     }

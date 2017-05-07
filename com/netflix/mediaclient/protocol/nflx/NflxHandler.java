@@ -13,6 +13,7 @@ import android.net.Uri;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.service.pushnotification.UserFeedbackOnReceivedPushNotification;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
+import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -27,7 +28,6 @@ import com.netflix.mediaclient.ui.search.SearchActivity;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import java.util.Locale;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
-import android.content.Context;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
 import com.netflix.mediaclient.servicemgr.VideoType;
@@ -42,10 +42,10 @@ import java.net.URLDecoder;
 import com.netflix.mediaclient.Log;
 import java.util.Map;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.Playable;
 import com.netflix.mediaclient.servicemgr.IMdx;
-import android.app.Activity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.common.PlayContext;
 
 public class NflxHandler
@@ -285,40 +285,40 @@ public class NflxHandler
         this.playVideo(netflixActivity, mdx, String.valueOf(WebApiUtils.extractIsd(null, jsonObject.getString("id")).episodeId), VideoType.EPISODE, s2, s3);
     }
     
-    private void handleEpisodeVideoDetailFromTinyUrl(final Activity activity, String optString, JSONObject optJSONObject, final String s) throws JSONException, InvalidParameterException {
+    private void handleEpisodeVideoDetailFromTinyUrl(final NetflixActivity netflixActivity, String optString, JSONObject optJSONObject, final String s) throws JSONException, InvalidParameterException {
         optString = optJSONObject.optString("id");
         if (StringUtils.isEmpty(optString)) {
             Log.e("NflxHandler", "It should be episode JSON, failed to get id! Default to LOLOMO!");
-            this.handleHomeAction(activity);
+            this.handleHomeAction(netflixActivity);
             return;
         }
         optJSONObject = optJSONObject.optJSONObject("title_series");
         if (optJSONObject == null) {
             Log.e("NflxHandler", "It should be episode JSON, failed to get title series! Default to LOLOMO!");
-            this.handleHomeAction(activity);
+            this.handleHomeAction(netflixActivity);
             return;
         }
         if (!optJSONObject.has("id")) {
             Log.e("NflxHandler", "It should be episode JSON, failed to get title series id! Default to LOLOMO!");
-            this.handleHomeAction(activity);
+            this.handleHomeAction(netflixActivity);
             return;
         }
         final String string = optJSONObject.getString("id");
         if (StringUtils.isEmpty(string)) {
             Log.e("NflxHandler", "It should be episode, failed to get showIdUri! Default to LOLOMO!");
-            this.handleHomeAction(activity);
+            this.handleHomeAction(netflixActivity);
             return;
         }
         final String id = this.extractId(string);
         if (StringUtils.isEmpty(id)) {
             Log.e("NflxHandler", "It should be episode, failed to get show id from url! Default to LOLOMO! Url was: " + string);
-            this.handleHomeAction(activity);
+            this.handleHomeAction(netflixActivity);
             return;
         }
         final String id2 = this.extractId(optString);
         if (StringUtils.isEmpty(id2)) {
             Log.e("NflxHandler", "It should be episode, failed to get episode id from url! Default to show SDP! Url was: " + optString);
-            DetailsActivity.show(activity, VideoType.SHOW, id, this.getPlayContext(s));
+            DetailsActivity.show(netflixActivity, VideoType.SHOW, id, "", this.getPlayContext(s));
             return;
         }
         if (Log.isLoggable("NflxHandler", 3)) {
@@ -326,13 +326,13 @@ public class NflxHandler
             Log.d("NflxHandler", "Expanded from: episodeIdUri " + optString + " and shodIdUri " + string);
             Log.v("NflxHandler", "Showing SDP");
         }
-        DetailsActivity.showEpisodeDetails(activity, id, id2, this.getPlayContext(s));
+        DetailsActivity.showEpisodeDetails(netflixActivity, id, id2, this.getPlayContext(s));
     }
     
-    private Response handleHomeAction(final Activity activity) {
+    private Response handleHomeAction(final NetflixActivity netflixActivity) {
         Log.v("NflxHandler", "Starting home activity");
-        activity.startActivity(HomeActivity.createStartIntent((Context)activity));
-        activity.overridePendingTransition(0, 0);
+        netflixActivity.startActivity(HomeActivity.createStartIntent(netflixActivity));
+        netflixActivity.overridePendingTransition(0, 0);
         return Response.HANDLING;
     }
     
@@ -356,7 +356,7 @@ public class NflxHandler
                 if (Log.isLoggable("NflxHandler", 2)) {
                     Log.v("NflxHandler", "Showing MDP for: " + videoIdFromUri);
                 }
-                DetailsActivity.show(netflixActivity, VideoType.MOVIE, videoIdFromUri, this.getPlayContext(s3));
+                DetailsActivity.show(netflixActivity, VideoType.MOVIE, videoIdFromUri, "", this.getPlayContext(s3));
             }
             else {
                 if (Log.isLoggable("NflxHandler", 6)) {
@@ -397,7 +397,7 @@ public class NflxHandler
                     Log.d("NflxHandler", "Reporting that application is started from deep link. Source: " + source + ", action: " + lowerCase);
                 }
                 if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
-                    clientLogging.getCustomerEventLogging().reportApplicationLaunchedFromDeepLinking(source, lowerCase);
+                    clientLogging.getCustomerEventLogging().reportApplicationLaunchedFromDeepLinking(source, lowerCase, map.toString());
                 }
             }
             else {
@@ -603,25 +603,25 @@ public class NflxHandler
             if (Log.isLoggable("NflxHandler", 2)) {
                 Log.v("NflxHandler", "Showing details for: " + catalogId + ", type: " + videoType);
             }
-            DetailsActivity.show(netflixActivity, videoType, catalogId, this.getPlayContext(map.get("trkid")));
+            DetailsActivity.show(netflixActivity, videoType, catalogId, "", this.getPlayContext(map.get("trkid")));
         }
         return Response.HANDLING;
     }
     
-    private Response handleViewGenreAction(final Activity activity, final Map<String, String> map) {
+    private Response handleViewGenreAction(final NetflixActivity netflixActivity, final Map<String, String> map) {
         final String s = map.get("genreid");
         if (s == null) {
             Log.v("NflxHandler", "Could not find genre ID");
             return Response.NOT_HANDLING;
         }
-        ((NetflixActivity)activity).getServiceManager().fetchLoLoMoSummary(s, new FetchLoLoMoSummaryCallback(activity, s));
+        netflixActivity.getServiceManager().fetchLoLoMoSummary(s, new FetchLoLoMoSummaryCallback(netflixActivity, s));
         return Response.HANDLING_WITH_DELAY;
     }
     
-    private void play(final Activity activity, final IMdx mdx, final Playable playable, final String dialUuidAsCurrentTarget, final PlayContext playContext) {
+    private void play(final NetflixActivity netflixActivity, final IMdx mdx, final Playable playable, final String dialUuidAsCurrentTarget, final PlayContext playContext) {
         if (StringUtils.isEmpty(dialUuidAsCurrentTarget)) {
             Log.d("NflxHandler", "Starting local playback");
-            PlayerActivity.playVideo(activity, playable, playContext);
+            PlayerActivity.playVideo(netflixActivity, playable, playContext);
             return;
         }
         if (Log.isLoggable("NflxHandler", 3)) {
@@ -633,13 +633,13 @@ public class NflxHandler
         else {
             Log.d("NflxHandler", "MDX exist, check if target is available");
             if (mdx.setDialUuidAsCurrentTarget(dialUuidAsCurrentTarget)) {
-                this.handleHomeAction(activity);
-                PlaybackLauncher.startPlaybackForceRemote((NetflixActivity)activity, Asset.create(playable, playContext));
+                this.handleHomeAction(netflixActivity);
+                PlaybackLauncher.startPlaybackForceRemote(netflixActivity, Asset.create(playable, playContext));
                 return;
             }
             Log.d("NflxHandler", "MDX does not know target dial UUID, go local playback");
         }
-        PlayerActivity.playVideo(activity, playable, playContext);
+        PlayerActivity.playVideo(netflixActivity, playable, playContext);
     }
     
     private void playVideo(final NetflixActivity netflixActivity, final IMdx mdx, final String s, final VideoType videoType, final String s2, final String s3) {
@@ -647,10 +647,10 @@ public class NflxHandler
             Log.v("NflxHandler", "Playing video: " + s);
         }
         if (VideoType.MOVIE.equals(videoType)) {
-            netflixActivity.getServiceManager().fetchMovieDetails(s, new FetchPlayableCallback((Activity)netflixActivity, s3, mdx, s2));
+            netflixActivity.getServiceManager().fetchMovieDetails(s, new FetchPlayableCallback(netflixActivity, s3, mdx, s2));
         }
         else if (VideoType.EPISODE.equals(videoType)) {
-            netflixActivity.getServiceManager().fetchEpisodeDetails(s, new FetchPlayableCallback((Activity)netflixActivity, s3, mdx, s2));
+            netflixActivity.getServiceManager().fetchEpisodeDetails(s, new FetchPlayableCallback(netflixActivity, s3, mdx, s2));
         }
     }
     
@@ -727,10 +727,10 @@ public class NflxHandler
     
     class FetchLoLoMoSummaryCallback extends SimpleManagerCallback
     {
-        private final Activity activity;
+        private final NetflixActivity activity;
         private final String genreId;
         
-        FetchLoLoMoSummaryCallback(final Activity activity, final String genreId) {
+        FetchLoLoMoSummaryCallback(final NetflixActivity activity, final String genreId) {
             this.genreId = genreId;
             this.activity = activity;
         }
@@ -738,7 +738,7 @@ public class NflxHandler
         @Override
         public void onLoLoMoSummaryFetched(final LoLoMo loLoMo, final int n) {
             if (n == 0) {
-                HomeActivity.showGenreList(this.activity, this.genreId, loLoMo.getTitle());
+                HomeActivity.showGenreList(this.activity, this.genreId, loLoMo.getTitle(), false);
             }
             NflxHandler.this.reportDelayedResponseHandled(this.activity);
         }
@@ -746,12 +746,12 @@ public class NflxHandler
     
     class FetchPlayableCallback extends SimpleManagerCallback
     {
-        private final Activity activity;
+        private final NetflixActivity activity;
         private final String trackId;
         final /* synthetic */ IMdx val$mdx;
         final /* synthetic */ String val$targetDialUuid;
         
-        FetchPlayableCallback(final Activity activity, final String trackId, final Activity val$mdx, final String val$targetDialUuid) {
+        FetchPlayableCallback(final NetflixActivity activity, final String trackId, final NetflixActivity val$mdx, final String val$targetDialUuid) {
             this.val$mdx = (IMdx)val$mdx;
             this.val$targetDialUuid = val$targetDialUuid;
             this.activity = activity;

@@ -4,47 +4,36 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import android.content.Context;
 
-public final class cu implements SafeParcelable
+public final class cu
 {
-    public static final cv CREATOR;
-    public String iJ;
-    public int iK;
-    public int iL;
-    public boolean iM;
-    public final int versionCode;
-    
-    static {
-        CREATOR = new cv();
-    }
-    
-    public cu(final int n, final int n2, final boolean b) {
-        final StringBuilder append = new StringBuilder().append("afma-sdk-a-v").append(n).append(".").append(n2).append(".");
-        String s;
-        if (b) {
-            s = "0";
+    public static do a(final Context context, final cx cx, final a a) {
+        if (cx.kK.rt) {
+            return b(context, cx, a);
         }
-        else {
-            s = "1";
+        return c(context, cx, a);
+    }
+    
+    private static do b(final Context context, final cx cx, final a a) {
+        dw.v("Fetching ad response from local ad request service.");
+        final cv.a a2 = new cv.a(context, cx, a);
+        a2.start();
+        return a2;
+    }
+    
+    private static do c(final Context context, final cx cx, final a a) {
+        dw.v("Fetching ad response from remote ad request service.");
+        if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(context) != 0) {
+            dw.z("Failed to connect to remote ad request service.");
+            return null;
         }
-        this(1, append.append(s).toString(), n, n2, b);
+        return new cv.b(context, cx, a);
     }
     
-    cu(final int versionCode, final String ij, final int ik, final int il, final boolean im) {
-        this.versionCode = versionCode;
-        this.iJ = ij;
-        this.iK = ik;
-        this.iL = il;
-        this.iM = im;
-    }
-    
-    public int describeContents() {
-        return 0;
-    }
-    
-    public void writeToParcel(final Parcel parcel, final int n) {
-        cv.a(this, parcel, n);
+    public interface a
+    {
+        void a(final cz p0);
     }
 }

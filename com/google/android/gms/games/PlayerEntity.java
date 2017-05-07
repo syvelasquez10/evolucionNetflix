@@ -5,58 +5,64 @@
 package com.google.android.gms.games;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.fc;
+import com.google.android.gms.internal.gm;
 import android.database.CharArrayBuffer;
-import com.google.android.gms.internal.dv;
-import com.google.android.gms.internal.ee;
-import com.google.android.gms.internal.ds;
+import com.google.android.gms.internal.fe;
+import com.google.android.gms.internal.fo;
+import com.google.android.gms.internal.fb;
 import android.net.Uri;
 import android.os.Parcelable$Creator;
-import com.google.android.gms.internal.fm;
+import com.google.android.gms.games.internal.GamesDowngradeableSafeParcel;
 
-public final class PlayerEntity extends fm implements Player
+public final class PlayerEntity extends GamesDowngradeableSafeParcel implements Player
 {
     public static final Parcelable$Creator<PlayerEntity> CREATOR;
-    private final int kg;
-    private final String qa;
-    private final Uri sL;
-    private final Uri sM;
-    private final String tC;
-    private final long tD;
-    private final int tE;
-    private final long tF;
+    private final String HA;
+    private final Uri HF;
+    private final Uri HG;
+    private final String HQ;
+    private final String HR;
+    private final String Ie;
+    private final long If;
+    private final int Ig;
+    private final long Ih;
+    private final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new a();
+        CREATOR = (Parcelable$Creator)new PlayerEntityCreatorCompat();
     }
     
-    PlayerEntity(final int kg, final String tc, final String qa, final Uri sl, final Uri sm, final long td, final int te, final long tf) {
-        this.kg = kg;
-        this.tC = tc;
-        this.qa = qa;
-        this.sL = sl;
-        this.sM = sm;
-        this.tD = td;
-        this.tE = te;
-        this.tF = tf;
+    PlayerEntity(final int xh, final String ie, final String ha, final Uri hf, final Uri hg, final long if1, final int ig, final long ih, final String hq, final String hr) {
+        this.xH = xh;
+        this.Ie = ie;
+        this.HA = ha;
+        this.HF = hf;
+        this.HQ = hq;
+        this.HG = hg;
+        this.HR = hr;
+        this.If = if1;
+        this.Ig = ig;
+        this.Ih = ih;
     }
     
     public PlayerEntity(final Player player) {
-        this.kg = 3;
-        this.tC = player.getPlayerId();
-        this.qa = player.getDisplayName();
-        this.sL = player.getIconImageUri();
-        this.sM = player.getHiResImageUri();
-        this.tD = player.getRetrievedTimestamp();
-        this.tE = player.db();
-        this.tF = player.getLastPlayedWithTimestamp();
-        ds.d(this.tC);
-        ds.d(this.qa);
-        ds.p(this.tD > 0L);
+        this.xH = 4;
+        this.Ie = player.getPlayerId();
+        this.HA = player.getDisplayName();
+        this.HF = player.getIconImageUri();
+        this.HQ = player.getIconImageUrl();
+        this.HG = player.getHiResImageUri();
+        this.HR = player.getHiResImageUrl();
+        this.If = player.getRetrievedTimestamp();
+        this.Ig = player.gh();
+        this.Ih = player.getLastPlayedWithTimestamp();
+        fb.d(this.Ie);
+        fb.d(this.HA);
+        fb.x(this.If > 0L);
     }
     
     static int a(final Player player) {
-        return ee.hashCode(player.getPlayerId(), player.getDisplayName(), player.getIconImageUri(), player.getHiResImageUri(), player.getRetrievedTimestamp());
+        return fo.hashCode(player.getPlayerId(), player.getDisplayName(), player.getIconImageUri(), player.getHiResImageUri(), player.getRetrievedTimestamp());
     }
     
     static boolean a(final Player player, final Object o) {
@@ -69,9 +75,9 @@ public final class PlayerEntity extends fm implements Player
             b2 = b;
             if (player != o) {
                 final Player player2 = (Player)o;
-                if (ee.equal(player2.getPlayerId(), player.getPlayerId()) && ee.equal(player2.getDisplayName(), player.getDisplayName()) && ee.equal(player2.getIconImageUri(), player.getIconImageUri()) && ee.equal(player2.getHiResImageUri(), player.getHiResImageUri())) {
+                if (fo.equal(player2.getPlayerId(), player.getPlayerId()) && fo.equal(player2.getDisplayName(), player.getDisplayName()) && fo.equal(player2.getIconImageUri(), player.getIconImageUri()) && fo.equal(player2.getHiResImageUri(), player.getHiResImageUri())) {
                     b2 = b;
-                    if (ee.equal(player2.getRetrievedTimestamp(), player.getRetrievedTimestamp())) {
+                    if (fo.equal(player2.getRetrievedTimestamp(), player.getRetrievedTimestamp())) {
                         return b2;
                     }
                 }
@@ -82,12 +88,7 @@ public final class PlayerEntity extends fm implements Player
     }
     
     static String b(final Player player) {
-        return ee.e(player).a("PlayerId", player.getPlayerId()).a("DisplayName", player.getDisplayName()).a("IconImageUri", player.getIconImageUri()).a("HiResImageUri", player.getHiResImageUri()).a("RetrievedTimestamp", player.getRetrievedTimestamp()).toString();
-    }
-    
-    @Override
-    public int db() {
-        return this.tE;
+        return fo.e(player).a("PlayerId", player.getPlayerId()).a("DisplayName", player.getDisplayName()).a("IconImageUri", player.getIconImageUri()).a("IconImageUrl", player.getIconImageUrl()).a("HiResImageUri", player.getHiResImageUri()).a("HiResImageUrl", player.getHiResImageUrl()).a("RetrievedTimestamp", player.getRetrievedTimestamp()).toString();
     }
     
     public int describeContents() {
@@ -105,41 +106,56 @@ public final class PlayerEntity extends fm implements Player
     
     @Override
     public String getDisplayName() {
-        return this.qa;
+        return this.HA;
     }
     
     @Override
     public void getDisplayName(final CharArrayBuffer charArrayBuffer) {
-        fc.b(this.qa, charArrayBuffer);
+        gm.b(this.HA, charArrayBuffer);
     }
     
     @Override
     public Uri getHiResImageUri() {
-        return this.sM;
+        return this.HG;
+    }
+    
+    @Override
+    public String getHiResImageUrl() {
+        return this.HR;
     }
     
     @Override
     public Uri getIconImageUri() {
-        return this.sL;
+        return this.HF;
+    }
+    
+    @Override
+    public String getIconImageUrl() {
+        return this.HQ;
     }
     
     @Override
     public long getLastPlayedWithTimestamp() {
-        return this.tF;
+        return this.Ih;
     }
     
     @Override
     public String getPlayerId() {
-        return this.tC;
+        return this.Ie;
     }
     
     @Override
     public long getRetrievedTimestamp() {
-        return this.tD;
+        return this.If;
     }
     
     public int getVersionCode() {
-        return this.kg;
+        return this.xH;
+    }
+    
+    @Override
+    public int gh() {
+        return this.Ig;
     }
     
     @Override
@@ -168,54 +184,57 @@ public final class PlayerEntity extends fm implements Player
     
     public void writeToParcel(final Parcel parcel, final int n) {
         final String s = null;
-        if (!this.bN()) {
-            c.a(this, parcel, n);
+        if (!this.eK()) {
+            PlayerEntityCreator.a(this, parcel, n);
             return;
         }
-        parcel.writeString(this.tC);
-        parcel.writeString(this.qa);
+        parcel.writeString(this.Ie);
+        parcel.writeString(this.HA);
         String string;
-        if (this.sL == null) {
+        if (this.HF == null) {
             string = null;
         }
         else {
-            string = this.sL.toString();
+            string = this.HF.toString();
         }
         parcel.writeString(string);
         String string2;
-        if (this.sM == null) {
+        if (this.HG == null) {
             string2 = s;
         }
         else {
-            string2 = this.sM.toString();
+            string2 = this.HG.toString();
         }
         parcel.writeString(string2);
-        parcel.writeLong(this.tD);
+        parcel.writeLong(this.If);
     }
     
-    static final class a extends c
+    static final class PlayerEntityCreatorCompat extends PlayerEntityCreator
     {
         @Override
-        public PlayerEntity Z(final Parcel parcel) {
-            Uri parse = null;
-            if (fm.c(dv.bM()) || dv.P(PlayerEntity.class.getCanonicalName())) {
-                return super.Z(parcel);
+        public PlayerEntity ao(final Parcel parcel) {
+            if (GamesDowngradeableSafeParcel.c(fe.eJ()) || fe.al(PlayerEntity.class.getCanonicalName())) {
+                return super.ao(parcel);
             }
             final String string = parcel.readString();
             final String string2 = parcel.readString();
             final String string3 = parcel.readString();
             final String string4 = parcel.readString();
-            Uri parse2;
+            Uri parse;
             if (string3 == null) {
+                parse = null;
+            }
+            else {
+                parse = Uri.parse(string3);
+            }
+            Uri parse2;
+            if (string4 == null) {
                 parse2 = null;
             }
             else {
-                parse2 = Uri.parse(string3);
+                parse2 = Uri.parse(string4);
             }
-            if (string4 != null) {
-                parse = Uri.parse(string4);
-            }
-            return new PlayerEntity(3, string, string2, parse2, parse, parcel.readLong(), -1, -1L);
+            return new PlayerEntity(4, string, string2, parse, parse2, parcel.readLong(), -1, -1L, null, null);
         }
     }
 }

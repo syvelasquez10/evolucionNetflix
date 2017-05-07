@@ -8,13 +8,19 @@ import java.util.concurrent.TimeUnit;
 
 public interface PendingResult<R extends Result>
 {
+    void a(final a p0);
+    
     R await();
     
     R await(final long p0, final TimeUnit p1);
     
-    R e(final Status p0);
+    void cancel();
+    
+    boolean isCanceled();
     
     void setResultCallback(final ResultCallback<R> p0);
+    
+    void setResultCallback(final ResultCallback<R> p0, final long p1, final TimeUnit p2);
     
     public interface a
     {

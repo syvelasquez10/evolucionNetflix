@@ -4,256 +4,85 @@
 
 package com.google.android.gms.internal;
 
-import java.util.List;
-import java.util.ArrayList;
-import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.plus.model.people.Person;
-import com.google.android.gms.common.data.b;
+import java.util.HashSet;
+import com.google.android.gms.common.internal.safeparcel.a;
+import java.util.Set;
+import com.google.android.gms.common.internal.safeparcel.b;
+import android.os.Parcel;
+import android.os.Parcelable$Creator;
 
-public final class ir extends b implements Person
+public class ir implements Parcelable$Creator<ih.h>
 {
-    public ir(final DataHolder dataHolder, final int n) {
-        super(dataHolder, n);
+    static void a(final ih.h h, final Parcel parcel, int p3) {
+        p3 = b.p(parcel);
+        final Set<Integer> ja = h.ja();
+        if (ja.contains(1)) {
+            b.c(parcel, 1, h.getVersionCode());
+        }
+        if (ja.contains(3)) {
+            b.c(parcel, 3, h.jN());
+        }
+        if (ja.contains(4)) {
+            b.a(parcel, 4, h.getValue(), true);
+        }
+        if (ja.contains(5)) {
+            b.a(parcel, 5, h.getLabel(), true);
+        }
+        if (ja.contains(6)) {
+            b.c(parcel, 6, h.getType());
+        }
+        b.F(parcel, p3);
     }
     
-    public ArrayList<Organizations> fP() {
-        return null;
+    public ih.h aW(final Parcel parcel) {
+        String n = null;
+        int g = 0;
+        final int o = a.o(parcel);
+        final HashSet<Integer> set = new HashSet<Integer>();
+        int g2 = 0;
+        String n2 = null;
+        int g3 = 0;
+        while (parcel.dataPosition() < o) {
+            final int n3 = a.n(parcel);
+            switch (a.R(n3)) {
+                default: {
+                    a.b(parcel, n3);
+                    continue;
+                }
+                case 1: {
+                    g3 = a.g(parcel, n3);
+                    set.add(1);
+                    continue;
+                }
+                case 3: {
+                    g = a.g(parcel, n3);
+                    set.add(3);
+                    continue;
+                }
+                case 4: {
+                    n = a.n(parcel, n3);
+                    set.add(4);
+                    continue;
+                }
+                case 5: {
+                    n2 = a.n(parcel, n3);
+                    set.add(5);
+                    continue;
+                }
+                case 6: {
+                    g2 = a.g(parcel, n3);
+                    set.add(6);
+                    continue;
+                }
+            }
+        }
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
+        }
+        return new ih.h(set, g3, n2, g2, n, g);
     }
     
-    public ArrayList<PlacesLived> fQ() {
-        return null;
-    }
-    
-    public ArrayList<Urls> fR() {
-        return null;
-    }
-    
-    public Person fS() {
-        return new ig(this.getDisplayName(), this.getId(), (ig.c)this.getImage(), this.getObjectType(), this.getUrl());
-    }
-    
-    @Override
-    public String getAboutMe() {
-        return null;
-    }
-    
-    @Override
-    public AgeRange getAgeRange() {
-        return null;
-    }
-    
-    @Override
-    public String getBirthday() {
-        return null;
-    }
-    
-    @Override
-    public String getBraggingRights() {
-        return null;
-    }
-    
-    @Override
-    public int getCircledByCount() {
-        return 0;
-    }
-    
-    @Override
-    public Cover getCover() {
-        return null;
-    }
-    
-    @Override
-    public String getCurrentLocation() {
-        return null;
-    }
-    
-    @Override
-    public String getDisplayName() {
-        return this.getString("displayName");
-    }
-    
-    @Override
-    public int getGender() {
-        return 0;
-    }
-    
-    @Override
-    public String getId() {
-        return this.getString("personId");
-    }
-    
-    @Override
-    public Image getImage() {
-        return new ig.c(this.getString("image"));
-    }
-    
-    @Override
-    public String getLanguage() {
-        return null;
-    }
-    
-    @Override
-    public Name getName() {
-        return null;
-    }
-    
-    @Override
-    public String getNickname() {
-        return null;
-    }
-    
-    @Override
-    public int getObjectType() {
-        return ig.e.aB(this.getString("objectType"));
-    }
-    
-    @Override
-    public int getPlusOneCount() {
-        return 0;
-    }
-    
-    @Override
-    public int getRelationshipStatus() {
-        return 0;
-    }
-    
-    @Override
-    public String getTagline() {
-        return null;
-    }
-    
-    @Override
-    public String getUrl() {
-        return this.getString("url");
-    }
-    
-    @Override
-    public boolean hasAboutMe() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasAgeRange() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasBirthday() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasBraggingRights() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasCircledByCount() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasCover() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasCurrentLocation() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasDisplayName() {
-        return true;
-    }
-    
-    @Override
-    public boolean hasGender() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasId() {
-        return true;
-    }
-    
-    @Override
-    public boolean hasImage() {
-        return true;
-    }
-    
-    @Override
-    public boolean hasIsPlusUser() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasLanguage() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasName() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasNickname() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasObjectType() {
-        return true;
-    }
-    
-    @Override
-    public boolean hasOrganizations() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasPlacesLived() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasPlusOneCount() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasRelationshipStatus() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasTagline() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasUrl() {
-        return true;
-    }
-    
-    @Override
-    public boolean hasUrls() {
-        return false;
-    }
-    
-    @Override
-    public boolean hasVerified() {
-        return false;
-    }
-    
-    @Override
-    public boolean isPlusUser() {
-        return false;
-    }
-    
-    @Override
-    public boolean isVerified() {
-        return false;
+    public ih.h[] bZ(final int n) {
+        return new ih.h[n];
     }
 }

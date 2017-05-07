@@ -46,7 +46,9 @@ public interface TurnBasedMultiplayer
     
     PendingResult<LoadMatchResult> loadMatch(final GoogleApiClient p0, final String p1);
     
-    PendingResult<LoadMatchesResult> loadMatchesByStatus(final GoogleApiClient p0, final int... p1);
+    PendingResult<LoadMatchesResult> loadMatchesByStatus(final GoogleApiClient p0, final int p1, final int[] p2);
+    
+    PendingResult<LoadMatchesResult> loadMatchesByStatus(final GoogleApiClient p0, final int[] p1);
     
     void registerMatchUpdateListener(final GoogleApiClient p0, final OnTurnBasedMatchUpdateReceivedListener p1);
     

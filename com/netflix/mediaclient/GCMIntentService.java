@@ -4,8 +4,7 @@
 
 package com.netflix.mediaclient;
 
-import java.util.Iterator;
-import android.os.Bundle;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.Context;
 import com.netflix.mediaclient.service.NetflixService;
 import android.content.Intent;
@@ -26,20 +25,6 @@ public class GCMIntentService extends GCMBaseIntentService
         return intent;
     }
     
-    private void dumpIntent(final Intent intent) {
-        if (Log.isLoggable("nf_push_service", 3) && intent != null) {
-            Log.d("nf_push_service", "Intent received " + intent);
-            Log.d("nf_push_service", "Intent action " + intent.getAction());
-            Log.d("nf_push_service", "Intent data " + intent.getDataString());
-            final Bundle extras = intent.getExtras();
-            if (extras != null) {
-                for (final String s : extras.keySet()) {
-                    Log.d("nf_push_service", "Intent key " + s + ", value: " + extras.get(s));
-                }
-            }
-        }
-    }
-    
     @Override
     protected void onDeletedMessages(final Context context, final int n) {
         Log.d("nf_push_service", "Received deleted messages notification");
@@ -56,7 +41,7 @@ public class GCMIntentService extends GCMBaseIntentService
             Log.e("nf_push_service", "Error, intent can not be null!");
             return;
         }
-        this.dumpIntent(intent);
+        AndroidUtils.logIntent("nf_push_service", intent);
         intent.addCategory("com.netflix.mediaclient.intent.category.PUSH");
         intent.setClass((Context)this, (Class)NetflixService.class);
         intent.setAction("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_GCM_ONMESSAGE");

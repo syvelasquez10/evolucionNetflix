@@ -11,47 +11,47 @@ import android.os.Parcelable$Creator;
 
 public class hj implements Parcelable$Creator<hi>
 {
-    static void a(final hi hi, final Parcel parcel, int o) {
-        o = b.o(parcel);
-        b.a(parcel, 1, hi.Bn, false);
-        b.c(parcel, 1000, hi.versionCode);
-        b.a(parcel, 2, hi.Bo, false);
-        b.D(parcel, o);
+    static void a(final hi hi, final Parcel parcel, int p3) {
+        p3 = b.p(parcel);
+        b.c(parcel, 1, hi.xH);
+        b.a(parcel, 2, hi.hY(), false);
+        b.a(parcel, 3, hi.getTag(), false);
+        b.F(parcel, p3);
     }
     
-    public hi aq(final Parcel parcel) {
-        String m = null;
-        final int n = a.n(parcel);
+    public hi aE(final Parcel parcel) {
+        String n = null;
+        final int o = a.o(parcel);
         int g = 0;
-        String i = null;
-        while (parcel.dataPosition() < n) {
-            final int j = a.m(parcel);
-            switch (a.M(j)) {
+        String n2 = null;
+        while (parcel.dataPosition() < o) {
+            final int n3 = a.n(parcel);
+            switch (a.R(n3)) {
                 default: {
-                    a.b(parcel, j);
+                    a.b(parcel, n3);
                     continue;
                 }
                 case 1: {
-                    i = a.m(parcel, j);
-                    continue;
-                }
-                case 1000: {
-                    g = a.g(parcel, j);
+                    g = a.g(parcel, n3);
                     continue;
                 }
                 case 2: {
-                    m = a.m(parcel, j);
+                    n2 = a.n(parcel, n3);
+                    continue;
+                }
+                case 3: {
+                    n = a.n(parcel, n3);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new hi(g, i, m);
+        return new hi(g, n2, n);
     }
     
-    public hi[] bg(final int n) {
+    public hi[] bF(final int n) {
         return new hi[n];
     }
 }

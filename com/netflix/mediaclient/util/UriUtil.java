@@ -13,6 +13,14 @@ public final class UriUtil
 {
     private static final String TAG = "UriUtils";
     
+    public static String buildUrlParam(final String s, final String s2) {
+        final StringBuilder sb = new StringBuilder("&");
+        sb.append(s);
+        sb.append("=");
+        sb.append(s2);
+        return sb.toString();
+    }
+    
     public static String getParamFromUri(final String s, final String s2) {
         if (!StringUtils.isEmpty(s) && !StringUtils.isEmpty(s2)) {
             final String[] split = s2.split("[&]");

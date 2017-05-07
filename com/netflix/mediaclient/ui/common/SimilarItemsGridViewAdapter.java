@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.common;
 
+import com.makeramen.RoundedImageView;
 import android.widget.ImageView$ScaleType;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
@@ -91,11 +92,11 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
         Object o = view;
         if (view == null) {
             o = new VideoView((Context)this.activity);
-            final int dimensionPixelOffset = this.activity.getResources().getDimensionPixelOffset(2131492939);
+            final int dimensionPixelOffset = this.activity.getResources().getDimensionPixelOffset(2131361869);
             ((VideoView)o).setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
             ((VideoView)o).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.imgHeight));
             ((VideoView)o).setAdjustViewBounds(true);
-            ((VideoView)o).setScaleType(ImageView$ScaleType.CENTER_CROP);
+            ((RoundedImageView)o).setScaleType(ImageView$ScaleType.CENTER_CROP);
         }
         ((VideoView)o).update(this.getItem(n), this.trackIdProvider, n, false);
         return (View)o;

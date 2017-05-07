@@ -5,40 +5,83 @@
 package com.google.android.gms.wallet;
 
 import android.os.Parcel;
+import com.google.android.gms.internal.gi;
+import com.google.android.gms.internal.jo;
+import com.google.android.gms.internal.js;
+import com.google.android.gms.internal.jw;
+import com.google.android.gms.internal.jm;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.internal.ju;
+import com.google.android.gms.internal.jy;
+import java.util.ArrayList;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class LoyaltyWalletObject implements SafeParcelable
 {
     public static final Parcelable$Creator<LoyaltyWalletObject> CREATOR;
-    String GA;
-    String GB;
-    String GC;
-    String GD;
-    String GE;
-    String GF;
-    String GG;
-    String GH;
-    private final int kg;
+    String abA;
+    String abB;
+    String abC;
+    String abD;
+    String abE;
+    String abF;
+    String abG;
+    String abH;
+    ArrayList<jy> abI;
+    ju abJ;
+    ArrayList<LatLng> abK;
+    String abL;
+    String abM;
+    ArrayList<jm> abN;
+    boolean abO;
+    ArrayList<jw> abP;
+    ArrayList<js> abQ;
+    ArrayList<jw> abR;
+    jo abS;
+    String abz;
+    String eC;
+    int state;
+    private final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new g();
+        CREATOR = (Parcelable$Creator)new j();
     }
     
     LoyaltyWalletObject() {
-        this.kg = 3;
+        this.xH = 4;
+        this.abI = gi.fs();
+        this.abK = gi.fs();
+        this.abN = gi.fs();
+        this.abP = gi.fs();
+        this.abQ = gi.fs();
+        this.abR = gi.fs();
     }
     
-    LoyaltyWalletObject(final int kg, final String ga, final String gb, final String gc, final String gd, final String ge, final String gf, final String gg, final String gh) {
-        this.kg = kg;
-        this.GA = ga;
-        this.GB = gb;
-        this.GC = gc;
-        this.GD = gd;
-        this.GE = ge;
-        this.GF = gf;
-        this.GG = gg;
-        this.GH = gh;
+    LoyaltyWalletObject(final int xh, final String ec, final String abz, final String abA, final String abB, final String abC, final String abD, final String abE, final String abF, final String abG, final String abH, final int state, final ArrayList<jy> abI, final ju abJ, final ArrayList<LatLng> abK, final String abL, final String abM, final ArrayList<jm> abN, final boolean abO, final ArrayList<jw> abP, final ArrayList<js> abQ, final ArrayList<jw> abR, final jo abS) {
+        this.xH = xh;
+        this.eC = ec;
+        this.abz = abz;
+        this.abA = abA;
+        this.abB = abB;
+        this.abC = abC;
+        this.abD = abD;
+        this.abE = abE;
+        this.abF = abF;
+        this.abG = abG;
+        this.abH = abH;
+        this.state = state;
+        this.abI = abI;
+        this.abJ = abJ;
+        this.abK = abK;
+        this.abL = abL;
+        this.abM = abM;
+        this.abN = abN;
+        this.abO = abO;
+        this.abP = abP;
+        this.abQ = abQ;
+        this.abR = abR;
+        this.abS = abS;
     }
     
     public int describeContents() {
@@ -46,42 +89,42 @@ public final class LoyaltyWalletObject implements SafeParcelable
     }
     
     public String getAccountId() {
-        return this.GB;
+        return this.abz;
     }
     
     public String getAccountName() {
-        return this.GE;
+        return this.abC;
     }
     
     public String getBarcodeAlternateText() {
-        return this.GF;
+        return this.abD;
     }
     
     public String getBarcodeType() {
-        return this.GG;
+        return this.abE;
     }
     
     public String getBarcodeValue() {
-        return this.GH;
+        return this.abF;
     }
     
     public String getId() {
-        return this.GA;
+        return this.eC;
     }
     
     public String getIssuerName() {
-        return this.GC;
+        return this.abA;
     }
     
     public String getProgramName() {
-        return this.GD;
+        return this.abB;
     }
     
     public int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        g.a(this, parcel, n);
+        j.a(this, parcel, n);
     }
 }

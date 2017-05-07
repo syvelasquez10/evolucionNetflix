@@ -127,7 +127,6 @@ public class AddToQueueRequest extends FalcorVolleyWebClientRequest<String>
         final StringBuilder sb = new StringBuilder();
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), string3));
         sb.append(AddToQueueRequest.optionalParam).append(this.iqLoMoIndex);
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), "'queue'"));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), string));
         sb.append(AddToQueueRequest.optionalParam).append(this.trackId);
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", string2));

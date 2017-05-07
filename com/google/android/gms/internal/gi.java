@@ -5,72 +5,73 @@
 package com.google.android.gms.internal;
 
 import java.util.ArrayList;
-import com.google.android.gms.common.internal.safeparcel.a;
-import com.google.android.gms.common.internal.safeparcel.b;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
 
-public class gi implements Parcelable$Creator<gh>
+public final class gi
 {
-    static void a(final gh gh, final Parcel parcel, int o) {
-        o = b.o(parcel);
-        b.c(parcel, 1000, gh.getVersionCode());
-        b.a(parcel, 2, gh.isEnabled());
-        b.a(parcel, 3, gh.dD());
-        b.a(parcel, 4, gh.dE());
-        b.a(parcel, 5, gh.dF());
-        b.b(parcel, 6, gh.dG(), false);
-        b.D(parcel, o);
-    }
-    
-    public gh[] aU(final int n) {
-        return new gh[n];
-    }
-    
-    public gh ah(final Parcel parcel) {
-        boolean c = false;
-        final int n = a.n(parcel);
-        ArrayList<el> c2 = null;
-        boolean c3 = false;
-        boolean c4 = false;
-        boolean c5 = false;
-        int g = 0;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
-                default: {
-                    a.b(parcel, m);
-                    continue;
-                }
-                case 1000: {
-                    g = a.g(parcel, m);
-                    continue;
-                }
-                case 2: {
-                    c5 = a.c(parcel, m);
-                    continue;
-                }
-                case 3: {
-                    c4 = a.c(parcel, m);
-                    continue;
-                }
-                case 4: {
-                    c3 = a.c(parcel, m);
-                    continue;
-                }
-                case 5: {
-                    c = a.c(parcel, m);
-                    continue;
-                }
-                case 6: {
-                    c2 = a.c(parcel, m, (android.os.Parcelable$Creator<el>)el.CREATOR);
-                    continue;
-                }
+    public static void a(final StringBuilder sb, final double[] array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            if (i != 0) {
+                sb.append(",");
             }
+            sb.append(Double.toString(array[i]));
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+    }
+    
+    public static void a(final StringBuilder sb, final float[] array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append(Float.toString(array[i]));
         }
-        return new gh(g, c5, c4, c3, c, c2);
+    }
+    
+    public static void a(final StringBuilder sb, final int[] array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append(Integer.toString(array[i]));
+        }
+    }
+    
+    public static void a(final StringBuilder sb, final long[] array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append(Long.toString(array[i]));
+        }
+    }
+    
+    public static <T> void a(final StringBuilder sb, final T[] array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append(array[i].toString());
+        }
+    }
+    
+    public static void a(final StringBuilder sb, final String[] array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append("\"").append(array[i]).append("\"");
+        }
+    }
+    
+    public static void a(final StringBuilder sb, final boolean[] array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append(Boolean.toString(array[i]));
+        }
+    }
+    
+    public static <T> ArrayList<T> fs() {
+        return new ArrayList<T>();
     }
 }

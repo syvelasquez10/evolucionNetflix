@@ -4,17 +4,35 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.ads.doubleclick.AppEventListener;
+import org.json.JSONObject;
 
-public final class z extends ae.a
+public final class z
 {
-    private final AppEventListener eI;
+    private final String le;
+    private final JSONObject lf;
+    private final String lg;
+    private final String lh;
     
-    public z(final AppEventListener ei) {
-        this.eI = ei;
+    public z(final String lg, final dx dx, final String le, final JSONObject lf) {
+        this.lh = dx.rq;
+        this.lf = lf;
+        this.lg = lg;
+        this.le = le;
     }
     
-    public void onAppEvent(final String s, final String s2) {
-        this.eI.onAppEvent(s, s2);
+    public String al() {
+        return this.le;
+    }
+    
+    public String am() {
+        return this.lh;
+    }
+    
+    public JSONObject an() {
+        return this.lf;
+    }
+    
+    public String ao() {
+        return this.lg;
     }
 }

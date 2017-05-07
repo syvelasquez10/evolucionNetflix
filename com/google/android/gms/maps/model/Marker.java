@@ -5,15 +5,15 @@
 package com.google.android.gms.maps.model;
 
 import android.os.RemoteException;
-import com.google.android.gms.internal.eg;
-import com.google.android.gms.maps.model.internal.d;
+import com.google.android.gms.internal.fq;
+import com.google.android.gms.maps.model.internal.f;
 
 public final class Marker
 {
-    private final d CL;
+    private final f Te;
     
-    public Marker(final d d) {
-        this.CL = eg.f(d);
+    public Marker(final f f) {
+        this.Te = fq.f(f);
     }
     
     @Override
@@ -22,7 +22,7 @@ public final class Marker
             return false;
         }
         try {
-            return this.CL.h(((Marker)o).CL);
+            return this.Te.h(((Marker)o).Te);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -31,7 +31,7 @@ public final class Marker
     
     public float getAlpha() {
         try {
-            return this.CL.getAlpha();
+            return this.Te.getAlpha();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -40,7 +40,7 @@ public final class Marker
     
     public String getId() {
         try {
-            return this.CL.getId();
+            return this.Te.getId();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -49,7 +49,7 @@ public final class Marker
     
     public LatLng getPosition() {
         try {
-            return this.CL.getPosition();
+            return this.Te.getPosition();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -58,7 +58,7 @@ public final class Marker
     
     public float getRotation() {
         try {
-            return this.CL.getRotation();
+            return this.Te.getRotation();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -67,7 +67,7 @@ public final class Marker
     
     public String getSnippet() {
         try {
-            return this.CL.getSnippet();
+            return this.Te.getSnippet();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -76,7 +76,7 @@ public final class Marker
     
     public String getTitle() {
         try {
-            return this.CL.getTitle();
+            return this.Te.getTitle();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -86,7 +86,7 @@ public final class Marker
     @Override
     public int hashCode() {
         try {
-            return this.CL.hashCodeRemote();
+            return this.Te.hashCodeRemote();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -95,7 +95,7 @@ public final class Marker
     
     public void hideInfoWindow() {
         try {
-            this.CL.hideInfoWindow();
+            this.Te.hideInfoWindow();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -104,7 +104,7 @@ public final class Marker
     
     public boolean isDraggable() {
         try {
-            return this.CL.isDraggable();
+            return this.Te.isDraggable();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -113,7 +113,7 @@ public final class Marker
     
     public boolean isFlat() {
         try {
-            return this.CL.isFlat();
+            return this.Te.isFlat();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -122,7 +122,7 @@ public final class Marker
     
     public boolean isInfoWindowShown() {
         try {
-            return this.CL.isInfoWindowShown();
+            return this.Te.isInfoWindowShown();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -131,7 +131,7 @@ public final class Marker
     
     public boolean isVisible() {
         try {
-            return this.CL.isVisible();
+            return this.Te.isVisible();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -140,7 +140,7 @@ public final class Marker
     
     public void remove() {
         try {
-            this.CL.remove();
+            this.Te.remove();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -149,7 +149,7 @@ public final class Marker
     
     public void setAlpha(final float alpha) {
         try {
-            this.CL.setAlpha(alpha);
+            this.Te.setAlpha(alpha);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -158,7 +158,7 @@ public final class Marker
     
     public void setAnchor(final float n, final float n2) {
         try {
-            this.CL.setAnchor(n, n2);
+            this.Te.setAnchor(n, n2);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -167,7 +167,7 @@ public final class Marker
     
     public void setDraggable(final boolean draggable) {
         try {
-            this.CL.setDraggable(draggable);
+            this.Te.setDraggable(draggable);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -176,7 +176,7 @@ public final class Marker
     
     public void setFlat(final boolean flat) {
         try {
-            this.CL.setFlat(flat);
+            this.Te.setFlat(flat);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -185,7 +185,7 @@ public final class Marker
     
     public void setIcon(final BitmapDescriptor bitmapDescriptor) {
         try {
-            this.CL.i(bitmapDescriptor.el());
+            this.Te.l(bitmapDescriptor.id());
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -194,7 +194,7 @@ public final class Marker
     
     public void setInfoWindowAnchor(final float n, final float n2) {
         try {
-            this.CL.setInfoWindowAnchor(n, n2);
+            this.Te.setInfoWindowAnchor(n, n2);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -203,7 +203,7 @@ public final class Marker
     
     public void setPosition(final LatLng position) {
         try {
-            this.CL.setPosition(position);
+            this.Te.setPosition(position);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -212,7 +212,7 @@ public final class Marker
     
     public void setRotation(final float rotation) {
         try {
-            this.CL.setRotation(rotation);
+            this.Te.setRotation(rotation);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -221,7 +221,7 @@ public final class Marker
     
     public void setSnippet(final String snippet) {
         try {
-            this.CL.setSnippet(snippet);
+            this.Te.setSnippet(snippet);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -230,7 +230,7 @@ public final class Marker
     
     public void setTitle(final String title) {
         try {
-            this.CL.setTitle(title);
+            this.Te.setTitle(title);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -239,7 +239,7 @@ public final class Marker
     
     public void setVisible(final boolean visible) {
         try {
-            this.CL.setVisible(visible);
+            this.Te.setVisible(visible);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -248,7 +248,7 @@ public final class Marker
     
     public void showInfoWindow() {
         try {
-            this.CL.showInfoWindow();
+            this.Te.showInfoWindow();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);

@@ -20,7 +20,7 @@ import com.google.android.gms.cast.Cast;
 
 public class MdxCastApplication extends Listener implements OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, MessageReceivedCallback
 {
-    private static final String MESSAGE_NAMESPACE = "urn:mdx-netflix-com:service:target:2";
+    private static final String MESSAGE_NAMESPACE = "urn:x-cast:mdx-netflix-com:service:target:2";
     private static final String TAG;
     private GoogleApiClient mApiClient;
     private final String mApplicationId;
@@ -35,7 +35,7 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
         this.mApplicationId = mApplicationId;
         this.mCallback = mCallback;
         this.mForceLaunch = mForceLaunch;
-        (this.mApiClient = new GoogleApiClient.Builder(context).addApi(Cast.API, Cast.CastOptions.builder(castDevice, this).setDebuggingEnabled().build()).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build()).connect();
+        (this.mApiClient = new GoogleApiClient.Builder(context).addApi(Cast.API, Cast.CastOptions.builder(castDevice, this).build()).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build()).connect();
     }
     
     private boolean isNetflixRunning() {
@@ -133,13 +133,13 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
     }
     
     public void sendMessage(final String s) {
-        Cast.CastApi.sendMessage(this.mApiClient, "urn:mdx-netflix-com:service:target:2", s).setResultCallback(new SendMessageResultCallback());
+        Cast.CastApi.sendMessage(this.mApiClient, "urn:x-cast:mdx-netflix-com:service:target:2", s).setResultCallback(new SendMessageResultCallback());
     }
     
     public void stop() {
         while (true) {
             try {
-                Cast.CastApi.removeMessageReceivedCallbacks(this.mApiClient, "urn:mdx-netflix-com:service:target:2");
+                Cast.CastApi.removeMessageReceivedCallbacks(this.mApiClient, "urn:x-cast:mdx-netflix-com:service:target:2");
                 this.mApiClient.disconnect();
             }
             catch (IllegalStateException ex) {
@@ -167,7 +167,7 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
             if (applicationConnectionResult.getStatus().isSuccess()) {
                 Log.d(MdxCastApplication.TAG, "launchApplication(), success");
                 try {
-                    Cast.CastApi.setMessageReceivedCallbacks(MdxCastApplication.this.mApiClient, "urn:mdx-netflix-com:service:target:2", this.mMessageReceivedCallback);
+                    Cast.CastApi.setMessageReceivedCallbacks(MdxCastApplication.this.mApiClient, "urn:x-cast:mdx-netflix-com:service:target:2", this.mMessageReceivedCallback);
                     MdxCastApplication.this.mForceLaunch = false;
                     MdxCastApplication.this.mCallback.onLaunched();
                     return;
@@ -180,6 +180,11 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
                 catch (IOException ex2) {
                     MdxCastApplication.this.mCallback.onFailToLaunch();
                     ex2.printStackTrace();
+                    return;
+                }
+                catch (Exception ex3) {
+                    MdxCastApplication.this.mCallback.onFailToLaunch();
+                    ex3.printStackTrace();
                     return;
                 }
             }

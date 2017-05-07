@@ -4,69 +4,70 @@
 
 package com.google.android.gms.internal;
 
-import java.util.Collections;
-import java.util.List;
+import android.os.IBinder;
+import android.os.RemoteException;
+import com.google.android.gms.dynamic.e;
+import android.content.Context;
+import android.content.Intent;
+import android.app.Activity;
+import com.google.android.gms.dynamic.g;
 
-public final class cj
+public final class cj extends g<cl>
 {
-    public final int errorCode;
-    public final List<String> fK;
-    public final List<String> fL;
-    public final long fO;
-    public final cw gJ;
-    public final at gb;
-    public final bc gc;
-    public final String gd;
-    public final aw ge;
-    public final List<String> hA;
-    public final v hr;
-    public final String hu;
-    public final long hx;
-    public final boolean hy;
-    public final long hz;
-    public final au is;
-    public final x it;
-    public final int orientation;
+    private static final cj oC;
     
-    public cj(final v hr, final cw gj, final List<String> list, final int errorCode, final List<String> list2, final List<String> list3, final int orientation, final long fo, final String hu, final boolean hy, final at gb, final bc gc, final String gd, final au is, final aw ge, final long hz, final x it, final long hx) {
-        this.hr = hr;
-        this.gJ = gj;
-        List<String> unmodifiableList;
-        if (list != null) {
-            unmodifiableList = Collections.unmodifiableList((List<? extends String>)list);
+    static {
+        oC = new cj();
+    }
+    
+    private cj() {
+        super("com.google.android.gms.ads.AdOverlayCreatorImpl");
+    }
+    
+    public static ck a(final Activity activity) {
+        try {
+            if (b(activity)) {
+                dw.v("Using AdOverlay from the client jar.");
+                return new cc(activity);
+            }
+            return cj.oC.c(activity);
         }
-        else {
-            unmodifiableList = null;
+        catch (a a) {
+            dw.z(a.getMessage());
+            return null;
         }
-        this.fK = unmodifiableList;
-        this.errorCode = errorCode;
-        List<String> unmodifiableList2;
-        if (list2 != null) {
-            unmodifiableList2 = Collections.unmodifiableList((List<? extends String>)list2);
+    }
+    
+    private static boolean b(final Activity activity) throws a {
+        final Intent intent = activity.getIntent();
+        if (!intent.hasExtra("com.google.android.gms.ads.internal.overlay.useClientJar")) {
+            throw new a("Ad overlay requires the useClientJar flag in intent extras.");
         }
-        else {
-            unmodifiableList2 = null;
+        return intent.getBooleanExtra("com.google.android.gms.ads.internal.overlay.useClientJar", false);
+    }
+    
+    private ck c(final Activity activity) {
+        try {
+            return ck.a.m(this.z((Context)activity).a(e.h(activity)));
         }
-        this.fL = unmodifiableList2;
-        List<String> unmodifiableList3;
-        if (list3 != null) {
-            unmodifiableList3 = Collections.unmodifiableList((List<? extends String>)list3);
+        catch (RemoteException ex) {
+            dw.c("Could not create remote AdOverlay.", (Throwable)ex);
+            return null;
         }
-        else {
-            unmodifiableList3 = null;
+        catch (g.a a) {
+            dw.c("Could not create remote AdOverlay.", a);
+            return null;
         }
-        this.hA = unmodifiableList3;
-        this.orientation = orientation;
-        this.fO = fo;
-        this.hu = hu;
-        this.hy = hy;
-        this.gb = gb;
-        this.gc = gc;
-        this.gd = gd;
-        this.is = is;
-        this.ge = ge;
-        this.hz = hz;
-        this.it = it;
-        this.hx = hx;
+    }
+    
+    protected cl l(final IBinder binder) {
+        return cl.a.n(binder);
+    }
+    
+    private static final class a extends Exception
+    {
+        public a(final String s) {
+            super(s);
+        }
     }
 }

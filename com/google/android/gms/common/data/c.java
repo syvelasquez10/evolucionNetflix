@@ -10,24 +10,24 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public class c<T extends SafeParcelable> extends DataBuffer<T>
 {
-    private static final String[] nI;
-    private final Parcelable$Creator<T> nJ;
+    private static final String[] BF;
+    private final Parcelable$Creator<T> BG;
     
     static {
-        nI = new String[] { "data" };
+        BF = new String[] { "data" };
     }
     
-    public c(final DataHolder dataHolder, final Parcelable$Creator<T> nj) {
+    public c(final DataHolder dataHolder, final Parcelable$Creator<T> bg) {
         super(dataHolder);
-        this.nJ = nj;
+        this.BG = bg;
     }
     
-    public T B(final int n) {
-        final byte[] byteArray = this.nE.getByteArray("data", n, 0);
+    public T F(final int n) {
+        final byte[] byteArray = this.BB.getByteArray("data", n, 0);
         final Parcel obtain = Parcel.obtain();
         obtain.unmarshall(byteArray, 0, byteArray.length);
         obtain.setDataPosition(0);
-        final SafeParcelable safeParcelable = (SafeParcelable)this.nJ.createFromParcel(obtain);
+        final SafeParcelable safeParcelable = (SafeParcelable)this.BG.createFromParcel(obtain);
         obtain.recycle();
         return (T)safeParcelable;
     }

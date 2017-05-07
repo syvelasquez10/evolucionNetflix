@@ -6,9 +6,11 @@ package com.google.android.gms.ads.search;
 
 import android.graphics.Color;
 import android.content.Context;
+import android.os.Bundle;
+import com.google.android.gms.ads.mediation.MediationAdapter;
 import com.google.android.gms.ads.mediation.NetworkExtras;
 import android.location.Location;
-import com.google.android.gms.internal.af;
+import com.google.android.gms.internal.as;
 
 public final class SearchAdRequest
 {
@@ -24,146 +26,156 @@ public final class SearchAdRequest
     public static final int ERROR_CODE_INVALID_REQUEST = 1;
     public static final int ERROR_CODE_NETWORK_ERROR = 2;
     public static final int ERROR_CODE_NO_FILL = 3;
-    private final af dW;
-    private final int jj;
-    private final int jk;
-    private final int jl;
-    private final int jm;
-    private final int jn;
-    private final int jo;
-    private final int jp;
-    private final int jq;
-    private final String jr;
-    private final int js;
-    private final String jt;
-    private final int ju;
-    private final int jv;
-    private final String jw;
+    private final as kp;
+    private final int rR;
+    private final int rS;
+    private final int rT;
+    private final int rU;
+    private final int rV;
+    private final int rW;
+    private final int rX;
+    private final int rY;
+    private final String rZ;
+    private final int sa;
+    private final String sb;
+    private final int sc;
+    private final int sd;
+    private final String se;
     
     static {
-        DEVICE_ID_EMULATOR = af.DEVICE_ID_EMULATOR;
+        DEVICE_ID_EMULATOR = as.DEVICE_ID_EMULATOR;
     }
     
     private SearchAdRequest(final Builder builder) {
-        this.jj = builder.jj;
-        this.jk = builder.jk;
-        this.jl = builder.jl;
-        this.jm = builder.jm;
-        this.jn = builder.jn;
-        this.jo = builder.jo;
-        this.jp = builder.jp;
-        this.jq = builder.jq;
-        this.jr = builder.jr;
-        this.js = builder.js;
-        this.jt = builder.jt;
-        this.ju = builder.ju;
-        this.jv = builder.jv;
-        this.jw = builder.jw;
-        this.dW = new af(builder.dX, this);
+        this.rR = builder.rR;
+        this.rS = builder.rS;
+        this.rT = builder.rT;
+        this.rU = builder.rU;
+        this.rV = builder.rV;
+        this.rW = builder.rW;
+        this.rX = builder.rX;
+        this.rY = builder.rY;
+        this.rZ = builder.rZ;
+        this.sa = builder.sa;
+        this.sb = builder.sb;
+        this.sc = builder.sc;
+        this.sd = builder.sd;
+        this.se = builder.se;
+        this.kp = new as(builder.kq, this);
+    }
+    
+    as O() {
+        return this.kp;
     }
     
     public int getAnchorTextColor() {
-        return this.jj;
+        return this.rR;
     }
     
     public int getBackgroundColor() {
-        return this.jk;
+        return this.rS;
     }
     
     public int getBackgroundGradientBottom() {
-        return this.jl;
+        return this.rT;
     }
     
     public int getBackgroundGradientTop() {
-        return this.jm;
+        return this.rU;
     }
     
     public int getBorderColor() {
-        return this.jn;
+        return this.rV;
     }
     
     public int getBorderThickness() {
-        return this.jo;
+        return this.rW;
     }
     
     public int getBorderType() {
-        return this.jp;
+        return this.rX;
     }
     
     public int getCallButtonColor() {
-        return this.jq;
+        return this.rY;
     }
     
     public String getCustomChannels() {
-        return this.jr;
+        return this.rZ;
     }
     
     public int getDescriptionTextColor() {
-        return this.js;
+        return this.sa;
     }
     
     public String getFontFace() {
-        return this.jt;
+        return this.sb;
     }
     
     public int getHeaderTextColor() {
-        return this.ju;
+        return this.sc;
     }
     
     public int getHeaderTextSize() {
-        return this.jv;
+        return this.sd;
     }
     
     public Location getLocation() {
-        return this.dW.getLocation();
+        return this.kp.getLocation();
     }
     
+    @Deprecated
     public <T extends NetworkExtras> T getNetworkExtras(final Class<T> clazz) {
-        return this.dW.getNetworkExtras(clazz);
+        return this.kp.getNetworkExtras(clazz);
+    }
+    
+    public <T extends MediationAdapter> Bundle getNetworkExtrasBundle(final Class<T> clazz) {
+        return this.kp.getNetworkExtrasBundle(clazz);
     }
     
     public String getQuery() {
-        return this.jw;
+        return this.se;
     }
     
     public boolean isTestDevice(final Context context) {
-        return this.dW.isTestDevice(context);
-    }
-    
-    af v() {
-        return this.dW;
+        return this.kp.isTestDevice(context);
     }
     
     public static final class Builder
     {
-        private final af.a dX;
-        private int jj;
-        private int jk;
-        private int jl;
-        private int jm;
-        private int jn;
-        private int jo;
-        private int jp;
-        private int jq;
-        private String jr;
-        private int js;
-        private String jt;
-        private int ju;
-        private int jv;
-        private String jw;
+        private final as.a kq;
+        private int rR;
+        private int rS;
+        private int rT;
+        private int rU;
+        private int rV;
+        private int rW;
+        private int rX;
+        private int rY;
+        private String rZ;
+        private int sa;
+        private String sb;
+        private int sc;
+        private int sd;
+        private String se;
         
         public Builder() {
-            this.dX = new af.a();
-            this.jp = 0;
+            this.kq = new as.a();
+            this.rX = 0;
         }
         
         public Builder addNetworkExtras(final NetworkExtras networkExtras) {
-            this.dX.a(networkExtras);
+            this.kq.a(networkExtras);
+            return this;
+        }
+        
+        public Builder addNetworkExtrasBundle(final Class<? extends MediationAdapter> clazz, final Bundle bundle) {
+            this.kq.a(clazz, bundle);
             return this;
         }
         
         public Builder addTestDevice(final String s) {
-            this.dX.h(s);
+            this.kq.h(s);
             return this;
         }
         
@@ -171,82 +183,82 @@ public final class SearchAdRequest
             return new SearchAdRequest(this, null);
         }
         
-        public Builder setAnchorTextColor(final int jj) {
-            this.jj = jj;
+        public Builder setAnchorTextColor(final int rr) {
+            this.rR = rr;
             return this;
         }
         
-        public Builder setBackgroundColor(final int jk) {
-            this.jk = jk;
-            this.jl = Color.argb(0, 0, 0, 0);
-            this.jm = Color.argb(0, 0, 0, 0);
+        public Builder setBackgroundColor(final int rs) {
+            this.rS = rs;
+            this.rT = Color.argb(0, 0, 0, 0);
+            this.rU = Color.argb(0, 0, 0, 0);
             return this;
         }
         
-        public Builder setBackgroundGradient(final int jm, final int jl) {
-            this.jk = Color.argb(0, 0, 0, 0);
-            this.jl = jl;
-            this.jm = jm;
+        public Builder setBackgroundGradient(final int ru, final int rt) {
+            this.rS = Color.argb(0, 0, 0, 0);
+            this.rT = rt;
+            this.rU = ru;
             return this;
         }
         
-        public Builder setBorderColor(final int jn) {
-            this.jn = jn;
+        public Builder setBorderColor(final int rv) {
+            this.rV = rv;
             return this;
         }
         
-        public Builder setBorderThickness(final int jo) {
-            this.jo = jo;
+        public Builder setBorderThickness(final int rw) {
+            this.rW = rw;
             return this;
         }
         
-        public Builder setBorderType(final int jp) {
-            this.jp = jp;
+        public Builder setBorderType(final int rx) {
+            this.rX = rx;
             return this;
         }
         
-        public Builder setCallButtonColor(final int jq) {
-            this.jq = jq;
+        public Builder setCallButtonColor(final int ry) {
+            this.rY = ry;
             return this;
         }
         
-        public Builder setCustomChannels(final String jr) {
-            this.jr = jr;
+        public Builder setCustomChannels(final String rz) {
+            this.rZ = rz;
             return this;
         }
         
-        public Builder setDescriptionTextColor(final int js) {
-            this.js = js;
+        public Builder setDescriptionTextColor(final int sa) {
+            this.sa = sa;
             return this;
         }
         
-        public Builder setFontFace(final String jt) {
-            this.jt = jt;
+        public Builder setFontFace(final String sb) {
+            this.sb = sb;
             return this;
         }
         
-        public Builder setHeaderTextColor(final int ju) {
-            this.ju = ju;
+        public Builder setHeaderTextColor(final int sc) {
+            this.sc = sc;
             return this;
         }
         
-        public Builder setHeaderTextSize(final int jv) {
-            this.jv = jv;
+        public Builder setHeaderTextSize(final int sd) {
+            this.sd = sd;
             return this;
         }
         
         public Builder setLocation(final Location location) {
-            this.dX.a(location);
+            this.kq.a(location);
             return this;
         }
         
-        public Builder setQuery(final String jw) {
-            this.jw = jw;
+        public Builder setQuery(final String se) {
+            this.se = se;
             return this;
         }
         
         public Builder tagForChildDirectedTreatment(final boolean b) {
-            this.dX.e(b);
+            this.kq.g(b);
             return this;
         }
     }

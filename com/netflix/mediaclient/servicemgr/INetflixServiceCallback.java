@@ -22,6 +22,8 @@ public interface INetflixServiceCallback
     
     void onGenresFetched(final int p0, final List<Genre> p1, final int p2);
     
+    void onKidsCharacterDetailsFetched(final int p0, final KidsCharacterDetails p1, final Boolean p2, final int p3);
+    
     void onLoLoMoPrefetched(final int p0, final int p1);
     
     void onLoLoMoSummaryFetched(final int p0, final LoLoMo p1, final int p2);

@@ -5,21 +5,27 @@
 package com.netflix.mediaclient.ui;
 
 import android.app.ActionBar;
-import android.view.View;
 import com.netflix.mediaclient.android.fragment.LoadingView;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.IntentFilter;
+import android.view.View;
+import com.netflix.mediaclient.util.ViewUtils;
+import android.widget.ImageView$ScaleType;
+import android.widget.RelativeLayout$LayoutParams;
+import android.view.ViewTreeObserver$OnGlobalLayoutListener;
+import android.widget.ProgressBar;
+import android.widget.ImageView;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.ui.login.LoginActivity;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.util.DeviceUtils;
 import android.app.Activity;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
@@ -33,6 +39,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 public class LaunchActivity extends NetflixActivity
 {
     private static final String EXTRA_SOURCE = "extra_source";
+    private static final boolean HANG_ON_LOADING_SCREEN = false;
     private static final boolean START_DETAILS_ACTIVITY_ON_LAUNCH = false;
     private static final String TAG = "LaunchActivity";
     private static final Video sampleVideo;
@@ -55,12 +62,22 @@ public class LaunchActivity extends NetflixActivity
             }
             
             @Override
+            public String getHorzDispUrl() {
+                return null;
+            }
+            
+            @Override
             public String getId() {
-                return "70178217";
+                return "70140457";
             }
             
             @Override
             public String getTitle() {
+                return "Dummy Title";
+            }
+            
+            @Override
+            public String getTvCardUrl() {
                 return null;
             }
             
@@ -98,6 +115,13 @@ public class LaunchActivity extends NetflixActivity
         catch (Throwable t) {
             Log.e("LaunchActivity", "Failed to parse nflx url ", t);
             return NflxHandler.Response.NOT_HANDLING;
+        }
+    }
+    
+    private void createContentView() {
+        this.setContentView(2130903161);
+        if (DeviceUtils.getScreenResolutionDpi(this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
+            this.manipulateSplashBackground();
         }
     }
     
@@ -148,10 +172,36 @@ public class LaunchActivity extends NetflixActivity
             return;
         }
         Log.d("LaunchActivity", String.format("Redirect to home with profile %s, %s", serviceManager.getCurrentProfile().getProfileName(), serviceManager.getCurrentProfile().getProfileId()));
-        this.startNextActivity(HomeActivity.createStartIntent((Context)this));
+        this.startNextActivity(HomeActivity.createStartIntent(this));
         this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.homeScreen, this.mStarted);
         this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().startUiBrowseStartupSession(this.mStarted);
         this.finish();
+    }
+    
+    private void manipulateSplashBackground() {
+        final ImageView imageView = (ImageView)this.findViewById(2131165567);
+        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
+            final /* synthetic */ ImageView val$logo = (ImageView)LaunchActivity.this.findViewById(2131165568);
+            final /* synthetic */ ProgressBar val$progress = (ProgressBar)LaunchActivity.this.findViewById(2131165569);
+            
+            public void onGlobalLayout() {
+                if (imageView.getWidth() <= 0) {
+                    return;
+                }
+                Log.v("LaunchActivity", "Manipulating splash bg, scale factor: " + 2);
+                final RelativeLayout$LayoutParams relativeLayout$LayoutParams = (RelativeLayout$LayoutParams)imageView.getLayoutParams();
+                relativeLayout$LayoutParams.width = imageView.getWidth() * 2;
+                relativeLayout$LayoutParams.height = imageView.getHeight() * 2;
+                imageView.setScaleType(ImageView$ScaleType.FIT_CENTER);
+                final RelativeLayout$LayoutParams relativeLayout$LayoutParams2 = (RelativeLayout$LayoutParams)this.val$logo.getLayoutParams();
+                relativeLayout$LayoutParams2.topMargin *= 2;
+                if (DeviceUtils.isLandscape((Context)LaunchActivity.this)) {
+                    final RelativeLayout$LayoutParams relativeLayout$LayoutParams3 = (RelativeLayout$LayoutParams)this.val$progress.getLayoutParams();
+                    relativeLayout$LayoutParams3.topMargin *= 2;
+                }
+                ViewUtils.removeGlobalLayoutListener((View)imageView, (ViewTreeObserver$OnGlobalLayoutListener)this);
+            }
+        });
     }
     
     private void registerNflxReceiver() {
@@ -203,6 +253,11 @@ public class LaunchActivity extends NetflixActivity
     }
     
     @Override
+    public void finish() {
+        super.finish();
+    }
+    
+    @Override
     public IClientLogging.ModalView getUiScreen() {
         return null;
     }
@@ -225,17 +280,13 @@ public class LaunchActivity extends NetflixActivity
         }
         this.registerNflxReceiver();
         if (this.getNetflixApplication().isReady()) {
-            Log.d("LaunchActivity", "Service is ready, just use simple progress bar...");
+            Log.d("LaunchActivity", "Service is ready, just use loading view...");
             this.setContentView((View)new LoadingView((Context)this));
             return;
         }
         Log.d("LaunchActivity", "Service is NOT ready, use splash screen...");
         this.mSplashScreenStarted = System.currentTimeMillis();
-        if (DeviceUtils.isTabletByContext((Context)this)) {
-            this.setContentView(2130903155);
-            return;
-        }
-        this.setContentView(2130903154);
+        this.createContentView();
     }
     
     @Override

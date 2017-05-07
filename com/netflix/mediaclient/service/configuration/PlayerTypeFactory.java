@@ -24,7 +24,7 @@ public final class PlayerTypeFactory
         PreferenceUtils.removePref(context, "nflx_player_type");
     }
     
-    public static PlayerType findDefaultPlayerType(final Context context) {
+    public static PlayerType findDefaultPlayerType() {
         final int androidVersion = AndroidUtils.getAndroidVersion();
         if (Log.isLoggable("nf-playertypefactory", 3)) {
             Log.d("nf-playertypefactory", "Crypto factory type (CDM is 2): " + PlayerTypeFactory.cryptoFactoryType);
@@ -45,12 +45,8 @@ public final class PlayerTypeFactory
             Log.d("nf-playertypefactory", "JB MR1+, Default to JPlayer");
             return PlayerType.device10;
         }
-        if (androidVersion >= 14) {
-            Log.d("nf-playertypefactory", "Default to OpenMax AL (XAL)");
-            return PlayerType.device7;
-        }
-        Log.d("nf-playertypefactory", "Default to visualon player");
-        return PlayerType.device6;
+        Log.d("nf-playertypefactory", "Default to OpenMax AL (XAL)");
+        return PlayerType.device7;
     }
     
     public static PlayerType getCurrentType(final Context context) {
@@ -61,38 +57,14 @@ public final class PlayerTypeFactory
             }
             if (PlayerTypeFactory.currentType == null) {
                 Log.d("nf-playertypefactory", "Current type was not saved to preferences before. Find default player.");
-                PlayerTypeFactory.currentType = findDefaultPlayerType(context);
+                PlayerTypeFactory.currentType = findDefaultPlayerType();
             }
             if (!isValidPlayerType(context)) {
                 Log.e("nf-playertypefactory", "Current type is not valid! Replace it with default!");
                 PreferenceUtils.removePref(context, "nflx_player_type");
-                PlayerTypeFactory.currentType = findDefaultPlayerType(context);
+                PlayerTypeFactory.currentType = findDefaultPlayerType();
             }
             return PlayerTypeFactory.currentType;
-        }
-    }
-    
-    public static PlayerType getDrmPlayPlayer() {
-        if (!AndroidUtils.isDrmPlaySupported()) {
-            Log.w("nf-playertypefactory", "drm.play is not supported on this device");
-            return null;
-        }
-        switch (AndroidUtils.getAndroidVersion()) {
-            default: {
-                return null;
-            }
-            case 8:
-            case 9:
-            case 10: {
-                return PlayerType.device2;
-            }
-            case 11: {
-                return PlayerType.device3;
-            }
-            case 12:
-            case 13: {
-                return PlayerType.device5;
-            }
         }
     }
     
@@ -106,25 +78,6 @@ public final class PlayerTypeFactory
     
     public static PlayerType getJPlayerBase() {
         return PlayerType.device11;
-    }
-    
-    public static PlayerType getNfampPlayer() {
-        return PlayerType.device9;
-    }
-    
-    public static PlayerType getOmxPlayer() {
-        switch (AndroidUtils.getAndroidVersion()) {
-            default: {
-                return null;
-            }
-            case 8: {
-                return PlayerType.device1;
-            }
-            case 9:
-            case 10: {
-                return PlayerType.device4;
-            }
-        }
     }
     
     private static PlayerType getPlayerTypeFromPreferences(final Context context) {
@@ -145,10 +98,6 @@ public final class PlayerTypeFactory
         return playerType;
     }
     
-    public static PlayerType getSoftwarePlayer() {
-        return PlayerType.device6;
-    }
-    
     public static PlayerType getXalPlayer() {
         return PlayerType.device7;
     }
@@ -165,10 +114,6 @@ public final class PlayerTypeFactory
         return PreferenceUtils.getIntPref(context, "nflx_player_type", -1) == -1;
     }
     
-    public static boolean isDrmPlayPlayer(final PlayerType playerType) {
-        return PlayerType.device2.equals(playerType) || PlayerType.device3.equals(playerType) || PlayerType.device5.equals(playerType);
-    }
-    
     public static boolean isJPlayer(final PlayerType playerType) {
         return PlayerType.device10.equals(playerType);
     }
@@ -181,25 +126,13 @@ public final class PlayerTypeFactory
         return PlayerType.device11.equals(playerType);
     }
     
-    public static boolean isNfampPlayer(final PlayerType playerType) {
-        return PlayerType.device9.equals(playerType);
-    }
-    
-    public static boolean isOmxPlayer(final PlayerType playerType) {
-        return PlayerType.device1.equals(playerType) || PlayerType.device4.equals(playerType);
-    }
-    
     public static boolean isPlayerTypeSupported(final PlayerType playerType) {
         return isValidPlayerType(playerType);
     }
     
-    public static boolean isSoftwarePlayer(final PlayerType playerType) {
-        return PlayerType.device6.equals(playerType);
-    }
-    
     private static boolean isValidPlayerType(final Context context) {
         if (PlayerTypeFactory.currentType == null) {
-            PlayerTypeFactory.currentType = findDefaultPlayerType(context);
+            PlayerTypeFactory.currentType = findDefaultPlayerType();
         }
         return isValidPlayerType(PlayerTypeFactory.currentType);
     }
@@ -213,75 +146,8 @@ public final class PlayerTypeFactory
             final int androidVersion = AndroidUtils.getAndroidVersion();
             switch (playerType.getValue()) {
                 default: {
-                    if (playerType == PlayerType.device6) {
-                        Log.d("nf-playertypefactory", "visualon catch all, supported platform " + androidVersion);
-                        return true;
-                    }
                     Log.d("nf-playertypefactory", "Not supported type " + playerType + " for this device!");
                     return false;
-                }
-                case 1: {
-                    if (androidVersion != 8) {
-                        Log.e("nf-playertypefactory", "Incorrect platform");
-                        return false;
-                    }
-                    break;
-                }
-                case 2: {
-                    if (!AndroidUtils.isDrmPlaySupported()) {
-                        Log.e("nf-playertypefactory", "drm.play is not present on device!");
-                        return false;
-                    }
-                    if (androidVersion > 10 && androidVersion < 8) {
-                        Log.e("nf-playertypefactory", "Incorrect platform " + androidVersion);
-                        return false;
-                    }
-                    if (Log.isLoggable("nf-playertypefactory", 3)) {
-                        Log.d("nf-playertypefactory", "drm.play supported, supported platform " + androidVersion);
-                        return true;
-                    }
-                    break;
-                }
-                case 3: {
-                    if (!AndroidUtils.isDrmPlaySupported()) {
-                        Log.e("nf-playertypefactory", "drm.play is not present on device!");
-                        return false;
-                    }
-                    if (androidVersion != 11) {
-                        Log.e("nf-playertypefactory", "Incorrect platform " + androidVersion);
-                        return false;
-                    }
-                    if (Log.isLoggable("nf-playertypefactory", 3)) {
-                        Log.d("nf-playertypefactory", "drm.play supported, supported platform " + androidVersion);
-                        return true;
-                    }
-                    break;
-                }
-                case 4: {
-                    if (androidVersion < 9 && androidVersion > 10) {
-                        Log.e("nf-playertypefactory", "Incorrect platform " + androidVersion);
-                        return false;
-                    }
-                    if (Log.isLoggable("nf-playertypefactory", 3)) {
-                        Log.d("nf-playertypefactory", "OMX supported, supported platform " + androidVersion);
-                        return true;
-                    }
-                    break;
-                }
-                case 5: {
-                    if (!AndroidUtils.isDrmPlaySupported()) {
-                        Log.e("nf-playertypefactory", "drm.play is not present on device!");
-                        return false;
-                    }
-                    if (androidVersion < 12 || androidVersion > 13) {
-                        Log.e("nf-playertypefactory", "Incorrect platform " + androidVersion);
-                        return false;
-                    }
-                    if (Log.isLoggable("nf-playertypefactory", 3)) {
-                        Log.d("nf-playertypefactory", "drm.play supported, supported platform " + androidVersion);
-                        return true;
-                    }
-                    break;
                 }
                 case 7: {
                     Log.d("nf-playertypefactory", "XAL player " + androidVersion);
@@ -293,13 +159,6 @@ public final class PlayerTypeFactory
                 case 8: {
                     Log.d("nf-playertypefactory", "XAL Main Profile player " + androidVersion);
                     if (androidVersion <= 13) {
-                        return false;
-                    }
-                    break;
-                }
-                case 9: {
-                    Log.d("nf-playertypefactory", "Netflix Android MediaPlayer " + androidVersion);
-                    if (androidVersion <= 8) {
                         return false;
                     }
                     break;
@@ -340,7 +199,7 @@ public final class PlayerTypeFactory
         synchronized (PlayerTypeFactory.class) {
             Log.d("nf-playertypefactory", "Removing player type QA override from preferences");
             PreferenceUtils.removePref(context, "nflx_player_type_qa");
-            PlayerTypeFactory.currentType = findDefaultPlayerType(context);
+            PlayerTypeFactory.currentType = findDefaultPlayerType();
             return getCurrentType(context);
         }
     }
@@ -356,11 +215,17 @@ public final class PlayerTypeFactory
                     Log.w("nf-playertypefactory", "Type is null, do nothing!");
                     return;
                     // iftrue(Label_0053:, !Log.isLoggable("nf-playertypefactory", 3))
-                    Log.d("nf-playertypefactory", "Updating player type " + currentType);
-                    Label_0053: {
-                        Log.e("nf-playertypefactory", "Invalid player type for this device. We should never be here!");
-                    }
                     // iftrue(Label_0077:, isValidPlayerType(currentType))
+                Block_7:
+                    while (true) {
+                        Block_6: {
+                            break Block_6;
+                            break Block_7;
+                        }
+                        Log.d("nf-playertypefactory", "Updating player type " + currentType);
+                        continue;
+                    }
+                    Log.e("nf-playertypefactory", "Invalid player type for this device. We should never be here!");
                     return;
                 }
                 finally {
@@ -384,33 +249,31 @@ public final class PlayerTypeFactory
     
     public static void setPlayerTypeForQAOverride(final Context context, final PlayerType currentType) {
         // monitorenter(PlayerTypeFactory.class)
-        Label_0020: {
+        Label_0019: {
             if (currentType != null) {
-                break Label_0020;
+                break Label_0019;
             }
             while (true) {
                 try {
                     Log.w("nf-playertypefactory", "setPlayerTypeForQAOverride: Type is null, do nothing!");
                     return;
-                Block_6_Outer:
+                    // iftrue(Label_0077:, isValidPlayerType(currentType))
+                    // iftrue(Label_0053:, !Log.isLoggable("nf-playertypefactory", 3))
+                Block_7:
                     while (true) {
-                        Log.e("nf-playertypefactory", "setPlayerTypeForQAOverride: Invalid player type for this device. We should never be here!");
-                        return;
-                    Label_0055:
-                        while (true) {
-                            Log.d("nf-playertypefactory", "setPlayerTypeForQAOverride: Updating player type " + currentType);
-                            break Label_0055;
-                            continue;
+                        Log.d("nf-playertypefactory", "setPlayerTypeForQAOverride: Updating player type " + currentType);
+                        Label_0053: {
+                            break Block_7;
                         }
-                        continue Block_6_Outer;
+                        continue;
                     }
+                    Log.e("nf-playertypefactory", "setPlayerTypeForQAOverride: Invalid player type for this device. We should never be here!");
+                    return;
                 }
-                // iftrue(Label_0055:, !Log.isLoggable("nf-playertypefactory", 3))
-                // iftrue(Label_0080:, isValidPlayerType(currentType))
                 finally {
                 }
                 // monitorexit(PlayerTypeFactory.class)
-                Label_0080: {
+                Label_0077: {
                     if (PlayerTypeFactory.currentType != null && PlayerTypeFactory.currentType.getValue() == currentType.getValue()) {
                         Log.d("nf-playertypefactory", "setPlayerTypeForQAOverride: Already known player type, used for playback currently. Do nothing");
                         return;

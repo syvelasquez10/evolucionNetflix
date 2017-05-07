@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
 import com.google.android.gms.maps.GoogleMapOptions;
-import com.google.android.gms.dynamic.b;
+import com.google.android.gms.dynamic.d;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.IInterface;
@@ -21,13 +21,13 @@ public interface IMapFragmentDelegate extends IInterface
     
     void onCreate(final Bundle p0) throws RemoteException;
     
-    b onCreateView(final b p0, final b p1, final Bundle p2) throws RemoteException;
+    d onCreateView(final d p0, final d p1, final Bundle p2) throws RemoteException;
     
     void onDestroy() throws RemoteException;
     
     void onDestroyView() throws RemoteException;
     
-    void onInflate(final b p0, final GoogleMapOptions p1, final Bundle p2) throws RemoteException;
+    void onInflate(final d p0, final GoogleMapOptions p1, final Bundle p2) throws RemoteException;
     
     void onLowMemory() throws RemoteException;
     
@@ -39,7 +39,7 @@ public interface IMapFragmentDelegate extends IInterface
     
     public abstract static class a extends Binder implements IMapFragmentDelegate
     {
-        public static IMapFragmentDelegate U(final IBinder binder) {
+        public static IMapFragmentDelegate af(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -76,7 +76,7 @@ public interface IMapFragmentDelegate extends IInterface
                 }
                 case 2: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IMapFragmentDelegate");
-                    final b e = b.a.E(parcel.readStrongBinder());
+                    final d k = d.a.K(parcel.readStrongBinder());
                     GoogleMapOptions fromParcel;
                     if (parcel.readInt() != 0) {
                         fromParcel = GoogleMapOptions.CREATOR.createFromParcel(parcel);
@@ -91,7 +91,7 @@ public interface IMapFragmentDelegate extends IInterface
                     else {
                         bundle = null;
                     }
-                    this.onInflate(e, fromParcel, bundle);
+                    this.onInflate(k, fromParcel, bundle);
                     parcel2.writeNoException();
                     return true;
                 }
@@ -110,8 +110,8 @@ public interface IMapFragmentDelegate extends IInterface
                 }
                 case 4: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IMapFragmentDelegate");
-                    final b e2 = b.a.E(parcel.readStrongBinder());
-                    final b e3 = b.a.E(parcel.readStrongBinder());
+                    final d i = d.a.K(parcel.readStrongBinder());
+                    final d j = d.a.K(parcel.readStrongBinder());
                     Bundle bundle3;
                     if (parcel.readInt() != 0) {
                         bundle3 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
@@ -119,7 +119,7 @@ public interface IMapFragmentDelegate extends IInterface
                     else {
                         bundle3 = null;
                     }
-                    final b onCreateView = this.onCreateView(e2, e3, bundle3);
+                    final d onCreateView = this.onCreateView(i, j, bundle3);
                     parcel2.writeNoException();
                     IBinder binder3 = binder;
                     if (onCreateView != null) {
@@ -195,14 +195,14 @@ public interface IMapFragmentDelegate extends IInterface
         
         private static class a implements IMapFragmentDelegate
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
             }
             
             public IBinder asBinder() {
-                return this.dU;
+                return this.kn;
             }
             
             @Override
@@ -211,9 +211,9 @@ public interface IMapFragmentDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapFragmentDelegate");
-                    this.dU.transact(1, obtain, obtain2, 0);
+                    this.kn.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
-                    return IGoogleMapDelegate.a.R(obtain2.readStrongBinder());
+                    return IGoogleMapDelegate.a.ac(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -228,7 +228,7 @@ public interface IMapFragmentDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapFragmentDelegate");
-                    this.dU.transact(11, obtain, obtain2, 0);
+                    this.kn.transact(11, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -254,7 +254,7 @@ public interface IMapFragmentDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.dU.transact(3, obtain, obtain2, 0);
+                    this.kn.transact(3, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -264,23 +264,23 @@ public interface IMapFragmentDelegate extends IInterface
             }
             
             @Override
-            public b onCreateView(b e, final b b, final Bundle bundle) throws RemoteException {
+            public d onCreateView(d k, final d d, final Bundle bundle) throws RemoteException {
                 final IBinder binder = null;
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapFragmentDelegate");
                     IBinder binder2;
-                    if (e != null) {
-                        binder2 = e.asBinder();
+                    if (k != null) {
+                        binder2 = k.asBinder();
                     }
                     else {
                         binder2 = null;
                     }
                     obtain.writeStrongBinder(binder2);
                     IBinder binder3 = binder;
-                    if (b != null) {
-                        binder3 = b.asBinder();
+                    if (d != null) {
+                        binder3 = d.asBinder();
                     }
                     obtain.writeStrongBinder(binder3);
                     if (bundle != null) {
@@ -290,10 +290,10 @@ public interface IMapFragmentDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.dU.transact(4, obtain, obtain2, 0);
+                    this.kn.transact(4, obtain, obtain2, 0);
                     obtain2.readException();
-                    e = com.google.android.gms.dynamic.b.a.E(obtain2.readStrongBinder());
-                    return e;
+                    k = com.google.android.gms.dynamic.d.a.K(obtain2.readStrongBinder());
+                    return k;
                 }
                 finally {
                     obtain2.recycle();
@@ -307,7 +307,7 @@ public interface IMapFragmentDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapFragmentDelegate");
-                    this.dU.transact(8, obtain, obtain2, 0);
+                    this.kn.transact(8, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -322,7 +322,7 @@ public interface IMapFragmentDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapFragmentDelegate");
-                    this.dU.transact(7, obtain, obtain2, 0);
+                    this.kn.transact(7, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -332,7 +332,7 @@ public interface IMapFragmentDelegate extends IInterface
             }
             
             @Override
-            public void onInflate(final b b, final GoogleMapOptions googleMapOptions, final Bundle bundle) throws RemoteException {
+            public void onInflate(final d d, final GoogleMapOptions googleMapOptions, final Bundle bundle) throws RemoteException {
                 while (true) {
                     final Parcel obtain = Parcel.obtain();
                     final Parcel obtain2 = Parcel.obtain();
@@ -340,8 +340,8 @@ public interface IMapFragmentDelegate extends IInterface
                         try {
                             obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapFragmentDelegate");
                             IBinder binder;
-                            if (b != null) {
-                                binder = b.asBinder();
+                            if (d != null) {
+                                binder = d.asBinder();
                             }
                             else {
                                 binder = null;
@@ -357,7 +357,7 @@ public interface IMapFragmentDelegate extends IInterface
                             if (bundle != null) {
                                 obtain.writeInt(1);
                                 bundle.writeToParcel(obtain, 0);
-                                this.dU.transact(2, obtain, obtain2, 0);
+                                this.kn.transact(2, obtain, obtain2, 0);
                                 obtain2.readException();
                                 return;
                             }
@@ -378,7 +378,7 @@ public interface IMapFragmentDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapFragmentDelegate");
-                    this.dU.transact(9, obtain, obtain2, 0);
+                    this.kn.transact(9, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -393,7 +393,7 @@ public interface IMapFragmentDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapFragmentDelegate");
-                    this.dU.transact(6, obtain, obtain2, 0);
+                    this.kn.transact(6, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -408,7 +408,7 @@ public interface IMapFragmentDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IMapFragmentDelegate");
-                    this.dU.transact(5, obtain, obtain2, 0);
+                    this.kn.transact(5, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -430,7 +430,7 @@ public interface IMapFragmentDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.dU.transact(10, obtain, obtain2, 0);
+                    this.kn.transact(10, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         bundle.readFromParcel(obtain2);

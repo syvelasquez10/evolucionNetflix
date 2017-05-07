@@ -6,7 +6,6 @@ package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
-import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
 import android.widget.LinearLayout;
@@ -80,7 +79,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
-        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131231096);
+        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131165583);
         if (linearLayout != null) {
             linearLayout.setOrientation(1);
             for (int i = 0; i < linearLayout.getChildCount(); ++i) {
@@ -89,10 +88,6 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
                 layoutParams.weight = 0.0f;
                 child.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
             }
-        }
-        final View viewById = onCreateView.findViewById(2131231084);
-        if (viewById != null && DeviceUtils.isTabletByContext((Context)this.getActivity())) {
-            viewById.setVisibility(0);
         }
         return onCreateView;
     }
@@ -156,12 +151,12 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
         
         @Override
         public CharSequence getCreatorsText() {
-            return StringUtils.createBoldLabeledText(this.context, 2131296550, this.details.getCreators());
+            return StringUtils.createBoldLabeledText(this.context, 2131493169, this.details.getCreators());
         }
         
         @Override
         public CharSequence getStarringText() {
-            return StringUtils.createBoldLabeledText(this.context, 2131296549, this.details.getActors());
+            return StringUtils.createBoldLabeledText(this.context, 2131493168, this.details.getActors());
         }
     }
 }

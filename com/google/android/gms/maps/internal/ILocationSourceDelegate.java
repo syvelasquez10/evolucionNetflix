@@ -12,7 +12,7 @@ import android.os.IInterface;
 
 public interface ILocationSourceDelegate extends IInterface
 {
-    void activate(final g p0) throws RemoteException;
+    void activate(final h p0) throws RemoteException;
     
     void deactivate() throws RemoteException;
     
@@ -22,7 +22,7 @@ public interface ILocationSourceDelegate extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.ILocationSourceDelegate");
         }
         
-        public static ILocationSourceDelegate T(final IBinder binder) {
+        public static ILocationSourceDelegate ae(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -48,7 +48,7 @@ public interface ILocationSourceDelegate extends IInterface
                 }
                 case 1: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ILocationSourceDelegate");
-                    this.activate(g.a.Y(parcel.readStrongBinder()));
+                    this.activate(h.a.ak(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
@@ -63,27 +63,27 @@ public interface ILocationSourceDelegate extends IInterface
         
         private static class a implements ILocationSourceDelegate
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
             }
             
             @Override
-            public void activate(final g g) throws RemoteException {
+            public void activate(final h h) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ILocationSourceDelegate");
                     IBinder binder;
-                    if (g != null) {
-                        binder = g.asBinder();
+                    if (h != null) {
+                        binder = h.asBinder();
                     }
                     else {
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.dU.transact(1, obtain, obtain2, 0);
+                    this.kn.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -93,7 +93,7 @@ public interface ILocationSourceDelegate extends IInterface
             }
             
             public IBinder asBinder() {
-                return this.dU;
+                return this.kn;
             }
             
             @Override
@@ -102,7 +102,7 @@ public interface ILocationSourceDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ILocationSourceDelegate");
-                    this.dU.transact(2, obtain, obtain2, 0);
+                    this.kn.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

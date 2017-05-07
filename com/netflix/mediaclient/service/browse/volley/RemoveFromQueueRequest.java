@@ -31,7 +31,6 @@ public class RemoveFromQueueRequest extends FalcorVolleyWebClientRequest<String>
     private final int fromVideo;
     private final HardCache hardCache;
     private final List<String> iqKeysCache;
-    private final String iqLoMoId;
     private final String iqLoMoIndex;
     private final String lolomoId;
     private final String mVideoId;
@@ -55,7 +54,6 @@ public class RemoveFromQueueRequest extends FalcorVolleyWebClientRequest<String>
             canMakeRequest = false;
         }
         if (!(this.canMakeRequest = canMakeRequest)) {}
-        this.iqLoMoId = BrowseAgent.getIQLoMoId(hardCache);
         this.lolomoId = BrowseAgent.getLoLoMoId(hardCache);
         this.iqLoMoIndex = BrowseAgent.getIQLoMoIndex(hardCache);
         this.pqlQuery = "['lolomos','" + this.lolomoId + "','remove']";
@@ -79,11 +77,8 @@ public class RemoveFromQueueRequest extends FalcorVolleyWebClientRequest<String>
         final String string2 = "['videos','" + this.mVideoId + "']";
         final String string3 = "[{'to':" + this.toVideo + ",'from':" + this.fromVideo + "},'summary']";
         final String string4 = new StringBuilder("['summary']").toString();
-        final String string5 = "'" + this.iqLoMoId + "'";
         final StringBuilder sb = new StringBuilder();
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), string5));
         sb.append(string).append(this.iqLoMoIndex);
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), "'queue'"));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), string2));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", string3));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", string4));

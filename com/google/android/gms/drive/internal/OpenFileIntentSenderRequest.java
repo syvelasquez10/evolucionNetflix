@@ -12,20 +12,20 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class OpenFileIntentSenderRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<OpenFileIntentSenderRequest> CREATOR;
-    final int kg;
-    final String qL;
-    final DriveId qM;
-    final String[] qW;
+    final String EB;
+    final DriveId EC;
+    final String[] EQ;
+    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new x();
+        CREATOR = (Parcelable$Creator)new ai();
     }
     
-    OpenFileIntentSenderRequest(final int kg, final String ql, final String[] qw, final DriveId qm) {
-        this.kg = kg;
-        this.qL = ql;
-        this.qW = qw;
-        this.qM = qm;
+    OpenFileIntentSenderRequest(final int xh, final String eb, final String[] eq, final DriveId ec) {
+        this.xH = xh;
+        this.EB = eb;
+        this.EQ = eq;
+        this.EC = ec;
     }
     
     public OpenFileIntentSenderRequest(final String s, final String[] array, final DriveId driveId) {
@@ -37,6 +37,6 @@ public class OpenFileIntentSenderRequest implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        x.a(this, parcel, n);
+        ai.a(this, parcel, n);
     }
 }

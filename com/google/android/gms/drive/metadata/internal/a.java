@@ -6,12 +6,11 @@ package com.google.android.gms.drive.metadata.internal;
 
 import com.google.android.gms.common.data.DataHolder;
 import android.os.Bundle;
-import com.google.android.gms.drive.metadata.MetadataField;
 
-public class a extends MetadataField<Boolean>
+public class a extends com.google.android.gms.drive.metadata.a<Boolean>
 {
-    public a(final String s) {
-        super(s);
+    public a(final String s, final int n) {
+        super(s, n);
     }
     
     @Override
@@ -19,11 +18,11 @@ public class a extends MetadataField<Boolean>
         bundle.putBoolean(this.getName(), (boolean)b);
     }
     
-    protected Boolean e(final DataHolder dataHolder, final int n, final int n2) {
+    protected Boolean d(final DataHolder dataHolder, final int n, final int n2) {
         return dataHolder.getBoolean(this.getName(), n, n2);
     }
     
-    protected Boolean g(final Bundle bundle) {
+    protected Boolean f(final Bundle bundle) {
         return bundle.getBoolean(this.getName());
     }
 }

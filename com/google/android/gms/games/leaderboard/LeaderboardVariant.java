@@ -18,12 +18,6 @@ public interface LeaderboardVariant extends Freezable<LeaderboardVariant>
     public static final int TIME_SPAN_DAILY = 0;
     public static final int TIME_SPAN_WEEKLY = 1;
     
-    String dt();
-    
-    String du();
-    
-    String dv();
-    
     int getCollection();
     
     String getDisplayPlayerRank();
@@ -39,6 +33,12 @@ public interface LeaderboardVariant extends Freezable<LeaderboardVariant>
     long getRawPlayerScore();
     
     int getTimeSpan();
+    
+    String hG();
+    
+    String hH();
+    
+    String hI();
     
     boolean hasPlayerInfo();
 }

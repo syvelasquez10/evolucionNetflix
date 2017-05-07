@@ -4,73 +4,90 @@
 
 package com.google.android.gms.internal;
 
-import java.util.List;
-import com.google.android.gms.common.internal.safeparcel.a;
-import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Collections;
+import java.util.Set;
+import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public class hg implements Parcelable$Creator<hf>
+public final class hg implements SafeParcelable
 {
-    static void a(final hf hf, final Parcel parcel, int o) {
-        o = b.o(parcel);
-        b.a(parcel, 1, hf.name, false);
-        b.c(parcel, 1000, hf.versionCode);
-        b.a(parcel, 2, hf.Bf, false);
-        b.a(parcel, 3, hf.Bg, false);
-        b.a(parcel, 4, hf.Bh, false);
-        b.a(parcel, 5, hf.Bi, false);
-        b.D(parcel, o);
+    public static final hh CREATOR;
+    final List<hm> OA;
+    private final String OB;
+    private final boolean OC;
+    private final Set<hm> OD;
+    final int xH;
+    
+    static {
+        CREATOR = new hh();
     }
     
-    public hf ap(final Parcel parcel) {
-        List<String> y = null;
-        final int n = a.n(parcel);
-        int g = 0;
-        String m = null;
-        String i = null;
-        String j = null;
-        String k = null;
-        while (parcel.dataPosition() < n) {
-            final int l = a.m(parcel);
-            switch (a.M(l)) {
-                default: {
-                    a.b(parcel, l);
-                    continue;
-                }
-                case 1: {
-                    k = a.m(parcel, l);
-                    continue;
-                }
-                case 1000: {
-                    g = a.g(parcel, l);
-                    continue;
-                }
-                case 2: {
-                    j = a.m(parcel, l);
-                    continue;
-                }
-                case 3: {
-                    i = a.m(parcel, l);
-                    continue;
-                }
-                case 4: {
-                    m = a.m(parcel, l);
-                    continue;
-                }
-                case 5: {
-                    y = a.y(parcel, l);
-                    continue;
-                }
+    hg(final int xh, final List<hm> list, final String s, final boolean oc) {
+        this.xH = xh;
+        List<hm> oa;
+        if (list == null) {
+            oa = Collections.emptyList();
+        }
+        else {
+            oa = Collections.unmodifiableList((List<? extends hm>)list);
+        }
+        this.OA = oa;
+        String ob = s;
+        if (s == null) {
+            ob = "";
+        }
+        this.OB = ob;
+        this.OC = oc;
+        if (this.OA.isEmpty()) {
+            this.OD = Collections.emptySet();
+            return;
+        }
+        this.OD = Collections.unmodifiableSet((Set<? extends hm>)new HashSet<hm>(this.OA));
+    }
+    
+    public int describeContents() {
+        final hh creator = hg.CREATOR;
+        return 0;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (this != o) {
+            if (!(o instanceof hg)) {
+                return false;
+            }
+            final hg hg = (hg)o;
+            if (!this.OD.equals(hg.OD) || this.OC != hg.OC) {
+                return false;
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
-        }
-        return new hf(g, k, j, i, m, y);
+        return true;
     }
     
-    public hf[] bf(final int n) {
-        return new hf[n];
+    @Deprecated
+    public String hW() {
+        return this.OB;
+    }
+    
+    public boolean hX() {
+        return this.OC;
+    }
+    
+    @Override
+    public int hashCode() {
+        return fo.hashCode(this.OD, this.OC);
+    }
+    
+    @Override
+    public String toString() {
+        return fo.e(this).a("types", this.OD).a("requireOpenNow", this.OC).toString();
+    }
+    
+    public void writeToParcel(final Parcel parcel, final int n) {
+        final hh creator = hg.CREATOR;
+        hh.a(this, parcel, n);
     }
 }

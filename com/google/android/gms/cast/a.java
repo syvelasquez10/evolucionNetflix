@@ -15,70 +15,70 @@ import android.os.Parcelable$Creator;
 public class a implements Parcelable$Creator<ApplicationMetadata>
 {
     static void a(final ApplicationMetadata applicationMetadata, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
+        final int p3 = b.p(parcel);
         b.c(parcel, 1, applicationMetadata.getVersionCode());
         b.a(parcel, 2, applicationMetadata.getApplicationId(), false);
         b.a(parcel, 3, applicationMetadata.getName(), false);
         b.b(parcel, 4, applicationMetadata.getImages(), false);
-        b.a(parcel, 5, applicationMetadata.kj, false);
+        b.a(parcel, 5, applicationMetadata.xK, false);
         b.a(parcel, 6, applicationMetadata.getSenderAppIdentifier(), false);
-        b.a(parcel, 7, (Parcelable)applicationMetadata.aN(), n, false);
-        b.D(parcel, o);
+        b.a(parcel, 7, (Parcelable)applicationMetadata.dz(), n, false);
+        b.F(parcel, p3);
     }
     
-    public ApplicationMetadata i(final Parcel parcel) {
+    public ApplicationMetadata j(final Parcel parcel) {
         Uri uri = null;
-        final int n = com.google.android.gms.common.internal.safeparcel.a.n(parcel);
+        final int o = com.google.android.gms.common.internal.safeparcel.a.o(parcel);
         int g = 0;
-        String m = null;
-        List<String> y = null;
+        String n = null;
+        List<String> a = null;
         List<WebImage> c = null;
-        String i = null;
-        String j = null;
-        while (parcel.dataPosition() < n) {
-            final int k = com.google.android.gms.common.internal.safeparcel.a.m(parcel);
-            switch (com.google.android.gms.common.internal.safeparcel.a.M(k)) {
+        String n2 = null;
+        String n3 = null;
+        while (parcel.dataPosition() < o) {
+            final int n4 = com.google.android.gms.common.internal.safeparcel.a.n(parcel);
+            switch (com.google.android.gms.common.internal.safeparcel.a.R(n4)) {
                 default: {
-                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, k);
+                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, n4);
                     continue;
                 }
                 case 1: {
-                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, k);
+                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, n4);
                     continue;
                 }
                 case 2: {
-                    j = com.google.android.gms.common.internal.safeparcel.a.m(parcel, k);
+                    n3 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n4);
                     continue;
                 }
                 case 3: {
-                    i = com.google.android.gms.common.internal.safeparcel.a.m(parcel, k);
+                    n2 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n4);
                     continue;
                 }
                 case 4: {
-                    c = com.google.android.gms.common.internal.safeparcel.a.c(parcel, k, WebImage.CREATOR);
+                    c = com.google.android.gms.common.internal.safeparcel.a.c(parcel, n4, WebImage.CREATOR);
                     continue;
                 }
                 case 5: {
-                    y = com.google.android.gms.common.internal.safeparcel.a.y(parcel, k);
+                    a = com.google.android.gms.common.internal.safeparcel.a.A(parcel, n4);
                     continue;
                 }
                 case 6: {
-                    m = com.google.android.gms.common.internal.safeparcel.a.m(parcel, k);
+                    n = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n4);
                     continue;
                 }
                 case 7: {
-                    uri = com.google.android.gms.common.internal.safeparcel.a.a(parcel, k, (android.os.Parcelable$Creator<Uri>)Uri.CREATOR);
+                    uri = com.google.android.gms.common.internal.safeparcel.a.a(parcel, n4, (android.os.Parcelable$Creator<Uri>)Uri.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + o, parcel);
         }
-        return new ApplicationMetadata(g, j, i, c, y, m, uri);
+        return new ApplicationMetadata(g, n3, n2, c, a, n, uri);
     }
     
-    public ApplicationMetadata[] q(final int n) {
+    public ApplicationMetadata[] w(final int n) {
         return new ApplicationMetadata[n];
     }
 }

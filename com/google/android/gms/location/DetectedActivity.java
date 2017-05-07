@@ -13,32 +13,34 @@ public class DetectedActivity implements SafeParcelable
     public static final int IN_VEHICLE = 0;
     public static final int ON_BICYCLE = 1;
     public static final int ON_FOOT = 2;
+    public static final int RUNNING = 8;
     public static final int STILL = 3;
     public static final int TILTING = 5;
     public static final int UNKNOWN = 4;
-    private final int kg;
-    int xp;
-    int xq;
+    public static final int WALKING = 7;
+    int NS;
+    int NT;
+    private final int xH;
     
     static {
         CREATOR = new DetectedActivityCreator();
     }
     
-    public DetectedActivity(final int xp, final int xq) {
-        this.kg = 1;
-        this.xp = xp;
-        this.xq = xq;
+    public DetectedActivity(final int ns, final int nt) {
+        this.xH = 1;
+        this.NS = ns;
+        this.NT = nt;
     }
     
-    public DetectedActivity(final int kg, final int xp, final int xq) {
-        this.kg = kg;
-        this.xp = xp;
-        this.xq = xq;
+    public DetectedActivity(final int xh, final int ns, final int nt) {
+        this.xH = xh;
+        this.NS = ns;
+        this.NT = nt;
     }
     
-    private int aM(final int n) {
+    private int bv(final int n) {
         int n2 = n;
-        if (n > 6) {
+        if (n > 8) {
             n2 = 4;
         }
         return n2;
@@ -49,20 +51,20 @@ public class DetectedActivity implements SafeParcelable
     }
     
     public int getConfidence() {
-        return this.xq;
+        return this.NT;
     }
     
     public int getType() {
-        return this.aM(this.xp);
+        return this.bv(this.NS);
     }
     
     public int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     @Override
     public String toString() {
-        return "DetectedActivity [type=" + this.getType() + ", confidence=" + this.xq + "]";
+        return "DetectedActivity [type=" + this.getType() + ", confidence=" + this.NT + "]";
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

@@ -4,84 +4,48 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.Binder;
-import android.os.RemoteException;
-import android.os.IBinder;
-import com.google.android.gms.dynamic.b;
-import android.os.IInterface;
+import java.util.Set;
+import java.util.Date;
+import com.google.android.gms.ads.mediation.MediationAdRequest;
 
-public interface bt extends IInterface
+public final class bt implements MediationAdRequest
 {
-    IBinder a(final b p0) throws RemoteException;
+    private final Date d;
+    private final Set<String> f;
+    private final boolean g;
+    private final int lZ;
+    private final int nD;
     
-    public abstract static class a extends Binder implements bt
-    {
-        public static bt n(final IBinder binder) {
-            if (binder == null) {
-                return null;
-            }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
-            if (queryLocalInterface != null && queryLocalInterface instanceof bt) {
-                return (bt)queryLocalInterface;
-            }
-            return new bt.a.a(binder);
-        }
-        
-        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            switch (n) {
-                default: {
-                    return super.onTransact(n, parcel, parcel2, n2);
-                }
-                case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
-                    return true;
-                }
-                case 1: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
-                    final IBinder a = this.a(b.a.E(parcel.readStrongBinder()));
-                    parcel2.writeNoException();
-                    parcel2.writeStrongBinder(a);
-                    return true;
-                }
-            }
-        }
-        
-        private static class a implements bt
-        {
-            private IBinder dU;
-            
-            a(final IBinder du) {
-                this.dU = du;
-            }
-            
-            @Override
-            public IBinder a(final b b) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
-                    IBinder binder;
-                    if (b != null) {
-                        binder = b.asBinder();
-                    }
-                    else {
-                        binder = null;
-                    }
-                    obtain.writeStrongBinder(binder);
-                    this.dU.transact(1, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readStrongBinder();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            public IBinder asBinder() {
-                return this.dU;
-            }
-        }
+    public bt(final Date d, final int lz, final Set<String> f, final boolean g, final int nd) {
+        this.d = d;
+        this.lZ = lz;
+        this.f = f;
+        this.g = g;
+        this.nD = nd;
+    }
+    
+    @Override
+    public Date getBirthday() {
+        return this.d;
+    }
+    
+    @Override
+    public int getGender() {
+        return this.lZ;
+    }
+    
+    @Override
+    public Set<String> getKeywords() {
+        return this.f;
+    }
+    
+    @Override
+    public boolean isTesting() {
+        return this.g;
+    }
+    
+    @Override
+    public int taggedForChildDirectedTreatment() {
+        return this.nD;
     }
 }

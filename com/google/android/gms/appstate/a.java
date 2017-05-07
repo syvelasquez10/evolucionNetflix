@@ -4,28 +4,28 @@
 
 package com.google.android.gms.appstate;
 
-import com.google.android.gms.internal.ee;
+import com.google.android.gms.internal.fo;
 
 public final class a implements AppState
 {
-    private final int jI;
-    private final String jJ;
-    private final byte[] jK;
-    private final boolean jL;
-    private final String jM;
-    private final byte[] jN;
+    private final int wr;
+    private final String ws;
+    private final byte[] wt;
+    private final boolean wu;
+    private final String wv;
+    private final byte[] ww;
     
     public a(final AppState appState) {
-        this.jI = appState.getKey();
-        this.jJ = appState.getLocalVersion();
-        this.jK = appState.getLocalData();
-        this.jL = appState.hasConflict();
-        this.jM = appState.getConflictVersion();
-        this.jN = appState.getConflictData();
+        this.wr = appState.getKey();
+        this.ws = appState.getLocalVersion();
+        this.wt = appState.getLocalData();
+        this.wu = appState.hasConflict();
+        this.wv = appState.getConflictVersion();
+        this.ww = appState.getConflictData();
     }
     
     static int a(final AppState appState) {
-        return ee.hashCode(appState.getKey(), appState.getLocalVersion(), appState.getLocalData(), appState.hasConflict(), appState.getConflictVersion(), appState.getConflictData());
+        return fo.hashCode(appState.getKey(), appState.getLocalVersion(), appState.getLocalData(), appState.hasConflict(), appState.getConflictVersion(), appState.getConflictData());
     }
     
     static boolean a(final AppState appState, final Object o) {
@@ -38,9 +38,9 @@ public final class a implements AppState
             b2 = b;
             if (appState != o) {
                 final AppState appState2 = (AppState)o;
-                if (ee.equal(appState2.getKey(), appState.getKey()) && ee.equal(appState2.getLocalVersion(), appState.getLocalVersion()) && ee.equal(appState2.getLocalData(), appState.getLocalData()) && ee.equal(appState2.hasConflict(), appState.hasConflict()) && ee.equal(appState2.getConflictVersion(), appState.getConflictVersion())) {
+                if (fo.equal(appState2.getKey(), appState.getKey()) && fo.equal(appState2.getLocalVersion(), appState.getLocalVersion()) && fo.equal(appState2.getLocalData(), appState.getLocalData()) && fo.equal(appState2.hasConflict(), appState.hasConflict()) && fo.equal(appState2.getConflictVersion(), appState.getConflictVersion())) {
                     b2 = b;
-                    if (ee.equal(appState2.getConflictData(), appState.getConflictData())) {
+                    if (fo.equal(appState2.getConflictData(), appState.getConflictData())) {
                         return b2;
                     }
                 }
@@ -51,10 +51,10 @@ public final class a implements AppState
     }
     
     static String b(final AppState appState) {
-        return ee.e(appState).a("Key", appState.getKey()).a("LocalVersion", appState.getLocalVersion()).a("LocalData", appState.getLocalData()).a("HasConflict", appState.hasConflict()).a("ConflictVersion", appState.getConflictVersion()).a("ConflictData", appState.getConflictData()).toString();
+        return fo.e(appState).a("Key", appState.getKey()).a("LocalVersion", appState.getLocalVersion()).a("LocalData", appState.getLocalData()).a("HasConflict", appState.hasConflict()).a("ConflictVersion", appState.getConflictVersion()).a("ConflictData", appState.getConflictData()).toString();
     }
     
-    public AppState aK() {
+    public AppState dt() {
         return this;
     }
     
@@ -65,32 +65,32 @@ public final class a implements AppState
     
     @Override
     public byte[] getConflictData() {
-        return this.jN;
+        return this.ww;
     }
     
     @Override
     public String getConflictVersion() {
-        return this.jM;
+        return this.wv;
     }
     
     @Override
     public int getKey() {
-        return this.jI;
+        return this.wr;
     }
     
     @Override
     public byte[] getLocalData() {
-        return this.jK;
+        return this.wt;
     }
     
     @Override
     public String getLocalVersion() {
-        return this.jJ;
+        return this.ws;
     }
     
     @Override
     public boolean hasConflict() {
-        return this.jL;
+        return this.wu;
     }
     
     @Override

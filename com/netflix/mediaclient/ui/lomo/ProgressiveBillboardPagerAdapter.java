@@ -11,8 +11,8 @@ import com.netflix.mediaclient.service.webclient.model.BillboardDetails;
 
 public abstract class ProgressiveBillboardPagerAdapter extends BaseProgressivePagerAdapter<BillboardDetails>
 {
-    public ProgressiveBillboardPagerAdapter(final ServiceManager serviceManager, final PagerAdapterCallbacks pagerAdapterCallbacks, final ViewRecycler viewRecycler) {
-        super(serviceManager, pagerAdapterCallbacks, viewRecycler);
+    public ProgressiveBillboardPagerAdapter(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ViewRecycler viewRecycler) {
+        super(serviceManager, rowAdapterCallbacks, viewRecycler);
     }
     
     @Override

@@ -13,44 +13,44 @@ public class LatLngCreator implements Parcelable$Creator<LatLng>
 {
     public static final int CONTENT_DESCRIPTION = 0;
     
-    static void a(final LatLng latLng, final Parcel parcel, int o) {
-        o = b.o(parcel);
+    static void a(final LatLng latLng, final Parcel parcel, int p3) {
+        p3 = b.p(parcel);
         b.c(parcel, 1, latLng.getVersionCode());
         b.a(parcel, 2, latLng.latitude);
         b.a(parcel, 3, latLng.longitude);
-        b.D(parcel, o);
+        b.F(parcel, p3);
     }
     
     public LatLng createFromParcel(final Parcel parcel) {
-        double k = 0.0;
-        final int n = a.n(parcel);
+        double l = 0.0;
+        final int o = a.o(parcel);
         int g = 0;
         double i = 0.0;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
                 default: {
-                    a.b(parcel, m);
+                    a.b(parcel, n);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, m);
+                    g = a.g(parcel, n);
                     continue;
                 }
                 case 2: {
-                    i = a.k(parcel, m);
+                    i = a.l(parcel, n);
                     continue;
                 }
                 case 3: {
-                    k = a.k(parcel, m);
+                    l = a.l(parcel, n);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new LatLng(g, i, k);
+        return new LatLng(g, i, l);
     }
     
     public LatLng[] newArray(final int n) {

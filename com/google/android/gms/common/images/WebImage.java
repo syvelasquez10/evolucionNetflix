@@ -5,8 +5,7 @@
 package com.google.android.gms.common.images;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.ee;
-import com.google.android.gms.internal.dh;
+import com.google.android.gms.internal.fo;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.net.Uri;
@@ -16,20 +15,20 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class WebImage implements SafeParcelable
 {
     public static final Parcelable$Creator<WebImage> CREATOR;
-    private final int kg;
-    private final Uri oA;
-    private final int v;
-    private final int w;
+    private final Uri Cu;
+    private final int kr;
+    private final int ks;
+    private final int xH;
     
     static {
         CREATOR = (Parcelable$Creator)new b();
     }
     
-    WebImage(final int kg, final Uri oa, final int w, final int v) {
-        this.kg = kg;
-        this.oA = oa;
-        this.w = w;
-        this.v = v;
+    WebImage(final int xh, final Uri cu, final int kr, final int ks) {
+        this.xH = xh;
+        this.Cu = cu;
+        this.kr = kr;
+        this.ks = ks;
     }
     
     public WebImage(final Uri uri) throws IllegalArgumentException {
@@ -47,10 +46,10 @@ public final class WebImage implements SafeParcelable
     }
     
     public WebImage(final JSONObject jsonObject) throws IllegalArgumentException {
-        this(f(jsonObject), jsonObject.optInt("width", 0), jsonObject.optInt("height", 0));
+        this(d(jsonObject), jsonObject.optInt("width", 0), jsonObject.optInt("height", 0));
     }
     
-    private static Uri f(final JSONObject jsonObject) {
+    private static Uri d(final JSONObject jsonObject) {
         Uri parse = null;
         if (!jsonObject.has("url")) {
             return parse;
@@ -64,12 +63,12 @@ public final class WebImage implements SafeParcelable
         }
     }
     
-    public JSONObject aP() {
+    public JSONObject dB() {
         final JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("url", (Object)this.oA.toString());
-            jsonObject.put("width", this.w);
-            jsonObject.put("height", this.v);
+            jsonObject.put("url", (Object)this.Cu.toString());
+            jsonObject.put("width", this.kr);
+            jsonObject.put("height", this.ks);
             return jsonObject;
         }
         catch (JSONException ex) {
@@ -88,7 +87,7 @@ public final class WebImage implements SafeParcelable
                 return false;
             }
             final WebImage webImage = (WebImage)o;
-            if (!dh.a(this.oA, webImage.oA) || this.w != webImage.w || this.v != webImage.v) {
+            if (!fo.equal(this.Cu, webImage.Cu) || this.kr != webImage.kr || this.ks != webImage.ks) {
                 return false;
             }
         }
@@ -96,29 +95,29 @@ public final class WebImage implements SafeParcelable
     }
     
     public int getHeight() {
-        return this.v;
+        return this.ks;
     }
     
     public Uri getUrl() {
-        return this.oA;
+        return this.Cu;
     }
     
     int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public int getWidth() {
-        return this.w;
+        return this.kr;
     }
     
     @Override
     public int hashCode() {
-        return ee.hashCode(this.oA, this.w, this.v);
+        return fo.hashCode(this.Cu, this.kr, this.ks);
     }
     
     @Override
     public String toString() {
-        return String.format("Image %dx%d %s", this.w, this.v, this.oA.toString());
+        return String.format("Image %dx%d %s", this.kr, this.ks, this.Cu.toString());
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

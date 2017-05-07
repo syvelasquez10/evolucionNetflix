@@ -8,9 +8,9 @@ import android.graphics.drawable.Drawable;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.widget.ImageView;
+import com.makeramen.RoundedImageView;
 
-public abstract class LoggingImageView extends ImageView
+public abstract class LoggingImageView extends RoundedImageView
 {
     private static final boolean LOG_VERBOSE = false;
     
@@ -28,14 +28,17 @@ public abstract class LoggingImageView extends ImageView
     
     protected abstract String getLogTag();
     
+    @Override
     public void setImageBitmap(final Bitmap imageBitmap) {
         super.setImageBitmap(imageBitmap);
     }
     
+    @Override
     public void setImageDrawable(final Drawable imageDrawable) {
         super.setImageDrawable(imageDrawable);
     }
     
+    @Override
     public void setImageResource(final int imageResource) {
         super.setImageResource(imageResource);
     }

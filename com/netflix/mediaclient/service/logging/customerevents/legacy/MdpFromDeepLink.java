@@ -15,7 +15,6 @@ import android.content.Context;
 
 public class MdpFromDeepLink extends BaseCustomerEvent implements Runnable
 {
-    private static final String DEEPLINK_MSG_PARAMS = "deeplinkMsgParams";
     private static final String NAME = "Mobile UI MDP Opened from Deeplink";
     private Context mContext;
     private String mDepplinkParams;
@@ -34,8 +33,7 @@ public class MdpFromDeepLink extends BaseCustomerEvent implements Runnable
         jsonObject.put("EventName", (Object)"Mobile UI MDP Opened from Deeplink");
         jsonObject.put("EventTime", currentTimeMillis);
         jsonObject.put("Esn", (Object)s);
-        jsonObject.put("deeplinkMsgParams", (Object)s2);
-        jsonObject.put("data", (Object)this.getEvent(s, commonRequestParameters, authorizationCredentials, currentTimeMillis));
+        jsonObject.put("data", (Object)this.getEvent(s, commonRequestParameters, authorizationCredentials, currentTimeMillis, s2));
         return jsonArray;
     }
     

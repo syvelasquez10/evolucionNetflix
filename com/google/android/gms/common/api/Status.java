@@ -8,26 +8,30 @@ import android.os.Parcel;
 import android.content.IntentSender$SendIntentException;
 import android.content.Intent;
 import android.app.Activity;
-import com.google.android.gms.internal.ee;
+import com.google.android.gms.internal.fo;
 import com.google.android.gms.common.ConnectionResult;
 import android.app.PendingIntent;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class Status implements Result, SafeParcelable
 {
+    public static final Status Bv;
+    public static final Status Bw;
+    public static final Status Bx;
+    public static final Status By;
+    public static final Status Bz;
     public static final StatusCreator CREATOR;
-    public static final Status nA;
-    public static final Status nB;
-    public static final Status nC;
-    private final int kg;
-    private final int mC;
+    private final int Ah;
+    private final String BA;
     private final PendingIntent mPendingIntent;
-    private final String nD;
+    private final int xH;
     
     static {
-        nA = new Status(0, null, null);
-        nB = new Status(14, null, null);
-        nC = new Status(15, null, null);
+        Bv = new Status(0);
+        Bw = new Status(14);
+        Bx = new Status(8);
+        By = new Status(15);
+        Bz = new Status(16);
         CREATOR = new StatusCreator();
     }
     
@@ -35,10 +39,10 @@ public final class Status implements Result, SafeParcelable
         this(1, n, null, null);
     }
     
-    Status(final int kg, final int mc, final String nd, final PendingIntent mPendingIntent) {
-        this.kg = kg;
-        this.mC = mc;
-        this.nD = nd;
+    Status(final int xh, final int ah, final String ba, final PendingIntent mPendingIntent) {
+        this.xH = xh;
+        this.Ah = ah;
+        this.BA = ba;
         this.mPendingIntent = mPendingIntent;
     }
     
@@ -46,35 +50,35 @@ public final class Status implements Result, SafeParcelable
         this(1, n, s, pendingIntent);
     }
     
-    private String bh() {
-        if (this.nD != null) {
-            return this.nD;
+    private String dW() {
+        if (this.BA != null) {
+            return this.BA;
         }
-        return CommonStatusCodes.getStatusCodeString(this.mC);
-    }
-    
-    PendingIntent bs() {
-        return this.mPendingIntent;
-    }
-    
-    String bt() {
-        return this.nD;
-    }
-    
-    @Deprecated
-    public ConnectionResult bu() {
-        return new ConnectionResult(this.mC, this.mPendingIntent);
+        return CommonStatusCodes.getStatusCodeString(this.Ah);
     }
     
     public int describeContents() {
         return 0;
     }
     
+    PendingIntent eo() {
+        return this.mPendingIntent;
+    }
+    
+    String ep() {
+        return this.BA;
+    }
+    
+    @Deprecated
+    public ConnectionResult eq() {
+        return new ConnectionResult(this.Ah, this.mPendingIntent);
+    }
+    
     @Override
     public boolean equals(final Object o) {
         if (o instanceof Status) {
             final Status status = (Status)o;
-            if (this.kg == status.kg && this.mC == status.mC && ee.equal(this.nD, status.nD) && ee.equal(this.mPendingIntent, status.mPendingIntent)) {
+            if (this.xH == status.xH && this.Ah == status.Ah && fo.equal(this.BA, status.BA) && fo.equal(this.mPendingIntent, status.mPendingIntent)) {
                 return true;
             }
         }
@@ -91,11 +95,11 @@ public final class Status implements Result, SafeParcelable
     }
     
     public int getStatusCode() {
-        return this.mC;
+        return this.Ah;
     }
     
     int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public boolean hasResolution() {
@@ -104,15 +108,19 @@ public final class Status implements Result, SafeParcelable
     
     @Override
     public int hashCode() {
-        return ee.hashCode(this.kg, this.mC, this.nD, this.mPendingIntent);
+        return fo.hashCode(this.xH, this.Ah, this.BA, this.mPendingIntent);
+    }
+    
+    public boolean isCanceled() {
+        return this.Ah == 16;
     }
     
     public boolean isInterrupted() {
-        return this.mC == 14;
+        return this.Ah == 14;
     }
     
     public boolean isSuccess() {
-        return this.mC <= 0;
+        return this.Ah <= 0;
     }
     
     public void startResolutionForResult(final Activity activity, final int n) throws IntentSender$SendIntentException {
@@ -124,7 +132,7 @@ public final class Status implements Result, SafeParcelable
     
     @Override
     public String toString() {
-        return ee.e(this).a("statusCode", this.bh()).a("resolution", this.mPendingIntent).toString();
+        return fo.e(this).a("statusCode", this.dW()).a("resolution", this.mPendingIntent).toString();
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

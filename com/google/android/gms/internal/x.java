@@ -4,136 +4,94 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import com.google.android.gms.ads.a;
-import android.util.DisplayMetrics;
-import com.google.android.gms.ads.AdSize;
-import android.content.Context;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import android.os.Handler;
+import java.lang.ref.WeakReference;
 
-public final class x implements SafeParcelable
+public final class x
 {
-    public static final y CREATOR;
-    public final String eF;
-    public final boolean eG;
-    public final x[] eH;
-    public final int height;
-    public final int heightPixels;
-    public final int versionCode;
-    public final int width;
-    public final int widthPixels;
+    private final a kV;
+    private final Runnable kW;
+    private ah kX;
+    private boolean kY;
+    private boolean kZ;
+    private long la;
     
-    static {
-        CREATOR = new y();
+    public x(final v v) {
+        this(v, new a(dv.rp));
     }
     
-    public x() {
-        this(2, "interstitial_mb", 0, 0, true, 0, 0, null);
+    x(final v v, final a kv) {
+        this.kY = false;
+        this.kZ = false;
+        this.la = 0L;
+        this.kV = kv;
+        this.kW = new Runnable() {
+            private final WeakReference<v> lb = new WeakReference<v>(v);
+            
+            @Override
+            public void run() {
+                x.this.kY = false;
+                final v v = this.lb.get();
+                if (v != null) {
+                    v.b(x.this.kX);
+                }
+            }
+        };
     }
     
-    x(final int versionCode, final String ef, final int height, final int heightPixels, final boolean eg, final int width, final int widthPixels, final x[] eh) {
-        this.versionCode = versionCode;
-        this.eF = ef;
-        this.height = height;
-        this.heightPixels = heightPixels;
-        this.eG = eg;
-        this.width = width;
-        this.widthPixels = widthPixels;
-        this.eH = eh;
-    }
-    
-    public x(final Context context, final AdSize adSize) {
-        this(context, new AdSize[] { adSize });
-    }
-    
-    public x(final Context context, final AdSize[] array) {
-        final int n = 0;
-        final AdSize adSize = array[0];
-        this.versionCode = 2;
-        this.eG = false;
-        this.width = adSize.getWidth();
-        this.height = adSize.getHeight();
-        boolean b;
-        if (this.width == -1) {
-            b = true;
+    public void a(final ah kx, final long la) {
+        if (this.kY) {
+            dw.z("An ad refresh is already scheduled.");
         }
         else {
-            b = false;
-        }
-        boolean b2;
-        if (this.height == -2) {
-            b2 = true;
-        }
-        else {
-            b2 = false;
-        }
-        final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int width;
-        if (b) {
-            this.widthPixels = a(displayMetrics);
-            width = (int)(this.widthPixels / displayMetrics.density);
-        }
-        else {
-            width = this.width;
-            this.widthPixels = cs.a(displayMetrics, this.width);
-        }
-        int n2;
-        if (b2) {
-            n2 = c(displayMetrics);
-        }
-        else {
-            n2 = this.height;
-        }
-        this.heightPixels = cs.a(displayMetrics, n2);
-        if (b || b2) {
-            this.eF = width + "x" + n2 + "_as";
-        }
-        else {
-            this.eF = adSize.toString();
-        }
-        if (array.length > 1) {
-            this.eH = new x[array.length];
-            for (int i = n; i < array.length; ++i) {
-                this.eH[i] = new x(context, array[i]);
+            this.kX = kx;
+            this.kY = true;
+            this.la = la;
+            if (!this.kZ) {
+                dw.x("Scheduling ad refresh " + la + " milliseconds from now.");
+                this.kV.postDelayed(this.kW, la);
             }
         }
-        else {
-            this.eH = null;
+    }
+    
+    public void cancel() {
+        this.kY = false;
+        this.kV.removeCallbacks(this.kW);
+    }
+    
+    public void d(final ah ah) {
+        this.a(ah, 60000L);
+    }
+    
+    public void pause() {
+        this.kZ = true;
+        if (this.kY) {
+            this.kV.removeCallbacks(this.kW);
         }
     }
     
-    public x(final x x, final x[] array) {
-        this(2, x.eF, x.height, x.heightPixels, x.eG, x.width, x.widthPixels, array);
-    }
-    
-    public static int a(final DisplayMetrics displayMetrics) {
-        return displayMetrics.widthPixels;
-    }
-    
-    public static int b(final DisplayMetrics displayMetrics) {
-        return (int)(c(displayMetrics) * displayMetrics.density);
-    }
-    
-    private static int c(final DisplayMetrics displayMetrics) {
-        final int n = (int)(displayMetrics.heightPixels / displayMetrics.density);
-        if (n <= 400) {
-            return 32;
+    public void resume() {
+        this.kZ = false;
+        if (this.kY) {
+            this.kY = false;
+            this.a(this.kX, this.la);
         }
-        if (n <= 720) {
-            return 50;
+    }
+    
+    public static class a
+    {
+        private final Handler mHandler;
+        
+        public a(final Handler mHandler) {
+            this.mHandler = mHandler;
         }
-        return 90;
-    }
-    
-    public AdSize P() {
-        return a.a(this.width, this.height, this.eF);
-    }
-    
-    public int describeContents() {
-        return 0;
-    }
-    
-    public void writeToParcel(final Parcel parcel, final int n) {
-        y.a(this, parcel, n);
+        
+        public boolean postDelayed(final Runnable runnable, final long n) {
+            return this.mHandler.postDelayed(runnable, n);
+        }
+        
+        public void removeCallbacks(final Runnable runnable) {
+            this.mHandler.removeCallbacks(runnable);
+        }
     }
 }

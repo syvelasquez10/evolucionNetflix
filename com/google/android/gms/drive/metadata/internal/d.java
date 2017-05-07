@@ -4,49 +4,26 @@
 
 package com.google.android.gms.drive.metadata.internal;
 
+import com.google.android.gms.common.data.DataHolder;
 import android.os.Bundle;
-import com.google.android.gms.common.internal.safeparcel.a;
-import com.google.android.gms.common.internal.safeparcel.b;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import com.google.android.gms.drive.metadata.a;
 
-public class d implements Parcelable$Creator<MetadataBundle>
+public class d extends a<Integer>
 {
-    static void a(final MetadataBundle metadataBundle, final Parcel parcel, int o) {
-        o = b.o(parcel);
-        b.c(parcel, 1, metadataBundle.kg);
-        b.a(parcel, 2, metadataBundle.rF, false);
-        b.D(parcel, o);
+    public d(final String s, final int n) {
+        super(s, n);
     }
     
-    public MetadataBundle P(final Parcel parcel) {
-        final int n = a.n(parcel);
-        int g = 0;
-        Bundle o = null;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
-                default: {
-                    a.b(parcel, m);
-                    continue;
-                }
-                case 1: {
-                    g = a.g(parcel, m);
-                    continue;
-                }
-                case 2: {
-                    o = a.o(parcel, m);
-                    continue;
-                }
-            }
-        }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
-        }
-        return new MetadataBundle(g, o);
+    @Override
+    protected void a(final Bundle bundle, final Integer n) {
+        bundle.putInt(this.getName(), (int)n);
     }
     
-    public MetadataBundle[] ap(final int n) {
-        return new MetadataBundle[n];
+    protected Integer f(final DataHolder dataHolder, final int n, final int n2) {
+        return dataHolder.getInteger(this.getName(), n, n2);
+    }
+    
+    protected Integer h(final Bundle bundle) {
+        return bundle.getInt(this.getName());
     }
 }

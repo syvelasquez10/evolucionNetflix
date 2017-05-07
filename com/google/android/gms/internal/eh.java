@@ -4,38 +4,22 @@
 
 package com.google.android.gms.internal;
 
-import android.os.IBinder;
-import com.google.android.gms.dynamic.c;
-import android.view.View;
-import android.content.Context;
-import com.google.android.gms.dynamic.e;
+import com.google.android.gms.common.data.DataHolder;
 
-public final class eh extends e<ed>
+public abstract class eh extends ej.a
 {
-    private static final eh pP;
-    
-    static {
-        pP = new eh();
+    public void a(final int n, final DataHolder dataHolder) {
     }
     
-    private eh() {
-        super("com.google.android.gms.common.ui.SignInButtonCreatorImpl");
+    public void a(final DataHolder dataHolder) {
     }
     
-    public static View d(final Context context, final int n, final int n2) throws a {
-        return eh.pP.e(context, n, n2);
+    public void b(final int n, final int n2) {
     }
     
-    private View e(final Context context, final int n, final int n2) throws a {
-        try {
-            return c.b(this.t(context).a(c.h(context), n, n2));
-        }
-        catch (Exception ex) {
-            throw new a("Could not get button with size " + n + " and color " + n2, ex);
-        }
+    public void du() {
     }
     
-    public ed A(final IBinder binder) {
-        return ed.a.z(binder);
+    public void v(final int n) {
     }
 }

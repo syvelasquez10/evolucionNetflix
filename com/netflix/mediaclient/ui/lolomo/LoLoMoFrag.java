@@ -4,27 +4,41 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
-import com.netflix.mediaclient.android.app.LoadingStatus;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.ListAdapter;
+import com.netflix.mediaclient.android.app.LoadingStatus;
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import android.database.DataSetObserver;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.graphics.drawable.Drawable;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.view.KeyEvent;
+import com.netflix.mediaclient.ui.kids.lolomo.SkidmarkLoLoMoAdapter;
+import com.netflix.mediaclient.servicemgr.LoMo;
+import com.netflix.mediaclient.ui.kids.lolomo.KidsLomoDetailAdapter;
+import com.netflix.mediaclient.ui.kids.lolomo.KidsGenreWrapper;
+import android.app.Activity;
+import android.view.ViewGroup$LayoutParams;
+import android.widget.AbsListView$LayoutParams;
+import com.netflix.mediaclient.util.DeviceUtils;
+import android.view.View$OnClickListener;
+import android.content.Context;
+import android.widget.TextView;
 import android.os.Bundle;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.Log;
-import android.view.View;
 import java.util.HashMap;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
-import com.netflix.mediaclient.ui.lomo.LoMoViewPager;
 import java.util.Map;
 import android.widget.AbsListView$RecyclerListener;
-import android.widget.ListView;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper;
+import android.view.View;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 
@@ -33,19 +47,20 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     private static final String EXTRA_GENRE_ID = "genre_id";
     private static final String EXTRA_IS_GENRE_LIST = "is_genre_list";
     private static final String TAG = "LoLoMoFrag";
-    private BaseLoLoMoAdapter<?> adapter;
+    private ILoLoMoAdapter adapter;
     private LoLoMoFocusHandler focusHandler;
     private String genreId;
     private boolean isGenreList;
+    private View kidsEntryHeader;
     private final ErrorWrapper.Callback leCallback;
     private LoadingAndErrorWrapper leWrapper;
-    private ListView listView;
+    private StickyListHeadersListView listView;
     private final AbsListView$RecyclerListener recycleListener;
-    private final Map<String, LoMoViewPager.State> stateMap;
+    private final Map<String, Object> stateMap;
     private ViewRecycler viewRecycler;
     
     public LoLoMoFrag() {
-        this.stateMap = new HashMap<String, LoMoViewPager.State>();
+        this.stateMap = new HashMap<String, Object>();
         this.leCallback = new ErrorWrapper.Callback() {
             @Override
             public void onRetryRequested() {
@@ -54,14 +69,24 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         };
         this.recycleListener = (AbsListView$RecyclerListener)new AbsListView$RecyclerListener() {
             public void onMovedToScrapHeap(final View view) {
-                Log.v("LoLoMoFrag", "View moved to scrap heap - invalidating request");
                 final BaseLoLoMoAdapter.RowHolder rowHolder = (BaseLoLoMoAdapter.RowHolder)view.getTag();
-                if (rowHolder == null || rowHolder.pager == null || rowHolder.pager.getLoMoViewPagerAdapter() == null) {
+                if (rowHolder == null) {
                     return;
                 }
-                rowHolder.pager.getLoMoViewPagerAdapter().invalidateRequestId();
+                Log.v("LoLoMoFrag", "View moved to scrap heap - invalidating request");
+                rowHolder.invalidateRequestId();
             }
         };
+    }
+    
+    private void addKidsEntryHeaderIfNecessary(final StickyListHeadersListView stickyListHeadersListView) {
+        if (this.getActivity() instanceof HomeActivity) {
+            final HomeActivity homeActivity = (HomeActivity)this.getActivity();
+            if (!homeActivity.isForKids() && homeActivity.isKidsGenre() && KidsUtils.shouldShowKidsEntryInGenreLomo(homeActivity)) {
+                (this.kidsEntryHeader = this.createKidsEntryHeader()).setVisibility(4);
+                stickyListHeadersListView.addHeaderView(this.kidsEntryHeader);
+            }
+        }
     }
     
     public static LoLoMoFrag create(final String s) {
@@ -73,15 +98,39 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         return loLoMoFrag;
     }
     
+    private View createKidsEntryHeader() {
+        final Activity activity = this.getActivity();
+        final TextView textView = new TextView((Context)activity);
+        textView.setBackgroundResource(2130837827);
+        textView.setGravity(17);
+        textView.setOnClickListener((View$OnClickListener)new KidsUtils.OnSwitchToKidsClickListener(activity));
+        textView.setText(2131492948);
+        textView.setTextColor(-1);
+        textView.setTextSize(48.0f);
+        textView.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)(DeviceUtils.getScreenWidthInPixels((Context)activity) * 0.5625f)));
+        return (View)textView;
+    }
+    
+    protected ILoLoMoAdapter createAdapter() {
+        if (this.getNetflixActivity().isForKids()) {
+            if (this.isGenreList) {
+                return (ILoLoMoAdapter)new KidsLomoDetailAdapter(this, new KidsGenreWrapper(this.genreId));
+            }
+            if (KidsUtils.isKidsWithUpDownScrolling(this.getNetflixActivity())) {
+                return (ILoLoMoAdapter)new SkidmarkLoLoMoAdapter(this);
+            }
+        }
+        if (this.isGenreList) {
+            return (ILoLoMoAdapter)new GenreLoLoMoAdapter(this, this.genreId);
+        }
+        return (ILoLoMoAdapter)new LoLoMoAdapter(this);
+    }
+    
     public boolean dispatchKeyEvent(final KeyEvent keyEvent) {
-        return this.focusHandler.dispatchKeyEvent(keyEvent);
+        return this.focusHandler != null && this.focusHandler.dispatchKeyEvent(keyEvent);
     }
     
-    public BaseLoLoMoAdapter<?> getLoLoMoAdapter() {
-        return this.adapter;
-    }
-    
-    public Map<String, LoMoViewPager.State> getStateMap() {
+    public Map<String, Object> getStateMap() {
         return this.stateMap;
     }
     
@@ -91,7 +140,8 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     
     public void hideLoadingAndErrorViews() {
         this.leWrapper.hide(false);
-        AnimationUtils.showView((View)this.listView, true);
+        AnimationUtils.showViewIfHidden((View)this.listView, true);
+        AnimationUtils.showViewIfHidden(this.kidsEntryHeader, true);
     }
     
     public boolean isLoadingData() {
@@ -102,66 +152,69 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     
     @Override
     public void onCreate(final Bundle bundle) {
+        super.onCreate(bundle);
         this.genreId = this.getArguments().getString("genre_id");
         this.isGenreList = this.getArguments().getBoolean("is_genre_list");
-        this.viewRecycler = ((HomeActivity)this.getActivity()).getViewRecycler();
+        this.viewRecycler = ((ViewRecycler.ViewRecyclerProvider)this.getActivity()).getViewRecycler();
         if (bundle != null) {
             Log.v("LoLoMoFrag", "Clearing all frag state");
             this.stateMap.clear();
         }
-        super.onCreate(bundle);
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("LoLoMoFrag", "Creating frag view");
-        final View inflate = layoutInflater.inflate(2130903096, (ViewGroup)null);
-        inflate.findViewById(2131230901).setVisibility(0);
-        (this.listView = (ListView)inflate.findViewById(16908298)).setRecyclerListener(this.recycleListener);
-        this.listView.setDivider((Drawable)null);
+        final View inflate = layoutInflater.inflate(2130903106, (ViewGroup)null);
+        (this.listView = (StickyListHeadersListView)inflate.findViewById(16908298)).setRecyclerListener(this.recycleListener);
+        this.listView.setDivider(null);
         this.listView.setFocusable(false);
-        this.focusHandler = new LoLoMoFocusHandler(this.listView);
+        ViewUtils.addActionBarPaddingView(this.listView);
+        this.addKidsEntryHeaderIfNecessary(this.listView);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.leCallback);
-        ManagerStatusListener adapter;
-        if (this.isGenreList) {
-            adapter = new GenreLoLoMoAdapter(this, this.genreId);
-        }
-        else {
-            adapter = new LoLoMoAdapter(this);
-        }
-        (this.adapter = (BaseLoLoMoAdapter<?>)adapter).registerDataSetObserver((DataSetObserver)this.focusHandler);
-        this.listView.setAdapter((ListAdapter)this.adapter);
         return inflate;
     }
     
     public void onDestroyView() {
         Log.v("LoLoMoFrag", "onDestroyView");
-        this.adapter.destroy();
+        if (this.adapter != null) {
+            this.adapter.onDestroyView();
+        }
         super.onDestroyView();
     }
     
     @Override
     public void onManagerReady(final ServiceManager serviceManager, final int n) {
+        Log.v("LoLoMoFrag", "onManagerReady");
+        this.adapter = this.createAdapter();
+        if (this.focusHandler != null) {
+            this.adapter.registerDataSetObserver((DataSetObserver)this.focusHandler);
+        }
+        this.listView.setAdapter(this.adapter);
         this.adapter.onManagerReady(serviceManager, n);
     }
     
     @Override
     public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
-        this.adapter.onManagerUnavailable(serviceManager, n);
+        (this.adapter = this.createAdapter()).onManagerUnavailable(serviceManager, n);
     }
     
     public void onPause() {
         super.onPause();
-        this.adapter.onPause();
+        if (this.adapter != null) {
+            this.adapter.onPause();
+        }
     }
     
     public void onResume() {
         super.onResume();
-        this.adapter.onResume();
+        if (this.adapter != null) {
+            this.adapter.onResume();
+        }
     }
     
     public void refresh() {
         this.showLoadingView();
-        this.adapter.refresh();
+        this.adapter.refreshData();
     }
     
     @Override
@@ -174,12 +227,29 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     public void showErrorView() {
         Log.v("LoLoMoFrag", "Showing error view");
         AnimationUtils.hideView((View)this.listView, true);
+        if (this.kidsEntryHeader != null) {
+            this.kidsEntryHeader.setVisibility(4);
+        }
         this.leWrapper.showErrorView(true);
     }
     
     public void showLoadingView() {
         Log.v("LoLoMoFrag", "Showing loading view");
         AnimationUtils.hideView((View)this.listView, true);
+        if (this.kidsEntryHeader != null) {
+            this.kidsEntryHeader.setVisibility(4);
+        }
         this.leWrapper.showLoadingView(true);
+    }
+    
+    public interface ILoLoMoAdapter extends ManagerStatusListener, LoadingStatus, ListAdapter, StickyListHeadersAdapter
+    {
+        void onDestroyView();
+        
+        void onPause();
+        
+        void onResume();
+        
+        void refreshData();
     }
 }

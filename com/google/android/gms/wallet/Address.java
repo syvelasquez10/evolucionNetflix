@@ -8,43 +8,44 @@ import android.os.Parcel;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
+@Deprecated
 public final class Address implements SafeParcelable
 {
     public static final Parcelable$Creator<Address> CREATOR;
-    String Ga;
-    String Gb;
-    String Gc;
-    String Gd;
-    String Ge;
-    String Gf;
-    String Gg;
-    boolean Gh;
-    String Gi;
-    String id;
-    private final int kg;
+    String NB;
+    String NC;
+    String ND;
+    String NI;
+    String NK;
+    boolean NL;
+    String NM;
+    String aba;
+    String abb;
     String name;
+    String qd;
+    private final int xH;
     
     static {
         CREATOR = (Parcelable$Creator)new a();
     }
     
     Address() {
-        this.kg = 1;
+        this.xH = 1;
     }
     
-    Address(final int kg, final String name, final String ga, final String gb, final String gc, final String id, final String gd, final String ge, final String gf, final String gg, final boolean gh, final String gi) {
-        this.kg = kg;
+    Address(final int xh, final String name, final String nb, final String nc, final String nd, final String qd, final String aba, final String abb, final String ni, final String nk, final boolean nl, final String nm) {
+        this.xH = xh;
         this.name = name;
-        this.Ga = ga;
-        this.Gb = gb;
-        this.Gc = gc;
-        this.id = id;
-        this.Gd = gd;
-        this.Ge = ge;
-        this.Gf = gf;
-        this.Gg = gg;
-        this.Gh = gh;
-        this.Gi = gi;
+        this.NB = nb;
+        this.NC = nc;
+        this.ND = nd;
+        this.qd = qd;
+        this.aba = aba;
+        this.abb = abb;
+        this.NI = ni;
+        this.NK = nk;
+        this.NL = nl;
+        this.NM = nm;
     }
     
     public int describeContents() {
@@ -52,27 +53,27 @@ public final class Address implements SafeParcelable
     }
     
     public String getAddress1() {
-        return this.Ga;
+        return this.NB;
     }
     
     public String getAddress2() {
-        return this.Gb;
+        return this.NC;
     }
     
     public String getAddress3() {
-        return this.Gc;
+        return this.ND;
     }
     
     public String getCity() {
-        return this.Gd;
+        return this.aba;
     }
     
     public String getCompanyName() {
-        return this.Gi;
+        return this.NM;
     }
     
     public String getCountryCode() {
-        return this.id;
+        return this.qd;
     }
     
     public String getName() {
@@ -80,23 +81,23 @@ public final class Address implements SafeParcelable
     }
     
     public String getPhoneNumber() {
-        return this.Gg;
+        return this.NK;
     }
     
     public String getPostalCode() {
-        return this.Gf;
+        return this.NI;
     }
     
     public String getState() {
-        return this.Ge;
+        return this.abb;
     }
     
     public int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public boolean isPostBox() {
-        return this.Gh;
+        return this.NL;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

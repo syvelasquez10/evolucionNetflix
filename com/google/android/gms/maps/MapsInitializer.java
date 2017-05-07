@@ -11,23 +11,23 @@ import android.os.RemoteException;
 import com.google.android.gms.maps.model.RuntimeRemoteException;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.internal.q;
-import com.google.android.gms.internal.eg;
+import com.google.android.gms.maps.internal.u;
+import com.google.android.gms.internal.fq;
 import android.content.Context;
 
 public final class MapsInitializer
 {
     public static int initialize(final Context context) {
-        eg.f(context);
+        fq.f(context);
         c c;
         try {
-            final c u;
-            c = (u = q.u(context));
-            final ICameraUpdateFactoryDelegate cameraUpdateFactoryDelegate = u.ez();
+            final c a;
+            c = (a = u.A(context));
+            final ICameraUpdateFactoryDelegate cameraUpdateFactoryDelegate = a.ix();
             CameraUpdateFactory.a(cameraUpdateFactoryDelegate);
             final c c2 = c;
-            final a a = c2.eA();
-            BitmapDescriptorFactory.a(a);
+            final a a2 = c2.iy();
+            BitmapDescriptorFactory.a(a2);
             final boolean b = false;
             return b ? 1 : 0;
         }
@@ -35,12 +35,12 @@ public final class MapsInitializer
             return ex.errorCode;
         }
         try {
-            final c u = c;
-            final ICameraUpdateFactoryDelegate cameraUpdateFactoryDelegate = u.ez();
+            final c a = c;
+            final ICameraUpdateFactoryDelegate cameraUpdateFactoryDelegate = a.ix();
             CameraUpdateFactory.a(cameraUpdateFactoryDelegate);
             final c c2 = c;
-            final a a = c2.eA();
-            BitmapDescriptorFactory.a(a);
+            final a a2 = c2.iy();
+            BitmapDescriptorFactory.a(a2);
             final boolean b = false;
             return b ? 1 : 0;
         }

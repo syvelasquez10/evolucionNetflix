@@ -5,83 +5,104 @@
 package com.google.android.gms.wallet;
 
 import android.os.Parcel;
+import com.google.android.gms.identity.intents.model.UserAddress;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class MaskedWallet implements SafeParcelable
 {
     public static final Parcelable$Creator<MaskedWallet> CREATOR;
-    LoyaltyWalletObject[] GI;
-    OfferWalletObject[] GJ;
-    String Gn;
-    String Go;
-    String Gq;
-    Address Gr;
-    Address Gs;
-    String[] Gt;
-    private final int kg;
+    LoyaltyWalletObject[] abT;
+    OfferWalletObject[] abU;
+    String abh;
+    String abi;
+    String abk;
+    Address abl;
+    Address abm;
+    String[] abn;
+    UserAddress abo;
+    UserAddress abp;
+    InstrumentInfo[] abq;
+    private final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new h();
+        CREATOR = (Parcelable$Creator)new k();
     }
     
-    MaskedWallet() {
-        this.kg = 2;
+    private MaskedWallet() {
+        this.xH = 2;
     }
     
-    MaskedWallet(final int kg, final String gn, final String go, final String[] gt, final String gq, final Address gr, final Address gs, final LoyaltyWalletObject[] gi, final OfferWalletObject[] gj) {
-        this.kg = kg;
-        this.Gn = gn;
-        this.Go = go;
-        this.Gt = gt;
-        this.Gq = gq;
-        this.Gr = gr;
-        this.Gs = gs;
-        this.GI = gi;
-        this.GJ = gj;
+    MaskedWallet(final int xh, final String abh, final String abi, final String[] abn, final String abk, final Address abl, final Address abm, final LoyaltyWalletObject[] abT, final OfferWalletObject[] abU, final UserAddress abo, final UserAddress abp, final InstrumentInfo[] abq) {
+        this.xH = xh;
+        this.abh = abh;
+        this.abi = abi;
+        this.abn = abn;
+        this.abk = abk;
+        this.abl = abl;
+        this.abm = abm;
+        this.abT = abT;
+        this.abU = abU;
+        this.abo = abo;
+        this.abp = abp;
+        this.abq = abq;
     }
     
     public int describeContents() {
         return 0;
     }
     
+    @Deprecated
     public Address getBillingAddress() {
-        return this.Gr;
+        return this.abl;
+    }
+    
+    public UserAddress getBuyerBillingAddress() {
+        return this.abo;
+    }
+    
+    public UserAddress getBuyerShippingAddress() {
+        return this.abp;
     }
     
     public String getEmail() {
-        return this.Gq;
+        return this.abk;
     }
     
     public String getGoogleTransactionId() {
-        return this.Gn;
+        return this.abh;
+    }
+    
+    public InstrumentInfo[] getInstrumentInfos() {
+        return this.abq;
     }
     
     public LoyaltyWalletObject[] getLoyaltyWalletObjects() {
-        return this.GI;
+        return this.abT;
     }
     
     public String getMerchantTransactionId() {
-        return this.Go;
+        return this.abi;
     }
     
     public OfferWalletObject[] getOfferWalletObjects() {
-        return this.GJ;
+        return this.abU;
     }
     
     public String[] getPaymentDescriptions() {
-        return this.Gt;
+        return this.abn;
     }
     
+    @Deprecated
     public Address getShippingAddress() {
-        return this.Gs;
+        return this.abm;
     }
     
     public int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        h.a(this, parcel, n);
+        k.a(this, parcel, n);
     }
 }

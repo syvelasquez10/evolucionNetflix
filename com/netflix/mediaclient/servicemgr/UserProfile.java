@@ -38,6 +38,8 @@ public interface UserProfile
     
     boolean isIQEnabled();
     
+    boolean isKidsProfile();
+    
     boolean isPrimaryProfile();
     
     boolean isSocialConnected();

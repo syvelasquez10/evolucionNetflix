@@ -5,33 +5,33 @@
 package com.google.android.gms.common.data;
 
 import java.util.NoSuchElementException;
-import com.google.android.gms.internal.eg;
+import com.google.android.gms.internal.fq;
 import java.util.Iterator;
 
 public final class a<T> implements Iterator<T>
 {
+    private int BC;
     private final DataBuffer<T> mDataBuffer;
-    private int nF;
     
     public a(final DataBuffer<T> dataBuffer) {
-        this.mDataBuffer = eg.f(dataBuffer);
-        this.nF = -1;
+        this.mDataBuffer = fq.f(dataBuffer);
+        this.BC = -1;
     }
     
     @Override
     public boolean hasNext() {
-        return this.nF < this.mDataBuffer.getCount() - 1;
+        return this.BC < this.mDataBuffer.getCount() - 1;
     }
     
     @Override
     public T next() {
         if (!this.hasNext()) {
-            throw new NoSuchElementException("Cannot advance the iterator beyond " + this.nF);
+            throw new NoSuchElementException("Cannot advance the iterator beyond " + this.BC);
         }
         final DataBuffer<T> mDataBuffer = this.mDataBuffer;
-        final int nf = this.nF + 1;
-        this.nF = nf;
-        return mDataBuffer.get(nf);
+        final int bc = this.BC + 1;
+        this.BC = bc;
+        return mDataBuffer.get(bc);
     }
     
     @Override

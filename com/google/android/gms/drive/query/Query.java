@@ -5,6 +5,7 @@
 package com.google.android.gms.drive.query;
 
 import com.google.android.gms.drive.query.internal.Operator;
+import com.google.android.gms.drive.query.internal.MatchAllFilter;
 import java.util.ArrayList;
 import java.util.List;
 import android.os.Parcel;
@@ -15,34 +16,40 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class Query implements SafeParcelable
 {
     public static final Parcelable$Creator<Query> CREATOR;
-    final int kg;
-    LogicalFilter rO;
-    String rP;
+    final LogicalFilter GA;
+    final String GB;
+    final SortOrder GC;
+    final int xH;
     
     static {
         CREATOR = (Parcelable$Creator)new a();
     }
     
-    Query(final int kg, final LogicalFilter ro, final String rp) {
-        this.kg = kg;
-        this.rO = ro;
-        this.rP = rp;
+    Query(final int xh, final LogicalFilter ga, final String gb, final SortOrder gc) {
+        this.xH = xh;
+        this.GA = ga;
+        this.GB = gb;
+        this.GC = gc;
     }
     
-    Query(final LogicalFilter logicalFilter, final String s) {
-        this(1, logicalFilter, s);
+    Query(final LogicalFilter logicalFilter, final String s, final SortOrder sortOrder) {
+        this(1, logicalFilter, s, sortOrder);
     }
     
     public int describeContents() {
         return 0;
     }
     
+    public SortOrder fV() {
+        return this.GC;
+    }
+    
     public Filter getFilter() {
-        return this.rO;
+        return this.GA;
     }
     
     public String getPageToken() {
-        return this.rP;
+        return this.GB;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
@@ -51,24 +58,32 @@ public class Query implements SafeParcelable
     
     public static class Builder
     {
-        private String rP;
-        private final List<Filter> rQ;
+        private String GB;
+        private SortOrder GC;
+        private final List<Filter> GD;
         
         public Builder() {
-            this.rQ = new ArrayList<Filter>();
+            this.GD = new ArrayList<Filter>();
+        }
+        
+        public Builder a(final SortOrder gc) {
+            this.GC = gc;
+            return this;
         }
         
         public Builder addFilter(final Filter filter) {
-            this.rQ.add(filter);
+            if (!(filter instanceof MatchAllFilter)) {
+                this.GD.add(filter);
+            }
             return this;
         }
         
         public Query build() {
-            return new Query(new LogicalFilter(Operator.si, this.rQ), this.rP);
+            return new Query(new LogicalFilter(Operator.GZ, this.GD), this.GB, this.GC);
         }
         
-        public Builder setPageToken(final String rp) {
-            this.rP = rp;
+        public Builder setPageToken(final String gb) {
+            this.GB = gb;
             return this;
         }
     }

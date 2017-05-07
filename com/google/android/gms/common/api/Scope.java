@@ -6,13 +6,13 @@ package com.google.android.gms.common.api;
 
 public final class Scope
 {
-    private final String nz;
+    private final String Bu;
     
-    public Scope(final String nz) {
-        this.nz = nz;
+    public Scope(final String bu) {
+        this.Bu = bu;
     }
     
-    public String br() {
-        return this.nz;
+    public String en() {
+        return this.Bu;
     }
 }

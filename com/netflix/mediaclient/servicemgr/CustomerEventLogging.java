@@ -12,7 +12,7 @@ public interface CustomerEventLogging
     
     void logMdxTargetSelection(final String p0);
     
-    void reportApplicationLaunchedFromDeepLinking(final String p0, final String p1);
+    void reportApplicationLaunchedFromDeepLinking(final String p0, final String p1, final String p2);
     
     void reportMdpFromDeepLinking(final String p0);
     

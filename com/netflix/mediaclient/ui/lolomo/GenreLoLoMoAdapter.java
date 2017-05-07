@@ -13,7 +13,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.Genre;
 
-public class GenreLoLoMoAdapter extends BaseLoLoMoAdapter<Genre>
+public class GenreLoLoMoAdapter extends BasePaginatedLoLoMoAdapter<Genre>
 {
     private static final String TAG = "GenreLoLoMoAdapter";
     
@@ -22,7 +22,7 @@ public class GenreLoLoMoAdapter extends BaseLoLoMoAdapter<Genre>
     }
     
     private void handlePrefetchComplete() {
-        super.refresh();
+        super.refreshData();
     }
     
     @Override
@@ -36,7 +36,7 @@ public class GenreLoLoMoAdapter extends BaseLoLoMoAdapter<Genre>
     }
     
     @Override
-    public void refresh() {
+    public void refreshData() {
         final ServiceManager serviceManager = this.getServiceManager();
         if (serviceManager == null) {
             Log.w("GenreLoLoMoAdapter", "Service man is null");

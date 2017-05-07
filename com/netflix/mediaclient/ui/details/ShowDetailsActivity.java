@@ -15,12 +15,16 @@ import android.app.DialogFragment;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
+import android.app.Fragment;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
-import android.app.Fragment;
 
 public class ShowDetailsActivity extends DetailsActivity implements EpisodeRowListenerProvider, EpisodeRowListener
 {
+    private boolean shouldHideDetailsView() {
+        return DeviceUtils.isTabletByContext((Context)this) && DeviceUtils.isLandscape((Context)this);
+    }
+    
     @Override
     protected Fragment createPrimaryFrag() {
         return ShowDetailsFrag.create(this.getVideoId(), this.getEpisodeId());
@@ -28,20 +32,7 @@ public class ShowDetailsActivity extends DetailsActivity implements EpisodeRowLi
     
     @Override
     protected Fragment createSecondaryFrag() {
-        boolean b = true;
-        int n;
-        if (DeviceUtils.isTabletByContext((Context)this) && DeviceUtils.isLandscape((Context)this)) {
-            n = 1;
-        }
-        else {
-            n = 0;
-        }
-        final String videoId = this.getVideoId();
-        final String episodeId = this.getEpisodeId();
-        if (n != 0) {
-            b = false;
-        }
-        return (Fragment)EpisodeListFrag.create(videoId, episodeId, b);
+        return (Fragment)EpisodeListFrag.create(this.getVideoId(), this.getEpisodeId(), !this.shouldHideDetailsView());
     }
     
     @Override
@@ -78,7 +69,7 @@ public class ShowDetailsActivity extends DetailsActivity implements EpisodeRowLi
     protected void onPostCreate(final Bundle bundle) {
         super.onPostCreate(bundle);
         final EpisodeListFrag episodeListFrag = (EpisodeListFrag)this.getSecondaryFrag();
-        if (DeviceUtils.isTabletByContext((Context)this) && DeviceUtils.isLandscape((Context)this)) {
+        if (this.shouldHideDetailsView()) {
             this.getPrimaryFragContainer().setVisibility(0);
             episodeListFrag.hideDetailViewHeader();
             return;

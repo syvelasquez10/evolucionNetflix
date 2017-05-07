@@ -8,14 +8,14 @@ import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
 import android.os.RemoteException;
-import com.google.android.gms.dynamic.b;
+import com.google.android.gms.maps.model.internal.f;
 import android.os.IInterface;
 
 public interface d extends IInterface
 {
-    b f(final com.google.android.gms.maps.model.internal.d p0) throws RemoteException;
+    com.google.android.gms.dynamic.d f(final f p0) throws RemoteException;
     
-    b g(final com.google.android.gms.maps.model.internal.d p0) throws RemoteException;
+    com.google.android.gms.dynamic.d g(final f p0) throws RemoteException;
     
     public abstract static class a extends Binder implements d
     {
@@ -23,7 +23,7 @@ public interface d extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IInfoWindowAdapter");
         }
         
-        public static d S(final IBinder binder) {
+        public static d ad(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -51,7 +51,7 @@ public interface d extends IInterface
                 }
                 case 1: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IInfoWindowAdapter");
-                    final b f = this.f(com.google.android.gms.maps.model.internal.d.a.am(parcel.readStrongBinder()));
+                    final com.google.android.gms.dynamic.d f = this.f(com.google.android.gms.maps.model.internal.f.a.aG(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     IBinder binder3 = binder2;
                     if (f != null) {
@@ -62,7 +62,7 @@ public interface d extends IInterface
                 }
                 case 2: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IInfoWindowAdapter");
-                    final b g = this.g(com.google.android.gms.maps.model.internal.d.a.am(parcel.readStrongBinder()));
+                    final com.google.android.gms.dynamic.d g = this.g(f.a.aG(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     IBinder binder4 = binder;
                     if (g != null) {
@@ -76,33 +76,33 @@ public interface d extends IInterface
         
         private static class a implements d
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
             }
             
             public IBinder asBinder() {
-                return this.dU;
+                return this.kn;
             }
             
             @Override
-            public b f(final com.google.android.gms.maps.model.internal.d d) throws RemoteException {
+            public com.google.android.gms.dynamic.d f(final f f) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IInfoWindowAdapter");
                     IBinder binder;
-                    if (d != null) {
-                        binder = d.asBinder();
+                    if (f != null) {
+                        binder = f.asBinder();
                     }
                     else {
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.dU.transact(1, obtain, obtain2, 0);
+                    this.kn.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return com.google.android.gms.dynamic.d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -111,22 +111,22 @@ public interface d extends IInterface
             }
             
             @Override
-            public b g(final com.google.android.gms.maps.model.internal.d d) throws RemoteException {
+            public com.google.android.gms.dynamic.d g(final f f) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IInfoWindowAdapter");
                     IBinder binder;
-                    if (d != null) {
-                        binder = d.asBinder();
+                    if (f != null) {
+                        binder = f.asBinder();
                     }
                     else {
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.dU.transact(2, obtain, obtain2, 0);
+                    this.kn.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return com.google.android.gms.dynamic.d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();

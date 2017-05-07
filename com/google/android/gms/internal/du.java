@@ -4,34 +4,48 @@
 
 package com.google.android.gms.internal;
 
-import android.content.ActivityNotFoundException;
-import android.util.Log;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.app.Activity;
-import android.content.DialogInterface$OnClickListener;
+import java.io.IOException;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import android.content.Context;
 
-public class du implements DialogInterface$OnClickListener
+public final class du extends do
 {
-    private final Activity gs;
-    private final Intent mIntent;
-    private final int oZ;
+    private final String lh;
+    private final Context mContext;
+    private final String ro;
     
-    public du(final Activity gs, final Intent mIntent, final int oz) {
-        this.gs = gs;
-        this.mIntent = mIntent;
-        this.oZ = oz;
+    public du(final Context mContext, final String lh, final String ro) {
+        this.mContext = mContext;
+        this.lh = lh;
+        this.ro = ro;
     }
     
-    public void onClick(final DialogInterface dialogInterface, final int n) {
+    @Override
+    public void aY() {
         try {
-            if (this.mIntent != null) {
-                this.gs.startActivityForResult(this.mIntent, this.oZ);
+            dw.y("Pinging URL: " + this.ro);
+            final HttpURLConnection httpURLConnection = (HttpURLConnection)new URL(this.ro).openConnection();
+            try {
+                dq.a(this.mContext, this.lh, true, httpURLConnection);
+                final int responseCode = httpURLConnection.getResponseCode();
+                if (responseCode < 200 || responseCode >= 300) {
+                    dw.z("Received non-success response code " + responseCode + " from pinging URL: " + this.ro);
+                }
             }
-            dialogInterface.dismiss();
+            finally {
+                httpURLConnection.disconnect();
+            }
         }
-        catch (ActivityNotFoundException ex) {
-            Log.e("SettingsRedirect", "Can't redirect to app settings for Google Play services");
+        catch (IndexOutOfBoundsException ex) {
+            dw.z("Error while parsing ping URL: " + this.ro + ". " + ex.getMessage());
         }
+        catch (IOException ex2) {
+            dw.z("Error while pinging URL: " + this.ro + ". " + ex2.getMessage());
+        }
+    }
+    
+    @Override
+    public void onStop() {
     }
 }

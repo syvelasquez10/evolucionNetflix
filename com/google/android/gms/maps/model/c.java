@@ -11,9 +11,9 @@ import android.os.Parcel;
 public class c
 {
     static void a(final GroundOverlayOptions groundOverlayOptions, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
+        final int p3 = b.p(parcel);
         b.c(parcel, 1, groundOverlayOptions.getVersionCode());
-        b.a(parcel, 2, groundOverlayOptions.eF(), false);
+        b.a(parcel, 2, groundOverlayOptions.iD(), false);
         b.a(parcel, 3, (Parcelable)groundOverlayOptions.getLocation(), n, false);
         b.a(parcel, 4, groundOverlayOptions.getWidth());
         b.a(parcel, 5, groundOverlayOptions.getHeight());
@@ -24,6 +24,6 @@ public class c
         b.a(parcel, 10, groundOverlayOptions.getTransparency());
         b.a(parcel, 11, groundOverlayOptions.getAnchorU());
         b.a(parcel, 12, groundOverlayOptions.getAnchorV());
-        b.D(parcel, o);
+        b.F(parcel, p3);
     }
 }

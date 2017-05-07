@@ -5,8 +5,8 @@
 package com.google.android.gms.games.multiplayer;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.gd;
-import com.google.android.gms.internal.eg;
+import com.google.android.gms.games.internal.constants.MatchResult;
+import com.google.android.gms.internal.fq;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class ParticipantResult implements SafeParcelable
@@ -20,21 +20,21 @@ public final class ParticipantResult implements SafeParcelable
     public static final int MATCH_RESULT_UNINITIALIZED = -1;
     public static final int MATCH_RESULT_WIN = 0;
     public static final int PLACING_UNINITIALIZED = -1;
-    private final int kg;
-    private final String up;
-    private final int wy;
-    private final int wz;
+    private final String Jg;
+    private final int MF;
+    private final int MG;
+    private final int xH;
     
     static {
         CREATOR = new ParticipantResultCreator();
     }
     
-    public ParticipantResult(final int kg, final String s, final int wy, final int wz) {
-        this.kg = kg;
-        this.up = eg.f(s);
-        eg.p(gd.isValid(wy));
-        this.wy = wy;
-        this.wz = wz;
+    public ParticipantResult(final int xh, final String s, final int mf, final int mg) {
+        this.xH = xh;
+        this.Jg = fq.f(s);
+        fq.x(MatchResult.isValid(mf));
+        this.MF = mf;
+        this.MG = mg;
     }
     
     public ParticipantResult(final String s, final int n, final int n2) {
@@ -46,19 +46,19 @@ public final class ParticipantResult implements SafeParcelable
     }
     
     public String getParticipantId() {
-        return this.up;
+        return this.Jg;
     }
     
     public int getPlacing() {
-        return this.wz;
+        return this.MG;
     }
     
     public int getResult() {
-        return this.wy;
+        return this.MF;
     }
     
     public int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

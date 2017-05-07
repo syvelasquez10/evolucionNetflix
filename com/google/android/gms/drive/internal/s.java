@@ -4,54 +4,62 @@
 
 package com.google.android.gms.drive.internal;
 
-import com.google.android.gms.common.internal.safeparcel.a;
-import com.google.android.gms.common.internal.safeparcel.b;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import android.os.Message;
+import android.util.Pair;
+import android.os.Handler;
+import android.os.RemoteException;
+import android.util.Log;
+import com.google.android.gms.internal.fq;
+import android.os.Looper;
+import com.google.android.gms.drive.events.DriveEvent;
 
-public class s implements Parcelable$Creator<OnDownloadProgressResponse>
+public class s<C extends DriveEvent> extends w.a
 {
-    static void a(final OnDownloadProgressResponse onDownloadProgressResponse, final Parcel parcel, int o) {
-        o = b.o(parcel);
-        b.c(parcel, 1, onDownloadProgressResponse.kg);
-        b.a(parcel, 2, onDownloadProgressResponse.rx);
-        b.a(parcel, 3, onDownloadProgressResponse.ry);
-        b.D(parcel, o);
+    private final int ES;
+    private final a<C> FA;
+    private final DriveEvent.Listener<C> Fz;
+    
+    public s(final Looper looper, final int es, final DriveEvent.Listener<C> fz) {
+        this.ES = es;
+        this.Fz = fz;
+        this.FA = new a<C>(looper);
     }
     
-    public OnDownloadProgressResponse H(final Parcel parcel) {
-        long h = 0L;
-        final int n = a.n(parcel);
-        int g = 0;
-        long h2 = 0L;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
+    public void a(final OnEventResponse onEventResponse) throws RemoteException {
+        fq.x(this.ES == onEventResponse.getEventType());
+        switch (onEventResponse.getEventType()) {
+            default: {
+                Log.w("EventCallback", "Unexpected event type:" + onEventResponse.getEventType());
+            }
+            case 1: {
+                this.FA.a(this.Fz, (C)onEventResponse.fL());
+            }
+            case 2: {
+                this.FA.a(this.Fz, (C)onEventResponse.fM());
+            }
+        }
+    }
+    
+    private static class a<E extends DriveEvent> extends Handler
+    {
+        private a(final Looper looper) {
+            super(looper);
+        }
+        
+        public void a(final DriveEvent.Listener<E> listener, final E e) {
+            this.sendMessage(this.obtainMessage(1, (Object)new Pair((Object)listener, (Object)e)));
+        }
+        
+        public void handleMessage(final Message message) {
+            switch (message.what) {
                 default: {
-                    a.b(parcel, m);
-                    continue;
+                    Log.wtf("EventCallback", "Don't know how to handle this event");
                 }
                 case 1: {
-                    g = a.g(parcel, m);
-                    continue;
-                }
-                case 2: {
-                    h2 = a.h(parcel, m);
-                    continue;
-                }
-                case 3: {
-                    h = a.h(parcel, m);
-                    continue;
+                    final Pair pair = (Pair)message.obj;
+                    ((DriveEvent.Listener)pair.first).onEvent((DriveEvent)pair.second);
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
-        }
-        return new OnDownloadProgressResponse(g, h2, h);
-    }
-    
-    public OnDownloadProgressResponse[] ah(final int n) {
-        return new OnDownloadProgressResponse[n];
     }
 }

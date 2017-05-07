@@ -4,132 +4,145 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.IBinder;
-import android.os.Binder;
-import android.os.RemoteException;
-import com.google.android.gms.cast.ApplicationMetadata;
-import android.os.IInterface;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.ArrayList;
+import java.security.NoSuchAlgorithmException;
+import java.security.MessageDigest;
+import java.util.UUID;
+import android.os.Bundle;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.math.BigInteger;
 
-public interface dj extends IInterface
+public class dj
 {
-    void a(final ApplicationMetadata p0, final String p1, final String p2, final boolean p3) throws RemoteException;
+    private static final dj qJ;
+    public static final String qK;
+    private final Object li;
+    public final String qL;
+    private final dk qM;
+    private BigInteger qN;
+    private final HashSet<di> qO;
+    private final HashMap<String, dm> qP;
     
-    void a(final String p0, final long p1) throws RemoteException;
+    static {
+        qJ = new dj();
+        qK = dj.qJ.qL;
+    }
     
-    void a(final String p0, final long p1, final int p2) throws RemoteException;
+    private dj() {
+        this.li = new Object();
+        this.qN = BigInteger.ONE;
+        this.qO = new HashSet<di>();
+        this.qP = new HashMap<String, dm>();
+        this.qL = br();
+        this.qM = new dk(this.qL);
+    }
     
-    void a(final String p0, final String p1) throws RemoteException;
+    public static Bundle a(final dl dl, final String s) {
+        return dj.qJ.b(dl, s);
+    }
     
-    void b(final String p0, final double p1, final boolean p2) throws RemoteException;
+    public static void b(final HashSet<di> set) {
+        dj.qJ.c(set);
+    }
     
-    void b(final String p0, final byte[] p1) throws RemoteException;
+    public static dj bq() {
+        return dj.qJ;
+    }
     
-    void onApplicationDisconnected(final int p0) throws RemoteException;
-    
-    void t(final int p0) throws RemoteException;
-    
-    void u(final int p0) throws RemoteException;
-    
-    void v(final int p0) throws RemoteException;
-    
-    void w(final int p0) throws RemoteException;
-    
-    public abstract static class a extends Binder implements dj
-    {
-        public a() {
-            this.attachInterface((IInterface)this, "com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-        }
-        
-        public IBinder asBinder() {
-            return (IBinder)this;
-        }
-        
-        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            final boolean b = false;
-            boolean b2 = false;
-            switch (n) {
-                default: {
-                    return super.onTransact(n, parcel, parcel2, n2);
-                }
-                case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                    return true;
-                }
-                case 1: {
-                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                    this.t(parcel.readInt());
-                    return true;
-                }
-                case 2: {
-                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                    ApplicationMetadata applicationMetadata;
-                    if (parcel.readInt() != 0) {
-                        applicationMetadata = (ApplicationMetadata)ApplicationMetadata.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        applicationMetadata = null;
-                    }
-                    final String string = parcel.readString();
-                    final String string2 = parcel.readString();
-                    if (parcel.readInt() != 0) {
-                        b2 = true;
-                    }
-                    this.a(applicationMetadata, string, string2, b2);
-                    return true;
-                }
-                case 3: {
-                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                    this.u(parcel.readInt());
-                    return true;
-                }
-                case 4: {
-                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                    final String string3 = parcel.readString();
-                    final double double1 = parcel.readDouble();
-                    boolean b3 = b;
-                    if (parcel.readInt() != 0) {
-                        b3 = true;
-                    }
-                    this.b(string3, double1, b3);
-                    return true;
-                }
-                case 5: {
-                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                    this.a(parcel.readString(), parcel.readString());
-                    return true;
-                }
-                case 6: {
-                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                    this.b(parcel.readString(), parcel.createByteArray());
-                    return true;
-                }
-                case 7: {
-                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                    this.w(parcel.readInt());
-                    return true;
-                }
-                case 8: {
-                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                    this.v(parcel.readInt());
-                    return true;
-                }
-                case 9: {
-                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                    this.onApplicationDisconnected(parcel.readInt());
-                    return true;
-                }
-                case 10: {
-                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                    this.a(parcel.readString(), parcel.readLong(), parcel.readInt());
-                    return true;
-                }
-                case 11: {
-                    parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                    this.a(parcel.readString(), parcel.readLong());
-                    return true;
-                }
+    private static String br() {
+        final UUID randomUUID = UUID.randomUUID();
+        final byte[] byteArray = BigInteger.valueOf(randomUUID.getLeastSignificantBits()).toByteArray();
+        final byte[] byteArray2 = BigInteger.valueOf(randomUUID.getMostSignificantBits()).toByteArray();
+        String s = new BigInteger(1, byteArray).toString();
+        int n = 0;
+    Label_0099_Outer:
+        while (true) {
+            if (n >= 2) {
+                return s;
             }
+            while (true) {
+                try {
+                    final MessageDigest instance = MessageDigest.getInstance("MD5");
+                    instance.update(byteArray);
+                    instance.update(byteArray2);
+                    final byte[] array = new byte[8];
+                    System.arraycopy(instance.digest(), 0, array, 0, 8);
+                    s = new BigInteger(1, array).toString();
+                    ++n;
+                    continue Label_0099_Outer;
+                }
+                catch (NoSuchAlgorithmException ex) {
+                    continue;
+                }
+                break;
+            }
+        }
+    }
+    
+    public static String bs() {
+        return dj.qJ.bt();
+    }
+    
+    public static dk bu() {
+        return dj.qJ.bv();
+    }
+    
+    public void a(final di di) {
+        synchronized (this.li) {
+            this.qO.add(di);
+        }
+    }
+    
+    public void a(final String s, final dm dm) {
+        synchronized (this.li) {
+            this.qP.put(s, dm);
+        }
+    }
+    
+    public Bundle b(final dl dl, String s) {
+        final Bundle bundle;
+        synchronized (this.li) {
+            bundle = new Bundle();
+            bundle.putBundle("app", this.qM.q(s));
+            s = (String)new Bundle();
+            for (final String s2 : this.qP.keySet()) {
+                ((Bundle)s).putBundle(s2, this.qP.get(s2).toBundle());
+            }
+        }
+        bundle.putBundle("slots", (Bundle)s);
+        final ArrayList<Bundle> list = new ArrayList<Bundle>();
+        final Iterator<di> iterator2 = this.qO.iterator();
+        while (iterator2.hasNext()) {
+            list.add(iterator2.next().toBundle());
+        }
+        bundle.putParcelableArrayList("ads", (ArrayList)list);
+        final dl dl2;
+        dl2.a(this.qO);
+        this.qO.clear();
+        // monitorexit(o)
+        return bundle;
+    }
+    
+    public String bt() {
+        synchronized (this.li) {
+            final String string = this.qN.toString();
+            this.qN = this.qN.add(BigInteger.ONE);
+            return string;
+        }
+    }
+    
+    public dk bv() {
+        synchronized (this.li) {
+            return this.qM;
+        }
+    }
+    
+    public void c(final HashSet<di> set) {
+        synchronized (this.li) {
+            this.qO.addAll((Collection<?>)set);
         }
     }
 }

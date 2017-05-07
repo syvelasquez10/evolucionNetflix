@@ -4,16 +4,16 @@
 
 package com.google.android.gms.maps.model;
 
-import com.google.android.gms.maps.internal.r;
+import com.google.android.gms.maps.internal.v;
 import android.os.Parcel;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class LatLng implements SafeParcelable
 {
     public static final LatLngCreator CREATOR;
-    private final int kg;
     public final double latitude;
     public final double longitude;
+    private final int xH;
     
     static {
         CREATOR = new LatLngCreator();
@@ -23,8 +23,8 @@ public final class LatLng implements SafeParcelable
         this(1, n, n2);
     }
     
-    LatLng(final int kg, final double n, final double longitude) {
-        this.kg = kg;
+    LatLng(final int xh, final double n, final double longitude) {
+        this.xH = xh;
         if (-180.0 <= longitude && longitude < 180.0) {
             this.longitude = longitude;
         }
@@ -53,7 +53,7 @@ public final class LatLng implements SafeParcelable
     }
     
     int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     @Override
@@ -70,7 +70,7 @@ public final class LatLng implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (r.eD()) {
+        if (v.iB()) {
             e.a(this, parcel, n);
             return;
         }

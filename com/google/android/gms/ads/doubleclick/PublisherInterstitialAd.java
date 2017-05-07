@@ -6,49 +6,49 @@ package com.google.android.gms.ads.doubleclick;
 
 import com.google.android.gms.ads.AdListener;
 import android.content.Context;
-import com.google.android.gms.internal.ah;
+import com.google.android.gms.internal.au;
 
 public final class PublisherInterstitialAd
 {
-    private final ah ea;
+    private final au kv;
     
     public PublisherInterstitialAd(final Context context) {
-        this.ea = new ah(context);
+        this.kv = new au(context);
     }
     
     public AdListener getAdListener() {
-        return this.ea.getAdListener();
+        return this.kv.getAdListener();
     }
     
     public String getAdUnitId() {
-        return this.ea.getAdUnitId();
+        return this.kv.getAdUnitId();
     }
     
     public AppEventListener getAppEventListener() {
-        return this.ea.getAppEventListener();
+        return this.kv.getAppEventListener();
     }
     
     public boolean isLoaded() {
-        return this.ea.isLoaded();
+        return this.kv.isLoaded();
     }
     
     public void loadAd(final PublisherAdRequest publisherAdRequest) {
-        this.ea.a(publisherAdRequest.v());
+        this.kv.a(publisherAdRequest.O());
     }
     
     public void setAdListener(final AdListener adListener) {
-        this.ea.setAdListener(adListener);
+        this.kv.setAdListener(adListener);
     }
     
     public void setAdUnitId(final String adUnitId) {
-        this.ea.setAdUnitId(adUnitId);
+        this.kv.setAdUnitId(adUnitId);
     }
     
     public void setAppEventListener(final AppEventListener appEventListener) {
-        this.ea.setAppEventListener(appEventListener);
+        this.kv.setAppEventListener(appEventListener);
     }
     
     public void show() {
-        this.ea.show();
+        this.kv.show();
     }
 }

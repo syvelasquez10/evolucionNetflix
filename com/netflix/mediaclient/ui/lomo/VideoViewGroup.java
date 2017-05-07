@@ -9,10 +9,10 @@ import com.netflix.mediaclient.util.DataUtil;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.Trackable;
 import java.util.List;
+import android.widget.LinearLayout$LayoutParams;
 import com.netflix.mediaclient.android.fragment.CustomViewPager;
 import android.view.ViewGroup$LayoutParams;
-import android.widget.LinearLayout$LayoutParams;
-import android.util.AttributeSet;
+import android.widget.AbsListView$LayoutParams;
 import android.content.Context;
 import android.widget.LinearLayout;
 import com.netflix.mediaclient.servicemgr.Video;
@@ -21,26 +21,12 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
 {
     protected static final String TAG = "VideoViewGroup";
     
-    public VideoViewGroup(final Context context) {
+    public VideoViewGroup(final Context context, final boolean b) {
         super(context);
-        this.init();
-    }
-    
-    public VideoViewGroup(final Context context, final AttributeSet set) {
-        super(context, set);
-        this.init();
-    }
-    
-    public VideoViewGroup(final Context context, final AttributeSet set, final int n) {
-        super(context, set, n);
-        this.init();
-    }
-    
-    private void init() {
-        this.setId(2131230759);
-        this.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, -2));
+        this.setId(2131165238);
+        this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         this.setOrientation(0);
-        if (this.shouldOverlapPages()) {
+        if (b) {
             CustomViewPager.applyContentOverlapPadding(this.getContext(), (View)this);
         }
     }
@@ -52,7 +38,7 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
         for (int i = 0; i < n; ++i) {
             final View childView = this.createChildView(this.getContext());
             if (this.shouldApplyPaddingToChildren()) {
-                final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131492939);
+                final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361869);
                 childView.setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
             }
             this.addView(childView, (ViewGroup$LayoutParams)linearLayout$LayoutParams);
@@ -60,8 +46,6 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
     }
     
     protected abstract boolean shouldApplyPaddingToChildren();
-    
-    protected abstract boolean shouldOverlapPages();
     
     public void updateDataThenViews(final List<T> list, final int n, final int n2, final int n3, final Trackable trackable) {
         if (Log.isLoggable("VideoViewGroup", 2)) {

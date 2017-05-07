@@ -5,20 +5,20 @@
 package com.google.android.gms.maps.model;
 
 import android.os.RemoteException;
-import com.google.android.gms.internal.eg;
-import com.google.android.gms.maps.model.internal.f;
+import com.google.android.gms.internal.fq;
+import com.google.android.gms.maps.model.internal.h;
 
 public final class TileOverlay
 {
-    private final f CZ;
+    private final h Ts;
     
-    public TileOverlay(final f f) {
-        this.CZ = eg.f(f);
+    public TileOverlay(final h h) {
+        this.Ts = fq.f(h);
     }
     
     public void clearTileCache() {
         try {
-            this.CZ.clearTileCache();
+            this.Ts.clearTileCache();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -31,7 +31,7 @@ public final class TileOverlay
             return false;
         }
         try {
-            return this.CZ.a(((TileOverlay)o).CZ);
+            return this.Ts.a(((TileOverlay)o).Ts);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -40,7 +40,7 @@ public final class TileOverlay
     
     public boolean getFadeIn() {
         try {
-            return this.CZ.getFadeIn();
+            return this.Ts.getFadeIn();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -49,7 +49,7 @@ public final class TileOverlay
     
     public String getId() {
         try {
-            return this.CZ.getId();
+            return this.Ts.getId();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -58,7 +58,7 @@ public final class TileOverlay
     
     public float getZIndex() {
         try {
-            return this.CZ.getZIndex();
+            return this.Ts.getZIndex();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -68,7 +68,7 @@ public final class TileOverlay
     @Override
     public int hashCode() {
         try {
-            return this.CZ.hashCodeRemote();
+            return this.Ts.hashCodeRemote();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -77,7 +77,7 @@ public final class TileOverlay
     
     public boolean isVisible() {
         try {
-            return this.CZ.isVisible();
+            return this.Ts.isVisible();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -86,7 +86,7 @@ public final class TileOverlay
     
     public void remove() {
         try {
-            this.CZ.remove();
+            this.Ts.remove();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -95,7 +95,7 @@ public final class TileOverlay
     
     public void setFadeIn(final boolean fadeIn) {
         try {
-            this.CZ.setFadeIn(fadeIn);
+            this.Ts.setFadeIn(fadeIn);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -104,7 +104,7 @@ public final class TileOverlay
     
     public void setVisible(final boolean visible) {
         try {
-            this.CZ.setVisible(visible);
+            this.Ts.setVisible(visible);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -113,7 +113,7 @@ public final class TileOverlay
     
     public void setZIndex(final float zIndex) {
         try {
-            this.CZ.setZIndex(zIndex);
+            this.Ts.setZIndex(zIndex);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);

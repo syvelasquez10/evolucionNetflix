@@ -15,10 +15,9 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.Trackable;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import android.view.ViewGroup;
-import android.app.Activity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.widget.TextView;
@@ -32,7 +31,7 @@ import android.widget.RelativeLayout;
 
 public class CwView extends RelativeLayout implements IVideoView<CWVideo>
 {
-    public static final float CW_IMG_HEIGHT_TO_WIDTH_RATIO = 0.562f;
+    public static final float CW_IMG_HEIGHT_TO_WIDTH_RATIO = 0.5625f;
     private static final String TAG = "CwView";
     private VideoDetailsClickListener clicker;
     private AdvancedImageView img;
@@ -58,15 +57,14 @@ public class CwView extends RelativeLayout implements IVideoView<CWVideo>
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837831);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        final Activity activity = (Activity)this.getContext();
-        activity.getLayoutInflater().inflate(2130903081, (ViewGroup)this);
-        this.title = (TextView)this.findViewById(2131230842);
-        this.img = (AdvancedImageView)this.findViewById(2131230840);
-        this.progress = (ProgressBar)this.findViewById(2131230844);
-        this.info = (ImageView)this.findViewById(2131230843);
-        this.clicker = new VideoDetailsClickListener(activity, this);
+        final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
+        netflixActivity.getLayoutInflater().inflate(2130903080, (ViewGroup)this);
+        this.title = (TextView)this.findViewById(2131165322);
+        this.img = (AdvancedImageView)this.findViewById(2131165319);
+        this.progress = (ProgressBar)this.findViewById(2131165324);
+        this.info = (ImageView)this.findViewById(2131165323);
+        this.clicker = new VideoDetailsClickListener(netflixActivity, this);
     }
     
     public PlayContext getPlayContext() {
@@ -89,10 +87,10 @@ public class CwView extends RelativeLayout implements IVideoView<CWVideo>
         }
         this.playContext = new PlayContextImp(trackable, progress);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131296561), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131493180), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.title.setText((CharSequence)this.getContext().getString(2131296623, new Object[] { cwVideo.getTitle(), cwVideo.getCurrentSeasonNumber(), cwVideo.getCurrentEpisodeNumber() }));
+            this.title.setText((CharSequence)this.getContext().getString(2131493242, new Object[] { cwVideo.getTitle(), cwVideo.getCurrentSeasonNumber(), cwVideo.getCurrentEpisodeNumber() }));
         }
         else {
             this.title.setText((CharSequence)cwVideo.getTitle());
@@ -120,7 +118,7 @@ public class CwView extends RelativeLayout implements IVideoView<CWVideo>
                 PlaybackLauncher.startPlayback((NetflixActivity)CwView.this.getContext(), cwVideo, CwView.this.playContext);
             }
         });
-        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131296603), cwVideo.getTitle()));
+        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493222), cwVideo.getTitle()));
         this.clicker.update((View)this.info, cwVideo);
     }
 }

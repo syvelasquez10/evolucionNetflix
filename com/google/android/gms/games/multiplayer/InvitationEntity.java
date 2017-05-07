@@ -7,57 +7,57 @@ package com.google.android.gms.games.multiplayer;
 import android.os.Parcel;
 import java.util.Collection;
 import com.google.android.gms.games.Game;
-import com.google.android.gms.internal.dv;
-import com.google.android.gms.internal.ee;
+import com.google.android.gms.internal.fe;
+import com.google.android.gms.internal.fo;
 import com.google.android.gms.common.data.Freezable;
-import com.google.android.gms.internal.eg;
+import com.google.android.gms.internal.fq;
 import java.util.ArrayList;
 import com.google.android.gms.games.GameEntity;
 import android.os.Parcelable$Creator;
-import com.google.android.gms.internal.fm;
+import com.google.android.gms.games.internal.GamesDowngradeableSafeParcel;
 
-public final class InvitationEntity extends fm implements Invitation
+public final class InvitationEntity extends GamesDowngradeableSafeParcel implements Invitation
 {
     public static final Parcelable$Creator<InvitationEntity> CREATOR;
-    private final int kg;
-    private final String uf;
-    private final GameEntity wj;
-    private final long wk;
-    private final int wl;
-    private final ParticipantEntity wm;
-    private final ArrayList<ParticipantEntity> wn;
-    private final int wo;
-    private final int wp;
+    private final String IV;
+    private final GameEntity Lt;
+    private final long Mu;
+    private final int Mv;
+    private final ParticipantEntity Mw;
+    private final ArrayList<ParticipantEntity> Mx;
+    private final int My;
+    private final int Mz;
+    private final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new a();
+        CREATOR = (Parcelable$Creator)new InvitationEntityCreatorCompat();
     }
     
-    InvitationEntity(final int kg, final GameEntity wj, final String uf, final long wk, final int wl, final ParticipantEntity wm, final ArrayList<ParticipantEntity> wn, final int wo, final int wp) {
-        this.kg = kg;
-        this.wj = wj;
-        this.uf = uf;
-        this.wk = wk;
-        this.wl = wl;
-        this.wm = wm;
-        this.wn = wn;
-        this.wo = wo;
-        this.wp = wp;
+    InvitationEntity(final int xh, final GameEntity lt, final String iv, final long mu, final int mv, final ParticipantEntity mw, final ArrayList<ParticipantEntity> mx, final int my, final int mz) {
+        this.xH = xh;
+        this.Lt = lt;
+        this.IV = iv;
+        this.Mu = mu;
+        this.Mv = mv;
+        this.Mw = mw;
+        this.Mx = mx;
+        this.My = my;
+        this.Mz = mz;
     }
     
     InvitationEntity(final Invitation invitation) {
-        this.kg = 2;
-        this.wj = new GameEntity(invitation.getGame());
-        this.uf = invitation.getInvitationId();
-        this.wk = invitation.getCreationTimestamp();
-        this.wl = invitation.getInvitationType();
-        this.wo = invitation.getVariant();
-        this.wp = invitation.getAvailableAutoMatchSlots();
+        this.xH = 2;
+        this.Lt = new GameEntity(invitation.getGame());
+        this.IV = invitation.getInvitationId();
+        this.Mu = invitation.getCreationTimestamp();
+        this.Mv = invitation.getInvitationType();
+        this.My = invitation.getVariant();
+        this.Mz = invitation.getAvailableAutoMatchSlots();
         final String participantId = invitation.getInviter().getParticipantId();
         final Freezable<ParticipantEntity> freezable = null;
         final ArrayList<Participant> participants = invitation.getParticipants();
         final int size = participants.size();
-        this.wn = new ArrayList<ParticipantEntity>(size);
+        this.Mx = new ArrayList<ParticipantEntity>(size);
         int i = 0;
         Object o = freezable;
         while (i < size) {
@@ -65,15 +65,15 @@ public final class InvitationEntity extends fm implements Invitation
             if (participant.getParticipantId().equals(participantId)) {
                 o = participant;
             }
-            this.wn.add(((Freezable<ParticipantEntity>)participant).freeze());
+            this.Mx.add(((Freezable<ParticipantEntity>)participant).freeze());
             ++i;
         }
-        eg.b(o, "Must have a valid inviter!");
-        this.wm = ((Freezable<ParticipantEntity>)o).freeze();
+        fq.b(o, "Must have a valid inviter!");
+        this.Mw = ((Freezable<ParticipantEntity>)o).freeze();
     }
     
     static int a(final Invitation invitation) {
-        return ee.hashCode(invitation.getGame(), invitation.getInvitationId(), invitation.getCreationTimestamp(), invitation.getInvitationType(), invitation.getInviter(), invitation.getParticipants(), invitation.getVariant(), invitation.getAvailableAutoMatchSlots());
+        return fo.hashCode(invitation.getGame(), invitation.getInvitationId(), invitation.getCreationTimestamp(), invitation.getInvitationType(), invitation.getInviter(), invitation.getParticipants(), invitation.getVariant(), invitation.getAvailableAutoMatchSlots());
     }
     
     static boolean a(final Invitation invitation, final Object o) {
@@ -86,9 +86,9 @@ public final class InvitationEntity extends fm implements Invitation
             b2 = b;
             if (invitation != o) {
                 final Invitation invitation2 = (Invitation)o;
-                if (ee.equal(invitation2.getGame(), invitation.getGame()) && ee.equal(invitation2.getInvitationId(), invitation.getInvitationId()) && ee.equal(invitation2.getCreationTimestamp(), invitation.getCreationTimestamp()) && ee.equal(invitation2.getInvitationType(), invitation.getInvitationType()) && ee.equal(invitation2.getInviter(), invitation.getInviter()) && ee.equal(invitation2.getParticipants(), invitation.getParticipants()) && ee.equal(invitation2.getVariant(), invitation.getVariant())) {
+                if (fo.equal(invitation2.getGame(), invitation.getGame()) && fo.equal(invitation2.getInvitationId(), invitation.getInvitationId()) && fo.equal(invitation2.getCreationTimestamp(), invitation.getCreationTimestamp()) && fo.equal(invitation2.getInvitationType(), invitation.getInvitationType()) && fo.equal(invitation2.getInviter(), invitation.getInviter()) && fo.equal(invitation2.getParticipants(), invitation.getParticipants()) && fo.equal(invitation2.getVariant(), invitation.getVariant())) {
                     b2 = b;
-                    if (ee.equal(invitation2.getAvailableAutoMatchSlots(), invitation.getAvailableAutoMatchSlots())) {
+                    if (fo.equal(invitation2.getAvailableAutoMatchSlots(), invitation.getAvailableAutoMatchSlots())) {
                         return b2;
                     }
                 }
@@ -99,7 +99,7 @@ public final class InvitationEntity extends fm implements Invitation
     }
     
     static String b(final Invitation invitation) {
-        return ee.e(invitation).a("Game", invitation.getGame()).a("InvitationId", invitation.getInvitationId()).a("CreationTimestamp", invitation.getCreationTimestamp()).a("InvitationType", invitation.getInvitationType()).a("Inviter", invitation.getInviter()).a("Participants", invitation.getParticipants()).a("Variant", invitation.getVariant()).a("AvailableAutoMatchSlots", invitation.getAvailableAutoMatchSlots()).toString();
+        return fo.e(invitation).a("Game", invitation.getGame()).a("InvitationId", invitation.getInvitationId()).a("CreationTimestamp", invitation.getCreationTimestamp()).a("InvitationType", invitation.getInvitationType()).a("Inviter", invitation.getInviter()).a("Participants", invitation.getParticipants()).a("Variant", invitation.getVariant()).a("AvailableAutoMatchSlots", invitation.getAvailableAutoMatchSlots()).toString();
     }
     
     public int describeContents() {
@@ -117,45 +117,45 @@ public final class InvitationEntity extends fm implements Invitation
     
     @Override
     public int getAvailableAutoMatchSlots() {
-        return this.wp;
+        return this.Mz;
     }
     
     @Override
     public long getCreationTimestamp() {
-        return this.wk;
+        return this.Mu;
     }
     
     @Override
     public Game getGame() {
-        return this.wj;
+        return this.Lt;
     }
     
     @Override
     public String getInvitationId() {
-        return this.uf;
+        return this.IV;
     }
     
     @Override
     public int getInvitationType() {
-        return this.wl;
+        return this.Mv;
     }
     
     @Override
     public Participant getInviter() {
-        return this.wm;
+        return this.Mw;
     }
     
     public ArrayList<Participant> getParticipants() {
-        return new ArrayList<Participant>(this.wn);
+        return new ArrayList<Participant>(this.Mx);
     }
     
     @Override
     public int getVariant() {
-        return this.wo;
+        return this.My;
     }
     
     public int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     @Override
@@ -173,29 +173,29 @@ public final class InvitationEntity extends fm implements Invitation
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (!this.bN()) {
-            com.google.android.gms.games.multiplayer.a.a(this, parcel, n);
+        if (!this.eK()) {
+            InvitationEntityCreator.a(this, parcel, n);
         }
         else {
-            this.wj.writeToParcel(parcel, n);
-            parcel.writeString(this.uf);
-            parcel.writeLong(this.wk);
-            parcel.writeInt(this.wl);
-            this.wm.writeToParcel(parcel, n);
-            final int size = this.wn.size();
+            this.Lt.writeToParcel(parcel, n);
+            parcel.writeString(this.IV);
+            parcel.writeLong(this.Mu);
+            parcel.writeInt(this.Mv);
+            this.Mw.writeToParcel(parcel, n);
+            final int size = this.Mx.size();
             parcel.writeInt(size);
             for (int i = 0; i < size; ++i) {
-                this.wn.get(i).writeToParcel(parcel, n);
+                this.Mx.get(i).writeToParcel(parcel, n);
             }
         }
     }
     
-    static final class a extends com.google.android.gms.games.multiplayer.a
+    static final class InvitationEntityCreatorCompat extends InvitationEntityCreator
     {
         @Override
-        public InvitationEntity aa(final Parcel parcel) {
-            if (fm.c(dv.bM()) || dv.P(InvitationEntity.class.getCanonicalName())) {
-                return super.aa(parcel);
+        public InvitationEntity au(final Parcel parcel) {
+            if (GamesDowngradeableSafeParcel.c(fe.eJ()) || fe.al(InvitationEntity.class.getCanonicalName())) {
+                return super.au(parcel);
             }
             final GameEntity gameEntity = (GameEntity)GameEntity.CREATOR.createFromParcel(parcel);
             final String string = parcel.readString();

@@ -15,7 +15,7 @@ import com.netflix.mediaclient.servicemgr.Video;
 public class LoMoViewGroup extends VideoViewGroup<Video, VideoView>
 {
     public LoMoViewGroup(final Context context) {
-        super(context);
+        super(context, true);
     }
     
     @Override
@@ -25,11 +25,6 @@ public class LoMoViewGroup extends VideoViewGroup<Video, VideoView>
     
     @Override
     protected boolean shouldApplyPaddingToChildren() {
-        return true;
-    }
-    
-    @Override
-    protected boolean shouldOverlapPages() {
         return true;
     }
     

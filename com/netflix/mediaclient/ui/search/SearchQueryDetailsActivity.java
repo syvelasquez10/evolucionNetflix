@@ -83,10 +83,10 @@ public class SearchQueryDetailsActivity extends NetflixActivity
     
     private String getTitleForType(final SearchQueryDetailsType searchQueryDetailsType, final String s) {
         if (searchQueryDetailsType == SearchQueryDetailsType.PERSON) {
-            return this.getString(2131296656, new Object[] { s });
+            return this.getString(2131493275, new Object[] { s });
         }
         if (searchQueryDetailsType == SearchQueryDetailsType.SEARCH_SUGGESTION) {
-            return this.getString(2131296656, new Object[] { s });
+            return this.getString(2131493275, new Object[] { s });
         }
         throw new IllegalStateException("Bad type");
     }
@@ -147,15 +147,15 @@ public class SearchQueryDetailsActivity extends NetflixActivity
         this.type = (SearchQueryDetailsType)intent.getSerializableExtra("extra_type");
         this.id = intent.getStringExtra("extra_id");
         this.title = intent.getStringExtra("extra_title");
-        this.setContentView(2130903143);
-        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131231068), this.leCallback);
-        final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131492938);
-        (this.content = this.findViewById(2131231069)).setPadding(dimensionPixelOffset, 0, dimensionPixelOffset, 0);
+        this.setContentView(2130903151);
+        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165552), this.leCallback);
+        final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361868);
+        (this.content = this.findViewById(2131165553)).setPadding(dimensionPixelOffset, 0, dimensionPixelOffset, 0);
         this.content.setVisibility(4);
-        this.findViewById(2131231079).setVisibility(0);
-        (this.titleView = (TextView)this.findViewById(2131231080)).setText((CharSequence)this.getTitleForType(this.type, this.title));
+        this.findViewById(2131165564).setVisibility(0);
+        (this.titleView = (TextView)this.findViewById(2131165565)).setText((CharSequence)this.getTitleForType(this.type, this.title));
         this.titleView.setVisibility(0);
-        (this.gridView = (StaticGridView)this.findViewById(2131231081)).setLayoutAnimation(AnimationUtils.createGridLayoutAnimator((Context)this));
+        (this.gridView = (StaticGridView)this.findViewById(2131165566)).setLayoutAnimation(AnimationUtils.createGridLayoutAnimator((Context)this));
         this.gridView.setFocusable(false);
         this.adapter = new SimilarItemsGridViewAdapter(this, this.gridView, false);
         this.gridView.setAdapter((ListAdapter)this.adapter);

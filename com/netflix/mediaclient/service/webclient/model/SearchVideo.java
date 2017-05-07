@@ -21,11 +21,27 @@ public class SearchVideo extends Video implements com.netflix.mediaclient.servic
     }
     
     @Override
+    public String getCertification() {
+        if (this.searchTitle == null) {
+            return null;
+        }
+        return this.searchTitle.certification;
+    }
+    
+    @Override
     public VideoType getErrorType() {
         if (this.summary == null) {
             return null;
         }
         return this.summary.getErrorType();
+    }
+    
+    @Override
+    public String getHorzDispUrl() {
+        if (this.summary == null) {
+            return null;
+        }
+        return this.summary.getHorzDispUrl();
     }
     
     @Override
@@ -42,6 +58,14 @@ public class SearchVideo extends Video implements com.netflix.mediaclient.servic
             return null;
         }
         return this.summary.getTitle();
+    }
+    
+    @Override
+    public String getTvCardUrl() {
+        if (this.summary == null) {
+            return null;
+        }
+        return this.summary.getTvCardUrl();
     }
     
     @Override

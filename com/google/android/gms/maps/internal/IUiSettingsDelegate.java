@@ -14,6 +14,8 @@ public interface IUiSettingsDelegate extends IInterface
 {
     boolean isCompassEnabled() throws RemoteException;
     
+    boolean isIndoorLevelPickerEnabled() throws RemoteException;
+    
     boolean isMyLocationButtonEnabled() throws RemoteException;
     
     boolean isRotateGesturesEnabled() throws RemoteException;
@@ -30,6 +32,8 @@ public interface IUiSettingsDelegate extends IInterface
     
     void setCompassEnabled(final boolean p0) throws RemoteException;
     
+    void setIndoorLevelPickerEnabled(final boolean p0) throws RemoteException;
+    
     void setMyLocationButtonEnabled(final boolean p0) throws RemoteException;
     
     void setRotateGesturesEnabled(final boolean p0) throws RemoteException;
@@ -44,7 +48,7 @@ public interface IUiSettingsDelegate extends IInterface
     
     public abstract static class a extends Binder implements IUiSettingsDelegate
     {
-        public static IUiSettingsDelegate ai(final IBinder binder) {
+        public static IUiSettingsDelegate aA(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -70,6 +74,8 @@ public interface IUiSettingsDelegate extends IInterface
             final int n7 = 0;
             final int n8 = 0;
             final int n9 = 0;
+            final boolean b8 = false;
+            final int n10 = 0;
             boolean zoomControlsEnabled = false;
             switch (n) {
                 default: {
@@ -235,19 +241,40 @@ public interface IUiSettingsDelegate extends IInterface
                     parcel2.writeInt(n);
                     return true;
                 }
+                case 16: {
+                    parcel.enforceInterface("com.google.android.gms.maps.internal.IUiSettingsDelegate");
+                    boolean indoorLevelPickerEnabled = b8;
+                    if (parcel.readInt() != 0) {
+                        indoorLevelPickerEnabled = true;
+                    }
+                    this.setIndoorLevelPickerEnabled(indoorLevelPickerEnabled);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 17: {
+                    parcel.enforceInterface("com.google.android.gms.maps.internal.IUiSettingsDelegate");
+                    final boolean indoorLevelPickerEnabled2 = this.isIndoorLevelPickerEnabled();
+                    parcel2.writeNoException();
+                    n = n10;
+                    if (indoorLevelPickerEnabled2) {
+                        n = 1;
+                    }
+                    parcel2.writeInt(n);
+                    return true;
+                }
             }
         }
         
         private static class a implements IUiSettingsDelegate
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
             }
             
             public IBinder asBinder() {
-                return this.dU;
+                return this.kn;
             }
             
             @Override
@@ -257,7 +284,27 @@ public interface IUiSettingsDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IUiSettingsDelegate");
-                    this.dU.transact(10, obtain, obtain2, 0);
+                    this.kn.transact(10, obtain, obtain2, 0);
+                    obtain2.readException();
+                    if (obtain2.readInt() != 0) {
+                        b = true;
+                    }
+                    return b;
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public boolean isIndoorLevelPickerEnabled() throws RemoteException {
+                boolean b = false;
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IUiSettingsDelegate");
+                    this.kn.transact(17, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -277,7 +324,7 @@ public interface IUiSettingsDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IUiSettingsDelegate");
-                    this.dU.transact(11, obtain, obtain2, 0);
+                    this.kn.transact(11, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -297,7 +344,7 @@ public interface IUiSettingsDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IUiSettingsDelegate");
-                    this.dU.transact(15, obtain, obtain2, 0);
+                    this.kn.transact(15, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -317,7 +364,7 @@ public interface IUiSettingsDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IUiSettingsDelegate");
-                    this.dU.transact(12, obtain, obtain2, 0);
+                    this.kn.transact(12, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -337,7 +384,7 @@ public interface IUiSettingsDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IUiSettingsDelegate");
-                    this.dU.transact(14, obtain, obtain2, 0);
+                    this.kn.transact(14, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -357,7 +404,7 @@ public interface IUiSettingsDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IUiSettingsDelegate");
-                    this.dU.transact(9, obtain, obtain2, 0);
+                    this.kn.transact(9, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -377,7 +424,7 @@ public interface IUiSettingsDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IUiSettingsDelegate");
-                    this.dU.transact(13, obtain, obtain2, 0);
+                    this.kn.transact(13, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -401,7 +448,7 @@ public interface IUiSettingsDelegate extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.dU.transact(8, obtain, obtain2, 0);
+                    this.kn.transact(8, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -421,7 +468,27 @@ public interface IUiSettingsDelegate extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.dU.transact(2, obtain, obtain2, 0);
+                    this.kn.transact(2, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void setIndoorLevelPickerEnabled(final boolean b) throws RemoteException {
+                int n = 0;
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IUiSettingsDelegate");
+                    if (b) {
+                        n = 1;
+                    }
+                    obtain.writeInt(n);
+                    this.kn.transact(16, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -441,7 +508,7 @@ public interface IUiSettingsDelegate extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.dU.transact(3, obtain, obtain2, 0);
+                    this.kn.transact(3, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -461,7 +528,7 @@ public interface IUiSettingsDelegate extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.dU.transact(7, obtain, obtain2, 0);
+                    this.kn.transact(7, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -481,7 +548,7 @@ public interface IUiSettingsDelegate extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.dU.transact(4, obtain, obtain2, 0);
+                    this.kn.transact(4, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -501,7 +568,7 @@ public interface IUiSettingsDelegate extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.dU.transact(6, obtain, obtain2, 0);
+                    this.kn.transact(6, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -521,7 +588,7 @@ public interface IUiSettingsDelegate extends IInterface
                         n = 0;
                     }
                     obtain.writeInt(n);
-                    this.dU.transact(1, obtain, obtain2, 0);
+                    this.kn.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -541,7 +608,7 @@ public interface IUiSettingsDelegate extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.dU.transact(5, obtain, obtain2, 0);
+                    this.kn.transact(5, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

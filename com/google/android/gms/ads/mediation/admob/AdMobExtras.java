@@ -7,21 +7,22 @@ package com.google.android.gms.ads.mediation.admob;
 import android.os.Bundle;
 import com.google.ads.mediation.NetworkExtras;
 
+@Deprecated
 public final class AdMobExtras implements NetworkExtras
 {
-    private final Bundle jh;
+    private final Bundle rP;
     
-    public AdMobExtras(Bundle jh) {
-        if (jh != null) {
-            jh = new Bundle(jh);
+    public AdMobExtras(Bundle rp) {
+        if (rp != null) {
+            rp = new Bundle(rp);
         }
         else {
-            jh = null;
+            rp = null;
         }
-        this.jh = jh;
+        this.rP = rp;
     }
     
     public Bundle getExtras() {
-        return this.jh;
+        return this.rP;
     }
 }

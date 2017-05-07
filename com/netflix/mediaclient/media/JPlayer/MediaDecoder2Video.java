@@ -4,12 +4,17 @@
 
 package com.netflix.mediaclient.media.JPlayer;
 
-import com.netflix.mediaclient.Log;
 import android.os.Message;
 import android.os.Looper;
+import android.media.MediaCodec;
+import java.util.LinkedList;
+import android.media.MediaCodec$BufferInfo;
+import com.netflix.mediaclient.Log;
+import java.util.concurrent.TimeUnit;
 import android.media.MediaCrypto;
 import android.view.Surface;
 import android.media.MediaFormat;
+import java.lang.reflect.Method;
 import android.os.HandlerThread;
 import android.os.Handler;
 import android.annotation.TargetApi;
@@ -19,6 +24,7 @@ public class MediaDecoder2Video extends MediaDecoderPipe2
 {
     private static final int DEFAULT_LOOPING_TIME = 30;
     private static final int FAST_LOOPING_TIME = 10;
+    private static final long MAX_AHEAD_TIMED_RELEASE_MS = 500L;
     private static final int MAX_LOOPING_TIME = 50;
     private static final int MSG_RENDER_FLUSH = 2;
     private static final int MSG_RENDER_FRAME = 1;
@@ -33,8 +39,9 @@ public class MediaDecoder2Video extends MediaDecoderPipe2
     RenderHeartbeat mHearbeat;
     private boolean mLastFrameRendered;
     private boolean mPaused;
-    private final LocalStateNotifier mRenderState;
+    private LocalStateNotifier mRenderState;
     private boolean mRendererStarted;
+    private Method mTimedReleaseOutputBufferMethod;
     private long nFrameRendered;
     private long nFrameSkipped;
     private long previousPts;
@@ -53,726 +60,854 @@ public class MediaDecoder2Video extends MediaDecoderPipe2
         this.mHearbeat = new RenderHeartbeat();
     }
     
+    private boolean isTimedReleaseSupported() {
+        return this.mTimedReleaseOutputBufferMethod != null;
+    }
+    
+    private void removeFrameFromQ(final int n) {
+        synchronized (this.mOutputBuffersQ) {
+            this.mOutputBuffersQ.removeFirst();
+            this.mOutputBufferInfo[n] = null;
+        }
+    }
+    
+    private void tryToReleaseBuffers() {
+        long millis = 0L;
+    Label_0176_Outer:
+        while (true) {
+        Label_0263_Outer:
+            while (true) {
+                final int intValue;
+                long presentationTimeUs;
+                final long value;
+                synchronized (this.mOutputBuffersQ) {
+                    if (this.mOutputBuffersQ.isEmpty()) {
+                        return;
+                    }
+                    intValue = this.mOutputBuffersQ.peekFirst();
+                    final MediaCodec$BufferInfo mediaCodec$BufferInfo = this.mOutputBufferInfo[intValue];
+                    if (intValue == -1 || mediaCodec$BufferInfo == null || this.mRefClock == null) {
+                        break Label_0176;
+                    }
+                    presentationTimeUs = mediaCodec$BufferInfo.presentationTimeUs;
+                    value = this.mRefClock.get();
+                    if (value < 0L) {
+                        this.mHandler.sendEmptyMessageDelayed(1, 30L);
+                        return;
+                    }
+                }
+                presentationTimeUs = TimeUnit.MICROSECONDS.toNanos(presentationTimeUs) - TimeUnit.MILLISECONDS.toNanos(value);
+                millis = TimeUnit.NANOSECONDS.toMillis(presentationTimeUs);
+                Label_0200: {
+                    if (millis >= 0L) {
+                        break Label_0200;
+                    }
+                    while (true) {
+                        try {
+                            this.mDecoder.releaseOutputBuffer(intValue, false);
+                            ++this.nFrameRendered;
+                            ++this.nFrameSkipped;
+                            this.removeFrameFromQ(intValue);
+                            // monitorexit(list)
+                            continue Label_0176_Outer;
+                        }
+                        catch (Exception ex) {
+                            Log.d("MediaDecoder2Video", "get exception as skip frame with releaseOutputBuffer()");
+                            this.mLastFrameRendered = true;
+                            continue;
+                        }
+                        break;
+                    }
+                }
+                if (millis > 500L) {
+                    break;
+                }
+                while (true) {
+                    try {
+                        this.mTimedReleaseOutputBufferMethod.invoke(this.mDecoder, intValue, System.nanoTime() + presentationTimeUs);
+                        ++this.nFrameRendered;
+                        this.removeFrameFromQ(intValue);
+                        if (this.mEventListener != null) {
+                            this.mEventListener.onSampleRendered(false, this.nFrameRendered, value);
+                            continue Label_0263_Outer;
+                        }
+                        continue Label_0263_Outer;
+                    }
+                    catch (Exception ex2) {
+                        Log.d("MediaDecoder2Video", "get exception as a result of timed releaseOutputBuffer()");
+                        this.mLastFrameRendered = true;
+                        continue;
+                    }
+                    break;
+                }
+                break;
+            }
+        }
+        this.mHandler.sendEmptyMessageDelayed(1, millis - 500L);
+    }
+    // monitorexit(list)
+    
+    @Override
+    void addToRenderer(final int n, final MediaCodec$BufferInfo mediaCodec$BufferInfo) {
+        synchronized (this.mOutputBuffersQ) {
+            this.mOutputBuffersQ.add(n);
+            this.mOutputBufferInfo[n] = mediaCodec$BufferInfo;
+            // monitorexit(this.mOutputBuffersQ)
+            if (!this.mPaused && this.isTimedReleaseSupported()) {
+                this.mHearbeat.ShowHearbeat();
+                this.tryToReleaseBuffers();
+            }
+        }
+    }
+    
     @Override
     void createRenderer() {
-        (this.mHandlerThread = new HandlerThread("RenderThreadVideo", -4)).start();
-        this.mHandler = new Handler(this.mHandlerThread.getLooper()) {
-            public void handleMessage(final Message p0) {
-                // 
-                // This method could not be decompiled.
-                // 
-                // Original Bytecode:
-                // 
-                //     0: aload_0        
-                //     1: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //     4: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mHearbeat:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$RenderHeartbeat;
-                //     7: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$RenderHeartbeat.ShowHearbeat:()V
-                //    10: aload_1        
-                //    11: getfield        android/os/Message.what:I
-                //    14: tableswitch {
-                //                2: 45
-                //                3: 1221
-                //          default: 36
-                //        }
-                //    36: ldc             "MediaDecoder2Video"
-                //    38: ldc             "RenderThreadVideo had unknown message"
-                //    40: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-                //    43: pop            
-                //    44: return         
-                //    45: iconst_m1      
-                //    46: istore_3       
-                //    47: aconst_null    
-                //    48: astore          14
-                //    50: ldc2_w          20
-                //    53: lstore          6
-                //    55: aload_0        
-                //    56: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //    59: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
-                //    62: astore          15
-                //    64: aload           15
-                //    66: monitorenter   
-                //    67: iload_3        
-                //    68: istore_2       
-                //    69: aload           14
-                //    71: astore_1       
-                //    72: aload_0        
-                //    73: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //    76: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
-                //    79: invokevirtual   java/util/LinkedList.isEmpty:()Z
-                //    82: ifne            127
-                //    85: iload_3        
-                //    86: istore_2       
-                //    87: aload           14
-                //    89: astore_1       
-                //    90: aload_0        
-                //    91: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //    94: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Z
-                //    97: ifne            127
-                //   100: aload_0        
-                //   101: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   104: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
-                //   107: invokevirtual   java/util/LinkedList.peekFirst:()Ljava/lang/Object;
-                //   110: checkcast       Ljava/lang/Integer;
-                //   113: invokevirtual   java/lang/Integer.intValue:()I
-                //   116: istore_2       
-                //   117: aload_0        
-                //   118: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   121: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBufferInfo:[Landroid/media/MediaCodec$BufferInfo;
-                //   124: iload_2        
-                //   125: aaload         
-                //   126: astore_1       
-                //   127: aload_1        
-                //   128: ifnull          171
-                //   131: aload_1        
-                //   132: getfield        android/media/MediaCodec$BufferInfo.flags:I
-                //   135: iconst_4       
-                //   136: iand           
-                //   137: ifeq            171
-                //   140: ldc             "MediaDecoder2Video"
-                //   142: ldc             "renderer got buffer BUFFER_FLAG_END_OF_STREAM"
-                //   144: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-                //   147: pop            
-                //   148: aload_0        
-                //   149: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   152: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
-                //   155: ifnull          171
-                //   158: aload_0        
-                //   159: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   162: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
-                //   165: iconst_0       
-                //   166: invokeinterface com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener.onEndOfStream:(Z)V
-                //   171: lload           6
-                //   173: lstore          4
-                //   175: iload_2        
-                //   176: iconst_m1      
-                //   177: if_icmpeq       232
-                //   180: lload           6
-                //   182: lstore          4
-                //   184: aload_1        
-                //   185: ifnull          232
-                //   188: lload           6
-                //   190: lstore          4
-                //   192: aload_0        
-                //   193: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   196: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mRefClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
-                //   199: ifnull          232
-                //   202: aload_1        
-                //   203: getfield        android/media/MediaCodec$BufferInfo.presentationTimeUs:J
-                //   206: ldc2_w          1000
-                //   209: ldiv           
-                //   210: lstore          8
-                //   212: aload_0        
-                //   213: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   216: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mRefClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
-                //   219: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.get:()J
-                //   222: lconst_0       
-                //   223: lcmp           
-                //   224: ifge            407
-                //   227: ldc2_w          30
-                //   230: lstore          4
-                //   232: aload           15
-                //   234: monitorexit    
-                //   235: aload_0        
-                //   236: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   239: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$600:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Z
-                //   242: ifeq            322
-                //   245: aload_0        
-                //   246: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   249: iconst_1       
-                //   250: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$202:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;Z)Z
-                //   253: pop            
-                //   254: ldc2_w          -1
-                //   257: lstore          6
-                //   259: lload           6
-                //   261: lstore          4
-                //   263: ldc             "MediaDecoder2Video"
-                //   265: iconst_3       
-                //   266: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-                //   269: ifeq            322
-                //   272: ldc             "MediaDecoder2Video"
-                //   274: new             Ljava/lang/StringBuilder;
-                //   277: dup            
-                //   278: invokespecial   java/lang/StringBuilder.<init>:()V
-                //   281: ldc             "EOS: stopped, rendered frame "
-                //   283: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //   286: aload_0        
-                //   287: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   290: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$400:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
-                //   293: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-                //   296: ldc             ",skipped frame "
-                //   298: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //   301: aload_0        
-                //   302: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   305: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$500:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
-                //   308: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-                //   311: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-                //   314: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-                //   317: pop            
-                //   318: lload           6
-                //   320: lstore          4
-                //   322: aload_0        
-                //   323: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   326: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$200:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Z
-                //   329: ifne            44
-                //   332: lload           4
-                //   334: ldc2_w          60
-                //   337: lcmp           
-                //   338: ifgt            352
-                //   341: lload           4
-                //   343: lstore          6
-                //   345: lload           4
-                //   347: lconst_0       
-                //   348: lcmp           
-                //   349: ifgt            392
-                //   352: ldc             "MediaDecoder2Video"
-                //   354: iconst_3       
-                //   355: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-                //   358: ifeq            387
-                //   361: ldc             "MediaDecoder2Video"
-                //   363: new             Ljava/lang/StringBuilder;
-                //   366: dup            
-                //   367: invokespecial   java/lang/StringBuilder.<init>:()V
-                //   370: ldc             "unexpect loop time "
-                //   372: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //   375: lload           4
-                //   377: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-                //   380: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-                //   383: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-                //   386: pop            
-                //   387: ldc2_w          30
-                //   390: lstore          6
-                //   392: aload_0        
-                //   393: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   396: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$700:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Landroid/os/Handler;
-                //   399: iconst_1       
-                //   400: lload           6
-                //   402: invokevirtual   android/os/Handler.sendEmptyMessageDelayed:(IJ)Z
-                //   405: pop            
-                //   406: return         
-                //   407: lload           8
-                //   409: aload_0        
-                //   410: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   413: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mRefClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
-                //   416: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.get:()J
-                //   419: lsub           
-                //   420: lstore          12
-                //   422: lload           12
-                //   424: ldc2_w          -30
-                //   427: lcmp           
-                //   428: ifle            844
-                //   431: iconst_1       
-                //   432: istore_3       
-                //   433: lload           12
-                //   435: ldc2_w          20
-                //   438: lcmp           
-                //   439: ifge            1192
-                //   442: lload           6
-                //   444: lstore          4
-                //   446: aload_0        
-                //   447: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   450: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$100:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
-                //   453: lconst_0       
-                //   454: lcmp           
-                //   455: ifle            495
-                //   458: lload           8
-                //   460: aload_0        
-                //   461: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   464: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$100:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
-                //   467: lsub           
-                //   468: lstore          6
-                //   470: lload           6
-                //   472: ldc2_w          30
-                //   475: lcmp           
-                //   476: iflt            1288
-                //   479: lload           6
-                //   481: lstore          4
-                //   483: lload           6
-                //   485: ldc2_w          50
-                //   488: lcmp           
-                //   489: ifle            495
-                //   492: goto            1288
-                //   495: iload_3        
-                //   496: ifeq            1315
-                //   499: aload_0        
-                //   500: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   503: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
-                //   506: invokevirtual   java/util/LinkedList.removeFirst:()Ljava/lang/Object;
-                //   509: pop            
-                //   510: aload_0        
-                //   511: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   514: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBufferInfo:[Landroid/media/MediaCodec$BufferInfo;
-                //   517: iload_2        
-                //   518: aconst_null    
-                //   519: aastore        
-                //   520: aload_0        
-                //   521: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   524: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mDecoder:Landroid/media/MediaCodec;
-                //   527: iload_2        
-                //   528: iconst_1       
-                //   529: invokevirtual   android/media/MediaCodec.releaseOutputBuffer:(IZ)V
-                //   532: lload           4
-                //   534: lload           12
-                //   536: ladd           
-                //   537: lstore          6
-                //   539: lload           6
-                //   541: ldc2_w          5
-                //   544: lcmp           
-                //   545: ifle            1296
-                //   548: lload           6
-                //   550: ldc2_w          5
-                //   553: lsub           
-                //   554: lstore          4
-                //   556: aload_0        
-                //   557: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   560: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$300:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Z
-                //   563: ifne            583
-                //   566: ldc             "MediaDecoder2Video"
-                //   568: ldc             "first buffer to render"
-                //   570: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-                //   573: pop            
-                //   574: aload_0        
-                //   575: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   578: iconst_1       
-                //   579: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$302:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;Z)Z
-                //   582: pop            
-                //   583: aload_0        
-                //   584: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   587: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
-                //   590: ifnull          615
-                //   593: aload_0        
-                //   594: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   597: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
-                //   600: iconst_0       
-                //   601: aload_0        
-                //   602: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   605: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$400:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
-                //   608: lload           8
-                //   610: invokeinterface com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener.onSampleRendered:(ZJJ)V
-                //   615: lload           8
-                //   617: lstore          10
-                //   619: aload_1        
-                //   620: astore          14
-                //   622: lload           4
-                //   624: lstore          6
-                //   626: lload           12
-                //   628: ldc2_w          -20
-                //   631: lcmp           
-                //   632: ifge            727
-                //   635: lload           8
-                //   637: lstore          10
-                //   639: aload_1        
-                //   640: astore          14
-                //   642: lload           4
-                //   644: lstore          6
-                //   646: ldc             "MediaDecoder2Video"
-                //   648: iconst_3       
-                //   649: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-                //   652: ifeq            727
-                //   655: ldc             "MediaDecoder2Video"
-                //   657: new             Ljava/lang/StringBuilder;
-                //   660: dup            
-                //   661: invokespecial   java/lang/StringBuilder.<init>:()V
-                //   664: ldc             "STAT:rendered frame "
-                //   666: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //   669: aload_0        
-                //   670: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   673: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$400:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
-                //   676: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-                //   679: ldc             " @"
-                //   681: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //   684: lload           8
-                //   686: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-                //   689: ldc             ", with delta "
-                //   691: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //   694: lload           12
-                //   696: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-                //   699: ldc             ", next after "
-                //   701: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //   704: lload           4
-                //   706: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-                //   709: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-                //   712: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-                //   715: pop            
-                //   716: lload           4
-                //   718: lstore          6
-                //   720: aload_1        
-                //   721: astore          14
-                //   723: lload           8
-                //   725: lstore          10
-                //   727: aload_0        
-                //   728: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   731: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$408:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
-                //   734: pop2           
-                //   735: aload_0        
-                //   736: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   739: lload           10
-                //   741: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$102:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;J)J
-                //   744: pop2           
-                //   745: lload           6
-                //   747: lstore          4
-                //   749: aload           14
-                //   751: getfield        android/media/MediaCodec$BufferInfo.flags:I
-                //   754: iconst_4       
-                //   755: if_icmpne       232
-                //   758: aload_0        
-                //   759: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   762: iconst_1       
-                //   763: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$202:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;Z)Z
-                //   766: pop            
-                //   767: ldc2_w          -1
-                //   770: lstore          6
-                //   772: lload           6
-                //   774: lstore          4
-                //   776: ldc             "MediaDecoder2Video"
-                //   778: iconst_3       
-                //   779: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-                //   782: ifeq            232
-                //   785: ldc             "MediaDecoder2Video"
-                //   787: new             Ljava/lang/StringBuilder;
-                //   790: dup            
-                //   791: invokespecial   java/lang/StringBuilder.<init>:()V
-                //   794: ldc             "EOS: has flag, rendered frame "
-                //   796: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //   799: aload_0        
-                //   800: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   803: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$400:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
-                //   806: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-                //   809: ldc             ",skipped frame "
-                //   811: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //   814: aload_0        
-                //   815: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   818: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$500:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
-                //   821: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-                //   824: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-                //   827: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-                //   830: pop            
-                //   831: lload           6
-                //   833: lstore          4
-                //   835: goto            232
-                //   838: astore_1       
-                //   839: aload           15
-                //   841: monitorexit    
-                //   842: aload_1        
-                //   843: athrow         
-                //   844: iconst_0       
-                //   845: istore_3       
-                //   846: goto            433
-                //   849: astore          14
-                //   851: ldc             "MediaDecoder2Video"
-                //   853: ldc             "get un-documented exception as a result of releaseOutputBuffer()"
-                //   855: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-                //   858: pop            
-                //   859: aload_0        
-                //   860: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   863: iconst_1       
-                //   864: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$202:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;Z)Z
-                //   867: pop            
-                //   868: goto            532
-                //   871: aload_0        
-                //   872: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   875: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
-                //   878: invokevirtual   java/util/LinkedList.size:()I
-                //   881: iconst_1       
-                //   882: if_icmple       1007
-                //   885: lload           8
-                //   887: ldc2_w          -30
-                //   890: lcmp           
-                //   891: ifgt            1007
-                //   894: aload_0        
-                //   895: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   898: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
-                //   901: invokevirtual   java/util/LinkedList.removeFirst:()Ljava/lang/Object;
-                //   904: pop            
-                //   905: aload_0        
-                //   906: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   909: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBufferInfo:[Landroid/media/MediaCodec$BufferInfo;
-                //   912: iload_2        
-                //   913: aconst_null    
-                //   914: aastore        
-                //   915: aload_0        
-                //   916: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   919: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mDecoder:Landroid/media/MediaCodec;
-                //   922: iload_2        
-                //   923: iconst_0       
-                //   924: invokevirtual   android/media/MediaCodec.releaseOutputBuffer:(IZ)V
-                //   927: aload_0        
-                //   928: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   931: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
-                //   934: invokevirtual   java/util/LinkedList.peekFirst:()Ljava/lang/Object;
-                //   937: checkcast       Ljava/lang/Integer;
-                //   940: invokevirtual   java/lang/Integer.intValue:()I
-                //   943: istore_2       
-                //   944: aload_0        
-                //   945: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   948: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBufferInfo:[Landroid/media/MediaCodec$BufferInfo;
-                //   951: iload_2        
-                //   952: aaload         
-                //   953: astore_1       
-                //   954: aload_1        
-                //   955: getfield        android/media/MediaCodec$BufferInfo.presentationTimeUs:J
-                //   958: ldc2_w          1000
-                //   961: ldiv           
-                //   962: lstore          4
-                //   964: lload           4
-                //   966: aload_0        
-                //   967: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   970: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mRefClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
-                //   973: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.get:()J
-                //   976: lsub           
-                //   977: lstore          8
-                //   979: iload_3        
-                //   980: iconst_1       
-                //   981: iadd           
-                //   982: istore_3       
-                //   983: goto            871
-                //   986: astore_1       
-                //   987: ldc             "MediaDecoder2Video"
-                //   989: ldc             "get un-documented exception as a result of releaseOutputBuffer()"
-                //   991: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-                //   994: pop            
-                //   995: aload_0        
-                //   996: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //   999: iconst_1       
-                //  1000: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$202:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;Z)Z
-                //  1003: pop            
-                //  1004: goto            927
-                //  1007: aload_0        
-                //  1008: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //  1011: iload_3        
-                //  1012: i2l            
-                //  1013: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$414:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;J)J
-                //  1016: pop2           
-                //  1017: aload_0        
-                //  1018: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //  1021: iload_3        
-                //  1022: i2l            
-                //  1023: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$514:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;J)J
-                //  1026: pop2           
-                //  1027: aload_0        
-                //  1028: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //  1031: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
-                //  1034: invokevirtual   java/util/LinkedList.removeFirst:()Ljava/lang/Object;
-                //  1037: pop            
-                //  1038: aload_0        
-                //  1039: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //  1042: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBufferInfo:[Landroid/media/MediaCodec$BufferInfo;
-                //  1045: iload_2        
-                //  1046: aconst_null    
-                //  1047: aastore        
-                //  1048: aload_0        
-                //  1049: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //  1052: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mDecoder:Landroid/media/MediaCodec;
-                //  1055: iload_2        
-                //  1056: iconst_1       
-                //  1057: invokevirtual   android/media/MediaCodec.releaseOutputBuffer:(IZ)V
-                //  1060: ldc2_w          10
-                //  1063: lstore          12
-                //  1065: lload           4
-                //  1067: lstore          10
-                //  1069: aload_1        
-                //  1070: astore          14
-                //  1072: lload           12
-                //  1074: lstore          6
-                //  1076: ldc             "MediaDecoder2Video"
-                //  1078: iconst_3       
-                //  1079: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-                //  1082: ifeq            727
-                //  1085: ldc             "MediaDecoder2Video"
-                //  1087: new             Ljava/lang/StringBuilder;
-                //  1090: dup            
-                //  1091: invokespecial   java/lang/StringBuilder.<init>:()V
-                //  1094: ldc             "STAT:REND frame "
-                //  1096: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //  1099: aload_0        
-                //  1100: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //  1103: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$400:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
-                //  1106: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-                //  1109: ldc             " skipped "
-                //  1111: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //  1114: iload_3        
-                //  1115: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
-                //  1118: ldc             " @"
-                //  1120: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //  1123: lload           4
-                //  1125: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-                //  1128: ldc             ", with delta "
-                //  1130: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //  1133: lload           8
-                //  1135: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-                //  1138: ldc             ", next after "
-                //  1140: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //  1143: ldc2_w          10
-                //  1146: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-                //  1149: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-                //  1152: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-                //  1155: pop            
-                //  1156: lload           4
-                //  1158: lstore          10
-                //  1160: aload_1        
-                //  1161: astore          14
-                //  1163: lload           12
-                //  1165: lstore          6
-                //  1167: goto            727
-                //  1170: astore          14
-                //  1172: ldc             "MediaDecoder2Video"
-                //  1174: ldc             "get un-documented exception as a result of releaseOutputBuffer()"
-                //  1176: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-                //  1179: pop            
-                //  1180: aload_0        
-                //  1181: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //  1184: iconst_1       
-                //  1185: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$202:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;Z)Z
-                //  1188: pop            
-                //  1189: goto            1060
-                //  1192: lload           12
-                //  1194: ldc2_w          5
-                //  1197: lsub           
-                //  1198: lstore          6
-                //  1200: lload           6
-                //  1202: lstore          4
-                //  1204: lload           6
-                //  1206: ldc2_w          50
-                //  1209: lcmp           
-                //  1210: ifle            232
-                //  1213: ldc2_w          50
-                //  1216: lstore          4
-                //  1218: goto            232
-                //  1221: ldc             "MediaDecoder2Video"
-                //  1223: ldc             "render state flushing"
-                //  1225: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-                //  1228: pop            
-                //  1229: aload_0        
-                //  1230: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //  1233: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
-                //  1236: astore_1       
-                //  1237: aload_1        
-                //  1238: monitorenter   
-                //  1239: aload_0        
-                //  1240: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //  1243: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
-                //  1246: invokevirtual   java/util/LinkedList.clear:()V
-                //  1249: aload_1        
-                //  1250: monitorexit    
-                //  1251: aload_0        
-                //  1252: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //  1255: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$800:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
-                //  1258: astore_1       
-                //  1259: aload_1        
-                //  1260: monitorenter   
-                //  1261: aload_0        
-                //  1262: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
-                //  1265: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$800:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
-                //  1268: invokevirtual   java/lang/Object.notify:()V
-                //  1271: aload_1        
-                //  1272: monitorexit    
-                //  1273: return         
-                //  1274: astore          14
-                //  1276: aload_1        
-                //  1277: monitorexit    
-                //  1278: aload           14
-                //  1280: athrow         
-                //  1281: astore          14
-                //  1283: aload_1        
-                //  1284: monitorexit    
-                //  1285: aload           14
-                //  1287: athrow         
-                //  1288: ldc2_w          30
-                //  1291: lstore          4
-                //  1293: goto            495
-                //  1296: lload           6
-                //  1298: lstore          4
-                //  1300: lload           6
-                //  1302: lconst_0       
-                //  1303: lcmp           
-                //  1304: ifge            556
-                //  1307: ldc2_w          10
-                //  1310: lstore          4
-                //  1312: goto            556
-                //  1315: iconst_0       
-                //  1316: istore_3       
-                //  1317: lload           8
-                //  1319: lstore          4
-                //  1321: lload           12
-                //  1323: lstore          8
-                //  1325: goto            871
-                //    Exceptions:
-                //  Try           Handler
-                //  Start  End    Start  End    Type                 
-                //  -----  -----  -----  -----  ---------------------
-                //  72     85     838    844    Any
-                //  90     127    838    844    Any
-                //  131    171    838    844    Any
-                //  192    227    838    844    Any
-                //  232    235    838    844    Any
-                //  407    422    838    844    Any
-                //  446    470    838    844    Any
-                //  499    520    838    844    Any
-                //  520    532    849    871    Ljava/lang/Exception;
-                //  520    532    838    844    Any
-                //  556    583    838    844    Any
-                //  583    615    838    844    Any
-                //  646    716    838    844    Any
-                //  727    745    838    844    Any
-                //  749    767    838    844    Any
-                //  776    831    838    844    Any
-                //  839    842    838    844    Any
-                //  851    868    838    844    Any
-                //  871    885    838    844    Any
-                //  894    915    838    844    Any
-                //  915    927    986    1007   Ljava/lang/Exception;
-                //  915    927    838    844    Any
-                //  927    979    838    844    Any
-                //  987    1004   838    844    Any
-                //  1007   1048   838    844    Any
-                //  1048   1060   1170   1192   Ljava/lang/Exception;
-                //  1048   1060   838    844    Any
-                //  1076   1156   838    844    Any
-                //  1172   1189   838    844    Any
-                //  1239   1251   1281   1288   Any
-                //  1261   1273   1274   1281   Any
-                //  1276   1278   1274   1281   Any
-                //  1283   1285   1281   1288   Any
-                // 
-                // The error that occurred was:
-                // 
-                // java.lang.IllegalStateException: Expression is linked from several locations: Label_0532:
-                //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
-                //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
-                //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
-                //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformCall(AstMethodBodyBuilder.java:1163)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformByteCode(AstMethodBodyBuilder.java:1010)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformExpression(AstMethodBodyBuilder.java:540)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformByteCode(AstMethodBodyBuilder.java:554)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformExpression(AstMethodBodyBuilder.java:540)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformNode(AstMethodBodyBuilder.java:392)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformBlock(AstMethodBodyBuilder.java:333)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:294)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
-                //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
-                //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
-                //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
-                //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
-                //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
-                // 
-                throw new IllegalStateException("An error occurred while decompiling this method.");
+        while (true) {
+            if (!MediaDecoder2Video.USE_ANDROID_L_API) {
+                break Label_0043;
             }
-        };
+            try {
+                this.mTimedReleaseOutputBufferMethod = MediaCodec.class.getMethod("releaseOutputBuffer", Integer.TYPE, Long.TYPE);
+                Log.d("MediaDecoder2Video", "use timed buffer release");
+                (this.mHandlerThread = new HandlerThread("RenderThreadVideo", -4)).start();
+                this.mHandler = new Handler(this.mHandlerThread.getLooper()) {
+                    public void handleMessage(final Message p0) {
+                        // 
+                        // This method could not be decompiled.
+                        // 
+                        // Original Bytecode:
+                        // 
+                        //     0: aload_0        
+                        //     1: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //     4: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mHearbeat:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$RenderHeartbeat;
+                        //     7: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$RenderHeartbeat.ShowHearbeat:()V
+                        //    10: aload_1        
+                        //    11: getfield        android/os/Message.what:I
+                        //    14: tableswitch {
+                        //                2: 45
+                        //                3: 1249
+                        //          default: 36
+                        //        }
+                        //    36: ldc             "MediaDecoder2Video"
+                        //    38: ldc             "RenderThreadVideo had unknown message"
+                        //    40: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+                        //    43: pop            
+                        //    44: return         
+                        //    45: aload_0        
+                        //    46: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //    49: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Z
+                        //    52: ifeq            73
+                        //    55: aload_0        
+                        //    56: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //    59: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$100:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Z
+                        //    62: ifne            44
+                        //    65: aload_0        
+                        //    66: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //    69: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$200:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)V
+                        //    72: return         
+                        //    73: iconst_m1      
+                        //    74: istore_3       
+                        //    75: aconst_null    
+                        //    76: astore          14
+                        //    78: ldc2_w          20
+                        //    81: lstore          6
+                        //    83: aload_0        
+                        //    84: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //    87: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
+                        //    90: astore          15
+                        //    92: aload           15
+                        //    94: monitorenter   
+                        //    95: iload_3        
+                        //    96: istore_2       
+                        //    97: aload           14
+                        //    99: astore_1       
+                        //   100: aload_0        
+                        //   101: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   104: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
+                        //   107: invokevirtual   java/util/LinkedList.isEmpty:()Z
+                        //   110: ifne            155
+                        //   113: iload_3        
+                        //   114: istore_2       
+                        //   115: aload           14
+                        //   117: astore_1       
+                        //   118: aload_0        
+                        //   119: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   122: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$100:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Z
+                        //   125: ifne            155
+                        //   128: aload_0        
+                        //   129: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   132: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
+                        //   135: invokevirtual   java/util/LinkedList.peekFirst:()Ljava/lang/Object;
+                        //   138: checkcast       Ljava/lang/Integer;
+                        //   141: invokevirtual   java/lang/Integer.intValue:()I
+                        //   144: istore_2       
+                        //   145: aload_0        
+                        //   146: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   149: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBufferInfo:[Landroid/media/MediaCodec$BufferInfo;
+                        //   152: iload_2        
+                        //   153: aaload         
+                        //   154: astore_1       
+                        //   155: aload_1        
+                        //   156: ifnull          199
+                        //   159: aload_1        
+                        //   160: getfield        android/media/MediaCodec$BufferInfo.flags:I
+                        //   163: iconst_4       
+                        //   164: iand           
+                        //   165: ifeq            199
+                        //   168: ldc             "MediaDecoder2Video"
+                        //   170: ldc             "renderer got buffer BUFFER_FLAG_END_OF_STREAM"
+                        //   172: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+                        //   175: pop            
+                        //   176: aload_0        
+                        //   177: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   180: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
+                        //   183: ifnull          199
+                        //   186: aload_0        
+                        //   187: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   190: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
+                        //   193: iconst_0       
+                        //   194: invokeinterface com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener.onEndOfStream:(Z)V
+                        //   199: lload           6
+                        //   201: lstore          4
+                        //   203: iload_2        
+                        //   204: iconst_m1      
+                        //   205: if_icmpeq       260
+                        //   208: lload           6
+                        //   210: lstore          4
+                        //   212: aload_1        
+                        //   213: ifnull          260
+                        //   216: lload           6
+                        //   218: lstore          4
+                        //   220: aload_0        
+                        //   221: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   224: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mRefClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
+                        //   227: ifnull          260
+                        //   230: aload_1        
+                        //   231: getfield        android/media/MediaCodec$BufferInfo.presentationTimeUs:J
+                        //   234: ldc2_w          1000
+                        //   237: ldiv           
+                        //   238: lstore          8
+                        //   240: aload_0        
+                        //   241: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   244: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mRefClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
+                        //   247: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.get:()J
+                        //   250: lconst_0       
+                        //   251: lcmp           
+                        //   252: ifge            435
+                        //   255: ldc2_w          30
+                        //   258: lstore          4
+                        //   260: aload           15
+                        //   262: monitorexit    
+                        //   263: aload_0        
+                        //   264: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   267: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$800:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Z
+                        //   270: ifeq            350
+                        //   273: aload_0        
+                        //   274: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   277: iconst_1       
+                        //   278: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$402:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;Z)Z
+                        //   281: pop            
+                        //   282: ldc2_w          -1
+                        //   285: lstore          6
+                        //   287: lload           6
+                        //   289: lstore          4
+                        //   291: ldc             "MediaDecoder2Video"
+                        //   293: iconst_3       
+                        //   294: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
+                        //   297: ifeq            350
+                        //   300: ldc             "MediaDecoder2Video"
+                        //   302: new             Ljava/lang/StringBuilder;
+                        //   305: dup            
+                        //   306: invokespecial   java/lang/StringBuilder.<init>:()V
+                        //   309: ldc             "EOS: stopped, rendered frame "
+                        //   311: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+                        //   314: aload_0        
+                        //   315: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   318: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$600:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
+                        //   321: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+                        //   324: ldc             ",skipped frame "
+                        //   326: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+                        //   329: aload_0        
+                        //   330: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   333: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$700:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
+                        //   336: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+                        //   339: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+                        //   342: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+                        //   345: pop            
+                        //   346: lload           6
+                        //   348: lstore          4
+                        //   350: aload_0        
+                        //   351: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   354: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$400:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Z
+                        //   357: ifne            44
+                        //   360: lload           4
+                        //   362: ldc2_w          60
+                        //   365: lcmp           
+                        //   366: ifgt            380
+                        //   369: lload           4
+                        //   371: lstore          6
+                        //   373: lload           4
+                        //   375: lconst_0       
+                        //   376: lcmp           
+                        //   377: ifgt            420
+                        //   380: ldc             "MediaDecoder2Video"
+                        //   382: iconst_3       
+                        //   383: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
+                        //   386: ifeq            415
+                        //   389: ldc             "MediaDecoder2Video"
+                        //   391: new             Ljava/lang/StringBuilder;
+                        //   394: dup            
+                        //   395: invokespecial   java/lang/StringBuilder.<init>:()V
+                        //   398: ldc             "unexpect loop time "
+                        //   400: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+                        //   403: lload           4
+                        //   405: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+                        //   408: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+                        //   411: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+                        //   414: pop            
+                        //   415: ldc2_w          30
+                        //   418: lstore          6
+                        //   420: aload_0        
+                        //   421: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   424: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$900:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Landroid/os/Handler;
+                        //   427: iconst_1       
+                        //   428: lload           6
+                        //   430: invokevirtual   android/os/Handler.sendEmptyMessageDelayed:(IJ)Z
+                        //   433: pop            
+                        //   434: return         
+                        //   435: lload           8
+                        //   437: aload_0        
+                        //   438: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   441: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mRefClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
+                        //   444: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.get:()J
+                        //   447: lsub           
+                        //   448: lstore          12
+                        //   450: lload           12
+                        //   452: ldc2_w          -30
+                        //   455: lcmp           
+                        //   456: ifle            872
+                        //   459: iconst_1       
+                        //   460: istore_3       
+                        //   461: lload           12
+                        //   463: ldc2_w          20
+                        //   466: lcmp           
+                        //   467: ifge            1220
+                        //   470: lload           6
+                        //   472: lstore          4
+                        //   474: aload_0        
+                        //   475: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   478: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$300:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
+                        //   481: lconst_0       
+                        //   482: lcmp           
+                        //   483: ifle            523
+                        //   486: lload           8
+                        //   488: aload_0        
+                        //   489: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   492: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$300:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
+                        //   495: lsub           
+                        //   496: lstore          6
+                        //   498: lload           6
+                        //   500: ldc2_w          30
+                        //   503: lcmp           
+                        //   504: iflt            1316
+                        //   507: lload           6
+                        //   509: lstore          4
+                        //   511: lload           6
+                        //   513: ldc2_w          50
+                        //   516: lcmp           
+                        //   517: ifle            523
+                        //   520: goto            1316
+                        //   523: iload_3        
+                        //   524: ifeq            1343
+                        //   527: aload_0        
+                        //   528: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   531: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
+                        //   534: invokevirtual   java/util/LinkedList.removeFirst:()Ljava/lang/Object;
+                        //   537: pop            
+                        //   538: aload_0        
+                        //   539: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   542: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBufferInfo:[Landroid/media/MediaCodec$BufferInfo;
+                        //   545: iload_2        
+                        //   546: aconst_null    
+                        //   547: aastore        
+                        //   548: aload_0        
+                        //   549: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   552: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mDecoder:Landroid/media/MediaCodec;
+                        //   555: iload_2        
+                        //   556: iconst_1       
+                        //   557: invokevirtual   android/media/MediaCodec.releaseOutputBuffer:(IZ)V
+                        //   560: lload           4
+                        //   562: lload           12
+                        //   564: ladd           
+                        //   565: lstore          6
+                        //   567: lload           6
+                        //   569: ldc2_w          5
+                        //   572: lcmp           
+                        //   573: ifle            1324
+                        //   576: lload           6
+                        //   578: ldc2_w          5
+                        //   581: lsub           
+                        //   582: lstore          4
+                        //   584: aload_0        
+                        //   585: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   588: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$500:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Z
+                        //   591: ifne            611
+                        //   594: ldc             "MediaDecoder2Video"
+                        //   596: ldc             "first buffer to render"
+                        //   598: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+                        //   601: pop            
+                        //   602: aload_0        
+                        //   603: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   606: iconst_1       
+                        //   607: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$502:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;Z)Z
+                        //   610: pop            
+                        //   611: aload_0        
+                        //   612: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   615: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
+                        //   618: ifnull          643
+                        //   621: aload_0        
+                        //   622: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   625: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
+                        //   628: iconst_0       
+                        //   629: aload_0        
+                        //   630: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   633: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$600:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
+                        //   636: lload           8
+                        //   638: invokeinterface com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener.onSampleRendered:(ZJJ)V
+                        //   643: lload           8
+                        //   645: lstore          10
+                        //   647: aload_1        
+                        //   648: astore          14
+                        //   650: lload           4
+                        //   652: lstore          6
+                        //   654: lload           12
+                        //   656: ldc2_w          -20
+                        //   659: lcmp           
+                        //   660: ifge            755
+                        //   663: lload           8
+                        //   665: lstore          10
+                        //   667: aload_1        
+                        //   668: astore          14
+                        //   670: lload           4
+                        //   672: lstore          6
+                        //   674: ldc             "MediaDecoder2Video"
+                        //   676: iconst_3       
+                        //   677: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
+                        //   680: ifeq            755
+                        //   683: ldc             "MediaDecoder2Video"
+                        //   685: new             Ljava/lang/StringBuilder;
+                        //   688: dup            
+                        //   689: invokespecial   java/lang/StringBuilder.<init>:()V
+                        //   692: ldc             "STAT:rendered frame "
+                        //   694: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+                        //   697: aload_0        
+                        //   698: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   701: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$600:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
+                        //   704: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+                        //   707: ldc             " @"
+                        //   709: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+                        //   712: lload           8
+                        //   714: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+                        //   717: ldc             ", with delta "
+                        //   719: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+                        //   722: lload           12
+                        //   724: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+                        //   727: ldc             ", next after "
+                        //   729: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+                        //   732: lload           4
+                        //   734: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+                        //   737: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+                        //   740: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+                        //   743: pop            
+                        //   744: lload           4
+                        //   746: lstore          6
+                        //   748: aload_1        
+                        //   749: astore          14
+                        //   751: lload           8
+                        //   753: lstore          10
+                        //   755: aload_0        
+                        //   756: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   759: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$608:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
+                        //   762: pop2           
+                        //   763: aload_0        
+                        //   764: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   767: lload           10
+                        //   769: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$302:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;J)J
+                        //   772: pop2           
+                        //   773: lload           6
+                        //   775: lstore          4
+                        //   777: aload           14
+                        //   779: getfield        android/media/MediaCodec$BufferInfo.flags:I
+                        //   782: iconst_4       
+                        //   783: if_icmpne       260
+                        //   786: aload_0        
+                        //   787: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   790: iconst_1       
+                        //   791: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$402:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;Z)Z
+                        //   794: pop            
+                        //   795: ldc2_w          -1
+                        //   798: lstore          6
+                        //   800: lload           6
+                        //   802: lstore          4
+                        //   804: ldc             "MediaDecoder2Video"
+                        //   806: iconst_3       
+                        //   807: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
+                        //   810: ifeq            260
+                        //   813: ldc             "MediaDecoder2Video"
+                        //   815: new             Ljava/lang/StringBuilder;
+                        //   818: dup            
+                        //   819: invokespecial   java/lang/StringBuilder.<init>:()V
+                        //   822: ldc             "EOS: has flag, rendered frame "
+                        //   824: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+                        //   827: aload_0        
+                        //   828: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   831: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$600:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
+                        //   834: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+                        //   837: ldc             ",skipped frame "
+                        //   839: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+                        //   842: aload_0        
+                        //   843: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   846: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$700:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
+                        //   849: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+                        //   852: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+                        //   855: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+                        //   858: pop            
+                        //   859: lload           6
+                        //   861: lstore          4
+                        //   863: goto            260
+                        //   866: astore_1       
+                        //   867: aload           15
+                        //   869: monitorexit    
+                        //   870: aload_1        
+                        //   871: athrow         
+                        //   872: iconst_0       
+                        //   873: istore_3       
+                        //   874: goto            461
+                        //   877: astore          14
+                        //   879: ldc             "MediaDecoder2Video"
+                        //   881: ldc             "get un-documented exception as a result of releaseOutputBuffer()"
+                        //   883: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+                        //   886: pop            
+                        //   887: aload_0        
+                        //   888: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   891: iconst_1       
+                        //   892: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$402:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;Z)Z
+                        //   895: pop            
+                        //   896: goto            560
+                        //   899: aload_0        
+                        //   900: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   903: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
+                        //   906: invokevirtual   java/util/LinkedList.size:()I
+                        //   909: iconst_1       
+                        //   910: if_icmple       1035
+                        //   913: lload           8
+                        //   915: ldc2_w          -30
+                        //   918: lcmp           
+                        //   919: ifgt            1035
+                        //   922: aload_0        
+                        //   923: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   926: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
+                        //   929: invokevirtual   java/util/LinkedList.removeFirst:()Ljava/lang/Object;
+                        //   932: pop            
+                        //   933: aload_0        
+                        //   934: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   937: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBufferInfo:[Landroid/media/MediaCodec$BufferInfo;
+                        //   940: iload_2        
+                        //   941: aconst_null    
+                        //   942: aastore        
+                        //   943: aload_0        
+                        //   944: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   947: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mDecoder:Landroid/media/MediaCodec;
+                        //   950: iload_2        
+                        //   951: iconst_0       
+                        //   952: invokevirtual   android/media/MediaCodec.releaseOutputBuffer:(IZ)V
+                        //   955: aload_0        
+                        //   956: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   959: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
+                        //   962: invokevirtual   java/util/LinkedList.peekFirst:()Ljava/lang/Object;
+                        //   965: checkcast       Ljava/lang/Integer;
+                        //   968: invokevirtual   java/lang/Integer.intValue:()I
+                        //   971: istore_2       
+                        //   972: aload_0        
+                        //   973: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   976: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBufferInfo:[Landroid/media/MediaCodec$BufferInfo;
+                        //   979: iload_2        
+                        //   980: aaload         
+                        //   981: astore_1       
+                        //   982: aload_1        
+                        //   983: getfield        android/media/MediaCodec$BufferInfo.presentationTimeUs:J
+                        //   986: ldc2_w          1000
+                        //   989: ldiv           
+                        //   990: lstore          4
+                        //   992: lload           4
+                        //   994: aload_0        
+                        //   995: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //   998: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mRefClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
+                        //  1001: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.get:()J
+                        //  1004: lsub           
+                        //  1005: lstore          8
+                        //  1007: iload_3        
+                        //  1008: iconst_1       
+                        //  1009: iadd           
+                        //  1010: istore_3       
+                        //  1011: goto            899
+                        //  1014: astore_1       
+                        //  1015: ldc             "MediaDecoder2Video"
+                        //  1017: ldc             "get un-documented exception as a result of releaseOutputBuffer()"
+                        //  1019: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+                        //  1022: pop            
+                        //  1023: aload_0        
+                        //  1024: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //  1027: iconst_1       
+                        //  1028: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$402:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;Z)Z
+                        //  1031: pop            
+                        //  1032: goto            955
+                        //  1035: aload_0        
+                        //  1036: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //  1039: iload_3        
+                        //  1040: i2l            
+                        //  1041: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$614:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;J)J
+                        //  1044: pop2           
+                        //  1045: aload_0        
+                        //  1046: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //  1049: iload_3        
+                        //  1050: i2l            
+                        //  1051: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$714:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;J)J
+                        //  1054: pop2           
+                        //  1055: aload_0        
+                        //  1056: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //  1059: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
+                        //  1062: invokevirtual   java/util/LinkedList.removeFirst:()Ljava/lang/Object;
+                        //  1065: pop            
+                        //  1066: aload_0        
+                        //  1067: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //  1070: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBufferInfo:[Landroid/media/MediaCodec$BufferInfo;
+                        //  1073: iload_2        
+                        //  1074: aconst_null    
+                        //  1075: aastore        
+                        //  1076: aload_0        
+                        //  1077: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //  1080: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mDecoder:Landroid/media/MediaCodec;
+                        //  1083: iload_2        
+                        //  1084: iconst_1       
+                        //  1085: invokevirtual   android/media/MediaCodec.releaseOutputBuffer:(IZ)V
+                        //  1088: ldc2_w          10
+                        //  1091: lstore          12
+                        //  1093: lload           4
+                        //  1095: lstore          10
+                        //  1097: aload_1        
+                        //  1098: astore          14
+                        //  1100: lload           12
+                        //  1102: lstore          6
+                        //  1104: ldc             "MediaDecoder2Video"
+                        //  1106: iconst_3       
+                        //  1107: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
+                        //  1110: ifeq            755
+                        //  1113: ldc             "MediaDecoder2Video"
+                        //  1115: new             Ljava/lang/StringBuilder;
+                        //  1118: dup            
+                        //  1119: invokespecial   java/lang/StringBuilder.<init>:()V
+                        //  1122: ldc             "STAT:REND frame "
+                        //  1124: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+                        //  1127: aload_0        
+                        //  1128: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //  1131: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$600:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)J
+                        //  1134: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+                        //  1137: ldc             " skipped "
+                        //  1139: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+                        //  1142: iload_3        
+                        //  1143: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+                        //  1146: ldc             " @"
+                        //  1148: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+                        //  1151: lload           4
+                        //  1153: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+                        //  1156: ldc             ", with delta "
+                        //  1158: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+                        //  1161: lload           8
+                        //  1163: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+                        //  1166: ldc             ", next after "
+                        //  1168: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+                        //  1171: ldc2_w          10
+                        //  1174: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+                        //  1177: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+                        //  1180: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+                        //  1183: pop            
+                        //  1184: lload           4
+                        //  1186: lstore          10
+                        //  1188: aload_1        
+                        //  1189: astore          14
+                        //  1191: lload           12
+                        //  1193: lstore          6
+                        //  1195: goto            755
+                        //  1198: astore          14
+                        //  1200: ldc             "MediaDecoder2Video"
+                        //  1202: ldc             "get un-documented exception as a result of releaseOutputBuffer()"
+                        //  1204: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+                        //  1207: pop            
+                        //  1208: aload_0        
+                        //  1209: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //  1212: iconst_1       
+                        //  1213: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$402:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;Z)Z
+                        //  1216: pop            
+                        //  1217: goto            1088
+                        //  1220: lload           12
+                        //  1222: ldc2_w          5
+                        //  1225: lsub           
+                        //  1226: lstore          6
+                        //  1228: lload           6
+                        //  1230: lstore          4
+                        //  1232: lload           6
+                        //  1234: ldc2_w          50
+                        //  1237: lcmp           
+                        //  1238: ifle            260
+                        //  1241: ldc2_w          50
+                        //  1244: lstore          4
+                        //  1246: goto            260
+                        //  1249: ldc             "MediaDecoder2Video"
+                        //  1251: ldc             "render state flushing"
+                        //  1253: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+                        //  1256: pop            
+                        //  1257: aload_0        
+                        //  1258: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //  1261: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
+                        //  1264: astore_1       
+                        //  1265: aload_1        
+                        //  1266: monitorenter   
+                        //  1267: aload_0        
+                        //  1268: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //  1271: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.mOutputBuffersQ:Ljava/util/LinkedList;
+                        //  1274: invokevirtual   java/util/LinkedList.clear:()V
+                        //  1277: aload_1        
+                        //  1278: monitorexit    
+                        //  1279: aload_0        
+                        //  1280: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //  1283: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$1000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
+                        //  1286: astore_1       
+                        //  1287: aload_1        
+                        //  1288: monitorenter   
+                        //  1289: aload_0        
+                        //  1290: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;
+                        //  1293: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Video.access$1000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Video;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
+                        //  1296: invokevirtual   java/lang/Object.notify:()V
+                        //  1299: aload_1        
+                        //  1300: monitorexit    
+                        //  1301: return         
+                        //  1302: astore          14
+                        //  1304: aload_1        
+                        //  1305: monitorexit    
+                        //  1306: aload           14
+                        //  1308: athrow         
+                        //  1309: astore          14
+                        //  1311: aload_1        
+                        //  1312: monitorexit    
+                        //  1313: aload           14
+                        //  1315: athrow         
+                        //  1316: ldc2_w          30
+                        //  1319: lstore          4
+                        //  1321: goto            523
+                        //  1324: lload           6
+                        //  1326: lstore          4
+                        //  1328: lload           6
+                        //  1330: lconst_0       
+                        //  1331: lcmp           
+                        //  1332: ifge            584
+                        //  1335: ldc2_w          10
+                        //  1338: lstore          4
+                        //  1340: goto            584
+                        //  1343: iconst_0       
+                        //  1344: istore_3       
+                        //  1345: lload           8
+                        //  1347: lstore          4
+                        //  1349: lload           12
+                        //  1351: lstore          8
+                        //  1353: goto            899
+                        //    Exceptions:
+                        //  Try           Handler
+                        //  Start  End    Start  End    Type                 
+                        //  -----  -----  -----  -----  ---------------------
+                        //  100    113    866    872    Any
+                        //  118    155    866    872    Any
+                        //  159    199    866    872    Any
+                        //  220    255    866    872    Any
+                        //  260    263    866    872    Any
+                        //  435    450    866    872    Any
+                        //  474    498    866    872    Any
+                        //  527    548    866    872    Any
+                        //  548    560    877    899    Ljava/lang/Exception;
+                        //  548    560    866    872    Any
+                        //  584    611    866    872    Any
+                        //  611    643    866    872    Any
+                        //  674    744    866    872    Any
+                        //  755    773    866    872    Any
+                        //  777    795    866    872    Any
+                        //  804    859    866    872    Any
+                        //  867    870    866    872    Any
+                        //  879    896    866    872    Any
+                        //  899    913    866    872    Any
+                        //  922    943    866    872    Any
+                        //  943    955    1014   1035   Ljava/lang/Exception;
+                        //  943    955    866    872    Any
+                        //  955    1007   866    872    Any
+                        //  1015   1032   866    872    Any
+                        //  1035   1076   866    872    Any
+                        //  1076   1088   1198   1220   Ljava/lang/Exception;
+                        //  1076   1088   866    872    Any
+                        //  1104   1184   866    872    Any
+                        //  1200   1217   866    872    Any
+                        //  1267   1279   1309   1316   Any
+                        //  1289   1301   1302   1309   Any
+                        //  1304   1306   1302   1309   Any
+                        //  1311   1313   1309   1316   Any
+                        // 
+                        // The error that occurred was:
+                        // 
+                        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0560:
+                        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+                        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+                        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+                        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+                        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+                        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+                        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+                        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+                        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+                        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+                        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+                        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+                        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformCall(AstMethodBodyBuilder.java:1163)
+                        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformByteCode(AstMethodBodyBuilder.java:1010)
+                        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformExpression(AstMethodBodyBuilder.java:540)
+                        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformByteCode(AstMethodBodyBuilder.java:554)
+                        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformExpression(AstMethodBodyBuilder.java:540)
+                        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformNode(AstMethodBodyBuilder.java:392)
+                        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformBlock(AstMethodBodyBuilder.java:333)
+                        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformNode(AstMethodBodyBuilder.java:494)
+                        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformBlock(AstMethodBodyBuilder.java:333)
+                        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:294)
+                        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+                        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+                        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+                        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+                        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+                        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+                        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+                        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+                        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+                        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+                        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+                        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+                        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+                        // 
+                        throw new IllegalStateException("An error occurred while decompiling this method.");
+                    }
+                };
+            }
+            catch (NoSuchMethodException ex) {
+                Log.d("MediaDecoder2Video", "no timed buffer release, use regular method");
+                continue;
+            }
+            break;
+        }
     }
     
     @Override
@@ -819,6 +954,9 @@ public class MediaDecoder2Video extends MediaDecoderPipe2
     @Override
     void unpauseRenderer() {
         this.mPaused = false;
+        if (this.isTimedReleaseSupported()) {
+            this.mHandler.sendEmptyMessage(1);
+        }
     }
     
     private class RenderHeartbeat

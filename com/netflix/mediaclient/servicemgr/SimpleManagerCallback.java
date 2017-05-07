@@ -37,6 +37,10 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     }
     
     @Override
+    public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final int n) {
+    }
+    
+    @Override
     public void onLoLoMoPrefetched(final int n) {
     }
     

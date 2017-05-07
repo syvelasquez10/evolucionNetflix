@@ -4,160 +4,55 @@
 
 package com.google.android.gms.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a;
+import android.os.Parcelable;
+import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
-import java.util.List;
-import java.util.ArrayList;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import android.os.Parcelable$Creator;
 
-public class gh implements SafeParcelable, Cloneable
+public class gh implements Parcelable$Creator<gg>
 {
-    public static final gi CREATOR;
-    private final int kg;
-    private final boolean xK;
-    private final boolean xL;
-    private final boolean xM;
-    private final boolean xN;
-    private final ArrayList<el> xO;
-    
-    static {
-        CREATOR = new gi();
+    static void a(final gg gg, final Parcel parcel, final int n) {
+        final int p3 = b.p(parcel);
+        b.c(parcel, 1, gg.getVersionCode());
+        b.a(parcel, 2, gg.fq(), false);
+        b.a(parcel, 3, (Parcelable)gg.fr(), n, false);
+        b.F(parcel, p3);
     }
     
-    public gh(final int kg, final boolean xk, final boolean xl, final boolean xm, final boolean xn, final ArrayList<el> xo) {
-        this.kg = kg;
-        this.xK = xk;
-        this.xL = xl;
-        this.xM = xm;
-        this.xN = xn;
-        this.xO = xo;
+    public gg[] Z(final int n) {
+        return new gg[n];
     }
     
-    public Object clone() {
-        final int kg = this.kg;
-        final boolean xk = this.xK;
-        final boolean xl = this.xL;
-        final boolean xm = this.xM;
-        final boolean xn = this.xN;
-        ArrayList<el> list;
-        if (this.xO == null) {
-            list = null;
-        }
-        else {
-            list = (ArrayList<el>)this.xO.clone();
-        }
-        return new gh(kg, xk, xl, xm, xn, list);
-    }
-    
-    public boolean dD() {
-        return this.xL;
-    }
-    
-    public boolean dE() {
-        return this.xM;
-    }
-    
-    public boolean dF() {
-        return this.xN;
-    }
-    
-    public List<el> dG() {
-        return this.xO;
-    }
-    
-    public int describeContents() {
-        final gi creator = gh.CREATOR;
-        return 0;
-    }
-    
-    @Override
-    public boolean equals(final Object o) {
-        if (this != o) {
-            if (o == null) {
-                return false;
-            }
-            if (this.getClass() != o.getClass()) {
-                return false;
-            }
-            final gh gh = (gh)o;
-            if (this.xO == null) {
-                if (gh.xO != null) {
-                    return false;
+    public gg x(final Parcel parcel) {
+        gd gd = null;
+        final int o = a.o(parcel);
+        int g = 0;
+        Parcel b = null;
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
+                default: {
+                    a.b(parcel, n);
+                    continue;
+                }
+                case 1: {
+                    g = a.g(parcel, n);
+                    continue;
+                }
+                case 2: {
+                    b = a.B(parcel, n);
+                    continue;
+                }
+                case 3: {
+                    gd = a.a(parcel, n, (android.os.Parcelable$Creator<gd>)com.google.android.gms.internal.gd.CREATOR);
+                    continue;
                 }
             }
-            else if (!this.xO.equals(gh.xO)) {
-                return false;
-            }
-            if (this.xK != gh.xK) {
-                return false;
-            }
-            if (this.xL != gh.xL) {
-                return false;
-            }
-            if (this.xN != gh.xN) {
-                return false;
-            }
-            if (this.xM != gh.xM) {
-                return false;
-            }
-            if (this.kg != gh.kg) {
-                return false;
-            }
         }
-        return true;
-    }
-    
-    public int getVersionCode() {
-        return this.kg;
-    }
-    
-    @Override
-    public int hashCode() {
-        int n = 1231;
-        int hashCode;
-        if (this.xO == null) {
-            hashCode = 0;
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        else {
-            hashCode = this.xO.hashCode();
-        }
-        int n2;
-        if (this.xK) {
-            n2 = 1231;
-        }
-        else {
-            n2 = 1237;
-        }
-        int n3;
-        if (this.xL) {
-            n3 = 1231;
-        }
-        else {
-            n3 = 1237;
-        }
-        int n4;
-        if (this.xN) {
-            n4 = 1231;
-        }
-        else {
-            n4 = 1237;
-        }
-        if (!this.xM) {
-            n = 1237;
-        }
-        return ((n4 + (n3 + (n2 + (hashCode + 31) * 31) * 31) * 31) * 31 + n) * 31 + this.kg;
-    }
-    
-    public boolean isEnabled() {
-        return this.xK;
-    }
-    
-    @Override
-    public String toString() {
-        return "CopresenceSettings [mVersionCode=" + this.kg + ", mEnabled=" + this.xK + "," + "mAcl={" + this.xO.toArray() + "}," + ", mNotifiedForNonAcl=" + this.xM + "]";
-    }
-    
-    public void writeToParcel(final Parcel parcel, final int n) {
-        final gi creator = gh.CREATOR;
-        gi.a(this, parcel, n);
+        return new gg(g, b, gd);
     }
 }

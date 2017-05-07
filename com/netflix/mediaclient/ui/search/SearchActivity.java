@@ -14,6 +14,8 @@ import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.app.ActionBar;
+import java.io.Serializable;
+import com.netflix.mediaclient.ui.kids.search.KidsSearchActivity;
 import android.content.Intent;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.SearchResults;
@@ -44,7 +46,7 @@ public class SearchActivity extends NetflixActivity
     private ViewGroup fragGroup;
     private final Runnable handleQueryUpdateRunnable;
     private boolean isLoading;
-    private LoadingAndErrorWrapper leWrapper;
+    protected LoadingAndErrorWrapper leWrapper;
     private Runnable pendingAction;
     private String query;
     private long requestId;
@@ -85,8 +87,15 @@ public class SearchActivity extends NetflixActivity
         };
     }
     
-    public static Intent create(final Context context) {
-        return new Intent(context, (Class)SearchActivity.class).setAction("android.intent.action.VIEW");
+    public static Intent create(final NetflixActivity netflixActivity) {
+        Serializable s;
+        if (netflixActivity.isForKids()) {
+            s = KidsSearchActivity.class;
+        }
+        else {
+            s = SearchActivity.class;
+        }
+        return new Intent((Context)netflixActivity, (Class)s).setAction("android.intent.action.VIEW");
     }
     
     private void handleNewIntent(final Intent intent) {
@@ -125,19 +134,19 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void showEmpty() {
-        this.leWrapper.showErrorView(2131296597, false, false);
+        this.leWrapper.showErrorView(2131493216, false, false);
         this.fragGroup.setVisibility(4);
         this.searchBar.hideProgressSpinner();
     }
     
     private void showError() {
-        this.leWrapper.showErrorView(2131296596, true, false);
+        this.leWrapper.showErrorView(2131493215, true, false);
         this.fragGroup.setVisibility(4);
         this.searchBar.hideProgressSpinner();
     }
     
     private void showInitState() {
-        this.leWrapper.showErrorView(2131296579, false, false);
+        this.leWrapper.showErrorView(this.getInitMessageStringId(), false, false);
         this.fragGroup.setVisibility(4);
         this.searchBar.hideProgressSpinner();
     }
@@ -150,9 +159,7 @@ public class SearchActivity extends NetflixActivity
     
     @Override
     protected NetflixActionBar createActionBar(final ActionBar actionBar) {
-        (this.searchBar = new SearchActionBar(this, actionBar, this.createUpActionRunnable())).setOnQueryTextListener(this.searchQueryTextListener);
-        this.searchBar.hide();
-        return this.searchBar;
+        return new SearchActionBar(this, actionBar, this.createUpActionRunnable());
     }
     
     @Override
@@ -173,6 +180,10 @@ public class SearchActivity extends NetflixActivity
         };
     }
     
+    protected int getInitMessageStringId() {
+        return 2131493198;
+    }
+    
     @Override
     public IClientLogging.ModalView getUiScreen() {
         return IClientLogging.ModalView.search;
@@ -185,13 +196,15 @@ public class SearchActivity extends NetflixActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
+        (this.searchBar = (SearchActionBar)this.getNetflixActionBar()).setOnQueryTextListener(this.searchQueryTextListener);
         this.searchBar.hideProgressSpinner();
-        this.setContentView(2130903142);
-        (this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131231066), this.errorsCallback)).hide(false);
-        this.fragGroup = (ViewGroup)this.findViewById(2131231067);
+        this.searchBar.hide();
+        this.setContentView(2130903150);
+        (this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165550), this.errorsCallback)).hide(false);
+        this.fragGroup = (ViewGroup)this.findViewById(2131165551);
         if (bundle == null) {
             this.resultsFrag = SearchResultsFrag.create();
-            this.getFragmentManager().beginTransaction().add(2131231067, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131165551, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
         }
         else {

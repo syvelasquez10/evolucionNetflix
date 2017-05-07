@@ -26,20 +26,20 @@ public class FetchEpisodesRequest extends FalcorVolleyWebClientRequest<List<Epis
     private static final String FIELD_VIDEOS = "videos";
     private static final String TAG = "nf_service_browse_fetchepisodesrequest";
     private final int fromEpisodes;
-    private final String mSeasonsId;
+    private final String mVideoId;
     private final String pqlQuery;
     private final BrowseAgentCallback responseCallback;
     private final int toEpisodes;
     private final boolean userConnectedToFacebook;
     
-    public FetchEpisodesRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String mSeasonsId, final int fromEpisodes, final int toEpisodes, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
+    public FetchEpisodesRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String mVideoId, final int fromEpisodes, final int toEpisodes, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
         super(context, configurationAgentInterface);
         this.responseCallback = responseCallback;
-        this.mSeasonsId = mSeasonsId;
+        this.mVideoId = mVideoId;
         this.fromEpisodes = fromEpisodes;
         this.toEpisodes = toEpisodes;
         this.userConnectedToFacebook = userConnectedToFacebook;
-        this.pqlQuery = "['videos', '" + this.mSeasonsId + "', 'episodes', {'to':" + toEpisodes + ",'from':" + fromEpisodes + "},['detail', 'summary', 'bookmark']]";
+        this.pqlQuery = "['videos', '" + this.mVideoId + "', 'episodes', {'to':" + toEpisodes + ",'from':" + fromEpisodes + "},['detail', 'summary', 'bookmark']]";
         if (Log.isLoggable("nf_service_browse_fetchepisodesrequest", 2)) {
             Log.v("nf_service_browse_fetchepisodesrequest", "PQL = " + this.pqlQuery);
         }
@@ -75,7 +75,7 @@ public class FetchEpisodesRequest extends FalcorVolleyWebClientRequest<List<Epis
                     int n = 0;
                     Label_0235: {
                         try {
-                            final JsonObject asJsonObject2 = dataObj.getAsJsonObject("videos").getAsJsonObject(this.mSeasonsId);
+                            final JsonObject asJsonObject2 = dataObj.getAsJsonObject("videos").getAsJsonObject(this.mVideoId);
                             if (asJsonObject2.has("episodes")) {
                                 asJsonObject = asJsonObject2.getAsJsonObject("episodes");
                             }

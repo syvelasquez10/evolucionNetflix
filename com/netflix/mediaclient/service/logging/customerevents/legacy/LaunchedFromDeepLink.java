@@ -20,15 +20,17 @@ public class LaunchedFromDeepLink extends BaseCustomerEvent implements Runnable
     private static final String NAME = "Mobile UI Launched from Deeplink";
     private String mAction;
     private Context mContext;
+    private String mDeeplinkParams;
     private String mSource;
     
-    public LaunchedFromDeepLink(final Context mContext, final UserData userData, final String mSource, final String s) {
+    public LaunchedFromDeepLink(final Context mContext, final UserData userData, final String mSource, final String s, final String mDeeplinkParams) {
         super(userData);
         this.mContext = mContext;
         this.mSource = mSource;
+        this.mDeeplinkParams = mDeeplinkParams;
     }
     
-    private JSONArray getEvents(final String s, final CommonRequestParameters commonRequestParameters, final AuthorizationCredentials authorizationCredentials) throws JSONException {
+    private JSONArray getEvents(final String s, final CommonRequestParameters commonRequestParameters, final AuthorizationCredentials authorizationCredentials, final String s2) throws JSONException {
         final JSONArray jsonArray = new JSONArray();
         final JSONObject jsonObject = new JSONObject();
         jsonArray.put((Object)jsonObject);
@@ -36,7 +38,7 @@ public class LaunchedFromDeepLink extends BaseCustomerEvent implements Runnable
         jsonObject.put("EventName", (Object)"Mobile UI Launched from Deeplink");
         jsonObject.put("EventTime", currentTimeMillis);
         jsonObject.put("Esn", (Object)s);
-        final JSONObject event = this.getEvent(s, commonRequestParameters, authorizationCredentials, currentTimeMillis);
+        final JSONObject event = this.getEvent(s, commonRequestParameters, authorizationCredentials, currentTimeMillis, s2);
         jsonObject.put("data", (Object)event);
         BaseCustomerEvent.addIfNotNull(event, "source", this.mSource);
         BaseCustomerEvent.addIfNotNull(event, "action", this.mAction);
@@ -47,7 +49,7 @@ public class LaunchedFromDeepLink extends BaseCustomerEvent implements Runnable
     public void run() {
         try {
             final AuthorizationCredentials authorizationCredentials = new AuthorizationCredentials(this.mUser.netflixId, this.mUser.secureNetflixId);
-            final CustomerEventCommand customerEventCommand = new CustomerEventCommand(this.mUser.esn, authorizationCredentials, this.getEvents(this.mUser.esn, this.getCommonRequestParameters(this.mContext), authorizationCredentials).toString());
+            final CustomerEventCommand customerEventCommand = new CustomerEventCommand(this.mUser.esn, authorizationCredentials, this.getEvents(this.mUser.esn, this.getCommonRequestParameters(this.mContext), authorizationCredentials, this.mDeeplinkParams).toString());
             Log.d("nf_rest", "Executing LaunchedFromDeepLink WebAPI call start");
             final String execute = customerEventCommand.execute();
             Log.d("nf_rest", "Executing LaunchedFromDeepLink WebAPI call done");

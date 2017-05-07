@@ -13,7 +13,7 @@ import com.netflix.mediaclient.servicemgr.CWVideo;
 public class CwViewGroup extends VideoViewGroup<CWVideo, CwView>
 {
     public CwViewGroup(final Context context) {
-        super(context);
+        super(context, true);
     }
     
     @Override
@@ -23,11 +23,6 @@ public class CwViewGroup extends VideoViewGroup<CWVideo, CwView>
     
     @Override
     protected boolean shouldApplyPaddingToChildren() {
-        return true;
-    }
-    
-    @Override
-    protected boolean shouldOverlapPages() {
         return true;
     }
     

@@ -4,6 +4,9 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-public interface GenreList extends BasicInfo
+public interface GenreList extends BasicLoMo
 {
+    int getNumVideos();
+    
+    boolean isKidsGenre();
 }

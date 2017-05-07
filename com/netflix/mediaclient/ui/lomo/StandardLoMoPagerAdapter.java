@@ -13,8 +13,8 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 
 public class StandardLoMoPagerAdapter extends ProgressiveLoMoPagerAdapter
 {
-    public StandardLoMoPagerAdapter(final ServiceManager serviceManager, final PagerAdapterCallbacks pagerAdapterCallbacks, final ViewRecycler viewRecycler) {
-        super(serviceManager, pagerAdapterCallbacks, viewRecycler);
+    public StandardLoMoPagerAdapter(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ViewRecycler viewRecycler) {
+        super(serviceManager, rowAdapterCallbacks, viewRecycler);
     }
     
     @Override

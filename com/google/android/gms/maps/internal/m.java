@@ -8,23 +8,28 @@ import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
 import android.os.RemoteException;
+import com.google.android.gms.maps.model.internal.f;
 import android.os.IInterface;
 
 public interface m extends IInterface
 {
-    boolean onMyLocationButtonClick() throws RemoteException;
+    void b(final f p0) throws RemoteException;
+    
+    void c(final f p0) throws RemoteException;
+    
+    void d(final f p0) throws RemoteException;
     
     public abstract static class a extends Binder implements m
     {
         public a() {
-            this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnMyLocationButtonClickListener");
+            this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnMarkerDragListener");
         }
         
-        public static m ae(final IBinder binder) {
+        public static m ap(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.maps.internal.IOnMyLocationButtonClickListener");
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.maps.internal.IOnMarkerDragListener");
             if (queryLocalInterface != null && queryLocalInterface instanceof m) {
                 return (m)queryLocalInterface;
             }
@@ -35,26 +40,31 @@ public interface m extends IInterface
             return (IBinder)this;
         }
         
-        public boolean onTransact(int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
             switch (n) {
                 default: {
                     return super.onTransact(n, parcel, parcel2, n2);
                 }
                 case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.maps.internal.IOnMyLocationButtonClickListener");
+                    parcel2.writeString("com.google.android.gms.maps.internal.IOnMarkerDragListener");
                     return true;
                 }
                 case 1: {
-                    parcel.enforceInterface("com.google.android.gms.maps.internal.IOnMyLocationButtonClickListener");
-                    final boolean onMyLocationButtonClick = this.onMyLocationButtonClick();
+                    parcel.enforceInterface("com.google.android.gms.maps.internal.IOnMarkerDragListener");
+                    this.b(f.a.aG(parcel.readStrongBinder()));
                     parcel2.writeNoException();
-                    if (onMyLocationButtonClick) {
-                        n = 1;
-                    }
-                    else {
-                        n = 0;
-                    }
-                    parcel2.writeInt(n);
+                    return true;
+                }
+                case 2: {
+                    parcel.enforceInterface("com.google.android.gms.maps.internal.IOnMarkerDragListener");
+                    this.d(f.a.aG(parcel.readStrongBinder()));
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 3: {
+                    parcel.enforceInterface("com.google.android.gms.maps.internal.IOnMarkerDragListener");
+                    this.c(f.a.aG(parcel.readStrongBinder()));
+                    parcel2.writeNoException();
                     return true;
                 }
             }
@@ -62,29 +72,78 @@ public interface m extends IInterface
         
         private static class a implements m
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
             }
             
             public IBinder asBinder() {
-                return this.dU;
+                return this.kn;
             }
             
             @Override
-            public boolean onMyLocationButtonClick() throws RemoteException {
-                boolean b = true;
+            public void b(final f f) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IOnMyLocationButtonClickListener");
-                    this.dU.transact(1, obtain, obtain2, 0);
-                    obtain2.readException();
-                    if (obtain2.readInt() == 0) {
-                        b = false;
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IOnMarkerDragListener");
+                    IBinder binder;
+                    if (f != null) {
+                        binder = f.asBinder();
                     }
-                    return b;
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    this.kn.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void c(final f f) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IOnMarkerDragListener");
+                    IBinder binder;
+                    if (f != null) {
+                        binder = f.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    this.kn.transact(3, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void d(final f f) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IOnMarkerDragListener");
+                    IBinder binder;
+                    if (f != null) {
+                        binder = f.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    this.kn.transact(2, obtain, obtain2, 0);
+                    obtain2.readException();
                 }
                 finally {
                     obtain2.recycle();

@@ -49,6 +49,7 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
     
     protected FalcorVolleyWebClientRequest(final Context mContext, final ServiceAgent.ConfigurationAgentInterface mConfig) {
         super(0);
+        this.mServerExecTimeInMs = -1L;
         this.mUuid = UUID.randomUUID();
         this.mConfig = mConfig;
         this.mContext = mContext;
@@ -181,6 +182,10 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
         }
     }
     
+    protected ServiceAgent.ConfigurationAgentInterface getConfig() {
+        return this.mConfig;
+    }
+    
     Context getContext() {
         return this.mContext;
     }
@@ -232,7 +237,7 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
         sb.append(StringUtils.buildUnencodedUrlParam("method", this.getMethodType()));
         sb.append(rawPQLQuery);
         final String optionalParams = this.getOptionalParams();
-        if (this.getMethodType().endsWith("call") && optionalParams != null) {
+        if (StringUtils.isNotEmpty(optionalParams)) {
             sb.append(optionalParams);
         }
         this.storeReqNetflixId(this.getCurrentNetflixId());

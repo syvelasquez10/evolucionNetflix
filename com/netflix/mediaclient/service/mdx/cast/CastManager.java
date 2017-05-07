@@ -14,22 +14,20 @@ import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
 import com.google.android.gms.cast.CastDevice;
 import java.util.ArrayList;
+import org.json.JSONArray;
 import android.support.v7.media.MediaRouteSelector;
 import android.os.Handler;
 import java.util.List;
 import android.content.Context;
-import org.json.JSONArray;
 import android.support.v7.media.MediaRouter;
 
 public class CastManager extends Callback implements MdxCastApplicaCallback
 {
     private static final String CAST_SERVICE_PREFIX = "CastMediaRouteProviderService:";
-    static final String NETFLIX_NAMESPACE = "urn:mdx-netflix-com:service:target:2";
+    static final String NETFLIX_NAMESPACE = "urn:x-cast:mdx-netflix-com:service:target:2";
     private static final String NF_APPID = "CA5E8412";
     private static final String TAG;
-    private static final String mFakeUrl = "cast://192.168.1.107";
     private String mApplicationId;
-    private JSONArray mBlackList;
     private Context mContext;
     private boolean mForceLaunch;
     private List<RouteInfo> mListOfRoutes;
@@ -39,6 +37,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     private MdxCastApplication mSelectedMdxCastApp;
     private RouteInfo mSelectedRoute;
     private String mTargetId;
+    private JSONArray mWhiteList;
     
     static {
         TAG = CastManager.class.getSimpleName();
@@ -129,11 +128,11 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
         return s.substring(s.indexOf("CastMediaRouteProviderService:") + "CastMediaRouteProviderService:".length());
     }
     
-    private boolean isCastDeviceBlackListed(final CastDevice castDevice) {
-        if (this.mBlackList != null) {
-            for (int i = 0; i < this.mBlackList.length(); ++i) {
-                if (this.mBlackList.opt(i) instanceof JSONObject) {
-                    final String optString = ((JSONObject)this.mBlackList.opt(i)).optString("modelName");
+    private boolean isCastDeviceWhiteListed(final CastDevice castDevice) {
+        if (this.mWhiteList != null) {
+            for (int i = 0; i < this.mWhiteList.length(); ++i) {
+                if (this.mWhiteList.opt(i) instanceof JSONObject) {
+                    final String optString = ((JSONObject)this.mWhiteList.opt(i)).optString("modelName");
                     final String modelName = castDevice.getModelName();
                     if (StringUtils.isNotEmpty(optString) && optString.equalsIgnoreCase(modelName)) {
                         return true;
@@ -349,8 +348,8 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
             this.logCastDevice(routeInfo);
         }
         final CastDevice fromBundle = CastDevice.getFromBundle(routeInfo.getExtras());
-        if (fromBundle == null || this.isCastDeviceBlackListed(fromBundle)) {
-            Log.d(CastManager.TAG, "device is blacklisted");
+        if (fromBundle == null || !this.isCastDeviceWhiteListed(fromBundle)) {
+            Log.d(CastManager.TAG, "device is not whitelisted");
             return;
         }
         this.mListOfRoutes.add(routeInfo);
@@ -425,11 +424,11 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
         this.sendCastMessage(this.createCastMessage(s));
     }
     
-    public void setCastBlackList(final JSONArray mBlackList) {
+    public void setCastWhiteList(final JSONArray mWhiteList) {
         if (Log.isLoggable(CastManager.TAG, 3)) {
-            Log.d(CastManager.TAG, "setCastBlackList: " + mBlackList);
+            Log.d(CastManager.TAG, "setCastWhiteList: " + mWhiteList);
         }
-        this.mBlackList = mBlackList;
+        this.mWhiteList = mWhiteList;
     }
     
     public void setTargetId(final String mTargetId) {
@@ -447,7 +446,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
         this.mMainHandler.post((Runnable)new Runnable() {
             @Override
             public void run() {
-                new ArrayList<String>().add("urn:mdx-netflix-com:service:target:2");
+                new ArrayList<String>().add("urn:x-cast:mdx-netflix-com:service:target:2");
                 CastManager.this.mMediaRouter = MediaRouter.getInstance(CastManager.this.mContext);
                 try {
                     CastManager.this.mMediaRouteSelector = new MediaRouteSelector.Builder().addControlCategory(CastMediaControlIntent.categoryForCast(CastManager.this.mApplicationId)).build();

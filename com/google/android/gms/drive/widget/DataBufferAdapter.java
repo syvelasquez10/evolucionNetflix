@@ -12,21 +12,21 @@ import android.view.ViewGroup;
 import android.view.View;
 import java.util.Arrays;
 import java.util.ArrayList;
+import android.content.Context;
 import android.view.LayoutInflater;
 import com.google.android.gms.common.data.DataBuffer;
 import java.util.List;
-import android.content.Context;
 import android.widget.BaseAdapter;
 
 public class DataBufferAdapter<T> extends BaseAdapter
 {
+    private final int Hd;
+    private int He;
+    private final int Hf;
+    private final List<DataBuffer<T>> Hg;
+    private final LayoutInflater Hh;
+    private boolean Hi;
     private final Context mContext;
-    private final int sm;
-    private int sn;
-    private final int so;
-    private final List<DataBuffer<T>> sp;
-    private final LayoutInflater sq;
-    private boolean sr;
     
     public DataBufferAdapter(final Context context, final int n) {
         this(context, n, 0, (List)new ArrayList());
@@ -36,14 +36,14 @@ public class DataBufferAdapter<T> extends BaseAdapter
         this(context, n, n2, (List)new ArrayList());
     }
     
-    public DataBufferAdapter(final Context mContext, final int n, final int so, final List<DataBuffer<T>> sp) {
-        this.sr = true;
+    public DataBufferAdapter(final Context mContext, final int n, final int hf, final List<DataBuffer<T>> hg) {
+        this.Hi = true;
         this.mContext = mContext;
-        this.sn = n;
-        this.sm = n;
-        this.so = so;
-        this.sp = sp;
-        this.sq = (LayoutInflater)mContext.getSystemService("layout_inflater");
+        this.He = n;
+        this.Hd = n;
+        this.Hf = hf;
+        this.Hg = hg;
+        this.Hh = (LayoutInflater)mContext.getSystemService("layout_inflater");
     }
     
     public DataBufferAdapter(final Context context, final int n, final int n2, final DataBuffer<T>... array) {
@@ -65,14 +65,14 @@ public class DataBufferAdapter<T> extends BaseAdapter
             if (inflate != null) {
                 break Label_0054;
             }
-            inflate = this.sq.inflate(n2, viewGroup, false);
+            inflate = this.Hh.inflate(n2, viewGroup, false);
             try {
                 while (true) {
-                    if (this.so == 0) {
+                    if (this.Hf == 0) {
                         textView = (TextView)inflate;
                     }
                     else {
-                        textView = (TextView)inflate.findViewById(this.so);
+                        textView = (TextView)inflate.findViewById(this.Hf);
                     }
                     item = this.getItem(n);
                     if (item instanceof CharSequence) {
@@ -93,19 +93,19 @@ public class DataBufferAdapter<T> extends BaseAdapter
     }
     
     public void append(final DataBuffer<T> dataBuffer) {
-        this.sp.add(dataBuffer);
-        if (this.sr) {
+        this.Hg.add(dataBuffer);
+        if (this.Hi) {
             this.notifyDataSetChanged();
         }
     }
     
     public void clear() {
-        final Iterator<DataBuffer<T>> iterator = this.sp.iterator();
+        final Iterator<DataBuffer<T>> iterator = this.Hg.iterator();
         while (iterator.hasNext()) {
             iterator.next().close();
         }
-        this.sp.clear();
-        if (this.sr) {
+        this.Hg.clear();
+        if (this.Hi) {
             this.notifyDataSetChanged();
         }
     }
@@ -115,7 +115,7 @@ public class DataBufferAdapter<T> extends BaseAdapter
     }
     
     public int getCount() {
-        final Iterator<DataBuffer<T>> iterator = this.sp.iterator();
+        final Iterator<DataBuffer<T>> iterator = this.Hg.iterator();
         int n = 0;
         while (iterator.hasNext()) {
             n += iterator.next().getCount();
@@ -124,11 +124,11 @@ public class DataBufferAdapter<T> extends BaseAdapter
     }
     
     public View getDropDownView(final int n, final View view, final ViewGroup viewGroup) {
-        return this.a(n, view, viewGroup, this.sn);
+        return this.a(n, view, viewGroup, this.He);
     }
     
     public T getItem(final int n) throws CursorIndexOutOfBoundsException {
-        final Iterator<DataBuffer<T>> iterator = this.sp.iterator();
+        final Iterator<DataBuffer<T>> iterator = this.Hg.iterator();
         int n2 = n;
         while (iterator.hasNext()) {
             final DataBuffer<T> dataBuffer = iterator.next();
@@ -152,19 +152,19 @@ public class DataBufferAdapter<T> extends BaseAdapter
     }
     
     public View getView(final int n, final View view, final ViewGroup viewGroup) {
-        return this.a(n, view, viewGroup, this.sm);
+        return this.a(n, view, viewGroup, this.Hd);
     }
     
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-        this.sr = true;
+        this.Hi = true;
     }
     
-    public void setDropDownViewResource(final int sn) {
-        this.sn = sn;
+    public void setDropDownViewResource(final int he) {
+        this.He = he;
     }
     
-    public void setNotifyOnChange(final boolean sr) {
-        this.sr = sr;
+    public void setNotifyOnChange(final boolean hi) {
+        this.Hi = hi;
     }
 }

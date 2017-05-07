@@ -8,11 +8,6 @@ import java.util.Iterator;
 import android.view.MotionEvent;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup;
-import android.view.SurfaceHolder;
-import com.netflix.mediaclient.media.MediaPlayerHelper;
-import com.netflix.mediaclient.media.PlayerType;
-import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
-import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.Log;
 import java.util.ArrayList;
 import android.util.AttributeSet;
@@ -50,27 +45,6 @@ public class TappableSurfaceView extends SurfaceView
     
     private void initSurface(final Context context) {
         Log.d("@@@", "INIT_SURFACE");
-        final PlayerType currentType = PlayerTypeFactory.getCurrentType(context);
-        final MediaPlayerHelper instance = MediaPlayerHelperFactory.getInstance(currentType);
-        int surfaceHolderType = 3;
-        int surfaceHolderPixelFormat = -2;
-        if (instance != null) {
-            surfaceHolderType = instance.getSurfaceHolderType();
-            surfaceHolderPixelFormat = instance.getSurfaceHolderPixelFormat();
-        }
-        else {
-            Log.e("@@@", "Player or helper are not instantiated yet. This should NOT happen!");
-        }
-        final SurfaceHolder holder = this.getHolder();
-        if (holder == null) {
-            Log.e("@@@", "INIT_SURFACE Surface holder is NULL!");
-            return;
-        }
-        if (PlayerTypeFactory.isSoftwarePlayer(currentType)) {
-            Log.d("@@@", "INIT_SURFACE to " + surfaceHolderPixelFormat + " using " + instance);
-            holder.setFormat(surfaceHolderPixelFormat);
-        }
-        holder.setType(surfaceHolderType);
     }
     
     public void addTapListener(final TapListener tapListener) {

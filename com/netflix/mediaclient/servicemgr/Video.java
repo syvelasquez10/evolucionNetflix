@@ -10,9 +10,13 @@ public interface Video
     
     VideoType getErrorType();
     
+    String getHorzDispUrl();
+    
     String getId();
     
     String getTitle();
+    
+    String getTvCardUrl();
     
     VideoType getType();
 }

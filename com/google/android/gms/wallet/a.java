@@ -10,101 +10,101 @@ import android.os.Parcelable$Creator;
 
 public class a implements Parcelable$Creator<Address>
 {
-    static void a(final Address address, final Parcel parcel, int o) {
-        o = b.o(parcel);
+    static void a(final Address address, final Parcel parcel, int p3) {
+        p3 = b.p(parcel);
         b.c(parcel, 1, address.getVersionCode());
         b.a(parcel, 2, address.name, false);
-        b.a(parcel, 3, address.Ga, false);
-        b.a(parcel, 4, address.Gb, false);
-        b.a(parcel, 5, address.Gc, false);
-        b.a(parcel, 6, address.id, false);
-        b.a(parcel, 7, address.Gd, false);
-        b.a(parcel, 8, address.Ge, false);
-        b.a(parcel, 9, address.Gf, false);
-        b.a(parcel, 10, address.Gg, false);
-        b.a(parcel, 11, address.Gh);
-        b.a(parcel, 12, address.Gi, false);
-        b.D(parcel, o);
+        b.a(parcel, 3, address.NB, false);
+        b.a(parcel, 4, address.NC, false);
+        b.a(parcel, 5, address.ND, false);
+        b.a(parcel, 6, address.qd, false);
+        b.a(parcel, 7, address.aba, false);
+        b.a(parcel, 8, address.abb, false);
+        b.a(parcel, 9, address.NI, false);
+        b.a(parcel, 10, address.NK, false);
+        b.a(parcel, 11, address.NL);
+        b.a(parcel, 12, address.NM, false);
+        b.F(parcel, p3);
     }
     
-    public Address aE(final Parcel parcel) {
-        final int n = com.google.android.gms.common.internal.safeparcel.a.n(parcel);
+    public Address aX(final Parcel parcel) {
+        final int o = com.google.android.gms.common.internal.safeparcel.a.o(parcel);
         int g = 0;
-        String m = null;
-        String i = null;
-        String j = null;
-        String k = null;
-        String l = null;
-        String m2 = null;
-        String m3 = null;
-        String m4 = null;
-        String m5 = null;
+        String n = null;
+        String n2 = null;
+        String n3 = null;
+        String n4 = null;
+        String n5 = null;
+        String n6 = null;
+        String n7 = null;
+        String n8 = null;
+        String n9 = null;
         boolean c = false;
-        String m6 = null;
-        while (parcel.dataPosition() < n) {
-            final int m7 = com.google.android.gms.common.internal.safeparcel.a.m(parcel);
-            switch (com.google.android.gms.common.internal.safeparcel.a.M(m7)) {
+        String n10 = null;
+        while (parcel.dataPosition() < o) {
+            final int n11 = com.google.android.gms.common.internal.safeparcel.a.n(parcel);
+            switch (com.google.android.gms.common.internal.safeparcel.a.R(n11)) {
                 default: {
-                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, m7);
+                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, n11);
                     continue;
                 }
                 case 1: {
-                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, m7);
+                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, n11);
                     continue;
                 }
                 case 2: {
-                    m = com.google.android.gms.common.internal.safeparcel.a.m(parcel, m7);
+                    n = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n11);
                     continue;
                 }
                 case 3: {
-                    i = com.google.android.gms.common.internal.safeparcel.a.m(parcel, m7);
+                    n2 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n11);
                     continue;
                 }
                 case 4: {
-                    j = com.google.android.gms.common.internal.safeparcel.a.m(parcel, m7);
+                    n3 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n11);
                     continue;
                 }
                 case 5: {
-                    k = com.google.android.gms.common.internal.safeparcel.a.m(parcel, m7);
+                    n4 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n11);
                     continue;
                 }
                 case 6: {
-                    l = com.google.android.gms.common.internal.safeparcel.a.m(parcel, m7);
+                    n5 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n11);
                     continue;
                 }
                 case 7: {
-                    m2 = com.google.android.gms.common.internal.safeparcel.a.m(parcel, m7);
+                    n6 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n11);
                     continue;
                 }
                 case 8: {
-                    m3 = com.google.android.gms.common.internal.safeparcel.a.m(parcel, m7);
+                    n7 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n11);
                     continue;
                 }
                 case 9: {
-                    m4 = com.google.android.gms.common.internal.safeparcel.a.m(parcel, m7);
+                    n8 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n11);
                     continue;
                 }
                 case 10: {
-                    m5 = com.google.android.gms.common.internal.safeparcel.a.m(parcel, m7);
+                    n9 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n11);
                     continue;
                 }
                 case 11: {
-                    c = com.google.android.gms.common.internal.safeparcel.a.c(parcel, m7);
+                    c = com.google.android.gms.common.internal.safeparcel.a.c(parcel, n11);
                     continue;
                 }
                 case 12: {
-                    m6 = com.google.android.gms.common.internal.safeparcel.a.m(parcel, m7);
+                    n10 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n11);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + o, parcel);
         }
-        return new Address(g, m, i, j, k, l, m2, m3, m4, m5, c, m6);
+        return new Address(g, n, n2, n3, n4, n5, n6, n7, n8, n9, c, n10);
     }
     
-    public Address[] bw(final int n) {
+    public Address[] cj(final int n) {
         return new Address[n];
     }
 }

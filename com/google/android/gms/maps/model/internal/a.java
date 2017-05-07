@@ -8,29 +8,29 @@ import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
 import android.os.RemoteException;
-import com.google.android.gms.dynamic.b;
+import com.google.android.gms.dynamic.d;
 import android.graphics.Bitmap;
 import android.os.IInterface;
 
 public interface a extends IInterface
 {
-    b a(final Bitmap p0) throws RemoteException;
+    d b(final Bitmap p0) throws RemoteException;
     
-    b at(final String p0) throws RemoteException;
+    d bK(final int p0) throws RemoteException;
     
-    b au(final String p0) throws RemoteException;
+    d ba(final String p0) throws RemoteException;
     
-    b av(final String p0) throws RemoteException;
+    d bb(final String p0) throws RemoteException;
     
-    b bh(final int p0) throws RemoteException;
+    d bc(final String p0) throws RemoteException;
     
-    b c(final float p0) throws RemoteException;
+    d c(final float p0) throws RemoteException;
     
-    b eJ() throws RemoteException;
+    d iH() throws RemoteException;
     
     public abstract static class a extends Binder implements a
     {
-        public static a aj(final IBinder binder) {
+        public static a aB(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -58,11 +58,11 @@ public interface a extends IInterface
                 }
                 case 1: {
                     parcel.enforceInterface("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
-                    final b bh = this.bh(parcel.readInt());
+                    final d bk = this.bK(parcel.readInt());
                     parcel2.writeNoException();
                     IBinder binder7;
-                    if (bh != null) {
-                        binder7 = bh.asBinder();
+                    if (bk != null) {
+                        binder7 = bk.asBinder();
                     }
                     else {
                         binder7 = null;
@@ -72,40 +72,40 @@ public interface a extends IInterface
                 }
                 case 2: {
                     parcel.enforceInterface("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
-                    final b at = this.at(parcel.readString());
+                    final d ba = this.ba(parcel.readString());
                     parcel2.writeNoException();
                     IBinder binder8 = binder6;
-                    if (at != null) {
-                        binder8 = at.asBinder();
+                    if (ba != null) {
+                        binder8 = ba.asBinder();
                     }
                     parcel2.writeStrongBinder(binder8);
                     return true;
                 }
                 case 3: {
                     parcel.enforceInterface("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
-                    final b au = this.au(parcel.readString());
+                    final d bb = this.bb(parcel.readString());
                     parcel2.writeNoException();
                     IBinder binder9 = binder;
-                    if (au != null) {
-                        binder9 = au.asBinder();
+                    if (bb != null) {
+                        binder9 = bb.asBinder();
                     }
                     parcel2.writeStrongBinder(binder9);
                     return true;
                 }
                 case 4: {
                     parcel.enforceInterface("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
-                    final b ej = this.eJ();
+                    final d ih = this.iH();
                     parcel2.writeNoException();
                     IBinder binder10 = binder2;
-                    if (ej != null) {
-                        binder10 = ej.asBinder();
+                    if (ih != null) {
+                        binder10 = ih.asBinder();
                     }
                     parcel2.writeStrongBinder(binder10);
                     return true;
                 }
                 case 5: {
                     parcel.enforceInterface("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
-                    final b c = this.c(parcel.readFloat());
+                    final d c = this.c(parcel.readFloat());
                     parcel2.writeNoException();
                     IBinder binder11 = binder3;
                     if (c != null) {
@@ -123,22 +123,22 @@ public interface a extends IInterface
                     else {
                         bitmap = null;
                     }
-                    final b a = this.a(bitmap);
+                    final d b = this.b(bitmap);
                     parcel2.writeNoException();
                     IBinder binder12 = binder4;
-                    if (a != null) {
-                        binder12 = a.asBinder();
+                    if (b != null) {
+                        binder12 = b.asBinder();
                     }
                     parcel2.writeStrongBinder(binder12);
                     return true;
                 }
                 case 7: {
                     parcel.enforceInterface("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
-                    final b av = this.av(parcel.readString());
+                    final d bc = this.bc(parcel.readString());
                     parcel2.writeNoException();
                     IBinder binder13 = binder5;
-                    if (av != null) {
-                        binder13 = av.asBinder();
+                    if (bc != null) {
+                        binder13 = bc.asBinder();
                     }
                     parcel2.writeStrongBinder(binder13);
                     return true;
@@ -148,14 +148,18 @@ public interface a extends IInterface
         
         private static class a implements com.google.android.gms.maps.model.internal.a
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
+            }
+            
+            public IBinder asBinder() {
+                return this.kn;
             }
             
             @Override
-            public b a(final Bitmap bitmap) throws RemoteException {
+            public d b(final Bitmap bitmap) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
@@ -167,30 +171,9 @@ public interface a extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.dU.transact(6, obtain, obtain2, 0);
+                    this.kn.transact(6, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            public IBinder asBinder() {
-                return this.dU;
-            }
-            
-            @Override
-            public b at(final String s) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
-                    obtain.writeString(s);
-                    this.dU.transact(2, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -199,49 +182,15 @@ public interface a extends IInterface
             }
             
             @Override
-            public b au(final String s) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
-                    obtain.writeString(s);
-                    this.dU.transact(3, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public b av(final String s) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
-                    obtain.writeString(s);
-                    this.dU.transact(7, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public b bh(final int n) throws RemoteException {
+            public d bK(final int n) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
                     obtain.writeInt(n);
-                    this.dU.transact(1, obtain, obtain2, 0);
+                    this.kn.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -250,15 +199,66 @@ public interface a extends IInterface
             }
             
             @Override
-            public b c(final float n) throws RemoteException {
+            public d ba(final String s) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
+                    obtain.writeString(s);
+                    this.kn.transact(2, obtain, obtain2, 0);
+                    obtain2.readException();
+                    return d.a.K(obtain2.readStrongBinder());
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public d bb(final String s) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
+                    obtain.writeString(s);
+                    this.kn.transact(3, obtain, obtain2, 0);
+                    obtain2.readException();
+                    return d.a.K(obtain2.readStrongBinder());
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public d bc(final String s) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
+                    obtain.writeString(s);
+                    this.kn.transact(7, obtain, obtain2, 0);
+                    obtain2.readException();
+                    return d.a.K(obtain2.readStrongBinder());
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public d c(final float n) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
                     obtain.writeFloat(n);
-                    this.dU.transact(5, obtain, obtain2, 0);
+                    this.kn.transact(5, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -267,14 +267,14 @@ public interface a extends IInterface
             }
             
             @Override
-            public b eJ() throws RemoteException {
+            public d iH() throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.IBitmapDescriptorFactoryDelegate");
-                    this.dU.transact(4, obtain, obtain2, 0);
+                    this.kn.transact(4, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.E(obtain2.readStrongBinder());
+                    return d.a.K(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();

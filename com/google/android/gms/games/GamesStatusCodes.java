@@ -41,5 +41,7 @@ public final class GamesStatusCodes
     public static final int STATUS_REAL_TIME_INACTIVE_ROOM = 7005;
     public static final int STATUS_REAL_TIME_MESSAGE_SEND_FAILED = 7001;
     public static final int STATUS_REAL_TIME_ROOM_NOT_JOINED = 7004;
+    public static final int STATUS_REQUEST_UPDATE_PARTIAL_SUCCESS = 2000;
+    public static final int STATUS_REQUEST_UPDATE_TOTAL_FAILURE = 2001;
     public static final int STATUS_TIMEOUT = 15;
 }

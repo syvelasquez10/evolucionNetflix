@@ -4,15 +4,15 @@
 
 package com.netflix.mediaclient.ui.search;
 
+import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.Video;
 import com.netflix.mediaclient.servicemgr.SearchVideo;
 import com.netflix.mediaclient.servicemgr.SearchSuggestion;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.SearchPerson;
 import android.view.ViewGroup;
-import android.app.Activity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.SpannableString;
@@ -34,7 +34,8 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     public static final String VIDEO_TAG = "Video";
     private AdvancedImageView img;
     private PlayContext playContext;
-    private TextView title;
+    protected TextView rating;
+    protected TextView title;
     private View verticalDivider;
     private VideoDetailsClickListener videoClickListener;
     
@@ -55,20 +56,21 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final SpannableString spannableString = new SpannableString((CharSequence)String.format("%s  (%s)", s, s2));
         final int length = spannableString.length();
         final int n = length - s2.length() - 4;
-        spannableString.setSpan((Object)new AbsoluteSizeSpan(this.getResources().getDimensionPixelSize(2131492909)), n, length, 0);
-        spannableString.setSpan((Object)new ForegroundColorSpan(this.getResources().getColor(2131165230)), n, length, 0);
+        spannableString.setSpan((Object)new AbsoluteSizeSpan(this.getResources().getDimensionPixelSize(2131361837)), n, length, 0);
+        spannableString.setSpan((Object)new ForegroundColorSpan(this.getResources().getColor(2131296315)), n, length, 0);
         return (CharSequence)spannableString;
     }
     
     private void init() {
-        final Activity activity = (Activity)this.getContext();
-        activity.getLayoutInflater().inflate(2130903144, (ViewGroup)this);
+        final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
+        netflixActivity.getLayoutInflater().inflate(2130903152, (ViewGroup)this);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        this.setForeground(this.getResources().getDrawable(2130837830));
-        (this.img = (AdvancedImageView)this.findViewById(2131231070)).setPressedStateHandlerEnabled(false);
-        this.title = (TextView)this.findViewById(2131231071);
-        this.verticalDivider = this.findViewById(2131231072);
-        this.videoClickListener = new VideoDetailsClickListener(activity, this);
+        this.setForeground(this.getResources().getDrawable(2130837829));
+        (this.img = (AdvancedImageView)this.findViewById(2131165554)).setPressedStateHandlerEnabled(false);
+        this.title = (TextView)this.findViewById(2131165555);
+        this.verticalDivider = this.findViewById(2131165557);
+        (this.rating = (TextView)this.findViewById(2131165556)).setVisibility(8);
+        this.videoClickListener = new VideoDetailsClickListener(netflixActivity, this);
     }
     
     private void setViewHeights(final ImgSizeType imgSizeType) {
@@ -108,20 +110,10 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         return this.playContext;
     }
     
-    public void update(final SearchVideo searchVideo, final int n) {
-        this.setViewHeights(ImgSizeType.BOXART);
-        this.setContentDescription((CharSequence)searchVideo.getTitle());
-        this.setTag((Object)"Video");
-        this.title.setText(this.getFormattedYearSpannable(searchVideo.getTitle(), String.valueOf(searchVideo.getYear())));
-        this.img.setVisibility(0);
-        NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, searchVideo.getBoxshotURL(), IClientLogging.AssetType.boxArt, searchVideo.getTitle(), true, true);
-        this.videoClickListener.update((View)this, searchVideo);
-    }
-    
     public void update(final Object o, final PlayContext playContext) {
         this.playContext = playContext;
         if (o instanceof SearchVideo) {
-            this.update((SearchVideo)o, playContext.getVideoPos());
+            this.updateForVideo((SearchVideo)o, playContext.getVideoPos());
             return;
         }
         if (o instanceof SearchPerson) {
@@ -135,10 +127,20 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         throw new IllegalStateException("Unknown search result type");
     }
     
+    protected void updateForVideo(final SearchVideo searchVideo, final int n) {
+        this.setViewHeights(ImgSizeType.BOXART);
+        this.setContentDescription((CharSequence)searchVideo.getTitle());
+        this.setTag((Object)"Video");
+        this.title.setText(this.getFormattedYearSpannable(searchVideo.getTitle(), String.valueOf(searchVideo.getYear())));
+        this.img.setVisibility(0);
+        NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, searchVideo.getBoxshotURL(), IClientLogging.AssetType.boxArt, searchVideo.getTitle(), true, true);
+        this.videoClickListener.update((View)this, searchVideo);
+    }
+    
     private enum ImgSizeType
     {
-        BOXART(2131492930), 
-        SQUARE(2131492929);
+        BOXART(2131361859), 
+        SQUARE(2131361858);
         
         private final int heightDimenId;
         

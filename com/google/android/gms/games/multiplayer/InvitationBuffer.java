@@ -14,7 +14,7 @@ public final class InvitationBuffer extends d<Invitation>
     }
     
     protected Invitation getEntry(final int n, final int n2) {
-        return new b(this.nE, n, n2);
+        return new InvitationRef(this.BB, n, n2);
     }
     
     @Override

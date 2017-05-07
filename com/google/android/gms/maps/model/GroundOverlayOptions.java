@@ -4,10 +4,10 @@
 
 package com.google.android.gms.maps.model;
 
-import com.google.android.gms.maps.internal.r;
+import com.google.android.gms.maps.internal.v;
 import android.os.Parcel;
-import com.google.android.gms.internal.eg;
-import com.google.android.gms.dynamic.b;
+import com.google.android.gms.internal.fq;
+import com.google.android.gms.dynamic.d;
 import android.os.IBinder;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
@@ -15,65 +15,65 @@ public final class GroundOverlayOptions implements SafeParcelable
 {
     public static final GroundOverlayOptionsCreator CREATOR;
     public static final float NO_DIMENSION = -1.0f;
-    private LatLng CA;
-    private float CB;
-    private float CC;
-    private LatLngBounds CD;
-    private float CE;
-    private float CF;
-    private float CG;
-    private float Cp;
-    private float Cw;
-    private boolean Cx;
-    private BitmapDescriptor Cz;
-    private final int kg;
+    private float SG;
+    private float SN;
+    private boolean SO;
+    private BitmapDescriptor SQ;
+    private LatLng SR;
+    private float SS;
+    private float ST;
+    private LatLngBounds SU;
+    private float SV;
+    private float SW;
+    private float SX;
+    private final int xH;
     
     static {
         CREATOR = new GroundOverlayOptionsCreator();
     }
     
     public GroundOverlayOptions() {
-        this.Cx = true;
-        this.CE = 0.0f;
-        this.CF = 0.5f;
-        this.CG = 0.5f;
-        this.kg = 1;
+        this.SO = true;
+        this.SV = 0.0f;
+        this.SW = 0.5f;
+        this.SX = 0.5f;
+        this.xH = 1;
     }
     
-    GroundOverlayOptions(final int kg, final IBinder binder, final LatLng ca, final float cb, final float cc, final LatLngBounds cd, final float cp, final float cw, final boolean cx, final float ce, final float cf, final float cg) {
-        this.Cx = true;
-        this.CE = 0.0f;
-        this.CF = 0.5f;
-        this.CG = 0.5f;
-        this.kg = kg;
-        this.Cz = new BitmapDescriptor(b.a.E(binder));
-        this.CA = ca;
-        this.CB = cb;
-        this.CC = cc;
-        this.CD = cd;
-        this.Cp = cp;
-        this.Cw = cw;
-        this.Cx = cx;
-        this.CE = ce;
-        this.CF = cf;
-        this.CG = cg;
+    GroundOverlayOptions(final int xh, final IBinder binder, final LatLng sr, final float ss, final float st, final LatLngBounds su, final float sg, final float sn, final boolean so, final float sv, final float sw, final float sx) {
+        this.SO = true;
+        this.SV = 0.0f;
+        this.SW = 0.5f;
+        this.SX = 0.5f;
+        this.xH = xh;
+        this.SQ = new BitmapDescriptor(d.a.K(binder));
+        this.SR = sr;
+        this.SS = ss;
+        this.ST = st;
+        this.SU = su;
+        this.SG = sg;
+        this.SN = sn;
+        this.SO = so;
+        this.SV = sv;
+        this.SW = sw;
+        this.SX = sx;
     }
     
-    private GroundOverlayOptions a(final LatLng ca, final float cb, final float cc) {
-        this.CA = ca;
-        this.CB = cb;
-        this.CC = cc;
+    private GroundOverlayOptions a(final LatLng sr, final float ss, final float st) {
+        this.SR = sr;
+        this.SS = ss;
+        this.ST = st;
         return this;
     }
     
-    public GroundOverlayOptions anchor(final float cf, final float cg) {
-        this.CF = cf;
-        this.CG = cg;
+    public GroundOverlayOptions anchor(final float sw, final float sx) {
+        this.SW = sw;
+        this.SX = sx;
         return this;
     }
     
     public GroundOverlayOptions bearing(final float n) {
-        this.Cp = (n % 360.0f + 360.0f) % 360.0f;
+        this.SG = (n % 360.0f + 360.0f) % 360.0f;
         return this;
     }
     
@@ -81,107 +81,107 @@ public final class GroundOverlayOptions implements SafeParcelable
         return 0;
     }
     
-    IBinder eF() {
-        return this.Cz.el().asBinder();
-    }
-    
     public float getAnchorU() {
-        return this.CF;
+        return this.SW;
     }
     
     public float getAnchorV() {
-        return this.CG;
+        return this.SX;
     }
     
     public float getBearing() {
-        return this.Cp;
+        return this.SG;
     }
     
     public LatLngBounds getBounds() {
-        return this.CD;
+        return this.SU;
     }
     
     public float getHeight() {
-        return this.CC;
+        return this.ST;
     }
     
     public BitmapDescriptor getImage() {
-        return this.Cz;
+        return this.SQ;
     }
     
     public LatLng getLocation() {
-        return this.CA;
+        return this.SR;
     }
     
     public float getTransparency() {
-        return this.CE;
+        return this.SV;
     }
     
     int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public float getWidth() {
-        return this.CB;
+        return this.SS;
     }
     
     public float getZIndex() {
-        return this.Cw;
+        return this.SN;
     }
     
-    public GroundOverlayOptions image(final BitmapDescriptor cz) {
-        this.Cz = cz;
+    IBinder iD() {
+        return this.SQ.id().asBinder();
+    }
+    
+    public GroundOverlayOptions image(final BitmapDescriptor sq) {
+        this.SQ = sq;
         return this;
     }
     
     public boolean isVisible() {
-        return this.Cx;
+        return this.SO;
     }
     
     public GroundOverlayOptions position(final LatLng latLng, final float n) {
         final boolean b = true;
-        eg.a(this.CD == null, (Object)"Position has already been set using positionFromBounds");
-        eg.b(latLng != null, "Location must be specified");
-        eg.b(n >= 0.0f && b, "Width must be non-negative");
+        fq.a(this.SU == null, (Object)"Position has already been set using positionFromBounds");
+        fq.b(latLng != null, "Location must be specified");
+        fq.b(n >= 0.0f && b, "Width must be non-negative");
         return this.a(latLng, n, -1.0f);
     }
     
     public GroundOverlayOptions position(final LatLng latLng, final float n, final float n2) {
         final boolean b = true;
-        eg.a(this.CD == null, (Object)"Position has already been set using positionFromBounds");
-        eg.b(latLng != null, "Location must be specified");
-        eg.b(n >= 0.0f, "Width must be non-negative");
-        eg.b(n2 >= 0.0f && b, "Height must be non-negative");
+        fq.a(this.SU == null, (Object)"Position has already been set using positionFromBounds");
+        fq.b(latLng != null, "Location must be specified");
+        fq.b(n >= 0.0f, "Width must be non-negative");
+        fq.b(n2 >= 0.0f && b, "Height must be non-negative");
         return this.a(latLng, n, n2);
     }
     
-    public GroundOverlayOptions positionFromBounds(final LatLngBounds cd) {
-        eg.a(this.CA == null, (Object)("Position has already been set using position: " + this.CA));
-        this.CD = cd;
+    public GroundOverlayOptions positionFromBounds(final LatLngBounds su) {
+        fq.a(this.SR == null, (Object)("Position has already been set using position: " + this.SR));
+        this.SU = su;
         return this;
     }
     
-    public GroundOverlayOptions transparency(final float ce) {
-        eg.b(ce >= 0.0f && ce <= 1.0f, "Transparency must be in the range [0..1]");
-        this.CE = ce;
+    public GroundOverlayOptions transparency(final float sv) {
+        fq.b(sv >= 0.0f && sv <= 1.0f, "Transparency must be in the range [0..1]");
+        this.SV = sv;
         return this;
     }
     
-    public GroundOverlayOptions visible(final boolean cx) {
-        this.Cx = cx;
+    public GroundOverlayOptions visible(final boolean so) {
+        this.SO = so;
         return this;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (r.eD()) {
+        if (v.iB()) {
             c.a(this, parcel, n);
             return;
         }
         GroundOverlayOptionsCreator.a(this, parcel, n);
     }
     
-    public GroundOverlayOptions zIndex(final float cw) {
-        this.Cw = cw;
+    public GroundOverlayOptions zIndex(final float sn) {
+        this.SN = sn;
         return this;
     }
 }

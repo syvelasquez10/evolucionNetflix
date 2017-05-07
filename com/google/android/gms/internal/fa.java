@@ -4,68 +4,50 @@
 
 package com.google.android.gms.internal;
 
-public final class fa
+import android.graphics.drawable.Drawable;
+
+public final class fa extends fu<a, Drawable>
 {
-    public static void a(final StringBuilder sb, final double[] array) {
-        for (int length = array.length, i = 0; i < length; ++i) {
-            if (i != 0) {
-                sb.append(",");
-            }
-            sb.append(Double.toString(array[i]));
-        }
+    public fa() {
+        super(10);
     }
     
-    public static void a(final StringBuilder sb, final float[] array) {
-        for (int length = array.length, i = 0; i < length; ++i) {
-            if (i != 0) {
-                sb.append(",");
-            }
-            sb.append(Float.toString(array[i]));
+    public static final class a
+    {
+        public final int CR;
+        public final int CS;
+        
+        public a(final int cr, final int cs) {
+            this.CR = cr;
+            this.CS = cs;
         }
-    }
-    
-    public static void a(final StringBuilder sb, final int[] array) {
-        for (int length = array.length, i = 0; i < length; ++i) {
-            if (i != 0) {
-                sb.append(",");
+        
+        @Override
+        public boolean equals(final Object o) {
+            final boolean b = true;
+            boolean b2;
+            if (!(o instanceof a)) {
+                b2 = false;
             }
-            sb.append(Integer.toString(array[i]));
+            else {
+                b2 = b;
+                if (this != o) {
+                    final a a = (a)o;
+                    if (a.CR == this.CR) {
+                        b2 = b;
+                        if (a.CS == this.CS) {
+                            return b2;
+                        }
+                    }
+                    return false;
+                }
+            }
+            return b2;
         }
-    }
-    
-    public static void a(final StringBuilder sb, final long[] array) {
-        for (int length = array.length, i = 0; i < length; ++i) {
-            if (i != 0) {
-                sb.append(",");
-            }
-            sb.append(Long.toString(array[i]));
-        }
-    }
-    
-    public static <T> void a(final StringBuilder sb, final T[] array) {
-        for (int length = array.length, i = 0; i < length; ++i) {
-            if (i != 0) {
-                sb.append(",");
-            }
-            sb.append(array[i].toString());
-        }
-    }
-    
-    public static void a(final StringBuilder sb, final String[] array) {
-        for (int length = array.length, i = 0; i < length; ++i) {
-            if (i != 0) {
-                sb.append(",");
-            }
-            sb.append("\"").append(array[i]).append("\"");
-        }
-    }
-    
-    public static void a(final StringBuilder sb, final boolean[] array) {
-        for (int length = array.length, i = 0; i < length; ++i) {
-            if (i != 0) {
-                sb.append(",");
-            }
-            sb.append(Boolean.toString(array[i]));
+        
+        @Override
+        public int hashCode() {
+            return fo.hashCode(this.CR, this.CS);
         }
     }
 }

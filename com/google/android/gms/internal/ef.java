@@ -4,67 +4,69 @@
 
 package com.google.android.gms.internal;
 
-import java.util.List;
-import com.google.android.gms.common.internal.safeparcel.a;
-import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
+import android.os.Parcelable;
 
-public class ef implements Parcelable$Creator<dt.a>
+public class ef implements Parcelable
 {
-    static void a(final dt.a a, final Parcel parcel, int o) {
-        o = b.o(parcel);
-        b.a(parcel, 1, a.getAccountName(), false);
-        b.c(parcel, 1000, a.getVersionCode());
-        b.a(parcel, 2, a.bH(), false);
-        b.c(parcel, 3, a.bG());
-        b.a(parcel, 4, a.bJ(), false);
-        b.D(parcel, o);
-    }
+    @Deprecated
+    public static final Parcelable$Creator<ef> CREATOR;
+    private String mValue;
+    private String wp;
+    private String wq;
     
-    public dt.a[] L(final int n) {
-        return new dt.a[n];
-    }
-    
-    public dt.a l(final Parcel parcel) {
-        int g = 0;
-        String m = null;
-        final int n = a.n(parcel);
-        List<String> y = null;
-        String i = null;
-        int g2 = 0;
-        while (parcel.dataPosition() < n) {
-            final int j = a.m(parcel);
-            switch (a.M(j)) {
-                default: {
-                    a.b(parcel, j);
-                    continue;
-                }
-                case 1: {
-                    i = a.m(parcel, j);
-                    continue;
-                }
-                case 1000: {
-                    g2 = a.g(parcel, j);
-                    continue;
-                }
-                case 2: {
-                    y = a.y(parcel, j);
-                    continue;
-                }
-                case 3: {
-                    g = a.g(parcel, j);
-                    continue;
-                }
-                case 4: {
-                    m = a.m(parcel, j);
-                    continue;
-                }
+    static {
+        CREATOR = (Parcelable$Creator)new Parcelable$Creator<ef>() {
+            @Deprecated
+            public ef i(final Parcel parcel) {
+                return new ef(parcel);
             }
-        }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
-        }
-        return new dt.a(g2, i, y, g, m);
+            
+            @Deprecated
+            public ef[] u(final int n) {
+                return new ef[n];
+            }
+        };
+    }
+    
+    public ef() {
+    }
+    
+    ef(final Parcel parcel) {
+        this.readFromParcel(parcel);
+    }
+    
+    public ef(final String wp, final String wq, final String mValue) {
+        this.wp = wp;
+        this.wq = wq;
+        this.mValue = mValue;
+    }
+    
+    @Deprecated
+    private void readFromParcel(final Parcel parcel) {
+        this.wp = parcel.readString();
+        this.wq = parcel.readString();
+        this.mValue = parcel.readString();
+    }
+    
+    @Deprecated
+    public int describeContents() {
+        return 0;
+    }
+    
+    public String getId() {
+        return this.wp;
+    }
+    
+    public String getValue() {
+        return this.mValue;
+    }
+    
+    @Deprecated
+    public void writeToParcel(final Parcel parcel, final int n) {
+        parcel.writeString(this.wp);
+        parcel.writeString(this.wq);
+        parcel.writeString(this.mValue);
     }
 }

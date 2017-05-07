@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import android.widget.LinearLayout$LayoutParams;
 import android.view.ViewGroup;
 import android.content.IntentFilter;
 import android.content.Intent;
@@ -15,29 +16,29 @@ import android.view.View;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.BasicLoMo;
 import android.content.BroadcastReceiver;
-import android.app.Activity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.support.v4.view.PagerAdapter;
 
 public class LoMoViewPagerAdapter extends PagerAdapter
 {
     private static final String TAG = "LoMoViewPagerAdapter";
-    private final Activity activity;
-    private final ProgressiveAdapterProvider billboard;
+    private final NetflixActivity activity;
+    private final RowAdapter billboard;
     private final BroadcastReceiver browseReceiver;
-    private ProgressiveAdapterProvider currentAdapter;
-    private final ProgressiveAdapterProvider cw;
-    private final ProgressiveAdapterProvider error;
-    private final ProgressiveAdapterProvider iq;
+    private RowAdapter currentAdapter;
+    private final RowAdapter cw;
+    private final RowAdapter error;
+    private final RowAdapter iq;
     private boolean isDestroyed;
     private int listViewPos;
     private BasicLoMo loMo;
-    private final ProgressiveAdapterProvider loading;
+    private final RowAdapter loading;
     private final View$OnClickListener onReloadClickListener;
     private final LoMoViewPager pager;
-    private final PagerAdapterCallbacks pagerAdapterCallbacks;
+    private final RowAdapterCallbacks pagerAdapterCallbacks;
     private Type preErrorState;
     private final View reloadView;
-    private final ProgressiveAdapterProvider standard;
+    private final RowAdapter standard;
     private Type state;
     private final ViewRecycler viewRecycler;
     
@@ -47,9 +48,9 @@ public class LoMoViewPagerAdapter extends PagerAdapter
                 LoMoViewPagerAdapter.this.reload();
             }
         };
-        this.pagerAdapterCallbacks = new PagerAdapterCallbacks() {
+        this.pagerAdapterCallbacks = new RowAdapterCallbacks() {
             @Override
-            public Activity getActivity() {
+            public NetflixActivity getActivity() {
                 return LoMoViewPagerAdapter.this.activity;
             }
             
@@ -111,13 +112,13 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         };
         this.pager = pager;
         this.viewRecycler = viewRecycler;
-        this.activity = (Activity)pager.getContext();
+        this.activity = (NetflixActivity)pager.getContext();
         this.reloadView = reloadView;
         this.registerBrowseNotificationReceiver();
         reloadView.setOnClickListener(this.onReloadClickListener);
-        this.billboard = (ProgressiveAdapterProvider)new BillboardPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
-        this.cw = (ProgressiveAdapterProvider)new CwPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
-        this.iq = (ProgressiveAdapterProvider)new IqPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
+        this.billboard = new BillboardPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
+        this.cw = new CwPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
+        this.iq = new IqPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
         ProgressiveLoMoPagerAdapter standard;
         if (b) {
             standard = new GenreLoMoPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
@@ -125,9 +126,9 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         else {
             standard = new StandardLoMoPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
         }
-        this.standard = (ProgressiveAdapterProvider)standard;
-        this.loading = (ProgressiveAdapterProvider)new LoadingFragmentPagerAdapter(this.pagerAdapterCallbacks, viewRecycler);
-        this.error = (ProgressiveAdapterProvider)new ErrorFragmentPagerAdapter(this.pagerAdapterCallbacks);
+        this.standard = standard;
+        this.loading = new LoadingViewAdapter(this.pagerAdapterCallbacks, viewRecycler);
+        this.error = new ErrorViewAdapter(this.pagerAdapterCallbacks);
         this.currentAdapter = this.loading;
         this.state = Type.LOADING;
     }
@@ -239,6 +240,26 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         return -2;
     }
     
+    public LinearLayout$LayoutParams getLayoutParams(final Type type) {
+        int n = 0;
+        switch (type) {
+            default: {
+                n = this.standard.getRowHeightInPx();
+                break;
+            }
+            case BILLBOARD: {
+                n = this.billboard.getRowHeightInPx();
+                break;
+            }
+            case CW: {
+                n = this.cw.getRowHeightInPx();
+                break;
+            }
+        }
+        Log.v("LoMoViewPagerAdapter", "Creating layout params with height: " + n);
+        return new LinearLayout$LayoutParams(-1, n);
+    }
+    
     public boolean hasMoreData() {
         return this.currentAdapter.hasMoreData();
     }
@@ -345,11 +366,11 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         final Type preErrorState;
         final Type state;
         
-        protected Memento(final Type state, final Type preErrorState, final BasicLoMo lomo, final ProgressiveAdapterProvider progressiveAdapterProvider) {
+        protected Memento(final Type state, final Type preErrorState, final BasicLoMo lomo, final RowAdapter rowAdapter) {
             this.state = state;
             this.preErrorState = preErrorState;
             this.lomo = lomo;
-            this.adapterMemento = progressiveAdapterProvider.saveToMemento();
+            this.adapterMemento = (BaseProgressivePagerAdapter.Memento)rowAdapter.saveToMemento();
         }
         
         @Override
@@ -364,25 +385,6 @@ public class LoMoViewPagerAdapter extends PagerAdapter
             }
             return append.append(title).append(", state: ").append(this.state).append(", adapter: ").append(this.adapterMemento).toString();
         }
-    }
-    
-    interface ProgressiveAdapterProvider
-    {
-        int getCount();
-        
-        View getView(final int p0);
-        
-        boolean hasMoreData();
-        
-        void invalidateRequestId();
-        
-        void refreshData(final BasicLoMo p0, final int p1);
-        
-        void restoreFromMemento(final BaseProgressivePagerAdapter.Memento p0);
-        
-        BaseProgressivePagerAdapter.Memento saveToMemento();
-        
-        void trackPresentation(final int p0);
     }
     
     public enum Type

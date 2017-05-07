@@ -5,6 +5,7 @@
 package com.google.android.gms.drive.query.internal;
 
 import android.os.Parcel;
+import com.google.android.gms.drive.metadata.SearchableMetadataField;
 import com.google.android.gms.drive.metadata.MetadataField;
 import com.google.android.gms.drive.metadata.internal.MetadataBundle;
 import com.google.android.gms.drive.query.Filter;
@@ -13,24 +14,24 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class ComparisonFilter<T> implements SafeParcelable, Filter
 {
     public static final a CREATOR;
-    final int kg;
-    final Operator rR;
-    final MetadataBundle rS;
-    final MetadataField<T> rT;
+    final Operator GG;
+    final MetadataBundle GH;
+    final MetadataField<T> GI;
+    final int xH;
     
     static {
         CREATOR = new a();
     }
     
-    ComparisonFilter(final int kg, final Operator rr, final MetadataBundle rs) {
-        this.kg = kg;
-        this.rR = rr;
-        this.rS = rs;
-        this.rT = (MetadataField<T>)d.b(rs);
+    ComparisonFilter(final int xh, final Operator gg, final MetadataBundle gh) {
+        this.xH = xh;
+        this.GG = gg;
+        this.GH = gh;
+        this.GI = (MetadataField<T>)e.b(gh);
     }
     
-    public ComparisonFilter(final Operator operator, final MetadataField<T> metadataField, final T t) {
-        this(1, operator, MetadataBundle.a(metadataField, t));
+    public ComparisonFilter(final Operator operator, final SearchableMetadataField<T> searchableMetadataField, final T t) {
+        this(1, operator, MetadataBundle.a(searchableMetadataField, t));
     }
     
     public int describeContents() {

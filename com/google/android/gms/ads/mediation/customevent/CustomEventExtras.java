@@ -9,17 +9,17 @@ import com.google.ads.mediation.NetworkExtras;
 
 public final class CustomEventExtras implements NetworkExtras
 {
-    private final HashMap<String, Object> ji;
+    private final HashMap<String, Object> rQ;
     
     public CustomEventExtras() {
-        this.ji = new HashMap<String, Object>();
+        this.rQ = new HashMap<String, Object>();
     }
     
     public Object getExtra(final String s) {
-        return this.ji.get(s);
+        return this.rQ.get(s);
     }
     
     public void setExtra(final String s, final Object o) {
-        this.ji.put(s, o);
+        this.rQ.put(s, o);
     }
 }

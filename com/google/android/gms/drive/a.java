@@ -13,57 +13,57 @@ import android.os.Parcelable$Creator;
 public class a implements Parcelable$Creator<Contents>
 {
     static void a(final Contents contents, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
-        b.c(parcel, 1, contents.kg);
-        b.a(parcel, 2, (Parcelable)contents.om, n, false);
-        b.c(parcel, 3, contents.qE);
-        b.c(parcel, 4, contents.qF);
-        b.a(parcel, 5, (Parcelable)contents.qG, n, false);
-        b.D(parcel, o);
+        final int p3 = b.p(parcel);
+        b.c(parcel, 1, contents.xH);
+        b.a(parcel, 2, (Parcelable)contents.Cj, n, false);
+        b.c(parcel, 3, contents.Eu);
+        b.c(parcel, 4, contents.Ev);
+        b.a(parcel, 5, (Parcelable)contents.Ew, n, false);
+        b.F(parcel, p3);
     }
     
-    public Contents[] Y(final int n) {
+    public Contents[] ac(final int n) {
         return new Contents[n];
     }
     
     public Contents y(final Parcel parcel) {
         DriveId driveId = null;
         int g = 0;
-        final int n = com.google.android.gms.common.internal.safeparcel.a.n(parcel);
+        final int o = com.google.android.gms.common.internal.safeparcel.a.o(parcel);
         int g2 = 0;
         ParcelFileDescriptor parcelFileDescriptor = null;
         int g3 = 0;
-        while (parcel.dataPosition() < n) {
-            final int m = com.google.android.gms.common.internal.safeparcel.a.m(parcel);
-            switch (com.google.android.gms.common.internal.safeparcel.a.M(m)) {
+        while (parcel.dataPosition() < o) {
+            final int n = com.google.android.gms.common.internal.safeparcel.a.n(parcel);
+            switch (com.google.android.gms.common.internal.safeparcel.a.R(n)) {
                 default: {
-                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, m);
+                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, n);
                     continue;
                 }
                 case 1: {
-                    g3 = com.google.android.gms.common.internal.safeparcel.a.g(parcel, m);
+                    g3 = com.google.android.gms.common.internal.safeparcel.a.g(parcel, n);
                     continue;
                 }
                 case 2: {
-                    parcelFileDescriptor = com.google.android.gms.common.internal.safeparcel.a.a(parcel, m, (android.os.Parcelable$Creator<ParcelFileDescriptor>)ParcelFileDescriptor.CREATOR);
+                    parcelFileDescriptor = com.google.android.gms.common.internal.safeparcel.a.a(parcel, n, (android.os.Parcelable$Creator<ParcelFileDescriptor>)ParcelFileDescriptor.CREATOR);
                     continue;
                 }
                 case 3: {
-                    g2 = com.google.android.gms.common.internal.safeparcel.a.g(parcel, m);
+                    g2 = com.google.android.gms.common.internal.safeparcel.a.g(parcel, n);
                     continue;
                 }
                 case 4: {
-                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, m);
+                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, n);
                     continue;
                 }
                 case 5: {
-                    driveId = com.google.android.gms.common.internal.safeparcel.a.a(parcel, m, DriveId.CREATOR);
+                    driveId = com.google.android.gms.common.internal.safeparcel.a.a(parcel, n, DriveId.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + o, parcel);
         }
         return new Contents(g3, parcelFileDescriptor, g2, g, driveId);
     }

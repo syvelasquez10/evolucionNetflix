@@ -14,6 +14,7 @@ import com.netflix.mediaclient.servicemgr.SearchResults;
 import com.netflix.mediaclient.servicemgr.PostPlayVideo;
 import com.netflix.mediaclient.servicemgr.MovieDetails;
 import com.netflix.mediaclient.servicemgr.LoLoMo;
+import com.netflix.mediaclient.servicemgr.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.Genre;
 import com.netflix.mediaclient.servicemgr.GenreList;
 import com.netflix.mediaclient.servicemgr.EpisodeDetails;
@@ -494,6 +495,10 @@ public final class NetflixService extends Service implements INetflixService
         this.mBrowseAgent.fetchIQVideos(n, n2, this.wrapCallback(new BrowseAgentClientCallback(n3, n4)));
     }
     
+    public void fetchKidsCharacterDetails(final String s, final int n, final int n2) {
+        this.mBrowseAgent.fetchKidsCharacterDetails(s, this.wrapCallback(new BrowseAgentClientCallback(n, n2)));
+    }
+    
     public void fetchLoLoMoSummary(final String s, final int n, final int n2) {
         this.mBrowseAgent.fetchLoLoMoSummary(s, this.wrapCallback(new BrowseAgentClientCallback(n, n2)));
     }
@@ -901,6 +906,16 @@ public final class NetflixService extends Service implements INetflixService
         @Override
         public void onIQListRefresh(final int n) {
             throw new IllegalStateException("not implemented");
+        }
+        
+        @Override
+        public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final int n) {
+            final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)NetflixService.this.mClientCallbacks.get(this.clientId);
+            if (netflixServiceCallback == null) {
+                Log.w("NetflixService", "No client callback found for onKidsCharacterDetailsFetched");
+                return;
+            }
+            netflixServiceCallback.onKidsCharacterDetailsFetched(this.requestId, kidsCharacterDetails, b, n);
         }
         
         @Override

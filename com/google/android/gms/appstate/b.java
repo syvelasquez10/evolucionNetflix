@@ -12,7 +12,7 @@ public final class b extends com.google.android.gms.common.data.b implements App
         super(dataHolder, n);
     }
     
-    public AppState aK() {
+    public AppState dt() {
         return new a(this);
     }
     
@@ -48,7 +48,7 @@ public final class b extends com.google.android.gms.common.data.b implements App
     
     @Override
     public boolean hasConflict() {
-        return !this.M("conflict_version");
+        return !this.ai("conflict_version");
     }
     
     @Override

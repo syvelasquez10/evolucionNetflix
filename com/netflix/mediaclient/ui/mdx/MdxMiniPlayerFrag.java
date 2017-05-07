@@ -144,7 +144,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
                         MdxMiniPlayerFrag.this.stopSimulatedVideoPositionUpdate();
                         return;
                     }
-                    if (!remoteTargetState.paused && MdxMiniPlayerFrag.this.isShowing) {
+                    if (!remoteTargetState.paused && MdxMiniPlayerFrag.this.isShowing()) {
                         MdxMiniPlayerFrag.this.startSimulatedVideoPositionUpdate(remoteTargetState.positionInSeconds);
                     }
                 }
@@ -286,7 +286,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
                 }
                 final IMdx mdx = MdxMiniPlayerFrag.this.mdxMiniPlayerViewCallbacks.getMdx();
                 final VideoDetails videoDetail = mdx.getVideoDetail();
-                if (MdxMiniPlayerFrag.this.currentVideo != null && MdxPlaycardActivity.isSameVideoPlaying(mdx, MdxMiniPlayerFrag.this.currentVideo.getPlayableId())) {
+                if (MdxMiniPlayerFrag.this.currentVideo != null && MdxUtils.isSameVideoPlaying(mdx, MdxMiniPlayerFrag.this.currentVideo.getPlayableId())) {
                     MdxMiniPlayerFrag.this.log("Same video is already playing, doing nothing");
                     return;
                 }
@@ -429,7 +429,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
                 }
                 Log.v("MdxMiniPlayerFrag", "Seeking...");
                 MdxMiniPlayerFrag.this.views.setControlsEnabled(false);
-                MdxMiniPlayerFrag.this.remotePlayer.seek(MdxPlaycardActivity.setProgressByBif(progressByBif));
+                MdxMiniPlayerFrag.this.remotePlayer.seek(MdxUtils.setProgressByBif(progressByBif));
             }
         };
         this.mdxKeyEventCallbacks = new MdxKeyEventHandler.MdxKeyEventCallbacks() {
@@ -495,6 +495,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
     }
     
     private void initMdxComponents() {
+        this.log("initMdxComponents()");
         final IMdx mdx = this.mdxMiniPlayerViewCallbacks.getMdx();
         if (mdx != null) {
             final VideoDetails videoDetail = mdx.getVideoDetail();
@@ -504,11 +505,14 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
                 this.updateVisibility(MdxMiniPlayerFrag.state.shouldShowSelf, mdx.isPaused());
             }
             this.remotePlayer = new RemotePlayer(this.activity, this.remoteTargetUiListener);
-            if (MdxMiniPlayerFrag.state.controlsEnabled) {
-                Log.v("MdxMiniPlayerFrag", "Controls are already enabled.  Requesting subs and dubs...");
-                this.remotePlayer.requestAudioAndSubtitleData();
+            if (this.isShowing()) {
+                if (MdxMiniPlayerFrag.state.controlsEnabled) {
+                    this.log("Controls are enabled & mini player is showing. Requesting subs and dubs...");
+                    this.remotePlayer.requestAudioAndSubtitleData();
+                }
+                this.log("Syncing with remote player...");
+                this.remotePlayer.sync();
             }
-            this.remotePlayer.sync();
         }
         this.languageSelector = LanguageSelector.createInstance(this.activity, DeviceUtils.isTabletByContext((Context)this.activity), this.languageSelectorCallback);
         this.views.onManagerReady(this.manager);
@@ -579,7 +583,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
         this.log("Updating metadata: " + this.currentVideo + ", hash: " + this.currentVideo.hashCode());
         if (this.currentVideo.getType() == VideoType.EPISODE) {
             this.views.updateTitleText(this.currentVideo.getParentTitle());
-            this.views.updateSubtitleText(this.activity.getString(2131296622, new Object[] { this.currentVideo.getSeasonNumber(), this.currentVideo.getEpisodeNumber(), this.currentVideo.getTitle() }));
+            this.views.updateSubtitleText(this.activity.getString(2131493241, new Object[] { this.currentVideo.getSeasonNumber(), this.currentVideo.getEpisodeNumber(), this.currentVideo.getTitle() }));
         }
         else {
             this.views.updateTitleText(this.currentVideo.getTitle());
@@ -712,7 +716,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
         if (Log.isLoggable("MdxMiniPlayerFrag", 2)) {
             this.log("Change user settings for received video id: " + s + " to rating: " + currRating);
         }
-        final String videoId = MdxPlaycardActivity.getVideoId(this.currentVideo);
+        final String videoId = MdxUtils.getVideoId(this.currentVideo);
         if (s != null && s.equals(videoId)) {
             this.log("This is rating for current playback, update it");
             MdxMiniPlayerFrag.state.currRating = currRating;
@@ -724,7 +728,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
             this.log("Can't set rating because service man is null");
             return;
         }
-        this.manager.setVideoRating(videoId, (int)MdxMiniPlayerFrag.state.currRating, PlayContext.EMPTY_CONTEXT.getTrackId(), new MdxPlaycardActivity.SetVideoRatingCallback(this.activity, MdxMiniPlayerFrag.state.currRating));
+        this.manager.setVideoRating(videoId, (int)MdxMiniPlayerFrag.state.currRating, PlayContext.EMPTY_CONTEXT.getTrackId(), new MdxUtils.SetVideoRatingCallback(this.activity, MdxMiniPlayerFrag.state.currRating));
     }
     
     public void hide() {
@@ -883,12 +887,12 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
     
     public void onStart() {
         super.onStart();
-        MdxPlaycardActivity.registerReceiver(this.activity, this.dialogMessageReceiver);
+        MdxUtils.registerReceiver(this.activity, this.dialogMessageReceiver);
     }
     
     public void onStop() {
         super.onStop();
-        MdxPlaycardActivity.unregisterReceiver(this.activity, this.dialogMessageReceiver);
+        MdxUtils.unregisterReceiver(this.activity, this.dialogMessageReceiver);
     }
     
     public void sendDialogResponse(final String s) {

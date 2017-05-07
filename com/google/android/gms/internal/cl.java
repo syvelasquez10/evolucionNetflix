@@ -4,54 +4,84 @@
 
 package com.google.android.gms.internal;
 
-import java.util.Locale;
-import java.math.BigInteger;
-import android.text.TextUtils;
-import android.content.Context;
+import android.os.Parcel;
+import android.os.Binder;
+import android.os.RemoteException;
+import android.os.IBinder;
+import com.google.android.gms.dynamic.d;
+import android.os.IInterface;
 
-public final class cl
+public interface cl extends IInterface
 {
-    private static final Object hC;
-    private static String iw;
+    IBinder a(final d p0) throws RemoteException;
     
-    static {
-        hC = new Object();
-    }
-    
-    public static String as() {
-        synchronized (cl.hC) {
-            return cl.iw;
-        }
-    }
-    
-    public static String b(final Context context, final String s, final String s2) {
-        synchronized (cl.hC) {
-            if (cl.iw == null && !TextUtils.isEmpty((CharSequence)s)) {
-                c(context, s, s2);
+    public abstract static class a extends Binder implements cl
+    {
+        public static cl n(final IBinder binder) {
+            if (binder == null) {
+                return null;
             }
-            return cl.iw;
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
+            if (queryLocalInterface != null && queryLocalInterface instanceof cl) {
+                return (cl)queryLocalInterface;
+            }
+            return new cl.a.a(binder);
         }
-    }
-    
-    private static void c(final Context context, final String s, final String s2) {
-        BigInteger bigInteger;
-        try {
-            final ClassLoader classLoader = context.createPackageContext(s2, 3).getClassLoader();
-            final Class<?> forName = Class.forName("com.google.ads.mediation.MediationAdapter", false, classLoader);
-            bigInteger = new BigInteger(new byte[1]);
-            final String[] split = s.split(",");
-            BigInteger setBit;
-            for (int i = 0; i < split.length; ++i, bigInteger = setBit) {
-                setBit = bigInteger;
-                if (co.a(classLoader, forName, split[i])) {
-                    setBit = bigInteger.setBit(i);
+        
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            switch (n) {
+                default: {
+                    return super.onTransact(n, parcel, parcel2, n2);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
+                    return true;
+                }
+                case 1: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
+                    final IBinder a = this.a(d.a.K(parcel.readStrongBinder()));
+                    parcel2.writeNoException();
+                    parcel2.writeStrongBinder(a);
+                    return true;
                 }
             }
         }
-        catch (Throwable t) {
-            cl.iw = "err";
-            return;
+        
+        private static class a implements cl
+        {
+            private IBinder kn;
+            
+            a(final IBinder kn) {
+                this.kn = kn;
+            }
+            
+            @Override
+            public IBinder a(final d d) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
+                    IBinder binder;
+                    if (d != null) {
+                        binder = d.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    this.kn.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
+                    return obtain2.readStrongBinder();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            public IBinder asBinder() {
+                return this.kn;
+            }
         }
-        cl.iw = String.format(Locale.US, "%X", bigInteger);
     }
 }

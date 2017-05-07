@@ -5,48 +5,53 @@
 package com.google.android.gms.ads;
 
 import android.view.View;
+import com.google.android.gms.ads.purchase.InAppPurchaseListener;
 import android.util.AttributeSet;
 import android.content.Context;
-import com.google.android.gms.internal.ag;
+import com.google.android.gms.internal.at;
 import android.view.ViewGroup;
 
 public final class AdView extends ViewGroup
 {
-    private final ag dZ;
+    private final at ku;
     
     public AdView(final Context context) {
         super(context);
-        this.dZ = new ag(this);
+        this.ku = new at(this);
     }
     
     public AdView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.dZ = new ag(this, set, false);
+        this.ku = new at(this, set, false);
     }
     
     public AdView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.dZ = new ag(this, set, false);
+        this.ku = new at(this, set, false);
     }
     
     public void destroy() {
-        this.dZ.destroy();
+        this.ku.destroy();
     }
     
     public AdListener getAdListener() {
-        return this.dZ.getAdListener();
+        return this.ku.getAdListener();
     }
     
     public AdSize getAdSize() {
-        return this.dZ.getAdSize();
+        return this.ku.getAdSize();
     }
     
     public String getAdUnitId() {
-        return this.dZ.getAdUnitId();
+        return this.ku.getAdUnitId();
+    }
+    
+    public InAppPurchaseListener getInAppPurchaseListener() {
+        return this.ku.getInAppPurchaseListener();
     }
     
     public void loadAd(final AdRequest adRequest) {
-        this.dZ.a(adRequest.v());
+        this.ku.a(adRequest.O());
     }
     
     protected void onLayout(final boolean b, int n, int n2, final int n3, final int n4) {
@@ -82,22 +87,26 @@ public final class AdView extends ViewGroup
     }
     
     public void pause() {
-        this.dZ.pause();
+        this.ku.pause();
     }
     
     public void resume() {
-        this.dZ.resume();
+        this.ku.resume();
     }
     
     public void setAdListener(final AdListener adListener) {
-        this.dZ.setAdListener(adListener);
+        this.ku.setAdListener(adListener);
     }
     
     public void setAdSize(final AdSize adSize) {
-        this.dZ.setAdSizes(adSize);
+        this.ku.setAdSizes(adSize);
     }
     
     public void setAdUnitId(final String adUnitId) {
-        this.dZ.setAdUnitId(adUnitId);
+        this.ku.setAdUnitId(adUnitId);
+    }
+    
+    public void setInAppPurchaseListener(final InAppPurchaseListener inAppPurchaseListener) {
+        this.ku.setInAppPurchaseListener(inAppPurchaseListener);
     }
 }

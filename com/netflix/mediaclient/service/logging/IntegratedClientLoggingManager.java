@@ -22,7 +22,6 @@ import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
 import java.io.File;
 import com.netflix.mediaclient.servicemgr.UserProfile;
-import com.netflix.mediaclient.servicemgr.ProfileType;
 import com.netflix.mediaclient.service.logging.client.model.UIMode;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
@@ -55,17 +54,17 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     private UserActionLoggingImpl mActionLogging;
     private ApmLoggingImpl mApmLogging;
     private ClientLoggingWebClient mClientLoggingWebClient;
-    private Context mContext;
+    private final Context mContext;
     private DataRepository mDataRepository;
     private final Map<String, Random> mEventPerSessionRndGeneratorMap;
-    private ClientLoggingEventQueue mEventQueue;
+    private final ClientLoggingEventQueue mEventQueue;
     private ScheduledExecutorService mExecutor;
     private UserInputManager mInputManager;
-    private List<LoggingSession> mLoggingSessions;
-    private LoggingAgent mOwner;
-    private AtomicLong mSequence;
-    private NetflixService mService;
-    private ServiceAgent.UserAgentInterface mUser;
+    private final List<LoggingSession> mLoggingSessions;
+    private final LoggingAgent mOwner;
+    private final AtomicLong mSequence;
+    private final NetflixService mService;
+    private final ServiceAgent.UserAgentInterface mUser;
     private final Map<String, Boolean> mUserSessionEnabledStatusMap;
     
     IntegratedClientLoggingManager(final Context mContext, final LoggingAgent mOwner, final ServiceAgent.UserAgentInterface mUser, final NetflixService mService) {
@@ -136,7 +135,7 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
             Log.w("nf_log", "getUiMode:: user is logged in, but profile is null. Return member");
             return UIMode.member;
         }
-        if (currentProfile.getProfileType() == ProfileType.JFK) {
+        if (currentProfile.isKidsProfile()) {
             return UIMode.jfk;
         }
         return UIMode.member;

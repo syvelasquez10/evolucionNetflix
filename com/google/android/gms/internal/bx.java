@@ -4,126 +4,306 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.ConnectionResult;
-import android.os.Bundle;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import android.content.Context;
+import com.google.ads.AdRequest;
+import com.google.ads.mediation.MediationInterstitialAdapter;
 import android.os.RemoteException;
+import com.google.ads.mediation.MediationBannerAdapter;
+import com.google.ads.mediation.MediationInterstitialListener;
+import com.google.ads.mediation.MediationBannerListener;
+import com.google.ads.mediation.MediationServerParameters;
+import com.google.ads.mediation.NetworkExtras;
 
-public abstract class bx extends cm
+public final class bx<NETWORK_EXTRAS extends NetworkExtras, SERVER_PARAMETERS extends MediationServerParameters> implements MediationBannerListener, MediationInterstitialListener
 {
-    private final bz fw;
-    private final bw.a hn;
+    private final bs nG;
     
-    public bx(final bz fw, final bw.a hn) {
-        this.fw = fw;
-        this.hn = hn;
+    public bx(final bs ng) {
+        this.nG = ng;
     }
     
-    private static cb a(final cd cd, final bz bz) {
+    @Override
+    public void onClick(final MediationBannerAdapter<?, ?> mediationBannerAdapter) {
+        dw.v("Adapter called onClick.");
+        if (!dv.bD()) {
+            dw.z("onClick must be called on the main UI thread.");
+            dv.rp.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        bx.this.nG.P();
+                    }
+                    catch (RemoteException ex) {
+                        dw.c("Could not call onAdClicked.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
         try {
-            return cd.b(bz);
+            this.nG.P();
         }
         catch (RemoteException ex) {
-            ct.b("Could not fetch ad response from ad request service.", (Throwable)ex);
-            return null;
+            dw.c("Could not call onAdClicked.", (Throwable)ex);
         }
     }
     
     @Override
-    public final void ai() {
+    public void onDismissScreen(final MediationBannerAdapter<?, ?> mediationBannerAdapter) {
+        dw.v("Adapter called onDismissScreen.");
+        if (!dv.bD()) {
+            dw.z("onDismissScreen must be called on the main UI thread.");
+            dv.rp.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        bx.this.nG.onAdClosed();
+                    }
+                    catch (RemoteException ex) {
+                        dw.c("Could not call onAdClosed.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
         try {
-            final cd al = this.al();
-            cb a;
-            if (al == null) {
-                a = new cb(0);
-            }
-            else if ((a = a(al, this.fw)) == null) {
-                a = new cb(0);
-            }
-            this.ak();
-            this.hn.a(a);
+            this.nG.onAdClosed();
         }
-        finally {
-            this.ak();
+        catch (RemoteException ex) {
+            dw.c("Could not call onAdClosed.", (Throwable)ex);
         }
     }
-    
-    public abstract void ak();
-    
-    public abstract cd al();
     
     @Override
-    public final void onStop() {
-        this.ak();
+    public void onDismissScreen(final MediationInterstitialAdapter<?, ?> mediationInterstitialAdapter) {
+        dw.v("Adapter called onDismissScreen.");
+        if (!dv.bD()) {
+            dw.z("onDismissScreen must be called on the main UI thread.");
+            dv.rp.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        bx.this.nG.onAdClosed();
+                    }
+                    catch (RemoteException ex) {
+                        dw.c("Could not call onAdClosed.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.nG.onAdClosed();
+        }
+        catch (RemoteException ex) {
+            dw.c("Could not call onAdClosed.", (Throwable)ex);
+        }
     }
     
-    public static final class a extends bx
-    {
-        private final Context mContext;
-        
-        public a(final Context mContext, final bz bz, final bw.a a) {
-            super(bz, a);
-            this.mContext = mContext;
+    @Override
+    public void onFailedToReceiveAd(final MediationBannerAdapter<?, ?> mediationBannerAdapter, final AdRequest.ErrorCode errorCode) {
+        dw.v("Adapter called onFailedToReceiveAd with error. " + errorCode);
+        if (!dv.bD()) {
+            dw.z("onFailedToReceiveAd must be called on the main UI thread.");
+            dv.rp.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        bx.this.nG.onAdFailedToLoad(by.a(errorCode));
+                    }
+                    catch (RemoteException ex) {
+                        dw.c("Could not call onAdFailedToLoad.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
         }
-        
-        @Override
-        public void ak() {
+        try {
+            this.nG.onAdFailedToLoad(by.a(errorCode));
         }
-        
-        @Override
-        public cd al() {
-            return ce.a(this.mContext, new ar());
+        catch (RemoteException ex) {
+            dw.c("Could not call onAdFailedToLoad.", (Throwable)ex);
         }
     }
     
-    public static final class b extends bx implements ConnectionCallbacks, OnConnectionFailedListener
-    {
-        private final Object fx;
-        private final bw.a hn;
-        private final by ho;
-        
-        public b(final Context context, final bz bz, final bw.a hn) {
-            super(bz, hn);
-            this.fx = new Object();
-            this.hn = hn;
-            (this.ho = new by(context, this, this, bz.ej.iL)).connect();
-        }
-        
-        @Override
-        public void ak() {
-            synchronized (this.fx) {
-                if (this.ho.isConnected() || this.ho.isConnecting()) {
-                    this.ho.disconnect();
+    @Override
+    public void onFailedToReceiveAd(final MediationInterstitialAdapter<?, ?> mediationInterstitialAdapter, final AdRequest.ErrorCode errorCode) {
+        dw.v("Adapter called onFailedToReceiveAd with error " + errorCode + ".");
+        if (!dv.bD()) {
+            dw.z("onFailedToReceiveAd must be called on the main UI thread.");
+            dv.rp.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        bx.this.nG.onAdFailedToLoad(by.a(errorCode));
+                    }
+                    catch (RemoteException ex) {
+                        dw.c("Could not call onAdFailedToLoad.", (Throwable)ex);
+                    }
                 }
-            }
+            });
+            return;
         }
-        
-        @Override
-        public cd al() {
-            synchronized (this.fx) {
-                try {
-                    return this.ho.ao();
+        try {
+            this.nG.onAdFailedToLoad(by.a(errorCode));
+        }
+        catch (RemoteException ex) {
+            dw.c("Could not call onAdFailedToLoad.", (Throwable)ex);
+        }
+    }
+    
+    @Override
+    public void onLeaveApplication(final MediationBannerAdapter<?, ?> mediationBannerAdapter) {
+        dw.v("Adapter called onLeaveApplication.");
+        if (!dv.bD()) {
+            dw.z("onLeaveApplication must be called on the main UI thread.");
+            dv.rp.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        bx.this.nG.onAdLeftApplication();
+                    }
+                    catch (RemoteException ex) {
+                        dw.c("Could not call onAdLeftApplication.", (Throwable)ex);
+                    }
                 }
-                catch (IllegalStateException ex) {
-                    return null;
+            });
+            return;
+        }
+        try {
+            this.nG.onAdLeftApplication();
+        }
+        catch (RemoteException ex) {
+            dw.c("Could not call onAdLeftApplication.", (Throwable)ex);
+        }
+    }
+    
+    @Override
+    public void onLeaveApplication(final MediationInterstitialAdapter<?, ?> mediationInterstitialAdapter) {
+        dw.v("Adapter called onLeaveApplication.");
+        if (!dv.bD()) {
+            dw.z("onLeaveApplication must be called on the main UI thread.");
+            dv.rp.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        bx.this.nG.onAdLeftApplication();
+                    }
+                    catch (RemoteException ex) {
+                        dw.c("Could not call onAdLeftApplication.", (Throwable)ex);
+                    }
                 }
-            }
+            });
+            return;
         }
-        
-        @Override
-        public void onConnected(final Bundle bundle) {
-            this.start();
+        try {
+            this.nG.onAdLeftApplication();
         }
-        
-        @Override
-        public void onConnectionFailed(final ConnectionResult connectionResult) {
-            this.hn.a(new cb(0));
+        catch (RemoteException ex) {
+            dw.c("Could not call onAdLeftApplication.", (Throwable)ex);
         }
-        
-        @Override
-        public void onDisconnected() {
-            ct.r("Disconnected from remote ad request service.");
+    }
+    
+    @Override
+    public void onPresentScreen(final MediationBannerAdapter<?, ?> mediationBannerAdapter) {
+        dw.v("Adapter called onPresentScreen.");
+        if (!dv.bD()) {
+            dw.z("onPresentScreen must be called on the main UI thread.");
+            dv.rp.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        bx.this.nG.onAdOpened();
+                    }
+                    catch (RemoteException ex) {
+                        dw.c("Could not call onAdOpened.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.nG.onAdOpened();
+        }
+        catch (RemoteException ex) {
+            dw.c("Could not call onAdOpened.", (Throwable)ex);
+        }
+    }
+    
+    @Override
+    public void onPresentScreen(final MediationInterstitialAdapter<?, ?> mediationInterstitialAdapter) {
+        dw.v("Adapter called onPresentScreen.");
+        if (!dv.bD()) {
+            dw.z("onPresentScreen must be called on the main UI thread.");
+            dv.rp.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        bx.this.nG.onAdOpened();
+                    }
+                    catch (RemoteException ex) {
+                        dw.c("Could not call onAdOpened.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.nG.onAdOpened();
+        }
+        catch (RemoteException ex) {
+            dw.c("Could not call onAdOpened.", (Throwable)ex);
+        }
+    }
+    
+    @Override
+    public void onReceivedAd(final MediationBannerAdapter<?, ?> mediationBannerAdapter) {
+        dw.v("Adapter called onReceivedAd.");
+        if (!dv.bD()) {
+            dw.z("onReceivedAd must be called on the main UI thread.");
+            dv.rp.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        bx.this.nG.onAdLoaded();
+                    }
+                    catch (RemoteException ex) {
+                        dw.c("Could not call onAdLoaded.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.nG.onAdLoaded();
+        }
+        catch (RemoteException ex) {
+            dw.c("Could not call onAdLoaded.", (Throwable)ex);
+        }
+    }
+    
+    @Override
+    public void onReceivedAd(final MediationInterstitialAdapter<?, ?> mediationInterstitialAdapter) {
+        dw.v("Adapter called onReceivedAd.");
+        if (!dv.bD()) {
+            dw.z("onReceivedAd must be called on the main UI thread.");
+            dv.rp.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        bx.this.nG.onAdLoaded();
+                    }
+                    catch (RemoteException ex) {
+                        dw.c("Could not call onAdLoaded.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.nG.onAdLoaded();
+        }
+        catch (RemoteException ex) {
+            dw.c("Could not call onAdLoaded.", (Throwable)ex);
         }
     }
 }

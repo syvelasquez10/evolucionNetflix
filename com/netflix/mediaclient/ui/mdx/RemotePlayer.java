@@ -349,11 +349,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
         Log.d("mdx_remote_player", "stop sent");
         this.mState = "STOP";
         if (b) {
-            if (!(this.mActivity instanceof MdxPlaycardActivity)) {
-                this.mActivity.finish();
-                return;
-            }
-            ((MdxPlaycardActivity)this.mActivity).destroy();
+            this.mActivity.finish();
         }
     }
     

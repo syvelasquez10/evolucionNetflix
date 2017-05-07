@@ -385,4 +385,9 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
             this.rating.userRating = userRating;
         }
     }
+    
+    @Override
+    public String toString() {
+        return "EpisodeDetails [summary=" + this.summary + ", detail=" + this.detail + "]";
+    }
 }

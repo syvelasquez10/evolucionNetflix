@@ -32,7 +32,6 @@ public final class TopPanel extends PlayerSection
 {
     private static final String TAG = "screen";
     private View mBackArrow;
-    private View mBackIcon;
     private View mBackPadding;
     private Button mBtnLog;
     private Button mBtnMetadata;
@@ -57,7 +56,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initBack() {
-        final View$OnTouchListener onTouchListener = (View$OnTouchListener)new View$OnTouchListener() {
+        final View$OnTouchListener view$OnTouchListener = (View$OnTouchListener)new View$OnTouchListener() {
             final /* synthetic */ Runnable val$upAction = TopPanel.this.context.createUpActionRunnable();
             
             public boolean onTouch(final View view, final MotionEvent motionEvent) {
@@ -69,27 +68,23 @@ public final class TopPanel extends PlayerSection
                 return true;
             }
         };
-        this.mBackArrow = this.context.findViewById(2131230970);
+        this.mBackArrow = this.context.findViewById(2131165498);
         if (this.mBackArrow != null) {
-            this.mBackArrow.setOnTouchListener((View$OnTouchListener)onTouchListener);
+            this.mBackArrow.setOnTouchListener((View$OnTouchListener)view$OnTouchListener);
         }
-        this.mBackIcon = this.context.findViewById(2131230971);
-        if (this.mBackIcon != null) {
-            this.mBackIcon.setOnTouchListener((View$OnTouchListener)onTouchListener);
-        }
-        this.mBackPadding = this.context.findViewById(2131230972);
+        this.mBackPadding = this.context.findViewById(2131165499);
         if (this.mBackPadding != null) {
-            this.mBackPadding.setOnTouchListener((View$OnTouchListener)onTouchListener);
+            this.mBackPadding.setOnTouchListener((View$OnTouchListener)view$OnTouchListener);
         }
     }
     
     private void initGeneric(final PlayScreen.Listeners listeners) {
-        this.mTopPanel = this.context.findViewById(2131230969);
+        this.mTopPanel = this.context.findViewById(2131165497);
         if (this.mTopPanel == null) {
             Log.e("screen", "========>top null!");
         }
-        this.mTitleLabel = (TextView)this.context.findViewById(2131231031);
-        this.mEpisodeSelector = (ImageButton)this.context.findViewById(2131230994);
+        this.mTitleLabel = (TextView)this.context.findViewById(2131165500);
+        this.mEpisodeSelector = (ImageButton)this.context.findViewById(2131165505);
         if (this.mEpisodeSelector != null) {
             this.mEpisodeSelector.setOnClickListener(listeners.episodeSelectorListener);
         }
@@ -137,7 +132,7 @@ public final class TopPanel extends PlayerSection
                 TopPanel.this.mDialogLanguageId = TopPanel.this.context.reportUiModelessViewSessionStart(IClientLogging.ModalView.audioSubtitlesSelector);
             }
         };
-        final View viewById = this.context.findViewById(2131230997);
+        final View viewById = this.context.findViewById(2131165506);
         if (viewById instanceof ImageView) {
             Log.d("screen", "Add language button");
             (this.mLanguage = (ImageButton)viewById).setOnClickListener((View$OnClickListener)onClickListener);
@@ -149,7 +144,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initSound(final SeekBar$OnSeekBarChangeListener onSeekBarChangeListener) {
-        this.mSound = (SeekBar)this.context.findViewById(2131230977);
+        this.mSound = (SeekBar)this.context.findViewById(2131165507);
         if (this.mSound == null) {
             Log.e("screen", "Sound seekbar was NOT found!");
             return;
@@ -252,9 +247,6 @@ public final class TopPanel extends PlayerSection
             if (this.mBackArrow != null) {
                 this.mBackArrow.setOnTouchListener((View$OnTouchListener)null);
             }
-            if (this.mBackIcon != null) {
-                this.mBackIcon.setOnTouchListener((View$OnTouchListener)null);
-            }
             if (this.mBackPadding != null) {
                 this.mBackPadding.setOnTouchListener((View$OnTouchListener)null);
             }
@@ -306,9 +298,6 @@ public final class TopPanel extends PlayerSection
             }
             if (this.mBackArrow != null) {
                 this.mBackArrow.setVisibility(0);
-            }
-            if (this.mBackIcon != null) {
-                this.mBackIcon.setVisibility(0);
             }
             if (this.mTitleLabel != null) {
                 this.mTitleLabel.setVisibility(0);
@@ -401,9 +390,6 @@ public final class TopPanel extends PlayerSection
                 if (this.mBackArrow != null) {
                     this.mBackArrow.setVisibility(0);
                 }
-                if (this.mBackIcon != null) {
-                    this.mBackIcon.setVisibility(0);
-                }
                 if (this.mTitleLabel != null) {
                     this.mTitleLabel.setVisibility(0);
                 }
@@ -444,9 +430,6 @@ public final class TopPanel extends PlayerSection
             }
             if (this.mBackArrow != null) {
                 this.mBackArrow.setVisibility(4);
-            }
-            if (this.mBackIcon != null) {
-                this.mBackIcon.setVisibility(4);
             }
             if (this.mLanguage != null) {
                 this.mLanguage.setVisibility(8);

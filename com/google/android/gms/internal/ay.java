@@ -4,28 +4,23 @@
 
 package com.google.android.gms.internal;
 
-public final class ay
+import java.util.Map;
+
+public final class ay implements bb
 {
-    public final int ga;
-    public final at gb;
-    public final bc gc;
-    public final String gd;
-    public final aw ge;
+    private final az mF;
     
-    public ay(final int n) {
-        this(null, null, null, null, n);
+    public ay(final az mf) {
+        this.mF = mf;
     }
     
-    public ay(final at gb, final bc gc, final String gd, final aw ge, final int ga) {
-        this.gb = gb;
-        this.gc = gc;
-        this.gd = gd;
-        this.ge = ge;
-        this.ga = ga;
-    }
-    
-    public interface a
-    {
-        void f(final int p0);
+    @Override
+    public void b(final dz dz, final Map<String, String> map) {
+        final String s = map.get("name");
+        if (s == null) {
+            dw.z("App event with no name parameter.");
+            return;
+        }
+        this.mF.onAppEvent(s, map.get("info"));
     }
 }

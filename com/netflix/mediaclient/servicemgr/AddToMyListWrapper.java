@@ -5,11 +5,11 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.ui.common.PlayContext;
-import android.content.Context;
 import com.netflix.mediaclient.util.LogUtils;
 import android.view.View;
 import android.view.View$OnClickListener;
 import java.util.HashMap;
+import android.content.Context;
 import android.widget.Toast;
 import android.widget.TextView;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
@@ -101,7 +101,7 @@ public class AddToMyListWrapper
             }
             addToListData.revertState();
             if (b) {
-                Toast.makeText(this.serviceMan.getContext(), 2131296573, 1).show();
+                Toast.makeText((Context)this.serviceMan.getActivity(), 2131493192, 1).show();
             }
         }
     }
@@ -128,8 +128,8 @@ public class AddToMyListWrapper
         public void update(final AddToListState addToListState) {
             switch (addToListState) {
                 case IN_LIST: {
-                    this.textView.setContentDescription((CharSequence)this.activity.getString(2131296341));
-                    this.textView.setCompoundDrawablesWithIntrinsicBounds(2130837822, 0, 0, 0);
+                    this.textView.setContentDescription((CharSequence)this.activity.getString(2131492964));
+                    this.textView.setCompoundDrawablesWithIntrinsicBounds(2130837821, 0, 0, 0);
                     this.textView.setEnabled(true);
                     this.textView.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
                         public void onClick(final View view) {
@@ -140,7 +140,7 @@ public class AddToMyListWrapper
                     break;
                 }
                 case NOT_IN_LIST: {
-                    this.textView.setContentDescription((CharSequence)this.activity.getString(2131296340));
+                    this.textView.setContentDescription((CharSequence)this.activity.getString(2131492963));
                     this.textView.setCompoundDrawablesWithIntrinsicBounds(2130837598, 0, 0, 0);
                     this.textView.setEnabled(true);
                     this.textView.setOnClickListener((View$OnClickListener)new View$OnClickListener() {

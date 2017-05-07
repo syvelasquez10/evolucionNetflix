@@ -12,94 +12,108 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class FilterHolder implements SafeParcelable
 {
     public static final Parcelable$Creator<FilterHolder> CREATOR;
-    final int kg;
-    final ComparisonFilter<?> rU;
-    final FieldOnlyFilter rV;
-    final LogicalFilter rW;
-    final NotFilter rX;
-    final InFilter<?> rY;
-    private final Filter rZ;
+    final ComparisonFilter<?> GK;
+    final FieldOnlyFilter GL;
+    final LogicalFilter GM;
+    final NotFilter GN;
+    final InFilter<?> GO;
+    final MatchAllFilter GP;
+    private final Filter GQ;
+    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new c();
+        CREATOR = (Parcelable$Creator)new d();
     }
     
-    FilterHolder(final int kg, final ComparisonFilter<?> ru, final FieldOnlyFilter rv, final LogicalFilter rw, final NotFilter rx, final InFilter<?> ry) {
-        this.kg = kg;
-        this.rU = ru;
-        this.rV = rv;
-        this.rW = rw;
-        this.rX = rx;
-        this.rY = ry;
-        if (this.rU != null) {
-            this.rZ = this.rU;
+    FilterHolder(final int xh, final ComparisonFilter<?> gk, final FieldOnlyFilter gl, final LogicalFilter gm, final NotFilter gn, final InFilter<?> go, final MatchAllFilter gp) {
+        this.xH = xh;
+        this.GK = gk;
+        this.GL = gl;
+        this.GM = gm;
+        this.GN = gn;
+        this.GO = go;
+        this.GP = gp;
+        if (this.GK != null) {
+            this.GQ = this.GK;
             return;
         }
-        if (this.rV != null) {
-            this.rZ = this.rV;
+        if (this.GL != null) {
+            this.GQ = this.GL;
             return;
         }
-        if (this.rW != null) {
-            this.rZ = this.rW;
+        if (this.GM != null) {
+            this.GQ = this.GM;
             return;
         }
-        if (this.rX != null) {
-            this.rZ = this.rX;
+        if (this.GN != null) {
+            this.GQ = this.GN;
             return;
         }
-        if (this.rY != null) {
-            this.rZ = this.rY;
+        if (this.GO != null) {
+            this.GQ = this.GO;
+            return;
+        }
+        if (this.GP != null) {
+            this.GQ = this.GP;
             return;
         }
         throw new IllegalArgumentException("At least one filter must be set.");
     }
     
-    public FilterHolder(final Filter rz) {
-        this.kg = 1;
-        ComparisonFilter<?> ru;
-        if (rz instanceof ComparisonFilter) {
-            ru = (ComparisonFilter<?>)rz;
+    public FilterHolder(final Filter gq) {
+        this.xH = 1;
+        ComparisonFilter<?> gk;
+        if (gq instanceof ComparisonFilter) {
+            gk = (ComparisonFilter<?>)gq;
         }
         else {
-            ru = null;
+            gk = null;
         }
-        this.rU = ru;
-        FieldOnlyFilter rv;
-        if (rz instanceof FieldOnlyFilter) {
-            rv = (FieldOnlyFilter)rz;
-        }
-        else {
-            rv = null;
-        }
-        this.rV = rv;
-        LogicalFilter rw;
-        if (rz instanceof LogicalFilter) {
-            rw = (LogicalFilter)rz;
+        this.GK = gk;
+        FieldOnlyFilter gl;
+        if (gq instanceof FieldOnlyFilter) {
+            gl = (FieldOnlyFilter)gq;
         }
         else {
-            rw = null;
+            gl = null;
         }
-        this.rW = rw;
-        NotFilter rx;
-        if (rz instanceof NotFilter) {
-            rx = (NotFilter)rz;
-        }
-        else {
-            rx = null;
-        }
-        this.rX = rx;
-        InFilter<?> ry;
-        if (rz instanceof InFilter) {
-            ry = (InFilter<?>)rz;
+        this.GL = gl;
+        LogicalFilter gm;
+        if (gq instanceof LogicalFilter) {
+            gm = (LogicalFilter)gq;
         }
         else {
-            ry = null;
+            gm = null;
         }
-        this.rY = ry;
-        if (this.rU == null && this.rV == null && this.rW == null && this.rX == null && this.rY == null) {
+        this.GM = gm;
+        NotFilter gn;
+        if (gq instanceof NotFilter) {
+            gn = (NotFilter)gq;
+        }
+        else {
+            gn = null;
+        }
+        this.GN = gn;
+        InFilter<?> go;
+        if (gq instanceof InFilter) {
+            go = (InFilter<?>)gq;
+        }
+        else {
+            go = null;
+        }
+        this.GO = go;
+        MatchAllFilter gp;
+        if (gq instanceof MatchAllFilter) {
+            gp = (MatchAllFilter)gq;
+        }
+        else {
+            gp = null;
+        }
+        this.GP = gp;
+        if (this.GK == null && this.GL == null && this.GM == null && this.GN == null && this.GO == null && this.GP == null) {
             throw new IllegalArgumentException("Invalid filter type or null filter.");
         }
-        this.rZ = rz;
+        this.GQ = gq;
     }
     
     public int describeContents() {
@@ -107,6 +121,6 @@ public class FilterHolder implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        c.a(this, parcel, n);
+        d.a(this, parcel, n);
     }
 }

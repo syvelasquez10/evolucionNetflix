@@ -13,8 +13,8 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 
 public class BillboardPagerAdapter extends ProgressiveBillboardPagerAdapter
 {
-    public BillboardPagerAdapter(final ServiceManager serviceManager, final PagerAdapterCallbacks pagerAdapterCallbacks, final ViewRecycler viewRecycler) {
-        super(serviceManager, pagerAdapterCallbacks, viewRecycler);
+    public BillboardPagerAdapter(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ViewRecycler viewRecycler) {
+        super(serviceManager, rowAdapterCallbacks, viewRecycler);
     }
     
     @Override

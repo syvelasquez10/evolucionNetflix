@@ -14,7 +14,7 @@ public final class TurnBasedMatchBuffer extends d<TurnBasedMatch>
     }
     
     protected TurnBasedMatch getEntry(final int n, final int n2) {
-        return new a(this.nE, n, n2);
+        return new TurnBasedMatchRef(this.BB, n, n2);
     }
     
     @Override

@@ -4,53 +4,174 @@
 
 package com.google.android.gms.internal;
 
-import java.util.Map;
+import android.os.Parcel;
+import android.os.IBinder;
+import android.os.Binder;
+import android.os.RemoteException;
+import android.os.IInterface;
 
-public final class ao implements an
+public interface ao extends IInterface
 {
-    private static boolean a(final Map<String, String> map) {
-        return "1".equals(map.get("custom_close"));
-    }
+    void onAdClosed() throws RemoteException;
     
-    private static int b(final Map<String, String> map) {
-        final String s = map.get("o");
-        if (s != null) {
-            if ("p".equalsIgnoreCase(s)) {
-                return co.av();
-            }
-            if ("l".equalsIgnoreCase(s)) {
-                return co.au();
-            }
-        }
-        return -1;
-    }
+    void onAdFailedToLoad(final int p0) throws RemoteException;
     
-    @Override
-    public void a(final cw cw, final Map<String, String> map) {
-        final String s = map.get("a");
-        if (s == null) {
-            ct.v("Action missing from an open GMSG.");
-            return;
+    void onAdLeftApplication() throws RemoteException;
+    
+    void onAdLoaded() throws RemoteException;
+    
+    void onAdOpened() throws RemoteException;
+    
+    public abstract static class a extends Binder implements ao
+    {
+        public a() {
+            this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.client.IAdListener");
         }
-        final cx ac = cw.aC();
-        if ("expand".equalsIgnoreCase(s)) {
-            if (cw.aF()) {
-                ct.v("Cannot expand WebView that is already expanded.");
-                return;
+        
+        public static ao e(final IBinder binder) {
+            if (binder == null) {
+                return null;
             }
-            ac.a(a(map), b(map));
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.client.IAdListener");
+            if (queryLocalInterface != null && queryLocalInterface instanceof ao) {
+                return (ao)queryLocalInterface;
+            }
+            return new ao.a.a(binder);
         }
-        else {
-            if (!"webapp".equalsIgnoreCase(s)) {
-                ac.a(new bj(map.get("i"), map.get("u"), map.get("m"), map.get("p"), map.get("c"), map.get("f"), map.get("e")));
-                return;
+        
+        public IBinder asBinder() {
+            return (IBinder)this;
+        }
+        
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            switch (n) {
+                default: {
+                    return super.onTransact(n, parcel, parcel2, n2);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.ads.internal.client.IAdListener");
+                    return true;
+                }
+                case 1: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdListener");
+                    this.onAdClosed();
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 2: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdListener");
+                    this.onAdFailedToLoad(parcel.readInt());
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 3: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdListener");
+                    this.onAdLeftApplication();
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 4: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdListener");
+                    this.onAdLoaded();
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 5: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdListener");
+                    this.onAdOpened();
+                    parcel2.writeNoException();
+                    return true;
+                }
             }
-            final String s2 = map.get("u");
-            if (s2 != null) {
-                ac.a(a(map), b(map), s2);
-                return;
+        }
+        
+        private static class a implements ao
+        {
+            private IBinder kn;
+            
+            a(final IBinder kn) {
+                this.kn = kn;
             }
-            ac.a(a(map), b(map), map.get("html"), map.get("baseurl"));
+            
+            public IBinder asBinder() {
+                return this.kn;
+            }
+            
+            @Override
+            public void onAdClosed() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdListener");
+                    this.kn.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void onAdFailedToLoad(final int n) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdListener");
+                    obtain.writeInt(n);
+                    this.kn.transact(2, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void onAdLeftApplication() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdListener");
+                    this.kn.transact(3, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void onAdLoaded() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdListener");
+                    this.kn.transact(4, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void onAdOpened() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdListener");
+                    this.kn.transact(5, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
         }
     }
 }

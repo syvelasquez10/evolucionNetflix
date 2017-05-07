@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import com.netflix.mediaclient.util.StringUtils;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.os.Bundle;
 import com.netflix.mediaclient.ui.LaunchActivity;
@@ -21,7 +22,6 @@ import android.content.Intent;
 import android.app.Activity;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import android.widget.AdapterView;
 import com.netflix.mediaclient.servicemgr.UserProfile;
@@ -39,6 +39,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 public class ProfileSelectionActivity extends NetflixActivity
 {
     private static final float ALPHA_CONTENT_FADE = 0.2f;
+    private static final String EXTRA_START_KIDS_BOOL = "extra_start_kids_bool";
     private static final String KEY_IS_LOADING = "is_loading";
     private static final String TAG = "ProfileSelectionActivity";
     private static final SparseArray<SparseIntArray> maxNumGridColumns;
@@ -53,6 +54,7 @@ public class ProfileSelectionActivity extends NetflixActivity
     private int numCols;
     private final AdapterView$OnItemClickListener onAvatarClickListener;
     private List<? extends UserProfile> profiles;
+    private boolean shouldStartKids;
     
     static {
         maxNumGridColumns = new SparseArray(2);
@@ -82,23 +84,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                     Log.d("ProfileSelectionActivity", "Invalid profiles set");
                     return;
                 }
-                if (ProfileSelectionActivity.this.manager == null || !ProfileSelectionActivity.this.manager.isReady()) {
-                    Log.d("ProfileSelectionActivity", "Manager is not ready");
-                    return;
-                }
-                final UserProfile userProfile = ProfileSelectionActivity.this.profiles.get(n);
-                if (Log.isLoggable("ProfileSelectionActivity", 3)) {
-                    Log.d("ProfileSelectionActivity", "Selecting profile: " + userProfile.getFirstName() + ", id: " + userProfile.getProfileId());
-                }
-                final UserProfile currentProfile = ProfileSelectionActivity.this.manager.getCurrentProfile();
-                if (currentProfile != null && StringUtils.safeEquals(currentProfile.getProfileId(), userProfile.getProfileId())) {
-                    Log.d("ProfileSelectionActivity", "Selected profile is the same as the current one - skipping profile change...");
-                    ProfileSelectionActivity.this.finish();
-                    return;
-                }
-                ProfileSelectionActivity.this.isLoading = true;
-                ProfileSelectionActivity.this.showLoadingView(true);
-                ProfileSelectionActivity.this.manager.selectProfile(userProfile.getProfileId());
+                ProfileSelectionActivity.this.startChangeProfile(ProfileSelectionActivity.this.profiles.get(n));
             }
         };
     }
@@ -115,6 +101,10 @@ public class ProfileSelectionActivity extends NetflixActivity
     
     public static Intent createStartIntent(final Activity activity) {
         return new Intent((Context)activity, (Class)ProfileSelectionActivity.class).addFlags(131072);
+    }
+    
+    public static Intent createSwitchToKidsIntent(final Activity activity) {
+        return createStartIntent(activity).putExtra("extra_start_kids_bool", true);
     }
     
     private void handleManagerReady(final boolean b) {
@@ -148,6 +138,23 @@ public class ProfileSelectionActivity extends NetflixActivity
                 if (this.isLoading) {
                     this.showLoadingView(false);
                 }
+            }
+            Log.v("ProfileSelectionActivity", String.format("shouldStartKids: %s, isInKoPTest: %s", this.shouldStartKids, this.manager.getConfiguration().getKidsOnPhoneConfiguration().isInKidsOnPhoneTest()));
+            if (this.shouldStartKids && this.manager.getConfiguration().getKidsOnPhoneConfiguration().isInKidsOnPhoneTest()) {
+                int n = 0;
+                UserProfile userProfile2 = null;
+                for (final UserProfile userProfile3 : this.manager.getAllProfiles()) {
+                    if (userProfile3.isKidsProfile()) {
+                        userProfile2 = userProfile3;
+                        ++n;
+                    }
+                }
+                if (n == 1) {
+                    Log.v("ProfileSelectionActivity", "Found one Kids profile - switching");
+                    this.startChangeProfile(userProfile2);
+                    return;
+                }
+                Log.v("ProfileSelectionActivity", "Kids profiles found: " + n);
             }
         }
     }
@@ -259,20 +266,22 @@ public class ProfileSelectionActivity extends NetflixActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.columnWidth = this.getResources().getDimensionPixelSize(2131492934);
-        this.setContentView(2130903140);
-        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131231059), this.errorCallback);
-        this.content = this.findViewById(2131231060);
-        (this.gridView = (StaticGridView)this.findViewById(2131231062)).setOnItemClickListener(this.onAvatarClickListener);
+        this.columnWidth = this.getResources().getDimensionPixelSize(2131361863);
+        this.setContentView(2130903148);
+        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165543), this.errorCallback);
+        this.content = this.findViewById(2131165544);
+        (this.gridView = (StaticGridView)this.findViewById(2131165546)).setOnItemClickListener(this.onAvatarClickListener);
         this.gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 ProfileSelectionActivity.this.adjustGridViewMargins();
             }
         });
-        if (bundle != null) {
-            this.isLoading = bundle.getBoolean("is_loading", false);
-            Log.v("ProfileSelectionActivity", "Recovered loading state: " + this.isLoading);
+        if (bundle == null) {
+            this.shouldStartKids = this.getIntent().getBooleanExtra("extra_start_kids_bool", false);
+            return;
         }
+        this.isLoading = bundle.getBoolean("is_loading", false);
+        Log.v("ProfileSelectionActivity", "Recovered loading state: " + this.isLoading);
     }
     
     @Override
@@ -280,6 +289,24 @@ public class ProfileSelectionActivity extends NetflixActivity
         super.onSaveInstanceState(bundle);
         Log.v("ProfileSelectionActivity", "Saving loading state: " + this.isLoading);
         bundle.putBoolean("is_loading", this.isLoading);
+    }
+    
+    protected void startChangeProfile(final UserProfile userProfile) {
+        if (this.manager == null || !this.manager.isReady()) {
+            Log.d("ProfileSelectionActivity", "Manager is not ready");
+            return;
+        }
+        if (Log.isLoggable("ProfileSelectionActivity", 3)) {
+            Log.d("ProfileSelectionActivity", "Selecting profile: " + userProfile.getFirstName() + ", id: " + userProfile.getProfileId());
+        }
+        final UserProfile currentProfile = this.manager.getCurrentProfile();
+        if (currentProfile != null && StringUtils.safeEquals(currentProfile.getProfileId(), userProfile.getProfileId())) {
+            Log.d("ProfileSelectionActivity", "Selected profile is the same as the current one - skipping profile change...");
+            this.finish();
+            return;
+        }
+        this.showLoadingView(this.isLoading = true);
+        this.manager.selectProfile(userProfile.getProfileId());
     }
     
     private static class Holder
@@ -311,8 +338,8 @@ public class ProfileSelectionActivity extends NetflixActivity
         public View getView(final int n, final View view, final ViewGroup viewGroup) {
             View inflate = view;
             if (view == null) {
-                inflate = ProfileSelectionActivity.this.getLayoutInflater().inflate(2130903141, (ViewGroup)null, false);
-                inflate.setTag((Object)new Holder((AdvancedImageView)inflate.findViewById(2131231064), (TextView)inflate.findViewById(2131231065)));
+                inflate = ProfileSelectionActivity.this.getLayoutInflater().inflate(2130903149, (ViewGroup)null, false);
+                inflate.setTag((Object)new Holder((AdvancedImageView)inflate.findViewById(2131165548), (TextView)inflate.findViewById(2131165549)));
             }
             final Holder holder = (Holder)inflate.getTag();
             final UserProfile item = this.getItem(n);

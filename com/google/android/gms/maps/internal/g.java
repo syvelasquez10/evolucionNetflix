@@ -8,24 +8,32 @@ import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
 import android.os.RemoteException;
-import com.google.android.gms.dynamic.b;
+import com.google.android.gms.maps.model.internal.f;
 import android.os.IInterface;
 
 public interface g extends IInterface
 {
-    void g(final b p0) throws RemoteException;
+    void e(final f p0) throws RemoteException;
     
     public abstract static class a extends Binder implements g
     {
-        public static g Y(final IBinder binder) {
+        public a() {
+            this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnInfoWindowClickListener");
+        }
+        
+        public static g aj(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.maps.internal.IOnLocationChangeListener");
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.maps.internal.IOnInfoWindowClickListener");
             if (queryLocalInterface != null && queryLocalInterface instanceof g) {
                 return (g)queryLocalInterface;
             }
             return new g.a.a(binder);
+        }
+        
+        public IBinder asBinder() {
+            return (IBinder)this;
         }
         
         public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
@@ -34,12 +42,12 @@ public interface g extends IInterface
                     return super.onTransact(n, parcel, parcel2, n2);
                 }
                 case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.maps.internal.IOnLocationChangeListener");
+                    parcel2.writeString("com.google.android.gms.maps.internal.IOnInfoWindowClickListener");
                     return true;
                 }
                 case 1: {
-                    parcel.enforceInterface("com.google.android.gms.maps.internal.IOnLocationChangeListener");
-                    this.g(b.a.E(parcel.readStrongBinder()));
+                    parcel.enforceInterface("com.google.android.gms.maps.internal.IOnInfoWindowClickListener");
+                    this.e(f.a.aG(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
@@ -48,31 +56,31 @@ public interface g extends IInterface
         
         private static class a implements g
         {
-            private IBinder dU;
+            private IBinder kn;
             
-            a(final IBinder du) {
-                this.dU = du;
+            a(final IBinder kn) {
+                this.kn = kn;
             }
             
             public IBinder asBinder() {
-                return this.dU;
+                return this.kn;
             }
             
             @Override
-            public void g(final b b) throws RemoteException {
+            public void e(final f f) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IOnLocationChangeListener");
+                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IOnInfoWindowClickListener");
                     IBinder binder;
-                    if (b != null) {
-                        binder = b.asBinder();
+                    if (f != null) {
+                        binder = f.asBinder();
                     }
                     else {
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.dU.transact(1, obtain, obtain2, 0);
+                    this.kn.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

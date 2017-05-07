@@ -4,33 +4,33 @@
 
 package com.google.android.gms.maps.model;
 
-import com.google.android.gms.maps.internal.r;
+import com.google.android.gms.maps.internal.v;
 import android.os.Parcel;
-import com.google.android.gms.internal.ee;
+import com.google.android.gms.internal.fo;
 import android.content.res.TypedArray;
 import com.google.android.gms.R;
 import android.util.AttributeSet;
 import android.content.Context;
-import com.google.android.gms.internal.eg;
+import com.google.android.gms.internal.fq;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class CameraPosition implements SafeParcelable
 {
     public static final CameraPositionCreator CREATOR;
     public final float bearing;
-    private final int kg;
     public final LatLng target;
     public final float tilt;
+    private final int xH;
     public final float zoom;
     
     static {
         CREATOR = new CameraPositionCreator();
     }
     
-    CameraPosition(final int kg, final LatLng target, float zoom, final float n, final float n2) {
-        eg.b(target, "null camera target");
-        eg.b(0.0f <= n && n <= 90.0f, "Tilt needs to be between 0 and 90 inclusive");
-        this.kg = kg;
+    CameraPosition(final int xh, final LatLng target, float zoom, final float n, final float n2) {
+        fq.b(target, "null camera target");
+        fq.b(0.0f <= n && n <= 90.0f, "Tilt needs to be between 0 and 90 inclusive");
+        this.xH = xh;
         this.target = target;
         this.zoom = zoom;
         this.tilt = n + 0.0f;
@@ -110,21 +110,21 @@ public final class CameraPosition implements SafeParcelable
     }
     
     int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     @Override
     public int hashCode() {
-        return ee.hashCode(this.target, this.zoom, this.tilt, this.bearing);
+        return fo.hashCode(this.target, this.zoom, this.tilt, this.bearing);
     }
     
     @Override
     public String toString() {
-        return ee.e(this).a("target", this.target).a("zoom", this.zoom).a("tilt", this.tilt).a("bearing", this.bearing).toString();
+        return fo.e(this).a("target", this.target).a("zoom", this.zoom).a("tilt", this.tilt).a("bearing", this.bearing).toString();
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (r.eD()) {
+        if (v.iB()) {
             a.a(this, parcel, n);
             return;
         }
@@ -133,42 +133,42 @@ public final class CameraPosition implements SafeParcelable
     
     public static final class Builder
     {
-        private LatLng Cm;
-        private float Cn;
-        private float Co;
-        private float Cp;
+        private LatLng SD;
+        private float SE;
+        private float SF;
+        private float SG;
         
         public Builder() {
         }
         
         public Builder(final CameraPosition cameraPosition) {
-            this.Cm = cameraPosition.target;
-            this.Cn = cameraPosition.zoom;
-            this.Co = cameraPosition.tilt;
-            this.Cp = cameraPosition.bearing;
+            this.SD = cameraPosition.target;
+            this.SE = cameraPosition.zoom;
+            this.SF = cameraPosition.tilt;
+            this.SG = cameraPosition.bearing;
         }
         
-        public Builder bearing(final float cp) {
-            this.Cp = cp;
+        public Builder bearing(final float sg) {
+            this.SG = sg;
             return this;
         }
         
         public CameraPosition build() {
-            return new CameraPosition(this.Cm, this.Cn, this.Co, this.Cp);
+            return new CameraPosition(this.SD, this.SE, this.SF, this.SG);
         }
         
-        public Builder target(final LatLng cm) {
-            this.Cm = cm;
+        public Builder target(final LatLng sd) {
+            this.SD = sd;
             return this;
         }
         
-        public Builder tilt(final float co) {
-            this.Co = co;
+        public Builder tilt(final float sf) {
+            this.SF = sf;
             return this;
         }
         
-        public Builder zoom(final float cn) {
-            this.Cn = cn;
+        public Builder zoom(final float se) {
+            this.SE = se;
             return this;
         }
     }

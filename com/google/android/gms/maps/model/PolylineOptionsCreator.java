@@ -14,8 +14,8 @@ public class PolylineOptionsCreator implements Parcelable$Creator<PolylineOption
 {
     public static final int CONTENT_DESCRIPTION = 0;
     
-    static void a(final PolylineOptions polylineOptions, final Parcel parcel, int o) {
-        o = b.o(parcel);
+    static void a(final PolylineOptions polylineOptions, final Parcel parcel, int p3) {
+        p3 = b.p(parcel);
         b.c(parcel, 1, polylineOptions.getVersionCode());
         b.b(parcel, 2, polylineOptions.getPoints(), false);
         b.a(parcel, 3, polylineOptions.getWidth());
@@ -23,59 +23,59 @@ public class PolylineOptionsCreator implements Parcelable$Creator<PolylineOption
         b.a(parcel, 5, polylineOptions.getZIndex());
         b.a(parcel, 6, polylineOptions.isVisible());
         b.a(parcel, 7, polylineOptions.isGeodesic());
-        b.D(parcel, o);
+        b.F(parcel, p3);
     }
     
     public PolylineOptions createFromParcel(final Parcel parcel) {
-        float j = 0.0f;
+        float k = 0.0f;
         boolean c = false;
-        final int n = a.n(parcel);
+        final int o = a.o(parcel);
         List<Object> c2 = null;
         boolean c3 = false;
         int g = 0;
         float i = 0.0f;
         int g2 = 0;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
                 default: {
-                    a.b(parcel, m);
+                    a.b(parcel, n);
                     continue;
                 }
                 case 1: {
-                    g2 = a.g(parcel, m);
+                    g2 = a.g(parcel, n);
                     continue;
                 }
                 case 2: {
-                    c2 = a.c(parcel, m, (android.os.Parcelable$Creator<Object>)LatLng.CREATOR);
+                    c2 = a.c(parcel, n, (android.os.Parcelable$Creator<Object>)LatLng.CREATOR);
                     continue;
                 }
                 case 3: {
-                    i = a.j(parcel, m);
+                    i = a.k(parcel, n);
                     continue;
                 }
                 case 4: {
-                    g = a.g(parcel, m);
+                    g = a.g(parcel, n);
                     continue;
                 }
                 case 5: {
-                    j = a.j(parcel, m);
+                    k = a.k(parcel, n);
                     continue;
                 }
                 case 6: {
-                    c3 = a.c(parcel, m);
+                    c3 = a.c(parcel, n);
                     continue;
                 }
                 case 7: {
-                    c = a.c(parcel, m);
+                    c = a.c(parcel, n);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new PolylineOptions(g2, c2, i, g, j, c3, c);
+        return new PolylineOptions(g2, c2, i, g, k, c3, c);
     }
     
     public PolylineOptions[] newArray(final int n) {

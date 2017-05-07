@@ -7,8 +7,8 @@ package com.google.android.gms.common.data;
 import java.util.Iterator;
 import java.util.Comparator;
 import java.util.Collections;
-import com.google.android.gms.internal.ds;
-import com.google.android.gms.internal.ee;
+import com.google.android.gms.internal.fb;
+import com.google.android.gms.internal.fo;
 import android.os.Parcel;
 import android.net.Uri;
 import android.database.CharArrayBuffer;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import android.util.Log;
 import java.util.ArrayList;
-import com.google.android.gms.internal.eg;
+import com.google.android.gms.internal.fq;
 import android.database.AbstractWindowedCursor;
 import java.util.HashMap;
 import android.content.ContentValues;
@@ -25,25 +25,25 @@ import android.database.CursorWindow;
 import android.os.Bundle;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public class DataHolder implements SafeParcelable
+public final class DataHolder implements SafeParcelable
 {
+    private static final Builder BP;
     public static final DataHolderCreator CREATOR;
-    private static final Builder nS;
-    private final int kg;
-    private final int mC;
+    private final int Ah;
+    private final String[] BH;
+    Bundle BI;
+    private final CursorWindow[] BJ;
+    private final Bundle BK;
+    int[] BL;
+    int BM;
+    private Object BN;
+    private boolean BO;
     boolean mClosed;
-    private final String[] nK;
-    Bundle nL;
-    private final CursorWindow[] nM;
-    private final Bundle nN;
-    int[] nO;
-    int nP;
-    private Object nQ;
-    private boolean nR;
+    private final int xH;
     
     static {
         CREATOR = new DataHolderCreator();
-        nS = (Builder)new Builder(new String[0], null) {
+        BP = (Builder)new Builder(new String[0], null) {
             @Override
             public Builder withRow(final ContentValues contentValues) {
                 throw new UnsupportedOperationException("Cannot add data to empty builder");
@@ -56,14 +56,14 @@ public class DataHolder implements SafeParcelable
         };
     }
     
-    DataHolder(final int kg, final String[] nk, final CursorWindow[] nm, final int mc, final Bundle nn) {
+    DataHolder(final int xh, final String[] bh, final CursorWindow[] bj, final int ah, final Bundle bk) {
         this.mClosed = false;
-        this.nR = true;
-        this.kg = kg;
-        this.nK = nk;
-        this.nM = nm;
-        this.mC = mc;
-        this.nN = nn;
+        this.BO = true;
+        this.xH = xh;
+        this.BH = bh;
+        this.BJ = bj;
+        this.Ah = ah;
+        this.BK = bk;
     }
     
     public DataHolder(final AbstractWindowedCursor abstractWindowedCursor, final int n, final Bundle bundle) {
@@ -71,21 +71,21 @@ public class DataHolder implements SafeParcelable
     }
     
     private DataHolder(final Builder builder, final int n, final Bundle bundle) {
-        this(builder.nK, a(builder, -1), n, bundle);
+        this(builder.BH, a(builder, -1), n, bundle);
     }
     
     private DataHolder(final Builder builder, final int n, final Bundle bundle, final int n2) {
-        this(builder.nK, a(builder, n2), n, bundle);
+        this(builder.BH, a(builder, n2), n, bundle);
     }
     
-    public DataHolder(final String[] array, final CursorWindow[] array2, final int mc, final Bundle nn) {
+    public DataHolder(final String[] array, final CursorWindow[] array2, final int ah, final Bundle bk) {
         this.mClosed = false;
-        this.nR = true;
-        this.kg = 1;
-        this.nK = eg.f(array);
-        this.nM = eg.f(array2);
-        this.mC = mc;
-        this.nN = nn;
+        this.BO = true;
+        this.xH = 1;
+        this.BH = fq.f(array);
+        this.BJ = fq.f(array2);
+        this.Ah = ah;
+        this.BK = bk;
         this.validateContents();
     }
     
@@ -140,7 +140,7 @@ public class DataHolder implements SafeParcelable
     
     private static CursorWindow[] a(final Builder builder, int i) {
         final int n = 0;
-        if (builder.nK.length == 0) {
+        if (builder.BH.length == 0) {
             return new CursorWindow[0];
         }
         ArrayList<CursorWindow> list2 = null;
@@ -149,8 +149,8 @@ public class DataHolder implements SafeParcelable
             Label_0088: {
                 List<Map<K, String>> list = null;
                 Label_0037: {
-                    if (i < 0 || i >= builder.nT.size()) {
-                        list = (List<Map<K, String>>)builder.nT;
+                    if (i < 0 || i >= builder.BQ.size()) {
+                        list = (List<Map<K, String>>)builder.BQ;
                         break Label_0037;
                     }
                     CursorWindow cursorWindow = null;
@@ -167,19 +167,19 @@ public class DataHolder implements SafeParcelable
                         Label_0244_Outer:Label_0398_Outer:
                         while (true) {
                             while (true) {
-                            Label_0642:
+                            Label_0670:
                                 while (true) {
-                                Label_0635:
+                                Label_0663:
                                     while (true) {
-                                        Label_0632: {
+                                        Label_0660: {
                                             try {
                                                 if (cursorWindow.allocRow()) {
-                                                    break Label_0632;
+                                                    break Label_0660;
                                                 }
                                                 Log.d("DataHolder", "Allocating additional cursor window for large data set (row " + i + ")");
                                                 cursorWindow = new CursorWindow(false);
                                                 cursorWindow.setStartPosition(i);
-                                                cursorWindow.setNumColumns(builder.nK.length);
+                                                cursorWindow.setNumColumns(builder.BH.length);
                                                 list2.add(cursorWindow);
                                                 if (!cursorWindow.allocRow()) {
                                                     Log.e("DataHolder", "Unable to allocate row to hold data.");
@@ -190,43 +190,47 @@ public class DataHolder implements SafeParcelable
                                                 map = list.get(i);
                                                 b = true;
                                                 n3 = 0;
-                                                if (n3 >= builder.nK.length || !b) {
+                                                if (n3 >= builder.BH.length || !b) {
                                                     break;
                                                 }
-                                                s = builder.nK[n3];
+                                                s = builder.BH[n3];
                                                 value = map.get(s);
                                                 if (value == null) {
                                                     b = cursorWindow.putNull(n2, n3);
-                                                    break Label_0635;
+                                                    break Label_0663;
                                                 }
                                                 if (value instanceof String) {
                                                     b = cursorWindow.putString((String)value, n2, n3);
-                                                    break Label_0635;
+                                                    break Label_0663;
                                                 }
                                                 if (value instanceof Long) {
                                                     b = cursorWindow.putLong((long)value, n2, n3);
-                                                    break Label_0635;
+                                                    break Label_0663;
                                                 }
                                                 if (value instanceof Integer) {
                                                     b = cursorWindow.putLong((long)(int)value, n2, n3);
-                                                    break Label_0635;
+                                                    break Label_0663;
                                                 }
                                                 if (value instanceof Boolean) {
                                                     if (value) {
                                                         n4 = 1L;
                                                         b = cursorWindow.putLong(n4, n2, n3);
-                                                        break Label_0635;
+                                                        break Label_0663;
                                                     }
-                                                    break Label_0642;
+                                                    break Label_0670;
                                                 }
                                                 else {
                                                     if (value instanceof byte[]) {
                                                         b = cursorWindow.putBlob((byte[])(byte[])(Object)value, n2, n3);
-                                                        break Label_0635;
+                                                        break Label_0663;
+                                                    }
+                                                    if (value instanceof Double) {
+                                                        b = cursorWindow.putDouble((double)value, n2, n3);
+                                                        break Label_0663;
                                                     }
                                                     throw new IllegalArgumentException("Unsupported object for column " + s + ": " + (Object)value);
                                                 }
-                                                list = builder.nT.subList(0, i);
+                                                list = builder.BQ.subList(0, i);
                                                 break Label_0037;
                                             }
                                             catch (RuntimeException ex) {
@@ -252,7 +256,7 @@ public class DataHolder implements SafeParcelable
                         Log.d("DataHolder", "Couldn't populate window data for row " + i + " - allocating new window.");
                         cursorWindow.freeLastRow();
                         cursorWindow = new CursorWindow(false);
-                        cursorWindow.setNumColumns(builder.nK.length);
+                        cursorWindow.setNumColumns(builder.BH.length);
                         list2.add(cursorWindow);
                         n5 = i - 1;
                         i = 0;
@@ -271,7 +275,7 @@ public class DataHolder implements SafeParcelable
                 CursorWindow cursorWindow = new CursorWindow(false);
                 list2 = new ArrayList<CursorWindow>();
                 list2.add(cursorWindow);
-                cursorWindow.setNumColumns(builder.nK.length);
+                cursorWindow.setNumColumns(builder.BH.length);
                 i = 0;
                 int n2 = 0;
             }
@@ -283,25 +287,25 @@ public class DataHolder implements SafeParcelable
         return list2.toArray(new CursorWindow[list2.size()]);
     }
     
-    private void b(final String s, final int n) {
-        if (this.nL == null || !this.nL.containsKey(s)) {
-            throw new IllegalArgumentException("No such column: " + s);
-        }
-        if (this.isClosed()) {
-            throw new IllegalArgumentException("Buffer is closed.");
-        }
-        if (n < 0 || n >= this.nP) {
-            throw new CursorIndexOutOfBoundsException(n, this.nP);
-        }
-    }
-    
     public static Builder builder(final String[] array) {
         return new Builder(array, (String)null);
     }
     
     public static Builder builder(final String[] array, final String s) {
-        eg.f(s);
+        fq.f(s);
         return new Builder(array, s);
+    }
+    
+    private void e(final String s, final int n) {
+        if (this.BI == null || !this.BI.containsKey(s)) {
+            throw new IllegalArgumentException("No such column: " + s);
+        }
+        if (this.isClosed()) {
+            throw new IllegalArgumentException("Buffer is closed.");
+        }
+        if (n < 0 || n >= this.BM) {
+            throw new CursorIndexOutOfBoundsException(n, this.BM);
+        }
     }
     
     public static DataHolder empty(final int n) {
@@ -309,72 +313,72 @@ public class DataHolder implements SafeParcelable
     }
     
     public static DataHolder empty(final int n, final Bundle bundle) {
-        return new DataHolder(DataHolder.nS, n, bundle);
+        return new DataHolder(DataHolder.BP, n, bundle);
     }
     
-    public int C(int n) {
+    public int G(int n) {
         int n2 = 0;
-        eg.p(n >= 0 && n < this.nP);
+        fq.x(n >= 0 && n < this.BM);
         int n3;
         while (true) {
             n3 = n2;
-            if (n2 >= this.nO.length) {
+            if (n2 >= this.BL.length) {
                 break;
             }
-            if (n < this.nO[n2]) {
+            if (n < this.BL[n2]) {
                 n3 = n2 - 1;
                 break;
             }
             ++n2;
         }
-        if ((n = n3) == this.nO.length) {
+        if ((n = n3) == this.BL.length) {
             n = n3 - 1;
         }
         return n;
     }
     
-    String[] bv() {
-        return this.nK;
-    }
-    
-    CursorWindow[] bw() {
-        return this.nM;
-    }
-    
-    public void c(final Object nq) {
-        this.nQ = nq;
+    public void c(final Object bn) {
+        this.BN = bn;
     }
     
     public void close() {
         synchronized (this) {
             if (!this.mClosed) {
                 this.mClosed = true;
-                for (int i = 0; i < this.nM.length; ++i) {
-                    this.nM[i].close();
+                for (int i = 0; i < this.BJ.length; ++i) {
+                    this.BJ[i].close();
                 }
             }
         }
     }
     
     public void copyToBuffer(final String s, final int n, final int n2, final CharArrayBuffer charArrayBuffer) {
-        this.b(s, n);
-        this.nM[n2].copyStringToBuffer(n, this.nL.getInt(s), charArrayBuffer);
+        this.e(s, n);
+        this.BJ[n2].copyStringToBuffer(n, this.BI.getInt(s), charArrayBuffer);
     }
     
     public int describeContents() {
         return 0;
     }
     
+    String[] er() {
+        return this.BH;
+    }
+    
+    CursorWindow[] es() {
+        return this.BJ;
+    }
+    
     @Override
     protected void finalize() throws Throwable {
         try {
-            if (this.nR && this.nM.length > 0 && !this.isClosed()) {
+            if (this.BO && this.BJ.length > 0 && !this.isClosed()) {
                 String s;
-                if (this.nQ == null) {
+                if (this.BN == null) {
                     s = "internal object: " + this.toString();
                 }
                 else {
-                    s = this.nQ.toString();
+                    s = this.BN.toString();
                 }
                 Log.e("DataBuffer", "Internal data leak within a DataBuffer object detected!  Be sure to explicitly call close() on all DataBuffer extending objects when you are done with them. (" + s + ")");
                 this.close();
@@ -386,53 +390,58 @@ public class DataHolder implements SafeParcelable
     }
     
     public boolean getBoolean(final String s, final int n, final int n2) {
-        this.b(s, n);
-        return Long.valueOf(this.nM[n2].getLong(n, this.nL.getInt(s))) == 1L;
+        this.e(s, n);
+        return Long.valueOf(this.BJ[n2].getLong(n, this.BI.getInt(s))) == 1L;
     }
     
     public byte[] getByteArray(final String s, final int n, final int n2) {
-        this.b(s, n);
-        return this.nM[n2].getBlob(n, this.nL.getInt(s));
+        this.e(s, n);
+        return this.BJ[n2].getBlob(n, this.BI.getInt(s));
     }
     
     public int getCount() {
-        return this.nP;
+        return this.BM;
+    }
+    
+    public double getDouble(final String s, final int n, final int n2) {
+        this.e(s, n);
+        return this.BJ[n2].getDouble(n, this.BI.getInt(s));
     }
     
     public int getInteger(final String s, final int n, final int n2) {
-        this.b(s, n);
-        return this.nM[n2].getInt(n, this.nL.getInt(s));
+        this.e(s, n);
+        return this.BJ[n2].getInt(n, this.BI.getInt(s));
     }
     
     public long getLong(final String s, final int n, final int n2) {
-        this.b(s, n);
-        return this.nM[n2].getLong(n, this.nL.getInt(s));
+        this.e(s, n);
+        return this.BJ[n2].getLong(n, this.BI.getInt(s));
     }
     
     public Bundle getMetadata() {
-        return this.nN;
+        return this.BK;
     }
     
     public int getStatusCode() {
-        return this.mC;
+        return this.Ah;
     }
     
     public String getString(final String s, final int n, final int n2) {
-        this.b(s, n);
-        return this.nM[n2].getString(n, this.nL.getInt(s));
+        this.e(s, n);
+        return this.BJ[n2].getString(n, this.BI.getInt(s));
     }
     
     int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public boolean hasColumn(final String s) {
-        return this.nL.containsKey(s);
+        return this.BI.containsKey(s);
     }
     
     public boolean hasNull(final String s, final int n, final int n2) {
-        this.b(s, n);
-        return this.nM[n2].isNull(n, this.nL.getInt(s));
+        this.e(s, n);
+        return this.BJ[n2].isNull(n, this.BI.getInt(s));
     }
     
     public boolean isClosed() {
@@ -451,20 +460,20 @@ public class DataHolder implements SafeParcelable
     
     public void validateContents() {
         final int n = 0;
-        this.nL = new Bundle();
-        for (int i = 0; i < this.nK.length; ++i) {
-            this.nL.putInt(this.nK[i], i);
+        this.BI = new Bundle();
+        for (int i = 0; i < this.BH.length; ++i) {
+            this.BI.putInt(this.BH[i], i);
         }
-        this.nO = new int[this.nM.length];
+        this.BL = new int[this.BJ.length];
         final int n2 = 0;
         int j = n;
-        int np = n2;
-        while (j < this.nM.length) {
-            this.nO[j] = np;
-            np += this.nM[j].getNumRows() - (np - this.nM[j].getStartPosition());
+        int bm = n2;
+        while (j < this.BJ.length) {
+            this.BL[j] = bm;
+            bm += this.BJ[j].getNumRows() - (bm - this.BJ[j].getStartPosition());
             ++j;
         }
-        this.nP = np;
+        this.BM = bm;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
@@ -473,41 +482,41 @@ public class DataHolder implements SafeParcelable
     
     public static class Builder
     {
-        private final String[] nK;
-        private final ArrayList<HashMap<String, Object>> nT;
-        private final String nU;
-        private final HashMap<Object, Integer> nV;
-        private boolean nW;
-        private String nX;
+        private final String[] BH;
+        private final ArrayList<HashMap<String, Object>> BQ;
+        private final String BR;
+        private final HashMap<Object, Integer> BS;
+        private boolean BT;
+        private String BU;
         
-        private Builder(final String[] array, final String nu) {
-            this.nK = eg.f(array);
-            this.nT = new ArrayList<HashMap<String, Object>>();
-            this.nU = nu;
-            this.nV = new HashMap<Object, Integer>();
-            this.nW = false;
-            this.nX = null;
+        private Builder(final String[] array, final String br) {
+            this.BH = fq.f(array);
+            this.BQ = new ArrayList<HashMap<String, Object>>();
+            this.BR = br;
+            this.BS = new HashMap<Object, Integer>();
+            this.BT = false;
+            this.BU = null;
         }
         
         private void a(final HashMap<String, Object> hashMap) {
-            final Object value = hashMap.get(this.nU);
+            final Object value = hashMap.get(this.BR);
             if (value == null) {
                 return;
             }
-            final Integer n = this.nV.remove(value);
+            final Integer n = this.BS.remove(value);
             if (n != null) {
-                this.nT.remove((int)n);
+                this.BQ.remove((int)n);
             }
-            this.nV.put(value, this.nT.size());
+            this.BS.put(value, this.BQ.size());
         }
         
-        private void bx() {
-            if (this.nU != null) {
-                this.nV.clear();
-                for (int size = this.nT.size(), i = 0; i < size; ++i) {
-                    final Object value = this.nT.get(i).get(this.nU);
+        private void et() {
+            if (this.BR != null) {
+                this.BS.clear();
+                for (int size = this.BQ.size(), i = 0; i < size; ++i) {
+                    final Object value = this.BQ.get(i).get(this.BR);
                     if (value != null) {
-                        this.nV.put(value, i);
+                        this.BS.put(value, i);
                     }
                 }
             }
@@ -526,32 +535,32 @@ public class DataHolder implements SafeParcelable
         }
         
         public int getCount() {
-            return this.nT.size();
+            return this.BQ.size();
         }
         
         public Builder removeRowsWithValue(final String s, final Object o) {
-            for (int i = this.nT.size() - 1; i >= 0; --i) {
-                if (ee.equal(this.nT.get(i).get(s), o)) {
-                    this.nT.remove(i);
+            for (int i = this.BQ.size() - 1; i >= 0; --i) {
+                if (fo.equal(this.BQ.get(i).get(s), o)) {
+                    this.BQ.remove(i);
                 }
             }
             return this;
         }
         
-        public Builder sort(final String nx) {
-            ds.d(nx);
-            if (this.nW && nx.equals(this.nX)) {
+        public Builder sort(final String bu) {
+            fb.d(bu);
+            if (this.BT && bu.equals(this.BU)) {
                 return this;
             }
-            Collections.sort(this.nT, new a(nx));
-            this.bx();
-            this.nW = true;
-            this.nX = nx;
+            Collections.sort(this.BQ, new a(bu));
+            this.et();
+            this.BT = true;
+            this.BU = bu;
             return this;
         }
         
         public Builder withRow(final ContentValues contentValues) {
-            ds.d(contentValues);
+            fb.d(contentValues);
             final HashMap<String, Object> hashMap = new HashMap<String, Object>(contentValues.size());
             for (final Map.Entry<Object, V> entry : contentValues.valueSet()) {
                 hashMap.put(entry.getKey(), entry.getValue());
@@ -560,27 +569,27 @@ public class DataHolder implements SafeParcelable
         }
         
         public Builder withRow(final HashMap<String, Object> hashMap) {
-            ds.d(hashMap);
-            if (this.nU != null) {
+            fb.d(hashMap);
+            if (this.BR != null) {
                 this.a(hashMap);
             }
-            this.nT.add(hashMap);
-            this.nW = false;
+            this.BQ.add(hashMap);
+            this.BT = false;
             return this;
         }
     }
     
     private static final class a implements Comparator<HashMap<String, Object>>
     {
-        private final String nY;
+        private final String BV;
         
         a(final String s) {
-            this.nY = eg.f(s);
+            this.BV = fq.f(s);
         }
         
         public int a(final HashMap<String, Object> hashMap, final HashMap<String, Object> hashMap2) {
-            final Boolean f = eg.f((Boolean)hashMap.get(this.nY));
-            final String f2 = eg.f((String)hashMap2.get(this.nY));
+            final Boolean f = fq.f((Boolean)hashMap.get(this.BV));
+            final String f2 = fq.f((String)hashMap2.get(this.BV));
             if (f.equals(f2)) {
                 return 0;
             }

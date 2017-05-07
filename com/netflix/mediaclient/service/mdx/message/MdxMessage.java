@@ -4,10 +4,13 @@
 
 package com.netflix.mediaclient.service.mdx.message;
 
+import java.util.HashSet;
 import org.json.JSONObject;
+import java.util.Set;
 
 public abstract class MdxMessage
 {
+    private static final Set<String> MESSAGE_IS_USER_COMMAND;
     protected static final String PROPERTY_xid = "xid";
     protected static final String TAG = "nf_mdx";
     public static final String TYPE_AUDIO_SUBTITLES_CHANGED = "AUDIO_SUBTITLES_CHANGED";
@@ -37,9 +40,29 @@ public abstract class MdxMessage
     protected JSONObject mJson;
     private String mName;
     
+    static {
+        MESSAGE_IS_USER_COMMAND = new HashSet<String>() {
+            {
+                this.add("DIALOG_RESPONSE");
+                this.add("PLAYER_PAUSE");
+                this.add("PLAYER_PLAY");
+                this.add("PLAYER_RESUME");
+                this.add("PLAYER_SET_AUTO_ADVANCE");
+                this.add("PLAYER_SET_CURRENT_TIME");
+                this.add("PLAYER_SKIP");
+                this.add("PLAYER_STOP");
+                this.add("SET_AUDIO_SUBTITLES");
+            }
+        };
+    }
+    
     protected MdxMessage(final String mName) {
         this.mJson = new JSONObject();
         this.mName = mName;
+    }
+    
+    public static boolean isUserCommand(final String s) {
+        return MdxMessage.MESSAGE_IS_USER_COMMAND.contains(s);
     }
     
     public String messageName() {

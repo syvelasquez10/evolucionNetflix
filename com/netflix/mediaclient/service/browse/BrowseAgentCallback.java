@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.PostPlayVideo;
 import com.netflix.mediaclient.servicemgr.MovieDetails;
 import com.netflix.mediaclient.servicemgr.LoMo;
 import com.netflix.mediaclient.servicemgr.LoLoMo;
+import com.netflix.mediaclient.servicemgr.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.Genre;
 import com.netflix.mediaclient.servicemgr.GenreList;
 import com.netflix.mediaclient.servicemgr.EpisodeDetails;
@@ -36,6 +37,8 @@ public interface BrowseAgentCallback
     void onGenresFetched(final List<Genre> p0, final int p1);
     
     void onIQListRefresh(final int p0);
+    
+    void onKidsCharacterDetailsFetched(final KidsCharacterDetails p0, final Boolean p1, final int p2);
     
     void onLoLoMoPrefetched(final int p0);
     

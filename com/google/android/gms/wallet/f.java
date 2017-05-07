@@ -4,78 +4,104 @@
 
 package com.google.android.gms.wallet;
 
+import com.google.android.gms.identity.intents.model.UserAddress;
 import com.google.android.gms.common.internal.safeparcel.a;
+import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class f implements Parcelable$Creator<LineItem>
+public class f implements Parcelable$Creator<FullWallet>
 {
-    static void a(final LineItem lineItem, final Parcel parcel, int o) {
-        o = b.o(parcel);
-        b.c(parcel, 1, lineItem.getVersionCode());
-        b.a(parcel, 2, lineItem.description, false);
-        b.a(parcel, 3, lineItem.Gw, false);
-        b.a(parcel, 4, lineItem.Gx, false);
-        b.a(parcel, 5, lineItem.Gj, false);
-        b.c(parcel, 6, lineItem.Gy);
-        b.a(parcel, 7, lineItem.Gk, false);
-        b.D(parcel, o);
+    static void a(final FullWallet fullWallet, final Parcel parcel, final int n) {
+        final int p3 = b.p(parcel);
+        b.c(parcel, 1, fullWallet.getVersionCode());
+        b.a(parcel, 2, fullWallet.abh, false);
+        b.a(parcel, 3, fullWallet.abi, false);
+        b.a(parcel, 4, (Parcelable)fullWallet.abj, n, false);
+        b.a(parcel, 5, fullWallet.abk, false);
+        b.a(parcel, 6, (Parcelable)fullWallet.abl, n, false);
+        b.a(parcel, 7, (Parcelable)fullWallet.abm, n, false);
+        b.a(parcel, 8, fullWallet.abn, false);
+        b.a(parcel, 9, (Parcelable)fullWallet.abo, n, false);
+        b.a(parcel, 10, (Parcelable)fullWallet.abp, n, false);
+        b.a(parcel, 11, fullWallet.abq, n, false);
+        b.F(parcel, p3);
     }
     
-    public LineItem aJ(final Parcel parcel) {
+    public FullWallet bb(final Parcel parcel) {
+        InstrumentInfo[] array = null;
+        final int o = a.o(parcel);
         int g = 0;
-        String m = null;
-        final int n = a.n(parcel);
-        String i = null;
-        String j = null;
-        String k = null;
-        String l = null;
-        int g2 = 0;
-        while (parcel.dataPosition() < n) {
-            final int m2 = a.m(parcel);
-            switch (a.M(m2)) {
+        UserAddress userAddress = null;
+        UserAddress userAddress2 = null;
+        String[] z = null;
+        Address address = null;
+        Address address2 = null;
+        String n = null;
+        ProxyCard proxyCard = null;
+        String n2 = null;
+        String n3 = null;
+        while (parcel.dataPosition() < o) {
+            final int n4 = a.n(parcel);
+            switch (a.R(n4)) {
                 default: {
-                    a.b(parcel, m2);
+                    a.b(parcel, n4);
                     continue;
                 }
                 case 1: {
-                    g2 = a.g(parcel, m2);
+                    g = a.g(parcel, n4);
                     continue;
                 }
                 case 2: {
-                    l = a.m(parcel, m2);
+                    n3 = a.n(parcel, n4);
                     continue;
                 }
                 case 3: {
-                    k = a.m(parcel, m2);
+                    n2 = a.n(parcel, n4);
                     continue;
                 }
                 case 4: {
-                    j = a.m(parcel, m2);
+                    proxyCard = a.a(parcel, n4, ProxyCard.CREATOR);
                     continue;
                 }
                 case 5: {
-                    i = a.m(parcel, m2);
+                    n = a.n(parcel, n4);
                     continue;
                 }
                 case 6: {
-                    g = a.g(parcel, m2);
+                    address2 = a.a(parcel, n4, Address.CREATOR);
                     continue;
                 }
                 case 7: {
-                    m = a.m(parcel, m2);
+                    address = a.a(parcel, n4, Address.CREATOR);
+                    continue;
+                }
+                case 8: {
+                    z = a.z(parcel, n4);
+                    continue;
+                }
+                case 9: {
+                    userAddress2 = a.a(parcel, n4, UserAddress.CREATOR);
+                    continue;
+                }
+                case 10: {
+                    userAddress = a.a(parcel, n4, UserAddress.CREATOR);
+                    continue;
+                }
+                case 11: {
+                    array = a.b(parcel, n4, InstrumentInfo.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new LineItem(g2, l, k, j, i, g, m);
+        return new FullWallet(g, n3, n2, proxyCard, n, address2, address, z, userAddress2, userAddress, array);
     }
     
-    public LineItem[] bB(final int n) {
-        return new LineItem[n];
+    public FullWallet[] cn(final int n) {
+        return new FullWallet[n];
     }
 }

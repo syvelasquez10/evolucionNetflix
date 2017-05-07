@@ -6,25 +6,25 @@ package com.google.android.gms.location;
 
 import android.os.Looper;
 import android.location.Location;
-import com.google.android.gms.internal.eg;
+import com.google.android.gms.internal.fq;
 import android.app.PendingIntent;
 import java.util.Iterator;
-import com.google.android.gms.internal.go;
+import com.google.android.gms.internal.hd;
 import java.util.ArrayList;
 import java.util.List;
 import android.content.Intent;
 import android.content.Context;
-import com.google.android.gms.internal.gn;
+import com.google.android.gms.internal.hc;
 import com.google.android.gms.common.GooglePlayServicesClient;
 
 public class LocationClient implements GooglePlayServicesClient
 {
     public static final String KEY_LOCATION_CHANGED = "com.google.android.location.LOCATION";
     public static final String KEY_MOCK_LOCATION = "mockLocation";
-    private final gn xl;
+    private final hc NO;
     
     public LocationClient(final Context context, final ConnectionCallbacks connectionCallbacks, final OnConnectionFailedListener onConnectionFailedListener) {
-        this.xl = new gn(context, connectionCallbacks, onConnectionFailedListener, "location");
+        this.NO = new hc(context, connectionCallbacks, onConnectionFailedListener, "location");
     }
     
     public static int getErrorCode(final Intent intent) {
@@ -44,10 +44,10 @@ public class LocationClient implements GooglePlayServicesClient
         if (list == null) {
             return null;
         }
-        final ArrayList list2 = new ArrayList<go>(list.size());
+        final ArrayList list2 = new ArrayList<hd>(list.size());
         final Iterator<byte[]> iterator = list.iterator();
         while (iterator.hasNext()) {
-            list2.add(go.f(iterator.next()));
+            list2.add(hd.h(iterator.next()));
         }
         return (List<Geofence>)list2;
     }
@@ -57,105 +57,105 @@ public class LocationClient implements GooglePlayServicesClient
     }
     
     public void addGeofences(final List<Geofence> list, final PendingIntent pendingIntent, final OnAddGeofencesResultListener onAddGeofencesResultListener) {
-        List<go> list2 = null;
+        List<hd> list2 = null;
         if (list != null) {
-            list2 = new ArrayList<go>();
+            list2 = new ArrayList<hd>();
             for (final Geofence geofence : list) {
-                eg.b(geofence instanceof go, "Geofence must be created using Geofence.Builder.");
-                list2.add((go)geofence);
+                fq.b(geofence instanceof hd, "Geofence must be created using Geofence.Builder.");
+                list2.add((hd)geofence);
             }
         }
-        this.xl.addGeofences(list2, pendingIntent, onAddGeofencesResultListener);
+        this.NO.addGeofences(list2, pendingIntent, onAddGeofencesResultListener);
     }
     
     @Override
     public void connect() {
-        this.xl.connect();
+        this.NO.connect();
     }
     
     @Override
     public void disconnect() {
-        this.xl.disconnect();
+        this.NO.disconnect();
     }
     
     public Location getLastLocation() {
-        return this.xl.getLastLocation();
+        return this.NO.getLastLocation();
     }
     
     @Override
     public boolean isConnected() {
-        return this.xl.isConnected();
+        return this.NO.isConnected();
     }
     
     @Override
     public boolean isConnecting() {
-        return this.xl.isConnecting();
+        return this.NO.isConnecting();
     }
     
     @Override
     public boolean isConnectionCallbacksRegistered(final ConnectionCallbacks connectionCallbacks) {
-        return this.xl.isConnectionCallbacksRegistered(connectionCallbacks);
+        return this.NO.isConnectionCallbacksRegistered(connectionCallbacks);
     }
     
     @Override
     public boolean isConnectionFailedListenerRegistered(final OnConnectionFailedListener onConnectionFailedListener) {
-        return this.xl.isConnectionFailedListenerRegistered(onConnectionFailedListener);
+        return this.NO.isConnectionFailedListenerRegistered(onConnectionFailedListener);
     }
     
     @Override
     public void registerConnectionCallbacks(final ConnectionCallbacks connectionCallbacks) {
-        this.xl.registerConnectionCallbacks(connectionCallbacks);
+        this.NO.registerConnectionCallbacks(connectionCallbacks);
     }
     
     @Override
     public void registerConnectionFailedListener(final OnConnectionFailedListener onConnectionFailedListener) {
-        this.xl.registerConnectionFailedListener(onConnectionFailedListener);
+        this.NO.registerConnectionFailedListener(onConnectionFailedListener);
     }
     
     public void removeGeofences(final PendingIntent pendingIntent, final OnRemoveGeofencesResultListener onRemoveGeofencesResultListener) {
-        this.xl.removeGeofences(pendingIntent, onRemoveGeofencesResultListener);
+        this.NO.removeGeofences(pendingIntent, onRemoveGeofencesResultListener);
     }
     
     public void removeGeofences(final List<String> list, final OnRemoveGeofencesResultListener onRemoveGeofencesResultListener) {
-        this.xl.removeGeofences(list, onRemoveGeofencesResultListener);
+        this.NO.removeGeofences(list, onRemoveGeofencesResultListener);
     }
     
     public void removeLocationUpdates(final PendingIntent pendingIntent) {
-        this.xl.removeLocationUpdates(pendingIntent);
+        this.NO.removeLocationUpdates(pendingIntent);
     }
     
     public void removeLocationUpdates(final LocationListener locationListener) {
-        this.xl.removeLocationUpdates(locationListener);
+        this.NO.removeLocationUpdates(locationListener);
     }
     
     public void requestLocationUpdates(final LocationRequest locationRequest, final PendingIntent pendingIntent) {
-        this.xl.requestLocationUpdates(locationRequest, pendingIntent);
+        this.NO.requestLocationUpdates(locationRequest, pendingIntent);
     }
     
     public void requestLocationUpdates(final LocationRequest locationRequest, final LocationListener locationListener) {
-        this.xl.requestLocationUpdates(locationRequest, locationListener);
+        this.NO.requestLocationUpdates(locationRequest, locationListener);
     }
     
     public void requestLocationUpdates(final LocationRequest locationRequest, final LocationListener locationListener, final Looper looper) {
-        this.xl.requestLocationUpdates(locationRequest, locationListener, looper);
+        this.NO.requestLocationUpdates(locationRequest, locationListener, looper);
     }
     
     public void setMockLocation(final Location mockLocation) {
-        this.xl.setMockLocation(mockLocation);
+        this.NO.setMockLocation(mockLocation);
     }
     
     public void setMockMode(final boolean mockMode) {
-        this.xl.setMockMode(mockMode);
+        this.NO.setMockMode(mockMode);
     }
     
     @Override
     public void unregisterConnectionCallbacks(final ConnectionCallbacks connectionCallbacks) {
-        this.xl.unregisterConnectionCallbacks(connectionCallbacks);
+        this.NO.unregisterConnectionCallbacks(connectionCallbacks);
     }
     
     @Override
     public void unregisterConnectionFailedListener(final OnConnectionFailedListener onConnectionFailedListener) {
-        this.xl.unregisterConnectionFailedListener(onConnectionFailedListener);
+        this.NO.unregisterConnectionFailedListener(onConnectionFailedListener);
     }
     
     public interface OnAddGeofencesResultListener

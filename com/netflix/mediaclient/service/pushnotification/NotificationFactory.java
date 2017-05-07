@@ -10,11 +10,15 @@ import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.content.Intent;
 import android.content.Context;
+import com.netflix.mediaclient.service.NetflixService;
 
 public final class NotificationFactory
 {
     public static final String DATA = "data";
     private static final String TAG = "nf_service";
+    
+    public static void createDummyNotification(final NetflixService netflixService) {
+    }
     
     public static void createNotification(final Context context, final Intent intent, final ImageLoader imageLoader, final int n, final ErrorLogging errorLogging) {
         if (intent == null) {

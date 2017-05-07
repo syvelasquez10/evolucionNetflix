@@ -7,7 +7,9 @@ package com.netflix.mediaclient.servicemgr;
 public enum LoMoType
 {
     BILLBOARD("BillboardList"), 
+    CHARACTERS("character"), 
     CONTINUE_WATCHING("continueWatching"), 
+    FLAT_GENRE("defaultKidsList"), 
     INSTANT_QUEUE("queue"), 
     SOCIAL_FRIEND("SocialFriend"), 
     SOCIAL_GROUP("SocialGroup"), 

@@ -4,11 +4,11 @@
 
 package com.google.android.gms.common;
 
-import com.google.android.gms.internal.eg;
-import com.google.android.gms.dynamic.e;
+import com.google.android.gms.internal.fq;
+import com.google.android.gms.dynamic.g;
 import android.util.Log;
-import com.google.android.gms.internal.eh;
-import com.google.android.gms.internal.ei;
+import com.google.android.gms.internal.fr;
+import com.google.android.gms.internal.fs;
 import android.widget.Button;
 import android.util.AttributeSet;
 import android.content.Context;
@@ -23,9 +23,9 @@ public final class SignInButton extends FrameLayout implements View$OnClickListe
     public static final int SIZE_ICON_ONLY = 2;
     public static final int SIZE_STANDARD = 0;
     public static final int SIZE_WIDE = 1;
-    private int mP;
-    private View mQ;
-    private View$OnClickListener mR;
+    private int Av;
+    private View Aw;
+    private View$OnClickListener Ax;
     private int mSize;
     
     public SignInButton(final Context context) {
@@ -38,30 +38,30 @@ public final class SignInButton extends FrameLayout implements View$OnClickListe
     
     public SignInButton(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.mR = null;
+        this.Ax = null;
         this.setStyle(0, 0);
     }
     
-    private static Button c(final Context context, final int n, final int n2) {
-        final ei ei = new ei(context);
-        ei.a(context.getResources(), n, n2);
-        return ei;
+    private static Button a(final Context context, final int n, final int n2) {
+        final fs fs = new fs(context);
+        fs.a(context.getResources(), n, n2);
+        return fs;
     }
     
-    private void p(final Context context) {
-        if (this.mQ != null) {
-            this.removeView(this.mQ);
+    private void v(final Context context) {
+        if (this.Aw != null) {
+            this.removeView(this.Aw);
         }
         while (true) {
             try {
-                this.mQ = eh.d(context, this.mSize, this.mP);
-                this.addView(this.mQ);
-                this.mQ.setEnabled(this.isEnabled());
-                this.mQ.setOnClickListener((View$OnClickListener)this);
+                this.Aw = fr.b(context, this.mSize, this.Av);
+                this.addView(this.Aw);
+                this.Aw.setEnabled(this.isEnabled());
+                this.Aw.setOnClickListener((View$OnClickListener)this);
             }
-            catch (e.a a) {
+            catch (g.a a) {
                 Log.w("SignInButton", "Sign in button not found, using placeholder instead");
-                this.mQ = (View)c(context, this.mSize, this.mP);
+                this.Aw = (View)a(context, this.mSize, this.Av);
                 continue;
             }
             break;
@@ -69,8 +69,8 @@ public final class SignInButton extends FrameLayout implements View$OnClickListe
     }
     
     public void onClick(final View view) {
-        if (this.mR != null && view == this.mQ) {
-            this.mR.onClick((View)this);
+        if (this.Ax != null && view == this.Aw) {
+            this.Ax.onClick((View)this);
         }
     }
     
@@ -80,26 +80,26 @@ public final class SignInButton extends FrameLayout implements View$OnClickListe
     
     public void setEnabled(final boolean b) {
         super.setEnabled(b);
-        this.mQ.setEnabled(b);
+        this.Aw.setEnabled(b);
     }
     
-    public void setOnClickListener(final View$OnClickListener mr) {
-        this.mR = mr;
-        if (this.mQ != null) {
-            this.mQ.setOnClickListener((View$OnClickListener)this);
+    public void setOnClickListener(final View$OnClickListener ax) {
+        this.Ax = ax;
+        if (this.Aw != null) {
+            this.Aw.setOnClickListener((View$OnClickListener)this);
         }
     }
     
     public void setSize(final int n) {
-        this.setStyle(n, this.mP);
+        this.setStyle(n, this.Av);
     }
     
-    public void setStyle(final int mSize, final int mp) {
+    public void setStyle(final int mSize, final int av) {
         final boolean b = true;
-        eg.a(mSize >= 0 && mSize < 3, (Object)("Unknown button size " + mSize));
-        eg.a(mp >= 0 && mp < 2 && b, (Object)("Unknown color scheme " + mp));
+        fq.a(mSize >= 0 && mSize < 3, (Object)("Unknown button size " + mSize));
+        fq.a(av >= 0 && av < 2 && b, (Object)("Unknown color scheme " + av));
         this.mSize = mSize;
-        this.mP = mp;
-        this.p(this.getContext());
+        this.Av = av;
+        this.v(this.getContext());
     }
 }

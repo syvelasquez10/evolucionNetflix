@@ -5,73 +5,79 @@
 package com.google.android.gms.games.multiplayer;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.fc;
+import com.google.android.gms.internal.gm;
 import android.database.CharArrayBuffer;
-import com.google.android.gms.internal.dv;
-import com.google.android.gms.internal.ee;
+import com.google.android.gms.internal.fe;
+import com.google.android.gms.internal.fo;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.PlayerEntity;
 import android.net.Uri;
 import android.os.Parcelable$Creator;
-import com.google.android.gms.internal.fm;
+import com.google.android.gms.games.internal.GamesDowngradeableSafeParcel;
 
-public final class ParticipantEntity extends fm implements Participant
+public final class ParticipantEntity extends GamesDowngradeableSafeParcel implements Participant
 {
     public static final Parcelable$Creator<ParticipantEntity> CREATOR;
-    private final int kg;
-    private final String qa;
-    private final Uri sL;
-    private final Uri sM;
-    private final String up;
-    private final int wr;
-    private final String ws;
-    private final boolean wt;
-    private final PlayerEntity wu;
-    private final int wv;
-    private final ParticipantResult ww;
+    private final String HA;
+    private final Uri HF;
+    private final Uri HG;
+    private final String HQ;
+    private final String HR;
+    private final String Is;
+    private final String Jg;
+    private final PlayerEntity LH;
+    private final int MB;
+    private final boolean MC;
+    private final int MD;
+    private final ParticipantResult ME;
+    private final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new a();
+        CREATOR = (Parcelable$Creator)new ParticipantEntityCreatorCompat();
     }
     
-    ParticipantEntity(final int kg, final String up, final String qa, final Uri sl, final Uri sm, final int wr, final String ws, final boolean wt, final PlayerEntity wu, final int wv, final ParticipantResult ww) {
-        this.kg = kg;
-        this.up = up;
-        this.qa = qa;
-        this.sL = sl;
-        this.sM = sm;
-        this.wr = wr;
-        this.ws = ws;
-        this.wt = wt;
-        this.wu = wu;
-        this.wv = wv;
-        this.ww = ww;
+    ParticipantEntity(final int xh, final String jg, final String ha, final Uri hf, final Uri hg, final int mb, final String is, final boolean mc, final PlayerEntity lh, final int md, final ParticipantResult me, final String hq, final String hr) {
+        this.xH = xh;
+        this.Jg = jg;
+        this.HA = ha;
+        this.HF = hf;
+        this.HG = hg;
+        this.MB = mb;
+        this.Is = is;
+        this.MC = mc;
+        this.LH = lh;
+        this.MD = md;
+        this.ME = me;
+        this.HQ = hq;
+        this.HR = hr;
     }
     
     public ParticipantEntity(final Participant participant) {
-        this.kg = 2;
-        this.up = participant.getParticipantId();
-        this.qa = participant.getDisplayName();
-        this.sL = participant.getIconImageUri();
-        this.sM = participant.getHiResImageUri();
-        this.wr = participant.getStatus();
-        this.ws = participant.dy();
-        this.wt = participant.isConnectedToRoom();
+        this.xH = 3;
+        this.Jg = participant.getParticipantId();
+        this.HA = participant.getDisplayName();
+        this.HF = participant.getIconImageUri();
+        this.HG = participant.getHiResImageUri();
+        this.MB = participant.getStatus();
+        this.Is = participant.gi();
+        this.MC = participant.isConnectedToRoom();
         final Player player = participant.getPlayer();
-        PlayerEntity wu;
+        PlayerEntity lh;
         if (player == null) {
-            wu = null;
+            lh = null;
         }
         else {
-            wu = new PlayerEntity(player);
+            lh = new PlayerEntity(player);
         }
-        this.wu = wu;
-        this.wv = participant.getCapabilities();
-        this.ww = participant.getResult();
+        this.LH = lh;
+        this.MD = participant.getCapabilities();
+        this.ME = participant.getResult();
+        this.HQ = participant.getIconImageUrl();
+        this.HR = participant.getHiResImageUrl();
     }
     
     static int a(final Participant participant) {
-        return ee.hashCode(participant.getPlayer(), participant.getStatus(), participant.dy(), participant.isConnectedToRoom(), participant.getDisplayName(), participant.getIconImageUri(), participant.getHiResImageUri(), participant.getCapabilities(), participant.getResult());
+        return fo.hashCode(participant.getPlayer(), participant.getStatus(), participant.gi(), participant.isConnectedToRoom(), participant.getDisplayName(), participant.getIconImageUri(), participant.getHiResImageUri(), participant.getCapabilities(), participant.getResult(), participant.getParticipantId());
     }
     
     static boolean a(final Participant participant, final Object o) {
@@ -84,9 +90,9 @@ public final class ParticipantEntity extends fm implements Participant
             b2 = b;
             if (participant != o) {
                 final Participant participant2 = (Participant)o;
-                if (ee.equal(participant2.getPlayer(), participant.getPlayer()) && ee.equal(participant2.getStatus(), participant.getStatus()) && ee.equal(participant2.dy(), participant.dy()) && ee.equal(participant2.isConnectedToRoom(), participant.isConnectedToRoom()) && ee.equal(participant2.getDisplayName(), participant.getDisplayName()) && ee.equal(participant2.getIconImageUri(), participant.getIconImageUri()) && ee.equal(participant2.getHiResImageUri(), participant.getHiResImageUri()) && ee.equal(participant2.getCapabilities(), participant.getCapabilities())) {
+                if (fo.equal(participant2.getPlayer(), participant.getPlayer()) && fo.equal(participant2.getStatus(), participant.getStatus()) && fo.equal(participant2.gi(), participant.gi()) && fo.equal(participant2.isConnectedToRoom(), participant.isConnectedToRoom()) && fo.equal(participant2.getDisplayName(), participant.getDisplayName()) && fo.equal(participant2.getIconImageUri(), participant.getIconImageUri()) && fo.equal(participant2.getHiResImageUri(), participant.getHiResImageUri()) && fo.equal(participant2.getCapabilities(), participant.getCapabilities()) && fo.equal(participant2.getResult(), participant.getResult())) {
                     b2 = b;
-                    if (ee.equal(participant2.getResult(), participant.getResult())) {
+                    if (fo.equal(participant2.getParticipantId(), participant.getParticipantId())) {
                         return b2;
                     }
                 }
@@ -97,16 +103,11 @@ public final class ParticipantEntity extends fm implements Participant
     }
     
     static String b(final Participant participant) {
-        return ee.e(participant).a("Player", participant.getPlayer()).a("Status", participant.getStatus()).a("ClientAddress", participant.dy()).a("ConnectedToRoom", participant.isConnectedToRoom()).a("DisplayName", participant.getDisplayName()).a("IconImage", participant.getIconImageUri()).a("HiResImage", participant.getHiResImageUri()).a("Capabilities", participant.getCapabilities()).a("Result", participant.getResult()).toString();
+        return fo.e(participant).a("ParticipantId", participant.getParticipantId()).a("Player", participant.getPlayer()).a("Status", participant.getStatus()).a("ClientAddress", participant.gi()).a("ConnectedToRoom", participant.isConnectedToRoom()).a("DisplayName", participant.getDisplayName()).a("IconImage", participant.getIconImageUri()).a("IconImageUrl", participant.getIconImageUrl()).a("HiResImage", participant.getHiResImageUri()).a("HiResImageUrl", participant.getHiResImageUrl()).a("Capabilities", participant.getCapabilities()).a("Result", participant.getResult()).toString();
     }
     
     public int describeContents() {
         return 0;
-    }
-    
-    @Override
-    public String dy() {
-        return this.ws;
     }
     
     @Override
@@ -120,64 +121,85 @@ public final class ParticipantEntity extends fm implements Participant
     
     @Override
     public int getCapabilities() {
-        return this.wv;
+        return this.MD;
     }
     
     @Override
     public String getDisplayName() {
-        if (this.wu == null) {
-            return this.qa;
+        if (this.LH == null) {
+            return this.HA;
         }
-        return this.wu.getDisplayName();
+        return this.LH.getDisplayName();
     }
     
     @Override
     public void getDisplayName(final CharArrayBuffer charArrayBuffer) {
-        if (this.wu == null) {
-            fc.b(this.qa, charArrayBuffer);
+        if (this.LH == null) {
+            gm.b(this.HA, charArrayBuffer);
             return;
         }
-        this.wu.getDisplayName(charArrayBuffer);
+        this.LH.getDisplayName(charArrayBuffer);
     }
     
     @Override
     public Uri getHiResImageUri() {
-        if (this.wu == null) {
-            return this.sM;
+        if (this.LH == null) {
+            return this.HG;
         }
-        return this.wu.getHiResImageUri();
+        return this.LH.getHiResImageUri();
+    }
+    
+    @Override
+    public String getHiResImageUrl() {
+        if (this.LH == null) {
+            return this.HR;
+        }
+        return this.LH.getHiResImageUrl();
     }
     
     @Override
     public Uri getIconImageUri() {
-        if (this.wu == null) {
-            return this.sL;
+        if (this.LH == null) {
+            return this.HF;
         }
-        return this.wu.getIconImageUri();
+        return this.LH.getIconImageUri();
+    }
+    
+    @Override
+    public String getIconImageUrl() {
+        if (this.LH == null) {
+            return this.HQ;
+        }
+        return this.LH.getIconImageUrl();
     }
     
     @Override
     public String getParticipantId() {
-        return this.up;
+        return this.Jg;
     }
     
     @Override
     public Player getPlayer() {
-        return this.wu;
+        return this.LH;
     }
     
     @Override
     public ParticipantResult getResult() {
-        return this.ww;
+        return this.ME;
     }
     
     @Override
     public int getStatus() {
-        return this.wr;
+        return this.MB;
     }
     
     public int getVersionCode() {
-        return this.kg;
+        return this.xH;
+    }
+    
+    @Override
+    public String gi() {
+        return this.Is;
     }
     
     @Override
@@ -187,7 +209,7 @@ public final class ParticipantEntity extends fm implements Participant
     
     @Override
     public boolean isConnectedToRoom() {
-        return this.wt;
+        return this.MC;
     }
     
     public boolean isDataValid() {
@@ -202,32 +224,32 @@ public final class ParticipantEntity extends fm implements Participant
     public void writeToParcel(final Parcel parcel, final int n) {
         final String s = null;
         final boolean b = false;
-        if (!this.bN()) {
-            c.a(this, parcel, n);
+        if (!this.eK()) {
+            ParticipantEntityCreator.a(this, parcel, n);
         }
         else {
-            parcel.writeString(this.up);
-            parcel.writeString(this.qa);
+            parcel.writeString(this.Jg);
+            parcel.writeString(this.HA);
             String string;
-            if (this.sL == null) {
+            if (this.HF == null) {
                 string = null;
             }
             else {
-                string = this.sL.toString();
+                string = this.HF.toString();
             }
             parcel.writeString(string);
             String string2;
-            if (this.sM == null) {
+            if (this.HG == null) {
                 string2 = s;
             }
             else {
-                string2 = this.sM.toString();
+                string2 = this.HG.toString();
             }
             parcel.writeString(string2);
-            parcel.writeInt(this.wr);
-            parcel.writeString(this.ws);
+            parcel.writeInt(this.MB);
+            parcel.writeString(this.Is);
             int n2;
-            if (this.wt) {
+            if (this.MC) {
                 n2 = 1;
             }
             else {
@@ -235,26 +257,26 @@ public final class ParticipantEntity extends fm implements Participant
             }
             parcel.writeInt(n2);
             int n3;
-            if (this.wu == null) {
+            if (this.LH == null) {
                 n3 = (b ? 1 : 0);
             }
             else {
                 n3 = 1;
             }
             parcel.writeInt(n3);
-            if (this.wu != null) {
-                this.wu.writeToParcel(parcel, n);
+            if (this.LH != null) {
+                this.LH.writeToParcel(parcel, n);
             }
         }
     }
     
-    static final class a extends c
+    static final class ParticipantEntityCreatorCompat extends ParticipantEntityCreator
     {
         @Override
-        public ParticipantEntity ab(final Parcel parcel) {
+        public ParticipantEntity av(final Parcel parcel) {
             int n = 1;
-            if (fm.c(dv.bM()) || dv.P(ParticipantEntity.class.getCanonicalName())) {
-                return super.ab(parcel);
+            if (GamesDowngradeableSafeParcel.c(fe.eJ()) || fe.al(ParticipantEntity.class.getCanonicalName())) {
+                return super.av(parcel);
             }
             final String string = parcel.readString();
             final String string2 = parcel.readString();
@@ -287,7 +309,7 @@ public final class ParticipantEntity extends fm implements Participant
             else {
                 playerEntity = null;
             }
-            return new ParticipantEntity(2, string, string2, parse, parse2, int1, string5, b, playerEntity, 7, null);
+            return new ParticipantEntity(3, string, string2, parse, parse2, int1, string5, b, playerEntity, 7, null, null, null);
         }
     }
 }

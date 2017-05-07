@@ -20,8 +20,6 @@ public interface Participant extends Parcelable, Freezable<Participant>
     public static final int STATUS_NOT_INVITED_YET = 0;
     public static final int STATUS_UNRESPONSIVE = 6;
     
-    String dy();
-    
     int getCapabilities();
     
     String getDisplayName();
@@ -30,7 +28,13 @@ public interface Participant extends Parcelable, Freezable<Participant>
     
     Uri getHiResImageUri();
     
+    @Deprecated
+    String getHiResImageUrl();
+    
     Uri getIconImageUri();
+    
+    @Deprecated
+    String getIconImageUrl();
     
     String getParticipantId();
     
@@ -39,6 +43,8 @@ public interface Participant extends Parcelable, Freezable<Participant>
     ParticipantResult getResult();
     
     int getStatus();
+    
+    String gi();
     
     boolean isConnectedToRoom();
 }

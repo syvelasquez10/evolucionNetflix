@@ -25,15 +25,15 @@ public class AccountConfiguration
         PreferenceUtils.putStringPref(this.mContext, "accountConfig", null);
     }
     
-    public JSONArray getCastBlacklist() {
+    public boolean getCastEnabled() {
+        return this.mAccountConfigData != null && this.mAccountConfigData.getCastEnabled();
+    }
+    
+    public JSONArray getCastWhitelist() {
         if (this.mAccountConfigData == null) {
             return null;
         }
-        return this.mAccountConfigData.getCastBlacklistAsJsonArray();
-    }
-    
-    public boolean getCastEnabled() {
-        return this.mAccountConfigData != null && this.mAccountConfigData.getCastEnabled();
+        return this.mAccountConfigData.getCastWhitelistAsJsonArray();
     }
     
     public JSONObject getJPlayerConfig() {
@@ -41,6 +41,10 @@ public class AccountConfiguration
             return null;
         }
         return this.mAccountConfigData.getJPlayerThreadConfigAsJson();
+    }
+    
+    public KidsOnPhoneConfiguration getKidsOnPhoneConfiguration() {
+        return this.mAccountConfigData.getKidsOnPhone();
     }
     
     public JSONArray getMdxBlacklist() {

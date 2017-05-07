@@ -21,7 +21,7 @@ public class TurnBasedMatchEntityCreator implements Parcelable$Creator<TurnBased
     public static final int CONTENT_DESCRIPTION = 0;
     
     static void a(final TurnBasedMatchEntity turnBasedMatchEntity, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
+        final int p3 = b.p(parcel);
         b.a(parcel, 1, (Parcelable)turnBasedMatchEntity.getGame(), n, false);
         b.a(parcel, 2, turnBasedMatchEntity.getMatchId(), false);
         b.a(parcel, 3, turnBasedMatchEntity.getCreatorId(), false);
@@ -41,119 +41,131 @@ public class TurnBasedMatchEntityCreator implements Parcelable$Creator<TurnBased
         b.c(parcel, 1000, turnBasedMatchEntity.getVersionCode());
         b.a(parcel, 19, turnBasedMatchEntity.isLocallyModified());
         b.c(parcel, 18, turnBasedMatchEntity.getTurnStatus());
-        b.D(parcel, o);
+        b.a(parcel, 21, turnBasedMatchEntity.getDescriptionParticipantId(), false);
+        b.a(parcel, 20, turnBasedMatchEntity.getDescription(), false);
+        b.F(parcel, p3);
     }
     
     public TurnBasedMatchEntity createFromParcel(final Parcel parcel) {
-        final int n = a.n(parcel);
+        final int o = a.o(parcel);
         int g = 0;
         GameEntity gameEntity = null;
-        String m = null;
-        String i = null;
-        long h = 0L;
-        String j = null;
-        long h2 = 0L;
-        String k = null;
+        String n = null;
+        String n2 = null;
+        long i = 0L;
+        String n3 = null;
+        long j = 0L;
+        String n4 = null;
         int g2 = 0;
         int g3 = 0;
         int g4 = 0;
-        byte[] p = null;
+        byte[] q = null;
         ArrayList<ParticipantEntity> c = null;
-        String l = null;
-        byte[] p2 = null;
+        String n5 = null;
+        byte[] q2 = null;
         int g5 = 0;
-        Bundle o = null;
+        Bundle p = null;
         int g6 = 0;
         boolean c2 = false;
-        while (parcel.dataPosition() < n) {
-            final int m2 = a.m(parcel);
-            switch (a.M(m2)) {
+        String n6 = null;
+        String n7 = null;
+        while (parcel.dataPosition() < o) {
+            final int n8 = a.n(parcel);
+            switch (a.R(n8)) {
                 default: {
-                    a.b(parcel, m2);
+                    a.b(parcel, n8);
                     continue;
                 }
                 case 1: {
-                    gameEntity = a.a(parcel, m2, GameEntity.CREATOR);
+                    gameEntity = a.a(parcel, n8, GameEntity.CREATOR);
                     continue;
                 }
                 case 2: {
-                    m = a.m(parcel, m2);
+                    n = a.n(parcel, n8);
                     continue;
                 }
                 case 3: {
-                    i = a.m(parcel, m2);
+                    n2 = a.n(parcel, n8);
                     continue;
                 }
                 case 4: {
-                    h = a.h(parcel, m2);
+                    i = a.i(parcel, n8);
                     continue;
                 }
                 case 5: {
-                    j = a.m(parcel, m2);
+                    n3 = a.n(parcel, n8);
                     continue;
                 }
                 case 6: {
-                    h2 = a.h(parcel, m2);
+                    j = a.i(parcel, n8);
                     continue;
                 }
                 case 7: {
-                    k = a.m(parcel, m2);
+                    n4 = a.n(parcel, n8);
                     continue;
                 }
                 case 8: {
-                    g2 = a.g(parcel, m2);
+                    g2 = a.g(parcel, n8);
                     continue;
                 }
                 case 10: {
-                    g3 = a.g(parcel, m2);
+                    g3 = a.g(parcel, n8);
                     continue;
                 }
                 case 11: {
-                    g4 = a.g(parcel, m2);
+                    g4 = a.g(parcel, n8);
                     continue;
                 }
                 case 12: {
-                    p = a.p(parcel, m2);
+                    q = a.q(parcel, n8);
                     continue;
                 }
                 case 13: {
-                    c = a.c(parcel, m2, ParticipantEntity.CREATOR);
+                    c = a.c(parcel, n8, ParticipantEntity.CREATOR);
                     continue;
                 }
                 case 14: {
-                    l = a.m(parcel, m2);
+                    n5 = a.n(parcel, n8);
                     continue;
                 }
                 case 15: {
-                    p2 = a.p(parcel, m2);
+                    q2 = a.q(parcel, n8);
                     continue;
                 }
                 case 17: {
-                    o = a.o(parcel, m2);
+                    p = a.p(parcel, n8);
                     continue;
                 }
                 case 16: {
-                    g5 = a.g(parcel, m2);
+                    g5 = a.g(parcel, n8);
                     continue;
                 }
                 case 1000: {
-                    g = a.g(parcel, m2);
+                    g = a.g(parcel, n8);
                     continue;
                 }
                 case 19: {
-                    c2 = a.c(parcel, m2);
+                    c2 = a.c(parcel, n8);
                     continue;
                 }
                 case 18: {
-                    g6 = a.g(parcel, m2);
+                    g6 = a.g(parcel, n8);
+                    continue;
+                }
+                case 21: {
+                    n7 = a.n(parcel, n8);
+                    continue;
+                }
+                case 20: {
+                    n6 = a.n(parcel, n8);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new TurnBasedMatchEntity(g, gameEntity, m, i, h, j, h2, k, g2, g3, g4, p, c, l, p2, g5, o, g6, c2);
+        return new TurnBasedMatchEntity(g, gameEntity, n, n2, i, n3, j, n4, g2, g3, g4, q, c, n5, q2, g5, p, g6, c2, n6, n7);
     }
     
     public TurnBasedMatchEntity[] newArray(final int n) {

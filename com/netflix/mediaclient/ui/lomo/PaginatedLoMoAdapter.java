@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import android.view.View;
 import com.netflix.mediaclient.servicemgr.Trackable;
+import android.view.View;
+import com.netflix.mediaclient.servicemgr.BasicLoMo;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
 import android.util.SparseIntArray;
@@ -17,7 +17,6 @@ import com.netflix.mediaclient.servicemgr.Video;
 
 public class PaginatedLoMoAdapter extends BasePaginatedAdapter<Video>
 {
-    private static final String TAG = "PaginatedLoMoAdapter";
     public static final SparseArray<SparseIntArray> numVideosPerPageTable;
     
     static {
@@ -44,12 +43,6 @@ public class PaginatedLoMoAdapter extends BasePaginatedAdapter<Video>
         return ((SparseIntArray)PaginatedLoMoAdapter.numVideosPerPageTable.get(1)).get(n) * ((SparseIntArray)PaginatedLoMoAdapter.numVideosPerPageTable.get(2)).get(n);
     }
     
-    public static int getViewHeightInPixels(final Context context) {
-        final int n = (int)(BasePaginatedAdapter.computeViewPagerWidth(context, true) / ((SparseIntArray)PaginatedLoMoAdapter.numVideosPerPageTable.get(DeviceUtils.getBasicScreenOrientation(context))).get(DeviceUtils.getScreenSizeCategory(context)) * 1.43f + 0.5f);
-        Log.v("PaginatedLoMoAdapter", "Computed view height: " + n);
-        return n;
-    }
-    
     @Override
     protected int computeNumItemsPerPage(final int n, final int n2) {
         return ((SparseIntArray)PaginatedLoMoAdapter.numVideosPerPageTable.get(n)).get(n2);
@@ -61,13 +54,13 @@ public class PaginatedLoMoAdapter extends BasePaginatedAdapter<Video>
     }
     
     @Override
-    protected View getView(final ViewRecycler viewRecycler, final List<Video> list, final int n, final int n2, final Trackable trackable) {
+    protected View getView(final ViewRecycler viewRecycler, final List<Video> list, final int n, final int n2, final BasicLoMo basicLoMo) {
         LoMoViewGroup loMoViewGroup;
         if ((loMoViewGroup = (LoMoViewGroup)viewRecycler.pop(LoMoViewGroup.class)) == null) {
             loMoViewGroup = new LoMoViewGroup((Context)this.getActivity());
             loMoViewGroup.init(n);
         }
-        ((VideoViewGroup<Video, V>)loMoViewGroup).updateDataThenViews(list, n, n2, this.getListViewPos(), trackable);
+        ((VideoViewGroup<Video, V>)loMoViewGroup).updateDataThenViews(list, n, n2, this.getListViewPos(), basicLoMo);
         return (View)loMoViewGroup;
     }
 }

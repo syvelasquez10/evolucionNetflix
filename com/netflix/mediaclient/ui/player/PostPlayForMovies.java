@@ -8,9 +8,7 @@ import android.view.MotionEvent;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.Playable;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
-import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.servicemgr.VideoDetails;
-import android.widget.ImageView;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -76,6 +74,7 @@ public final class PostPlayForMovies extends PostPlay
             Log.e("nf_postplay", "Image not found for index " + n2);
             return;
         }
+        advancedImageView.setBackgroundResource(2130837603);
         advancedImageView.setOnTouchListener((View$OnTouchListener)new ChangeRecommendation(n2));
     }
     
@@ -113,16 +112,16 @@ public final class PostPlayForMovies extends PostPlay
     
     private void init() {
         this.mVideoWindow = VideoWindowForPostplayFactory.createVideoWindow(this.mContext);
-        this.addBoxArt(2131231052, 0);
-        this.addBoxArt(2131231054, 1);
-        this.addBoxArt(2131231056, 2);
-        this.addPlayButton(2131231053, 0);
-        this.addPlayButton(2131231055, 1);
-        this.addPlayButton(2131231057, 2);
-        this.mVideoDetails = (TextView)this.mContext.findViewById(2131231050);
-        this.mRatingBar = (NetflixRatingBar)this.mContext.findViewById(2131231051);
-        this.mMetadata = this.mContext.findViewById(2131231049);
-        this.mBackgroundContainer = this.mContext.findViewById(2131231058);
+        this.addBoxArt(2131165536, 0);
+        this.addBoxArt(2131165538, 1);
+        this.addBoxArt(2131165540, 2);
+        this.addPlayButton(2131165537, 0);
+        this.addPlayButton(2131165539, 1);
+        this.addPlayButton(2131165541, 2);
+        this.mVideoDetails = (TextView)this.mContext.findViewById(2131165534);
+        this.mRatingBar = (NetflixRatingBar)this.mContext.findViewById(2131165535);
+        this.mMetadata = this.mContext.findViewById(2131165533);
+        this.mBackgroundContainer = this.mContext.findViewById(2131165542);
     }
     
     private void updateUi(final PostPlayVideo details, final int n) {
@@ -132,23 +131,12 @@ public final class PostPlayForMovies extends PostPlay
                 title = "";
             }
             final String storyUrl = details.getStoryUrl();
-            final String format = String.format(this.mContext.getResources().getString(2131296685), title);
+            final String format = String.format(this.mContext.getResources().getString(2131493304), title);
             if (!StringUtils.isEmpty(storyUrl)) {
                 NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, storyUrl, IClientLogging.AssetType.merchStill, format, true, true, 1);
             }
             for (int i = 0; i < 3; ++i) {
-                final AdvancedImageView advancedImageView = this.mRecommendationBoxArts.get(i);
                 final View view = this.mPlayButtons.get(i);
-                if (advancedImageView == null) {
-                    Log.e("nf_postplay", "Image not found for index " + i);
-                }
-                else {
-                    Drawable drawable = null;
-                    if (n == i) {
-                        drawable = this.mContext.getResources().getDrawable(2130837604);
-                    }
-                    ViewUtils.setBackgroundToImageCompat(advancedImageView, drawable);
-                }
                 if (i == n) {
                     ViewUtils.setVisibility(view, ViewUtils.Visibility.VISIBLE);
                 }
@@ -271,7 +259,7 @@ public final class PostPlayForMovies extends PostPlay
                         if (postPlayVideo.getStoryUrl() != null) {
                             NetflixActivity.getImageLoader((Context)this.mContext).getImg(postPlayVideo.getStoryUrl(), IClientLogging.AssetType.merchStill, 1920, 1080, this.mImageLoaderListener);
                         }
-                        final String format = String.format(this.mContext.getResources().getString(2131296685), title);
+                        final String format = String.format(this.mContext.getResources().getString(2131493304), title);
                         if (postPlayVideo.getHighResolutionLandscapeBoxArtUrl() != null) {
                             NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mRecommendationBoxArts.get(i), postPlayVideo.getHighResolutionLandscapeBoxArtUrl(), IClientLogging.AssetType.merchStill, format, true, true, 1);
                         }

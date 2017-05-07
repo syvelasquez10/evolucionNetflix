@@ -11,69 +11,60 @@ import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class il implements Parcelable$Creator<ig.b.b>
+public class il implements Parcelable$Creator<ih.b.a>
 {
-    static void a(final ig.b.b b, final Parcel parcel, int o) {
-        o = b.o(parcel);
-        final Set<Integer> fa = b.fa();
-        if (fa.contains(1)) {
-            b.c(parcel, 1, b.getVersionCode());
+    static void a(final ih.b.a a, final Parcel parcel, int p3) {
+        p3 = b.p(parcel);
+        final Set<Integer> ja = a.ja();
+        if (ja.contains(1)) {
+            b.c(parcel, 1, a.getVersionCode());
         }
-        if (fa.contains(2)) {
-            b.c(parcel, 2, b.getHeight());
+        if (ja.contains(2)) {
+            b.c(parcel, 2, a.getLeftImageOffset());
         }
-        if (fa.contains(3)) {
-            b.a(parcel, 3, b.getUrl(), true);
+        if (ja.contains(3)) {
+            b.c(parcel, 3, a.getTopImageOffset());
         }
-        if (fa.contains(4)) {
-            b.c(parcel, 4, b.getWidth());
-        }
-        b.D(parcel, o);
+        b.F(parcel, p3);
     }
     
-    public ig.b.b ay(final Parcel parcel) {
+    public ih.b.a aQ(final Parcel parcel) {
         int g = 0;
-        final int n = a.n(parcel);
+        final int o = a.o(parcel);
         final HashSet<Integer> set = new HashSet<Integer>();
-        String m = null;
         int g2 = 0;
         int g3 = 0;
-        while (parcel.dataPosition() < n) {
-            final int i = a.m(parcel);
-            switch (a.M(i)) {
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
                 default: {
-                    a.b(parcel, i);
+                    a.b(parcel, n);
                     continue;
                 }
                 case 1: {
-                    g3 = a.g(parcel, i);
+                    g3 = a.g(parcel, n);
                     set.add(1);
                     continue;
                 }
                 case 2: {
-                    g2 = a.g(parcel, i);
+                    g2 = a.g(parcel, n);
                     set.add(2);
                     continue;
                 }
                 case 3: {
-                    m = a.m(parcel, i);
+                    g = a.g(parcel, n);
                     set.add(3);
-                    continue;
-                }
-                case 4: {
-                    g = a.g(parcel, i);
-                    set.add(4);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new ig.b.b(set, g3, g2, m, g);
+        return new ih.b.a(set, g3, g2, g);
     }
     
-    public ig.b.b[] bq(final int n) {
-        return new ig.b.b[n];
+    public ih.b.a[] bT(final int n) {
+        return new ih.b.a[n];
     }
 }

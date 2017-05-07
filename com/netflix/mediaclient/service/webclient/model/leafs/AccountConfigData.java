@@ -4,8 +4,10 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
+import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.JsonUtils;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONObject;
@@ -15,76 +17,103 @@ import com.google.gson.annotations.Expose;
 
 public class AccountConfigData
 {
+    private static final String FIELD_KIDS_ON_PHONE = "kidsOnPhoneConfig";
     @Expose
     private static final String TAG = "nf_config";
-    @SerializedName("castBlacklist")
-    private String castBlacklist;
+    @SerializedName("castWhitelistTargets")
+    private final String castWhitelist;
     @SerializedName("enableCast")
     private boolean enableCast;
     @SerializedName("JPlayerConfig")
     private String jPlayerConfig;
+    @SerializedName("kidsOnPhoneConfig")
+    private KidsOnPhoneConfigData kidsOnPhoneConfig;
     @Expose
-    private JSONArray mCastBlacklistJSONArray;
+    private JSONArray mCastWhitelistJSONArray;
     @Expose
     private JSONObject mJPlayerConfigJSON;
     @Expose
     private JSONArray mMdxBlacklistTargetsJSONArray;
     @SerializedName("mdxBlacklistTargets")
-    private String mdxBlacklistTargets;
+    private final String mdxBlacklistTargets;
     @SerializedName("videoBufferSize")
-    private int videoBufferSize;
+    private final int videoBufferSize;
     
     public AccountConfigData() {
         this.videoBufferSize = 0;
-        this.castBlacklist = null;
+        this.castWhitelist = null;
         this.mdxBlacklistTargets = null;
-        this.mCastBlacklistJSONArray = null;
+        this.mCastWhitelistJSONArray = null;
         this.mMdxBlacklistTargetsJSONArray = null;
+        this.kidsOnPhoneConfig = KidsOnPhoneConfigData.DEFAULT_KIDS_CONFIG;
         this.mJPlayerConfigJSON = null;
     }
     
-    public static AccountConfigData fromString(final String s) {
-        if (StringUtils.isEmpty(s)) {
+    public static AccountConfigData fromString(String string) {
+        if (StringUtils.isEmpty(string)) {
             return null;
         }
-        final AccountConfigData accountConfigData = FalcorParseUtils.getGson().fromJson(s, AccountConfigData.class);
-        accountConfigData.mCastBlacklistJSONArray = null;
-        accountConfigData.mMdxBlacklistTargetsJSONArray = null;
-        accountConfigData.mJPlayerConfigJSON = null;
+        AccountConfigData accountConfigData;
+        while (true) {
+            accountConfigData = FalcorParseUtils.getGson().fromJson(string, AccountConfigData.class);
+            accountConfigData.mCastWhitelistJSONArray = null;
+            accountConfigData.mMdxBlacklistTargetsJSONArray = null;
+            accountConfigData.mJPlayerConfigJSON = null;
+            while (true) {
+                try {
+                    if (StringUtils.isEmpty(string)) {
+                        final JSONObject jsonObject = new JSONObject();
+                        string = JsonUtils.getString(jsonObject, "kidsOnPhoneConfig", null);
+                        if (string != null) {
+                            accountConfigData.kidsOnPhoneConfig = FalcorParseUtils.getGson().fromJson(string, KidsOnPhoneConfigData.class);
+                            return accountConfigData;
+                        }
+                        break;
+                    }
+                }
+                catch (JSONException ex) {
+                    Log.handleException("nf_config", (Exception)ex);
+                    return accountConfigData;
+                }
+                final JSONObject jsonObject = new JSONObject(string);
+                continue;
+            }
+        }
+        accountConfigData.kidsOnPhoneConfig = KidsOnPhoneConfigData.DEFAULT_KIDS_CONFIG;
         return accountConfigData;
     }
     
     public String getCastBlacklist() {
-        return this.castBlacklist;
+        return this.castWhitelist;
     }
     
-    public JSONArray getCastBlacklistAsJsonArray() {
+    public boolean getCastEnabled() {
+        return this.enableCast;
+    }
+    
+    public JSONArray getCastWhitelistAsJsonArray() {
         Label_0038: {
-            if (this.mCastBlacklistJSONArray != null) {
+            if (this.mCastWhitelistJSONArray != null) {
                 break Label_0038;
             }
-            JSONArray mCastBlacklistJSONArray = null;
+            JSONArray mCastWhitelistJSONArray = null;
             while (true) {
-                if (!StringUtils.isNotEmpty(this.castBlacklist)) {
+                if (!StringUtils.isNotEmpty(this.castWhitelist)) {
                     break Label_0033;
                 }
                 try {
-                    mCastBlacklistJSONArray = new JSONArray(this.castBlacklist);
-                    this.mCastBlacklistJSONArray = mCastBlacklistJSONArray;
-                    return this.mCastBlacklistJSONArray;
+                    mCastWhitelistJSONArray = new JSONArray(this.castWhitelist);
+                    this.mCastWhitelistJSONArray = mCastWhitelistJSONArray;
+                    return this.mCastWhitelistJSONArray;
                 }
                 catch (JSONException ex) {
-                    Log.d("nf_config", String.format("castBlacklist bad json: %s", this.castBlacklist));
-                    mCastBlacklistJSONArray = mCastBlacklistJSONArray;
+                    Log.d("nf_config", String.format("castWhitelist bad json: %s", this.castWhitelist));
+                    mCastWhitelistJSONArray = mCastWhitelistJSONArray;
                     continue;
                 }
                 break;
             }
         }
-    }
-    
-    public boolean getCastEnabled() {
-        return this.enableCast;
     }
     
     public JSONObject getJPlayerThreadConfigAsJson() {
@@ -110,6 +139,10 @@ public class AccountConfigData
                 break;
             }
         }
+    }
+    
+    public KidsOnPhoneConfiguration getKidsOnPhone() {
+        return this.kidsOnPhoneConfig;
     }
     
     public String getMdxBlacklist() {
@@ -142,7 +175,7 @@ public class AccountConfigData
     }
     
     public int getVideoBufferSize() {
-        return this.videoBufferSize;
+        return 0;
     }
     
     @Override

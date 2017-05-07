@@ -5,12 +5,12 @@
 package com.google.android.gms.maps;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.maps.internal.q;
-import com.google.android.gms.dynamic.d;
+import com.google.android.gms.maps.internal.u;
+import com.google.android.gms.dynamic.f;
 import com.google.android.gms.dynamic.a;
-import com.google.android.gms.dynamic.c;
-import com.google.android.gms.maps.internal.p;
-import com.google.android.gms.internal.eg;
+import com.google.android.gms.dynamic.e;
+import com.google.android.gms.maps.internal.t;
+import com.google.android.gms.internal.fq;
 import com.google.android.gms.dynamic.LifecycleDelegate;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -19,20 +19,20 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.app.Activity;
 import com.google.android.gms.maps.internal.IGoogleMapDelegate;
+import com.google.android.gms.maps.internal.IMapFragmentDelegate;
 import android.os.RemoteException;
 import com.google.android.gms.maps.model.RuntimeRemoteException;
-import com.google.android.gms.maps.internal.IMapFragmentDelegate;
 import android.os.Parcelable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 public class SupportMapFragment extends Fragment
 {
-    private GoogleMap BU;
-    private final b Cf;
+    private GoogleMap RT;
+    private final b Sw;
     
     public SupportMapFragment() {
-        this.Cf = new b(this);
+        this.Sw = new b(this);
     }
     
     public static SupportMapFragment newInstance() {
@@ -47,24 +47,16 @@ public class SupportMapFragment extends Fragment
         return supportMapFragment;
     }
     
-    protected IMapFragmentDelegate ew() {
-        this.Cf.ex();
-        if (this.Cf.cZ() == null) {
-            return null;
-        }
-        return this.Cf.cZ().ew();
-    }
-    
     public final GoogleMap getMap() {
-        final IMapFragmentDelegate ew = this.ew();
-        if (ew != null) {
+        final IMapFragmentDelegate io = this.io();
+        if (io != null) {
             try {
-                final IGoogleMapDelegate map = ew.getMap();
+                final IGoogleMapDelegate map = io.getMap();
                 if (map != null) {
-                    if (this.BU == null || this.BU.en().asBinder() != map.asBinder()) {
-                        this.BU = new GoogleMap(map);
+                    if (this.RT == null || this.RT.if().asBinder() != map.asBinder()) {
+                        this.RT = new GoogleMap(map);
                     }
-                    return this.BU;
+                    return this.RT;
                 }
             }
             catch (RemoteException ex) {
@@ -72,6 +64,14 @@ public class SupportMapFragment extends Fragment
             }
         }
         return null;
+    }
+    
+    protected IMapFragmentDelegate io() {
+        this.Sw.ip();
+        if (this.Sw.fW() == null) {
+            return null;
+        }
+        return this.Sw.fW().io();
     }
     
     @Override
@@ -85,58 +85,58 @@ public class SupportMapFragment extends Fragment
     @Override
     public void onAttach(final Activity activity) {
         super.onAttach(activity);
-        this.Cf.setActivity(activity);
+        this.Sw.setActivity(activity);
     }
     
     @Override
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.Cf.onCreate(bundle);
+        this.Sw.onCreate(bundle);
     }
     
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        return this.Cf.onCreateView(layoutInflater, viewGroup, bundle);
+        return this.Sw.onCreateView(layoutInflater, viewGroup, bundle);
     }
     
     @Override
     public void onDestroy() {
-        this.Cf.onDestroy();
+        this.Sw.onDestroy();
         super.onDestroy();
     }
     
     @Override
     public void onDestroyView() {
-        this.Cf.onDestroyView();
+        this.Sw.onDestroyView();
         super.onDestroyView();
     }
     
     @Override
     public void onInflate(final Activity activity, final AttributeSet set, final Bundle bundle) {
         super.onInflate(activity, set, bundle);
-        this.Cf.setActivity(activity);
+        this.Sw.setActivity(activity);
         final GoogleMapOptions fromAttributes = GoogleMapOptions.createFromAttributes((Context)activity, set);
         final Bundle bundle2 = new Bundle();
         bundle2.putParcelable("MapOptions", (Parcelable)fromAttributes);
-        this.Cf.onInflate(activity, bundle2, bundle);
+        this.Sw.onInflate(activity, bundle2, bundle);
     }
     
     @Override
     public void onLowMemory() {
-        this.Cf.onLowMemory();
+        this.Sw.onLowMemory();
         super.onLowMemory();
     }
     
     @Override
     public void onPause() {
-        this.Cf.onPause();
+        this.Sw.onPause();
         super.onPause();
     }
     
     @Override
     public void onResume() {
         super.onResume();
-        this.Cf.onResume();
+        this.Sw.onResume();
     }
     
     @Override
@@ -145,7 +145,7 @@ public class SupportMapFragment extends Fragment
             bundle.setClassLoader(SupportMapFragment.class.getClassLoader());
         }
         super.onSaveInstanceState(bundle);
-        this.Cf.onSaveInstanceState(bundle);
+        this.Sw.onSaveInstanceState(bundle);
     }
     
     @Override
@@ -155,16 +155,16 @@ public class SupportMapFragment extends Fragment
     
     static class a implements LifecycleDelegate
     {
-        private final IMapFragmentDelegate BW;
-        private final Fragment Cg;
+        private final Fragment Hz;
+        private final IMapFragmentDelegate RU;
         
         public a(final Fragment fragment, final IMapFragmentDelegate mapFragmentDelegate) {
-            this.BW = eg.f(mapFragmentDelegate);
-            this.Cg = eg.f(fragment);
+            this.RU = fq.f(mapFragmentDelegate);
+            this.Hz = fq.f(fragment);
         }
         
-        public IMapFragmentDelegate ew() {
-            return this.BW;
+        public IMapFragmentDelegate io() {
+            return this.RU;
         }
         
         @Override
@@ -176,11 +176,11 @@ public class SupportMapFragment extends Fragment
                 }
                 try {
                     bundle = new Bundle();
-                    arguments = this.Cg.getArguments();
+                    arguments = this.Hz.getArguments();
                     if (arguments != null && arguments.containsKey("MapOptions")) {
-                        p.a(bundle, "MapOptions", arguments.getParcelable("MapOptions"));
+                        t.a(bundle, "MapOptions", arguments.getParcelable("MapOptions"));
                     }
-                    this.BW.onCreate(bundle);
+                    this.RU.onCreate(bundle);
                 }
                 catch (RemoteException ex) {
                     throw new RuntimeRemoteException(ex);
@@ -191,7 +191,7 @@ public class SupportMapFragment extends Fragment
         @Override
         public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
             try {
-                return c.b(this.BW.onCreateView(c.h(layoutInflater), c.h(viewGroup), bundle));
+                return e.d(this.RU.onCreateView(e.h(layoutInflater), e.h(viewGroup), bundle));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -201,7 +201,7 @@ public class SupportMapFragment extends Fragment
         @Override
         public void onDestroy() {
             try {
-                this.BW.onDestroy();
+                this.RU.onDestroy();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -211,7 +211,7 @@ public class SupportMapFragment extends Fragment
         @Override
         public void onDestroyView() {
             try {
-                this.BW.onDestroyView();
+                this.RU.onDestroyView();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -222,7 +222,7 @@ public class SupportMapFragment extends Fragment
         public void onInflate(final Activity activity, final Bundle bundle, final Bundle bundle2) {
             final GoogleMapOptions googleMapOptions = (GoogleMapOptions)bundle.getParcelable("MapOptions");
             try {
-                this.BW.onInflate(c.h(activity), googleMapOptions, bundle2);
+                this.RU.onInflate(e.h(activity), googleMapOptions, bundle2);
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -232,7 +232,7 @@ public class SupportMapFragment extends Fragment
         @Override
         public void onLowMemory() {
             try {
-                this.BW.onLowMemory();
+                this.RU.onLowMemory();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -242,7 +242,7 @@ public class SupportMapFragment extends Fragment
         @Override
         public void onPause() {
             try {
-                this.BW.onPause();
+                this.RU.onPause();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -252,7 +252,7 @@ public class SupportMapFragment extends Fragment
         @Override
         public void onResume() {
             try {
-                this.BW.onResume();
+                this.RU.onResume();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -262,42 +262,50 @@ public class SupportMapFragment extends Fragment
         @Override
         public void onSaveInstanceState(final Bundle bundle) {
             try {
-                this.BW.onSaveInstanceState(bundle);
+                this.RU.onSaveInstanceState(bundle);
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
             }
         }
+        
+        @Override
+        public void onStart() {
+        }
+        
+        @Override
+        public void onStop() {
+        }
     }
     
     static class b extends a<SupportMapFragment.a>
     {
-        protected d<SupportMapFragment.a> BX;
-        private final Fragment Cg;
-        private Activity gs;
+        private final Fragment Hz;
+        protected f<SupportMapFragment.a> RV;
+        private Activity nS;
         
-        b(final Fragment cg) {
-            this.Cg = cg;
+        b(final Fragment hz) {
+            this.Hz = hz;
         }
         
-        private void setActivity(final Activity gs) {
-            this.gs = gs;
-            this.ex();
+        private void setActivity(final Activity ns) {
+            this.nS = ns;
+            this.ip();
         }
         
         @Override
-        protected void a(final d<SupportMapFragment.a> bx) {
-            this.BX = bx;
-            this.ex();
+        protected void a(final f<SupportMapFragment.a> rv) {
+            this.RV = rv;
+            this.ip();
         }
         
-        public void ex() {
-            if (this.gs == null || this.BX == null || this.cZ() != null) {
+        public void ip() {
+            if (this.nS == null || this.RV == null || this.fW() != null) {
                 return;
             }
             try {
-                MapsInitializer.initialize((Context)this.gs);
-                this.BX.a(new SupportMapFragment.a(this.Cg, q.u((Context)this.gs).f(c.h(this.gs))));
+                MapsInitializer.initialize((Context)this.nS);
+                this.RV.a(new SupportMapFragment.a(this.Hz, u.A((Context)this.nS).h(e.h(this.nS))));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);

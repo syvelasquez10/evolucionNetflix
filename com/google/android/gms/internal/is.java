@@ -4,301 +4,256 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.IBinder;
-import android.os.Binder;
-import com.google.android.gms.wallet.NotifyTransactionStatusRequest;
-import com.google.android.gms.wallet.MaskedWalletRequest;
-import com.google.android.gms.wallet.FullWalletRequest;
-import android.os.RemoteException;
-import android.os.Bundle;
-import android.os.IInterface;
+import java.util.ArrayList;
+import java.util.List;
+import com.google.android.gms.common.data.DataHolder;
+import com.google.android.gms.plus.model.people.Person;
+import com.google.android.gms.common.data.b;
 
-public interface is extends IInterface
+public final class is extends b implements Person
 {
-    void a(final Bundle p0, final it p1) throws RemoteException;
+    public is(final DataHolder dataHolder, final int n) {
+        super(dataHolder, n);
+    }
     
-    void a(final FullWalletRequest p0, final Bundle p1, final it p2) throws RemoteException;
+    @Override
+    public String getAboutMe() {
+        return null;
+    }
     
-    void a(final MaskedWalletRequest p0, final Bundle p1, final it p2) throws RemoteException;
+    @Override
+    public AgeRange getAgeRange() {
+        return null;
+    }
     
-    void a(final NotifyTransactionStatusRequest p0, final Bundle p1) throws RemoteException;
+    @Override
+    public String getBirthday() {
+        return null;
+    }
     
-    void a(final String p0, final String p1, final Bundle p2, final it p3) throws RemoteException;
+    @Override
+    public String getBraggingRights() {
+        return null;
+    }
     
-    public abstract static class a extends Binder implements is
-    {
-        public static is az(final IBinder binder) {
-            if (binder == null) {
-                return null;
-            }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.wallet.internal.IOwService");
-            if (queryLocalInterface != null && queryLocalInterface instanceof is) {
-                return (is)queryLocalInterface;
-            }
-            return new is.a.a(binder);
-        }
-        
-        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            switch (n) {
-                default: {
-                    return super.onTransact(n, parcel, parcel2, n2);
-                }
-                case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.wallet.internal.IOwService");
-                    return true;
-                }
-                case 1: {
-                    parcel.enforceInterface("com.google.android.gms.wallet.internal.IOwService");
-                    MaskedWalletRequest maskedWalletRequest;
-                    if (parcel.readInt() != 0) {
-                        maskedWalletRequest = (MaskedWalletRequest)MaskedWalletRequest.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        maskedWalletRequest = null;
-                    }
-                    Bundle bundle;
-                    if (parcel.readInt() != 0) {
-                        bundle = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        bundle = null;
-                    }
-                    this.a(maskedWalletRequest, bundle, it.a.aA(parcel.readStrongBinder()));
-                    return true;
-                }
-                case 2: {
-                    parcel.enforceInterface("com.google.android.gms.wallet.internal.IOwService");
-                    FullWalletRequest fullWalletRequest;
-                    if (parcel.readInt() != 0) {
-                        fullWalletRequest = (FullWalletRequest)FullWalletRequest.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        fullWalletRequest = null;
-                    }
-                    Bundle bundle2;
-                    if (parcel.readInt() != 0) {
-                        bundle2 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        bundle2 = null;
-                    }
-                    this.a(fullWalletRequest, bundle2, it.a.aA(parcel.readStrongBinder()));
-                    return true;
-                }
-                case 3: {
-                    parcel.enforceInterface("com.google.android.gms.wallet.internal.IOwService");
-                    final String string = parcel.readString();
-                    final String string2 = parcel.readString();
-                    Bundle bundle3;
-                    if (parcel.readInt() != 0) {
-                        bundle3 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        bundle3 = null;
-                    }
-                    this.a(string, string2, bundle3, it.a.aA(parcel.readStrongBinder()));
-                    return true;
-                }
-                case 4: {
-                    parcel.enforceInterface("com.google.android.gms.wallet.internal.IOwService");
-                    NotifyTransactionStatusRequest notifyTransactionStatusRequest;
-                    if (parcel.readInt() != 0) {
-                        notifyTransactionStatusRequest = (NotifyTransactionStatusRequest)NotifyTransactionStatusRequest.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        notifyTransactionStatusRequest = null;
-                    }
-                    Bundle bundle4;
-                    if (parcel.readInt() != 0) {
-                        bundle4 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        bundle4 = null;
-                    }
-                    this.a(notifyTransactionStatusRequest, bundle4);
-                    return true;
-                }
-                case 5: {
-                    parcel.enforceInterface("com.google.android.gms.wallet.internal.IOwService");
-                    Bundle bundle5;
-                    if (parcel.readInt() != 0) {
-                        bundle5 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        bundle5 = null;
-                    }
-                    this.a(bundle5, it.a.aA(parcel.readStrongBinder()));
-                    return true;
-                }
-            }
-        }
-        
-        private static class a implements is
-        {
-            private IBinder dU;
-            
-            a(final IBinder du) {
-                this.dU = du;
-            }
-            
-            @Override
-            public void a(final Bundle bundle, final it it) throws RemoteException {
-                final IBinder binder = null;
-                final Parcel obtain = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.wallet.internal.IOwService");
-                    if (bundle != null) {
-                        obtain.writeInt(1);
-                        bundle.writeToParcel(obtain, 0);
-                    }
-                    else {
-                        obtain.writeInt(0);
-                    }
-                    IBinder binder2 = binder;
-                    if (it != null) {
-                        binder2 = it.asBinder();
-                    }
-                    obtain.writeStrongBinder(binder2);
-                    this.dU.transact(5, obtain, (Parcel)null, 1);
-                }
-                finally {
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void a(final FullWalletRequest fullWalletRequest, final Bundle bundle, final it it) throws RemoteException {
-                while (true) {
-                    final IBinder binder = null;
-                    final Parcel obtain = Parcel.obtain();
-                    while (true) {
-                        try {
-                            obtain.writeInterfaceToken("com.google.android.gms.wallet.internal.IOwService");
-                            if (fullWalletRequest != null) {
-                                obtain.writeInt(1);
-                                fullWalletRequest.writeToParcel(obtain, 0);
-                            }
-                            else {
-                                obtain.writeInt(0);
-                            }
-                            if (bundle != null) {
-                                obtain.writeInt(1);
-                                bundle.writeToParcel(obtain, 0);
-                                IBinder binder2 = binder;
-                                if (it != null) {
-                                    binder2 = it.asBinder();
-                                }
-                                obtain.writeStrongBinder(binder2);
-                                this.dU.transact(2, obtain, (Parcel)null, 1);
-                                return;
-                            }
-                        }
-                        finally {
-                            obtain.recycle();
-                        }
-                        obtain.writeInt(0);
-                        continue;
-                    }
-                }
-            }
-            
-            @Override
-            public void a(final MaskedWalletRequest maskedWalletRequest, final Bundle bundle, final it it) throws RemoteException {
-                while (true) {
-                    final IBinder binder = null;
-                    final Parcel obtain = Parcel.obtain();
-                    while (true) {
-                        try {
-                            obtain.writeInterfaceToken("com.google.android.gms.wallet.internal.IOwService");
-                            if (maskedWalletRequest != null) {
-                                obtain.writeInt(1);
-                                maskedWalletRequest.writeToParcel(obtain, 0);
-                            }
-                            else {
-                                obtain.writeInt(0);
-                            }
-                            if (bundle != null) {
-                                obtain.writeInt(1);
-                                bundle.writeToParcel(obtain, 0);
-                                IBinder binder2 = binder;
-                                if (it != null) {
-                                    binder2 = it.asBinder();
-                                }
-                                obtain.writeStrongBinder(binder2);
-                                this.dU.transact(1, obtain, (Parcel)null, 1);
-                                return;
-                            }
-                        }
-                        finally {
-                            obtain.recycle();
-                        }
-                        obtain.writeInt(0);
-                        continue;
-                    }
-                }
-            }
-            
-            @Override
-            public void a(final NotifyTransactionStatusRequest notifyTransactionStatusRequest, final Bundle bundle) throws RemoteException {
-                while (true) {
-                    final Parcel obtain = Parcel.obtain();
-                    while (true) {
-                        try {
-                            obtain.writeInterfaceToken("com.google.android.gms.wallet.internal.IOwService");
-                            if (notifyTransactionStatusRequest != null) {
-                                obtain.writeInt(1);
-                                notifyTransactionStatusRequest.writeToParcel(obtain, 0);
-                            }
-                            else {
-                                obtain.writeInt(0);
-                            }
-                            if (bundle != null) {
-                                obtain.writeInt(1);
-                                bundle.writeToParcel(obtain, 0);
-                                this.dU.transact(4, obtain, (Parcel)null, 1);
-                                return;
-                            }
-                        }
-                        finally {
-                            obtain.recycle();
-                        }
-                        obtain.writeInt(0);
-                        continue;
-                    }
-                }
-            }
-            
-            @Override
-            public void a(final String s, final String s2, final Bundle bundle, final it it) throws RemoteException {
-                final IBinder binder = null;
-                final Parcel obtain = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.wallet.internal.IOwService");
-                    obtain.writeString(s);
-                    obtain.writeString(s2);
-                    if (bundle != null) {
-                        obtain.writeInt(1);
-                        bundle.writeToParcel(obtain, 0);
-                    }
-                    else {
-                        obtain.writeInt(0);
-                    }
-                    IBinder binder2 = binder;
-                    if (it != null) {
-                        binder2 = it.asBinder();
-                    }
-                    obtain.writeStrongBinder(binder2);
-                    this.dU.transact(3, obtain, (Parcel)null, 1);
-                }
-                finally {
-                    obtain.recycle();
-                }
-            }
-            
-            public IBinder asBinder() {
-                return this.dU;
-            }
-        }
+    @Override
+    public int getCircledByCount() {
+        return 0;
+    }
+    
+    @Override
+    public Cover getCover() {
+        return null;
+    }
+    
+    @Override
+    public String getCurrentLocation() {
+        return null;
+    }
+    
+    @Override
+    public String getDisplayName() {
+        return this.getString("displayName");
+    }
+    
+    @Override
+    public int getGender() {
+        return 0;
+    }
+    
+    @Override
+    public String getId() {
+        return this.getString("personId");
+    }
+    
+    @Override
+    public Image getImage() {
+        return new ih.c(this.getString("image"));
+    }
+    
+    @Override
+    public String getLanguage() {
+        return null;
+    }
+    
+    @Override
+    public Name getName() {
+        return null;
+    }
+    
+    @Override
+    public String getNickname() {
+        return null;
+    }
+    
+    @Override
+    public int getObjectType() {
+        return ih.e.bi(this.getString("objectType"));
+    }
+    
+    @Override
+    public int getPlusOneCount() {
+        return 0;
+    }
+    
+    @Override
+    public int getRelationshipStatus() {
+        return 0;
+    }
+    
+    @Override
+    public String getTagline() {
+        return null;
+    }
+    
+    @Override
+    public String getUrl() {
+        return this.getString("url");
+    }
+    
+    @Override
+    public boolean hasAboutMe() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasAgeRange() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasBirthday() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasBraggingRights() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasCircledByCount() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasCover() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasCurrentLocation() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasDisplayName() {
+        return true;
+    }
+    
+    @Override
+    public boolean hasGender() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasId() {
+        return true;
+    }
+    
+    @Override
+    public boolean hasImage() {
+        return true;
+    }
+    
+    @Override
+    public boolean hasIsPlusUser() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasLanguage() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasName() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasNickname() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasObjectType() {
+        return true;
+    }
+    
+    @Override
+    public boolean hasOrganizations() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasPlacesLived() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasPlusOneCount() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasRelationshipStatus() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasTagline() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasUrl() {
+        return true;
+    }
+    
+    @Override
+    public boolean hasUrls() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasVerified() {
+        return false;
+    }
+    
+    @Override
+    public boolean isPlusUser() {
+        return false;
+    }
+    
+    @Override
+    public boolean isVerified() {
+        return false;
+    }
+    
+    public ArrayList<Organizations> jP() {
+        return null;
+    }
+    
+    public ArrayList<PlacesLived> jQ() {
+        return null;
+    }
+    
+    public ArrayList<Urls> jR() {
+        return null;
+    }
+    
+    public Person jS() {
+        return new ih(this.getDisplayName(), this.getId(), (ih.c)this.getImage(), this.getObjectType(), this.getUrl());
     }
 }

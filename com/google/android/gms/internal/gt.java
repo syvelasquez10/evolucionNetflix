@@ -4,105 +4,59 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Collections;
-import java.util.Set;
-import java.util.List;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import com.google.android.gms.drive.metadata.SearchableOrderedMetadataField;
+import java.util.Date;
+import com.google.android.gms.drive.metadata.SortableMetadataField;
+import com.google.android.gms.drive.metadata.internal.b;
 
-public final class gt implements SafeParcelable
+public class gt
 {
-    public static final gu CREATOR;
-    final int kg;
-    private final int yf;
-    final List<gx> yg;
-    private final String yh;
-    private final String yi;
-    private final boolean yj;
-    private final Set<gx> yk;
+    public static final a Gs;
+    public static final b Gt;
+    public static final d Gu;
+    public static final c Gv;
+    public static final e Gw;
     
     static {
-        CREATOR = new gu();
+        Gs = new a("created", 4100000);
+        Gt = new b("lastOpenedTime", 4300000);
+        Gu = new d("modified", 4100000);
+        Gv = new c("modifiedByMe", 4100000);
+        Gw = new e("sharedWithMe", 4100000);
     }
     
-    gt(final int kg, final int yf, final List<gx> list, final String s, final String s2, final boolean yj) {
-        this.kg = kg;
-        this.yf = yf;
-        List<gx> yg;
-        if (list == null) {
-            yg = Collections.emptyList();
+    public static class a extends b implements SortableMetadataField<Date>
+    {
+        public a(final String s, final int n) {
+            super(s, n);
         }
-        else {
-            yg = Collections.unmodifiableList((List<? extends gx>)list);
+    }
+    
+    public static class b extends com.google.android.gms.drive.metadata.internal.b implements SearchableOrderedMetadataField<Date>, SortableMetadataField<Date>
+    {
+        public b(final String s, final int n) {
+            super(s, n);
         }
-        this.yg = yg;
-        String yh = s;
-        if (s == null) {
-            yh = "";
+    }
+    
+    public static class c extends b implements SortableMetadataField<Date>
+    {
+        public c(final String s, final int n) {
+            super(s, n);
         }
-        this.yh = yh;
-        String yi;
-        if ((yi = s2) == null) {
-            yi = "";
+    }
+    
+    public static class d extends b implements SearchableOrderedMetadataField<Date>, SortableMetadataField<Date>
+    {
+        public d(final String s, final int n) {
+            super(s, n);
         }
-        this.yi = yi;
-        this.yj = yj;
-        if (this.yg.isEmpty()) {
-            this.yk = Collections.emptySet();
-            return;
+    }
+    
+    public static class e extends b implements SearchableOrderedMetadataField<Date>, SortableMetadataField<Date>
+    {
+        public e(final String s, final int n) {
+            super(s, n);
         }
-        this.yk = Collections.unmodifiableSet((Set<? extends gx>)new HashSet<gx>(this.yg));
-    }
-    
-    public int dO() {
-        return this.yf;
-    }
-    
-    public String dP() {
-        return this.yh;
-    }
-    
-    public String dQ() {
-        return this.yi;
-    }
-    
-    public boolean dR() {
-        return this.yj;
-    }
-    
-    public int describeContents() {
-        final gu creator = gt.CREATOR;
-        return 0;
-    }
-    
-    @Override
-    public boolean equals(final Object o) {
-        if (this != o) {
-            if (!(o instanceof gt)) {
-                return false;
-            }
-            final gt gt = (gt)o;
-            if (this.yf != gt.yf || !this.yk.equals(gt.yk) || this.yh != gt.yh || this.yi != gt.yi || this.yj != gt.yj) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    @Override
-    public int hashCode() {
-        return ee.hashCode(this.yf, this.yk, this.yh, this.yi, this.yj);
-    }
-    
-    @Override
-    public String toString() {
-        return ee.e(this).a("maxResults", this.yf).a("types", this.yk).a("nameQuery", this.yh).a("textQuery", this.yi).a("isOpenNowRequired", this.yj).toString();
-    }
-    
-    public void writeToParcel(final Parcel parcel, final int n) {
-        final gu creator = gt.CREATOR;
-        gu.a(this, parcel, n);
     }
 }

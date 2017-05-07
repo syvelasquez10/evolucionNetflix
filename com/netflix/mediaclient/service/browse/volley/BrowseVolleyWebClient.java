@@ -5,9 +5,13 @@
 package com.netflix.mediaclient.service.browse.volley;
 
 import com.netflix.mediaclient.servicemgr.ProfileType;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.BasicLoMo;
 import com.netflix.mediaclient.servicemgr.LoMoUtils;
+import com.netflix.mediaclient.service.ServiceAgent;
+import android.content.Context;
+import com.netflix.mediaclient.servicemgr.LoMoType;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 import com.netflix.mediaclient.servicemgr.Video;
 import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
@@ -95,7 +99,17 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     
     @Override
     public void fetchGenreVideos(final LoMo loMo, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new FetchVideosRequest(this.service.getApplicationContext(), this.service.getConfiguration(), "glists", loMo, n, n2, browseAgentCallback));
+        final FalcorVolleyWebClient webclient = this.webclient;
+        final Context applicationContext = this.service.getApplicationContext();
+        final ServiceAgent.ConfigurationAgentInterface configuration = this.service.getConfiguration();
+        String s;
+        if (LoMoType.FLAT_GENRE.equals(loMo.getType())) {
+            s = "flatGenre";
+        }
+        else {
+            s = "glists";
+        }
+        webclient.sendRequest(new FetchVideosRequest(applicationContext, configuration, s, loMo, n, n2, browseAgentCallback));
     }
     
     @Override
@@ -106,6 +120,11 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     @Override
     public void fetchIQVideos(final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
         this.webclient.sendRequest(new FetchIQVideosRequest(this.service.getApplicationContext(), this.service.getConfiguration(), this.hardCache, this.softCache, n, n2, browseAgentCallback));
+    }
+    
+    @Override
+    public void fetchKidsCharacterDetails(final String s, final BrowseAgentCallback browseAgentCallback) {
+        this.webclient.sendRequest(new FetchKidsCharacterDetailsRequest(this.service.getApplicationContext(), this.service.getConfiguration(), s, browseAgentCallback));
     }
     
     @Override
@@ -179,7 +198,7 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     
     @Override
     public void prefetchGenreLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new PrefetchGenreLoLoMoRequest(this.service.getApplicationContext(), this.service.getConfiguration(), this.hardCache, this.softCache, s, n, n2, n3, n4, browseAgentCallback));
+        this.webclient.sendRequest(new PrefetchGenreLoLoMoRequest(this.service.getApplicationContext(), this.service.getConfiguration(), KidsUtils.isKoPExperience(this.service.getConfiguration(), this.service.getCurrentProfile()), this.hardCache, this.softCache, s, n, n2, n3, n4, browseAgentCallback));
     }
     
     @Override
@@ -200,6 +219,11 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     @Override
     public void refreshIQList(final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
         throw new IllegalStateException(" refreshIQList not implemented");
+    }
+    
+    @Override
+    public void refreshKidsCharacterDetils(final String s, final BrowseAgentCallback browseAgentCallback) {
+        this.webclient.sendRequest(new RefreshKidsCharacterDetails(this.service.getApplicationContext(), this.service.getConfiguration(), s, browseAgentCallback));
     }
     
     @Override

@@ -12,27 +12,33 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class OnListEntriesResponse implements SafeParcelable
 {
     public static final Parcelable$Creator<OnListEntriesResponse> CREATOR;
-    final int kg;
-    final DataHolder rz;
+    final DataHolder FJ;
+    final boolean Fg;
+    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new u();
+        CREATOR = (Parcelable$Creator)new ad();
     }
     
-    OnListEntriesResponse(final int kg, final DataHolder rz) {
-        this.kg = kg;
-        this.rz = rz;
-    }
-    
-    public DataHolder cT() {
-        return this.rz;
+    OnListEntriesResponse(final int xh, final DataHolder fj, final boolean fg) {
+        this.xH = xh;
+        this.FJ = fj;
+        this.Fg = fg;
     }
     
     public int describeContents() {
         return 0;
     }
     
+    public DataHolder fN() {
+        return this.FJ;
+    }
+    
+    public boolean fO() {
+        return this.Fg;
+    }
+    
     public void writeToParcel(final Parcel parcel, final int n) {
-        u.a(this, parcel, n);
+        ad.a(this, parcel, n);
     }
 }

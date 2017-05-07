@@ -9,28 +9,28 @@ import com.google.android.gms.drive.metadata.internal.MetadataBundle;
 
 public final class b extends Metadata
 {
-    private final MetadataBundle qN;
+    private final MetadataBundle ED;
     
-    public b(final MetadataBundle qn) {
-        this.qN = qn;
+    public b(final MetadataBundle ed) {
+        this.ED = ed;
     }
     
     @Override
     protected <T> T a(final MetadataField<T> metadataField) {
-        return this.qN.a(metadataField);
+        return this.ED.a(metadataField);
     }
     
-    public Metadata cK() {
-        return new b(MetadataBundle.a(this.qN));
+    public Metadata fB() {
+        return new b(MetadataBundle.a(this.ED));
     }
     
     @Override
     public boolean isDataValid() {
-        return this.qN != null;
+        return this.ED != null;
     }
     
     @Override
     public String toString() {
-        return "Metadata [mImpl=" + this.qN + "]";
+        return "Metadata [mImpl=" + this.ED + "]";
     }
 }

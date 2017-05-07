@@ -5,16 +5,16 @@
 package com.google.android.gms.maps;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.maps.internal.q;
-import com.google.android.gms.dynamic.d;
-import com.google.android.gms.dynamic.a;
+import com.google.android.gms.maps.internal.u;
+import com.google.android.gms.dynamic.f;
 import android.app.Activity;
 import android.view.LayoutInflater;
-import com.google.android.gms.dynamic.c;
-import com.google.android.gms.internal.eg;
+import com.google.android.gms.dynamic.e;
+import com.google.android.gms.internal.fq;
 import android.view.View;
 import com.google.android.gms.maps.internal.IMapViewDelegate;
 import com.google.android.gms.dynamic.LifecycleDelegate;
+import com.google.android.gms.dynamic.a;
 import android.os.Bundle;
 import android.os.RemoteException;
 import com.google.android.gms.maps.model.RuntimeRemoteException;
@@ -25,39 +25,39 @@ import android.widget.FrameLayout;
 
 public class MapView extends FrameLayout
 {
-    private GoogleMap BU;
-    private final b BY;
+    private GoogleMap RT;
+    private final b RW;
     
     public MapView(final Context context) {
         super(context);
-        this.BY = new b((ViewGroup)this, context, null);
+        this.RW = new b((ViewGroup)this, context, null);
     }
     
     public MapView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.BY = new b((ViewGroup)this, context, GoogleMapOptions.createFromAttributes(context, set));
+        this.RW = new b((ViewGroup)this, context, GoogleMapOptions.createFromAttributes(context, set));
     }
     
     public MapView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.BY = new b((ViewGroup)this, context, GoogleMapOptions.createFromAttributes(context, set));
+        this.RW = new b((ViewGroup)this, context, GoogleMapOptions.createFromAttributes(context, set));
     }
     
     public MapView(final Context context, final GoogleMapOptions googleMapOptions) {
         super(context);
-        this.BY = new b((ViewGroup)this, context, googleMapOptions);
+        this.RW = new b((ViewGroup)this, context, googleMapOptions);
     }
     
     public final GoogleMap getMap() {
-        if (this.BU != null) {
-            return this.BU;
+        if (this.RT != null) {
+            return this.RT;
         }
-        this.BY.ex();
-        if (this.BY.cZ() == null) {
+        this.RW.ip();
+        if (this.RW.fW() == null) {
             return null;
         }
         try {
-            return this.BU = new GoogleMap(this.BY.cZ().ey().getMap());
+            return this.RT = new GoogleMap(this.RW.fW().iq().getMap());
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -65,54 +65,55 @@ public class MapView extends FrameLayout
     }
     
     public final void onCreate(final Bundle bundle) {
-        this.BY.onCreate(bundle);
-        if (this.BY.cZ() == null) {
-            this.BY.a(this);
+        this.RW.onCreate(bundle);
+        if (this.RW.fW() == null) {
+            final b rw = this.RW;
+            com.google.android.gms.dynamic.a.b(this);
         }
     }
     
     public final void onDestroy() {
-        this.BY.onDestroy();
+        this.RW.onDestroy();
     }
     
     public final void onLowMemory() {
-        this.BY.onLowMemory();
+        this.RW.onLowMemory();
     }
     
     public final void onPause() {
-        this.BY.onPause();
+        this.RW.onPause();
     }
     
     public final void onResume() {
-        this.BY.onResume();
+        this.RW.onResume();
     }
     
     public final void onSaveInstanceState(final Bundle bundle) {
-        this.BY.onSaveInstanceState(bundle);
+        this.RW.onSaveInstanceState(bundle);
     }
     
     static class a implements LifecycleDelegate
     {
-        private final ViewGroup BZ;
-        private final IMapViewDelegate Ca;
-        private View Cb;
+        private final ViewGroup RX;
+        private final IMapViewDelegate RY;
+        private View RZ;
         
         public a(final ViewGroup viewGroup, final IMapViewDelegate mapViewDelegate) {
-            this.Ca = eg.f(mapViewDelegate);
-            this.BZ = eg.f(viewGroup);
+            this.RY = fq.f(mapViewDelegate);
+            this.RX = fq.f(viewGroup);
         }
         
-        public IMapViewDelegate ey() {
-            return this.Ca;
+        public IMapViewDelegate iq() {
+            return this.RY;
         }
         
         @Override
         public void onCreate(final Bundle bundle) {
             try {
-                this.Ca.onCreate(bundle);
-                this.Cb = c.b(this.Ca.getView());
-                this.BZ.removeAllViews();
-                this.BZ.addView(this.Cb);
+                this.RY.onCreate(bundle);
+                this.RZ = e.d(this.RY.getView());
+                this.RX.removeAllViews();
+                this.RX.addView(this.RZ);
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -127,7 +128,7 @@ public class MapView extends FrameLayout
         @Override
         public void onDestroy() {
             try {
-                this.Ca.onDestroy();
+                this.RY.onDestroy();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -147,7 +148,7 @@ public class MapView extends FrameLayout
         @Override
         public void onLowMemory() {
             try {
-                this.Ca.onLowMemory();
+                this.RY.onLowMemory();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -157,7 +158,7 @@ public class MapView extends FrameLayout
         @Override
         public void onPause() {
             try {
-                this.Ca.onPause();
+                this.RY.onPause();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -167,7 +168,7 @@ public class MapView extends FrameLayout
         @Override
         public void onResume() {
             try {
-                this.Ca.onResume();
+                this.RY.onResume();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -177,39 +178,47 @@ public class MapView extends FrameLayout
         @Override
         public void onSaveInstanceState(final Bundle bundle) {
             try {
-                this.Ca.onSaveInstanceState(bundle);
+                this.RY.onSaveInstanceState(bundle);
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
             }
         }
+        
+        @Override
+        public void onStart() {
+        }
+        
+        @Override
+        public void onStop() {
+        }
     }
     
     static class b extends a<MapView.a>
     {
-        protected d<MapView.a> BX;
-        private final ViewGroup Cc;
-        private final GoogleMapOptions Cd;
+        protected f<MapView.a> RV;
+        private final ViewGroup Sa;
+        private final GoogleMapOptions Sb;
         private final Context mContext;
         
-        b(final ViewGroup cc, final Context mContext, final GoogleMapOptions cd) {
-            this.Cc = cc;
+        b(final ViewGroup sa, final Context mContext, final GoogleMapOptions sb) {
+            this.Sa = sa;
             this.mContext = mContext;
-            this.Cd = cd;
+            this.Sb = sb;
         }
         
         @Override
-        protected void a(final d<MapView.a> bx) {
-            this.BX = bx;
-            this.ex();
+        protected void a(final f<MapView.a> rv) {
+            this.RV = rv;
+            this.ip();
         }
         
-        public void ex() {
-            if (this.BX == null || this.cZ() != null) {
+        public void ip() {
+            if (this.RV == null || this.fW() != null) {
                 return;
             }
             try {
-                this.BX.a(new MapView.a(this.Cc, q.u(this.mContext).a(c.h(this.mContext), this.Cd)));
+                this.RV.a(new MapView.a(this.Sa, u.A(this.mContext).a(e.h(this.mContext), this.Sb)));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);

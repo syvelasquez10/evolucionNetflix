@@ -11,21 +11,27 @@ import android.os.Parcelable;
 
 public interface Player extends Parcelable, Freezable<Player>
 {
-    int db();
-    
     String getDisplayName();
     
     void getDisplayName(final CharArrayBuffer p0);
     
     Uri getHiResImageUri();
     
+    @Deprecated
+    String getHiResImageUrl();
+    
     Uri getIconImageUri();
+    
+    @Deprecated
+    String getIconImageUrl();
     
     long getLastPlayedWithTimestamp();
     
     String getPlayerId();
     
     long getRetrievedTimestamp();
+    
+    int gh();
     
     boolean hasHiResImage();
     

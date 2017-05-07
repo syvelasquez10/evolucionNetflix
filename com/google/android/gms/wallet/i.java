@@ -5,120 +5,77 @@
 package com.google.android.gms.wallet;
 
 import com.google.android.gms.common.internal.safeparcel.a;
-import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class i implements Parcelable$Creator<MaskedWalletRequest>
+public class i implements Parcelable$Creator<LineItem>
 {
-    static void a(final MaskedWalletRequest maskedWalletRequest, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
-        b.c(parcel, 1, maskedWalletRequest.getVersionCode());
-        b.a(parcel, 2, maskedWalletRequest.Go, false);
-        b.a(parcel, 3, maskedWalletRequest.GK);
-        b.a(parcel, 4, maskedWalletRequest.GL);
-        b.a(parcel, 5, maskedWalletRequest.GM);
-        b.a(parcel, 6, maskedWalletRequest.GN, false);
-        b.a(parcel, 7, maskedWalletRequest.Gk, false);
-        b.a(parcel, 8, maskedWalletRequest.GO, false);
-        b.a(parcel, 9, (Parcelable)maskedWalletRequest.Gu, n, false);
-        b.a(parcel, 10, maskedWalletRequest.GP);
-        b.a(parcel, 11, maskedWalletRequest.GQ);
-        b.a(parcel, 12, maskedWalletRequest.GR, n, false);
-        b.a(parcel, 13, maskedWalletRequest.GS);
-        b.a(parcel, 14, maskedWalletRequest.GT);
-        b.D(parcel, o);
+    static void a(final LineItem lineItem, final Parcel parcel, int p3) {
+        p3 = b.p(parcel);
+        b.c(parcel, 1, lineItem.getVersionCode());
+        b.a(parcel, 2, lineItem.description, false);
+        b.a(parcel, 3, lineItem.abv, false);
+        b.a(parcel, 4, lineItem.abw, false);
+        b.a(parcel, 5, lineItem.abc, false);
+        b.c(parcel, 6, lineItem.abx);
+        b.a(parcel, 7, lineItem.abd, false);
+        b.F(parcel, p3);
     }
     
-    public MaskedWalletRequest aM(final Parcel parcel) {
-        final int n = a.n(parcel);
+    public LineItem be(final Parcel parcel) {
         int g = 0;
-        String m = null;
-        boolean c = false;
-        boolean c2 = false;
-        boolean c3 = false;
-        String i = null;
-        String j = null;
-        String k = null;
-        Cart cart = null;
-        boolean c4 = false;
-        boolean c5 = false;
-        CountrySpecification[] array = null;
-        boolean c6 = true;
-        boolean c7 = true;
-        while (parcel.dataPosition() < n) {
-            final int l = a.m(parcel);
-            switch (a.M(l)) {
+        String n = null;
+        final int o = a.o(parcel);
+        String n2 = null;
+        String n3 = null;
+        String n4 = null;
+        String n5 = null;
+        int g2 = 0;
+        while (parcel.dataPosition() < o) {
+            final int n6 = a.n(parcel);
+            switch (a.R(n6)) {
                 default: {
-                    a.b(parcel, l);
+                    a.b(parcel, n6);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, l);
+                    g2 = a.g(parcel, n6);
                     continue;
                 }
                 case 2: {
-                    m = a.m(parcel, l);
+                    n5 = a.n(parcel, n6);
                     continue;
                 }
                 case 3: {
-                    c = a.c(parcel, l);
+                    n4 = a.n(parcel, n6);
                     continue;
                 }
                 case 4: {
-                    c2 = a.c(parcel, l);
+                    n3 = a.n(parcel, n6);
                     continue;
                 }
                 case 5: {
-                    c3 = a.c(parcel, l);
+                    n2 = a.n(parcel, n6);
                     continue;
                 }
                 case 6: {
-                    i = a.m(parcel, l);
+                    g = a.g(parcel, n6);
                     continue;
                 }
                 case 7: {
-                    j = a.m(parcel, l);
-                    continue;
-                }
-                case 8: {
-                    k = a.m(parcel, l);
-                    continue;
-                }
-                case 9: {
-                    cart = a.a(parcel, l, Cart.CREATOR);
-                    continue;
-                }
-                case 10: {
-                    c4 = a.c(parcel, l);
-                    continue;
-                }
-                case 11: {
-                    c5 = a.c(parcel, l);
-                    continue;
-                }
-                case 12: {
-                    array = a.b(parcel, l, CountrySpecification.CREATOR);
-                    continue;
-                }
-                case 13: {
-                    c6 = a.c(parcel, l);
-                    continue;
-                }
-                case 14: {
-                    c7 = a.c(parcel, l);
+                    n = a.n(parcel, n6);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new MaskedWalletRequest(g, m, c, c2, c3, i, j, k, cart, c4, c5, array, c6, c7);
+        return new LineItem(g2, n5, n4, n3, n2, g, n);
     }
     
-    public MaskedWalletRequest[] bE(final int n) {
-        return new MaskedWalletRequest[n];
+    public LineItem[] cq(final int n) {
+        return new LineItem[n];
     }
 }

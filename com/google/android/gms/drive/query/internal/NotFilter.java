@@ -12,16 +12,16 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class NotFilter implements SafeParcelable, Filter
 {
     public static final Parcelable$Creator<NotFilter> CREATOR;
-    final int kg;
-    final FilterHolder sc;
+    final FilterHolder GT;
+    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new g();
+        CREATOR = (Parcelable$Creator)new i();
     }
     
-    NotFilter(final int kg, final FilterHolder sc) {
-        this.kg = kg;
-        this.sc = sc;
+    NotFilter(final int xh, final FilterHolder gt) {
+        this.xH = xh;
+        this.GT = gt;
     }
     
     public NotFilter(final Filter filter) {
@@ -33,6 +33,6 @@ public class NotFilter implements SafeParcelable, Filter
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        g.a(this, parcel, n);
+        i.a(this, parcel, n);
     }
 }

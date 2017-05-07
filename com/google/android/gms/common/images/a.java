@@ -4,273 +4,110 @@
 
 package com.google.android.gms.common.images;
 
-import com.google.android.gms.internal.ee;
-import android.graphics.drawable.BitmapDrawable;
-import com.google.android.gms.internal.ds;
-import android.graphics.Bitmap;
-import android.content.Context;
-import com.google.android.gms.internal.fg;
-import com.google.android.gms.internal.dr;
-import com.google.android.gms.internal.dq;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.widget.TextView;
+import com.google.android.gms.internal.ez;
 import android.widget.ImageView;
 import java.lang.ref.WeakReference;
+import com.google.android.gms.internal.fo;
+import android.graphics.drawable.BitmapDrawable;
+import com.google.android.gms.internal.fb;
+import android.graphics.Bitmap;
+import com.google.android.gms.internal.ex;
+import com.google.android.gms.internal.ey;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import com.google.android.gms.internal.fa;
+import android.content.Context;
+import android.net.Uri;
 
-public final class a
+public abstract class a
 {
-    final a op;
-    private int oq;
-    private int or;
-    int os;
-    private int ot;
-    private WeakReference<ImageManager.OnImageLoadedListener> ou;
-    private WeakReference<ImageView> ov;
-    private WeakReference<TextView> ow;
-    private int ox;
-    private boolean oy;
-    private boolean oz;
+    final a Cm;
+    protected int Cn;
+    protected int Co;
+    private boolean Cp;
+    private boolean Cq;
+    protected int Cr;
     
-    public a(final int or) {
-        this.oq = 0;
-        this.or = 0;
-        this.ox = -1;
-        this.oy = true;
-        this.oz = false;
-        this.op = new a(null);
-        this.or = or;
+    public a(final Uri uri, final int co) {
+        this.Cn = 0;
+        this.Co = 0;
+        this.Cp = true;
+        this.Cq = false;
+        this.Cm = new a(uri);
+        this.Co = co;
     }
     
-    public a(final Uri uri) {
-        this.oq = 0;
-        this.or = 0;
-        this.ox = -1;
-        this.oy = true;
-        this.oz = false;
-        this.op = new a(uri);
-        this.or = 0;
+    private Drawable a(final Context context, final fa fa, final int n) {
+        final Resources resources = context.getResources();
+        if (this.Cr > 0) {
+            final fa.a a = new fa.a(n, this.Cr);
+            Drawable drawable;
+            if ((drawable = fa.get(a)) == null) {
+                final Drawable drawable2 = drawable = resources.getDrawable(n);
+                if ((this.Cr & 0x1) != 0x0) {
+                    drawable = this.a(resources, drawable2);
+                }
+                fa.put(a, drawable);
+            }
+            return drawable;
+        }
+        return resources.getDrawable(n);
     }
     
-    private dq a(final Drawable drawable, final Drawable drawable2) {
-        Drawable bc;
+    public void J(final int co) {
+        this.Co = co;
+    }
+    
+    protected Drawable a(final Resources resources, final Drawable drawable) {
+        return ey.a(resources, drawable);
+    }
+    
+    protected ex a(final Drawable drawable, final Drawable drawable2) {
+        Drawable ez;
         if (drawable != null) {
-            bc = drawable;
-            if (drawable instanceof dq) {
-                bc = ((dq)drawable).bC();
+            ez = drawable;
+            if (drawable instanceof ex) {
+                ez = ((ex)drawable).ez();
             }
         }
         else {
-            bc = null;
+            ez = null;
         }
-        return new dq(bc, drawable2);
-    }
-    
-    private void a(final Drawable drawable, final boolean b, final boolean b2, final boolean b3) {
-        switch (this.os) {
-            case 1: {
-                if (b2) {
-                    break;
-                }
-                final ImageManager.OnImageLoadedListener onImageLoadedListener = this.ou.get();
-                if (onImageLoadedListener != null) {
-                    onImageLoadedListener.onImageLoaded(this.op.uri, drawable, b3);
-                    return;
-                }
-                break;
-            }
-            case 2: {
-                final ImageView imageView = this.ov.get();
-                if (imageView != null) {
-                    this.a(imageView, drawable, b, b2, b3);
-                    return;
-                }
-                break;
-            }
-            case 3: {
-                final TextView textView = this.ow.get();
-                if (textView != null) {
-                    this.a(textView, this.ox, drawable, b, b2);
-                    return;
-                }
-                break;
-            }
-        }
-    }
-    
-    private void a(final ImageView imageView, Drawable a, final boolean b, final boolean b2, final boolean b3) {
-        boolean b4;
-        if (!b2 && !b3) {
-            b4 = true;
-        }
-        else {
-            b4 = false;
-        }
-        Label_0057: {
-            if (!b4 || !(imageView instanceof dr)) {
-                break Label_0057;
-            }
-            final int be = ((dr)imageView).bE();
-            if (this.or == 0 || be != this.or) {
-                break Label_0057;
-            }
-            return;
-        }
-        final boolean a2 = this.a(b, b2);
-        if (a2) {
-            a = this.a(imageView.getDrawable(), a);
-        }
-        imageView.setImageDrawable(a);
-        if (imageView instanceof dr) {
-            final dr dr = (dr)imageView;
-            Uri uri;
-            if (b3) {
-                uri = this.op.uri;
-            }
-            else {
-                uri = null;
-            }
-            dr.d(uri);
-            int or;
-            if (b4) {
-                or = this.or;
-            }
-            else {
-                or = 0;
-            }
-            dr.H(or);
-        }
-        if (a2) {
-            ((dq)a).startTransition(250);
-        }
-    }
-    
-    private void a(final TextView textView, final int n, Drawable a, final boolean b, final boolean b2) {
-        final boolean a2 = this.a(b, b2);
-        Drawable[] array;
-        if (fg.cI()) {
-            array = textView.getCompoundDrawablesRelative();
-        }
-        else {
-            array = textView.getCompoundDrawables();
-        }
-        final Drawable drawable = array[n];
-        if (a2) {
-            a = this.a(drawable, a);
-        }
-        Drawable drawable2;
-        if (n == 0) {
-            drawable2 = a;
-        }
-        else {
-            drawable2 = array[0];
-        }
-        Drawable drawable3;
-        if (n == 1) {
-            drawable3 = a;
-        }
-        else {
-            drawable3 = array[1];
-        }
-        Drawable drawable4;
-        if (n == 2) {
-            drawable4 = a;
-        }
-        else {
-            drawable4 = array[2];
-        }
-        Drawable drawable5;
-        if (n == 3) {
-            drawable5 = a;
-        }
-        else {
-            drawable5 = array[3];
-        }
-        if (fg.cI()) {
-            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(drawable2, drawable3, drawable4, drawable5);
-        }
-        else {
-            textView.setCompoundDrawablesWithIntrinsicBounds(drawable2, drawable3, drawable4, drawable5);
-        }
-        if (a2) {
-            ((dq)a).startTransition(250);
-        }
-    }
-    
-    private boolean a(final boolean b, final boolean b2) {
-        return this.oy && !b2 && (!b || this.oz);
-    }
-    
-    public void F(final int or) {
-        this.or = or;
+        return new ex(ez, drawable2);
     }
     
     void a(final Context context, final Bitmap bitmap, final boolean b) {
-        ds.d(bitmap);
-        this.a((Drawable)new BitmapDrawable(context.getResources(), bitmap), b, false, true);
-    }
-    
-    public void a(final ImageView imageView) {
-        ds.d(imageView);
-        this.ou = null;
-        this.ov = new WeakReference<ImageView>(imageView);
-        this.ow = null;
-        this.ox = -1;
-        this.os = 2;
-        this.ot = imageView.hashCode();
-    }
-    
-    public void a(final ImageManager.OnImageLoadedListener onImageLoadedListener) {
-        ds.d(onImageLoadedListener);
-        this.ou = new WeakReference<ImageManager.OnImageLoadedListener>(onImageLoadedListener);
-        this.ov = null;
-        this.ow = null;
-        this.ox = -1;
-        this.os = 1;
-        this.ot = ee.hashCode(onImageLoadedListener, this.op);
-    }
-    
-    void b(final Context context, final boolean b) {
-        Drawable drawable = null;
-        if (this.or != 0) {
-            drawable = context.getResources().getDrawable(this.or);
+        fb.d(bitmap);
+        Bitmap a = bitmap;
+        if ((this.Cr & 0x1) != 0x0) {
+            a = ey.a(bitmap);
         }
-        this.a(drawable, b, false, false);
+        this.a((Drawable)new BitmapDrawable(context.getResources(), a), b, false, true);
     }
     
-    @Override
-    public boolean equals(final Object o) {
-        final boolean b = true;
-        boolean b2;
-        if (!(o instanceof a)) {
-            b2 = false;
+    void a(final Context context, final fa fa) {
+        Drawable a = null;
+        if (this.Cn != 0) {
+            a = this.a(context, fa, this.Cn);
         }
-        else {
-            b2 = b;
-            if (this != o) {
-                b2 = b;
-                if (((a)o).hashCode() != this.hashCode()) {
-                    return false;
-                }
-            }
+        this.a(a, false, true, false);
+    }
+    
+    void a(final Context context, final fa fa, final boolean b) {
+        Drawable a = null;
+        if (this.Co != 0) {
+            a = this.a(context, fa, this.Co);
         }
-        return b2;
+        this.a(a, b, false, false);
     }
     
-    @Override
-    public int hashCode() {
-        return this.ot;
+    protected abstract void a(final Drawable p0, final boolean p1, final boolean p2, final boolean p3);
+    
+    protected boolean b(final boolean b, final boolean b2) {
+        return this.Cp && !b2 && (!b || this.Cq);
     }
     
-    void r(final Context context) {
-        Drawable drawable = null;
-        if (this.oq != 0) {
-            drawable = context.getResources().getDrawable(this.oq);
-        }
-        this.a(drawable, false, true, false);
-    }
-    
-    public static final class a
+    static final class a
     {
         public final Uri uri;
         
@@ -280,26 +117,143 @@ public final class a
         
         @Override
         public boolean equals(final Object o) {
-            final boolean b = true;
-            boolean b2;
-            if (!(o instanceof a)) {
-                b2 = false;
-            }
-            else {
-                b2 = b;
-                if (this != o) {
-                    b2 = b;
-                    if (((a)o).hashCode() != this.hashCode()) {
-                        return false;
-                    }
-                }
-            }
-            return b2;
+            return o instanceof a && (this == o || fo.equal(((a)o).uri, this.uri));
         }
         
         @Override
         public int hashCode() {
-            return ee.hashCode(this.uri);
+            return fo.hashCode(this.uri);
+        }
+    }
+    
+    public static final class b extends a
+    {
+        private WeakReference<ImageView> Cs;
+        
+        public b(final ImageView imageView, final int n) {
+            super(null, n);
+            fb.d(imageView);
+            this.Cs = new WeakReference<ImageView>(imageView);
+        }
+        
+        public b(final ImageView imageView, final Uri uri) {
+            super(uri, 0);
+            fb.d(imageView);
+            this.Cs = new WeakReference<ImageView>(imageView);
+        }
+        
+        private void a(final ImageView imageView, Drawable a, final boolean b, final boolean b2, final boolean b3) {
+            boolean b4;
+            if (!b2 && !b3) {
+                b4 = true;
+            }
+            else {
+                b4 = false;
+            }
+            Label_0057: {
+                if (!b4 || !(imageView instanceof ez)) {
+                    break Label_0057;
+                }
+                final int eb = ((ez)imageView).eB();
+                if (this.Co == 0 || eb != this.Co) {
+                    break Label_0057;
+                }
+                return;
+            }
+            final boolean b5 = this.b(b, b2);
+            if (b5) {
+                a = this.a(imageView.getDrawable(), a);
+            }
+            imageView.setImageDrawable(a);
+            if (imageView instanceof ez) {
+                final ez ez = (ez)imageView;
+                Uri uri;
+                if (b3) {
+                    uri = this.Cm.uri;
+                }
+                else {
+                    uri = null;
+                }
+                ez.e(uri);
+                int co;
+                if (b4) {
+                    co = this.Co;
+                }
+                else {
+                    co = 0;
+                }
+                ez.L(co);
+            }
+            if (b5) {
+                ((ex)a).startTransition(250);
+            }
+        }
+        
+        @Override
+        protected void a(final Drawable drawable, final boolean b, final boolean b2, final boolean b3) {
+            final ImageView imageView = this.Cs.get();
+            if (imageView != null) {
+                this.a(imageView, drawable, b, b2, b3);
+            }
+        }
+        
+        @Override
+        public boolean equals(final Object o) {
+            if (!(o instanceof b)) {
+                return false;
+            }
+            if (this == o) {
+                return true;
+            }
+            final b b = (b)o;
+            final ImageView imageView = this.Cs.get();
+            final ImageView imageView2 = b.Cs.get();
+            return imageView2 != null && imageView != null && fo.equal(imageView2, imageView);
+        }
+        
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+    }
+    
+    public static final class c extends a
+    {
+        private WeakReference<ImageManager.OnImageLoadedListener> Ct;
+        
+        public c(final ImageManager.OnImageLoadedListener onImageLoadedListener, final Uri uri) {
+            super(uri, 0);
+            fb.d(onImageLoadedListener);
+            this.Ct = new WeakReference<ImageManager.OnImageLoadedListener>(onImageLoadedListener);
+        }
+        
+        @Override
+        protected void a(final Drawable drawable, final boolean b, final boolean b2, final boolean b3) {
+            if (!b2) {
+                final ImageManager.OnImageLoadedListener onImageLoadedListener = this.Ct.get();
+                if (onImageLoadedListener != null) {
+                    onImageLoadedListener.onImageLoaded(this.Cm.uri, drawable, b3);
+                }
+            }
+        }
+        
+        @Override
+        public boolean equals(final Object o) {
+            if (!(o instanceof c)) {
+                return false;
+            }
+            if (this == o) {
+                return true;
+            }
+            final c c = (c)o;
+            final ImageManager.OnImageLoadedListener onImageLoadedListener = this.Ct.get();
+            final ImageManager.OnImageLoadedListener onImageLoadedListener2 = c.Ct.get();
+            return onImageLoadedListener2 != null && onImageLoadedListener != null && fo.equal(onImageLoadedListener2, onImageLoadedListener) && fo.equal(c.Cm, this.Cm);
+        }
+        
+        @Override
+        public int hashCode() {
+            return fo.hashCode(this.Cm);
         }
     }
 }

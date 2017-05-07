@@ -150,7 +150,7 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
                             }
                             if (MdxAgent.this.mVideoDetails != null) {
                                 if (MdxAgent.this.mVideoDetails.getType() == VideoType.EPISODE) {
-                                    MdxAgent.this.mRemoteControlClientManager.setTitles(MdxAgent.this.getContext().getString(2131296622, new Object[] { MdxAgent.this.mVideoDetails.getSeasonNumber(), MdxAgent.this.mVideoDetails.getEpisodeNumber(), MdxAgent.this.mVideoDetails.getTitle() }), MdxAgent.this.mVideoDetails.getParentTitle());
+                                    MdxAgent.this.mRemoteControlClientManager.setTitles(MdxAgent.this.getContext().getString(2131493241, new Object[] { MdxAgent.this.mVideoDetails.getSeasonNumber(), MdxAgent.this.mVideoDetails.getEpisodeNumber(), MdxAgent.this.mVideoDetails.getTitle() }), MdxAgent.this.mVideoDetails.getParentTitle());
                                 }
                                 else {
                                     MdxAgent.this.mRemoteControlClientManager.setTitles(MdxAgent.this.mVideoDetails.getTitle(), null);
@@ -294,7 +294,7 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
                             MdxAgent.this.mTargetManager.playerPlay(MdxAgent.this.mCurrentTargetUuid, MdxAgent.this.mVideoIds.catalogIdUrl, MdxAgent.this.mTrackId, MdxAgent.this.mVideoIds.episodeIdUrl, MdxAgent.this.mStartTime);
                             MdxAgent.this.logPlaystart(false);
                         }
-                        MdxAgent.this.updateMdxNotification(true, MdxAgent.this.mVideoDetails.getParentTitle(), MdxAgent.this.getContext().getString(2131296622, new Object[] { MdxAgent.this.mVideoDetails.getSeasonNumber(), MdxAgent.this.mVideoDetails.getEpisodeNumber(), MdxAgent.this.mVideoDetails.getTitle() }));
+                        MdxAgent.this.updateMdxNotification(true, MdxAgent.this.mVideoDetails.getParentTitle(), MdxAgent.this.getContext().getString(2131493241, new Object[] { MdxAgent.this.mVideoDetails.getSeasonNumber(), MdxAgent.this.mVideoDetails.getEpisodeNumber(), MdxAgent.this.mVideoDetails.getTitle() }));
                     }
                 }
             });
@@ -361,7 +361,7 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
         this.mDisableWebSocket = this.getConfigurationAgent().isDisableWebsocket();
         this.mEnableCast = this.getConfigurationAgent().isEnableCast();
         if (this.mEnableCast) {
-            (this.mCastManager = new CastManager(this.getContext(), this.getMainHandler())).setCastBlackList(this.getConfigurationAgent().getCastBlackList());
+            (this.mCastManager = new CastManager(this.getContext(), this.getMainHandler())).setCastWhiteList(this.getConfigurationAgent().getCastWhiteList());
             if (StringUtils.isNotEmpty(this.mCurrentTargetUuid)) {
                 this.mCastManager.setTargetId(this.mCurrentTargetUuid);
             }
@@ -689,7 +689,7 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
             }
             if (this.mVideoDetails != null) {
                 if (this.mVideoIds.episode) {
-                    this.mMdxNotificationManager.setTitlesNotify(true, this.mVideoDetails.getParentTitle(), this.getContext().getString(2131296622, new Object[] { this.mVideoDetails.getSeasonNumber(), this.mVideoDetails.getEpisodeNumber(), this.mVideoDetails.getTitle() }));
+                    this.mMdxNotificationManager.setTitlesNotify(true, this.mVideoDetails.getParentTitle(), this.getContext().getString(2131493241, new Object[] { this.mVideoDetails.getSeasonNumber(), this.mVideoDetails.getEpisodeNumber(), this.mVideoDetails.getTitle() }));
                 }
                 else {
                     this.mMdxNotificationManager.setTitlesNotify(false, this.mVideoDetails.getTitle(), null);

@@ -11,24 +11,24 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class FullWalletRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<FullWalletRequest> CREATOR;
-    String Gn;
-    String Go;
-    Cart Gu;
-    private final int kg;
+    String abh;
+    String abi;
+    Cart abr;
+    private final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new e();
+        CREATOR = (Parcelable$Creator)new g();
     }
     
     FullWalletRequest() {
-        this.kg = 1;
+        this.xH = 1;
     }
     
-    FullWalletRequest(final int kg, final String gn, final String go, final Cart gu) {
-        this.kg = kg;
-        this.Gn = gn;
-        this.Go = go;
-        this.Gu = gu;
+    FullWalletRequest(final int xh, final String abh, final String abi, final Cart abr) {
+        this.xH = xh;
+        this.abh = abh;
+        this.abi = abi;
+        this.abr = abr;
     }
     
     public static Builder newBuilder() {
@@ -42,23 +42,23 @@ public final class FullWalletRequest implements SafeParcelable
     }
     
     public Cart getCart() {
-        return this.Gu;
+        return this.abr;
     }
     
     public String getGoogleTransactionId() {
-        return this.Gn;
+        return this.abh;
     }
     
     public String getMerchantTransactionId() {
-        return this.Go;
+        return this.abi;
     }
     
     public int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        e.a(this, parcel, n);
+        g.a(this, parcel, n);
     }
     
     public final class Builder
@@ -67,18 +67,18 @@ public final class FullWalletRequest implements SafeParcelable
             return FullWalletRequest.this;
         }
         
-        public Builder setCart(final Cart gu) {
-            FullWalletRequest.this.Gu = gu;
+        public Builder setCart(final Cart abr) {
+            FullWalletRequest.this.abr = abr;
             return this;
         }
         
-        public Builder setGoogleTransactionId(final String gn) {
-            FullWalletRequest.this.Gn = gn;
+        public Builder setGoogleTransactionId(final String abh) {
+            FullWalletRequest.this.abh = abh;
             return this;
         }
         
-        public Builder setMerchantTransactionId(final String go) {
-            FullWalletRequest.this.Go = go;
+        public Builder setMerchantTransactionId(final String abi) {
+            FullWalletRequest.this.abi = abi;
             return this;
         }
     }

@@ -13,50 +13,50 @@ public class ParticipantResultCreator implements Parcelable$Creator<ParticipantR
 {
     public static final int CONTENT_DESCRIPTION = 0;
     
-    static void a(final ParticipantResult participantResult, final Parcel parcel, int o) {
-        o = b.o(parcel);
+    static void a(final ParticipantResult participantResult, final Parcel parcel, int p3) {
+        p3 = b.p(parcel);
         b.a(parcel, 1, participantResult.getParticipantId(), false);
         b.c(parcel, 1000, participantResult.getVersionCode());
         b.c(parcel, 2, participantResult.getResult());
         b.c(parcel, 3, participantResult.getPlacing());
-        b.D(parcel, o);
+        b.F(parcel, p3);
     }
     
     public ParticipantResult createFromParcel(final Parcel parcel) {
         int g = 0;
-        final int n = a.n(parcel);
-        String m = null;
+        final int o = a.o(parcel);
+        String n = null;
         int g2 = 0;
         int g3 = 0;
-        while (parcel.dataPosition() < n) {
-            final int i = a.m(parcel);
-            switch (a.M(i)) {
+        while (parcel.dataPosition() < o) {
+            final int n2 = a.n(parcel);
+            switch (a.R(n2)) {
                 default: {
-                    a.b(parcel, i);
+                    a.b(parcel, n2);
                     continue;
                 }
                 case 1: {
-                    m = a.m(parcel, i);
+                    n = a.n(parcel, n2);
                     continue;
                 }
                 case 1000: {
-                    g3 = a.g(parcel, i);
+                    g3 = a.g(parcel, n2);
                     continue;
                 }
                 case 2: {
-                    g2 = a.g(parcel, i);
+                    g2 = a.g(parcel, n2);
                     continue;
                 }
                 case 3: {
-                    g = a.g(parcel, i);
+                    g = a.g(parcel, n2);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new ParticipantResult(g3, m, g2, g);
+        return new ParticipantResult(g3, n, g2, g);
     }
     
     public ParticipantResult[] newArray(final int n) {

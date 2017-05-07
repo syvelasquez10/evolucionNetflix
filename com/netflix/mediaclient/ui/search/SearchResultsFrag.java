@@ -8,6 +8,8 @@ import android.widget.AdapterView;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.Trackable;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
+import com.netflix.mediaclient.ui.kids.search.KidsSearchResultView;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.TextView;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapter;
 import android.widget.BaseAdapter;
@@ -59,9 +61,9 @@ public class SearchResultsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903145, (ViewGroup)null);
+        final View inflate = layoutInflater.inflate(2130903153, (ViewGroup)null);
         this.adapter = new SearchResultsAdapter();
-        (this.gridView = (StickyGridHeadersGridView)inflate.findViewById(2131231073)).setAdapter((ListAdapter)this.adapter);
+        (this.gridView = (StickyGridHeadersGridView)inflate.findViewById(2131165558)).setAdapter((ListAdapter)this.adapter);
         this.gridView.setOnItemClickListener((AdapterView$OnItemClickListener)this.adapter);
         this.gridView.setAreHeadersSticky(false);
         this.gridView.setNumColumns(((SparseIntArray)SearchResultsFrag.numColsTable.get(DeviceUtils.getBasicScreenOrientation((Context)this.getActivity()))).get(DeviceUtils.getScreenSizeCategory((Context)this.getActivity())));
@@ -103,9 +105,9 @@ public class SearchResultsFrag extends NetflixFrag
             }
             View inflate;
             if ((inflate = view) == null) {
-                inflate = SearchResultsFrag.this.getActivity().getLayoutInflater().inflate(2130903146, (ViewGroup)null);
+                inflate = SearchResultsFrag.this.getActivity().getLayoutInflater().inflate(2130903154, (ViewGroup)null);
             }
-            ((TextView)inflate.findViewById(2131231074)).setText(SearchResultsFrag.this.results.getSectionTitle((Context)SearchResultsFrag.this.getActivity(), n));
+            ((TextView)inflate.findViewById(2131165559)).setText(SearchResultsFrag.this.results.getSectionTitle((Context)SearchResultsFrag.this.getActivity(), n));
             return inflate;
         }
         
@@ -130,7 +132,13 @@ public class SearchResultsFrag extends NetflixFrag
         public View getView(final int n, final View view, final ViewGroup viewGroup) {
             Object o = view;
             if (view == null) {
-                o = new SearchResultView((Context)SearchResultsFrag.this.getActivity());
+                final NetflixActivity netflixActivity = (NetflixActivity)SearchResultsFrag.this.getActivity();
+                if (netflixActivity.isForKids()) {
+                    o = new KidsSearchResultView((Context)netflixActivity);
+                }
+                else {
+                    o = new SearchResultView((Context)netflixActivity);
+                }
             }
             ((SearchResultView)o).update(this.getItem(n), new PlayContextImp(SearchResultsFrag.this.results, n));
             return (View)o;

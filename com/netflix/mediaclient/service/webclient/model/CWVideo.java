@@ -146,6 +146,14 @@ public class CWVideo implements com.netflix.mediaclient.servicemgr.CWVideo
     }
     
     @Override
+    public String getHorzDispUrl() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.horzDispUrl;
+    }
+    
+    @Override
     public String getId() {
         if (this.summary == null) {
             return null;
@@ -234,6 +242,14 @@ public class CWVideo implements com.netflix.mediaclient.servicemgr.CWVideo
             return null;
         }
         return this.summary.getTitle();
+    }
+    
+    @Override
+    public String getTvCardUrl() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.tvCardUrl;
     }
     
     @Override

@@ -5,22 +5,48 @@
 package com.google.android.gms.drive.metadata.internal;
 
 import android.os.Bundle;
-import java.util.Collection;
-import com.google.android.gms.drive.metadata.MetadataField;
-import android.os.Parcelable;
+import com.google.android.gms.common.internal.safeparcel.a;
+import com.google.android.gms.common.internal.safeparcel.b;
+import android.os.Parcel;
+import android.os.Parcelable$Creator;
 
-public abstract class f<T extends Parcelable> extends MetadataField<T>
+public class f implements Parcelable$Creator<MetadataBundle>
 {
-    public f(final String s, final Collection<String> collection) {
-        super(s, collection);
+    static void a(final MetadataBundle metadataBundle, final Parcel parcel, int p3) {
+        p3 = b.p(parcel);
+        b.c(parcel, 1, metadataBundle.xH);
+        b.a(parcel, 2, metadataBundle.FQ, false);
+        b.F(parcel, p3);
     }
     
-    @Override
-    protected void a(final Bundle bundle, final T t) {
-        bundle.putParcelable(this.getName(), (Parcelable)t);
+    public MetadataBundle[] aF(final int n) {
+        return new MetadataBundle[n];
     }
     
-    protected T j(final Bundle bundle) {
-        return (T)bundle.getParcelable(this.getName());
+    public MetadataBundle ab(final Parcel parcel) {
+        final int o = a.o(parcel);
+        int g = 0;
+        Bundle p = null;
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
+                default: {
+                    a.b(parcel, n);
+                    continue;
+                }
+                case 1: {
+                    g = a.g(parcel, n);
+                    continue;
+                }
+                case 2: {
+                    p = a.p(parcel, n);
+                    continue;
+                }
+            }
+        }
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
+        }
+        return new MetadataBundle(g, p);
     }
 }

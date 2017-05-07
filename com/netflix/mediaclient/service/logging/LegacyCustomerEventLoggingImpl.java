@@ -64,8 +64,8 @@ public final class LegacyCustomerEventLoggingImpl implements CustomerEventLoggin
     }
     
     @Override
-    public void reportApplicationLaunchedFromDeepLinking(final String s, final String s2) {
-        final LaunchedFromDeepLink launchedFromDeepLink = new LaunchedFromDeepLink(this.mContext, this.getUserData(), s, s2);
+    public void reportApplicationLaunchedFromDeepLinking(final String s, final String s2, final String s3) {
+        final LaunchedFromDeepLink launchedFromDeepLink = new LaunchedFromDeepLink(this.mContext, this.getUserData(), s, s2, s3);
         Log.d("nf_log", "Execute reportApplicationLaunchFromDeepLinking beacon...");
         new BackgroundTask().execute(launchedFromDeepLink);
         Log.d("nf_log", "Beacon send in background");

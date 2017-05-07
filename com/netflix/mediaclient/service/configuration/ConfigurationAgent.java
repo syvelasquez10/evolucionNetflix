@@ -42,6 +42,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     private static final float DISK_CACHE_SIZE_AS_PERCENTAGE_OF_AVLBLMEM = 0.25f;
     private static final int HIGH_MEM_THREAD_COUNT = 4;
     private static final float IMAGE_CACHE_SIZE_AS_PERCENTAGE_OF_MAX_HEAP = 0.5f;
+    private static final KidsOnPhoneConfiguration KIDS_CONFIG_OVERRIDE;
     private static final String LEVEL_HIGH = "high";
     private static final String LEVEL_LOW = "low";
     private static final long LOW_MEMORY_CONFIG_THRESHOLD_IN_BYTES = 33554432L;
@@ -77,6 +78,42 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     private final Runnable refreshRunnable;
     
     static {
+        KIDS_CONFIG_OVERRIDE = new KidsOnPhoneConfiguration() {
+            @Override
+            public LolomoImageType getLolomoImageType() {
+                return LolomoImageType.HORIZONTAL;
+            }
+            
+            @Override
+            public ScrollBehavior getScrollBehavior() {
+                return ScrollBehavior.UP_DOWN;
+            }
+            
+            @Override
+            public boolean isInKidsOnPhoneTest() {
+                return false;
+            }
+            
+            @Override
+            public boolean isKidsOnPhoneEnabled() {
+                return false;
+            }
+            
+            @Override
+            public boolean shouldShowKidsEntryInActionBar() {
+                return false;
+            }
+            
+            @Override
+            public boolean shouldShowKidsEntryInGenreLomo() {
+                return false;
+            }
+            
+            @Override
+            public boolean shouldShowKidsEntryInMenu() {
+                return false;
+            }
+        };
         sMemLevel = getMemLevel();
     }
     
@@ -185,6 +222,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     
     private void prepareConfigWebClient() {
         this.mEndpointRegistry.setUserAgentInterface(this.getUserAgent());
+        this.mEndpointRegistry.setConfigurationAgentInterface(this.getConfigurationAgent());
         if (this.mConfigurationWebClient == null) {
             this.mConfigurationWebClient = ConfigurationWebClientFactory.create(this.getService(), this.getResourceFetcher().getApiNextWebClient());
         }
@@ -329,8 +367,8 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     }
     
     @Override
-    public JSONArray getCastBlackList() {
-        return this.mAccountConfigOverride.getCastBlacklist();
+    public JSONArray getCastWhiteList() {
+        return this.mAccountConfigOverride.getCastWhitelist();
     }
     
     @Override
@@ -374,71 +412,38 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         int n = 0;
         for (int length = supportedVideoProfiles.length, i = 0; i < length; ++i) {
             final String s = supportedVideoProfiles[i];
-            final int n2 = 0;
-            final int n3 = 0;
-            int n4 = 4800;
+            int n2 = 4800;
             if (s.equalsIgnoreCase("playready-h264bpl30-dash")) {
-                n4 = 1350;
+                n2 = 1350;
                 Log.d("VideoBitrateRange", "player support BP30");
             }
             else if (s.equalsIgnoreCase("playready-h264mpl30-dash")) {
-                n4 = 1750;
+                n2 = 1750;
                 Log.d("VideoBitrateRange", "player support MP30");
             }
             else if (s.equalsIgnoreCase("playready-h264mpl31-dash")) {
-                n4 = 3600;
+                n2 = 3600;
                 Log.d("VideoBitrateRange", "player support MP31");
             }
-            int n5 = n4;
-            int n6 = n2;
-            if (!PlayerTypeFactory.isDrmPlayPlayer(currentPlayerType)) {
-                n5 = n4;
-                n6 = n2;
-                if (!PlayerTypeFactory.isJPlayer2(currentPlayerType)) {
-                    int n7;
-                    if (b) {
-                        if (s.equalsIgnoreCase("playready-h264bpl30-dash")) {
-                            n5 = 500;
-                            n7 = n3;
-                        }
-                        else {
-                            n5 = n4;
-                            n7 = n3;
-                            if (s.equalsIgnoreCase("playready-h264mpl30-dash")) {
-                                n5 = 750;
-                                n7 = n3;
-                            }
-                        }
+            int n3 = n2;
+            if (!PlayerTypeFactory.isJPlayer2(currentPlayerType)) {
+                n3 = n2;
+                if (b) {
+                    if (s.equalsIgnoreCase("playready-h264bpl30-dash")) {
+                        n3 = 500;
                     }
                     else {
-                        n5 = n4;
-                        n7 = n3;
-                        if (PlayerTypeFactory.isNfampPlayer(currentPlayerType)) {
-                            if (s.equalsIgnoreCase("playready-h264bpl30-dash")) {
-                                n5 = 500;
-                                n7 = n3;
-                            }
-                            else {
-                                n5 = n4;
-                                n7 = n3;
-                                if (s.equalsIgnoreCase("playready-h264mpl30-dash")) {
-                                    n7 = 550;
-                                    n5 = 1450;
-                                }
-                            }
+                        n3 = n2;
+                        if (s.equalsIgnoreCase("playready-h264mpl30-dash")) {
+                            n3 = 750;
                         }
-                    }
-                    n6 = n7;
-                    if (PlayerTypeFactory.isOmxPlayer(currentPlayerType)) {
-                        n5 = 500;
-                        n6 = n7;
                     }
                 }
             }
             if (Log.isLoggable("nf_configurationagent", 3)) {
-                Log.d("VideoBitrateRange", "Profile: " + s + ", min: " + n6 + ", max: " + n5);
+                Log.d("VideoBitrateRange", "Profile: " + s + ", min: " + 0 + ", max: " + n3);
             }
-            array[n] = new VideoBitrateRange(n6, n5, s);
+            array[n] = new VideoBitrateRange(0, n3, s);
             ++n;
         }
         return array;
@@ -477,6 +482,11 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     @Override
     public JSONObject getJPlayerConfig() {
         return this.mAccountConfigOverride.getJPlayerConfig();
+    }
+    
+    @Override
+    public KidsOnPhoneConfiguration getKidsOnPhoneConfiguration() {
+        return ConfigurationAgent.KIDS_CONFIG_OVERRIDE;
     }
     
     @Override

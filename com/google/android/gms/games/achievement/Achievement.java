@@ -42,6 +42,9 @@ public interface Achievement
     
     Uri getRevealedImageUri();
     
+    @Deprecated
+    String getRevealedImageUrl();
+    
     int getState();
     
     int getTotalSteps();
@@ -49,4 +52,7 @@ public interface Achievement
     int getType();
     
     Uri getUnlockedImageUri();
+    
+    @Deprecated
+    String getUnlockedImageUrl();
 }

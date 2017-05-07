@@ -30,4 +30,9 @@ public class TrackableListSummary extends ListSummary implements Trackable
     public void setListPos(final int listPos) {
         this.listPos = listPos;
     }
+    
+    @Override
+    public String toString() {
+        return "TrackableListSummary [trackId=" + this.trackId + ", listPos=" + this.listPos + ", requestId=" + this.requestId + "]";
+    }
 }

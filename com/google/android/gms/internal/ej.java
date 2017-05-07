@@ -4,71 +4,202 @@
 
 package com.google.android.gms.internal;
 
-import android.content.res.Resources$NotFoundException;
-import android.util.Log;
-import android.util.TypedValue;
-import android.util.AttributeSet;
-import android.content.Context;
+import android.os.Parcel;
+import android.os.IBinder;
+import android.os.Binder;
+import android.os.RemoteException;
+import com.google.android.gms.common.data.DataHolder;
+import android.os.IInterface;
 
-public class ej
+public interface ej extends IInterface
 {
-    public static String a(String attributeValue, final String s, final Context context, AttributeSet string, final boolean b, final boolean b2, final String s2) {
-    Label_0104:
-        while (true) {
-            while (true) {
-                Label_0006: {
-                    if (string == null) {
-                        attributeValue = null;
-                        break Label_0006;
-                    }
-                    Label_0145: {
-                        break Label_0145;
-                        while (true) {
-                            final String substring = attributeValue.substring("@string/".length());
-                            final String packageName = context.getPackageName();
-                            string = (AttributeSet)new TypedValue();
-                        Label_0195:
-                            while (true) {
-                                try {
-                                    context.getResources().getValue(packageName + ":string/" + substring, (TypedValue)string, true);
-                                    if (((TypedValue)string).string != null) {
-                                        string = (AttributeSet)((TypedValue)string).string.toString();
-                                        if (b2 && string == null) {
-                                            Log.w(s2, "Required XML attribute \"" + s + "\" missing");
-                                        }
-                                        return (String)string;
-                                    }
-                                    break Label_0195;
-                                    attributeValue = string.getAttributeValue(attributeValue, s);
-                                    break;
-                                }
-                                catch (Resources$NotFoundException ex) {
-                                    Log.w(s2, "Could not find resource for " + s + ": " + attributeValue);
-                                    continue;
-                                }
-                                break;
-                            }
-                            Log.w(s2, "Resource " + s + " was not a string: " + string);
-                            string = (AttributeSet)attributeValue;
-                            continue Label_0104;
-                        }
-                    }
-                }
-                string = (AttributeSet)attributeValue;
-                if (attributeValue == null) {
-                    continue Label_0104;
-                }
-                string = (AttributeSet)attributeValue;
-                if (!attributeValue.startsWith("@string/")) {
-                    continue Label_0104;
-                }
-                string = (AttributeSet)attributeValue;
-                if (b) {
-                    continue;
-                }
-                break;
+    void a(final int p0, final DataHolder p1) throws RemoteException;
+    
+    void a(final DataHolder p0) throws RemoteException;
+    
+    void b(final int p0, final int p1) throws RemoteException;
+    
+    void du() throws RemoteException;
+    
+    void v(final int p0) throws RemoteException;
+    
+    public abstract static class a extends Binder implements ej
+    {
+        public a() {
+            this.attachInterface((IInterface)this, "com.google.android.gms.appstate.internal.IAppStateCallbacks");
+        }
+        
+        public static ej v(final IBinder binder) {
+            if (binder == null) {
+                return null;
             }
-            continue Label_0104;
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.appstate.internal.IAppStateCallbacks");
+            if (queryLocalInterface != null && queryLocalInterface instanceof ej) {
+                return (ej)queryLocalInterface;
+            }
+            return new ej.a.a(binder);
+        }
+        
+        public IBinder asBinder() {
+            return (IBinder)this;
+        }
+        
+        public boolean onTransact(int int1, final Parcel parcel, final Parcel parcel2, final int n) throws RemoteException {
+            final DataHolder dataHolder = null;
+            DataHolder fromParcel = null;
+            switch (int1) {
+                default: {
+                    return super.onTransact(int1, parcel, parcel2, n);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.appstate.internal.IAppStateCallbacks");
+                    return true;
+                }
+                case 5001: {
+                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateCallbacks");
+                    int1 = parcel.readInt();
+                    if (parcel.readInt() != 0) {
+                        fromParcel = DataHolder.CREATOR.createFromParcel(parcel);
+                    }
+                    this.a(int1, fromParcel);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 5002: {
+                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateCallbacks");
+                    DataHolder fromParcel2 = dataHolder;
+                    if (parcel.readInt() != 0) {
+                        fromParcel2 = DataHolder.CREATOR.createFromParcel(parcel);
+                    }
+                    this.a(fromParcel2);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 5003: {
+                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateCallbacks");
+                    this.b(parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 5004: {
+                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateCallbacks");
+                    this.du();
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 5005: {
+                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateCallbacks");
+                    this.v(parcel.readInt());
+                    parcel2.writeNoException();
+                    return true;
+                }
+            }
+        }
+        
+        private static class a implements ej
+        {
+            private IBinder kn;
+            
+            a(final IBinder kn) {
+                this.kn = kn;
+            }
+            
+            @Override
+            public void a(final int n, final DataHolder dataHolder) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateCallbacks");
+                    obtain.writeInt(n);
+                    if (dataHolder != null) {
+                        obtain.writeInt(1);
+                        dataHolder.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.kn.transact(5001, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void a(final DataHolder dataHolder) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateCallbacks");
+                    if (dataHolder != null) {
+                        obtain.writeInt(1);
+                        dataHolder.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.kn.transact(5002, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            public IBinder asBinder() {
+                return this.kn;
+            }
+            
+            @Override
+            public void b(final int n, final int n2) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateCallbacks");
+                    obtain.writeInt(n);
+                    obtain.writeInt(n2);
+                    this.kn.transact(5003, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void du() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateCallbacks");
+                    this.kn.transact(5004, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void v(final int n) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateCallbacks");
+                    obtain.writeInt(n);
+                    this.kn.transact(5005, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
         }
     }
 }

@@ -13,40 +13,40 @@ import android.os.Parcelable$Creator;
 public class b implements Parcelable$Creator<FieldOnlyFilter>
 {
     static void a(final FieldOnlyFilter fieldOnlyFilter, final Parcel parcel, final int n) {
-        final int o = com.google.android.gms.common.internal.safeparcel.b.o(parcel);
-        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1000, fieldOnlyFilter.kg);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 1, (Parcelable)fieldOnlyFilter.rS, n, false);
-        com.google.android.gms.common.internal.safeparcel.b.D(parcel, o);
+        final int p3 = com.google.android.gms.common.internal.safeparcel.b.p(parcel);
+        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1000, fieldOnlyFilter.xH);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 1, (Parcelable)fieldOnlyFilter.GH, n, false);
+        com.google.android.gms.common.internal.safeparcel.b.F(parcel, p3);
     }
     
-    public FieldOnlyFilter S(final Parcel parcel) {
-        final int n = a.n(parcel);
+    public FieldOnlyFilter[] aJ(final int n) {
+        return new FieldOnlyFilter[n];
+    }
+    
+    public FieldOnlyFilter af(final Parcel parcel) {
+        final int o = a.o(parcel);
         int g = 0;
         MetadataBundle metadataBundle = null;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
                 default: {
-                    a.b(parcel, m);
+                    a.b(parcel, n);
                     continue;
                 }
                 case 1000: {
-                    g = a.g(parcel, m);
+                    g = a.g(parcel, n);
                     continue;
                 }
                 case 1: {
-                    metadataBundle = a.a(parcel, m, MetadataBundle.CREATOR);
+                    metadataBundle = a.a(parcel, n, MetadataBundle.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
         return new FieldOnlyFilter(g, metadataBundle);
-    }
-    
-    public FieldOnlyFilter[] as(final int n) {
-        return new FieldOnlyFilter[n];
     }
 }

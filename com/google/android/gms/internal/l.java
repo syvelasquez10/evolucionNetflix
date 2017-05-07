@@ -4,89 +4,101 @@
 
 package com.google.android.gms.internal;
 
-import java.nio.ByteBuffer;
-import java.security.InvalidAlgorithmParameterException;
-import javax.crypto.BadPaddingException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import android.view.MotionEvent;
+import android.content.Context;
+import android.net.Uri;
 
 public class l
 {
-    private final SecureRandom dP;
-    private final j dw;
+    private String kd;
+    private String ke;
+    private String[] kf;
+    private h kg;
+    private final g kh;
     
-    public l(final j dw, final SecureRandom dp) {
-        this.dw = dw;
-        this.dP = dp;
+    public l(final h kg) {
+        this.kd = "googleads.g.doubleclick.net";
+        this.ke = "/pagead/ads";
+        this.kf = new String[] { ".doubleclick.net", ".googleadservices.com", ".googlesyndication.com" };
+        this.kh = new g();
+        this.kg = kg;
     }
     
-    static void a(final byte[] array) {
-        for (int i = 0; i < array.length; ++i) {
-            array[i] ^= 0x44;
-        }
-    }
-    
-    public byte[] c(final byte[] array, final String s) throws a {
-        if (array.length != 16) {
-            throw new a();
-        }
+    private Uri a(final Uri uri, final Context context, final String s, final boolean b) throws m {
         try {
-            if (this.dw.a(s, false).length <= 16) {
-                throw new a();
-            }
-            goto Label_0055;
-        }
-        catch (NoSuchAlgorithmException ex) {
-            throw new a(ex);
-        }
-        catch (InvalidKeyException ex2) {
-            throw new a(ex2);
-        }
-        catch (IllegalBlockSizeException ex3) {
-            throw new a(ex3);
-        }
-        catch (NoSuchPaddingException ex4) {
-            throw new a(ex4);
-        }
-        catch (BadPaddingException ex5) {
-            throw new a(ex5);
-        }
-        catch (InvalidAlgorithmParameterException ex6) {
-            throw new a(ex6);
-        }
-        catch (IllegalArgumentException ex7) {
-            throw new a(ex7);
-        }
-    }
-    
-    public byte[] d(final String s) throws a {
-        byte[] a;
-        try {
-            a = this.dw.a(s, false);
-            if (a.length != 32) {
-                throw new a();
+            if (uri.getQueryParameter("ms") != null) {
+                throw new m("Query parameter already exists: ms");
             }
         }
-        catch (IllegalArgumentException ex) {
-            throw new a(ex);
+        catch (UnsupportedOperationException ex) {
+            throw new m("Provided Uri is not in a valid state");
         }
-        final ByteBuffer wrap = ByteBuffer.wrap(a, 4, 16);
-        final byte[] array = new byte[16];
-        wrap.get(array);
-        a(array);
-        return array;
+        String s2;
+        if (b) {
+            s2 = this.kg.a(context, s);
+        }
+        else {
+            s2 = this.kg.a(context);
+        }
+        return this.a(uri, "ms", s2);
     }
     
-    public class a extends Exception
-    {
-        public a() {
+    private Uri a(final Uri uri, final String s, final String s2) throws UnsupportedOperationException {
+        final String string = uri.toString();
+        int n;
+        if ((n = string.indexOf("&adurl")) == -1) {
+            n = string.indexOf("?adurl");
         }
-        
-        public a(final Throwable t) {
-            super(t);
+        if (n != -1) {
+            return Uri.parse(string.substring(0, n + 1) + s + "=" + s2 + "&" + string.substring(n + 1));
         }
+        return uri.buildUpon().appendQueryParameter(s, s2).build();
+    }
+    
+    public Uri a(Uri a, final Context context) throws m {
+        try {
+            a = this.a(a, context, a.getQueryParameter("ai"), true);
+            return a;
+        }
+        catch (UnsupportedOperationException ex) {
+            throw new m("Provided Uri is not in a valid state");
+        }
+    }
+    
+    public void a(final MotionEvent motionEvent) {
+        this.kg.a(motionEvent);
+    }
+    
+    public boolean a(final Uri uri) {
+        final boolean b = false;
+        if (uri == null) {
+            throw new NullPointerException();
+        }
+        try {
+            final String host = uri.getHost();
+            final String[] kf = this.kf;
+            final int length = kf.length;
+            int n = 0;
+            boolean b2;
+            while (true) {
+                b2 = b;
+                if (n >= length) {
+                    break;
+                }
+                if (host.endsWith(kf[n])) {
+                    b2 = true;
+                    break;
+                }
+                ++n;
+            }
+            return b2;
+        }
+        catch (NullPointerException ex) {
+            return false;
+        }
+    }
+    
+    public h y() {
+        return this.kg;
     }
 }

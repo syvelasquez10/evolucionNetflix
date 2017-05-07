@@ -4,7 +4,7 @@
 
 package com.google.android.gms.maps.model;
 
-import com.google.android.gms.maps.internal.r;
+import com.google.android.gms.maps.internal.v;
 import android.os.Parcel;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
@@ -13,15 +13,15 @@ public final class Tile implements SafeParcelable
     public static final TileCreator CREATOR;
     public final byte[] data;
     public final int height;
-    private final int kg;
     public final int width;
+    private final int xH;
     
     static {
         CREATOR = new TileCreator();
     }
     
-    Tile(final int kg, final int width, final int height, final byte[] data) {
-        this.kg = kg;
+    Tile(final int xh, final int width, final int height, final byte[] data) {
+        this.xH = xh;
         this.width = width;
         this.height = height;
         this.data = data;
@@ -36,11 +36,11 @@ public final class Tile implements SafeParcelable
     }
     
     int getVersionCode() {
-        return this.kg;
+        return this.xH;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (r.eD()) {
+        if (v.iB()) {
             i.a(this, parcel, n);
             return;
         }

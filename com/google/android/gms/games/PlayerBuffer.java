@@ -15,6 +15,6 @@ public final class PlayerBuffer extends DataBuffer<Player>
     
     @Override
     public Player get(final int n) {
-        return new d(this.nE, n);
+        return new PlayerRef(this.BB, n);
     }
 }

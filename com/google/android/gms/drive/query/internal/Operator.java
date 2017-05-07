@@ -11,33 +11,33 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class Operator implements SafeParcelable
 {
     public static final Parcelable$Creator<Operator> CREATOR;
-    public static final Operator sd;
-    public static final Operator se;
-    public static final Operator sf;
-    public static final Operator sg;
-    public static final Operator sh;
-    public static final Operator si;
-    public static final Operator sj;
-    public static final Operator sk;
-    public static final Operator sl;
-    final int kg;
+    public static final Operator GU;
+    public static final Operator GV;
+    public static final Operator GW;
+    public static final Operator GX;
+    public static final Operator GY;
+    public static final Operator GZ;
+    public static final Operator Ha;
+    public static final Operator Hb;
+    public static final Operator Hc;
     final String mTag;
+    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new h();
-        sd = new Operator("=");
-        se = new Operator("<");
-        sf = new Operator("<=");
-        sg = new Operator(">");
-        sh = new Operator(">=");
-        si = new Operator("and");
-        sj = new Operator("or");
-        sk = new Operator("not");
-        sl = new Operator("contains");
+        CREATOR = (Parcelable$Creator)new j();
+        GU = new Operator("=");
+        GV = new Operator("<");
+        GW = new Operator("<=");
+        GX = new Operator(">");
+        GY = new Operator(">=");
+        GZ = new Operator("and");
+        Ha = new Operator("or");
+        Hb = new Operator("not");
+        Hc = new Operator("contains");
     }
     
-    Operator(final int kg, final String mTag) {
-        this.kg = kg;
+    Operator(final int xh, final String mTag) {
+        this.xH = xh;
         this.mTag = mTag;
     }
     
@@ -84,6 +84,6 @@ public class Operator implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        h.a(this, parcel, n);
+        j.a(this, parcel, n);
     }
 }

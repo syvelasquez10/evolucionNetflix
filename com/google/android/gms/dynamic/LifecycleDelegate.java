@@ -29,4 +29,8 @@ public interface LifecycleDelegate
     void onResume();
     
     void onSaveInstanceState(final Bundle p0);
+    
+    void onStart();
+    
+    void onStop();
 }

@@ -12,16 +12,16 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class OnDriveIdResponse implements SafeParcelable
 {
     public static final Parcelable$Creator<OnDriveIdResponse> CREATOR;
-    final int kg;
-    DriveId rr;
+    DriveId EV;
+    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new t();
+        CREATOR = (Parcelable$Creator)new ab();
     }
     
-    OnDriveIdResponse(final int kg, final DriveId rr) {
-        this.kg = kg;
-        this.rr = rr;
+    OnDriveIdResponse(final int xh, final DriveId ev) {
+        this.xH = xh;
+        this.EV = ev;
     }
     
     public int describeContents() {
@@ -29,10 +29,10 @@ public class OnDriveIdResponse implements SafeParcelable
     }
     
     public DriveId getDriveId() {
-        return this.rr;
+        return this.EV;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        t.a(this, parcel, n);
+        ab.a(this, parcel, n);
     }
 }

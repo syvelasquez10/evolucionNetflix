@@ -13,74 +13,74 @@ public class LocationRequestCreator implements Parcelable$Creator<LocationReques
 {
     public static final int CONTENT_DESCRIPTION = 0;
     
-    static void a(final LocationRequest locationRequest, final Parcel parcel, int o) {
-        o = b.o(parcel);
+    static void a(final LocationRequest locationRequest, final Parcel parcel, int p3) {
+        p3 = b.p(parcel);
         b.c(parcel, 1, locationRequest.mPriority);
         b.c(parcel, 1000, locationRequest.getVersionCode());
-        b.a(parcel, 2, locationRequest.xB);
-        b.a(parcel, 3, locationRequest.xC);
-        b.a(parcel, 4, locationRequest.xD);
-        b.a(parcel, 5, locationRequest.xu);
-        b.c(parcel, 6, locationRequest.xE);
-        b.a(parcel, 7, locationRequest.xF);
-        b.D(parcel, o);
+        b.a(parcel, 2, locationRequest.Oc);
+        b.a(parcel, 3, locationRequest.Od);
+        b.a(parcel, 4, locationRequest.Oe);
+        b.a(parcel, 5, locationRequest.NV);
+        b.c(parcel, 6, locationRequest.Of);
+        b.a(parcel, 7, locationRequest.Og);
+        b.F(parcel, p3);
     }
     
     public LocationRequest createFromParcel(final Parcel parcel) {
         boolean c = false;
-        final int n = a.n(parcel);
+        final int o = a.o(parcel);
         int g = 102;
-        long h = 3600000L;
-        long h2 = 600000L;
-        long h3 = Long.MAX_VALUE;
+        long i = 3600000L;
+        long j = 600000L;
+        long k = Long.MAX_VALUE;
         int g2 = Integer.MAX_VALUE;
-        float j = 0.0f;
+        float l = 0.0f;
         int g3 = 0;
-        while (parcel.dataPosition() < n) {
-            final int m = a.m(parcel);
-            switch (a.M(m)) {
+        while (parcel.dataPosition() < o) {
+            final int n = a.n(parcel);
+            switch (a.R(n)) {
                 default: {
-                    a.b(parcel, m);
+                    a.b(parcel, n);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, m);
+                    g = a.g(parcel, n);
                     continue;
                 }
                 case 1000: {
-                    g3 = a.g(parcel, m);
+                    g3 = a.g(parcel, n);
                     continue;
                 }
                 case 2: {
-                    h = a.h(parcel, m);
+                    i = a.i(parcel, n);
                     continue;
                 }
                 case 3: {
-                    h2 = a.h(parcel, m);
+                    j = a.i(parcel, n);
                     continue;
                 }
                 case 4: {
-                    c = a.c(parcel, m);
+                    c = a.c(parcel, n);
                     continue;
                 }
                 case 5: {
-                    h3 = a.h(parcel, m);
+                    k = a.i(parcel, n);
                     continue;
                 }
                 case 6: {
-                    g2 = a.g(parcel, m);
+                    g2 = a.g(parcel, n);
                     continue;
                 }
                 case 7: {
-                    j = a.j(parcel, m);
+                    l = a.k(parcel, n);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
+        if (parcel.dataPosition() != o) {
+            throw new a.a("Overread allowed size end=" + o, parcel);
         }
-        return new LocationRequest(g3, g, h, h2, c, h3, g2, j);
+        return new LocationRequest(g3, g, i, j, c, k, g2, l);
     }
     
     public LocationRequest[] newArray(final int n) {

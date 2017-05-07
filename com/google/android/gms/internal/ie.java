@@ -4,95 +4,228 @@
 
 package com.google.android.gms.internal;
 
-import java.util.HashSet;
-import com.google.android.gms.common.internal.safeparcel.a;
-import java.util.Set;
-import android.os.Parcelable;
-import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import com.google.android.gms.plus.model.moments.ItemScope;
+import java.util.Iterator;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.HashMap;
+import com.google.android.gms.plus.model.moments.Moment;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public class ie implements Parcelable$Creator<id>
+public final class ie extends ga implements SafeParcelable, Moment
 {
-    static void a(final id id, final Parcel parcel, final int n) {
-        final int o = b.o(parcel);
-        final Set<Integer> fa = id.fa();
-        if (fa.contains(1)) {
-            b.c(parcel, 1, id.getVersionCode());
-        }
-        if (fa.contains(2)) {
-            b.a(parcel, 2, id.getId(), true);
-        }
-        if (fa.contains(4)) {
-            b.a(parcel, 4, (Parcelable)id.fr(), n, true);
-        }
-        if (fa.contains(5)) {
-            b.a(parcel, 5, id.getStartDate(), true);
-        }
-        if (fa.contains(6)) {
-            b.a(parcel, 6, (Parcelable)id.fs(), n, true);
-        }
-        if (fa.contains(7)) {
-            b.a(parcel, 7, id.getType(), true);
-        }
-        b.D(parcel, o);
+    public static final if CREATOR;
+    private static final HashMap<String, a<?, ?>> UI;
+    private String Rd;
+    private final Set<Integer> UJ;
+    private ic VE;
+    private ic VF;
+    private String Vw;
+    private String wp;
+    private final int xH;
+    
+    static {
+        CREATOR = new if();
+        (UI = new HashMap<String, a<?, ?>>()).put("id", a.j("id", 2));
+        ie.UI.put("result", a.a("result", 4, (Class<?>)ic.class));
+        ie.UI.put("startDate", (a<?, ?>)a.j("startDate", 5));
+        ie.UI.put("target", a.a("target", 6, (Class<?>)ic.class));
+        ie.UI.put("type", (a<?, ?>)a.j("type", 7));
     }
     
-    public id at(final Parcel parcel) {
-        String m = null;
-        final int n = a.n(parcel);
-        final HashSet<Integer> set = new HashSet<Integer>();
-        int g = 0;
-        ib ib = null;
-        String i = null;
-        ib ib2 = null;
-        String j = null;
-        while (parcel.dataPosition() < n) {
-            final int k = a.m(parcel);
-            switch (a.M(k)) {
-                default: {
-                    a.b(parcel, k);
-                    continue;
-                }
-                case 1: {
-                    g = a.g(parcel, k);
-                    set.add(1);
-                    continue;
-                }
-                case 2: {
-                    j = a.m(parcel, k);
-                    set.add(2);
-                    continue;
-                }
-                case 4: {
-                    ib2 = a.a(parcel, k, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(4);
-                    continue;
-                }
-                case 5: {
-                    i = a.m(parcel, k);
-                    set.add(5);
-                    continue;
-                }
-                case 6: {
-                    ib = a.a(parcel, k, (android.os.Parcelable$Creator<ib>)com.google.android.gms.internal.ib.CREATOR);
-                    set.add(6);
-                    continue;
-                }
-                case 7: {
-                    m = a.m(parcel, k);
-                    set.add(7);
-                    continue;
-                }
+    public ie() {
+        this.xH = 1;
+        this.UJ = new HashSet<Integer>();
+    }
+    
+    ie(final Set<Integer> uj, final int xh, final String wp, final ic ve, final String vw, final ic vf, final String rd) {
+        this.UJ = uj;
+        this.xH = xh;
+        this.wp = wp;
+        this.VE = ve;
+        this.Vw = vw;
+        this.VF = vf;
+        this.Rd = rd;
+    }
+    
+    public ie(final Set<Integer> uj, final String wp, final ic ve, final String vw, final ic vf, final String rd) {
+        this.UJ = uj;
+        this.xH = 1;
+        this.wp = wp;
+        this.VE = ve;
+        this.Vw = vw;
+        this.VF = vf;
+        this.Rd = rd;
+    }
+    
+    @Override
+    protected boolean a(final a a) {
+        return this.UJ.contains(a.ff());
+    }
+    
+    @Override
+    protected Object aq(final String s) {
+        return null;
+    }
+    
+    @Override
+    protected boolean ar(final String s) {
+        return false;
+    }
+    
+    @Override
+    protected Object b(final a a) {
+        switch (a.ff()) {
+            default: {
+                throw new IllegalStateException("Unknown safe parcelable id=" + a.ff());
+            }
+            case 2: {
+                return this.wp;
+            }
+            case 4: {
+                return this.VE;
+            }
+            case 5: {
+                return this.Vw;
+            }
+            case 6: {
+                return this.VF;
+            }
+            case 7: {
+                return this.Rd;
             }
         }
-        if (parcel.dataPosition() != n) {
-            throw new a.a("Overread allowed size end=" + n, parcel);
-        }
-        return new id(set, g, j, ib2, i, ib, m);
     }
     
-    public id[] bl(final int n) {
-        return new id[n];
+    public int describeContents() {
+        final if creator = ie.CREATOR;
+        return 0;
+    }
+    
+    @Override
+    public HashMap<String, a<?, ?>> eY() {
+        return ie.UI;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof ie)) {
+            return false;
+        }
+        if (this == o) {
+            return true;
+        }
+        final ie ie = (ie)o;
+        for (final a a : com.google.android.gms.internal.ie.UI.values()) {
+            if (this.a((a)a)) {
+                if (!ie.a((a)a)) {
+                    return false;
+                }
+                if (!this.b((a)a).equals(ie.b((a)a))) {
+                    return false;
+                }
+                continue;
+            }
+            else {
+                if (ie.a((a)a)) {
+                    return false;
+                }
+                continue;
+            }
+        }
+        return true;
+    }
+    
+    @Override
+    public String getId() {
+        return this.wp;
+    }
+    
+    @Override
+    public ItemScope getResult() {
+        return this.VE;
+    }
+    
+    @Override
+    public String getStartDate() {
+        return this.Vw;
+    }
+    
+    @Override
+    public ItemScope getTarget() {
+        return this.VF;
+    }
+    
+    @Override
+    public String getType() {
+        return this.Rd;
+    }
+    
+    int getVersionCode() {
+        return this.xH;
+    }
+    
+    @Override
+    public boolean hasId() {
+        return this.UJ.contains(2);
+    }
+    
+    @Override
+    public boolean hasResult() {
+        return this.UJ.contains(4);
+    }
+    
+    @Override
+    public boolean hasStartDate() {
+        return this.UJ.contains(5);
+    }
+    
+    @Override
+    public boolean hasTarget() {
+        return this.UJ.contains(6);
+    }
+    
+    @Override
+    public boolean hasType() {
+        return this.UJ.contains(7);
+    }
+    
+    @Override
+    public int hashCode() {
+        final Iterator<a<?, ?>> iterator = ie.UI.values().iterator();
+        int n = 0;
+        while (iterator.hasNext()) {
+            final a a = (a)iterator.next();
+            if (this.a((a)a)) {
+                n = this.b((a)a).hashCode() + (n + a.ff());
+            }
+        }
+        return n;
+    }
+    
+    public boolean isDataValid() {
+        return true;
+    }
+    
+    Set<Integer> ja() {
+        return this.UJ;
+    }
+    
+    ic jr() {
+        return this.VE;
+    }
+    
+    ic js() {
+        return this.VF;
+    }
+    
+    public ie jt() {
+        return this;
+    }
+    
+    public void writeToParcel(final Parcel parcel, final int n) {
+        final if creator = ie.CREATOR;
+        if.a(this, parcel, n);
     }
 }

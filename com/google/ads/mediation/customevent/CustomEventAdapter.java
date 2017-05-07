@@ -12,7 +12,7 @@ import com.google.ads.AdSize;
 import com.google.ads.mediation.MediationServerParameters;
 import android.app.Activity;
 import com.google.ads.mediation.MediationBannerListener;
-import com.google.android.gms.internal.ct;
+import com.google.android.gms.internal.dw;
 import android.view.View;
 import com.google.ads.mediation.MediationInterstitialAdapter;
 import com.google.android.gms.ads.mediation.customevent.CustomEventExtras;
@@ -20,31 +20,31 @@ import com.google.ads.mediation.MediationBannerAdapter;
 
 public final class CustomEventAdapter implements MediationBannerAdapter<CustomEventExtras, CustomEventServerParameters>, MediationInterstitialAdapter<CustomEventExtras, CustomEventServerParameters>
 {
-    private View m;
-    private CustomEventBanner n;
-    private CustomEventInterstitial o;
+    private View n;
+    private CustomEventBanner o;
+    private CustomEventInterstitial p;
     
     private static <T> T a(final String s) {
         try {
             return (T)Class.forName(s).newInstance();
         }
         catch (Throwable t) {
-            ct.v("Could not instantiate custom event adapter: " + s + ". " + t.getMessage());
+            dw.z("Could not instantiate custom event adapter: " + s + ". " + t.getMessage());
             return null;
         }
     }
     
-    private void a(final View m) {
-        this.m = m;
+    private void a(final View n) {
+        this.n = n;
     }
     
     @Override
     public void destroy() {
-        if (this.n != null) {
-            this.n.destroy();
-        }
         if (this.o != null) {
             this.o.destroy();
+        }
+        if (this.p != null) {
+            this.p.destroy();
         }
     }
     
@@ -55,7 +55,7 @@ public final class CustomEventAdapter implements MediationBannerAdapter<CustomEv
     
     @Override
     public View getBannerView() {
-        return this.m;
+        return this.n;
     }
     
     @Override
@@ -65,8 +65,8 @@ public final class CustomEventAdapter implements MediationBannerAdapter<CustomEv
     
     @Override
     public void requestBannerAd(final MediationBannerListener mediationBannerListener, final Activity activity, final CustomEventServerParameters customEventServerParameters, final AdSize adSize, final MediationAdRequest mediationAdRequest, final CustomEventExtras customEventExtras) {
-        this.n = a(customEventServerParameters.className);
-        if (this.n == null) {
+        this.o = a(customEventServerParameters.className);
+        if (this.o == null) {
             mediationBannerListener.onFailedToReceiveAd(this, AdRequest.ErrorCode.INTERNAL_ERROR);
             return;
         }
@@ -77,13 +77,13 @@ public final class CustomEventAdapter implements MediationBannerAdapter<CustomEv
         else {
             extra = customEventExtras.getExtra(customEventServerParameters.label);
         }
-        this.n.requestBannerAd(new a(this, mediationBannerListener), activity, customEventServerParameters.label, customEventServerParameters.parameter, adSize, mediationAdRequest, extra);
+        this.o.requestBannerAd(new a(this, mediationBannerListener), activity, customEventServerParameters.label, customEventServerParameters.parameter, adSize, mediationAdRequest, extra);
     }
     
     @Override
     public void requestInterstitialAd(final MediationInterstitialListener mediationInterstitialListener, final Activity activity, final CustomEventServerParameters customEventServerParameters, final MediationAdRequest mediationAdRequest, final CustomEventExtras customEventExtras) {
-        this.o = a(customEventServerParameters.className);
-        if (this.o == null) {
+        this.p = a(customEventServerParameters.className);
+        if (this.p == null) {
             mediationInterstitialListener.onFailedToReceiveAd(this, AdRequest.ErrorCode.INTERNAL_ERROR);
             return;
         }
@@ -94,100 +94,100 @@ public final class CustomEventAdapter implements MediationBannerAdapter<CustomEv
         else {
             extra = customEventExtras.getExtra(customEventServerParameters.label);
         }
-        this.o.requestInterstitialAd(new b(this, mediationInterstitialListener), activity, customEventServerParameters.label, customEventServerParameters.parameter, mediationAdRequest, extra);
+        this.p.requestInterstitialAd(new b(this, mediationInterstitialListener), activity, customEventServerParameters.label, customEventServerParameters.parameter, mediationAdRequest, extra);
     }
     
     @Override
     public void showInterstitial() {
-        this.o.showInterstitial();
+        this.p.showInterstitial();
     }
     
     private static final class a implements CustomEventBannerListener
     {
-        private final MediationBannerListener k;
-        private final CustomEventAdapter p;
+        private final CustomEventAdapter q;
+        private final MediationBannerListener r;
         
-        public a(final CustomEventAdapter p2, final MediationBannerListener k) {
-            this.p = p2;
-            this.k = k;
+        public a(final CustomEventAdapter q, final MediationBannerListener r) {
+            this.q = q;
+            this.r = r;
         }
         
         @Override
         public void onClick() {
-            ct.r("Custom event adapter called onFailedToReceiveAd.");
-            this.k.onClick(this.p);
+            dw.v("Custom event adapter called onFailedToReceiveAd.");
+            this.r.onClick(this.q);
         }
         
         @Override
         public void onDismissScreen() {
-            ct.r("Custom event adapter called onFailedToReceiveAd.");
-            this.k.onDismissScreen(this.p);
+            dw.v("Custom event adapter called onFailedToReceiveAd.");
+            this.r.onDismissScreen(this.q);
         }
         
         @Override
         public void onFailedToReceiveAd() {
-            ct.r("Custom event adapter called onFailedToReceiveAd.");
-            this.k.onFailedToReceiveAd(this.p, AdRequest.ErrorCode.NO_FILL);
+            dw.v("Custom event adapter called onFailedToReceiveAd.");
+            this.r.onFailedToReceiveAd(this.q, AdRequest.ErrorCode.NO_FILL);
         }
         
         @Override
         public void onLeaveApplication() {
-            ct.r("Custom event adapter called onFailedToReceiveAd.");
-            this.k.onLeaveApplication(this.p);
+            dw.v("Custom event adapter called onFailedToReceiveAd.");
+            this.r.onLeaveApplication(this.q);
         }
         
         @Override
         public void onPresentScreen() {
-            ct.r("Custom event adapter called onFailedToReceiveAd.");
-            this.k.onPresentScreen(this.p);
+            dw.v("Custom event adapter called onFailedToReceiveAd.");
+            this.r.onPresentScreen(this.q);
         }
         
         @Override
         public void onReceivedAd(final View view) {
-            ct.r("Custom event adapter called onReceivedAd.");
-            this.p.a(view);
-            this.k.onReceivedAd(this.p);
+            dw.v("Custom event adapter called onReceivedAd.");
+            this.q.a(view);
+            this.r.onReceivedAd(this.q);
         }
     }
     
     private class b implements CustomEventInterstitialListener
     {
-        private final MediationInterstitialListener l;
-        private final CustomEventAdapter p;
+        private final CustomEventAdapter q;
+        private final MediationInterstitialListener s;
         
-        public b(final CustomEventAdapter p3, final MediationInterstitialListener l) {
-            this.p = p3;
-            this.l = l;
+        public b(final CustomEventAdapter q, final MediationInterstitialListener s) {
+            this.q = q;
+            this.s = s;
         }
         
         @Override
         public void onDismissScreen() {
-            ct.r("Custom event adapter called onDismissScreen.");
-            this.l.onDismissScreen(this.p);
+            dw.v("Custom event adapter called onDismissScreen.");
+            this.s.onDismissScreen(this.q);
         }
         
         @Override
         public void onFailedToReceiveAd() {
-            ct.r("Custom event adapter called onFailedToReceiveAd.");
-            this.l.onFailedToReceiveAd(this.p, AdRequest.ErrorCode.NO_FILL);
+            dw.v("Custom event adapter called onFailedToReceiveAd.");
+            this.s.onFailedToReceiveAd(this.q, AdRequest.ErrorCode.NO_FILL);
         }
         
         @Override
         public void onLeaveApplication() {
-            ct.r("Custom event adapter called onLeaveApplication.");
-            this.l.onLeaveApplication(this.p);
+            dw.v("Custom event adapter called onLeaveApplication.");
+            this.s.onLeaveApplication(this.q);
         }
         
         @Override
         public void onPresentScreen() {
-            ct.r("Custom event adapter called onPresentScreen.");
-            this.l.onPresentScreen(this.p);
+            dw.v("Custom event adapter called onPresentScreen.");
+            this.s.onPresentScreen(this.q);
         }
         
         @Override
         public void onReceivedAd() {
-            ct.r("Custom event adapter called onReceivedAd.");
-            this.l.onReceivedAd(CustomEventAdapter.this);
+            dw.v("Custom event adapter called onReceivedAd.");
+            this.s.onReceivedAd(CustomEventAdapter.this);
         }
     }
 }

@@ -7,7 +7,7 @@ package com.google.android.gms.common.images;
 import java.util.concurrent.CountDownLatch;
 import android.content.res.Configuration;
 import android.content.ComponentCallbacks2;
-import com.google.android.gms.internal.ek;
+import com.google.android.gms.internal.fu;
 import android.app.ActivityManager;
 import android.graphics.drawable.Drawable;
 import android.os.ParcelFileDescriptor;
@@ -17,157 +17,137 @@ import android.content.Intent;
 import java.util.ArrayList;
 import android.os.ResultReceiver;
 import android.widget.ImageView;
+import com.google.android.gms.internal.fb;
 import android.content.ComponentCallbacks;
-import com.google.android.gms.internal.ds;
 import android.graphics.Bitmap;
 import java.util.HashMap;
-import com.google.android.gms.internal.fg;
+import com.google.android.gms.internal.gr;
 import java.util.concurrent.Executors;
 import android.os.Looper;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
 import android.os.Handler;
 import android.content.Context;
+import java.util.Map;
+import com.google.android.gms.internal.fa;
+import java.util.concurrent.ExecutorService;
 import android.net.Uri;
 import java.util.HashSet;
 
 public final class ImageManager
 {
-    private static final Object ob;
-    private static HashSet<Uri> oc;
-    private static ImageManager od;
-    private static ImageManager oe;
+    private static final Object BY;
+    private static HashSet<Uri> BZ;
+    private static ImageManager Ca;
+    private static ImageManager Cb;
+    private final ExecutorService Cc;
+    private final b Cd;
+    private final fa Ce;
+    private final Map<com.google.android.gms.common.images.a, ImageReceiver> Cf;
+    private final Map<Uri, ImageReceiver> Cg;
     private final Context mContext;
     private final Handler mHandler;
-    private final ExecutorService of;
-    private final b og;
-    private final Map<com.google.android.gms.common.images.a, ImageReceiver> oh;
-    private final Map<Uri, ImageReceiver> oi;
     
     static {
-        ob = new Object();
-        ImageManager.oc = new HashSet<Uri>();
+        BY = new Object();
+        ImageManager.BZ = new HashSet<Uri>();
     }
     
     private ImageManager(final Context context, final boolean b) {
         this.mContext = context.getApplicationContext();
         this.mHandler = new Handler(Looper.getMainLooper());
-        this.of = Executors.newFixedThreadPool(4);
+        this.Cc = Executors.newFixedThreadPool(4);
         if (b) {
-            this.og = new b(this.mContext);
-            if (fg.cG()) {
-                this.bz();
+            this.Cd = new b(this.mContext);
+            if (gr.fx()) {
+                this.ev();
             }
         }
         else {
-            this.og = null;
+            this.Cd = null;
         }
-        this.oh = new HashMap<com.google.android.gms.common.images.a, ImageReceiver>();
-        this.oi = new HashMap<Uri, ImageReceiver>();
+        this.Ce = new fa();
+        this.Cf = new HashMap<com.google.android.gms.common.images.a, ImageReceiver>();
+        this.Cg = new HashMap<Uri, ImageReceiver>();
     }
     
     private Bitmap a(final com.google.android.gms.common.images.a.a a) {
-        if (this.og == null) {
+        if (this.Cd == null) {
             return null;
         }
-        return this.og.get(a);
+        return this.Cd.get(a);
     }
     
     public static ImageManager a(final Context context, final boolean b) {
         if (b) {
-            if (ImageManager.oe == null) {
-                ImageManager.oe = new ImageManager(context, true);
+            if (ImageManager.Cb == null) {
+                ImageManager.Cb = new ImageManager(context, true);
             }
-            return ImageManager.oe;
+            return ImageManager.Cb;
         }
-        if (ImageManager.od == null) {
-            ImageManager.od = new ImageManager(context, false);
+        if (ImageManager.Ca == null) {
+            ImageManager.Ca = new ImageManager(context, false);
         }
-        return ImageManager.od;
-    }
-    
-    private boolean b(final com.google.android.gms.common.images.a a) {
-        ds.N("ImageManager.cleanupHashMaps() must be called in the main thread");
-        if (a.os == 1) {
-            return true;
-        }
-        final ImageReceiver imageReceiver = this.oh.get(a);
-        if (imageReceiver == null) {
-            return true;
-        }
-        if (imageReceiver.ok) {
-            return false;
-        }
-        this.oh.remove(a);
-        imageReceiver.d(a);
-        return true;
-    }
-    
-    private void bz() {
-        this.mContext.registerComponentCallbacks((ComponentCallbacks)new e(this.og));
+        return ImageManager.Ca;
     }
     
     public static ImageManager create(final Context context) {
         return a(context, false);
     }
     
+    private void ev() {
+        this.mContext.registerComponentCallbacks((ComponentCallbacks)new e(this.Cd));
+    }
+    
     public void a(final com.google.android.gms.common.images.a a) {
-        ds.N("ImageManager.loadImage() must be called in the main thread");
-        final boolean b = this.b(a);
-        final d d = new d(a);
-        if (b) {
-            d.run();
-            return;
-        }
-        this.mHandler.post((Runnable)d);
+        fb.aj("ImageManager.loadImage() must be called in the main thread");
+        new d(a).run();
     }
     
     public void loadImage(final ImageView imageView, final int n) {
-        final com.google.android.gms.common.images.a a = new com.google.android.gms.common.images.a(n);
-        a.a(imageView);
-        this.a(a);
+        this.a(new com.google.android.gms.common.images.a.b(imageView, n));
     }
     
     public void loadImage(final ImageView imageView, final Uri uri) {
-        final com.google.android.gms.common.images.a a = new com.google.android.gms.common.images.a(uri);
-        a.a(imageView);
-        this.a(a);
+        this.a(new com.google.android.gms.common.images.a.b(imageView, uri));
     }
     
     public void loadImage(final ImageView imageView, final Uri uri, final int n) {
-        final com.google.android.gms.common.images.a a = new com.google.android.gms.common.images.a(uri);
-        a.F(n);
-        a.a(imageView);
-        this.a(a);
+        final com.google.android.gms.common.images.a.b b = new com.google.android.gms.common.images.a.b(imageView, uri);
+        b.J(n);
+        this.a(b);
     }
     
     public void loadImage(final OnImageLoadedListener onImageLoadedListener, final Uri uri) {
-        final com.google.android.gms.common.images.a a = new com.google.android.gms.common.images.a(uri);
-        a.a(onImageLoadedListener);
-        this.a(a);
+        this.a(new com.google.android.gms.common.images.a.c(onImageLoadedListener, uri));
     }
     
     public void loadImage(final OnImageLoadedListener onImageLoadedListener, final Uri uri, final int n) {
-        final com.google.android.gms.common.images.a a = new com.google.android.gms.common.images.a(uri);
-        a.F(n);
-        a.a(onImageLoadedListener);
-        this.a(a);
+        final com.google.android.gms.common.images.a.c c = new com.google.android.gms.common.images.a.c(onImageLoadedListener, uri);
+        c.J(n);
+        this.a(c);
     }
     
     private final class ImageReceiver extends ResultReceiver
     {
+        private final ArrayList<com.google.android.gms.common.images.a> Ch;
         private final Uri mUri;
-        private final ArrayList<com.google.android.gms.common.images.a> oj;
-        boolean ok;
         
         ImageReceiver(final Uri mUri) {
             super(new Handler(Looper.getMainLooper()));
-            this.ok = false;
             this.mUri = mUri;
-            this.oj = new ArrayList<com.google.android.gms.common.images.a>();
+            this.Ch = new ArrayList<com.google.android.gms.common.images.a>();
         }
         
-        public void bB() {
+        public void b(final com.google.android.gms.common.images.a a) {
+            fb.aj("ImageReceiver.addImageRequest() must be called in the main thread");
+            this.Ch.add(a);
+        }
+        
+        public void c(final com.google.android.gms.common.images.a a) {
+            fb.aj("ImageReceiver.removeImageRequest() must be called in the main thread");
+            this.Ch.remove(a);
+        }
+        
+        public void ey() {
             final Intent intent = new Intent("com.google.android.gms.common.images.LOAD_IMAGE");
             intent.putExtra("com.google.android.gms.extras.uri", (Parcelable)this.mUri);
             intent.putExtra("com.google.android.gms.extras.resultReceiver", (Parcelable)this);
@@ -175,20 +155,8 @@ public final class ImageManager
             ImageManager.this.mContext.sendBroadcast(intent);
         }
         
-        public void c(final com.google.android.gms.common.images.a a) {
-            ds.a(!this.ok, "Cannot add an ImageRequest when mHandlingRequests is true");
-            ds.N("ImageReceiver.addImageRequest() must be called in the main thread");
-            this.oj.add(a);
-        }
-        
-        public void d(final com.google.android.gms.common.images.a a) {
-            ds.a(!this.ok, "Cannot remove an ImageRequest when mHandlingRequests is true");
-            ds.N("ImageReceiver.removeImageRequest() must be called in the main thread");
-            this.oj.remove(a);
-        }
-        
         public void onReceiveResult(final int n, final Bundle bundle) {
-            ImageManager.this.of.execute(new c(this.mUri, (ParcelFileDescriptor)bundle.getParcelable("com.google.android.gms.extra.fileDescriptor")));
+            ImageManager.this.Cc.execute(new c(this.mUri, (ParcelFileDescriptor)bundle.getParcelable("com.google.android.gms.extra.fileDescriptor")));
         }
     }
     
@@ -204,13 +172,13 @@ public final class ImageManager
         }
     }
     
-    private static final class b extends ek<com.google.android.gms.common.images.a.a, Bitmap>
+    private static final class b extends fu<com.google.android.gms.common.images.a.a, Bitmap>
     {
         public b(final Context context) {
-            super(q(context));
+            super(w(context));
         }
         
-        private static int q(final Context context) {
+        private static int w(final Context context) {
             final ActivityManager activityManager = (ActivityManager)context.getSystemService("activity");
             boolean b;
             if ((context.getApplicationInfo().flags & 0x100000) != 0x0) {
@@ -220,7 +188,7 @@ public final class ImageManager
                 b = false;
             }
             int n;
-            if (b && fg.cD()) {
+            if (b && gr.fu()) {
                 n = a.a(activityManager);
             }
             else {
@@ -240,12 +208,12 @@ public final class ImageManager
     
     private final class c implements Runnable
     {
+        private final ParcelFileDescriptor Cj;
         private final Uri mUri;
-        private final ParcelFileDescriptor om;
         
-        public c(final Uri mUri, final ParcelFileDescriptor om) {
+        public c(final Uri mUri, final ParcelFileDescriptor cj) {
             this.mUri = mUri;
-            this.om = om;
+            this.Cj = cj;
         }
         
         @Override
@@ -256,7 +224,7 @@ public final class ImageManager
             // Original Bytecode:
             // 
             //     0: ldc             "LoadBitmapFromDiskRunnable can't be executed in the main thread"
-            //     2: invokestatic    com/google/android/gms/internal/ds.O:(Ljava/lang/String;)V
+            //     2: invokestatic    com/google/android/gms/internal/fb.ak:(Ljava/lang/String;)V
             //     5: iconst_0       
             //     6: istore_1       
             //     7: iconst_0       
@@ -266,17 +234,17 @@ public final class ImageManager
             //    11: aconst_null    
             //    12: astore          4
             //    14: aload_0        
-            //    15: getfield        com/google/android/gms/common/images/ImageManager$c.om:Landroid/os/ParcelFileDescriptor;
+            //    15: getfield        com/google/android/gms/common/images/ImageManager$c.Cj:Landroid/os/ParcelFileDescriptor;
             //    18: ifnull          41
             //    21: aload_0        
-            //    22: getfield        com/google/android/gms/common/images/ImageManager$c.om:Landroid/os/ParcelFileDescriptor;
+            //    22: getfield        com/google/android/gms/common/images/ImageManager$c.Cj:Landroid/os/ParcelFileDescriptor;
             //    25: invokevirtual   android/os/ParcelFileDescriptor.getFileDescriptor:()Ljava/io/FileDescriptor;
             //    28: invokestatic    android/graphics/BitmapFactory.decodeFileDescriptor:(Ljava/io/FileDescriptor;)Landroid/graphics/Bitmap;
             //    31: astore_3       
             //    32: iload_2        
             //    33: istore_1       
             //    34: aload_0        
-            //    35: getfield        com/google/android/gms/common/images/ImageManager$c.om:Landroid/os/ParcelFileDescriptor;
+            //    35: getfield        com/google/android/gms/common/images/ImageManager$c.Cj:Landroid/os/ParcelFileDescriptor;
             //    38: invokevirtual   android/os/ParcelFileDescriptor.close:()V
             //    41: new             Ljava/util/concurrent/CountDownLatch;
             //    44: dup            
@@ -284,12 +252,12 @@ public final class ImageManager
             //    46: invokespecial   java/util/concurrent/CountDownLatch.<init>:(I)V
             //    49: astore          4
             //    51: aload_0        
-            //    52: getfield        com/google/android/gms/common/images/ImageManager$c.ol:Lcom/google/android/gms/common/images/ImageManager;
-            //    55: invokestatic    com/google/android/gms/common/images/ImageManager.e:(Lcom/google/android/gms/common/images/ImageManager;)Landroid/os/Handler;
+            //    52: getfield        com/google/android/gms/common/images/ImageManager$c.Ci:Lcom/google/android/gms/common/images/ImageManager;
+            //    55: invokestatic    com/google/android/gms/common/images/ImageManager.f:(Lcom/google/android/gms/common/images/ImageManager;)Landroid/os/Handler;
             //    58: new             Lcom/google/android/gms/common/images/ImageManager$f;
             //    61: dup            
             //    62: aload_0        
-            //    63: getfield        com/google/android/gms/common/images/ImageManager$c.ol:Lcom/google/android/gms/common/images/ImageManager;
+            //    63: getfield        com/google/android/gms/common/images/ImageManager$c.Ci:Lcom/google/android/gms/common/images/ImageManager;
             //    66: aload_0        
             //    67: getfield        com/google/android/gms/common/images/ImageManager$c.mUri:Landroid/net/Uri;
             //    70: aload_3        
@@ -380,40 +348,44 @@ public final class ImageManager
     
     private final class d implements Runnable
     {
-        private final com.google.android.gms.common.images.a on;
+        private final com.google.android.gms.common.images.a Ck;
         
-        public d(final com.google.android.gms.common.images.a on) {
-            this.on = on;
+        public d(final com.google.android.gms.common.images.a ck) {
+            this.Ck = ck;
         }
         
         @Override
         public void run() {
-            ds.N("LoadImageRunnable must be executed on the main thread");
-            ImageManager.this.b(this.on);
-            final com.google.android.gms.common.images.a.a op = this.on.op;
-            if (op.uri == null) {
-                this.on.b(ImageManager.this.mContext, true);
+            fb.aj("LoadImageRunnable must be executed on the main thread");
+            final ImageReceiver imageReceiver = ImageManager.this.Cf.get(this.Ck);
+            if (imageReceiver != null) {
+                ImageManager.this.Cf.remove(this.Ck);
+                imageReceiver.c(this.Ck);
+            }
+            final com.google.android.gms.common.images.a.a cm = this.Ck.Cm;
+            if (cm.uri == null) {
+                this.Ck.a(ImageManager.this.mContext, ImageManager.this.Ce, true);
                 return;
             }
-            final Bitmap a = ImageManager.this.a(op);
+            final Bitmap a = ImageManager.this.a(cm);
             if (a != null) {
-                this.on.a(ImageManager.this.mContext, a, true);
+                this.Ck.a(ImageManager.this.mContext, a, true);
                 return;
             }
-            this.on.r(ImageManager.this.mContext);
+            this.Ck.a(ImageManager.this.mContext, ImageManager.this.Ce);
             ResultReceiver resultReceiver;
-            if ((resultReceiver = ImageManager.this.oi.get(op.uri)) == null) {
-                resultReceiver = new ImageReceiver(op.uri);
-                ImageManager.this.oi.put(op.uri, resultReceiver);
+            if ((resultReceiver = ImageManager.this.Cg.get(cm.uri)) == null) {
+                resultReceiver = new ImageReceiver(cm.uri);
+                ImageManager.this.Cg.put(cm.uri, resultReceiver);
             }
-            ((ImageReceiver)resultReceiver).c(this.on);
-            if (this.on.os != 1) {
-                ImageManager.this.oh.put(this.on, resultReceiver);
+            ((ImageReceiver)resultReceiver).b(this.Ck);
+            if (!(this.Ck instanceof com.google.android.gms.common.images.a.c)) {
+                ImageManager.this.Cf.put(this.Ck, resultReceiver);
             }
-            synchronized (ImageManager.ob) {
-                if (!ImageManager.oc.contains(op.uri)) {
-                    ImageManager.oc.add(op.uri);
-                    ((ImageReceiver)resultReceiver).bB();
+            synchronized (ImageManager.BY) {
+                if (!ImageManager.BZ.contains(cm.uri)) {
+                    ImageManager.BZ.add(cm.uri);
+                    ((ImageReceiver)resultReceiver).ey();
                 }
             }
         }
@@ -421,84 +393,82 @@ public final class ImageManager
     
     private static final class e implements ComponentCallbacks2
     {
-        private final b og;
+        private final b Cd;
         
-        public e(final b og) {
-            this.og = og;
+        public e(final b cd) {
+            this.Cd = cd;
         }
         
         public void onConfigurationChanged(final Configuration configuration) {
         }
         
         public void onLowMemory() {
-            this.og.evictAll();
+            this.Cd.evictAll();
         }
         
         public void onTrimMemory(final int n) {
             if (n >= 60) {
-                this.og.evictAll();
+                this.Cd.evictAll();
             }
             else if (n >= 20) {
-                this.og.trimToSize(this.og.size() / 2);
+                this.Cd.trimToSize(this.Cd.size() / 2);
             }
         }
     }
     
     private final class f implements Runnable
     {
+        private final CountDownLatch AD;
+        private boolean Cl;
         private final Bitmap mBitmap;
         private final Uri mUri;
-        private final CountDownLatch mX;
-        private boolean oo;
         
-        public f(final Uri mUri, final Bitmap mBitmap, final boolean oo, final CountDownLatch mx) {
+        public f(final Uri mUri, final Bitmap mBitmap, final boolean cl, final CountDownLatch ad) {
             this.mUri = mUri;
             this.mBitmap = mBitmap;
-            this.oo = oo;
-            this.mX = mx;
+            this.Cl = cl;
+            this.AD = ad;
         }
         
         private void a(final ImageReceiver imageReceiver, final boolean b) {
-            imageReceiver.ok = true;
-            final ArrayList a = imageReceiver.oj;
+            final ArrayList a = imageReceiver.Ch;
             for (int size = a.size(), i = 0; i < size; ++i) {
                 final com.google.android.gms.common.images.a a2 = a.get(i);
                 if (b) {
                     a2.a(ImageManager.this.mContext, this.mBitmap, false);
                 }
                 else {
-                    a2.b(ImageManager.this.mContext, false);
+                    a2.a(ImageManager.this.mContext, ImageManager.this.Ce, false);
                 }
-                if (a2.os != 1) {
-                    ImageManager.this.oh.remove(a2);
+                if (!(a2 instanceof com.google.android.gms.common.images.a.c)) {
+                    ImageManager.this.Cf.remove(a2);
                 }
             }
-            imageReceiver.ok = false;
         }
         
         @Override
         public void run() {
-            ds.N("OnBitmapLoadedRunnable must be executed in the main thread");
+            fb.aj("OnBitmapLoadedRunnable must be executed in the main thread");
             final boolean b = this.mBitmap != null;
-            if (ImageManager.this.og != null) {
-                if (this.oo) {
-                    ImageManager.this.og.evictAll();
+            if (ImageManager.this.Cd != null) {
+                if (this.Cl) {
+                    ImageManager.this.Cd.evictAll();
                     System.gc();
-                    this.oo = false;
+                    this.Cl = false;
                     ImageManager.this.mHandler.post((Runnable)this);
                     return;
                 }
                 if (b) {
-                    ImageManager.this.og.put(new com.google.android.gms.common.images.a.a(this.mUri), this.mBitmap);
+                    ImageManager.this.Cd.put(new com.google.android.gms.common.images.a.a(this.mUri), this.mBitmap);
                 }
             }
-            final ImageReceiver imageReceiver = ImageManager.this.oi.remove(this.mUri);
+            final ImageReceiver imageReceiver = ImageManager.this.Cg.remove(this.mUri);
             if (imageReceiver != null) {
                 this.a(imageReceiver, b);
             }
-            this.mX.countDown();
-            synchronized (ImageManager.ob) {
-                ImageManager.oc.remove(this.mUri);
+            this.AD.countDown();
+            synchronized (ImageManager.BY) {
+                ImageManager.BZ.remove(this.mUri);
             }
         }
     }

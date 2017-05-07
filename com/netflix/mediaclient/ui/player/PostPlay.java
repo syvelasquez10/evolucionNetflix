@@ -84,16 +84,16 @@ public abstract class PostPlay
             }
         };
         this.mContext = mContext;
-        this.mBackground = (AdvancedImageView)this.mContext.findViewById(2131231041);
-        this.mPlayButton = this.mContext.findViewById(2131231046);
-        this.mPostPlay = this.mContext.findViewById(2131231040);
-        this.mTitle = (TextView)this.mContext.findViewById(2131231045);
-        this.mSynopsis = (TextView)this.mContext.findViewById(2131231048);
-        this.mInterrupterContinue = this.mContext.findViewById(2131231021);
-        this.mInterrupterStop = this.mContext.findViewById(2131231023);
-        this.mInterrupterPlayFromStart = this.mContext.findViewById(2131231022);
-        this.mInterrupter = this.mContext.findViewById(2131231020);
-        this.mPostPlayIgnoreTap = this.mContext.findViewById(2131231043);
+        this.mBackground = (AdvancedImageView)this.mContext.findViewById(2131165525);
+        this.mPlayButton = this.mContext.findViewById(2131165530);
+        this.mPostPlay = this.mContext.findViewById(2131165524);
+        this.mTitle = (TextView)this.mContext.findViewById(2131165529);
+        this.mSynopsis = (TextView)this.mContext.findViewById(2131165532);
+        this.mInterrupterContinue = this.mContext.findViewById(2131165484);
+        this.mInterrupterStop = this.mContext.findViewById(2131165486);
+        this.mInterrupterPlayFromStart = this.mContext.findViewById(2131165485);
+        this.mInterrupter = this.mContext.findViewById(2131165483);
+        this.mPostPlayIgnoreTap = this.mContext.findViewById(2131165527);
         if (this.mPostPlayIgnoreTap != null) {
             this.mPostPlayIgnoreTap.setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
                 public boolean onTouch(final View view, final MotionEvent motionEvent) {
@@ -254,7 +254,7 @@ public abstract class PostPlay
     
     public void init(final String s) {
         this.mContext.getServiceManager().fetchPostPlayVideos(s, new FetchPostPlayForPlaybackCallback());
-        this.mOffset = this.mContext.getResources().getInteger(2131361799) * 1000;
+        this.mOffset = this.mContext.getResources().getInteger(2131427335) * 1000;
     }
     
     public boolean isInPostPlay() {
