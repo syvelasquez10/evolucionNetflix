@@ -14,8 +14,6 @@ import com.netflix.mediaclient.media.PlayerType;
 
 public interface Bridge
 {
-    int getBitrateCap();
-    
     int getConfigVideoBufferSize();
     
     PlayerType getCurrentPlayerType();

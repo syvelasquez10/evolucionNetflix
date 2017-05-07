@@ -8,12 +8,12 @@ import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.FetchVideosHandler;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.widget.ViewRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 
 public class StandardLoMoPagerAdapter extends ProgressiveLoMoPagerAdapter
 {
-    public StandardLoMoPagerAdapter(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ViewRecycler viewRecycler) {
+    public StandardLoMoPagerAdapter(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler.ViewRecycler viewRecycler) {
         super(serviceManager, rowAdapterCallbacks, viewRecycler);
     }
     

@@ -6,7 +6,6 @@ package com.netflix.mediaclient.media;
 
 import org.json.JSONObject;
 import com.netflix.mediaclient.media.JPlayer.JPlayer;
-import com.netflix.mediaclient.service.configuration.BitrateRangeFactory;
 import android.content.Context;
 import android.view.Surface;
 import com.netflix.mediaclient.javabridge.ui.IMedia;
@@ -35,7 +34,7 @@ public class JPlayer2Helper implements MediaPlayerHelper
         if (this.jp != null) {
             this.jp.release();
         }
-        (this.jp = new JPlayer2(surface)).setMaxVideoBitrate(BitrateRangeFactory.getBitrateCap(context));
+        this.jp = new JPlayer2(surface);
         media.setVOapi(0L, this.jp.getNativePlayer());
     }
     
@@ -49,6 +48,12 @@ public class JPlayer2Helper implements MediaPlayerHelper
             this.jp.release();
         }
         this.jp = null;
+    }
+    
+    public void setMaxVideoHeight(final VideoResolutionRange maxVideoHeight) {
+        if (this.jp != null) {
+            this.jp.setMaxVideoHeight(maxVideoHeight);
+        }
     }
     
     public void updateSurface(final Surface surface) {

@@ -8,14 +8,15 @@ import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
 import android.text.TextUtils$TruncateAt;
 import com.netflix.mediaclient.android.widget.AutoResizeTextView;
 import android.view.ViewTreeObserver;
-import android.widget.LinearLayout$LayoutParams;
 import com.netflix.mediaclient.service.player.subtitles.ColorMapping;
 import android.graphics.Rect;
 import java.util.Comparator;
 import com.netflix.mediaclient.service.player.subtitles.DoubleLength;
-import com.netflix.mediaclient.service.player.subtitles.SubtitleTextNode;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Iterator;
+import android.widget.LinearLayout$LayoutParams;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleTextNode;
+import android.util.Pair;
 import com.netflix.mediaclient.android.widget.StrokeTextView;
 import com.netflix.mediaclient.service.player.subtitles.TextStyle;
 import com.netflix.mediaclient.service.player.subtitles.Outline;
@@ -41,6 +42,7 @@ import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
 import android.os.Handler;
 import android.view.ViewTreeObserver$OnPreDrawListener;
 import android.widget.RelativeLayout;
+import java.util.concurrent.atomic.AtomicBoolean;
 import android.widget.LinearLayout;
 
 final class EnhancedSubtitleManager implements SubtitleManager
@@ -53,6 +55,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
     private PlayerActivity mActivity;
     private LinearLayout mDefaultRegion;
     private float mDefaultTextSize;
+    private AtomicBoolean mDefaultsInitiated;
     private RelativeLayout mDisplayArea;
     final ViewTreeObserver$OnPreDrawListener mDoNotDraw;
     private Handler mHandler;
@@ -71,6 +74,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
         this.mRegions = new HashMap<String, LinearLayout>();
         this.mVisibleBlocks = new HashMap<String, List<TextView>>();
         this.mPendingActions = Collections.synchronizedList(new ArrayList<Runnable>());
+        this.mDefaultsInitiated = new AtomicBoolean(false);
         this.mDoNotDraw = (ViewTreeObserver$OnPreDrawListener)new ViewTreeObserver$OnPreDrawListener() {
             public boolean onPreDraw() {
                 Log.d("nf_subtitles_render", "onPreDraw on display area");
@@ -84,15 +88,20 @@ final class EnhancedSubtitleManager implements SubtitleManager
             throw new IllegalArgumentException("Player screen is not initialized!");
         }
         if (this.mActivity.isTablet()) {
-            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361947);
+            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361960);
         }
         else {
-            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361946);
+            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361959);
         }
-        this.createDefaults();
+        Log.v("nf_subtitles_render", "Create handler.");
+        this.mHandler = new Handler();
         this.mHorizontalRegionPadding = AndroidUtils.dipToPixels((Context)mActivity, 5);
         this.mVerticalRegionPadding = AndroidUtils.dipToPixels((Context)mActivity, 1);
         this.mTransparent = mActivity.getResources().getColor(17170445);
+        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131165536);
+        if (this.mDisplayArea.getWidth() == 0 || this.mDisplayArea.getHeight() == 0) {
+            Log.w("nf_subtitles_render", "Display area w/h are 0, display area is not visible yet!");
+        }
     }
     
     private void addRegion(final Region region) {
@@ -232,6 +241,83 @@ final class EnhancedSubtitleManager implements SubtitleManager
         this.applyOutline(textView, textStyleDefault);
     }
     
+    private Pair<Integer, Integer> calculateRegionSize(final SubtitleBlock subtitleBlock, final LinearLayout linearLayout) {
+        int measuredWidth = 0;
+        int n = 0;
+        Object o = null;
+        for (int i = 0; i < subtitleBlock.getTextNodes().size(); ++i) {
+            final SubtitleTextNode subtitleTextNode = subtitleBlock.getTextNodes().get(i);
+            final TextView textView = this.toTextView(subtitleTextNode);
+            Object o2 = o;
+            int n2 = n;
+            int measuredWidth2 = measuredWidth;
+            if (subtitleTextNode.getLineBreaks() > 0) {
+                Log.d("nf_subtitles_render", "This node belongs to its own line");
+                n2 = n;
+                measuredWidth2 = measuredWidth;
+                if (o != null) {
+                    ((LinearLayout)o).measure(0, 0);
+                    final int n3 = n2 = n + ((LinearLayout)o).getMeasuredHeight();
+                    if ((measuredWidth2 = measuredWidth) < ((LinearLayout)o).getMeasuredWidth()) {
+                        measuredWidth2 = ((LinearLayout)o).getMeasuredWidth();
+                        n2 = n3;
+                    }
+                }
+                o2 = null;
+            }
+            if (this.isNextNodeInSameLine(subtitleBlock.getTextNodes(), i)) {
+                Log.d("nf_subtitles_render", "Next node is in same line, add current node to horizontal LL.");
+                if ((o = o2) == null) {
+                    o = new LinearLayout((Context)this.mActivity);
+                    ((LinearLayout)o).setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-2, -2));
+                    ((LinearLayout)o).setOrientation(0);
+                    linearLayout.addView((View)o);
+                }
+            }
+            else {
+                Log.d("nf_subtitles_render", "Next node is not in same line");
+                o = o2;
+            }
+            if (o != null) {
+                Log.d("nf_subtitles_render", "Adding node to horizontal wrapper");
+                ((LinearLayout)o).addView((View)textView);
+                measuredWidth = measuredWidth2;
+                n = n2;
+            }
+            else {
+                Log.d("nf_subtitles_render", "Adding node directly to a window region");
+                linearLayout.addView((View)textView);
+                final int n4 = n = n2 + textView.getMeasuredHeight();
+                if ((measuredWidth = measuredWidth2) < textView.getMeasuredWidth()) {
+                    measuredWidth = textView.getMeasuredWidth();
+                    n = n4;
+                }
+            }
+        }
+        int measuredWidth3;
+        if (o != null) {
+            Log.d("nf_subtitles_render", "Last horizontal wrapper needs to be measured");
+            ((LinearLayout)o).measure(0, 0);
+            final int n5 = n += ((LinearLayout)o).getMeasuredHeight();
+            if ((measuredWidth3 = measuredWidth) < ((LinearLayout)o).getMeasuredWidth()) {
+                measuredWidth3 = ((LinearLayout)o).getMeasuredWidth();
+                n = n5;
+            }
+        }
+        else {
+            Log.d("nf_subtitles_render", "No unmeasured last horizontal wrapper");
+            measuredWidth3 = measuredWidth;
+        }
+        if (Log.isLoggable("nf_subtitles_render", 3)) {
+            Log.d("nf_subtitles_render", "Region after text nodes added, calculated w: " + measuredWidth3 + ", h: " + n);
+        }
+        linearLayout.measure(0, 0);
+        if (Log.isLoggable("nf_subtitles_render", 3)) {
+            Log.d("nf_subtitles_render", "Region after text nodes added, measured w: " + linearLayout.getMeasuredWidth() + ", h: " + linearLayout.getMeasuredHeight());
+        }
+        return (Pair<Integer, Integer>)new Pair((Object)linearLayout.getMeasuredWidth(), (Object)linearLayout.getMeasuredHeight());
+    }
+    
     private void clearDelayedPosts() {
         while (true) {
             synchronized (this) {
@@ -245,35 +331,6 @@ final class EnhancedSubtitleManager implements SubtitleManager
             }
             this.mPendingActions.clear();
         }
-    }
-    
-    private void createDefaultRegion() {
-        Log.v("nf_subtitles_render", "Create default region");
-        this.mDefaultRegion = new LinearLayout((Context)this.mActivity);
-        final RelativeLayout$LayoutParams relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(-1, -2);
-        this.mDefaultRegion.setOrientation(1);
-        relativeLayout$LayoutParams.addRule(12);
-        this.mSafeDisplayArea.addView((View)this.mDefaultRegion, (ViewGroup$LayoutParams)relativeLayout$LayoutParams);
-        this.mDefaultRegion.setVisibility(4);
-        this.mVisibleBlocks.put("DEFAULT", new ArrayList<TextView>());
-    }
-    
-    private void createDefaults() {
-        Log.v("nf_subtitles_render", "Create handler.");
-        this.mHandler = new Handler();
-        Log.v("nf_subtitles_render", "Find root display area");
-        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131165540);
-        if (this.mDisplayArea == null) {
-            Log.e("nf_subtitles_render", "Display area NOT found! This should NOT happen!");
-            return;
-        }
-        Log.v("nf_subtitles_render", "Create safe display area");
-        this.mSafeDisplayArea = new RelativeLayout((Context)this.mActivity);
-        final RelativeLayout$LayoutParams relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(-1, -1);
-        relativeLayout$LayoutParams.addRule(13);
-        this.mDisplayArea.addView((View)this.mSafeDisplayArea, (ViewGroup$LayoutParams)relativeLayout$LayoutParams);
-        Log.v("nf_subtitles_render", "Create safe display area done.");
-        this.createDefaultRegion();
     }
     
     private void createRegions(final Region[] array) {
@@ -389,6 +446,18 @@ final class EnhancedSubtitleManager implements SubtitleManager
             }
             this.mHandler.postDelayed(this.createRunnable(subtitleBlock, b), subtitleBlock.getEnd());
         }
+    }
+    
+    private boolean isDisplayAreaVisible() {
+        if (this.mDisplayArea == null) {
+            Log.e("nf_subtitles_render", "Display area NOT found! This should NOT happen!");
+            return false;
+        }
+        if (this.mDisplayArea.getWidth() == 0 || this.mDisplayArea.getHeight() == 0) {
+            Log.w("nf_subtitles_render", "Display area w/h are 0, display area is not visible yet, postpone getting w/h");
+            return false;
+        }
+        return true;
     }
     
     private boolean isNextNodeInSameLine(final List<SubtitleTextNode> list, int n) {
@@ -780,6 +849,71 @@ final class EnhancedSubtitleManager implements SubtitleManager
         linearLayout.setBackgroundColor((int)n2);
     }
     
+    private void setDefaults() {
+        Log.v("nf_subtitles_render", "Find root display area");
+        if (!this.isDisplayAreaVisible()) {
+            return;
+        }
+        Log.v("nf_subtitles_render", "Create safe display area");
+        this.mSafeDisplayArea = new RelativeLayout((Context)this.mActivity);
+        final RelativeLayout$LayoutParams relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(-1, -1);
+        relativeLayout$LayoutParams.addRule(13);
+        this.mDisplayArea.addView((View)this.mSafeDisplayArea, (ViewGroup$LayoutParams)relativeLayout$LayoutParams);
+        Log.v("nf_subtitles_render", "Create safe display area done.");
+        Log.v("nf_subtitles_render", "Create default region");
+        this.mDefaultRegion = new LinearLayout((Context)this.mActivity);
+        final RelativeLayout$LayoutParams relativeLayout$LayoutParams2 = new RelativeLayout$LayoutParams(-1, -2);
+        this.mDefaultRegion.setOrientation(1);
+        relativeLayout$LayoutParams2.addRule(12);
+        this.mSafeDisplayArea.addView((View)this.mDefaultRegion, (ViewGroup$LayoutParams)relativeLayout$LayoutParams2);
+        this.mDefaultRegion.setVisibility(4);
+        this.mVisibleBlocks.put("DEFAULT", new ArrayList<TextView>());
+        this.mDefaultsInitiated.set(true);
+    }
+    
+    private void setMargins(final RelativeLayout$LayoutParams relativeLayout$LayoutParams, final Rect rect) {
+        final int left = rect.left;
+        final int top = rect.top;
+        final int n = this.mDisplayArea.getWidth() - rect.right;
+        final int n2 = this.mDisplayArea.getHeight() - rect.bottom;
+        if (Log.isLoggable("nf_subtitles_render", 3)) {
+            Log.d("nf_subtitles_render", "Margins, left: " + left + ", top: " + top + ", right: " + n + ", bottom: " + n2);
+        }
+        int n3 = n2;
+        int n4 = top;
+        if (n2 < 0) {
+            Log.w("nf_subtitles_render", "Bottom margin is less than 0, correct");
+            final int n5 = top + n2;
+            final int n6 = n3 = 0;
+            n4 = n5;
+            if (Log.isLoggable("nf_subtitles_render", 3)) {
+                Log.d("nf_subtitles_render", "Margins, left: " + left + ", top: " + n5 + ", right: " + n + ", bottom: " + 0);
+                n4 = n5;
+                n3 = n6;
+            }
+        }
+        int n7 = n3;
+        int n8;
+        if ((n8 = n4) < 0) {
+            Log.w("nf_subtitles_render", "Top margin is less than 0, correct");
+            final int n9 = n3 + n4;
+            final int n10 = 0;
+            int n11;
+            if ((n11 = n9) < 0) {
+                Log.w("nf_subtitles_render", "Bottom margin is left than 0, after fixing top, set to 0");
+                n11 = 0;
+            }
+            n7 = n11;
+            n8 = n10;
+            if (Log.isLoggable("nf_subtitles_render", 3)) {
+                Log.d("nf_subtitles_render", "Margins, left: " + left + ", top: " + 0 + ", right: " + n + ", bottom: " + n11);
+                n8 = n10;
+                n7 = n11;
+            }
+        }
+        relativeLayout$LayoutParams.setMargins(left, n8, n, n7);
+    }
+    
     private void setMarginsForSafeDisplayArea() {
         Log.d("nf_subtitles_render", "Sets margin for safe display area");
         final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)this.mSafeDisplayArea.getLayoutParams();
@@ -803,34 +937,21 @@ final class EnhancedSubtitleManager implements SubtitleManager
                 Log.v("nf_subtitles_render", "Display area: w " + this.mDisplayArea.getWidth() + ", h " + this.mDisplayArea.getHeight());
                 Log.v("nf_subtitles_render", "Region w/h " + width + "/" + height + " known, set them");
             }
-            if (this.mDisplayArea != null) {
-                final int n = this.mDisplayArea.getHeight() / 4;
-                if (Log.isLoggable("nf_subtitles_render", 2)) {
-                    Log.d("nf_subtitles_render", "h: " + height + ", maxHeight: " + n);
-                }
-                if (height < n) {
-                    Log.d("nf_subtitles_render", "Use wrap content for height");
-                    relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(width, -2);
-                }
-                else {
-                    Log.d("nf_subtitles_render", "Use region height");
-                    relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(width, height);
-                }
+            final int n = this.mDisplayArea.getHeight() / 4;
+            if (Log.isLoggable("nf_subtitles_render", 2)) {
+                Log.d("nf_subtitles_render", "h: " + height + ", maxHeight: " + n);
             }
-            else {
+            if (height < n) {
                 Log.d("nf_subtitles_render", "Use wrap content for height");
                 relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(width, -2);
             }
+            else {
+                Log.d("nf_subtitles_render", "Use region height");
+                relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(width, height);
+            }
         }
         if (doubleLength2 != null && doubleLength2.isValid() && doubleLength != null && doubleLength.isValid()) {
-            final int left = regionForRectangle.left;
-            final int top = regionForRectangle.top;
-            final int n2 = this.mDisplayArea.getWidth() - regionForRectangle.right;
-            final int n3 = this.mDisplayArea.getHeight() - regionForRectangle.bottom;
-            if (Log.isLoggable("nf_subtitles_render", 3)) {
-                Log.d("nf_subtitles_render", "Margins, left: " + left + ", top: " + top + ", right: " + n2 + ", bottom: " + n3);
-            }
-            relativeLayout$LayoutParams.setMargins(left, top, n2, n3);
+            this.setMargins(relativeLayout$LayoutParams, regionForRectangle);
         }
         return relativeLayout$LayoutParams;
     }
@@ -846,6 +967,26 @@ final class EnhancedSubtitleManager implements SubtitleManager
             }
             linearLayout.setVisibility(visibility);
         }
+    }
+    
+    private boolean shouldUpdateRegionPosition(final LinearLayout linearLayout, final Region region, final int n, final int n2) {
+        if (DoubleLength.canUse(region.getExtent()) && DoubleLength.canUse(region.getOrigin())) {
+            final Rect regionForRectangle = SubtitleUtils.createRegionForRectangle((View)this.mDisplayArea, region.getExtent(), region.getOrigin());
+            if (regionForRectangle.height() < n2 && regionForRectangle.width() < n) {
+                Log.d("nf_subtitles_render", "Text does not fit into region by height AND width. Update region position taking into account measured data.");
+                return true;
+            }
+            if (regionForRectangle.height() < n2) {
+                Log.d("nf_subtitles_render", "Text does not fit into region by height. Update region position taking into account measured data.");
+                return true;
+            }
+            if (regionForRectangle.width() < n) {
+                Log.d("nf_subtitles_render", "Text does not fit into region by width. Update region position taking into account measured data.");
+                return true;
+            }
+            Log.d("nf_subtitles_render", "Text fits into region.");
+        }
+        return false;
     }
     
     private void showSubtitleBlock(final SubtitleBlock subtitleBlock, final List<ViewUtils.ViewComparator> list) {
@@ -884,76 +1025,8 @@ final class EnhancedSubtitleManager implements SubtitleManager
         else {
             Log.d("nf_subtitles_render", "Using extent/origin from block, region will be wrapped around block and background color will be applied to it.");
         }
-        int measuredWidth = 0;
-        int n2 = 0;
-        Object o = null;
-        for (int i = 0; i < subtitleBlock.getTextNodes().size(); ++i) {
-            final SubtitleTextNode subtitleTextNode = subtitleBlock.getTextNodes().get(i);
-            final TextView textView = this.toTextView(subtitleTextNode);
-            Object o2 = o;
-            int n3 = n2;
-            int measuredWidth2 = measuredWidth;
-            if (subtitleTextNode.getLineBreaks() > 0) {
-                Log.d("nf_subtitles_render", "This node belongs to its own line");
-                n3 = n2;
-                measuredWidth2 = measuredWidth;
-                if (o != null) {
-                    ((LinearLayout)o).measure(0, 0);
-                    final int n4 = n3 = n2 + ((LinearLayout)o).getMeasuredHeight();
-                    if ((measuredWidth2 = measuredWidth) < ((LinearLayout)o).getMeasuredWidth()) {
-                        measuredWidth2 = ((LinearLayout)o).getMeasuredWidth();
-                        n3 = n4;
-                    }
-                }
-                o2 = null;
-            }
-            if (this.isNextNodeInSameLine(subtitleBlock.getTextNodes(), i)) {
-                Log.d("nf_subtitles_render", "Next node is in same line, add current node to horizontal LL.");
-                if ((o = o2) == null) {
-                    o = new LinearLayout((Context)this.mActivity);
-                    ((LinearLayout)o).setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-2, -2));
-                    ((LinearLayout)o).setOrientation(0);
-                    linearLayout.addView((View)o);
-                }
-            }
-            else {
-                Log.d("nf_subtitles_render", "Next node is not in same line");
-                o = o2;
-            }
-            if (o != null) {
-                Log.d("nf_subtitles_render", "Adding node to horizontal wrapper");
-                ((LinearLayout)o).addView((View)textView);
-                measuredWidth = measuredWidth2;
-                n2 = n3;
-            }
-            else {
-                Log.d("nf_subtitles_render", "Adding node directly to a window region");
-                linearLayout.addView((View)textView);
-                final int n5 = n2 = n3 + textView.getMeasuredHeight();
-                if ((measuredWidth = measuredWidth2) < textView.getMeasuredWidth()) {
-                    measuredWidth = textView.getMeasuredWidth();
-                    n2 = n5;
-                }
-            }
-        }
-        int measuredWidth3;
-        if (o != null) {
-            Log.d("nf_subtitles_render", "Last horizontal wrapper needs to be measured");
-            ((LinearLayout)o).measure(0, 0);
-            final int n6 = n2 += ((LinearLayout)o).getMeasuredHeight();
-            if ((measuredWidth3 = measuredWidth) < ((LinearLayout)o).getMeasuredWidth()) {
-                measuredWidth3 = ((LinearLayout)o).getMeasuredWidth();
-                n2 = n6;
-            }
-        }
-        else {
-            Log.d("nf_subtitles_render", "No unmeasured last horizontal wrapper");
-            measuredWidth3 = measuredWidth;
-        }
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
-            Log.d("nf_subtitles_render", "Region w: " + measuredWidth3 + ", h: " + n2);
-        }
-        this.updatePositionIfNeeded(regionLayout, subtitleBlock, measuredWidth3, n2);
+        final Pair<Integer, Integer> calculateRegionSize = this.calculateRegionSize(subtitleBlock, linearLayout);
+        this.updatePositionIfNeeded(regionLayout, subtitleBlock, (int)calculateRegionSize.first, (int)calculateRegionSize.second);
         this.setBackgroundColorToRegion(linearLayout, subtitleBlock);
     }
     
@@ -1033,24 +1106,8 @@ final class EnhancedSubtitleManager implements SubtitleManager
             if (Log.isLoggable("nf_subtitles_render", 2)) {
                 Log.d("nf_subtitles_render", "Region h " + linearLayout.getHeight() + ", needed h " + n2);
             }
-            if (DoubleLength.canUse(region.getExtent()) && DoubleLength.canUse(region.getOrigin())) {
-                final Rect regionForRectangle = SubtitleUtils.createRegionForRectangle((View)this.mDisplayArea, region.getExtent(), region.getOrigin());
-                if (regionForRectangle.height() < n2 && regionForRectangle.width() < n) {
-                    Log.d("nf_subtitles_render", "Text does not fit into region by height AND width. Update region position taking into account measured data.");
-                    this.updateRegionPosition(linearLayout, n, n2, region.getExtent(), region.getOrigin());
-                    return;
-                }
-                if (regionForRectangle.height() < n2) {
-                    Log.d("nf_subtitles_render", "Text does not fit into region by height. Update region position taking into account measured data.");
-                    this.updateRegionPosition(linearLayout, n, n2, region.getExtent(), region.getOrigin());
-                    return;
-                }
-                if (regionForRectangle.width() < n) {
-                    Log.d("nf_subtitles_render", "Text does not fit into region by width. Update region position taking into account measured data.");
-                    this.updateRegionPosition(linearLayout, n, n2, region.getExtent(), region.getOrigin());
-                    return;
-                }
-                Log.d("nf_subtitles_render", "Text fits into region.");
+            if (this.shouldUpdateRegionPosition(linearLayout, region, n, n2)) {
+                this.updateRegionPosition(linearLayout, n, n2, region.getExtent(), region.getOrigin());
             }
         }
     }
@@ -1121,6 +1178,15 @@ final class EnhancedSubtitleManager implements SubtitleManager
             }
             final SubtitleScreen subtitleScreen2;
             this.mParser = subtitleScreen2.getParser();
+            if (!this.mDefaultsInitiated.get()) {
+                Log.d("nf_subtitles_render", "Try to set defaults. They were not initialized before");
+                this.setDefaults();
+                if (!this.mDefaultsInitiated.get()) {
+                    Log.w("nf_subtitles_render", "Initialization was NOT ok, exit.");
+                    return;
+                }
+                Log.d("nf_subtitles_render", "Initialization was ok, proceed with subtitles.");
+            }
             this.removeAll(false);
             final int hashCode = subtitleScreen2.getParser().hashCode();
             if (this.mSubtitleParserId != null && this.mSubtitleParserId == hashCode) {

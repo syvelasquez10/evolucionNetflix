@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.service.pushnotification;
 
-import java.util.Locale;
 import java.net.URLEncoder;
+import java.util.Locale;
 import java.io.UnsupportedEncodingException;
 import android.net.Uri;
 import com.netflix.mediaclient.Log;
@@ -19,6 +19,7 @@ public class Payload
     private static final String ACTION_HOME = "action=home&source=pn";
     private static final String BROWSE = "nflx://www.netflix.com/Browse?q=";
     public static final String DEFAULT_INFO_ACTION = "INFO";
+    public static final String DEFAULT_SOCIAL_ACTION = "SOCIAL";
     public static final String DEFAULT_sound_KEY = "default";
     private static final String PARAM_ActionInfoType = "type";
     public static final String PARAM_GUID = "guid";
@@ -187,12 +188,11 @@ public class Payload
                 i = -1;
             }
         }
-        this.validate();
     }
     
     private static String extractOriginator(String substring) {
         if (substring != null) {
-            final int index = substring.toLowerCase().indexOf("source=");
+            final int index = substring.toLowerCase(Locale.ENGLISH).indexOf("source=");
             if (index >= 0) {
                 final int n = index + 7;
                 if (n < substring.length()) {
@@ -218,6 +218,27 @@ public class Payload
             }
         }
         return null;
+    }
+    
+    public static String isValid(final Payload payload) {
+        String s = null;
+        if ("INFO".equals(payload.defaultActionKey)) {
+            if (StringUtils.isEmpty(payload.actionInfoType)) {
+                s = "Payload:: missing fields in INFO !";
+            }
+        }
+        else {
+            if (StringUtils.isEmpty(payload.title)) {
+                return "Payload:: title is missing!";
+            }
+            if (StringUtils.isEmpty(payload.text)) {
+                return "Payload:: text is missing!";
+            }
+            if (StringUtils.isEmpty(payload.defaultActionKey)) {
+                return "Payload:: defaultActionPayload is missing!";
+            }
+        }
+        return s;
     }
     
     private static Uri parsePayload(String s, final String s2) throws UnsupportedEncodingException {
@@ -268,25 +289,6 @@ public class Payload
             Log.d("nf_push", "Payload for home page " + s);
         }
         return Uri.parse(s);
-    }
-    
-    private void validate() {
-        if ("INFO".equals(this.defaultActionKey)) {
-            if (StringUtils.isEmpty(this.actionInfoType)) {
-                throw new IllegalArgumentException("Payload:: missing fields in INFO !");
-            }
-        }
-        else {
-            if (this.title == null) {
-                throw new IllegalArgumentException("Payload:: title is missing!");
-            }
-            if (this.text == null) {
-                throw new IllegalArgumentException("Payload:: text is missing!");
-            }
-            if (this.defaultActionPayload == null) {
-                throw new IllegalArgumentException("Payload:: defaultActionPayload is missing!");
-            }
-        }
     }
     
     public Action[] getActions() {
@@ -356,7 +358,7 @@ public class Payload
         }
         
         public int getIcon() {
-            return 2130837702;
+            return 2130837700;
         }
         
         public Uri getPayload() {
@@ -377,7 +379,10 @@ public class Payload
     
     public enum ActionInfoType
     {
+        EVENT_LOLOMO_REFRESH("NLL"), 
         EVENT_MYLIST_CHANGED("M"), 
+        EVENT_NOTIFICATION_LIST_CHANGED("N"), 
+        EVENT_NOTIFICATION_READ("NR"), 
         EVENT_PLAYBACK_ENDED("P"), 
         UNKNOWN("");
         
@@ -396,6 +401,26 @@ public class Payload
                 }
             }
             return ActionInfoType.UNKNOWN;
+        }
+        
+        public static boolean isLolomoRefreshEvent(final String s) {
+            return StringUtils.safeEquals(s, ActionInfoType.EVENT_LOLOMO_REFRESH.getValue());
+        }
+        
+        public static boolean isMylistChangedEvent(final String s) {
+            return StringUtils.safeEquals(s, ActionInfoType.EVENT_MYLIST_CHANGED.getValue());
+        }
+        
+        public static boolean isNotificationListChangedEvent(final String s) {
+            return StringUtils.safeEquals(s, ActionInfoType.EVENT_NOTIFICATION_LIST_CHANGED.getValue());
+        }
+        
+        public static boolean isNotificationReadEvent(final String s) {
+            return StringUtils.safeEquals(s, ActionInfoType.EVENT_NOTIFICATION_READ.getValue());
+        }
+        
+        public static boolean isPlayEndEvent(final String s) {
+            return StringUtils.safeEquals(s, ActionInfoType.EVENT_PLAYBACK_ENDED.getValue());
         }
         
         public String getValue() {

@@ -41,8 +41,8 @@ public class VolumeDialogFrag extends NetflixDialogFrag implements SeekBar$OnSee
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903194, viewGroup, false);
-        (this.seekBar = (NetflixSeekBar)inflate.findViewById(2131165659)).setOnSeekBarChangeListener((SeekBar$OnSeekBarChangeListener)this);
+        final View inflate = layoutInflater.inflate(2130903200, viewGroup, false);
+        (this.seekBar = (NetflixSeekBar)inflate.findViewById(2131165688)).setOnSeekBarChangeListener((SeekBar$OnSeekBarChangeListener)this);
         this.seekBar.setMax(100);
         return inflate;
     }

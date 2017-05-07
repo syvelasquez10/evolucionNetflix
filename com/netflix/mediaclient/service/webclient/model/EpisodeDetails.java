@@ -6,10 +6,8 @@ package com.netflix.mediaclient.service.webclient.model;
 
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
-import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
@@ -17,7 +15,7 @@ import com.netflix.mediaclient.service.webclient.model.branches.Episode;
 public class EpisodeDetails extends Episode implements com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails, Playable
 {
     private static final String TAG = "EpisodeDetails";
-    public Rating rating;
+    public com.netflix.mediaclient.service.webclient.model.branches.Video.Rating rating;
     public SocialEvidence showSocialEvidence;
     public boolean userConnectedToFacebook;
     
@@ -107,15 +105,10 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
     
     @Override
     public VideoType getErrorType() {
-        if (this.summary == null) {
+        if (this.detail == null) {
             return null;
         }
-        return this.summary.getErrorType();
-    }
-    
-    @Override
-    public List<FriendProfile> getFacebookFriends() {
-        return null;
+        return this.detail.getErrorType();
     }
     
     @Override
@@ -152,10 +145,10 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
     
     @Override
     public String getId() {
-        if (this.summary == null) {
+        if (this.detail == null) {
             return null;
         }
-        return this.summary.getId();
+        return this.detail.getId();
     }
     
     @Override
@@ -281,6 +274,14 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
     }
     
     @Override
+    public String getStoryDispUrl() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.storyImgDispUrl;
+    }
+    
+    @Override
     public String getStoryUrl() {
         if (this.detail == null) {
             return null;
@@ -314,10 +315,10 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
     
     @Override
     public VideoType getType() {
-        if (this.summary == null) {
+        if (this.detail == null) {
             return null;
         }
-        return this.summary.getType();
+        return this.detail.getType();
     }
     
     @Override
@@ -375,11 +376,6 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
     }
     
     @Override
-    public boolean isUserConnectedToFacebook() {
-        return this.userConnectedToFacebook;
-    }
-    
-    @Override
     public boolean isVideoHd() {
         return this.detail != null && this.detail.isHdAvailable;
     }
@@ -399,6 +395,6 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
     
     @Override
     public String toString() {
-        return "EpisodeDetails [summary=" + this.summary + ", detail=" + this.detail + "]";
+        return "EpisodeDetails [detail=" + this.detail + ", bookmark=" + this.bookmark + "]";
     }
 }

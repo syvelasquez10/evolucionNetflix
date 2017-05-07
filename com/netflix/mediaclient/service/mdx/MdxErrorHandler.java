@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.mdx;
 
+import com.netflix.mediaclient.ui.player.MDXControllerActivity;
+import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 import android.app.DialogFragment;
 import android.content.Context;
 import com.netflix.mediaclient.ui.common.NetflixAlertDialog;
@@ -36,22 +38,22 @@ public class MdxErrorHandler
                 return s;
             }
             case 100: {
-                return this.activity.getString(2131493238);
-            }
-            case 104: {
-                return this.activity.getString(2131493239);
-            }
-            case 105: {
-                return this.activity.getString(2131493240);
-            }
-            case 200: {
                 return this.activity.getString(2131493241);
             }
-            case 106: {
+            case 104: {
+                return this.activity.getString(2131493242);
+            }
+            case 105: {
                 return this.activity.getString(2131493243);
             }
+            case 200: {
+                return this.activity.getString(2131493244);
+            }
+            case 106: {
+                return String.format(this.activity.getString(2131493246), s);
+            }
             case 201: {
-                return this.activity.getString(2131493242);
+                return this.activity.getString(2131493245);
             }
         }
     }
@@ -61,6 +63,10 @@ public class MdxErrorHandler
     }
     
     private void sendToast(final int n, final String s) {
+    }
+    
+    private boolean shouldShowErrorMessage() {
+        return this.activity instanceof FragmentHostActivity || this.activity instanceof MDXControllerActivity;
     }
     
     public boolean handleDialogButton(final String s, final String s2) {
@@ -99,13 +105,22 @@ public class MdxErrorHandler
             return;
         }
         if (n >= 200 && n < 300) {
-            Log.d(this.tag, "Showing toast msg");
-            this.sendToast(n, s);
+            if (this.shouldShowErrorMessage()) {
+                Log.d(this.tag, "Showing toast msg");
+                this.sendToast(n, s);
+            }
+            else {
+                Log.d(this.tag, "Not MDX related activity, do not show toast");
+            }
             this.callbacks.destroy();
             return;
         }
-        Log.d(this.tag, "Showing toast msg");
-        this.sendToast(n, s);
+        if (this.shouldShowErrorMessage()) {
+            Log.d(this.tag, "Showing toast msg");
+            this.sendToast(n, s);
+            return;
+        }
+        Log.d(this.tag, "Not MDX related activity, do not show toast");
     }
     
     public interface ErrorHandlerCallbacks

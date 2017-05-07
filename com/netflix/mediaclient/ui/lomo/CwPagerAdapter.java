@@ -7,14 +7,14 @@ package com.netflix.mediaclient.ui.lomo;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.FetchVideosHandler;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.widget.ViewRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 
 public class CwPagerAdapter extends ProgressiveCwPagerAdapter
 {
     public static final String CW_CACHE_TAG = "CW";
     
-    public CwPagerAdapter(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ViewRecycler viewRecycler) {
+    public CwPagerAdapter(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler.ViewRecycler viewRecycler) {
         super(serviceManager, rowAdapterCallbacks, viewRecycler);
     }
     

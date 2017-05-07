@@ -9,6 +9,8 @@ import com.netflix.mediaclient.util.CryptoUtils;
 import android.media.DeniedByServerException;
 import android.os.Build;
 import java.util.Arrays;
+import android.support.v4.content.LocalBroadcastManager;
+import android.content.Intent;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -17,6 +19,7 @@ import android.media.MediaDrm$CryptoSession;
 import android.util.Base64;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.StatusCode;
 import android.media.ResourceBusyException;
 import android.media.NotProvisionedException;
 import java.util.HashMap;
@@ -36,6 +39,7 @@ import android.media.MediaDrm$OnEventListener;
 @TargetApi(18)
 public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
 {
+    public static final String KB_HELP_URL_FOR_CRYPTO_FAILURES = "https://help.netflix.com/en/node/14384";
     public static final String PROPERTY_SYSTEM_ID = "systemId";
     public static final String TAG;
     private static final UUID WIDEVINE_SCHEME;
@@ -111,14 +115,26 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         }
     }
     
+    private String createMediaDrmErrorMessage(final StatusCode statusCode, final Throwable t) {
+        final StringBuilder sb = new StringBuilder("MediaDrm failure: ");
+        sb.append(statusCode.name()).append(". Exception: ");
+        if (t == null) {
+            sb.append(" init failure: security level changed");
+        }
+        else {
+            sb.append(android.util.Log.getStackTraceString(t));
+        }
+        return sb.toString();
+    }
+    
     private boolean createNccpCryptoFactoryDrmSession() {
         while (true) {
-            Label_0149: {
+            Label_0152: {
                 try {
                     this.nccpCryptoFactoryCryptoSession.sessionId = this.drm.openSession();
                     if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
                         if (this.nccpCryptoFactoryCryptoSession.sessionId == null) {
-                            break Label_0149;
+                            break Label_0152;
                         }
                         Log.d(WidevineDrmManager.TAG, "Device is provisioned. NCCP crypto factory session ID: " + new String(this.nccpCryptoFactoryCryptoSession.sessionId));
                     }
@@ -214,26 +230,49 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         return AndroidUtils.getAndroidVersion() >= 18 && MediaDrm.isCryptoSchemeSupported(WidevineDrmManager.WIDEVINE_SCHEME);
     }
     
-    private void mediaDrmFailure(final boolean b) {
-        // monitorenter(this)
-        if (b) {
-            try {
-                Log.d(WidevineDrmManager.TAG, "MediaDrm failed, unregister device and logout user");
-                new BackgroundTask().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        WidevineDrmManager.this.mUser.logoutUser();
-                        Log.d(WidevineDrmManager.TAG, "Redo CDM provisioning");
-                        WidevineDrmManager.this.init();
+    private void mediaDrmFailure(final StatusCode statusCode, final Throwable t) {
+        while (true) {
+            while (true) {
+                Label_0144: {
+                    synchronized (this) {
+                        this.mErrorLogging.logHandledException(this.createMediaDrmErrorMessage(statusCode, t));
+                        if (StatusCode.DRM_FAILURE_MEDIADRM_WIDEVINE_PLUGIN_CHANGED == statusCode) {
+                            Log.d(WidevineDrmManager.TAG, "MediaDrm failed, unregister device and logout user");
+                            new BackgroundTask().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    WidevineDrmManager.this.mUser.logoutUser();
+                                    Log.d(WidevineDrmManager.TAG, "Redo CDM provisioning");
+                                    WidevineDrmManager.this.init();
+                                }
+                            });
+                        }
+                        else {
+                            if (StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE != statusCode) {
+                                break Label_0144;
+                            }
+                            Log.d(WidevineDrmManager.TAG, "MediaDrm provide key update failed, unregister device, logout user and kill app process after error is displayed");
+                            new BackgroundTask().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    WidevineDrmManager.this.mUser.logoutUser();
+                                    AndroidUtils.clearApplicationData(WidevineDrmManager.this.mContext);
+                                }
+                            });
+                            final Intent intent = new Intent("com.netflix.mediaclient.ui.error.ACTION_DISPLAY_ERROR");
+                            intent.putExtra("status", statusCode.getValue());
+                            intent.putExtra("message_id", 2131493412);
+                            LocalBroadcastManager.getInstance(this.mContext).sendBroadcast(intent);
+                        }
+                        return;
                     }
-                });
+                }
+                Log.d(WidevineDrmManager.TAG, "MediaDrm failed, fail back to legacy crypto scheme");
+                PreferenceUtils.putBooleanPref(this.mContext, "disable_widevine", true);
+                continue;
             }
-            finally {
-            }
-            // monitorexit(this)
         }
     }
-    // monitorexit(this)
     
     private void removeSessionKeys(final byte[] array) {
         if (array == null || this.drm == null) {
@@ -367,7 +406,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         }
         catch (Throwable t) {
             Log.e(WidevineDrmManager.TAG, "Failed to decrypt ", t);
-            this.mediaDrmFailure(false);
+            this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_DECRYPT, t);
             return new byte[0];
         }
     }
@@ -401,7 +440,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         }
         catch (Throwable t) {
             Log.e(WidevineDrmManager.TAG, "Failed to encrypt ", t);
-            this.mediaDrmFailure(false);
+            this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_ENCRYPT, t);
             return new byte[0];
         }
     }
@@ -457,7 +496,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
             }
             catch (Throwable t) {
                 Log.e(WidevineDrmManager.TAG, "Failed to get key request", t);
-                this.mediaDrmFailure(false);
+                this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_GET_KEY_REQUEST, t);
                 final byte[] data = new byte[0];
             }
         }
@@ -466,7 +505,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     public void init() {
         if (this.isWidevinePluginChanged()) {
             PreferenceUtils.putStringPref(this.mContext, "nf_drm_system_id", this.getDeviceType());
-            this.mediaDrmFailure(true);
+            this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_WIDEVINE_PLUGIN_CHANGED, null);
         }
         else if (this.createNccpCryptoFactoryDrmSession()) {
             Log.d(WidevineDrmManager.TAG, "NCCP Crypto Factory session is created");
@@ -529,31 +568,30 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         }
         catch (Throwable t) {
             Log.e(WidevineDrmManager.TAG, "Failed to sign message ", t);
-            this.mediaDrmFailure(false);
+            this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_SIGN, t);
             return new byte[0];
         }
     }
     
     boolean updateNccpSessionKeyResponse(final byte[] array, final byte[] array2, final byte[] array3, final String s) {
+    Label_0043_Outer:
         while (true) {
-            boolean b = false;
-        Label_0061_Outer:
             while (true) {
                 while (true) {
                     final byte[] array4;
-                    Label_0213: {
+                    Label_0200: {
                         synchronized (this) {
                             if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
                                 Log.d(WidevineDrmManager.TAG, "Update key response for account " + s);
                             }
-                            break Label_0213;
-                            Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
-                            return b;
-                            b = false;
+                            break Label_0200;
+                            boolean b = false;
                             try {
                                 final byte[] pendingSessionId = this.nccpCryptoFactoryCryptoSession.pendingSessionId;
                                 if (pendingSessionId != null) {
-                                    Log.d(WidevineDrmManager.TAG, "Update key response for pending session id " + new String(pendingSessionId));
+                                    if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+                                        Log.d(WidevineDrmManager.TAG, "Update key response for pending session id " + new String(pendingSessionId));
+                                    }
                                     final byte[] activatePendingSessionId = this.nccpCryptoFactoryCryptoSession.activatePendingSessionId();
                                     if (s.equals(this.mCurrentAccountId)) {
                                         this.closeSessionAndRemoveKeys(activatePendingSessionId);
@@ -566,17 +604,20 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                                 b = true;
                             }
                             catch (Throwable t) {
-                                Log.e(WidevineDrmManager.TAG, "We failed to update key response..." + t.getMessage() + ": ", t);
-                                this.mediaDrmFailure(false);
+                                Log.e(WidevineDrmManager.TAG, "We failed to update key response...", t);
+                                this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE, t);
                             }
+                            Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
+                            b = false;
+                            return b;
                         }
                     }
                     if (array4 != null && array2 != null && array3 != null) {
-                        continue;
+                        continue Label_0043_Outer;
                     }
                     break;
                 }
-                continue Label_0061_Outer;
+                continue;
             }
         }
     }
@@ -603,7 +644,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
             }
             catch (Throwable t) {
                 Log.e(WidevineDrmManager.TAG, "Failed to verify message ", t);
-                this.mediaDrmFailure(false);
+                this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_VERIFY, t);
                 return false;
             }
         }

@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
@@ -16,6 +18,7 @@ import com.netflix.mediaclient.servicemgr.model.LoLoMo;
 import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
@@ -36,6 +39,8 @@ public interface INetflixServiceCallback
     void onEpisodeDetailsFetched(final int p0, final EpisodeDetails p1, final Status p2);
     
     void onEpisodesFetched(final int p0, final List<EpisodeDetails> p1, final Status p2);
+    
+    void onFriendsForRecommendationsListFetched(final int p0, final List<FriendForRecommendation> p1, final Status p2);
     
     void onGenreListsFetched(final int p0, final List<GenreList> p1, final Status p2);
     
@@ -80,6 +85,10 @@ public interface INetflixServiceCallback
     void onShowDetailsFetched(final int p0, final ShowDetails p1, final Status p2);
     
     void onSimilarVideosFetched(final int p0, final SearchVideoList p1, final Status p2);
+    
+    void onSocialNotificationWasThanked(final int p0, final SocialNotificationSummary p1, final Status p2);
+    
+    void onSocialNotificationsListFetched(final int p0, final SocialNotificationsList p1, final Status p2);
     
     void onVideoHide(final int p0, final Status p1);
     

@@ -463,7 +463,7 @@ public class BifManager
                 //   707: aload_0        
                 //   708: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
                 //   711: invokestatic    com/netflix/mediaclient/media/BifManager.access$100:(Lcom/netflix/mediaclient/media/BifManager;)Z
-                //   714: ifeq            1856
+                //   714: ifeq            1852
                 //   717: aload           13
                 //   719: astore          8
                 //   721: aload           12
@@ -678,7 +678,7 @@ public class BifManager
                 //  1168: invokeinterface java/util/SortedMap.get:(Ljava/lang/Object;)Ljava/lang/Object;
                 //  1173: checkcast       Ljava/lang/Integer;
                 //  1176: invokevirtual   java/lang/Integer.intValue:()I
-                //  1179: istore_2       
+                //  1179: istore_3       
                 //  1180: aload           13
                 //  1182: astore          8
                 //  1184: aload           12
@@ -693,7 +693,7 @@ public class BifManager
                 //  1207: invokeinterface java/util/SortedMap.get:(Ljava/lang/Object;)Ljava/lang/Object;
                 //  1212: checkcast       Ljava/lang/Integer;
                 //  1215: invokevirtual   java/lang/Integer.intValue:()I
-                //  1218: istore_3       
+                //  1218: istore_2       
                 //  1219: aload           13
                 //  1221: astore          8
                 //  1223: aload           12
@@ -712,11 +712,11 @@ public class BifManager
                 //  1250: invokespecial   java/lang/StringBuilder.<init>:()V
                 //  1253: ldc             "first offset "
                 //  1255: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //  1258: iload_2        
+                //  1258: iload_3        
                 //  1259: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
                 //  1262: ldc             ", end @"
                 //  1264: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //  1267: iload_3        
+                //  1267: iload_2        
                 //  1268: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
                 //  1271: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
                 //  1274: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
@@ -725,7 +725,7 @@ public class BifManager
                 //  1280: astore          8
                 //  1282: aload           12
                 //  1284: astore          7
-                //  1286: iload_2        
+                //  1286: iload_3        
                 //  1287: aload_0        
                 //  1288: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
                 //  1291: invokestatic    com/netflix/mediaclient/media/BifManager.access$500:(Lcom/netflix/mediaclient/media/BifManager;)I
@@ -735,7 +735,7 @@ public class BifManager
                 //  1301: aload           12
                 //  1303: astore          7
                 //  1305: aload           11
-                //  1307: iload_2        
+                //  1307: iload_3        
                 //  1308: aload_0        
                 //  1309: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
                 //  1312: invokestatic    com/netflix/mediaclient/media/BifManager.access$500:(Lcom/netflix/mediaclient/media/BifManager;)I
@@ -766,8 +766,8 @@ public class BifManager
                 //  1364: iconst_0       
                 //  1365: istore_1       
                 //  1366: iload_1        
-                //  1367: iload_3        
-                //  1368: iload_2        
+                //  1367: iload_2        
+                //  1368: iload_3        
                 //  1369: isub           
                 //  1370: if_icmpge       1583
                 //  1373: aload           9
@@ -938,198 +938,196 @@ public class BifManager
                 //  1734: pop            
                 //  1735: goto            1563
                 //  1738: astore          6
-                //  1740: aload           9
+                //  1740: aload           7
                 //  1742: astore          10
-                //  1744: aload           7
-                //  1746: astore          9
-                //  1748: aload           10
-                //  1750: ifnull          1763
-                //  1753: aload           10
-                //  1755: invokevirtual   java/io/FileOutputStream.flush:()V
-                //  1758: aload           10
-                //  1760: invokevirtual   java/io/FileOutputStream.close:()V
-                //  1763: aload           9
-                //  1765: ifnull          1773
-                //  1768: aload           9
-                //  1770: invokevirtual   java/io/InputStream.close:()V
-                //  1773: aload           8
-                //  1775: ifnull          1783
-                //  1778: aload           8
-                //  1780: invokevirtual   java/io/BufferedInputStream.close:()V
-                //  1783: ldc             "BifManager"
-                //  1785: iconst_3       
-                //  1786: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-                //  1789: ifeq            1800
-                //  1792: ldc             "BifManager"
-                //  1794: ldc             "bif download complete"
-                //  1796: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-                //  1799: pop            
-                //  1800: aload           6
-                //  1802: athrow         
-                //  1803: astore          7
-                //  1805: ldc             "BifManager"
-                //  1807: ldc             "Failed downlaod"
-                //  1809: aload           7
-                //  1811: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-                //  1814: pop            
-                //  1815: goto            1783
-                //  1818: astore          12
-                //  1820: aload           11
-                //  1822: astore          8
-                //  1824: aload           6
+                //  1744: aload           9
+                //  1746: ifnull          1759
+                //  1749: aload           9
+                //  1751: invokevirtual   java/io/FileOutputStream.flush:()V
+                //  1754: aload           9
+                //  1756: invokevirtual   java/io/FileOutputStream.close:()V
+                //  1759: aload           10
+                //  1761: ifnull          1769
+                //  1764: aload           10
+                //  1766: invokevirtual   java/io/InputStream.close:()V
+                //  1769: aload           8
+                //  1771: ifnull          1779
+                //  1774: aload           8
+                //  1776: invokevirtual   java/io/BufferedInputStream.close:()V
+                //  1779: ldc             "BifManager"
+                //  1781: iconst_3       
+                //  1782: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
+                //  1785: ifeq            1796
+                //  1788: ldc             "BifManager"
+                //  1790: ldc             "bif download complete"
+                //  1792: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+                //  1795: pop            
+                //  1796: aload           6
+                //  1798: athrow         
+                //  1799: astore          7
+                //  1801: ldc             "BifManager"
+                //  1803: ldc             "Failed downlaod"
+                //  1805: aload           7
+                //  1807: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+                //  1810: pop            
+                //  1811: goto            1779
+                //  1814: astore          12
+                //  1816: aload           11
+                //  1818: astore          8
+                //  1820: aload           6
+                //  1822: astore          10
+                //  1824: aload           7
                 //  1826: astore          9
-                //  1828: aload           7
-                //  1830: astore          10
-                //  1832: aload           12
-                //  1834: astore          6
-                //  1836: goto            1748
-                //  1839: astore          12
-                //  1841: aload           16
-                //  1843: astore          11
-                //  1845: aload           10
-                //  1847: astore          6
-                //  1849: aload           15
-                //  1851: astore          10
-                //  1853: goto            1485
-                //  1856: sipush          1024
-                //  1859: istore_2       
-                //  1860: iload_3        
-                //  1861: iload_1        
-                //  1862: isub           
-                //  1863: sipush          1024
-                //  1866: if_icmpge       852
-                //  1869: iload_3        
-                //  1870: iload_1        
-                //  1871: isub           
-                //  1872: istore_2       
-                //  1873: goto            852
+                //  1828: aload           12
+                //  1830: astore          6
+                //  1832: goto            1744
+                //  1835: astore          12
+                //  1837: aload           16
+                //  1839: astore          11
+                //  1841: aload           10
+                //  1843: astore          6
+                //  1845: aload           15
+                //  1847: astore          10
+                //  1849: goto            1485
+                //  1852: sipush          1024
+                //  1855: istore_2       
+                //  1856: iload_3        
+                //  1857: iload_1        
+                //  1858: isub           
+                //  1859: sipush          1024
+                //  1862: if_icmpge       852
+                //  1865: iload_3        
+                //  1866: iload_1        
+                //  1867: isub           
+                //  1868: istore_2       
+                //  1869: goto            852
                 //    Exceptions:
                 //  Try           Handler
                 //  Start  End    Start  End    Type                 
                 //  -----  -----  -----  -----  ---------------------
-                //  123    140    1839   1856   Ljava/io/IOException;
-                //  123    140    1738   1748   Any
-                //  156    167    1839   1856   Ljava/io/IOException;
-                //  156    167    1738   1748   Any
+                //  123    140    1835   1852   Ljava/io/IOException;
+                //  123    140    1738   1744   Any
+                //  156    167    1835   1852   Ljava/io/IOException;
+                //  156    167    1738   1744   Any
                 //  175    181    1479   1485   Ljava/io/IOException;
-                //  175    181    1818   1839   Any
+                //  175    181    1814   1835   Any
                 //  189    200    1479   1485   Ljava/io/IOException;
-                //  189    200    1818   1839   Any
+                //  189    200    1814   1835   Any
                 //  208    217    1479   1485   Ljava/io/IOException;
-                //  208    217    1818   1839   Any
+                //  208    217    1814   1835   Any
                 //  225    255    1479   1485   Ljava/io/IOException;
-                //  225    255    1818   1839   Any
+                //  225    255    1814   1835   Any
                 //  269    274    1479   1485   Ljava/io/IOException;
-                //  269    274    1818   1839   Any
+                //  269    274    1814   1835   Any
                 //  282    287    1479   1485   Ljava/io/IOException;
-                //  282    287    1818   1839   Any
+                //  282    287    1814   1835   Any
                 //  291    299    343    358    Ljava/io/IOException;
                 //  303    311    343    358    Ljava/io/IOException;
                 //  315    323    343    358    Ljava/io/IOException;
                 //  366    373    1479   1485   Ljava/io/IOException;
-                //  366    373    1818   1839   Any
+                //  366    373    1814   1835   Any
                 //  381    390    1479   1485   Ljava/io/IOException;
-                //  381    390    1818   1839   Any
+                //  381    390    1814   1835   Any
                 //  398    413    1479   1485   Ljava/io/IOException;
-                //  398    413    1818   1839   Any
+                //  398    413    1814   1835   Any
                 //  421    436    1479   1485   Ljava/io/IOException;
-                //  421    436    1818   1839   Any
+                //  421    436    1814   1835   Any
                 //  444    459    1479   1485   Ljava/io/IOException;
-                //  444    459    1818   1839   Any
+                //  444    459    1814   1835   Any
                 //  467    476    1479   1485   Ljava/io/IOException;
-                //  467    476    1818   1839   Any
+                //  467    476    1814   1835   Any
                 //  484    545    1479   1485   Ljava/io/IOException;
-                //  484    545    1818   1839   Any
+                //  484    545    1814   1835   Any
                 //  553    563    1479   1485   Ljava/io/IOException;
-                //  553    563    1818   1839   Any
+                //  553    563    1814   1835   Any
                 //  571    584    1479   1485   Ljava/io/IOException;
-                //  571    584    1818   1839   Any
+                //  571    584    1814   1835   Any
                 //  592    605    1479   1485   Ljava/io/IOException;
-                //  592    605    1818   1839   Any
+                //  592    605    1814   1835   Any
                 //  613    625    1479   1485   Ljava/io/IOException;
-                //  613    625    1818   1839   Any
+                //  613    625    1814   1835   Any
                 //  633    638    1479   1485   Ljava/io/IOException;
-                //  633    638    1818   1839   Any
+                //  633    638    1814   1835   Any
                 //  650    659    1479   1485   Ljava/io/IOException;
-                //  650    659    1818   1839   Any
+                //  650    659    1814   1835   Any
                 //  667    692    1479   1485   Ljava/io/IOException;
-                //  667    692    1818   1839   Any
+                //  667    692    1814   1835   Any
                 //  707    717    1479   1485   Ljava/io/IOException;
-                //  707    717    1818   1839   Any
+                //  707    717    1814   1835   Any
                 //  725    733    1479   1485   Ljava/io/IOException;
-                //  725    733    1818   1839   Any
+                //  725    733    1814   1835   Any
                 //  741    748    1479   1485   Ljava/io/IOException;
-                //  741    748    1818   1839   Any
+                //  741    748    1814   1835   Any
                 //  756    765    1479   1485   Ljava/io/IOException;
-                //  756    765    1818   1839   Any
+                //  756    765    1814   1835   Any
                 //  780    787    1479   1485   Ljava/io/IOException;
-                //  780    787    1818   1839   Any
+                //  780    787    1814   1835   Any
                 //  795    802    1479   1485   Ljava/io/IOException;
-                //  795    802    1818   1839   Any
+                //  795    802    1814   1835   Any
                 //  822    844    1479   1485   Ljava/io/IOException;
-                //  822    844    1818   1839   Any
+                //  822    844    1814   1835   Any
                 //  860    871    1479   1485   Ljava/io/IOException;
-                //  860    871    1818   1839   Any
+                //  860    871    1814   1835   Any
                 //  885    894    1479   1485   Ljava/io/IOException;
-                //  885    894    1818   1839   Any
+                //  885    894    1814   1835   Any
                 //  902    942    1479   1485   Ljava/io/IOException;
-                //  902    942    1818   1839   Any
+                //  902    942    1814   1835   Any
                 //  955    960    1479   1485   Ljava/io/IOException;
-                //  955    960    1818   1839   Any
+                //  955    960    1814   1835   Any
                 //  968    973    1479   1485   Ljava/io/IOException;
-                //  968    973    1818   1839   Any
+                //  968    973    1814   1835   Any
                 //  977    985    1029   1044   Ljava/io/IOException;
                 //  989    997    1029   1044   Ljava/io/IOException;
                 //  1001   1009   1029   1044   Ljava/io/IOException;
                 //  1060   1070   1479   1485   Ljava/io/IOException;
-                //  1060   1070   1818   1839   Any
+                //  1060   1070   1814   1835   Any
                 //  1078   1114   1479   1485   Ljava/io/IOException;
-                //  1078   1114   1818   1839   Any
+                //  1078   1114   1814   1835   Any
                 //  1126   1141   1479   1485   Ljava/io/IOException;
-                //  1126   1141   1818   1839   Any
+                //  1126   1141   1814   1835   Any
                 //  1149   1180   1479   1485   Ljava/io/IOException;
-                //  1149   1180   1818   1839   Any
+                //  1149   1180   1814   1835   Any
                 //  1188   1219   1479   1485   Ljava/io/IOException;
-                //  1188   1219   1818   1839   Any
+                //  1188   1219   1814   1835   Any
                 //  1227   1236   1479   1485   Ljava/io/IOException;
-                //  1227   1236   1818   1839   Any
+                //  1227   1236   1814   1835   Any
                 //  1244   1278   1479   1485   Ljava/io/IOException;
-                //  1244   1278   1818   1839   Any
+                //  1244   1278   1814   1835   Any
                 //  1286   1297   1479   1485   Ljava/io/IOException;
-                //  1286   1297   1818   1839   Any
+                //  1286   1297   1814   1835   Any
                 //  1305   1321   1479   1485   Ljava/io/IOException;
-                //  1305   1321   1818   1839   Any
+                //  1305   1321   1814   1835   Any
                 //  1329   1349   1479   1485   Ljava/io/IOException;
-                //  1329   1349   1818   1839   Any
+                //  1329   1349   1814   1835   Any
                 //  1357   1364   1479   1485   Ljava/io/IOException;
-                //  1357   1364   1818   1839   Any
+                //  1357   1364   1814   1835   Any
                 //  1381   1394   1479   1485   Ljava/io/IOException;
-                //  1381   1394   1818   1839   Any
+                //  1381   1394   1814   1835   Any
                 //  1407   1417   1479   1485   Ljava/io/IOException;
-                //  1407   1417   1818   1839   Any
+                //  1407   1417   1814   1835   Any
                 //  1433   1476   1479   1485   Ljava/io/IOException;
-                //  1433   1476   1818   1839   Any
-                //  1497   1506   1738   1748   Any
-                //  1518   1528   1738   1748   Any
+                //  1433   1476   1814   1835   Any
+                //  1497   1506   1738   1744   Any
+                //  1518   1528   1738   1744   Any
                 //  1533   1543   1723   1738   Ljava/io/IOException;
                 //  1548   1553   1723   1738   Ljava/io/IOException;
                 //  1558   1563   1723   1738   Ljava/io/IOException;
                 //  1591   1600   1479   1485   Ljava/io/IOException;
-                //  1591   1600   1818   1839   Any
+                //  1591   1600   1814   1835   Any
                 //  1608   1638   1479   1485   Ljava/io/IOException;
-                //  1608   1638   1818   1839   Any
+                //  1608   1638   1814   1835   Any
                 //  1646   1655   1479   1485   Ljava/io/IOException;
-                //  1646   1655   1818   1839   Any
+                //  1646   1655   1814   1835   Any
                 //  1660   1670   1708   1723   Ljava/io/IOException;
                 //  1675   1680   1708   1723   Ljava/io/IOException;
                 //  1685   1690   1708   1723   Ljava/io/IOException;
-                //  1753   1763   1803   1818   Ljava/io/IOException;
-                //  1768   1773   1803   1818   Ljava/io/IOException;
-                //  1778   1783   1803   1818   Ljava/io/IOException;
+                //  1749   1759   1799   1814   Ljava/io/IOException;
+                //  1764   1769   1799   1814   Ljava/io/IOException;
+                //  1774   1779   1799   1814   Ljava/io/IOException;
                 // 
                 // The error that occurred was:
                 // 
-                // java.lang.IllegalStateException: Expression is linked from several locations: Label_1763:
+                // java.lang.IllegalStateException: Expression is linked from several locations: Label_1759:
                 //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
                 //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
                 //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)

@@ -4,6 +4,11 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.service.pushnotification.MessageData;
+import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import java.util.List;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
@@ -52,6 +57,8 @@ public interface IBrowseInterface
     
     void fetchSimilarVideosForQuerySuggestion(final String p0, final int p1, final int p2, final int p3, final String p4);
     
+    void fetchSocialNotifications(final int p0, final int p1, final int p2);
+    
     void fetchVideos(final LoMo p0, final int p1, final int p2, final int p3, final int p4);
     
     void flushCaches();
@@ -60,17 +67,31 @@ public interface IBrowseInterface
     
     void logBillboardActivity(final Video p0, final BrowseAgent.BillboardActivityType p1);
     
+    void markSocialNotificationsAsRead(final List<SocialNotificationSummary> p0);
+    
     void prefetchGenreLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final boolean p5, final int p6, final int p7);
     
     void prefetchLoLoMo(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final boolean p6, final boolean p7, final int p8, final int p9);
     
+    void refreshAll();
+    
     void refreshCW();
     
+    void refreshEpisodeData(final Asset p0);
+    
     void refreshIQ();
+    
+    void refreshSocialNotifications(final boolean p0, final boolean p1, final MessageData p2);
     
     void removeFromQueue(final String p0, final String p1, final int p2, final int p3);
     
     void searchNetflix(final String p0, final int p1, final int p2);
     
+    void sendThanksToSocialNotification(final SocialNotificationSummary p0, final int p1, final int p2);
+    
+    void sendThanksToSocialNotificationFromService(final SocialNotificationSummary p0, final NetflixService p1, final boolean p2);
+    
     void setVideoRating(final String p0, final int p1, final int p2, final int p3, final int p4);
+    
+    void updateCachedVideoPosition(final Asset p0);
 }

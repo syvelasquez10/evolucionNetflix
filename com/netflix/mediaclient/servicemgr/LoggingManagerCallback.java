@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
@@ -16,6 +18,7 @@ import com.netflix.mediaclient.servicemgr.model.LoLoMo;
 import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
@@ -103,6 +106,13 @@ public class LoggingManagerCallback implements ManagerCallback
                 size = list.size();
             }
             Log.v(tag, String.format("onEpisodesFetched, num: %d, status: %d", size, status.getStatusCode().getValue()));
+        }
+    }
+    
+    @Override
+    public void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> list, final Status status) {
+        if (Log.isLoggable(this.tag, 2)) {
+            Log.v(this.tag, String.format("onFriendsForRecommendationsListFetched, status: %d", status.getStatusCode().getValue()));
         }
     }
     
@@ -342,6 +352,20 @@ public class LoggingManagerCallback implements ManagerCallback
                 size = list.size();
             }
             Log.v(tag, String.format("onSimilarVideosFetched, num videos: %d, status: %d", size, status.getStatusCode().getValue()));
+        }
+    }
+    
+    @Override
+    public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+        if (Log.isLoggable(this.tag, 2)) {
+            Log.v(this.tag, String.format("onSocialNotificationWasThanked, status: %d", status.getStatusCode().getValue()));
+        }
+    }
+    
+    @Override
+    public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+        if (Log.isLoggable(this.tag, 2)) {
+            Log.v(this.tag, String.format("onSocialNotificationsListFetched, status: %d", status.getStatusCode().getValue()));
         }
     }
     

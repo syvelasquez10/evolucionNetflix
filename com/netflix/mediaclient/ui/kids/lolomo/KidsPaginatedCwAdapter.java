@@ -9,7 +9,7 @@ import android.view.View;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import java.util.List;
-import com.netflix.mediaclient.android.widget.ViewRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.lomo.PaginatedCwAdapter;
@@ -36,9 +36,9 @@ public class KidsPaginatedCwAdapter extends PaginatedCwAdapter
     }
     
     @Override
-    protected View getView(final ViewRecycler viewRecycler, final List<CWVideo> list, final int n, final int n2, final BasicLoMo basicLoMo) {
+    protected View getView(final ObjectRecycler.ViewRecycler viewRecycler, final List<CWVideo> list, final int n, final int n2, final BasicLoMo basicLoMo) {
         KidsCwViewGroup kidsCwViewGroup;
-        if ((kidsCwViewGroup = (KidsCwViewGroup)viewRecycler.pop(KidsCwViewGroup.class)) == null) {
+        if ((kidsCwViewGroup = ((ObjectRecycler<KidsCwViewGroup>)viewRecycler).pop(KidsCwViewGroup.class)) == null) {
             kidsCwViewGroup = new KidsCwViewGroup((Context)this.getActivity(), true);
             kidsCwViewGroup.init(n);
         }

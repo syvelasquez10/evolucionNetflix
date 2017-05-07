@@ -14,8 +14,11 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
+import com.netflix.mediaclient.util.IntentUtils;
 import android.support.v4.content.LocalBroadcastManager;
+import com.netflix.mediaclient.servicemgr.SocialLogging;
 import com.netflix.mediaclient.servicemgr.ISearchLogging;
+import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import android.content.IntentFilter;
@@ -120,13 +123,17 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging, 
         for (int length2 = actions2.length, j = 0; j < length2; ++j) {
             intentFilter.addAction(actions2[j]);
         }
-        final String[] actions3 = UIViewLoggingImpl.ACTIONS;
+        final String[] actions3 = UIViewLogging.ACTIONS;
         for (int length3 = actions3.length, k = 0; k < length3; ++k) {
             intentFilter.addAction(actions3[k]);
         }
         final String[] actions4 = ISearchLogging.ACTIONS;
         for (int length4 = actions4.length, l = 0; l < length4; ++l) {
             intentFilter.addAction(actions4[l]);
+        }
+        final String[] actions5 = SocialLogging.ACTIONS;
+        for (int length5 = actions5.length, n = 0; n < length5; ++n) {
+            intentFilter.addAction(actions5[n]);
         }
         intentFilter.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intentFilter.setPriority(999);
@@ -139,12 +146,7 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging, 
     }
     
     private void unregisterReceiver() {
-        try {
-            LocalBroadcastManager.getInstance(this.getContext()).unregisterReceiver(this.mLoggerReceiver);
-        }
-        catch (Throwable t) {
-            Log.e("nf_log", "Failed to unregister ", t);
-        }
+        IntentUtils.unregisterSafelyLocalBroadcastReceiver(this.getContext(), this.mLoggerReceiver);
     }
     
     void clearFailureCounter() {
@@ -191,6 +193,13 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging, 
         Log.d("nf_log", "Flush events");
         this.mIntegratedClientLoggingManager.flush();
         this.mPresentationTrackingManager.flush();
+    }
+    
+    public String getAccountOwnerToken() {
+        if (this.getService() != null) {
+            return this.getService().getAccountOwnerToken();
+        }
+        return null;
     }
     
     @Override
@@ -258,13 +267,6 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging, 
     
     public UserAgentInterface getUser() {
         return this.getUserAgent();
-    }
-    
-    public String getUserId() {
-        if (this.getService() != null) {
-            return this.getService().getUserId();
-        }
-        return null;
     }
     
     public boolean handleCommand(final Intent intent) {

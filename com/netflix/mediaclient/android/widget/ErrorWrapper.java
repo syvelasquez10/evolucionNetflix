@@ -18,7 +18,7 @@ import android.view.View;
 public class ErrorWrapper
 {
     private static final String TAG = "ErrorWrapper";
-    private final Callback callback;
+    private Callback callback;
     private final View errorGroup;
     private final TextView errorMsg;
     private final Button retryBtn;
@@ -36,9 +36,9 @@ public class ErrorWrapper
             }
         };
         this.callback = callback;
-        this.errorGroup = view.findViewById(2131165356);
-        this.errorMsg = (TextView)view.findViewById(2131165357);
-        (this.retryBtn = (Button)this.errorGroup.findViewById(2131165358)).setOnClickListener(this.retryClickListener);
+        this.errorGroup = view.findViewById(2131165357);
+        this.errorMsg = (TextView)view.findViewById(2131165358);
+        (this.retryBtn = (Button)this.errorGroup.findViewById(2131165359)).setOnClickListener(this.retryClickListener);
         if (view.getContext() instanceof NetflixActivity) {
             final NetflixActivity netflixActivity = (NetflixActivity)view.getContext();
             if (netflixActivity.isForKids()) {
@@ -54,9 +54,9 @@ public class ErrorWrapper
         ViewUtils.setTextViewSizeByRes(this.errorMsg, 2131361864);
         ViewUtils.setTextViewToBold(this.errorMsg);
         final ViewGroup$LayoutParams layoutParams = this.retryBtn.getLayoutParams();
-        layoutParams.height = resources.getDimensionPixelSize(2131361954);
-        layoutParams.width = resources.getDimensionPixelSize(2131361953);
-        this.retryBtn.setBackgroundResource(2130837719);
+        layoutParams.height = resources.getDimensionPixelSize(2131361967);
+        layoutParams.width = resources.getDimensionPixelSize(2131361966);
+        this.retryBtn.setBackgroundResource(2130837718);
         this.retryBtn.setTextColor(resources.getColor(2131296355));
         ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131361869);
         ViewUtils.setTextViewToBold((TextView)this.retryBtn);
@@ -87,6 +87,15 @@ public class ErrorWrapper
         this.showRetry = showRetry;
         AnimationUtils.showView(this.errorGroup, b);
         this.setRetryVisibility();
+    }
+    
+    public void showErrorView(final CharSequence text, final int text2, final Callback callback) {
+        this.showRetry = true;
+        this.errorMsg.setText(text);
+        this.retryBtn.setText(text2);
+        AnimationUtils.showView(this.errorGroup, false);
+        this.setRetryVisibility();
+        this.callback = callback;
     }
     
     public void showErrorView(final boolean b) {

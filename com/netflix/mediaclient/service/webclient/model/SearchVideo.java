@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.service.webclient.model;
 
-import java.util.HashSet;
-import java.util.Set;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 
@@ -13,17 +11,6 @@ public class SearchVideo extends Video implements com.netflix.mediaclient.servic
 {
     public SearchTitle searchTitle;
     public Summary summary;
-    
-    @Override
-    public Object get(final String s) {
-        if ("summary".equals(s)) {
-            return this.summary;
-        }
-        if ("searchTitle".equals(s)) {
-            return this.searchTitle;
-        }
-        return null;
-    }
     
     @Override
     public String getBoxshotURL() {
@@ -69,33 +56,6 @@ public class SearchVideo extends Video implements com.netflix.mediaclient.servic
     }
     
     @Override
-    public Set<String> getKeys() {
-        final HashSet<String> set = new HashSet<String>();
-        if (this.summary != null) {
-            set.add("summary");
-        }
-        if (this.searchTitle != null) {
-            set.add("searchTitle");
-        }
-        return set;
-    }
-    
-    @Override
-    public Object getOrCreate(final String s) {
-        final Object value = this.get(s);
-        if (value != null) {
-            return value;
-        }
-        if ("summary".equals(s)) {
-            return this.summary = new Summary();
-        }
-        if ("searchTitle".equals(s)) {
-            return this.searchTitle = new SearchTitle();
-        }
-        return null;
-    }
-    
-    @Override
     public String getSquareUrl() {
         if (this.summary == null) {
             return null;
@@ -137,16 +97,6 @@ public class SearchVideo extends Video implements com.netflix.mediaclient.servic
             value = this.searchTitle.releaseYear;
         }
         return value;
-    }
-    
-    @Override
-    public void set(final String s, final Object o) {
-        if ("summary".equals(s)) {
-            this.summary = (Summary)o;
-        }
-        else if ("searchTitle".equals(s)) {
-            this.searchTitle = (SearchTitle)o;
-        }
     }
     
     @Override

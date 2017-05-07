@@ -55,8 +55,8 @@ public class KidsMovieDetailsAdapter extends BaseAdapter
             else {
                 videoView = new KidsOneToOneVideoView((Context)this.activity, false);
             }
-            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361958);
-            final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361959);
+            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361971);
+            final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361972);
             ((View)videoView).setPadding(dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2);
             ((View)videoView).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeSkidmarkRowHeight(this.activity, dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2, false)));
             o = videoView;

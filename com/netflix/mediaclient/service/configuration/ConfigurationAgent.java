@@ -4,11 +4,16 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import android.view.Display;
+import android.util.DisplayMetrics;
+import android.hardware.display.DisplayManager;
+import com.netflix.mediaclient.media.VideoResolutionRange;
 import org.json.JSONObject;
 import com.netflix.mediaclient.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.DeviceCategory;
+import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import org.json.JSONArray;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
@@ -22,13 +27,7 @@ import java.util.Iterator;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.api.Api19Util;
-import android.view.Display;
-import android.util.DisplayMetrics;
-import android.hardware.display.DisplayManager;
 import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.media.PlayerType;
-import com.netflix.mediaclient.javabridge.transport.NativeTransport;
-import com.netflix.mediaclient.media.bitrate.VideoBitrateRange;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Locale;
 import java.io.IOException;
@@ -199,88 +198,12 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         return CommonStatus.OK;
     }
     
-    private VideoBitrateRange[] getDeviceVideoProfiles() {
-        final String[] supportedVideoProfiles = NativeTransport.getSupportedVideoProfiles();
-        final VideoBitrateRange[] array = new VideoBitrateRange[supportedVideoProfiles.length];
-        final boolean b = !this.isTablet();
-        final PlayerType currentPlayerType = this.getCurrentPlayerType();
-        if (Log.isLoggable("nf_configurationagent", 3)) {
-            Log.d("VideoBitrateRange", "Device is phone: " + b + ",PlayerType: " + currentPlayerType);
-        }
-        int n = 0;
-        for (int length = supportedVideoProfiles.length, i = 0; i < length; ++i) {
-            final String s = supportedVideoProfiles[i];
-            int n2 = 4800;
-            if (s.equalsIgnoreCase("playready-h264bpl30-dash")) {
-                n2 = 1350;
-                Log.d("VideoBitrateRange", "player support BP30");
-            }
-            else if (s.equalsIgnoreCase("playready-h264mpl30-dash")) {
-                n2 = 1750;
-                Log.d("VideoBitrateRange", "player support MP30");
-            }
-            else if (s.equalsIgnoreCase("playready-h264mpl31-dash")) {
-                n2 = 3600;
-                Log.d("VideoBitrateRange", "player support MP31");
-            }
-            int n3 = n2;
-            if (!PlayerTypeFactory.isJPlayer2(currentPlayerType)) {
-                n3 = n2;
-                if (b) {
-                    if (s.equalsIgnoreCase("playready-h264bpl30-dash")) {
-                        n3 = 500;
-                    }
-                    else {
-                        n3 = n2;
-                        if (s.equalsIgnoreCase("playready-h264mpl30-dash")) {
-                            n3 = 750;
-                        }
-                    }
-                }
-            }
-            if (Log.isLoggable("nf_configurationagent", 3)) {
-                Log.d("VideoBitrateRange", "Profile: " + s + ", min: " + 0 + ", max: " + n3);
-            }
-            array[n] = new VideoBitrateRange(0, n3, s);
-            ++n;
-        }
-        return array;
-    }
-    
     private int getMaxResolutionConfigured() {
         int videoResolutionOverride;
         if ((videoResolutionOverride = this.mDeviceConfigOverride.getVideoResolutionOverride()) <= 0) {
             videoResolutionOverride = Integer.MAX_VALUE;
         }
         return videoResolutionOverride;
-    }
-    
-    private int getMaxResolutionRestriction() {
-        final int maxResolutionConfigured = this.getMaxResolutionConfigured();
-        int heightPixels = Integer.MAX_VALUE;
-        if (AndroidUtils.getAndroidVersion() >= 17) {
-            final Display[] displays = ((DisplayManager)this.getContext().getSystemService("display")).getDisplays();
-            final int length = displays.length;
-            int n = 0;
-            while (true) {
-                heightPixels = heightPixels;
-                if (n >= length) {
-                    break;
-                }
-                final Display display = displays[n];
-                Log.d("nf_configurationagent", "getMaxResolutionRestriction " + display.toString());
-                if (display.isValid() && display.getDisplayId() == 0) {
-                    final DisplayMetrics displayMetrics = new DisplayMetrics();
-                    display.getMetrics(displayMetrics);
-                    heightPixels = displayMetrics.heightPixels;
-                    break;
-                }
-                ++n;
-            }
-        }
-        final int min = Math.min(this.resolutionToBitrate(maxResolutionConfigured), this.resolutionToBitrate(heightPixels));
-        Log.d("nf_configurationagent", "maxBrBasedOnRes is " + min);
-        return min;
     }
     
     public static String getMemLevel() {
@@ -360,19 +283,6 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         if (this.mConfigurationWebClient == null) {
             this.mConfigurationWebClient = ConfigurationWebClientFactory.create(this.getService(), this.getResourceFetcher().getApiNextWebClient());
         }
-    }
-    
-    private int resolutionToBitrate(final int n) {
-        if (n < 480) {
-            return 750;
-        }
-        if (n < 720) {
-            return 1750;
-        }
-        if (n < 1080) {
-            return 3000;
-        }
-        return Integer.MAX_VALUE;
     }
     
     public static boolean shouldUseLowMemConfig() {
@@ -509,11 +419,6 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     }
     
     @Override
-    public int getBitrateCap() {
-        return BitrateRangeFactory.getBitrateCap(this.getContext());
-    }
-    
-    @Override
     public BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification() {
         return this.mDeviceConfigOverride.getBreadcrumbLoggingSpecification();
     }
@@ -614,6 +519,11 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     }
     
     @Override
+    public int getRateLimitForNListChangeEvents() {
+        return this.mDeviceConfigOverride.getRateLimitForNListChangeEvents();
+    }
+    
+    @Override
     public int getResFetcherThreadPoolSize() {
         if (shouldUseLowMemConfig()) {
             return 2;
@@ -651,39 +561,6 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     }
     
     @Override
-    public VideoBitrateRange[] getVideoBitrateRange() {
-        final VideoBitrateRange[] deviceVideoProfiles = this.getDeviceVideoProfiles();
-        final int bitrateCap = this.getBitrateCap();
-        final int maxResolutionRestriction = this.getMaxResolutionRestriction();
-        int n;
-        if (bitrateCap <= 0 || (n = bitrateCap) > maxResolutionRestriction) {
-            Log.d("nf_configurationagent", "enforce resolution restriction");
-            n = maxResolutionRestriction;
-        }
-        final VideoBitrateRange[] array = new VideoBitrateRange[deviceVideoProfiles.length];
-        int n2 = 0;
-        for (int length = deviceVideoProfiles.length, i = 0; i < length; ++i) {
-            final VideoBitrateRange videoBitrateRange = deviceVideoProfiles[i];
-            int maximal;
-            if ((maximal = videoBitrateRange.getMaximal()) > Integer.MAX_VALUE) {
-                maximal = Integer.MAX_VALUE;
-                Log.d("nf_configurationagent", "use limit");
-            }
-            int n3 = maximal;
-            if (n > 0 && (n3 = maximal) > n) {
-                n3 = n;
-                Log.d("nf_configurationagent", "use bitratecap");
-            }
-            array[n2] = new VideoBitrateRange(videoBitrateRange.getMinimal(), n3, videoBitrateRange.getProfile());
-            if (Log.isLoggable("nf_configurationagent", 3)) {
-                Log.d("nf_configurationagent", " VideoBitrateRange[" + n2 + "] " + array[n2]);
-            }
-            ++n2;
-        }
-        return array;
-    }
-    
-    @Override
     public int getVideoBufferSize() {
         final int videoBufferSize = this.mAccountConfigOverride.getVideoBufferSize();
         int n;
@@ -695,6 +572,34 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
             }
         }
         return n;
+    }
+    
+    @SuppressLint({ "NewApi" })
+    @Override
+    public VideoResolutionRange getVideoResolutionRange() {
+        final int maxResolutionConfigured = this.getMaxResolutionConfigured();
+        int heightPixels = Integer.MAX_VALUE;
+        if (AndroidUtils.getAndroidVersion() >= 17) {
+            final Display[] displays = ((DisplayManager)this.getContext().getSystemService("display")).getDisplays();
+            final int length = displays.length;
+            int n = 0;
+            while (true) {
+                heightPixels = heightPixels;
+                if (n >= length) {
+                    break;
+                }
+                final Display display = displays[n];
+                Log.d("nf_configurationagent", "getMaxResolutionRestriction " + display.toString());
+                if (display.isValid() && display.getDisplayId() == 0) {
+                    final DisplayMetrics displayMetrics = new DisplayMetrics();
+                    display.getMetrics(displayMetrics);
+                    heightPixels = displayMetrics.heightPixels;
+                    break;
+                }
+                ++n;
+            }
+        }
+        return VideoResolutionRange.getVideoResolutionRangeFromMaxHieght(Math.min(maxResolutionConfigured, heightPixels));
     }
     
     public boolean isAppVersionObsolete() {

@@ -116,9 +116,4 @@ class TitlePlayable implements Playable
     public boolean isPlayableEpisode() {
         return this.mEpisode;
     }
-    
-    @Override
-    public boolean isUserConnectedToFacebook() {
-        return this.mCanBeSharedOnFacebook;
-    }
 }

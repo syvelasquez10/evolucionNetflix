@@ -116,7 +116,7 @@ public class CurrentTimeTablet extends CurrentTime
             public void onAnimationStart(final Animation animation) {
                 synchronized (CurrentTimeTablet.this.lock) {
                     CurrentTimeTablet.this.currentTimeAnimationInProgress = true;
-                    CurrentTimeTablet.this.currentTime.setBackgroundResource(2130837637);
+                    CurrentTimeTablet.this.currentTime.setBackgroundResource(2130837633);
                     CurrentTimeTablet.this.currentTimeExp.setVisibility(4);
                 }
             }

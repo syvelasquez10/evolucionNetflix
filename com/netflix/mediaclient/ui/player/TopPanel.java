@@ -61,26 +61,26 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initBack() {
-        this.mBackArrow = this.context.findViewById(2131165543);
+        this.mBackArrow = this.context.findViewById(2131165544);
         if (this.mBackArrow != null) {
             this.mBackArrow.setOnClickListener(this.backListener);
         }
-        this.mBackPadding = this.context.findViewById(2131165544);
+        this.mBackPadding = this.context.findViewById(2131165545);
         if (this.mBackPadding != null) {
             this.mBackPadding.setOnClickListener(this.backListener);
         }
     }
     
     private void initGeneric(final PlayScreen.Listeners listeners) {
-        this.mTopPanel = this.context.findViewById(2131165542);
+        this.mTopPanel = this.context.findViewById(2131165543);
         if (this.mTopPanel == null) {
             Log.e("screen", "========>top null!");
         }
-        this.mTitleLabel = (TextView)this.context.findViewById(2131165545);
+        this.mTitleLabel = (TextView)this.context.findViewById(2131165546);
         if (this.context.isForKids()) {
             this.mTitleLabel.setOnClickListener(this.backListener);
         }
-        this.mEpisodeSelector = (ImageButton)this.context.findViewById(2131165550);
+        this.mEpisodeSelector = (ImageButton)this.context.findViewById(2131165551);
         if (this.mEpisodeSelector != null) {
             this.mEpisodeSelector.setOnClickListener(listeners.episodeSelectorListener);
         }
@@ -128,7 +128,7 @@ public final class TopPanel extends PlayerSection
                 TopPanel.this.mDialogLanguageId = TopPanel.this.context.reportUiModelessViewSessionStart(IClientLogging.ModalView.audioSubtitlesSelector);
             }
         };
-        final View viewById = this.context.findViewById(2131165551);
+        final View viewById = this.context.findViewById(2131165552);
         if (viewById instanceof ImageView) {
             Log.d("screen", "Add language button");
             (this.mLanguage = (ImageButton)viewById).setOnClickListener((View$OnClickListener)onClickListener);
@@ -140,7 +140,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initSound(final SeekBar$OnSeekBarChangeListener onSeekBarChangeListener) {
-        this.mSound = (SeekBar)this.context.findViewById(2131165552);
+        this.mSound = (SeekBar)this.context.findViewById(2131165553);
         if (this.mSound == null) {
             Log.e("screen", "Sound seekbar was NOT found!");
             return;

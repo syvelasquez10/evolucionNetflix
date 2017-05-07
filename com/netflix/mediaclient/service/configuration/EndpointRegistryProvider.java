@@ -17,7 +17,7 @@ import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 public class EndpointRegistryProvider implements ApiEndpointRegistry
 {
     private static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
-    private static final String ANDROID_ENDPOINT_FULL = "/android/3.8.3/api";
+    private static final String ANDROID_ENDPOINT_FULL = "/android/3.9/api";
     private static final boolean BROWSE_AUTO_REDIRECT_TRUE = true;
     private static final String BROWSE_RESP_AUTO_REDIRECT = "&routing=redirect";
     private static final String BROWSE_RESP_FORMAT = "responseFormat=json&progressive=false";
@@ -25,29 +25,28 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String CLIENT_LOGGING_ENDPOINT = "ichnaea.netflix.com";
     private static final String CLIENT_LOGGING_PATH = "/log";
     private static final String ENDPOINT_REVISION_LATEST = "&revision=latest";
-    protected static final String HTTP = "http://";
-    protected static final String HTTPS = "https://";
-    public static final String IMG_PREFERENCE_JPG = "jpg";
-    public static final String IMG_PREFERENCE_WEBP = "webp";
+    private static final String HTTP = "http://";
+    private static final String HTTPS = "https://";
+    private static final String IMG_PREFERENCE_JPG = "jpg";
+    private static final String IMG_PREFERENCE_WEBP = "webp";
     private static final String PARAM_API_LEVEL = "api";
     private static final String PARAM_APK_VERSION = "appVer";
     private static final String PARAM_APP_INSTALL_STORE = "store";
     private static final String PARAM_APP_TYPE = "appType";
-    public static final String PARAM_BOXART_TYPE = "bat";
+    private static final String PARAM_BOXART_TYPE = "bat";
     private static final String PARAM_BUILD_BOARD = "osBoard";
     private static final String PARAM_BUILD_DEVICE = "osDevice";
     private static final String PARAM_BUILD_DISPLAY = "osDisplay";
-    public static final String PARAM_CUR_NETFLIX_ID_HASH = "ckh";
     private static final String PARAM_DEBUG_BUILD = "dbg";
     private static final String PARAM_DEVICE_MEM_LEVEL = "memLevel";
     private static final String PARAM_FORM_FACTOR = "ffbc";
     private static final String PARAM_IMG_PREFERENCE = "imgpref";
-    public static final String PARAM_KOP_EXPERIENCE = "kop";
+    private static final String PARAM_KOP_EXPERIENCE = "kop";
     private static final String PARAM_LANGUAGES = "languages";
     private static final String PARAM_MANUFACTURER = "mnf";
     private static final String PARAM_MODEL_ID = "mId";
     private static final String PARAM_PQL_PATH = "path";
-    public static final String PARAM_PROFILE_TYPE = "prfType";
+    private static final String PARAM_PROFILE_TYPE = "prfType";
     private static final String PARAM_RESOLUTION = "res";
     private static final String PARAM_VIDEO_CAPABILITY = "qlty";
     private static final String PRESENTATION_TRACKING_ENDPOINT = "presentationtracking.netflix.com";
@@ -167,7 +166,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
             sb.append("http://");
         }
         sb.append(this.mEndpointHost);
-        sb.append("/android/3.8.3/api");
+        sb.append("/android/3.9/api");
         sb.append("?");
         sb.append("responseFormat=json&progressive=false");
         sb.append("&routing=reject");

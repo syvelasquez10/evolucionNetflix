@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.Log;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerWorkflowState
@@ -178,7 +177,6 @@ public class PlayerWorkflowState
     }
     
     public void userInteraction() {
-        Log.d("SRDJAN", "userInteraction called!");
         this.userInteraction = true;
     }
 }

@@ -22,17 +22,17 @@ import android.annotation.TargetApi;
 @TargetApi(4)
 public final class ErrorLoggingManager
 {
-    private static final String CRITTER_VERSION_NAME = "3.8.3";
+    private static final String CRITTER_VERSION_NAME = "3.9.0";
     private static final boolean ENABLE_CRITTERCISM = true;
     private static final String TAG = "nf_log_crit";
     private static boolean sBreadcrumbLoggingEnabled;
     private static boolean sBreadcrumbLoggingExplicitlyDisabled;
     private static boolean sCrittercismReady;
-    private static boolean sErrorLoggingEnabled;
+    private static boolean sErrorLoggingEnabledByConfig;
     private static boolean sErrorLoggingExplicitlyDisabled;
     
     static {
-        ErrorLoggingManager.sErrorLoggingEnabled = true;
+        ErrorLoggingManager.sErrorLoggingEnabledByConfig = true;
         ErrorLoggingManager.sErrorLoggingExplicitlyDisabled = false;
         ErrorLoggingManager.sBreadcrumbLoggingEnabled = true;
         ErrorLoggingManager.sBreadcrumbLoggingExplicitlyDisabled = false;
@@ -45,7 +45,7 @@ public final class ErrorLoggingManager
             initBreadcrumbLogging((Context)application);
             final CrittercismConfig crittercismConfig = new CrittercismConfig();
             crittercismConfig.setNdkCrashReportingEnabled(true);
-            crittercismConfig.setCustomVersionName("3.8.3");
+            crittercismConfig.setCustomVersionName("3.9.0");
             try {
                 Crittercism.initialize(application.getApplicationContext(), SecurityRepository.getCrittercismAppId(), crittercismConfig);
                 final JSONObject metadata = new JSONObject();
@@ -71,7 +71,7 @@ public final class ErrorLoggingManager
             return;
         }
         Log.d("nf_log_crit", "Breadcrumb logging is NOT explicitly disabled, use error logging chance to keep all in sync since we are using only one service, ignore its own disable chance percentage");
-        ErrorLoggingManager.sBreadcrumbLoggingEnabled = ErrorLoggingManager.sErrorLoggingEnabled;
+        ErrorLoggingManager.sBreadcrumbLoggingEnabled = ErrorLoggingManager.sErrorLoggingEnabledByConfig;
     }
     
     private static void initErrorLogging(final Context context) {
@@ -79,15 +79,19 @@ public final class ErrorLoggingManager
         ErrorLoggingManager.sErrorLoggingExplicitlyDisabled = loadFromPreferences.isDisabled();
         if (loadFromPreferences.isDisabled()) {
             Log.d("nf_log_crit", "Error logging is explicitly disabled");
-            ErrorLoggingManager.sErrorLoggingEnabled = false;
+            ErrorLoggingManager.sErrorLoggingEnabledByConfig = false;
             return;
         }
         Log.d("nf_log_crit", "Error logging is NOT explicitly disabled, apply disable chance percentage");
-        ErrorLoggingManager.sErrorLoggingEnabled = isLoggingSessionEnabled(loadFromPreferences.getDisableChancePercentage());
+        ErrorLoggingManager.sErrorLoggingEnabledByConfig = isLoggingSessionEnabled(loadFromPreferences.getDisableChancePercentage());
     }
     
     public static boolean isCrittercismEnabled() {
         return true;
+    }
+    
+    private static boolean isEnabledAndReady() {
+        return isCrittercismEnabled() && ErrorLoggingManager.sCrittercismReady;
     }
     
     private static boolean isLoggingSessionEnabled(final int n) {
@@ -118,29 +122,29 @@ public final class ErrorLoggingManager
     }
     
     public static void leaveBreadcrumb(final String s) {
-        if (shouldLog() && ErrorLoggingManager.sBreadcrumbLoggingEnabled) {
+        if (isEnabledAndReady() && ErrorLoggingManager.sBreadcrumbLoggingEnabled) {
             Crittercism.leaveBreadcrumb(s);
         }
         else if (Log.isLoggable("nf_log_crit", 3)) {
-            Log.d("nf_log_crit", "Should log: " + shouldLog() + ", breadcrumb logging enabled " + ErrorLoggingManager.sBreadcrumbLoggingEnabled);
+            Log.d("nf_log_crit", "Should log: " + isEnabledAndReady() + ", breadcrumb logging enabled " + ErrorLoggingManager.sBreadcrumbLoggingEnabled);
         }
     }
     
     public static void logHandledException(final Exception ex) {
-        if (shouldLog() && ErrorLoggingManager.sErrorLoggingEnabled) {
+        if (isEnabledAndReady() && ErrorLoggingManager.sErrorLoggingEnabledByConfig) {
             Crittercism.logHandledException(ex);
         }
         else if (Log.isLoggable("nf_log_crit", 3)) {
-            Log.d("nf_log_crit", "Should log: " + shouldLog() + ", error logging enabled " + ErrorLoggingManager.sErrorLoggingEnabled);
+            Log.d("nf_log_crit", "Should log: " + isEnabledAndReady() + ", error logging enabled " + ErrorLoggingManager.sErrorLoggingEnabledByConfig);
         }
     }
     
     public static void logHandledException(final String s) {
-        if (shouldLog() && ErrorLoggingManager.sErrorLoggingEnabled) {
+        if (isEnabledAndReady() && ErrorLoggingManager.sErrorLoggingEnabledByConfig) {
             logHandledException(new Exception(s));
         }
         else if (Log.isLoggable("nf_log_crit", 3)) {
-            Log.d("nf_log_crit", "Should log: " + shouldLog() + ", error logging enabled " + ErrorLoggingManager.sErrorLoggingEnabled);
+            Log.d("nf_log_crit", "Should log: " + isEnabledAndReady() + ", error logging enabled " + ErrorLoggingManager.sErrorLoggingEnabledByConfig);
         }
     }
     
@@ -155,7 +159,7 @@ public final class ErrorLoggingManager
             }
             if (ErrorLoggingManager.sErrorLoggingExplicitlyDisabled != errorLoggingSpecification.isDisabled()) {
                 Log.d("nf_log_crit", "Error logging is now explicitly disabled!");
-                ErrorLoggingManager.sErrorLoggingEnabled = !errorLoggingSpecification.isDisabled();
+                ErrorLoggingManager.sErrorLoggingEnabledByConfig = !errorLoggingSpecification.isDisabled();
                 ErrorLoggingManager.sErrorLoggingExplicitlyDisabled = errorLoggingSpecification.isDisabled();
             }
             else {
@@ -184,9 +188,5 @@ public final class ErrorLoggingManager
             return;
         }
         jsonObject.put(s, (Object)"N/A");
-    }
-    
-    public static boolean shouldLog() {
-        return isCrittercismEnabled() && ErrorLoggingManager.sCrittercismReady;
     }
 }

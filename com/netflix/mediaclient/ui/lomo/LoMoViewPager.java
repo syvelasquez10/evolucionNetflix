@@ -14,7 +14,7 @@ import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import android.view.View;
-import com.netflix.mediaclient.android.widget.ViewRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +44,7 @@ public class LoMoViewPager extends CustomViewPager implements LoMoRowContent
         ROTATE_TO_NEXT_VIEW_DELAY_MS = TimeUnit.MILLISECONDS.convert(15L, TimeUnit.SECONDS);
     }
     
-    public LoMoViewPager(final LoLoMoFrag loLoMoFrag, final ServiceManager serviceManager, final CirclePageIndicator pageIndicator, final ViewRecycler viewRecycler, final View view, final boolean b) {
+    public LoMoViewPager(final LoLoMoFrag loLoMoFrag, final ServiceManager serviceManager, final CirclePageIndicator pageIndicator, final ObjectRecycler.ViewRecycler viewRecycler, final View view, final boolean b) {
         super((Context)loLoMoFrag.getActivity());
         this.rotateToNextViewRunnable = new Runnable() {
             @Override
@@ -209,6 +209,7 @@ public class LoMoViewPager extends CustomViewPager implements LoMoRowContent
         }
     }
     
+    @SuppressLint({ "ClickableViewAccessibility" })
     @Override
     public boolean onTouchEvent(final MotionEvent motionEvent) {
         this.handleTouchEvent(motionEvent);

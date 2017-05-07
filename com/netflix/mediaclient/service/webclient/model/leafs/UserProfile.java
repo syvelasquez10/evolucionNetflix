@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
+import com.google.gson.annotations.SerializedName;
 import com.netflix.mediaclient.servicemgr.model.user.ProfileType;
 import java.util.List;
 import java.util.Iterator;
@@ -22,13 +23,13 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.model.use
     private static final String FIELD_EMAIL = "email";
     private static final String FIELD_EPERIENCE = "experienceType";
     private static final String FIELD_FIRST_NAME = "firstName";
-    private static final String FIELD_ID = "userId";
     private static final String FIELD_IQ_ENABLED = "isIqEnabled";
     private static final String FIELD_IS_PRIMARY = "isPrimaryProfile";
     private static final String FIELD_LANGUAGES = "languages";
     private static final String FIELD_LAST_NAME = "lastName";
-    private static final String FIELD_PROFILE_ID = "profileId";
+    private static final String FIELD_PROFILE_GUID = "profileId";
     private static final String FIELD_PROFILE_NAME = "profileName";
+    private static final String FIELD_PROFILE_TOKEN = "userId";
     private static final String FIELD_SOCIAL_STATUS = "socialStatus";
     private static final String TAG = "UserProfile";
     public Operation operation;
@@ -52,8 +53,8 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.model.use
             else {
                 jsonObject = new JSONObject(s);
             }
-            this.summary.userId = JsonUtils.getString(jsonObject, "userId", null);
-            this.summary.profileId = JsonUtils.getString(jsonObject, "profileId", null);
+            this.summary.profileToken = JsonUtils.getString(jsonObject, "userId", null);
+            this.summary.profileGuid = JsonUtils.getString(jsonObject, "profileId", null);
             this.summary.profileName = JsonUtils.getString(jsonObject, "profileName", null);
             this.summary.firstName = JsonUtils.getString(jsonObject, "firstName", null);
             this.summary.lastName = JsonUtils.getString(jsonObject, "lastName", null);
@@ -185,11 +186,11 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.model.use
     }
     
     @Override
-    public String getProfileId() {
+    public String getProfileGuid() {
         if (this.summary == null) {
             return null;
         }
-        return this.summary.profileId;
+        return this.summary.profileGuid;
     }
     
     @Override
@@ -198,6 +199,14 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.model.use
             return null;
         }
         return StringUtils.decodeHtmlEntities(this.summary.profileName);
+    }
+    
+    @Override
+    public String getProfileToken() {
+        if (this.summary == null) {
+            return null;
+        }
+        return this.summary.profileToken;
     }
     
     @Override
@@ -221,14 +230,6 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.model.use
     
     public SubtitlePreference getSubtitlePreference() {
         return this.subtitlePreference;
-    }
-    
-    @Override
-    public String getUserId() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.userId;
     }
     
     @Override
@@ -265,8 +266,8 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.model.use
         final JSONObject jsonObject = new JSONObject();
         while (true) {
             try {
-                jsonObject.put("userId", (Object)this.getUserId());
-                jsonObject.put("profileId", (Object)this.getProfileId());
+                jsonObject.put("userId", (Object)this.getProfileToken());
+                jsonObject.put("profileId", (Object)this.getProfileGuid());
                 jsonObject.put("profileName", (Object)this.getProfileName());
                 jsonObject.put("firstName", (Object)this.getFirstName());
                 jsonObject.put("lastName", (Object)this.getLastName());
@@ -325,10 +326,12 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.model.use
         private boolean isPrimaryProfile;
         public List<Language> languages;
         private String lastName;
-        private String profileId;
+        @SerializedName("profileId")
+        private String profileGuid;
         private String profileName;
+        @SerializedName("userId")
+        private String profileToken;
         private String reqCountry;
         private Social social;
-        private String userId;
     }
 }

@@ -23,7 +23,6 @@ public class KidsLomoWrapper implements LoMo
         throw new UnsupportedOperationException("Can't describe contents");
     }
     
-    @Override
     public List<FriendProfile> getFacebookFriends() {
         return null;
     }
@@ -65,6 +64,10 @@ public class KidsLomoWrapper implements LoMo
     @Override
     public boolean isBillboard() {
         return false;
+    }
+    
+    @Override
+    public void setListPos(final int n) {
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

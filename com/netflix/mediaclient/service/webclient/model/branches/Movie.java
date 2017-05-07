@@ -4,6 +4,15 @@
 
 package com.netflix.mediaclient.service.webclient.model.branches;
 
-public class Movie extends FalkorVideo
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
+
+public class Movie extends Video
 {
+    public Bookmark bookmark;
+    public BookmarkStill bookmarkStill;
+    public Detail detail;
+    public InQueue inQueue;
+    public Rating rating;
+    public SocialEvidence socialEvidence;
+    public Summary summary;
 }

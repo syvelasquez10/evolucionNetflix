@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.kids.lolomo;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader;
+import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import android.view.View;
 import android.view.View$OnClickListener;
@@ -42,8 +43,8 @@ public class KidsHorizontalCwView extends RelativeLayout implements IVideoView<C
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeHorizontalRowHeight((NetflixActivity)this.getContext(), b)));
         this.playContext = PlayContext.EMPTY_CONTEXT;
         ((Activity)this.getContext()).getLayoutInflater().inflate(2130903102, (ViewGroup)this);
-        this.title = (TextView)this.findViewById(2131165416);
-        (this.img = (AdvancedImageView)this.findViewById(2131165414)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361949));
+        this.title = (TextView)this.findViewById(2131165417);
+        (this.img = (AdvancedImageView)this.findViewById(2131165415)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361962));
     }
     
     public PlayContext getPlayContext() {
@@ -61,10 +62,10 @@ public class KidsHorizontalCwView extends RelativeLayout implements IVideoView<C
         }
         this.playContext = new PlayContextImp(trackable, n);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493192), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131493193), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.title.setText((CharSequence)this.getContext().getString(2131493257, new Object[] { cwVideo.getTitle(), cwVideo.getPlayable().getSeasonNumber(), cwVideo.getPlayable().getEpisodeNumber() }));
+            this.title.setText((CharSequence)this.getContext().getString(2131493260, new Object[] { cwVideo.getTitle(), cwVideo.getSeasonNumber(), cwVideo.getEpisodeNumber() }));
         }
         else {
             this.title.setText((CharSequence)cwVideo.getTitle());
@@ -82,7 +83,7 @@ public class KidsHorizontalCwView extends RelativeLayout implements IVideoView<C
         imageLoader.showImg(img, interestingUrl, bif, format, false, true, n);
         this.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
-                PlaybackLauncher.startPlaybackAfterPIN((NetflixActivity)KidsHorizontalCwView.this.getContext(), cwVideo.getPlayable(), KidsHorizontalCwView.this.playContext);
+                PlaybackLauncher.startPlaybackAfterPIN((NetflixActivity)KidsHorizontalCwView.this.getContext(), cwVideo, KidsHorizontalCwView.this.playContext);
             }
         });
     }

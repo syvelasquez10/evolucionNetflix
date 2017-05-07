@@ -54,16 +54,16 @@ public class EpisodeRowView extends RelativeLayout implements Checkable
     }
     
     private CharSequence createTitleText(final int n, final String s) {
-        return this.getResources().getString(2131493255, new Object[] { n, s });
+        return this.getResources().getString(2131493258, new Object[] { n, s });
     }
     
     private void init() {
         ((Activity)this.getContext()).getLayoutInflater().inflate(2130903089, (ViewGroup)this);
-        this.setBackgroundResource(2130837845);
-        this.title = (TextView)this.findViewById(2131165353);
-        this.synopsis = (TextView)this.findViewById(2131165355);
-        this.playButton = (ImageView)this.findViewById(2131165352);
-        this.progressBar = (ProgressBar)this.findViewById(2131165354);
+        this.setBackgroundResource(2130837850);
+        this.title = (TextView)this.findViewById(2131165354);
+        this.synopsis = (TextView)this.findViewById(2131165356);
+        this.playButton = (ImageView)this.findViewById(2131165353);
+        this.progressBar = (ProgressBar)this.findViewById(2131165355);
     }
     
     public void handleItemClick() {
@@ -107,7 +107,7 @@ public class EpisodeRowView extends RelativeLayout implements Checkable
     
     public void updateToEpisode(final EpisodeDetails episodeDetails, final boolean isCurrentEpisode) {
         this.isCurrentEpisode = isCurrentEpisode;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493200), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493201), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
         this.title.setText(this.createTitleText(episodeDetails.getEpisodeNumber(), episodeDetails.getTitle()));
         this.title.setClickable(false);
         this.synopsis.setText((CharSequence)episodeDetails.getSynopsis());
@@ -145,8 +145,8 @@ public class EpisodeRowView extends RelativeLayout implements Checkable
     
     public void updateToErrorState(int n, final ErrorWrapper.Callback callback) {
         ++n;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493199), n));
-        this.title.setText(this.createTitleText(n, 2131492984));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493200), n));
+        this.title.setText(this.createTitleText(n, 2131492985));
         this.title.setClickable(true);
         this.title.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
@@ -160,8 +160,8 @@ public class EpisodeRowView extends RelativeLayout implements Checkable
     
     public void updateToLoadingState(int n) {
         ++n;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493198), n));
-        this.title.setText(this.createTitleText(n, 2131493183));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493199), n));
+        this.title.setText(this.createTitleText(n, 2131493184));
         this.title.setClickable(false);
         this.synopsis.setText((CharSequence)"");
         this.synopsis.setVisibility(8);

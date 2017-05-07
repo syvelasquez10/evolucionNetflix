@@ -29,11 +29,11 @@ public abstract class BaseCmpEvent
     protected static final String DATA_NETFLIX_ID = "netflixId";
     protected static final String DATA_ORIENTATION = "orientation";
     protected static final String DATA_OS_VERSION = "os_version";
+    protected static final String DATA_PROFILE_TOKEN = "user_id";
     protected static final String DATA_SECURE_NETFLIX_ID = "secureNetflixId";
     protected static final String DATA_SENDER_APP = "senderApp";
     protected static final String DATA_TIME = "time";
     protected static final String DATA_UI_VERSION = "ui_version";
-    protected static final String DATA_USER_ID = "user_id";
     protected static final String TAG = "nf_rest";
     protected static final String VALUE_APP_NAME = "Android";
     protected UserData mUser;
@@ -50,7 +50,7 @@ public abstract class BaseCmpEvent
     
     protected CommonRequestParameters getCommonRequestParameters(final Context context) {
         final CommonRequestParameters instanceWithCredentials = CommonRequestParameters.getInstanceWithCredentials();
-        instanceWithCredentials.userId = this.mUser.currentProfileToken;
+        instanceWithCredentials.profileToken = this.mUser.currentProfileToken;
         instanceWithCredentials.osVersion = String.valueOf(AndroidUtils.getAndroidVersion());
         instanceWithCredentials.deviceCategory = this.mUser.deviceCategory;
         instanceWithCredentials.appVersion = AndroidManifestUtils.getVersion(context);

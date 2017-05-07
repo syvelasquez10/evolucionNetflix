@@ -4,44 +4,82 @@
 
 package com.netflix.model;
 
-import com.netflix.falkor.Func;
+import com.netflix.mediaclient.service.falkor.Falkor;
 import java.util.HashSet;
 import java.util.Set;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.webclient.model.branches.Show;
-import com.netflix.mediaclient.service.webclient.model.branches.Movie;
+import java.io.IOException;
+import java.util.Iterator;
+import com.netflix.falkor.ModelProxy;
+import com.netflix.model.branches.FalkorVideo;
+import com.netflix.model.branches.UnsummarizedList;
+import com.netflix.model.leafs.ListOfMoviesSummary;
 import com.netflix.falkor.Ref;
+import com.netflix.model.branches.SummarizedList;
+import com.netflix.model.leafs.ListOfListOfGenres;
+import com.netflix.model.branches.FalkorEpisode;
 import com.netflix.falkor.BranchMap;
+import java.io.Flushable;
 import com.netflix.falkor.BranchNode;
 
-public class Root implements BranchNode
+public class Root implements BranchNode, Flushable
 {
+    public static final String EPISODES = "episodes";
+    public static final String GENRE_LIST = "genreList";
+    public static final String LISTS = "lists";
+    public static final String LOLOMO = "lolomo";
+    public static final String LOLOMOS = "lolomos";
+    public static final String MOVIES = "movies";
+    public static final String SHOWS = "shows";
+    public static final String SIMILARS = "similars";
+    public static final String SUMMARY = "summary";
     private static final String TAG = "Root";
-    BranchMap<SummarizedList<Ref>> lists;
-    Ref lolomo;
-    BranchMap<SummarizedList<Ref>> lolomos;
-    BranchMap<Movie> movies;
-    BranchMap<Show> shows;
+    private BranchMap<FalkorEpisode> episodes;
+    private ListOfListOfGenres genreList;
+    private BranchMap<SummarizedList<Ref, ListOfMoviesSummary>> lists;
+    private Ref lolomo;
+    private BranchMap<UnsummarizedList<Ref>> lolomos;
+    private BranchMap<FalkorVideo> movies;
+    private ModelProxy<? extends BranchNode> proxy;
+    private BranchMap<FalkorVideo> shows;
+    
+    @Override
+    public void flush() throws IOException {
+        final Iterator<String> iterator = this.getKeys().iterator();
+        while (iterator.hasNext()) {
+            this.set(iterator.next(), null);
+        }
+    }
     
     @Override
     public Object get(final String s) {
-        if ("lolomos".equals(s)) {
-            return this.lolomos;
+        switch (s) {
+            default: {
+                Log.d("Root", "Could not find key: " + s);
+                return null;
+            }
+            case "lolomos": {
+                return this.lolomos;
+            }
+            case "lolomo": {
+                return this.lolomo;
+            }
+            case "lists": {
+                return this.lists;
+            }
+            case "genreList": {
+                return this.genreList;
+            }
+            case "shows": {
+                return this.shows;
+            }
+            case "movies": {
+                return this.movies;
+            }
+            case "episodes": {
+                return this.episodes;
+            }
         }
-        if ("lolomo".equals(s)) {
-            return this.lolomo;
-        }
-        if ("lists".equals(s)) {
-            return this.lists;
-        }
-        if ("shows".equals(s)) {
-            return this.shows;
-        }
-        if ("movies".equals(s)) {
-            return this.movies;
-        }
-        Log.d("Root", "Could not find key: " + s);
-        return null;
     }
     
     @Override
@@ -56,25 +94,19 @@ public class Root implements BranchNode
         if (this.lists != null) {
             set.add("lists");
         }
+        if (this.genreList != null) {
+            set.add("genreList");
+        }
         if (this.shows != null) {
             set.add("shows");
         }
         if (this.movies != null) {
             set.add("movies");
         }
+        if (this.episodes != null) {
+            set.add("episodes");
+        }
         return set;
-    }
-    
-    public BranchMap<SummarizedList<Ref>> getList() {
-        return this.lists;
-    }
-    
-    public BranchMap<SummarizedList<Ref>> getLolomos() {
-        return this.lolomos;
-    }
-    
-    public BranchMap<Movie> getMovies() {
-        return this.movies;
     }
     
     @Override
@@ -83,84 +115,70 @@ public class Root implements BranchNode
         if (value != null) {
             return value;
         }
-        if ("lolomos".equals(s)) {
-            return this.lolomos = new BranchMap<SummarizedList<Ref>>(new Func<SummarizedList<Ref>>() {
-                @Override
-                public SummarizedList<Ref> call() {
-                    return new SummarizedList<Ref>(new Func<Ref>() {
-                        @Override
-                        public Ref call() {
-                            return new Ref();
-                        }
-                    });
-                }
-            });
+        switch (s) {
+            default: {
+                throw new IllegalArgumentException("Unknown key: " + s);
+            }
+            case "lolomo": {
+                return this.lolomo = new Ref();
+            }
+            case "lolomos": {
+                return this.lolomos = new BranchMap<UnsummarizedList<Ref>>(Falkor.Creator.UnsummarizedListOfRef);
+            }
+            case "lists": {
+                return this.lists = new BranchMap<SummarizedList<Ref, ListOfMoviesSummary>>(Falkor.Creator.SummarizedListOfMovieRefs);
+            }
+            case "genreList": {
+                return this.genreList = new ListOfListOfGenres();
+            }
+            case "shows": {
+                return this.shows = new BranchMap<FalkorVideo>(Falkor.Creator.FalkorVideo(this.proxy));
+            }
+            case "movies": {
+                return this.movies = new BranchMap<FalkorVideo>(Falkor.Creator.FalkorVideo(this.proxy));
+            }
+            case "episodes": {
+                return this.episodes = new BranchMap<FalkorEpisode>(Falkor.Creator.FalkorEpisode(this.proxy));
+            }
         }
-        if ("lolomo".equals(s)) {
-            return this.lolomo = new Ref();
-        }
-        if ("lists".equals(s)) {
-            return this.lists = new BranchMap<SummarizedList<Ref>>(new Func<SummarizedList<Ref>>() {
-                @Override
-                public SummarizedList<Ref> call() {
-                    return new SummarizedList<Ref>(new Func<Ref>() {
-                        @Override
-                        public Ref call() {
-                            return new Ref();
-                        }
-                    });
-                }
-            });
-        }
-        if ("shows".equals(s)) {
-            return this.shows = new BranchMap<Show>(new Func<Show>() {
-                @Override
-                public Show call() {
-                    return new Show();
-                }
-            });
-        }
-        if ("movies".equals(s)) {
-            return this.movies = new BranchMap<Movie>(new Func<Movie>() {
-                @Override
-                public Movie call() {
-                    return new Movie();
-                }
-            });
-        }
-        throw new IllegalArgumentException("Unknown key: " + s);
-    }
-    
-    public BranchMap<Show> getShows() {
-        return this.shows;
     }
     
     @Override
     public void set(final String s, final Object o) {
-        if ("lolomos".equals(s)) {
-            this.lolomos = (BranchMap<SummarizedList<Ref>>)o;
-        }
-        else {
-            if ("lolomo".equals(s)) {
+        switch (s) {
+            default: {
+                Log.d("Root", "Don't know how to set key: " + s);
+            }
+            case "lolomos": {
+                this.lolomos = (BranchMap<UnsummarizedList<Ref>>)o;
+            }
+            case "lolomo": {
                 this.lolomo = (Ref)o;
-                return;
             }
-            if ("lists".equals(s)) {
-                this.lists = (BranchMap<SummarizedList<Ref>>)o;
-                return;
+            case "lists": {
+                this.lists = (BranchMap<SummarizedList<Ref, ListOfMoviesSummary>>)o;
             }
-            if ("shows".equals(s)) {
-                this.shows = (BranchMap<Show>)o;
-                return;
+            case "genreList": {
+                this.genreList = (ListOfListOfGenres)o;
             }
-            if ("movies".equals(s)) {
-                this.movies = (BranchMap<Movie>)o;
+            case "shows": {
+                this.shows = (BranchMap<FalkorVideo>)o;
+            }
+            case "movies": {
+                this.movies = (BranchMap<FalkorVideo>)o;
+            }
+            case "episodes": {
+                this.episodes = (BranchMap<FalkorEpisode>)o;
             }
         }
     }
     
+    public void setProxy(final ModelProxy<? extends BranchNode> proxy) {
+        this.proxy = proxy;
+    }
+    
     @Override
     public String toString() {
-        return "Root [lolomos=" + this.lolomos + ", lists=" + this.lists + ", shows=" + this.shows + ", movies=" + this.movies + "]";
+        return "Root [lolomo=" + this.lolomo + ", lolomos=" + this.lolomos + ", lists=" + this.lists + ", movies=" + this.movies + ", shows=" + this.shows + ", episodes=" + this.episodes + "]";
     }
 }

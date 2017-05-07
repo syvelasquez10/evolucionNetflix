@@ -352,11 +352,6 @@ public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.
     }
     
     @Override
-    public boolean isUserConnectedToFacebook() {
-        return false;
-    }
-    
-    @Override
     public String toString() {
         return "KidsCharacterDetails [kidsSummary=" + this.kidsSummary + ", kidsDetail=" + this.kidsDetail + ", watchNextSummary=" + this.watchNextSummary + ", watchNextBookmark=" + this.watchNextBookmark + ", watchNextMovieDetail=" + this.watchNextMovieDetail + ", watchNextEpisodeDetail=" + this.watchNextEpisodeDetail + ", galleryListSummary=" + this.galleryListSummary + ", galleryVideos=" + this.galleryVideos + "]";
     }

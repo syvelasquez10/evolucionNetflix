@@ -14,7 +14,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
-import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.netflix.mediaclient.service.webclient.model.ShowDetails;
@@ -103,6 +103,7 @@ public class FetchCWVideosRequest extends FalcorVolleyWebClientRequest<List<CWVi
                 n4 = 1;
                 final com.netflix.mediaclient.service.webclient.model.CWVideo cwVideo = new com.netflix.mediaclient.service.webclient.model.CWVideo();
                 fillPlayableVideo(jsonObject, cwVideo, string, n2, b);
+                cwVideo.inQueue = browseWebClientCache.updateInQueueCacheRecord(cwVideo.getId(), cwVideo.inQueue);
                 if (VideoType.MOVIE.equals(cwVideo.getType())) {
                     syncWithMDP(browseWebClientCache, cwVideo);
                 }
@@ -155,6 +156,7 @@ public class FetchCWVideosRequest extends FalcorVolleyWebClientRequest<List<CWVi
         showDetails.currentEpisode = playableVideo.currentEpisode;
         showDetails.currentEpisodeBookmark = playableVideo.currentEpisodeBookmark;
         showDetails.userConnectedToFacebook = playableVideo.userConnectedToFacebook;
+        showDetails.socialEvidence = playableVideo.socialEvidence;
         browseWebClientCache.putInSoftCache(s, showDetails);
         Log.d("nf_service_browse_fetchcwvideosrequest", String.format("Created SDP from cw for (%s) %s", showDetails.getId(), showDetails.getTitle()));
     }

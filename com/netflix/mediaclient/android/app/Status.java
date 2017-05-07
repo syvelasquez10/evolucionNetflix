@@ -5,12 +5,13 @@
 package com.netflix.mediaclient.android.app;
 
 import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.service.logging.client.model.Error;
 
 public interface Status
 {
     public static final int REQUEST_ID_NOT_AVAILABLE = Integer.MAX_VALUE;
     
-    NetflixError[] getErrors();
+    Error getError();
     
     String getMessage();
     

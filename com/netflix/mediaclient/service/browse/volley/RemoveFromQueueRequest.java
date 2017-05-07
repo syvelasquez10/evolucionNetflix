@@ -134,7 +134,7 @@ public class RemoveFromQueueRequest extends FalcorVolleyWebClientRequest<String>
         }
         try {
             AddToQueueRequest.parseRefreshIqVideosAndUpdateCache(asJsonObject2.getAsJsonObject("lolomos").getAsJsonObject(this.lolomoId).getAsJsonObject(this.iqLoMoIndex), this.fromVideo, this.toVideo, this.browseCache);
-            FetchIQVideosRequest.updateMdpAndSdpWithIQInfo(this.browseCache, this.mVideoId, false);
+            this.browseCache.updateInQueueCacheRecord(this.mVideoId, false);
             return Integer.toString(StatusCode.OK.getValue());
         }
         catch (Exception ex2) {

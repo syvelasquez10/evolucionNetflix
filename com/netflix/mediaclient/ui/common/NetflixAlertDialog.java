@@ -129,12 +129,12 @@ public class NetflixAlertDialog extends NetflixDialogFrag
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View inflate = layoutInflater.inflate(2130903065, viewGroup, false);
-        this.mMessageView = (TextView)inflate.findViewById(2131165289);
-        this.mPositiveButton = (Button)inflate.findViewById(2131165294);
-        this.mNegativeButton = (Button)inflate.findViewById(2131165290);
-        this.mNeutralButton = (Button)inflate.findViewById(2131165292);
-        this.mNegativeDivider = inflate.findViewById(2131165291);
-        this.mNeutralDivider = inflate.findViewById(2131165293);
+        this.mMessageView = (TextView)inflate.findViewById(2131165290);
+        this.mPositiveButton = (Button)inflate.findViewById(2131165295);
+        this.mNegativeButton = (Button)inflate.findViewById(2131165291);
+        this.mNeutralButton = (Button)inflate.findViewById(2131165293);
+        this.mNegativeDivider = inflate.findViewById(2131165292);
+        this.mNeutralDivider = inflate.findViewById(2131165294);
         this.mMessageView.setText((CharSequence)this.mMessage);
         if (this.mNeutralButtonUsed) {
             this.mNeutralButton.setText((CharSequence)this.mNeutralButtonLabel);
@@ -248,11 +248,11 @@ public class NetflixAlertDialog extends NetflixDialogFrag
         }
         
         public void setNegativeButton() {
-            this.mNegativeButton = new ActionButtonDescriptor(this.mContext.getString(2131493126), "nflx_negative_button_clicked");
+            this.mNegativeButton = new ActionButtonDescriptor(this.mContext.getString(2131493127), "nflx_negative_button_clicked");
         }
         
         public void setNegativeButton(final String s) {
-            this.mNegativeButton = new ActionButtonDescriptor(this.mContext.getString(2131493126), s);
+            this.mNegativeButton = new ActionButtonDescriptor(this.mContext.getString(2131493127), s);
         }
         
         public void setNegativeButton(final String s, final String s2) {
@@ -268,11 +268,11 @@ public class NetflixAlertDialog extends NetflixDialogFrag
         }
         
         public void setPositiveButton() {
-            this.mPositiveButton = new ActionButtonDescriptor(this.mContext.getString(2131492982), "nflx_positive_button_clicked");
+            this.mPositiveButton = new ActionButtonDescriptor(this.mContext.getString(2131492983), "nflx_positive_button_clicked");
         }
         
         public void setPositiveButton(final String s) {
-            this.mPositiveButton = new ActionButtonDescriptor(this.mContext.getString(2131492982), s);
+            this.mPositiveButton = new ActionButtonDescriptor(this.mContext.getString(2131492983), s);
         }
         
         public void setPositiveButton(final String s, final String s2) {

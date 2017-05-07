@@ -9,15 +9,15 @@ import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.android.fragment.LoadingView;
 import android.view.View;
-import com.netflix.mediaclient.android.widget.ViewRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 
 public class LoadingViewAdapter implements RowAdapter
 {
     private static final String TAG = "LoadingFragmentPagerAdapter";
     private final RowAdapterCallbacks callbacks;
-    private final ViewRecycler viewRecycler;
+    private final ObjectRecycler.ViewRecycler viewRecycler;
     
-    public LoadingViewAdapter(final RowAdapterCallbacks callbacks, final ViewRecycler viewRecycler) {
+    public LoadingViewAdapter(final RowAdapterCallbacks callbacks, final ObjectRecycler.ViewRecycler viewRecycler) {
         this.callbacks = callbacks;
         this.viewRecycler = viewRecycler;
     }
@@ -34,9 +34,9 @@ public class LoadingViewAdapter implements RowAdapter
     
     @Override
     public View getView(final int n) {
-        final View pop = this.viewRecycler.pop(LoadingView.class);
-        if (pop != null) {
-            return pop;
+        final View view = this.viewRecycler.pop(LoadingView.class);
+        if (view != null) {
+            return view;
         }
         final LoadingView loadingView = new LoadingView((Context)this.callbacks.getActivity());
         Log.v("LoadingFragmentPagerAdapter", "Creating view: " + loadingView);

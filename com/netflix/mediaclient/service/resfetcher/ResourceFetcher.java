@@ -10,7 +10,7 @@ import com.android.volley.Request;
 import com.netflix.mediaclient.service.resfetcher.volley.FileDownloadRequest;
 import com.android.volley.VolleyError;
 import com.android.volley.Response;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -168,7 +168,7 @@ public class ResourceFetcher extends ServiceAgent
         if (Log.isLoggable("nf_service_resourcefetcher", 4)) {
             Log.i("nf_service_resourcefetcher", "Received request to fetch resource at " + s);
         }
-        LogUtils.reportAssetRequest(s, assetType, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
+        ApmLogUtils.reportAssetRequest(s, assetType, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
         final ResourceFetcherCallback resourceFetcherCallback2 = this.getResourceFetcherCallback(resourceFetcherCallback);
         this.mRequestQueue.add(new FileDownloadRequest(s, resourceFetcherCallback2, new Response.ErrorListener() {
             @Override
@@ -214,7 +214,7 @@ public class ResourceFetcher extends ServiceAgent
         if (Log.isLoggable("nf_service_resourcefetcher", 3)) {
             Log.d("nf_service_resourcefetcher", "Request to prefetch resource at URL " + s);
         }
-        LogUtils.reportAssetRequest(s, assetType, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
+        ApmLogUtils.reportAssetRequest(s, assetType, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
         final ResourceFetcherCallback resourceFetcherCallback2 = this.getResourceFetcherCallback(resourceFetcherCallback);
         this.mRequestQueue.add(new PrefetchResourceRequest(s, resourceFetcherCallback2, new Response.ErrorListener() {
             @Override
@@ -240,13 +240,13 @@ public class ResourceFetcher extends ServiceAgent
         
         @Override
         public void onResourceFetched(final String s, final String s2, final Status status) {
-            LogUtils.reportAssetRequestResult(s, status.getStatusCode(), ResourceFetcher.this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
+            ApmLogUtils.reportAssetRequestResult(s, status.getStatusCode(), ResourceFetcher.this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
             this.mCallback.onResourceFetched(s, s2, status);
         }
         
         @Override
         public void onResourcePrefetched(final String s, final int n, final Status status) {
-            LogUtils.reportAssetRequestResult(s, status.getStatusCode(), ResourceFetcher.this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
+            ApmLogUtils.reportAssetRequestResult(s, status.getStatusCode(), ResourceFetcher.this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
             this.mCallback.onResourcePrefetched(s, n, status);
         }
     }

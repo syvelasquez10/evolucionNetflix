@@ -8,6 +8,7 @@ import com.netflix.mediaclient.service.logging.apm.model.Display;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import android.content.Intent;
+import android.content.Context;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.service.logging.client.model.FalcorPathResult;
@@ -49,6 +50,8 @@ public interface ApplicationPerformanceMetricsLogging
     void endUiStartupSession(final boolean p0, final UIError p1, final PlayerType p2);
     
     void endUserSession(final EndReason p0, final long p1);
+    
+    void handleConnectivityChange(final Context p0);
     
     boolean handleIntent(final Intent p0, final boolean p1);
     

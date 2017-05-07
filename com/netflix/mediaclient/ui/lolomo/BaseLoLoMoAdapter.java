@@ -14,10 +14,11 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.ThreadUtils;
 import android.view.ViewGroup;
 import android.app.Activity;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import android.graphics.drawable.Drawable;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.ui.lomo.BillboardView;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -29,7 +30,7 @@ import android.widget.LinearLayout;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import java.util.ArrayList;
-import com.netflix.mediaclient.android.widget.ViewRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.app.LoadingStatus;
 import java.util.List;
@@ -39,7 +40,6 @@ import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 
 public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter implements ILoLoMoAdapter
 {
-    public static final int NUM_LOMOS_TO_FETCH_PER_BATCH = 20;
     private static final String TAG = "BaseLoLoMoAdapter";
     protected final NetflixActivity activity;
     protected final LoLoMoFrag frag;
@@ -52,7 +52,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     private final List<T> lomos;
     protected LoadingStatusCallback mLoadingStatusCallback;
     protected ServiceManager manager;
-    protected final ViewRecycler viewRecycler;
+    protected final ObjectRecycler.ViewRecycler viewRecycler;
     
     public BaseLoLoMoAdapter(final LoLoMoFrag frag, final String lolomoId) {
         this.isLoading = true;
@@ -66,9 +66,9 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     private RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131165456);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131165457);
         linearLayout.setFocusable(false);
-        final TextView textView = (TextView)view.findViewById(2131165458);
+        final TextView textView = (TextView)view.findViewById(2131165459);
         final Resources resources = this.activity.getResources();
         int n;
         if (this.activity.isForKids()) {
@@ -81,15 +81,15 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         final LoMoRowContent rowContent = this.createRowContent(linearLayout, (View)textView);
         TextView textView2;
         if (this.activity.isForKids()) {
-            view.findViewById(2131165459).setVisibility(8);
-            textView2 = (TextView)view.findViewById(2131165460);
+            view.findViewById(2131165460).setVisibility(8);
+            textView2 = (TextView)view.findViewById(2131165461);
             textView2.setVisibility(0);
         }
         else {
-            textView2 = (TextView)view.findViewById(2131165459);
+            textView2 = (TextView)view.findViewById(2131165460);
         }
         ((RelativeLayout$LayoutParams)textView2.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragOffsetLeftPx(this.activity) + this.activity.getResources().getDimensionPixelOffset(2131361897);
-        return new RowHolder((View)linearLayout, textView2, rowContent, view.findViewById(2131165455));
+        return new RowHolder((View)linearLayout, textView2, rowContent, view.findViewById(2131165456));
     }
     
     private void fetchMoreData() {
@@ -131,70 +131,82 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         final BasicLoMo item = this.getItem(dipToPixels);
         if (item == null) {
             Log.w("BaseLoLoMoAdapter", "Trying to show data for null lomo! Position: " + dipToPixels);
-            return;
-        }
-        if (Log.isLoggable("BaseLoLoMoAdapter", 2)) {
-            Log.v("BaseLoLoMoAdapter", "Updating LoMo row content: " + item.getTitle() + ", type: " + item.getType() + ", pos: " + dipToPixels);
-        }
-        final RowHolder rowHolder = (RowHolder)contentGroup.getTag();
-        final TextView title = rowHolder.title;
-        String text;
-        if (item.getType() == LoMoType.BILLBOARD) {
-            text = this.activity.getString(2131493309);
         }
         else {
-            text = item.getTitle();
-        }
-        title.setText((CharSequence)text);
-        final TextView title2 = rowHolder.title;
-        int visibility;
-        if (item.getType() != LoMoType.BILLBOARD || BillboardView.shouldShowArtworkOnly(this.activity)) {
-            visibility = 0;
-        }
-        else {
-            visibility = 8;
-        }
-        title2.setVisibility(visibility);
-        final View shelf = rowHolder.shelf;
-        int visibility2 = n;
-        if (this.isRowAfterBillboardOrCwRow(dipToPixels, item.getType())) {
-            visibility2 = n;
-            if (!this.activity.isForKids()) {
-                visibility2 = 0;
+            if (Log.isLoggable("BaseLoLoMoAdapter", 2)) {
+                Log.v("BaseLoLoMoAdapter", "Updating LoMo row content: " + item.getTitle() + ", type: " + item.getType() + ", pos: " + dipToPixels);
+            }
+            final RowHolder rowHolder = (RowHolder)contentGroup.getTag();
+            final TextView title = rowHolder.title;
+            String text;
+            if (item.getType() == LoMoType.BILLBOARD) {
+                text = this.activity.getString(2131493312);
+            }
+            else {
+                text = item.getTitle();
+            }
+            title.setText((CharSequence)text);
+            final TextView title2 = rowHolder.title;
+            int visibility;
+            if (item.getType() != LoMoType.BILLBOARD || BillboardView.shouldShowArtworkOnly(this.activity)) {
+                visibility = 0;
+            }
+            else {
+                visibility = 8;
+            }
+            title2.setVisibility(visibility);
+            final View shelf = rowHolder.shelf;
+            int visibility2 = n;
+            if (this.isRowAfterBillboardOrCwRow(dipToPixels, item.getType())) {
+                visibility2 = n;
+                if (!this.activity.isForKids()) {
+                    visibility2 = 0;
+                }
+            }
+            shelf.setVisibility(visibility2);
+            rowHolder.rowContent.refresh(item, dipToPixels);
+            if (this.activity.isForKids()) {
+                if (item.getType() == LoMoType.CONTINUE_WATCHING) {
+                    rowHolder.contentGroup.setBackgroundResource(2130837709);
+                    rowHolder.contentGroup.setPadding(0, 0, 0, AndroidUtils.dipToPixels((Context)this.activity, 22));
+                    rowHolder.title.setTextColor(this.activity.getResources().getColor(2131296355));
+                    return;
+                }
+                ViewUtils.setBackgroundDrawableCompat(rowHolder.contentGroup, null);
+                if (dipToPixels == this.getCount() - 1) {
+                    dipToPixels = 1;
+                }
+                else {
+                    dipToPixels = 0;
+                }
+                contentGroup = rowHolder.contentGroup;
+                if (dipToPixels != 0) {
+                    dipToPixels = AndroidUtils.dipToPixels((Context)this.activity, 24);
+                }
+                else {
+                    dipToPixels = 0;
+                }
+                contentGroup.setPadding(0, 0, 0, dipToPixels);
+                rowHolder.title.setTextColor(rowHolder.defaultTitleColors);
+            }
+            else {
+                final StickyListHeadersListView listView = this.frag.getListView();
+                int headerViewsCount;
+                if (listView == null) {
+                    headerViewsCount = 0;
+                }
+                else {
+                    headerViewsCount = listView.getHeaderViewsCount();
+                }
+                if (headerViewsCount == 0) {
+                    int actionBarHeight = b ? 1 : 0;
+                    if (dipToPixels == 0) {
+                        actionBarHeight = this.activity.getActionBarHeight();
+                    }
+                    ViewUtils.setPaddingTop(contentGroup, actionBarHeight);
+                }
             }
         }
-        shelf.setVisibility(visibility2);
-        rowHolder.rowContent.refresh(item, dipToPixels);
-        if (!this.activity.isForKids()) {
-            int actionBarHeight = b ? 1 : 0;
-            if (dipToPixels == 0) {
-                actionBarHeight = this.activity.getActionBarHeight();
-            }
-            ViewUtils.setPaddingTop(contentGroup, actionBarHeight);
-            return;
-        }
-        if (item.getType() == LoMoType.CONTINUE_WATCHING) {
-            rowHolder.contentGroup.setBackgroundResource(2130837711);
-            rowHolder.contentGroup.setPadding(0, 0, 0, AndroidUtils.dipToPixels((Context)this.activity, 22));
-            rowHolder.title.setTextColor(this.activity.getResources().getColor(2131296355));
-            return;
-        }
-        ViewUtils.setBackgroundDrawableCompat(rowHolder.contentGroup, null);
-        if (dipToPixels == this.getCount() - 1) {
-            dipToPixels = 1;
-        }
-        else {
-            dipToPixels = 0;
-        }
-        contentGroup = rowHolder.contentGroup;
-        if (dipToPixels != 0) {
-            dipToPixels = AndroidUtils.dipToPixels((Context)this.activity, 24);
-        }
-        else {
-            dipToPixels = 0;
-        }
-        contentGroup.setPadding(0, 0, 0, dipToPixels);
-        rowHolder.title.setTextColor(rowHolder.defaultTitleColors);
     }
     
     public boolean areAllItemsEnabled() {

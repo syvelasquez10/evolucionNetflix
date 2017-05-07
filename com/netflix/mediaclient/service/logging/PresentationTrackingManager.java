@@ -65,7 +65,9 @@ class PresentationTrackingManager implements PresentationTracking
     
     private void initDataRepository() {
         Log.d("nf_presentation", "PtManager::init data repository started ");
-        this.mDataRepository = new FileSystemDataRepositoryImpl(new File(this.mContext.getFilesDir(), "ptevents"));
+        final File file = new File(this.mContext.getFilesDir(), "ptevents");
+        file.mkdirs();
+        this.mDataRepository = new FileSystemDataRepositoryImpl(file);
         this.mExecutor.execute(new Runnable() {
             @Override
             public void run() {

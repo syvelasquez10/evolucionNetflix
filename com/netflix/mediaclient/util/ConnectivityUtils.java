@@ -480,8 +480,7 @@ public final class ConnectivityUtils
     }
     
     public static NetworkState processConnectivityChange(final Context context, final Intent intent) {
-        Log.d("nf_net", "Handle connectivity change, process...");
-        AndroidUtils.logIntent("nf_net", intent);
+        Log.d("nf_net", "Handle connectivity change, process...", intent);
         boolean b = false;
         LogMobileType logMobileType = null;
         final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService("connectivity");

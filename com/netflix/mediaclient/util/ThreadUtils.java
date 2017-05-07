@@ -6,9 +6,11 @@ package com.netflix.mediaclient.util;
 
 public class ThreadUtils
 {
-    public static void assertNotOnMain() {
+    public static boolean assertNotOnMain() {
+        return true;
     }
     
-    public static void assertOnMain() {
+    public static boolean assertOnMain() {
+        return true;
     }
 }

@@ -4,6 +4,12 @@
 
 package com.netflix.mediaclient;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import android.os.Bundle;
+import java.util.Iterator;
+import android.content.Intent;
+
 public final class Log
 {
     public static final int ASSERT = 7;
@@ -11,6 +17,7 @@ public final class Log
     public static final int ERROR = 6;
     public static final int INFO = 4;
     private static final int LOGCAT_ENTRY_MAX_LEN = 4000;
+    private static final String NOT_AVAILABLE = "n/a";
     public static final int VERBOSE = 2;
     public static final int WARN = 5;
     private static boolean debug;
@@ -31,6 +38,39 @@ public final class Log
             return android.util.Log.d(s, s2, t);
         }
         return 0;
+    }
+    
+    public static void d(final String s, final Intent intent) {
+        if (isLoggable(s, 3)) {
+            d(s, "intent.getAction(): " + intent.getAction());
+            if (intent.getCategories() == null) {
+                d(s, "intent.getCategories(): null");
+            }
+            else {
+                final Iterator<String> iterator = intent.getCategories().iterator();
+                while (iterator.hasNext()) {
+                    d(s, "intent.category: " + iterator.next());
+                }
+            }
+            d(s, "intent.getData(): " + intent.getData());
+            d(s, "intent.getDataString(): " + intent.getDataString());
+            d(s, "intent.getScheme(): " + intent.getScheme());
+            d(s, "intent.getType(): " + intent.getType());
+            final Bundle extras = intent.getExtras();
+            if (extras != null && !extras.isEmpty()) {
+                for (final String s2 : extras.keySet()) {
+                    d(s, "EXTRA: {" + s2 + ": " + extras.get(s2) + "}");
+                }
+            }
+            else {
+                d(s, "NO EXTRAS");
+            }
+        }
+    }
+    
+    public static void d(final String s, final String s2, final Intent intent) {
+        d(s, s2);
+        d(s, intent);
     }
     
     public static void dumpVerbose(final String s, final String s2) {
@@ -130,6 +170,54 @@ public final class Log
             return android.util.Log.v(s, s2, t);
         }
         return 0;
+    }
+    
+    public static void v(final String s, final Intent intent) {
+        if (!isLoggable(s, 2)) {
+            return;
+        }
+        String decode;
+        String string;
+        String string2;
+        Label_0031_Outer:Label_0042_Outer:
+        while (true) {
+            decode = "n/a";
+            while (true) {
+            Label_0141:
+                while (true) {
+                Label_0130:
+                    while (true) {
+                        try {
+                            if (intent.getDataString() == null) {
+                                decode = "n/a";
+                            }
+                            else {
+                                decode = URLDecoder.decode(intent.getDataString(), "utf-8");
+                            }
+                            if (intent.getCategories() != null) {
+                                break Label_0130;
+                            }
+                            string = "n/a";
+                            if (intent.getExtras() == null) {
+                                string2 = "n/a";
+                                v(s, String.format("Handling intent\n   action: %s\n   uri: %s\n   decodedUri: %s\n   categories: %s\n   extras: %s", intent.getAction(), intent.getDataString(), decode, string, string2));
+                                return;
+                            }
+                            break Label_0141;
+                        }
+                        catch (UnsupportedEncodingException ex) {
+                            w(s, "Couldn't decode url: " + intent.getDataString());
+                            continue Label_0031_Outer;
+                        }
+                        continue Label_0031_Outer;
+                    }
+                    string = intent.getCategories().toString();
+                    continue Label_0042_Outer;
+                }
+                string2 = intent.getExtras().toString();
+                continue;
+            }
+        }
     }
     
     public static int w(final String s, final String s2) {

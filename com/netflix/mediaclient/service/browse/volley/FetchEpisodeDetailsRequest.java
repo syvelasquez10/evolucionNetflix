@@ -6,9 +6,9 @@ package com.netflix.mediaclient.service.browse.volley;
 
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
-import com.netflix.mediaclient.service.webclient.model.branches.Episode;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
+import com.netflix.mediaclient.service.webclient.model.branches.Episode;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -72,7 +72,6 @@ public class FetchEpisodeDetailsRequest extends FalcorVolleyWebClientRequest<Epi
         }
         try {
             final JsonObject asJsonObject = dataObj.getAsJsonObject("episodes").getAsJsonObject(this.mEpisodeId);
-            episodeDetails.summary = FalcorParseUtils.getPropertyObject(asJsonObject, "summary", Video.Summary.class);
             episodeDetails.detail = FalcorParseUtils.getPropertyObject(asJsonObject, "detail", Episode.Detail.class);
             episodeDetails.bookmark = FalcorParseUtils.getPropertyObject(asJsonObject, "bookmark", Video.Bookmark.class);
             episodeDetails.showSocialEvidence = FalcorParseUtils.getPropertyObject(asJsonObject, "socialEvidence", SocialEvidence.class);

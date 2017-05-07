@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.webclient.model.leafs;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import android.os.Parcel;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import android.os.Parcelable$Creator;
@@ -35,6 +36,9 @@ public class ListOfMoviesSummary extends TrackableListSummary implements LoMo, G
         };
     }
     
+    public ListOfMoviesSummary() {
+    }
+    
     public ListOfMoviesSummary(final Parcel parcel) {
         super(parcel);
         this.id = parcel.readString();
@@ -46,7 +50,6 @@ public class ListOfMoviesSummary extends TrackableListSummary implements LoMo, G
         return 0;
     }
     
-    @Override
     public List<FriendProfile> getFacebookFriends() {
         if (this.socialEvidence != null) {
             return this.socialEvidence.getFacebookFriends();

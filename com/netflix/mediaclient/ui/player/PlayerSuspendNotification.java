@@ -99,29 +99,29 @@ public final class PlayerSuspendNotification
         RemoteViews remoteViews;
         if (b) {
             if (notEmpty) {
-                remoteViews = new RemoteViews(packageName, 2130903184);
+                remoteViews = new RemoteViews(packageName, 2130903189);
             }
             else {
-                remoteViews = new RemoteViews(packageName, 2130903186);
+                remoteViews = new RemoteViews(packageName, 2130903191);
             }
         }
         else if (notEmpty) {
-            remoteViews = new RemoteViews(packageName, 2130903183);
+            remoteViews = new RemoteViews(packageName, 2130903188);
         }
         else {
-            remoteViews = new RemoteViews(packageName, 2130903185);
+            remoteViews = new RemoteViews(packageName, 2130903190);
         }
         if (bitmap != null) {
-            remoteViews.setImageViewBitmap(2131165640, bitmap);
+            remoteViews.setImageViewBitmap(2131165667, bitmap);
         }
         if (StringUtils.isNotEmpty(s)) {
-            remoteViews.setTextViewText(2131165641, (CharSequence)s);
+            remoteViews.setTextViewText(2131165668, (CharSequence)s);
         }
         else {
-            remoteViews.setTextViewText(2131165641, (CharSequence)"");
+            remoteViews.setTextViewText(2131165668, (CharSequence)"");
         }
         if (notEmpty) {
-            remoteViews.setTextViewText(2131165642, (CharSequence)s2);
+            remoteViews.setTextViewText(2131165669, (CharSequence)s2);
         }
         return remoteViews;
     }
@@ -150,7 +150,7 @@ public final class PlayerSuspendNotification
         }
         else {
             final int color = this.mPlayerActivity.getResources().getColor(2131296356);
-            final String string = this.mPlayerActivity.getResources().getString(2131493359);
+            final String string = this.mPlayerActivity.getResources().getString(2131493362);
             final Notification$Builder setVisibility = new Notification$Builder((Context)this.mPlayerActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837768).setLargeIcon(largeIcon).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
             if (TextUtils.isEmpty((CharSequence)this.mSecondaryTitle)) {
                 setVisibility.setContentText((CharSequence)string);
@@ -190,7 +190,7 @@ public final class PlayerSuspendNotification
             }
         };
         if (asset.isEpisode()) {
-            this.mSecondaryTitle = this.mPlayerActivity.getApplicationContext().getString(2131493256, new Object[] { asset.getSeasonNumber(), asset.getEpisodeNumber(), asset.getTitle() });
+            this.mSecondaryTitle = this.mPlayerActivity.getApplicationContext().getString(2131493259, new Object[] { asset.getSeasonNumber(), asset.getEpisodeNumber(), asset.getTitle() });
             this.mTitle = asset.getParentTitle();
             this.mServiceManager.getBrowse().fetchEpisodeDetails(String.valueOf(asset.getPlayableId()), simpleManagerCallback);
             return;

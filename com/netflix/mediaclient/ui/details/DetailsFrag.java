@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.widget.TextView;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     private VideoDetailsViewGroup detailsViewGroup;
     private final Callback errorCallback;
     private LoadingAndErrorWrapper leWrapper;
+    private T mVideoDetails;
     private ServiceManager manager;
     protected View primaryView;
     
@@ -48,10 +50,10 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("DetailsFrag", "Creating new frag view...");
-        final View inflate = layoutInflater.inflate(2130903188, (ViewGroup)null, false);
-        this.detailsViewGroup = (VideoDetailsViewGroup)inflate.findViewById(2131165646);
+        final View inflate = layoutInflater.inflate(2130903194, (ViewGroup)null, false);
+        this.detailsViewGroup = (VideoDetailsViewGroup)inflate.findViewById(2131165675);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
-        (this.primaryView = inflate.findViewById(2131165645)).setVerticalScrollBarEnabled(false);
+        (this.primaryView = inflate.findViewById(2131165674)).setVerticalScrollBarEnabled(false);
         return inflate;
     }
     
@@ -69,14 +71,23 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         this.manager = manager;
         final TextView addToMyListButton = this.detailsViewGroup.getAddToMyListButton();
         if (manager != null && this.getActivity() != null && addToMyListButton != null) {
-            this.addToListWrapper = manager.createAddToMyListWrapper((DetailsActivity)this.getActivity(), addToMyListButton);
+            this.addToListWrapper = manager.createAddToMyListWrapper((DetailsActivity)this.getActivity(), addToMyListButton, false);
             manager.registerAddToMyListListener(this.getVideoId(), this.addToListWrapper);
         }
+        RecommendToFriendsFrag.addRecommendButtonHandler((NetflixActivity)this.getActivity(), manager, this.detailsViewGroup.getRecommendButton(), this.getVideoId());
     }
     
     public void onResume() {
         super.onResume();
         this.detailsViewGroup.refreshImagesIfNecessary();
+        if (this.manager != null) {
+            if (this.mVideoDetails instanceof VideoDetails) {
+                this.manager.updateMyListState(this.getVideoId(), this.mVideoDetails.isInQueue());
+            }
+            else if (Log.isLoggable("DetailsFrag", 6)) {
+                Log.e("DetailsFrag", "onResume() got weird videoDetails class: " + this.mVideoDetails);
+            }
+        }
     }
     
     @Override
@@ -87,11 +98,12 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     
     protected abstract void reloadData();
     
-    protected void showDetailsView(final T t) {
+    protected void showDetailsView(final T mVideoDetails) {
+        this.mVideoDetails = mVideoDetails;
         this.leWrapper.hide(true);
         AnimationUtils.showView(this.primaryView, true);
-        ((DetailsActivity)this.getActivity()).updateMenus(t);
-        this.detailsViewGroup.updateDetails(t, this.getDetailsStringProvider(t));
+        ((DetailsActivity)this.getActivity()).updateMenus(mVideoDetails);
+        this.detailsViewGroup.updateDetails(mVideoDetails, this.getDetailsStringProvider(mVideoDetails));
     }
     
     protected void showErrorView() {

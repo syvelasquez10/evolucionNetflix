@@ -10,7 +10,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class DeviceConfigData
 {
-    private String bitrate_cap;
     @SerializedName("breadcrumb_logging_specification")
     private BreadcrumbLoggingSpecification breadcrumb_logging_specification;
     @SerializedName("consolidated_logging_specification")
@@ -24,6 +23,8 @@ public class DeviceConfigData
     private ErrorLoggingSpecification error_logging_specification;
     @SerializedName("gcmBrowseEventRateLimitInSecs")
     private int gcmBrowseEventRateLimit;
+    @SerializedName("gcmNListChangeEventRateLimitInSecs")
+    private int gcmNListChangeEventRateLimit;
     private String image_pref;
     @SerializedName("ip_connectivity_policy")
     private int ip_connectivity_policy;
@@ -50,10 +51,6 @@ public class DeviceConfigData
     
     public String getAppRecommendedVresion() {
         return this.current_version;
-    }
-    
-    public String getBitrateCap() {
-        return this.bitrate_cap;
     }
     
     public BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification() {
@@ -94,6 +91,10 @@ public class DeviceConfigData
     
     public int getRateLimitForGcmBrowseEvents() {
         return this.gcmBrowseEventRateLimit;
+    }
+    
+    public int getRateLimitForGcmNListChangeEvents() {
+        return this.gcmNListChangeEventRateLimit;
     }
     
     public String getSignUpEnabled() {

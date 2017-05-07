@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.falkor;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
@@ -18,8 +19,13 @@ import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
+import android.widget.Toast;
+import com.netflix.mediaclient.android.app.Status;
+import android.content.Intent;
+import com.netflix.mediaclient.service.pushnotification.MessageData;
+import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.model.Video;
@@ -31,7 +37,7 @@ import com.netflix.mediaclient.servicemgr.IBrowseInterface;
 
 public class FalkorAccess implements IBrowseInterface
 {
-    private static final String TAG = "NetflixServiceBrowse";
+    private static final String TAG = "FalkorAccess";
     private final FalkorAgent mBrowseAgent;
     private final NetflixService.ClientCallbacks mClientCallbacks;
     
@@ -141,12 +147,17 @@ public class FalkorAccess implements IBrowseInterface
     
     @Override
     public void fetchSimilarVideosForPerson(final String s, final int n, final int n2, final int n3, final String s2) {
-        this.mBrowseAgent.fetchSimilarVideosForPerson(s, n, this.wrapCallback(new BrowseAgentClientCallback(n2, n3)));
+        this.mBrowseAgent.fetchSimilarVideosForPerson(s, n, this.wrapCallback(new BrowseAgentClientCallback(n2, n3)), s2);
     }
     
     @Override
     public void fetchSimilarVideosForQuerySuggestion(final String s, final int n, final int n2, final int n3, final String s2) {
         this.mBrowseAgent.fetchSimilarVideosForQuerySuggestion(s, n, this.wrapCallback(new BrowseAgentClientCallback(n2, n3)), s2);
+    }
+    
+    @Override
+    public void fetchSocialNotifications(final int n, final int n2, final int n3) {
+        this.mBrowseAgent.fetchSocialNotificationsList(n, this.wrapCallback(new BrowseAgentClientCallback(n2, n3)));
     }
     
     @Override
@@ -170,6 +181,11 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
+    public void markSocialNotificationsAsRead(final List<SocialNotificationSummary> list) {
+        this.mBrowseAgent.markSocialNotificationsAsRead(list);
+    }
+    
+    @Override
     public void prefetchGenreLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final boolean b, final int n5, final int n6) {
         this.mBrowseAgent.prefetchGenreLoLoMo(s, n, n2, n3, n4, b, this.wrapCallback(new BrowseAgentClientCallback(n5, n6)));
     }
@@ -180,13 +196,27 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
+    public void refreshAll() {
+    }
+    
+    @Override
     public void refreshCW() {
         this.mBrowseAgent.refreshCW();
     }
     
     @Override
+    public void refreshEpisodeData(final Asset asset) {
+        this.mBrowseAgent.refreshEpisodesData(asset);
+    }
+    
+    @Override
     public void refreshIQ() {
         this.mBrowseAgent.refreshIQ();
+    }
+    
+    @Override
+    public void refreshSocialNotifications(final boolean b, final boolean b2, final MessageData messageData) {
+        this.mBrowseAgent.refreshSocialNotifications(b, b2);
     }
     
     @Override
@@ -200,8 +230,46 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
+    public void sendThanksToSocialNotification(final SocialNotificationSummary socialNotificationSummary, final int n, final int n2) {
+        this.mBrowseAgent.sendThanksToSocialNotification(socialNotificationSummary, this.wrapCallback(new BrowseAgentClientCallback(n, n2)));
+    }
+    
+    @Override
+    public void sendThanksToSocialNotificationFromService(final SocialNotificationSummary socialNotificationSummary, final NetflixService netflixService, final boolean b) {
+        if (b) {
+            netflixService.getApplicationContext().sendBroadcast(new Intent("android.intent.action.CLOSE_SYSTEM_DIALOGS"));
+        }
+        this.mBrowseAgent.sendThanksToSocialNotification(socialNotificationSummary, new SentThanksCallback(netflixService));
+    }
+    
+    @Override
     public void setVideoRating(final String s, final int n, final int n2, final int n3, final int n4) {
         this.mBrowseAgent.setVideoRating(s, n, n2, this.wrapCallback(new BrowseAgentClientCallback(n3, n4)));
+    }
+    
+    @Override
+    public void updateCachedVideoPosition(final Asset asset) {
+        this.mBrowseAgent.updateCachedVideoPosition(asset);
+    }
+    
+    class SentThanksCallback extends BrowseAgentClientCallback
+    {
+        private final NetflixService service;
+        
+        SentThanksCallback(final NetflixService service) {
+            super(0, 0);
+            this.service = service;
+        }
+        
+        @Override
+        public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+            if (status.isSucces() && this.service != null) {
+                Toast.makeText(this.service.getApplicationContext(), 2131493411, 1).show();
+                if (this.service.getBrowse() != null) {
+                    this.service.getBrowse().refreshSocialNotifications(true, false, null);
+                }
+            }
+        }
     }
     
     private class BrowseAgentClientCallback implements BrowseAgentCallback
@@ -218,7 +286,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onBBVideosFetched(final List<Billboard> list, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for oBBVideosFetched");
+                Log.w("FalkorAccess", "No client callback found for oBBVideosFetched");
                 return;
             }
             netflixServiceCallback.onBBVideosFetched(this.requestId, list, status);
@@ -233,7 +301,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onCWVideosFetched(final List<CWVideo> list, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onCWVideosFetched");
+                Log.w("FalkorAccess", "No client callback found for onCWVideosFetched");
                 return;
             }
             netflixServiceCallback.onCWVideosFetched(this.requestId, list, status);
@@ -243,7 +311,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onEpisodeDetailsFetched");
+                Log.w("FalkorAccess", "No client callback found for onEpisodeDetailsFetched");
                 return;
             }
             netflixServiceCallback.onEpisodeDetailsFetched(this.requestId, episodeDetails, status);
@@ -253,7 +321,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onEpisodesFetched(final List<EpisodeDetails> list, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onEpisodesFetched");
+                Log.w("FalkorAccess", "No client callback found for onEpisodesFetched");
                 return;
             }
             netflixServiceCallback.onEpisodesFetched(this.requestId, list, status);
@@ -263,7 +331,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onGenreListsFetched(final List<GenreList> list, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onGenreListsFetched");
+                Log.w("FalkorAccess", "No client callback found for onGenreListsFetched");
                 return;
             }
             netflixServiceCallback.onGenreListsFetched(this.requestId, list, status);
@@ -273,7 +341,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onGenreLoLoMoPrefetched(final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for client onGenreLoLoMoPrefetched");
+                Log.w("FalkorAccess", "No client callback found for client onGenreLoLoMoPrefetched");
                 return;
             }
             netflixServiceCallback.onGenreLoLoMoPrefetched(this.requestId, status);
@@ -283,7 +351,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onGenresFetched(final List<Genre> list, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onGenresFetched");
+                Log.w("FalkorAccess", "No client callback found for onGenresFetched");
                 return;
             }
             netflixServiceCallback.onGenresFetched(this.requestId, list, status);
@@ -298,7 +366,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onKidsCharacterDetailsFetched");
+                Log.w("FalkorAccess", "No client callback found for onKidsCharacterDetailsFetched");
                 return;
             }
             netflixServiceCallback.onKidsCharacterDetailsFetched(this.requestId, kidsCharacterDetails, b, status);
@@ -308,7 +376,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onLoLoMoPrefetched(final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for client onLoLoMoPrefetched");
+                Log.w("FalkorAccess", "No client callback found for client onLoLoMoPrefetched");
                 return;
             }
             netflixServiceCallback.onLoLoMoPrefetched(this.requestId, status);
@@ -318,7 +386,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onLoLoMoSummaryFetched(final LoLoMo loLoMo, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onLoLoMoSummaryFetched");
+                Log.w("FalkorAccess", "No client callback found for onLoLoMoSummaryFetched");
                 return;
             }
             netflixServiceCallback.onLoLoMoSummaryFetched(this.requestId, loLoMo, status);
@@ -328,7 +396,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onLoMosFetched(final List<LoMo> list, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onLoMosFetched");
+                Log.w("FalkorAccess", "No client callback found for onLoMosFetched");
                 return;
             }
             netflixServiceCallback.onLoMosFetched(this.requestId, list, status);
@@ -338,7 +406,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onMovieDetailsFetched");
+                Log.w("FalkorAccess", "No client callback found for onMovieDetailsFetched");
                 return;
             }
             netflixServiceCallback.onMovieDetailsFetched(this.requestId, movieDetails, status);
@@ -348,7 +416,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onPostPlayVideosFetched");
+                Log.w("FalkorAccess", "No client callback found for onPostPlayVideosFetched");
                 return;
             }
             netflixServiceCallback.onPostPlayVideosFetched(this.requestId, list, status);
@@ -358,7 +426,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onQueueAdd(final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onQueueAdd");
+                Log.w("FalkorAccess", "No client callback found for onQueueAdd");
                 return;
             }
             netflixServiceCallback.onQueueAdd(this.requestId, status);
@@ -368,7 +436,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onQueueRemove(final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onQueueRemove");
+                Log.w("FalkorAccess", "No client callback found for onQueueRemove");
                 return;
             }
             netflixServiceCallback.onQueueRemove(this.requestId, status);
@@ -378,7 +446,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onSearchResultsFetched(final ISearchResults searchResults, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onSearchResultsFetched");
+                Log.w("FalkorAccess", "No client callback found for onSearchResultsFetched");
                 return;
             }
             netflixServiceCallback.onSearchResultsFetched(this.requestId, searchResults, status);
@@ -388,7 +456,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onSeasonDetailsFetched(final SeasonDetails seasonDetails, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onSeasonDetailsFetched");
+                Log.w("FalkorAccess", "No client callback found for onSeasonDetailsFetched");
                 return;
             }
             netflixServiceCallback.onSeasonDetailsFetched(this.requestId, seasonDetails, status);
@@ -398,7 +466,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onSeasonsFetched(final List<SeasonDetails> list, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onSeasonsFetched");
+                Log.w("FalkorAccess", "No client callback found for onSeasonsFetched");
                 return;
             }
             netflixServiceCallback.onSeasonsFetched(this.requestId, list, status);
@@ -408,7 +476,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onShowDetailsFetched");
+                Log.w("FalkorAccess", "No client callback found for onShowDetailsFetched");
                 return;
             }
             netflixServiceCallback.onShowDetailsFetched(this.requestId, showDetails, status);
@@ -418,17 +486,44 @@ public class FalkorAccess implements IBrowseInterface
         public void onSimilarVideosFetched(final SearchVideoList list, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onSimilarVideosFetched");
+                Log.w("FalkorAccess", "No client callback found for onSimilarVideosFetched");
                 return;
             }
             netflixServiceCallback.onSimilarVideosFetched(this.requestId, list, status);
         }
         
         @Override
+        public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+            final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
+            if (netflixServiceCallback == null) {
+                Log.w("FalkorAccess", "No client callback found for onSocialNotificationWasThanked");
+                return;
+            }
+            netflixServiceCallback.onSocialNotificationWasThanked(this.requestId, socialNotificationSummary, status);
+        }
+        
+        @Override
+        public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+            final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
+            if (netflixServiceCallback == null) {
+                Log.w("FalkorAccess", "No client callback found for onSocialNotificationsListFetched");
+                return;
+            }
+            netflixServiceCallback.onSocialNotificationsListFetched(this.requestId, list, status);
+        }
+        
+        @Override
+        public void onSocialNotificationsMarkedAsRead(final List<SocialNotificationSummary> list, final Status status) {
+            if (Log.isLoggable("FalkorAccess", 4)) {
+                Log.i("FalkorAccess", "onSocialNotificationsMarkedAsRead: " + status);
+            }
+        }
+        
+        @Override
         public void onVideoHide(final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onVideoHide");
+                Log.w("FalkorAccess", "No client callback found for onVideoHide");
                 return;
             }
             netflixServiceCallback.onVideoHide(this.requestId, status);
@@ -438,7 +533,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onVideoRatingSet(final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onVideoRatingSet");
+                Log.w("FalkorAccess", "No client callback found for onVideoRatingSet");
                 return;
             }
             netflixServiceCallback.onVideoRatingSet(this.requestId, status);
@@ -448,7 +543,7 @@ public class FalkorAccess implements IBrowseInterface
         public void onVideosFetched(final List<Video> list, final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)FalkorAccess.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
-                Log.w("NetflixServiceBrowse", "No client callback found for onVideosFetched");
+                Log.w("FalkorAccess", "No client callback found for onVideosFetched");
                 return;
             }
             netflixServiceCallback.onVideosFetched(this.requestId, list, status);

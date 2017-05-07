@@ -5,11 +5,55 @@
 package com.netflix.mediaclient.util;
 
 import org.json.JSONArray;
+import java.util.Iterator;
+import com.google.gson.JsonElement;
+import java.util.ArrayList;
+import java.util.List;
+import com.google.gson.JsonArray;
+import android.util.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class JsonUtils
 {
+    public static JSONObject createJson(final String s, final String s2) {
+        if (s == null || s2 == null) {
+            throw new IllegalArgumentException("Name and/or value are null");
+        }
+        final JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(s, (Object)s2);
+            return jsonObject;
+        }
+        catch (JSONException ex) {
+            return jsonObject;
+        }
+    }
+    
+    public static JSONObject createJson(final Pair<String, String>[] array) {
+        if (array == null) {
+            throw new IllegalArgumentException("Name and/or value are null");
+        }
+        final JSONObject jsonObject = new JSONObject();
+        try {
+            for (int length = array.length, i = 0; i < length; ++i) {
+                final Pair<String, String> pair = array[i];
+                jsonObject.put((String)pair.first, pair.second);
+            }
+        }
+        catch (JSONException ex) {}
+        return jsonObject;
+    }
+    
+    public static List<String> createStringArray(final JsonArray jsonArray) {
+        final ArrayList<String> list = new ArrayList<String>(jsonArray.size());
+        final Iterator<JsonElement> iterator = jsonArray.iterator();
+        while (iterator.hasNext()) {
+            list.add(iterator.next().getAsString());
+        }
+        return list;
+    }
+    
     public static boolean getBoolean(final JSONObject jsonObject, final String s, final boolean b) throws JSONException {
         if (!jsonObject.isNull(s)) {
             return jsonObject.getBoolean(s);

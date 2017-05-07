@@ -130,10 +130,10 @@ public class SearchUtils
     public static int getSearchFragLayout() {
         switch (SearchUtils.currentTest) {
             default: {
-                return 2130903173;
+                return 2130903175;
             }
             case THREE: {
-                return 2130903174;
+                return 2130903176;
             }
         }
     }
@@ -141,10 +141,10 @@ public class SearchUtils
     public static int getSearchViewLayoutPeople() {
         switch (SearchUtils.currentTest) {
             default: {
-                return 2130903170;
+                return 2130903172;
             }
             case THREE: {
-                return 2130903172;
+                return 2130903174;
             }
         }
     }
@@ -152,10 +152,10 @@ public class SearchUtils
     public static int getSearchViewLayoutRelated() {
         switch (SearchUtils.currentTest) {
             default: {
-                return 2130903171;
+                return 2130903173;
             }
             case THREE: {
-                return 2130903172;
+                return 2130903174;
             }
         }
     }

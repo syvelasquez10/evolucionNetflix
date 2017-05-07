@@ -5,10 +5,14 @@
 package com.netflix.mediaclient.service.webclient.model.branches;
 
 import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.model.BaseFalkorObject;
+import java.util.List;
+import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
 
-public abstract class Video extends BaseFalkorObject
+public abstract class Video
 {
+    public TrackableListSummary similarListSummary;
+    public List<com.netflix.mediaclient.servicemgr.model.Video> similarVideos;
+    
     public static boolean isSocialVideoType(final VideoType videoType) {
         return VideoType.SOCIAL_FRIEND.equals(videoType) || VideoType.SOCIAL_GROUP.equals(videoType) || VideoType.SOCIAL_POPULAR.equals(videoType);
     }
@@ -73,6 +77,7 @@ public abstract class Video extends BaseFalkorObject
         public String restUrl;
         public int runtime;
         public int seasonCount;
+        public String storyImgDispUrl;
         public String storyImgUrl;
         public String synopsis;
         public String synopsisNarrative;
@@ -96,6 +101,7 @@ public abstract class Video extends BaseFalkorObject
             this.mdxHorzUrl = detail.mdxHorzUrl;
             this.mdxVertUrl = detail.mdxVertUrl;
             this.storyImgUrl = detail.storyImgUrl;
+            this.storyImgDispUrl = detail.storyImgDispUrl;
             this.intrUrl = detail.intrUrl;
             this.episodeCount = detail.episodeCount;
             this.seasonCount = detail.seasonCount;
@@ -108,7 +114,7 @@ public abstract class Video extends BaseFalkorObject
         
         @Override
         public String toString() {
-            return "Detail [year=" + this.year + ", synopsis=" + this.synopsis + ", synopsisNarrative=" + this.synopsisNarrative + ", quality=" + this.quality + ", directors=" + this.directors + ", actors=" + this.actors + ", genres=" + this.genres + ", certification=" + this.certification + ", horzDispUrl=" + this.horzDispUrl + ", restUrl=" + this.restUrl + ", bifUrl=" + this.bifUrl + ", baseUrl=" + this.baseUrl + ", tvCardUrl=" + this.tvCardUrl + ", mdxHorzUrl=" + this.mdxHorzUrl + ", mdxVertUrl=" + this.mdxVertUrl + ", storyImgUrl=" + this.storyImgUrl + ", intrUrl=" + this.intrUrl + ", episodeCount=" + this.episodeCount + ", seasonCount=" + this.seasonCount + ", isHdAvailable=" + this.isHdAvailable + ", isAutoPlayEnabled=" + this.isAutoPlayEnabled + ", isNextPlayableEpisode=" + this.isNextPlayableEpisode + ", predictedRating=" + this.predictedRating + ", isPinProtected=" + this.isPinProtected + ", runtime=" + this.runtime + ", endtime=" + this.endtime + "]";
+            return "Detail [year=" + this.year + ", synopsis=" + this.synopsis + ", synopsisNarrative=" + this.synopsisNarrative + ", quality=" + this.quality + ", directors=" + this.directors + ", actors=" + this.actors + ", genres=" + this.genres + ", certification=" + this.certification + ", horzDispUrl=" + this.horzDispUrl + ", restUrl=" + this.restUrl + ", bifUrl=" + this.bifUrl + ", baseUrl=" + this.baseUrl + ", tvCardUrl=" + this.tvCardUrl + ", mdxHorzUrl=" + this.mdxHorzUrl + ", mdxVertUrl=" + this.mdxVertUrl + ", storyImgUrl=" + this.storyImgUrl + ", storyImgDispUrl=" + this.storyImgDispUrl + ", intrUrl=" + this.intrUrl + ", episodeCount=" + this.episodeCount + ", seasonCount=" + this.seasonCount + ", isHdAvailable=" + this.isHdAvailable + ", isAutoPlayEnabled=" + this.isAutoPlayEnabled + ", isNextPlayableEpisode=" + this.isNextPlayableEpisode + ", predictedRating=" + this.predictedRating + ", isPinProtected=" + this.isPinProtected + ", runtime=" + this.runtime + ", endtime=" + this.endtime + "]";
         }
     }
     
@@ -212,7 +218,7 @@ public abstract class Video extends BaseFalkorObject
         
         @Override
         public String toString() {
-            return "Summary [id=" + this.id + ", type=" + this.type + ", title=" + this.title + ", isEpisode=" + this.isEpisode + "]";
+            return "Summary [id=" + this.id + ", boxartUrl=" + this.boxartUrl + ", type=" + this.type + ", enumType=" + this.enumType + ", title=" + this.title + ", isEpisode=" + this.isEpisode + ", errorType=" + this.errorType + ", tvCardUrl=" + this.tvCardUrl + ", horzDispUrl=" + this.horzDispUrl + ", squareUrl=" + this.squareUrl + ", videoYear=" + this.videoYear + "]";
         }
     }
 }

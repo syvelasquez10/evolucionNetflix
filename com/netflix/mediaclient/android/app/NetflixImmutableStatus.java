@@ -4,21 +4,20 @@
 
 package com.netflix.mediaclient.android.app;
 
+import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.StatusCode;
 
 public final class NetflixImmutableStatus implements Status
 {
-    private final NetflixError[] mErrors;
     private final StatusCode mStatusCode;
     
     NetflixImmutableStatus(final StatusCode mStatusCode) {
-        this.mErrors = new NetflixError[0];
         this.mStatusCode = mStatusCode;
     }
     
     @Override
-    public NetflixError[] getErrors() {
-        return this.mErrors;
+    public Error getError() {
+        return null;
     }
     
     @Override
@@ -53,6 +52,6 @@ public final class NetflixImmutableStatus implements Status
     
     @Override
     public String toString() {
-        return "NetflixImmutableStatus [statusCode=" + this.mStatusCode + "]";
+        return "NetflixImmutableStatus, " + this.mStatusCode;
     }
 }

@@ -82,9 +82,4 @@ public class DummyPlayable implements Playable
     public boolean isPlayableEpisode() {
         return false;
     }
-    
-    @Override
-    public boolean isUserConnectedToFacebook() {
-        return false;
-    }
 }

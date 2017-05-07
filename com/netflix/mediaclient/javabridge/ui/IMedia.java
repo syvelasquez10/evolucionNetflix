@@ -6,7 +6,7 @@ package com.netflix.mediaclient.javabridge.ui;
 
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
-import com.netflix.mediaclient.media.bitrate.VideoBitrateRange;
+import com.netflix.mediaclient.media.VideoResolutionRange;
 import android.view.Surface;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.javabridge.invoke.media.Open;
@@ -30,7 +30,7 @@ public interface IMedia
     
     void addEventListener(final String p0, final EventListener p1);
     
-    void changePlayer(final PlayerType p0, final int p1);
+    void changePlayer(final PlayerType p0);
     
     void close();
     
@@ -102,7 +102,7 @@ public interface IMedia
     
     void setVideoBitrateRange(final int p0, final int p1);
     
-    void setVideoBitrateRanges(final VideoBitrateRange[] p0);
+    void setVideoResolutionRange(final VideoResolutionRange p0);
     
     void setWifiApsInfo(final Context p0, final String p1, final boolean p2);
     

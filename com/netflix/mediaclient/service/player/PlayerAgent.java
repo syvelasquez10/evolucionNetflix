@@ -7,7 +7,6 @@ package com.netflix.mediaclient.service.player;
 import com.netflix.mediaclient.event.nrdp.media.UpdatePts;
 import com.netflix.mediaclient.event.UIEvent;
 import android.view.SurfaceHolder;
-import com.netflix.mediaclient.media.JPlayer2Helper;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.media.Subtitle;
 import java.nio.ByteBuffer;
@@ -18,8 +17,8 @@ import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.service.configuration.BitrateRangeFactory;
 import android.support.v4.content.LocalBroadcastManager;
+import com.netflix.mediaclient.media.JPlayer2Helper;
 import android.media.AudioManager;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.service.player.subtitles.TextStyle;
@@ -62,6 +61,7 @@ import com.netflix.mediaclient.javabridge.ui.IMedia;
 import com.netflix.mediaclient.media.JPlayer.JPlayer;
 import com.netflix.mediaclient.media.MediaPlayerHelper;
 import com.netflix.mediaclient.media.BifManager;
+import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.servicemgr.IPlayer;
@@ -93,8 +93,8 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private boolean ignoreErrorsWhileActionId12IsProcessed;
     private boolean inPlaybackSession;
     private NccpError mActionId12Error;
+    private AudioBitrateRange mAudioBitrateRange;
     private BifManager mBifManager;
-    private int mBitrateCap;
     private long mBookmark;
     private boolean mBufferingCompleted;
     private CloseTimeoutTask mCloseTimeoutTask;
@@ -152,7 +152,6 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     public PlayerAgent() {
         this.mPlayerListenerManager = new PlayerListenerManager(this);
         this.mWakeLock = null;
-        this.mBitrateCap = -1;
         this.seeking = false;
         this.validPtsRecieved = false;
         this.preparedCompleted = false;
@@ -165,6 +164,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         this.toPlayAfterStop = false;
         this.toOpenAfterClose = false;
         this.toCancelOpen = false;
+        this.mAudioBitrateRange = new AudioBitrateRange(0, 64);
         this.onOpenRunnable = new Runnable() {
             @Override
             public void run() {
@@ -814,9 +814,13 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private void preparePlayerType(final PlayerType playerType) {
         if (playerType == PlayerType.device10 || playerType == PlayerType.device11) {
             this.mHelper.prepareJPlayer(this.mMedia, this.mSurface, this.mJPlayerListener, this.isPropertyStreamingVideoDrs(), this.getConfigurationAgent().getJPlayerConfig());
-            return;
         }
-        this.mHelper.prepare(this.mMedia, this.mSurface, this.getContext());
+        else {
+            this.mHelper.prepare(this.mMedia, this.mSurface, this.getContext());
+            if (this.mHelper != null && this.mHelper instanceof JPlayer2Helper) {
+                ((JPlayer2Helper)this.mHelper).setMaxVideoHeight(this.getConfigurationAgent().getVideoResolutionRange());
+            }
+        }
     }
     
     private void registerReceivers() {
@@ -905,7 +909,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     
     private void transitToOpeningState() {
         Log.d(PlayerAgent.TAG, "MP: Set audio bitrange to 64 Kbps");
-        this.mMedia.setAudioBitrateRange(BitrateRangeFactory.getAudioBitrateRange());
+        this.mMedia.setAudioBitrateRange(this.mAudioBitrateRange);
         this.mMedia.setThrotteled(false);
         this.mMedia.setNetworkProfile(2);
         this.muteAudio(true);
@@ -913,8 +917,8 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     
     private void transitToStoppedState() {
         if (this.mState == 0) {
-            this.mMedia.setAudioBitrateRange(BitrateRangeFactory.getAudioBitrateRange());
-            this.mMedia.setVideoBitrateRanges(this.getConfigurationAgent().getVideoBitrateRange());
+            this.mMedia.setAudioBitrateRange(this.mAudioBitrateRange);
+            this.mMedia.setVideoResolutionRange(this.getConfigurationAgent().getVideoResolutionRange());
             this.mMedia.setThrotteled(false);
             this.mMedia.setNetworkProfile(2);
         }
@@ -1052,12 +1056,8 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
             Log.d(PlayerAgent.TAG, "Player type is " + this.mPlayerType.getDescription());
         }
         this.mHelper = MediaPlayerHelperFactory.getInstance(this.mPlayerType);
-        this.mBitrateCap = BitrateRangeFactory.getBitrateCap(this.getContext());
-        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
-            Log.d(PlayerAgent.TAG, "Current bitrate cap setting " + this.mBitrateCap);
-        }
         Log.d(PlayerAgent.TAG, "MP: Set audio bitrange to 64 Kbps");
-        this.mMedia.setAudioBitrateRange(BitrateRangeFactory.getAudioBitrateRange());
+        this.mMedia.setAudioBitrateRange(this.mAudioBitrateRange);
         this.mMedia.setStreamingQoe(this.getConfigurationAgent().getStreamingQoe());
         this.mMedia.setThrotteled(false);
         this.mMedia.setNetworkProfile(2);
@@ -1237,141 +1237,129 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         //    12: aload_0        
         //    13: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getContext:()Landroid/content/Context;
         //    16: invokestatic    com/netflix/mediaclient/service/configuration/PlayerTypeFactory.getCurrentType:(Landroid/content/Context;)Lcom/netflix/mediaclient/media/PlayerType;
-        //    19: astore_2       
+        //    19: astore_1       
         //    20: aload_0        
-        //    21: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getContext:()Landroid/content/Context;
-        //    24: invokestatic    com/netflix/mediaclient/service/configuration/BitrateRangeFactory.getBitrateCap:(Landroid/content/Context;)I
-        //    27: istore_1       
-        //    28: aload_0        
-        //    29: aload_2        
-        //    30: invokestatic    com/netflix/mediaclient/media/MediaPlayerHelperFactory.getInstance:(Lcom/netflix/mediaclient/media/PlayerType;)Lcom/netflix/mediaclient/media/MediaPlayerHelper;
-        //    33: putfield        com/netflix/mediaclient/service/player/PlayerAgent.mHelper:Lcom/netflix/mediaclient/media/MediaPlayerHelper;
-        //    36: aload_2        
-        //    37: aload_0        
-        //    38: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //    41: if_acmpne       110
-        //    44: iload_1        
-        //    45: aload_0        
-        //    46: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mBitrateCap:I
-        //    49: if_icmpne       110
-        //    52: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
-        //    55: bipush          6
-        //    57: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //    60: ifeq            102
-        //    63: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
-        //    66: new             Ljava/lang/StringBuilder;
-        //    69: dup            
-        //    70: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    73: ldc_w           "Player type is not changed! It is still "
+        //    21: aload_1        
+        //    22: invokestatic    com/netflix/mediaclient/media/MediaPlayerHelperFactory.getInstance:(Lcom/netflix/mediaclient/media/PlayerType;)Lcom/netflix/mediaclient/media/MediaPlayerHelper;
+        //    25: putfield        com/netflix/mediaclient/service/player/PlayerAgent.mHelper:Lcom/netflix/mediaclient/media/MediaPlayerHelper;
+        //    28: aload_1        
+        //    29: aload_0        
+        //    30: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //    33: if_acmpne       94
+        //    36: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
+        //    39: bipush          6
+        //    41: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
+        //    44: ifeq            86
+        //    47: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
+        //    50: new             Ljava/lang/StringBuilder;
+        //    53: dup            
+        //    54: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    57: ldc_w           "Player type is not changed! It is still "
+        //    60: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    63: aload_0        
+        //    64: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //    67: invokevirtual   com/netflix/mediaclient/media/PlayerType.getDescription:()Ljava/lang/String;
+        //    70: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    73: ldc_w           ". Preparing players!"
         //    76: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    79: aload_0        
-        //    80: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //    83: invokevirtual   com/netflix/mediaclient/media/PlayerType.getDescription:()Ljava/lang/String;
-        //    86: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    89: ldc_w           ". Preparing players!"
-        //    92: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    95: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //    98: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   101: pop            
-        //   102: aload_0        
-        //   103: aload_2        
-        //   104: invokespecial   com/netflix/mediaclient/service/player/PlayerAgent.preparePlayerType:(Lcom/netflix/mediaclient/media/PlayerType;)V
-        //   107: aload_0        
-        //   108: monitorexit    
-        //   109: return         
-        //   110: aload_0        
-        //   111: aload_2        
-        //   112: putfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //   115: aload_0        
-        //   116: iload_1        
-        //   117: putfield        com/netflix/mediaclient/service/player/PlayerAgent.mBitrateCap:I
-        //   120: aload_0        
-        //   121: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //   124: ifnonnull       225
-        //   127: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
-        //   130: ldc_w           "This should not happen, player type was null at this point! Use default."
-        //   133: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   136: pop            
-        //   137: aload_0        
-        //   138: invokestatic    com/netflix/mediaclient/service/configuration/PlayerTypeFactory.findDefaultPlayerType:()Lcom/netflix/mediaclient/media/PlayerType;
-        //   141: putfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //    79: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    82: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //    85: pop            
+        //    86: aload_0        
+        //    87: aload_1        
+        //    88: invokespecial   com/netflix/mediaclient/service/player/PlayerAgent.preparePlayerType:(Lcom/netflix/mediaclient/media/PlayerType;)V
+        //    91: aload_0        
+        //    92: monitorexit    
+        //    93: return         
+        //    94: aload_0        
+        //    95: aload_1        
+        //    96: putfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //    99: aload_0        
+        //   100: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //   103: ifnonnull       201
+        //   106: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
+        //   109: ldc_w           "This should not happen, player type was null at this point! Use default."
+        //   112: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   115: pop            
+        //   116: aload_0        
+        //   117: invokestatic    com/netflix/mediaclient/service/configuration/PlayerTypeFactory.findDefaultPlayerType:()Lcom/netflix/mediaclient/media/PlayerType;
+        //   120: putfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //   123: aload_0        
+        //   124: aload_0        
+        //   125: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //   128: invokespecial   com/netflix/mediaclient/service/player/PlayerAgent.preparePlayerType:(Lcom/netflix/mediaclient/media/PlayerType;)V
+        //   131: aload_0        
+        //   132: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
+        //   135: aload_0        
+        //   136: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //   139: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.changePlayer:(Lcom/netflix/mediaclient/media/PlayerType;)V
         //   144: aload_0        
-        //   145: aload_0        
-        //   146: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //   149: invokespecial   com/netflix/mediaclient/service/player/PlayerAgent.preparePlayerType:(Lcom/netflix/mediaclient/media/PlayerType;)V
-        //   152: aload_0        
-        //   153: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
-        //   156: aload_0        
-        //   157: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //   160: aload_0        
-        //   161: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mBitrateCap:I
-        //   164: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.changePlayer:(Lcom/netflix/mediaclient/media/PlayerType;I)V
-        //   169: aload_0        
-        //   170: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
-        //   173: invokestatic    com/netflix/mediaclient/service/configuration/BitrateRangeFactory.getAudioBitrateRange:()Lcom/netflix/mediaclient/media/bitrate/AudioBitrateRange;
-        //   176: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.setAudioBitrateRange:(Lcom/netflix/mediaclient/media/bitrate/AudioBitrateRange;)V
-        //   181: aload_0        
-        //   182: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
-        //   185: iconst_0       
-        //   186: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.setThrotteled:(Z)V
-        //   191: aload_0        
-        //   192: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
-        //   195: iconst_2       
-        //   196: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.setNetworkProfile:(I)V
-        //   201: ldc2_w          400
-        //   204: invokestatic    java/lang/Thread.sleep:(J)V
-        //   207: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
-        //   210: ldc_w           "Player changed done"
-        //   213: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   216: pop            
-        //   217: goto            107
-        //   220: astore_2       
-        //   221: aload_0        
-        //   222: monitorexit    
-        //   223: aload_2        
-        //   224: athrow         
-        //   225: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
-        //   228: iconst_3       
-        //   229: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //   232: ifeq            144
-        //   235: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
-        //   238: new             Ljava/lang/StringBuilder;
-        //   241: dup            
-        //   242: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   245: ldc_w           "Player type is "
-        //   248: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   251: aload_0        
-        //   252: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //   255: invokevirtual   com/netflix/mediaclient/media/PlayerType.getDescription:()Ljava/lang/String;
-        //   258: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   261: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   264: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   267: pop            
-        //   268: goto            144
-        //   271: astore_2       
-        //   272: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
-        //   275: ldc_w           "ReloadPlayer "
-        //   278: aload_2        
-        //   279: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   282: pop            
-        //   283: goto            207
+        //   145: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
+        //   148: aload_0        
+        //   149: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mAudioBitrateRange:Lcom/netflix/mediaclient/media/bitrate/AudioBitrateRange;
+        //   152: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.setAudioBitrateRange:(Lcom/netflix/mediaclient/media/bitrate/AudioBitrateRange;)V
+        //   157: aload_0        
+        //   158: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
+        //   161: iconst_0       
+        //   162: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.setThrotteled:(Z)V
+        //   167: aload_0        
+        //   168: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
+        //   171: iconst_2       
+        //   172: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.setNetworkProfile:(I)V
+        //   177: ldc2_w          400
+        //   180: invokestatic    java/lang/Thread.sleep:(J)V
+        //   183: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
+        //   186: ldc_w           "Player changed done"
+        //   189: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   192: pop            
+        //   193: goto            91
+        //   196: astore_1       
+        //   197: aload_0        
+        //   198: monitorexit    
+        //   199: aload_1        
+        //   200: athrow         
+        //   201: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
+        //   204: iconst_3       
+        //   205: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
+        //   208: ifeq            123
+        //   211: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
+        //   214: new             Ljava/lang/StringBuilder;
+        //   217: dup            
+        //   218: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   221: ldc_w           "Player type is "
+        //   224: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   227: aload_0        
+        //   228: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //   231: invokevirtual   com/netflix/mediaclient/media/PlayerType.getDescription:()Ljava/lang/String;
+        //   234: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   237: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   240: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   243: pop            
+        //   244: goto            123
+        //   247: astore_1       
+        //   248: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
+        //   251: ldc_w           "ReloadPlayer "
+        //   254: aload_1        
+        //   255: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   258: pop            
+        //   259: goto            183
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                            
         //  -----  -----  -----  -----  --------------------------------
-        //  2      102    220    225    Any
-        //  102    107    220    225    Any
-        //  110    144    220    225    Any
-        //  144    201    220    225    Any
-        //  201    207    271    286    Ljava/lang/InterruptedException;
-        //  201    207    220    225    Any
-        //  207    217    220    225    Any
-        //  225    268    220    225    Any
-        //  272    283    220    225    Any
+        //  2      86     196    201    Any
+        //  86     91     196    201    Any
+        //  94     123    196    201    Any
+        //  123    177    196    201    Any
+        //  177    183    247    262    Ljava/lang/InterruptedException;
+        //  177    183    196    201    Any
+        //  183    193    196    201    Any
+        //  201    244    196    201    Any
+        //  248    259    196    201    Any
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0207:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0183:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)

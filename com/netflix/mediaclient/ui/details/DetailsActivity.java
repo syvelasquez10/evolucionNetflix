@@ -8,30 +8,35 @@ import android.widget.Toast;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import com.netflix.mediaclient.util.NflxProtocolUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
 import android.view.Menu;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.ui.kids.details.KidsDetailsActivity;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
-import com.netflix.mediaclient.util.LogUtils;
-import com.netflix.mediaclient.ui.common.PlayContextImp;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import java.io.Serializable;
 import android.os.Parcelable;
-import android.content.Context;
-import android.content.Intent;
 import android.app.Activity;
+import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import android.content.Intent;
+import android.content.Context;
+import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import android.view.MenuItem;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.ui.common.VideoDetailsProvider;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper;
@@ -46,15 +51,28 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     public static final String EXTRA_VIDEO_ID = "extra_video_id";
     public static final String EXTRA_VIDEO_TITLE = "extra_video_title";
     public static final String EXTRA_VIDEO_TYPE = "extra_video_type";
+    public static final String INTENT_MDP = "com.netflix.mediaclient.intent.action.NOTIFICATION_MOVIE_DETAILS";
+    public static final String INTENT_SDP = "com.netflix.mediaclient.intent.action.NOTIFICATION_SHOW_DETAILS";
     private static final String TAG = "DetailsActivity";
     static final boolean USE_DUMMY_DATA = false;
     private DetailsMenu detailsMenu;
     private String episodeId;
     private Action mAction;
     private String mActionToken;
+    protected MessageData mMessageData;
     private PlayContext mPlayContext;
+    private MenuItem notificationsMenuItem;
     private ServiceManager serviceMan;
+    private final BroadcastReceiver socialNotificationsListUpdateReceiver;
     private String videoId;
+    
+    public DetailsActivity() {
+        this.socialNotificationsListUpdateReceiver = new BroadcastReceiver() {
+            public void onReceive(final Context context, final Intent intent) {
+                SocialNotificationsUtils.handleNotificationsUpdateReceiver(intent, DetailsActivity.this.notificationsMenuItem, "DetailsActivity");
+            }
+        };
+    }
     
     public static Intent getEpisodeDetailsIntent(final Activity activity, final String s, final String s2, final PlayContext playContext) {
         return getEpisodeDetailsIntent(activity, s, s2, playContext, null, null);
@@ -71,13 +89,39 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         return putExtra;
     }
     
-    private int getTrackId() {
-        if (this.mPlayContext instanceof PlayContext) {
-            Log.d("DetailsActivity", "TrackId found in PlayContextImpl");
-            return ((PlayContextImp)this.mPlayContext).getTrackId();
+    public static Intent getIntent(final Context context, final Class<?> clazz, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final Action action, final String s3) {
+        final Intent intent = new Intent(context, (Class)clazz);
+        intent.putExtra("extra_video_id", s);
+        intent.putExtra("extra_video_title", s2);
+        intent.putExtra("extra_video_type", (Serializable)videoType);
+        intent.putExtra("extra_playcontext", (Parcelable)playContext);
+        if (action != null) {
+            intent.putExtra("extra_action", (Serializable)action);
         }
-        Log.d("DetailsActivity", "TrackId not found!");
-        return -1;
+        if (s3 != null) {
+            intent.putExtra("extra_action_token", s3);
+        }
+        return intent;
+    }
+    
+    public static Intent getIntentForBroadcastReceiver(final VideoType videoType, final String s, final String s2, final PlayContext playContext, final String s3, final MessageData messageData) {
+        String s4;
+        if (videoType == VideoType.MOVIE) {
+            s4 = "com.netflix.mediaclient.intent.action.NOTIFICATION_MOVIE_DETAILS";
+        }
+        else {
+            s4 = "com.netflix.mediaclient.intent.action.NOTIFICATION_SHOW_DETAILS";
+        }
+        final Intent intent = new Intent(s4);
+        intent.putExtra("extra_video_id", s);
+        intent.putExtra("extra_video_title", s2);
+        intent.putExtra("extra_video_type", (Serializable)videoType);
+        intent.putExtra("extra_playcontext", (Parcelable)playContext);
+        if (s3 != null) {
+            intent.putExtra("extra_action_token", s3);
+        }
+        MessageData.addMessageDataToIntent(intent, messageData);
+        return intent;
     }
     
     private void handleAction() {
@@ -105,13 +149,17 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         if (Log.isLoggable("DetailsActivity", 3)) {
             Log.d("DetailsActivity", "handleAddToMyList:: msg token " + this.mActionToken);
         }
-        LogUtils.reportAddToQueueActionStarted((Context)this, null, this.getUiScreen());
+        UserActionLogUtils.reportAddToQueueActionStarted((Context)this, null, this.getUiScreen());
         this.serviceMan.getBrowse().addToQueue(this.videoId, this.getTrackId(), this.mActionToken, new MyListCallback("DetailsActivity"));
     }
     
     private void handleRemoveFromMyList() {
-        LogUtils.reportRemoveFromQueueActionStarted((Context)this, null, this.getUiScreen());
+        UserActionLogUtils.reportRemoveFromQueueActionStarted((Context)this, null, this.getUiScreen());
         this.serviceMan.getBrowse().removeFromQueue(this.videoId, this.mActionToken, new MyListCallback("DetailsActivity"));
+    }
+    
+    private void registerReceivers() {
+        this.registerReceiverLocallyWithAutoUnregister(this.socialNotificationsListUpdateReceiver, "com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED");
     }
     
     private void sendRetryRequest(final Fragment fragment) {
@@ -135,17 +183,17 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     }
     
     public static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final Action action, final String s3) {
-        Serializable s4 = null;
+        Class<?> clazz = null;
         final boolean forKids = netflixActivity.isForKids();
         final boolean equals = VideoType.MOVIE.equals(videoType);
         if (forKids) {
-            s4 = KidsDetailsActivity.class;
+            clazz = KidsDetailsActivity.class;
         }
         else if (equals) {
-            s4 = MovieDetailsActivity.class;
+            clazz = MovieDetailsActivity.class;
         }
         else if (VideoType.SHOW.equals(videoType)) {
-            s4 = ShowDetailsActivity.class;
+            clazz = ShowDetailsActivity.class;
         }
         else if (com.netflix.mediaclient.service.webclient.model.branches.Video.isSocialVideoType(videoType)) {
             Log.w("DetailsActivity", "Asked to show details for a social video type - shouldn't happen");
@@ -153,15 +201,8 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         else {
             netflixActivity.getServiceManager().getClientLogging().getErrorLogging().logHandledException(new IllegalStateException(String.format("Don't know how to handle %s type: %s, playContext:%s", s, videoType, playContext)));
         }
-        if (s4 != null) {
-            final Intent putExtra = new Intent((Context)netflixActivity, (Class)s4).putExtra("extra_video_id", s).putExtra("extra_video_title", s2).putExtra("extra_video_type", (Serializable)videoType).putExtra("extra_playcontext", (Parcelable)playContext);
-            if (action != null) {
-                putExtra.putExtra("extra_action", (Serializable)action);
-            }
-            if (s3 != null) {
-                putExtra.putExtra("extra_action_token", s3);
-            }
-            netflixActivity.startActivity(putExtra);
+        if (clazz != null) {
+            netflixActivity.startActivity(getIntent((Context)netflixActivity, clazz, videoType, s, s2, playContext, action, s3));
         }
     }
     
@@ -174,6 +215,12 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
             putExtra.putExtra("extra_action_token", s3);
         }
         activity.startActivity(putExtra);
+    }
+    
+    private void updateSocialNotificationsState() {
+        if (this.serviceMan != null && SocialNotificationsUtils.isSocialNotificationsFeatureSupported(this.serviceMan)) {
+            this.serviceMan.getBrowse().refreshSocialNotifications(false);
+        }
     }
     
     @Override
@@ -201,6 +248,15 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     @Override
     public PlayContext getPlayContext() {
         return this.mPlayContext;
+    }
+    
+    public int getTrackId() {
+        if (this.mPlayContext instanceof PlayContext) {
+            Log.d("DetailsActivity", "TrackId found in PlayContextImpl");
+            return ((PlayContextImp)this.mPlayContext).getTrackId();
+        }
+        Log.d("DetailsActivity", "TrackId not found!");
+        return -1;
     }
     
     @Override
@@ -234,12 +290,14 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
             Log.v("DetailsActivity", "TRACK_ID: " + playContext.getTrackId());
         }
         super.onCreate(bundle);
+        this.registerReceivers();
     }
     
     @Override
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         MdxMenu.addSelectPlayTarget(this.getMdxMiniPlayerFrag(), menu);
         this.detailsMenu = new DetailsMenu(this, menu, this.videoId);
+        this.notificationsMenuItem = SocialNotificationsUtils.addSocialNotificationsIconIfNeeded(this, menu);
         super.onCreateOptionsMenu(menu, menu2);
     }
     
@@ -255,6 +313,8 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         if (secondaryFrag != null) {
             ((ManagerStatusListener)secondaryFrag).onManagerReady(serviceMan, status);
         }
+        this.updateSocialNotificationsState();
+        NflxProtocolUtils.reportUserOpenedNotification(this.serviceMan, this.getIntent());
         this.handleAction();
     }
     
@@ -266,6 +326,10 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         if (secondaryFrag != null) {
             ((ManagerStatusListener)secondaryFrag).onManagerUnavailable(serviceManager, status);
         }
+    }
+    
+    public boolean onOptionsItemSelected(final MenuItem menuItem) {
+        return SocialNotificationsUtils.tryHandleMenuItemClick(menuItem, (Context)this) || super.onOptionsItemSelected(menuItem);
     }
     
     @Override
@@ -316,15 +380,15 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         @Override
         public void onQueueAdd(final Status status) {
             super.onQueueAdd(status);
-            int n = 2131493204;
+            int n = 2131493205;
             if (CommonStatus.OK == status) {
-                n = 2131493376;
+                n = 2131493379;
             }
             else if (status.getStatusCode() == StatusCode.ALREADY_IN_QUEUE) {
-                n = 2131493378;
+                n = 2131493381;
             }
             else if (status.getStatusCode() == StatusCode.NOT_VALID) {
-                n = 2131493377;
+                n = 2131493380;
             }
             Toast.makeText((Context)DetailsActivity.this, n, 1).show();
         }
@@ -332,13 +396,13 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         @Override
         public void onQueueRemove(final Status status) {
             super.onQueueRemove(status);
-            int n = 2131493380;
+            int n = 2131493383;
             if (CommonStatus.OK == status) {
-                n = 2131493379;
+                n = 2131493382;
             }
             else if (status.getStatusCode() == StatusCode.NOT_IN_QUEUE) {
                 Log.w("DetailsActivity", "It was already removed");
-                n = 2131493379;
+                n = 2131493382;
             }
             Toast.makeText((Context)DetailsActivity.this, n, 1).show();
         }

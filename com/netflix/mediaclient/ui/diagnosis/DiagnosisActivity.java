@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.diagnosis;
 import com.netflix.mediaclient.service.diagnostics.DiagnosisAgent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.annotation.SuppressLint;
 import android.widget.ArrayAdapter;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -64,16 +65,16 @@ public class DiagnosisActivity extends NetflixActivity implements DiagnosisListe
                 DiagnosisActivity.this.mDiagnosis = DiagnosisActivity.this.getServiceManager().getDiagnosis();
                 DiagnosisActivity.this.mDiagnosis.addListener((IDiagnosis.DiagnosisListener)DiagnosisActivity.this);
                 DiagnosisActivity.this.mUrlList = DiagnosisActivity.this.mDiagnosis.getNetworkStateList();
-                DiagnosisActivity.this.mStatutListView = (ListView)DiagnosisActivity.this.findViewById(2131165347);
+                DiagnosisActivity.this.mStatutListView = (ListView)DiagnosisActivity.this.findViewById(2131165348);
                 DiagnosisActivity.this.mAdapter = new ResultsAdapter((Context)DiagnosisActivity.this);
                 DiagnosisActivity.this.mStatutListView.setAdapter((ListAdapter)DiagnosisActivity.this.mAdapter);
-                DiagnosisActivity.this.mNetworkStatus = (TextView)DiagnosisActivity.this.findViewById(2131165340);
-                DiagnosisActivity.this.mTestInfo = (TextView)DiagnosisActivity.this.findViewById(2131165341);
-                DiagnosisActivity.this.mTestButton = (Button)DiagnosisActivity.this.findViewById(2131165343);
-                DiagnosisActivity.this.mRadioLogo = (ImageView)DiagnosisActivity.this.findViewById(2131165346);
-                DiagnosisActivity.this.mProgressBar = (ProgressBar)DiagnosisActivity.this.findViewById(2131165342);
+                DiagnosisActivity.this.mNetworkStatus = (TextView)DiagnosisActivity.this.findViewById(2131165341);
+                DiagnosisActivity.this.mTestInfo = (TextView)DiagnosisActivity.this.findViewById(2131165342);
+                DiagnosisActivity.this.mTestButton = (Button)DiagnosisActivity.this.findViewById(2131165344);
+                DiagnosisActivity.this.mRadioLogo = (ImageView)DiagnosisActivity.this.findViewById(2131165347);
+                DiagnosisActivity.this.mProgressBar = (ProgressBar)DiagnosisActivity.this.findViewById(2131165343);
                 DiagnosisActivity.this.updateInfoGroup(InfoGroupState.INITIAL);
-                DiagnosisActivity.this.findViewById(2131165343).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
+                DiagnosisActivity.this.findViewById(2131165344).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
                     public void onClick(final View view) {
                         DiagnosisActivity.this.startDiagnosis();
                     }
@@ -110,15 +111,15 @@ public class DiagnosisActivity extends NetflixActivity implements DiagnosisListe
             }
         }
         if (n != 0 && n2 != 0) {
-            return this.getString(2131493372);
+            return this.getString(2131493375);
         }
         if (n2 != 0) {
-            return this.getString(2131493374);
+            return this.getString(2131493377);
         }
         if (n != 0) {
-            return this.getString(2131493373);
+            return this.getString(2131493376);
         }
-        return this.getString(2131493369);
+        return this.getString(2131493372);
     }
     
     @Override
@@ -231,24 +232,24 @@ public class DiagnosisActivity extends NetflixActivity implements DiagnosisListe
         switch (infoGroupState) {
             default: {}
             case INITIAL: {
-                this.mNetworkStatus.setText(2131493363);
-                this.mTestInfo.setText(2131493364);
-                this.mTestButton.setText(2131493365);
+                this.mNetworkStatus.setText(2131493366);
+                this.mTestInfo.setText(2131493367);
+                this.mTestButton.setText(2131493368);
                 this.mTestButton.setVisibility(0);
                 this.mProgressBar.setVisibility(4);
             }
             case FAILED: {
-                this.mNetworkStatus.setText(2131493367);
+                this.mNetworkStatus.setText(2131493370);
                 this.mTestInfo.setVisibility(0);
                 this.mTestInfo.setText((CharSequence)this.getStringForFailure());
                 this.mTestButton.setVisibility(0);
-                this.mTestButton.setText(2131493368);
+                this.mTestButton.setText(2131493371);
                 this.mProgressBar.setVisibility(4);
             }
             case SUCCESS: {
-                this.mNetworkStatus.setText(2131493369);
+                this.mNetworkStatus.setText(2131493372);
                 this.mTestButton.setVisibility(0);
-                this.mTestButton.setText(2131493368);
+                this.mTestButton.setText(2131493371);
                 this.mProgressBar.setVisibility(4);
             }
             case TEST_ONGOING: {
@@ -256,7 +257,7 @@ public class DiagnosisActivity extends NetflixActivity implements DiagnosisListe
                 this.mStatutListView.setVisibility(0);
                 this.mTestButton.setVisibility(4);
                 this.mProgressBar.setVisibility(0);
-                this.mNetworkStatus.setText(2131493366);
+                this.mNetworkStatus.setText(2131493369);
                 this.mTestInfo.setVisibility(4);
             }
         }
@@ -270,12 +271,13 @@ public class DiagnosisActivity extends NetflixActivity implements DiagnosisListe
         TEST_ONGOING;
     }
     
+    @SuppressLint({ "ViewHolder" })
     public class ResultsAdapter extends ArrayAdapter<String>
     {
         Context context;
         
         public ResultsAdapter(final Context context) {
-            super(context, 2130903087, 2131165347);
+            super(context, 2130903087, 2131165348);
             this.context = context;
         }
         
@@ -296,19 +298,19 @@ public class DiagnosisActivity extends NetflixActivity implements DiagnosisListe
         
         public View getView(final int n, View inflate, final ViewGroup viewGroup) {
             inflate = ((LayoutInflater)this.context.getSystemService("layout_inflater")).inflate(2130903087, viewGroup, false);
-            final TextView textView = (TextView)inflate.findViewById(2131165349);
-            final TextView textView2 = (TextView)inflate.findViewById(2131165350);
-            final ImageView imageView = (ImageView)inflate.findViewById(2131165348);
-            imageView.setImageResource(2130837701);
+            final TextView textView = (TextView)inflate.findViewById(2131165350);
+            final TextView textView2 = (TextView)inflate.findViewById(2131165351);
+            final ImageView imageView = (ImageView)inflate.findViewById(2131165349);
+            imageView.setImageResource(2130837698);
             final UrlNetworkState urlNetworkState = DiagnosisActivity.this.mUrlList.get(n);
             this.setTitleText(textView, urlNetworkState.getUrl(), n);
             if (urlNetworkState.getStatus().equals(DiagnosisAgent.UrlStatus.COMPLETED)) {
                 if (urlNetworkState.getResult() != 0) {
                     textView2.setText((CharSequence)("nw-" + urlNetworkState.getErrorGroup() + "-" + urlNetworkState.getErrorCode()));
-                    imageView.setImageResource(2130837700);
+                    imageView.setImageResource(2130837697);
                     return inflate;
                 }
-                imageView.setImageResource(2130837701);
+                imageView.setImageResource(2130837698);
                 textView2.setVisibility(4);
             }
             else {
@@ -329,10 +331,10 @@ public class DiagnosisActivity extends NetflixActivity implements DiagnosisListe
         
         public void setTitleText(final TextView textView, final String s, final int n) {
             if (s != null && s.contains("netflix")) {
-                textView.setText((CharSequence)this.context.getString(2131493370, new Object[] { n + 1 }));
+                textView.setText((CharSequence)this.context.getString(2131493373, new Object[] { n + 1 }));
                 return;
             }
-            textView.setText(2131493371);
+            textView.setText(2131493374);
         }
     }
 }

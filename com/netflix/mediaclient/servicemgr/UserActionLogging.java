@@ -15,7 +15,7 @@ import com.netflix.mediaclient.service.logging.client.model.UIError;
 
 public interface UserActionLogging
 {
-    public static final String[] ACTIONS = { "com.netflix.mediaclient.intent.action.LOG_UIA_SIGNUP_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SIGNUP_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_TO_PLAYLIST_START", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_TO_PLAYLIST_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_LOGIN_START", "com.netflix.mediaclient.intent.action.LOG_UIA_LOGIN_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_REMOVE_FROM_PLAYLIST_START", "com.netflix.mediaclient.intent.action.LOG_UIA_REMOVE_FROM_PLAYLIST_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_NAVIGATION_START", "com.netflix.mediaclient.intent.action.LOG_UIA_NAVIGATION_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_RATE_TITLE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_RATE_TITLE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_REGISTER_START", "com.netflix.mediaclient.intent.action.LOG_UIA_REGISTER_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SEARCH_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SEARCH_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_START_PLAY_START", "com.netflix.mediaclient.intent.action.LOG_UIA_START_PLAY_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SUBMIT_PAYMENT_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SUBMIT_PAYMENT_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_UPGRADE_STREAMS_START", "com.netflix.mediaclient.intent.action.LOG_UIA_UPGRADE_STREAMS_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SELECT_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SELECT_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_EDIT_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_EDIT_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_DELETE_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_DELETE_PROFILE_ENDED" };
+    public static final String[] ACTIONS = { "com.netflix.mediaclient.intent.action.LOG_UIA_SIGNUP_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SIGNUP_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_TO_PLAYLIST_START", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_TO_PLAYLIST_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_LOGIN_START", "com.netflix.mediaclient.intent.action.LOG_UIA_LOGIN_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_REMOVE_FROM_PLAYLIST_START", "com.netflix.mediaclient.intent.action.LOG_UIA_REMOVE_FROM_PLAYLIST_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_NAVIGATION_START", "com.netflix.mediaclient.intent.action.LOG_UIA_NAVIGATION_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_RATE_TITLE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_RATE_TITLE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_REGISTER_START", "com.netflix.mediaclient.intent.action.LOG_UIA_REGISTER_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SEARCH_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SEARCH_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_START_PLAY_START", "com.netflix.mediaclient.intent.action.LOG_UIA_START_PLAY_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SUBMIT_PAYMENT_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SUBMIT_PAYMENT_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_UPGRADE_STREAMS_START", "com.netflix.mediaclient.intent.action.LOG_UIA_UPGRADE_STREAMS_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SELECT_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SELECT_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_EDIT_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_EDIT_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_DELETE_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_DELETE_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_ENDED" };
     public static final String ADD_PROFILE_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_PROFILE_ENDED";
     public static final String ADD_PROFILE_START = "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_PROFILE_START";
     public static final String ADD_TO_PLAYLIST_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_TO_PLAYLIST_ENDED";
@@ -54,6 +54,8 @@ public interface UserActionLogging
     public static final String REGISTER_START = "com.netflix.mediaclient.intent.action.LOG_UIA_REGISTER_START";
     public static final String REMOVE_FROM_PLAYLIST_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_REMOVE_FROM_PLAYLIST_ENDED";
     public static final String REMOVE_FROM_PLAYLIST_START = "com.netflix.mediaclient.intent.action.LOG_UIA_REMOVE_FROM_PLAYLIST_START";
+    public static final String SAY_THANKS_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_ENDED";
+    public static final String SAY_THANKS_START = "com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_START";
     public static final String SEARCH_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_SEARCH_ENDED";
     public static final String SEARCH_START = "com.netflix.mediaclient.intent.action.LOG_UIA_SEARCH_START";
     public static final String SELECT_PROFILE_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_SELECT_PROFILE_ENDED";
@@ -86,6 +88,8 @@ public interface UserActionLogging
     void endRegisterSession(final IClientLogging.CompletionReason p0, final UIError p1);
     
     void endRemoveFromPlaylistSession(final IClientLogging.CompletionReason p0, final UIError p1);
+    
+    void endSayThanksSession(final IClientLogging.CompletionReason p0, final IClientLogging.ModalView p1, final UIError p2);
     
     void endSearchSession(final long p0, final IClientLogging.CompletionReason p1, final UIError p2);
     
@@ -120,6 +124,8 @@ public interface UserActionLogging
     void startRegisterSession(final CommandName p0, final IClientLogging.ModalView p1);
     
     void startRemoveFromPlaylistSession(final CommandName p0, final IClientLogging.ModalView p1);
+    
+    void startSayThanksSession(final CommandName p0, final IClientLogging.ModalView p1);
     
     void startSearchSession(final long p0, final CommandName p1, final IClientLogging.ModalView p2, final String p3);
     

@@ -57,15 +57,15 @@ public class KidsDetailsViewGroup extends LinearLayout
         LayoutInflater.from(this.getContext()).inflate(2130903099, (ViewGroup)this, true);
         this.setOrientation(1);
         this.setBackgroundColor(this.getContext().getResources().getColor(2131296423));
-        this.imgGroup = (ViewGroup)this.findViewById(2131165402);
+        this.imgGroup = (ViewGroup)this.findViewById(2131165403);
         this.imgGroup.getLayoutParams().height = DeviceUtils.getScreenWidthInPixels(this.getContext());
-        (this.img = (AdvancedImageView)this.findViewById(2131165404)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361949));
-        this.imgOverlay = this.findViewById(2131165405);
-        this.imgTitle = (TextView)this.findViewById(2131165406);
-        this.infoGroup = (ViewGroup)this.findViewById(2131165407);
-        this.rating = (TextView)this.findViewById(2131165408);
-        this.info = (TextView)this.findViewById(2131165409);
-        this.synopsis = (TextView)this.findViewById(2131165410);
+        (this.img = (AdvancedImageView)this.findViewById(2131165405)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361962));
+        this.imgOverlay = this.findViewById(2131165406);
+        this.imgTitle = (TextView)this.findViewById(2131165407);
+        this.infoGroup = (ViewGroup)this.findViewById(2131165408);
+        this.rating = (TextView)this.findViewById(2131165409);
+        this.info = (TextView)this.findViewById(2131165410);
+        this.synopsis = (TextView)this.findViewById(2131165411);
     }
     
     private static void setTextAndVisibility(final TextView textView, final String text) {

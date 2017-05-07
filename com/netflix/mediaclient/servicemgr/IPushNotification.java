@@ -20,12 +20,15 @@ public interface IPushNotification
     public static final String GCM_ON_UNREGISTERED = "com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_GCM_ONUNREGISTERED";
     public static final String NOTIFICATION_BROWSER_REDIRECT = "com.netflix.mediaclient.intent.action.NOTIFICATION_BROWSER_REDIRECT";
     public static final String NOTIFICATION_CANCELED = "com.netflix.mediaclient.intent.action.NOTIFICATION_CANCELED";
+    public static final String NOTIFICATION_SAY_THANKS = "com.netflix.mediaclient.intent.action.NOTIFICATION_SAY_THANKS";
     public static final String ONLOGIN = "com.netflix.mediaclient.intent.action.PUSH_ONLOGIN";
     public static final String ONLOGOUT = "com.netflix.mediaclient.intent.action.PUSH_ONLOGOUT";
     public static final String PUSH_OPTIN = "com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTIN";
     public static final String PUSH_OPTOUT = "com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTOUT";
     
     void informServiceStartedOnGcmInfo();
+    
+    boolean isOptIn();
     
     boolean isSupported();
     

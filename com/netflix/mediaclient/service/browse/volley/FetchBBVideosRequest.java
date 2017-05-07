@@ -14,7 +14,7 @@ import java.util.Arrays;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
 import com.netflix.mediaclient.service.webclient.model.ShowDetails;
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
-import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.netflix.mediaclient.service.webclient.model.MovieDetails;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
@@ -80,6 +80,7 @@ public class FetchBBVideosRequest extends FalcorVolleyWebClientRequest<List<Bill
                 n4 = 1;
                 final BillboardDetails billboardDetails = new BillboardDetails();
                 FetchCWVideosRequest.fillPlayableVideo(jsonObject, billboardDetails, string, n2, b);
+                billboardDetails.inQueue = browseWebClientCache.updateInQueueCacheRecord(billboardDetails.getId(), billboardDetails.inQueue);
                 if (VideoType.MOVIE.equals(billboardDetails.getType())) {
                     uniteWithMDP(browseWebClientCache, billboardDetails);
                 }
@@ -217,7 +218,7 @@ public class FetchBBVideosRequest extends FalcorVolleyWebClientRequest<List<Bill
             playableVideo.userConnectedToFacebook = showDetails.userConnectedToFacebook;
             return;
         }
-        Log.e("nf_service_browse_fetchbbvideosrequest", String.format("billboards creating sdp (%s - %s) ", playableVideo.getParentId(), playableVideo.getParentTitle()));
+        Log.d("nf_service_browse_fetchbbvideosrequest", String.format("billboards creating sdp (%s - %s) ", playableVideo.getParentId(), playableVideo.getParentTitle()));
         FetchCWVideosRequest.buildSdpFromPlayableVideo(browseWebClientCache, buildBrowseCacheKey, playableVideo);
     }
     

@@ -135,6 +135,11 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
+    public String getStoryDispUrl() {
+        return null;
+    }
+    
+    @Override
     public String getStoryUrl() {
         return null;
     }

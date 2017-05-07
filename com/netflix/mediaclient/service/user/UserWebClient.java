@@ -4,6 +4,9 @@
 
 package com.netflix.mediaclient.service.user;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import java.util.Set;
+
 public interface UserWebClient
 {
     void addWebUserProfile(final String p0, final boolean p1, final String p2, final UserAgentWebCallback p3);
@@ -20,11 +23,15 @@ public interface UserWebClient
     
     void fetchAvailableAvatarsList(final UserAgentWebCallback p0);
     
+    void fetchFriendsForRecommendations(final String p0, final int p1, final String p2, final UserAgentWebCallback p3);
+    
     void fetchProfileData(final String p0, final UserAgentWebCallback p1);
     
     boolean isSynchronous();
     
     void removeWebUserProfile(final String p0, final UserAgentWebCallback p1);
+    
+    void sendRecommendationsToFriends(final String p0, final Set<FriendForRecommendation> p1, final String p2, final UserAgentWebCallback p3);
     
     void switchWebUserProfile(final String p0, final UserAgentWebCallback p1);
     

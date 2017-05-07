@@ -51,4 +51,9 @@ public class Sentinel<T> implements ReferenceTarget, PathBound, Expires
     public void setReferences(final LinkedList<Ref> references) {
         this.references = references;
     }
+    
+    @Override
+    public String toString() {
+        return "Sentinel [value=" + this.value + "]";
+    }
 }

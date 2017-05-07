@@ -71,8 +71,8 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         for (int i = 0; i < this.getCount(); ++i) {
             this.episodes.add(this.loadingEpisode);
         }
-        this.lr = this.activity.getResources().getDimensionPixelSize(2131361958);
-        this.tb = this.activity.getResources().getDimensionPixelSize(2131361959);
+        this.lr = this.activity.getResources().getDimensionPixelSize(2131361971);
+        this.tb = this.activity.getResources().getDimensionPixelSize(2131361972);
         this.itemHeight = (int)((DeviceUtils.getScreenWidthInPixels((Context)this.activity) - this.lr - this.lr) * 0.75f) + this.tb;
         this.firstItemHeight = this.itemHeight + this.tb;
         this.itemParams = new AbsListView$LayoutParams(-1, this.itemHeight);
@@ -180,7 +180,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
                 if (view == null) {
                     statusTextView = this.createStatusTextView();
                 }
-                ((TextView)statusTextView).setText(2131493183);
+                ((TextView)statusTextView).setText(2131493184);
                 return (View)statusTextView;
             }
             case 2: {
@@ -215,7 +215,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
                 if (view == null) {
                     statusTextView2 = this.createStatusTextView();
                 }
-                ((TextView)statusTextView2).setText(2131492983);
+                ((TextView)statusTextView2).setText(2131492984);
                 return (View)statusTextView2;
             }
         }
@@ -278,7 +278,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         
         @Override
         public String getTitle() {
-            return this.activity.getString(2131492983);
+            return this.activity.getString(2131492984);
         }
     }
     
@@ -350,7 +350,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         
         @Override
         public String getTitle() {
-            return this.activity.getString(2131493183);
+            return this.activity.getString(2131493184);
         }
     }
 }

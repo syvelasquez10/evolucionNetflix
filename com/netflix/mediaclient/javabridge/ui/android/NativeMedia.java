@@ -9,7 +9,8 @@ import com.netflix.mediaclient.javabridge.invoke.media.Stop;
 import com.netflix.mediaclient.javabridge.invoke.android.SetWifiLinkSpeed;
 import com.netflix.mediaclient.javabridge.invoke.android.SetWifiApsInfo;
 import android.content.Context;
-import com.netflix.mediaclient.media.bitrate.VideoBitrateRange;
+import com.netflix.mediaclient.javabridge.invoke.media.SetVideoResolutionRangeToPlayer;
+import com.netflix.mediaclient.media.VideoResolutionRange;
 import com.netflix.mediaclient.javabridge.invoke.media.SetVideoBitrateRanges;
 import com.netflix.mediaclient.javabridge.invoke.android.InitVisualOn;
 import com.netflix.mediaclient.javabridge.invoke.android.SetVideoSurface;
@@ -549,8 +550,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void changePlayer(final PlayerType playerType, final int n) {
-        this.bridge.getNrdProxy().invokeMethod(new ChangePlayer(playerType, n));
+    public void changePlayer(final PlayerType playerType) {
+        this.bridge.getNrdProxy().invokeMethod(new ChangePlayer(playerType));
     }
     
     @Override
@@ -869,8 +870,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void setVideoBitrateRanges(final VideoBitrateRange[] array) {
-        this.bridge.getNrdProxy().invokeMethod(new SetVideoBitrateRanges(array));
+    public void setVideoResolutionRange(final VideoResolutionRange videoResolutionRange) {
+        this.bridge.getNrdProxy().invokeMethod(new SetVideoResolutionRangeToPlayer(videoResolutionRange.getMinWidth(), videoResolutionRange.getMaxWidth(), videoResolutionRange.getMinHeight(), videoResolutionRange.getMaxHeight()));
     }
     
     @Override

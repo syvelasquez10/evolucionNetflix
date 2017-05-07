@@ -10,14 +10,15 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.NetworkResponse;
 import android.net.Uri;
 import android.text.TextUtils;
-import java.util.Locale;
 import com.android.volley.AuthFailureError;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.app.NetflixStatus;
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
+import com.netflix.mediaclient.util.VolleyUtils;
 import com.android.volley.NetworkError;
 import com.android.volley.TimeoutError;
 import com.android.volley.ServerError;
+import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.Log;
 import com.android.volley.VolleyError;
@@ -59,21 +60,31 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
     @Override
     public void deliverError(final VolleyError volleyError) {
         this.mDurationTimeInMs = SystemClock.elapsedRealtime() - this.mDurationTimeInMs;
-        Log.w("nf_volleyrequest", "VolleyError: " + volleyError.getMessage());
+        NetflixStatus status = null;
+        if (Log.isLoggable("nf_volleyrequest", 5)) {
+            Log.w("nf_volleyrequest", "VolleyError: " + volleyError.getMessage());
+        }
         if (volleyError.networkResponse != null) {
             Log.d("nf_volleyrequest", "Error on response:" + new String(volleyError.networkResponse.data));
         }
-        StatusCode statusCode = StatusCode.INTERNAL_ERROR;
         if (volleyError instanceof ParseException) {
-            statusCode = StatusCode.RESPONSE_PARSE_ERROR;
+            status = new NetflixStatus(StatusCode.RESPONSE_PARSE_ERROR);
         }
         else if (volleyError instanceof ServerError) {
-            statusCode = StatusCode.SERVER_ERROR;
+            status = new NetflixStatus(StatusCode.SERVER_ERROR);
         }
         else if (volleyError instanceof TimeoutError || volleyError instanceof NetworkError) {
-            statusCode = this.getStatusCodeFromVolleyNetworkError(volleyError);
+            status = VolleyUtils.getStatus(volleyError, this.mErrorLogger);
         }
-        this.onFailure(new NetflixStatus(statusCode));
+        NetflixStatus netflixStatus;
+        if ((netflixStatus = status) == null) {
+            netflixStatus = new NetflixStatus(StatusCode.INTERNAL_ERROR);
+        }
+        if (netflixStatus.getError() == null) {
+            Log.d("nf_volleyrequest", "Error is not set yet, add it.");
+            netflixStatus.setError(ConsolidatedLoggingUtils.toError(volleyError));
+        }
+        this.onFailure(netflixStatus);
     }
     
     @Override
@@ -116,29 +127,6 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
     
     protected int getResponseSizeInBytes() {
         return this.mResponseSizeInBytes;
-    }
-    
-    protected StatusCode getStatusCodeFromVolleyNetworkError(final VolleyError volleyError) {
-        final String message = volleyError.getMessage();
-        StatusCode statusCode;
-        if (message == null) {
-            statusCode = StatusCode.NETWORK_ERROR;
-        }
-        else {
-            final String lowerCase = message.toLowerCase(Locale.US);
-            Log.d("nf_volleyrequest", ".next call failed with error =" + lowerCase);
-            statusCode = StatusCode.NETWORK_ERROR;
-            if (lowerCase.contains("sslhandshakeexception")) {
-                statusCode = StatusCode.HTTP_SSL_ERROR;
-                if (lowerCase.contains("current time") && lowerCase.contains("validation time")) {
-                    return StatusCode.HTTP_SSL_DATE_TIME_ERROR;
-                }
-                if (lowerCase.contains("no trusted certificate found")) {
-                    return StatusCode.HTTP_SSL_NO_VALID_CERT;
-                }
-            }
-        }
-        return statusCode;
     }
     
     @Override
@@ -254,20 +242,20 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                                                 break Label_0385;
                                                 responseValid = true;
                                                 continue Label_0112_Outer;
-                                                ++n;
-                                                s2 = s4;
-                                                s3 = s5;
-                                                continue Label_0175_Outer;
-                                                while (true) {
-                                                    s5 = split2[1];
-                                                    s4 = s2;
-                                                    continue Label_0269_Outer;
-                                                    s4 = s2;
-                                                    s5 = s3;
-                                                    continue;
+                                                s4 = s2;
+                                                s5 = s3;
+                                                // iftrue(Label_0175:, !this.mUserCredentialRegistry.getSecureNetflixIdName().equalsIgnoreCase(split2[0].trim()))
+                                                Block_15: {
+                                                    break Block_15;
+                                                    ++n;
+                                                    s2 = s4;
+                                                    s3 = s5;
+                                                    continue Label_0175_Outer;
                                                 }
+                                                s5 = split2[1];
+                                                s4 = s2;
+                                                continue Label_0269_Outer;
                                             }
-                                            // iftrue(Label_0175:, !this.mUserCredentialRegistry.getSecureNetflixIdName().equalsIgnoreCase(split2[0].trim()))
                                             catch (UnsupportedEncodingException ex2) {
                                                 networkResponse = (NetworkResponse)new String(networkResponse.data);
                                                 continue;
@@ -286,7 +274,7 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
             }
             try {
                 response = this.parseResponse((String)networkResponse);
-                if (response == null) {
+                if (!this.parsedResponseCanBeNull() && response == null) {
                     return Response.error(new ParseException("Parsing returned null."));
                 }
             }
@@ -301,6 +289,10 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
     }
     
     protected abstract T parseResponse(final String p0) throws VolleyError;
+    
+    protected boolean parsedResponseCanBeNull() {
+        return false;
+    }
     
     void setErrorLogger(final ErrorLogging mErrorLogger) {
         this.mErrorLogger = mErrorLogger;

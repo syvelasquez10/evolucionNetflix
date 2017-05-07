@@ -35,6 +35,4 @@ public interface Playable
     boolean isPinProtected();
     
     boolean isPlayableEpisode();
-    
-    boolean isUserConnectedToFacebook();
 }

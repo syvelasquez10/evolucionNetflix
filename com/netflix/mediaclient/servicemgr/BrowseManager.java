@@ -4,6 +4,9 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import com.netflix.mediaclient.service.pushnotification.MessageData;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import java.util.List;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
@@ -479,6 +482,21 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
+    public boolean fetchSocialNotificationsList(final int n, final ManagerCallback managerCallback) {
+        final int requestId = this.mgr.getRequestId(managerCallback);
+        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+            Log.d("ServiceManagerBrowse", "fetchSocialNotificationsList requestId=" + requestId);
+        }
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            service.getBrowse().fetchSocialNotifications(n, this.mgr.getClientId(), requestId);
+            return true;
+        }
+        Log.w("ServiceManagerBrowse", "fetchSocialNotificationsList:: service is not available");
+        return false;
+    }
+    
+    @Override
     public boolean fetchVideos(final LoMo loMo, final int n, final int n2, final ManagerCallback managerCallback) {
         // monitorenter(this)
         while (true) {
@@ -553,6 +571,16 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
+    public void markSocialNotificationsAsRead(final List<SocialNotificationSummary> list) {
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            service.getBrowse().markSocialNotificationsAsRead(list);
+            return;
+        }
+        Log.w("ServiceManagerBrowse", "markSocialNotificationsAsRead:: service is not available");
+    }
+    
+    @Override
     public boolean prefetchGenreLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final boolean b, final ManagerCallback managerCallback) {
         synchronized (this) {
             final int requestId = this.mgr.getRequestId(managerCallback);
@@ -586,6 +614,16 @@ public final class BrowseManager implements IBrowseManager
         }
         Log.w("ServiceManagerBrowse", "prefetchLoLoMo:: service is not available");
         return false;
+    }
+    
+    @Override
+    public void refreshSocialNotifications(final boolean b) {
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            service.getBrowse().refreshSocialNotifications(b, false, null);
+            return;
+        }
+        Log.w("ServiceManagerBrowse", "refreshSocialNotifications:: service is not available");
     }
     
     @Override
@@ -625,6 +663,20 @@ public final class BrowseManager implements IBrowseManager
             }
             return b;
         }
+    }
+    
+    @Override
+    public void sendThanksToSocialNotification(final SocialNotificationSummary socialNotificationSummary, final ManagerCallback managerCallback) {
+        final int requestId = this.mgr.getRequestId(managerCallback);
+        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+            Log.d("ServiceManagerBrowse", "sendThanksToSocialNotification requestId=" + requestId);
+        }
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            service.getBrowse().sendThanksToSocialNotification(socialNotificationSummary, this.mgr.getClientId(), requestId);
+            return;
+        }
+        Log.w("ServiceManagerBrowse", "sendThanksToSocialNotification:: service is not available");
     }
     
     @Override

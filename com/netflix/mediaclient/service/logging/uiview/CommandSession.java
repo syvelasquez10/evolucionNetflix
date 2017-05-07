@@ -11,9 +11,11 @@ import com.netflix.mediaclient.servicemgr.UIViewLogging;
 public final class CommandSession extends BaseUIViewSession
 {
     public static final String NAME = "command";
+    protected UIViewLogging.UIViewCommandName mCommandName;
     
-    public CommandSession(final UIViewLogging.UIViewCommandName uiViewCommandName, final IClientLogging.ModalView modalView) {
-        super(uiViewCommandName, modalView);
+    public CommandSession(final UIViewLogging.UIViewCommandName mCommandName, final IClientLogging.ModalView modalView) {
+        super(modalView);
+        this.mCommandName = mCommandName;
     }
     
     public CommandEndedEvent createEndedEvent() {
@@ -21,6 +23,10 @@ public final class CommandSession extends BaseUIViewSession
         commandEndedEvent.setCategory(this.getCategory());
         commandEndedEvent.setSessionId(this.mId);
         return commandEndedEvent;
+    }
+    
+    public UIViewLogging.UIViewCommandName getAction() {
+        return this.mCommandName;
     }
     
     @Override

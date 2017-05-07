@@ -5,9 +5,9 @@
 package com.netflix.mediaclient.service.browse.volley;
 
 import com.netflix.mediaclient.service.browse.BrowseVideoSentinels;
-import com.netflix.mediaclient.service.webclient.model.branches.Episode;
-import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
+import com.google.gson.JsonObject;
+import com.netflix.mediaclient.service.webclient.model.branches.Episode;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
@@ -75,7 +75,7 @@ public class FetchEpisodesRequest extends FalcorVolleyWebClientRequest<List<Epis
                 JsonObject asJsonObject = null;
                 while (true) {
                     int n = 0;
-                    Label_0235: {
+                    Label_0219: {
                         try {
                             final JsonObject asJsonObject2 = dataObj.getAsJsonObject("videos").getAsJsonObject(this.mVideoId);
                             if (asJsonObject2.has("episodes")) {
@@ -87,12 +87,11 @@ public class FetchEpisodesRequest extends FalcorVolleyWebClientRequest<List<Epis
                                 for (int i = this.toEpisodes; i >= this.fromEpisodes; --i, n = n2) {
                                     o = Integer.toString(i);
                                     if (!asJsonObject.has((String)o)) {
-                                        break Label_0235;
+                                        break Label_0219;
                                     }
                                     n2 = 1;
                                     o = asJsonObject.getAsJsonObject((String)o);
                                     final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails = new com.netflix.mediaclient.service.webclient.model.EpisodeDetails();
-                                    episodeDetails.summary = FalcorParseUtils.getPropertyObject((JsonObject)o, "summary", Video.Summary.class);
                                     episodeDetails.detail = FalcorParseUtils.getPropertyObject((JsonObject)o, "detail", Episode.Detail.class);
                                     episodeDetails.bookmark = FalcorParseUtils.getPropertyObject((JsonObject)o, "bookmark", Video.Bookmark.class);
                                     episodeDetails.userConnectedToFacebook = this.userConnectedToFacebook;

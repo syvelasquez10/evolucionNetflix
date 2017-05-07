@@ -6,5 +6,4 @@ package com.netflix.falkor;
 
 public class Utils
 {
-    private static final String TAG = "Falkor | ";
 }

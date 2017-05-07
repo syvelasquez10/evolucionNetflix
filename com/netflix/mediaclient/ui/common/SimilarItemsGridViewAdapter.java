@@ -10,10 +10,9 @@ import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import com.netflix.mediaclient.android.widget.VideoView;
 import android.view.ViewGroup;
+import com.netflix.mediaclient.util.UiUtils;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.ui.lomo.PaginatedLoMoAdapter;
-import android.util.SparseIntArray;
 import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.Log;
@@ -60,7 +59,7 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
     }
     
     private int getNumGridCols() {
-        return ((SparseIntArray)PaginatedLoMoAdapter.numVideosPerPageTable.get(DeviceUtils.getBasicScreenOrientation((Context)this.activity))).get(DeviceUtils.getScreenSizeCategory((Context)this.activity));
+        return UiUtils.computeNumItemsPerPage(DeviceUtils.getBasicScreenOrientation((Context)this.activity), DeviceUtils.getScreenSizeCategory((Context)this.activity));
     }
     
     public int getCount() {
@@ -83,7 +82,15 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
         if (view == null) {
             o = new VideoView((Context)this.activity);
             final int dimensionPixelOffset = this.activity.getResources().getDimensionPixelOffset(2131361897);
-            ((VideoView)o).setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
+            if (n % this.numGridCols == 0) {
+                ((VideoView)o).setPadding(0, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
+            }
+            else if ((n + 1) % this.numGridCols == 0) {
+                ((VideoView)o).setPadding(dimensionPixelOffset, dimensionPixelOffset, 0, dimensionPixelOffset);
+            }
+            else {
+                ((VideoView)o).setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
+            }
             ((VideoView)o).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.imgHeight));
             ((VideoView)o).setAdjustViewBounds(true);
             ((RoundedImageView)o).setScaleType(ImageView$ScaleType.CENTER_CROP);

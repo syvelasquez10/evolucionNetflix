@@ -69,6 +69,9 @@ public class AccountConfigData
                         final JSONObject jsonObject = new JSONObject();
                         string = JsonUtils.getString(jsonObject, "kidsOnPhoneConfig", null);
                         if (string != null) {
+                            if (Log.isLoggable("nf_config", 3)) {
+                                Log.d("nf_config", "Found KidsOnPhone config: " + string);
+                            }
                             accountConfigData.kidsOnPhoneConfig = FalcorParseUtils.getGson().fromJson(string, KidsOnPhoneConfigData.class);
                             return accountConfigData;
                         }
@@ -82,6 +85,9 @@ public class AccountConfigData
                 final JSONObject jsonObject = new JSONObject(string);
                 continue;
             }
+        }
+        if (Log.isLoggable("nf_config", 3)) {
+            Log.d("nf_config", "Using default KidsOnPhone config");
         }
         accountConfigData.kidsOnPhoneConfig = KidsOnPhoneConfigData.DEFAULT_KIDS_CONFIG;
         return accountConfigData;

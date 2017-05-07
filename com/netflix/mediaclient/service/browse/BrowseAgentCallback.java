@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
@@ -67,6 +69,12 @@ public interface BrowseAgentCallback
     void onShowDetailsFetched(final ShowDetails p0, final Status p1);
     
     void onSimilarVideosFetched(final SearchVideoList p0, final Status p1);
+    
+    void onSocialNotificationWasThanked(final SocialNotificationSummary p0, final Status p1);
+    
+    void onSocialNotificationsListFetched(final SocialNotificationsList p0, final Status p1);
+    
+    void onSocialNotificationsMarkedAsRead(final List<SocialNotificationSummary> p0, final Status p1);
     
     void onVideoHide(final Status p0);
     

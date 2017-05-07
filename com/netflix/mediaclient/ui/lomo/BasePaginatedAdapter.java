@@ -11,7 +11,7 @@ import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
-import com.netflix.mediaclient.android.widget.ViewRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import android.app.Activity;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.StringUtils;
@@ -145,12 +145,12 @@ public abstract class BasePaginatedAdapter<T extends Video>
         return n;
     }
     
-    public View getView(final ViewRecycler viewRecycler, final BasicLoMo basicLoMo, final int n) {
+    public View getView(final ObjectRecycler.ViewRecycler viewRecycler, final BasicLoMo basicLoMo, final int n) {
         Log.v("BasePaginatedAdapter", this.printLomo() + " Getting page for position: " + n);
         return this.getView(viewRecycler, this.getDataForPage(n), this.numItemsPerPage, n, basicLoMo);
     }
     
-    protected abstract View getView(final ViewRecycler p0, final List<T> p1, final int p2, final int p3, final BasicLoMo p4);
+    protected abstract View getView(final ObjectRecycler.ViewRecycler p0, final List<T> p1, final int p2, final int p3, final BasicLoMo p4);
     
     public boolean isLastItem(final int n) {
         return n == this.computeNumPages() - 1;

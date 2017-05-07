@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
+import com.google.gson.annotations.SerializedName;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.JsonUtils;
@@ -14,8 +15,8 @@ public class User implements com.netflix.mediaclient.servicemgr.model.user.User
 {
     private static final String FIELD_EMAIL = "email";
     private static final String FIELD_FIRST_NAME = "firstName";
-    private static final String FIELD_ID = "userId";
     private static final String FIELD_LAST_NAME = "lastName";
+    private static final String FIELD_USER_TOKEN = "userId";
     private static final String TAG = "User";
     public SubtitlePreference subtitleDefaults;
     public Summary summary;
@@ -38,7 +39,7 @@ public class User implements com.netflix.mediaclient.servicemgr.model.user.User
                     else {
                         jsonObject = new JSONObject(s);
                     }
-                    this.summary.userId = JsonUtils.getString(jsonObject, "userId", null);
+                    this.summary.userToken = JsonUtils.getString(jsonObject, "userId", null);
                     this.summary.email = JsonUtils.getString(jsonObject, "email", null);
                     this.summary.firstName = JsonUtils.getString(jsonObject, "firstName", null);
                     this.summary.lastName = JsonUtils.getString(jsonObject, "lastName", null);
@@ -88,11 +89,11 @@ public class User implements com.netflix.mediaclient.servicemgr.model.user.User
     }
     
     @Override
-    public String getUserId() {
+    public String getUserToken() {
         if (this.summary == null) {
             return null;
         }
-        return this.summary.userId;
+        return this.summary.userToken;
     }
     
     @Override
@@ -100,7 +101,7 @@ public class User implements com.netflix.mediaclient.servicemgr.model.user.User
         final JSONObject jsonObject = new JSONObject();
         while (true) {
             try {
-                jsonObject.put("userId", (Object)this.getUserId());
+                jsonObject.put("userId", (Object)this.getUserToken());
                 jsonObject.put("email", (Object)this.getEmail());
                 jsonObject.put("firstName", (Object)this.getFirstName());
                 jsonObject.put("lastName", (Object)this.getLastName());
@@ -123,6 +124,7 @@ public class User implements com.netflix.mediaclient.servicemgr.model.user.User
         private String email;
         private String firstName;
         private String lastName;
-        private String userId;
+        @SerializedName("userId")
+        private String userToken;
     }
 }

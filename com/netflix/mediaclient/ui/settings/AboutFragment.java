@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.settings;
 
 import com.netflix.mediaclient.ui.diagnosis.DiagnosisActivity;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.preference.Preference;
 import android.preference.Preference$OnPreferenceClickListener;
@@ -41,7 +41,7 @@ public class AboutFragment extends PreferenceFragment
     }
     
     private void updateAboutDevice() {
-        final String string = this.getString(2131493179);
+        final String string = this.getString(2131493180);
         int n = 0;
         Serializable s = string;
         while (true) {
@@ -77,7 +77,7 @@ public class AboutFragment extends PreferenceFragment
         preference.setIntent(this.createViewPrivacyPolicyIntent());
         preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new Preference$OnPreferenceClickListener() {
             public boolean onPreferenceClick(final Preference preference) {
-                LogUtils.reportUiModalViewChanged((Context)AboutFragment.this.activity, IClientLogging.ModalView.privacyPolicy);
+                ApmLogUtils.reportUiModalViewChanged((Context)AboutFragment.this.activity, IClientLogging.ModalView.privacyPolicy);
                 return false;
             }
         });
@@ -85,7 +85,7 @@ public class AboutFragment extends PreferenceFragment
         preference2.setIntent(this.createViewLegalTermsOfUseIntent());
         preference2.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new Preference$OnPreferenceClickListener() {
             public boolean onPreferenceClick(final Preference preference) {
-                LogUtils.reportUiModalViewChanged((Context)AboutFragment.this.activity, IClientLogging.ModalView.legalTerms);
+                ApmLogUtils.reportUiModalViewChanged((Context)AboutFragment.this.activity, IClientLogging.ModalView.legalTerms);
                 return false;
             }
         });
@@ -93,7 +93,7 @@ public class AboutFragment extends PreferenceFragment
         preference3.setIntent(DiagnosisActivity.createStartIntent((Context)this.activity));
         preference3.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new Preference$OnPreferenceClickListener() {
             public boolean onPreferenceClick(final Preference preference) {
-                LogUtils.reportUiModalViewChanged((Context)AboutFragment.this.activity, IClientLogging.ModalView.customerService);
+                ApmLogUtils.reportUiModalViewChanged((Context)AboutFragment.this.activity, IClientLogging.ModalView.customerService);
                 return false;
             }
         });

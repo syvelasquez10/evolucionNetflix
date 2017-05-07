@@ -12,7 +12,7 @@ import com.netflix.mediaclient.service.webclient.NetflixWebClientInitParameters;
 import com.netflix.mediaclient.service.webclient.WebClientInitParameters;
 import com.android.volley.Request;
 import android.content.Context;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 
 public class FalcorVolleyWebClient extends VolleyWebClient
@@ -22,7 +22,7 @@ public class FalcorVolleyWebClient extends VolleyWebClient
     private void reportDataRequestSessionStarted(final FalcorVolleyWebClientRequest<?> falcorVolleyWebClientRequest, final String s) {
         final Context context = falcorVolleyWebClientRequest.getContext();
         if (context != null) {
-            LogUtils.reportDataRequestStarted(context, falcorVolleyWebClientRequest.getRequestId(), s);
+            ApmLogUtils.reportDataRequestStarted(context, falcorVolleyWebClientRequest.getRequestId(), s);
         }
     }
     

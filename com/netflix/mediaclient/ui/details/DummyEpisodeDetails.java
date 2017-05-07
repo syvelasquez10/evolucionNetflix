@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.servicemgr.model.Playable;
-import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import java.util.Random;
 import java.util.ArrayList;
@@ -70,11 +69,6 @@ public class DummyEpisodeDetails implements EpisodeDetails
     
     @Override
     public VideoType getErrorType() {
-        return null;
-    }
-    
-    @Override
-    public List<FriendProfile> getFacebookFriends() {
         return null;
     }
     
@@ -150,6 +144,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     
     @Override
     public String getSquareUrl() {
+        return null;
+    }
+    
+    @Override
+    public String getStoryDispUrl() {
         return null;
     }
     

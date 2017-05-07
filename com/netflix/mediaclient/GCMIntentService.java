@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient;
 
-import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.Context;
 import com.netflix.mediaclient.service.NetflixService;
 import android.content.Intent;
@@ -41,7 +40,7 @@ public class GCMIntentService extends GCMBaseIntentService
             Log.e("nf_push_service", "Error, intent can not be null!");
             return;
         }
-        AndroidUtils.logIntent("nf_push_service", intent);
+        Log.d("nf_push_service", intent);
         intent.addCategory("com.netflix.mediaclient.intent.category.PUSH");
         intent.setClass((Context)this, (Class)NetflixService.class);
         intent.setAction("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_GCM_ONMESSAGE");

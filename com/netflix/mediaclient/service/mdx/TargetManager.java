@@ -42,18 +42,20 @@ public class TargetManager implements EventListener, CommandInterface
     private static final String TAG = "nf_mdx";
     private MdxController mController;
     private String mEsn;
+    private MdxNrdpLogger mMdxNrdpLogger;
     private NotifierInterface mNotify;
     private AtomicLong mRecentMessageTime;
     private boolean mTaregtLaunchingOrLaunched;
     private TargetContext mTarget;
     
-    TargetManager(final NotifierInterface mNotify, final MdxController mController, final String mEsn) {
+    TargetManager(final NotifierInterface mNotify, final MdxController mController, final String mEsn, final MdxNrdpLogger mMdxNrdpLogger) {
         this.mRecentMessageTime = new AtomicLong();
         this.mTaregtLaunchingOrLaunched = true;
         this.mNotify = mNotify;
         this.mController = mController;
         this.mEsn = mEsn;
         this.mRecentMessageTime.set(System.currentTimeMillis());
+        this.mMdxNrdpLogger = mMdxNrdpLogger;
     }
     
     public long getTimeOfMostRecentIncomingMessage() {

@@ -185,7 +185,9 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
                     MdxMiniPlayerFrag.this.log("error - code: " + n + ", descrip: " + s);
                 }
                 MdxMiniPlayerFrag.this.isEndOfPlayback = true;
-                MdxMiniPlayerFrag.this.mdxErrorHandler.handleMdxError(n, s);
+                if (!MdxMiniPlayerFrag.this.isInBackground) {
+                    MdxMiniPlayerFrag.this.mdxErrorHandler.handleMdxError(n, s);
+                }
                 if (this.isErrorRequireDisableControl(n)) {
                     MdxMiniPlayerFrag.this.views.setControlsEnabled(false);
                     MdxMiniPlayerFrag.this.views.enableMdxMenu();
@@ -266,6 +268,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
                 }
                 MdxMiniPlayerFrag.this.isEndOfPlayback = false;
                 MdxMiniPlayerFrag.state.mostRecentVolume = remoteTargetState.volume;
+                MdxMiniPlayerFrag.this.updateVisibility(remoteTargetState.showMiniPlayer, remoteTargetState.paused);
                 final MdxMiniPlayerViews access$300 = MdxMiniPlayerFrag.this.views;
                 boolean controlsEnabled = b;
                 if (!remoteTargetState.buffering) {
@@ -275,7 +278,6 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
                     }
                 }
                 access$300.setControlsEnabled(controlsEnabled);
-                MdxMiniPlayerFrag.this.updateVisibility(remoteTargetState.showMiniPlayer, remoteTargetState.paused);
                 this.handleSeekbarUpdate(remoteTargetState);
             }
             
@@ -584,7 +586,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
         this.log("Updating metadata: " + this.currentVideo + ", hash: " + this.currentVideo.hashCode());
         if (this.currentVideo.getType() == VideoType.EPISODE) {
             this.views.updateTitleText(this.currentVideo.getPlayable().getParentTitle());
-            this.views.updateSubtitleText(this.activity.getString(2131493256, new Object[] { this.currentVideo.getPlayable().getSeasonNumber(), this.currentVideo.getPlayable().getEpisodeNumber(), this.currentVideo.getTitle() }));
+            this.views.updateSubtitleText(this.activity.getString(2131493259, new Object[] { this.currentVideo.getPlayable().getSeasonNumber(), this.currentVideo.getPlayable().getEpisodeNumber(), this.currentVideo.getTitle() }));
         }
         else {
             this.views.updateTitleText(this.currentVideo.getTitle());
@@ -754,7 +756,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
     
     @Override
     public boolean isPlayingRemotely() {
-        return this.isShowing;
+        return this.isShowing && !this.isEndOfPlayback;
     }
     
     public boolean isShowing() {

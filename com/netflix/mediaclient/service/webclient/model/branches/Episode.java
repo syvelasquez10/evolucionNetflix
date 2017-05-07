@@ -4,82 +4,19 @@
 
 package com.netflix.mediaclient.service.webclient.model.branches;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 
-public class Episode extends Video
+public class Episode
 {
-    public Bookmark bookmark;
+    public Video.Bookmark bookmark;
     public Detail detail;
-    public Summary summary;
-    
-    @Override
-    public Object get(final String s) {
-        if ("summary".equals(s)) {
-            return this.summary;
-        }
-        if ("detail".equals(s)) {
-            return this.detail;
-        }
-        if ("bookmark".equals(s)) {
-            return this.bookmark;
-        }
-        return null;
-    }
-    
-    @Override
-    public Set<String> getKeys() {
-        final HashSet<String> set = new HashSet<String>();
-        if (this.summary != null) {
-            set.add("summary");
-        }
-        if (this.detail != null) {
-            set.add("detail");
-        }
-        if (this.bookmark != null) {
-            set.add("bookmark");
-        }
-        return set;
-    }
-    
-    @Override
-    public Object getOrCreate(final String s) {
-        final Object value = this.get(s);
-        if (value != null) {
-            return value;
-        }
-        if ("summary".equals(s)) {
-            return this.summary = new Summary();
-        }
-        if ("detail".equals(s)) {
-            return this.detail = new Detail();
-        }
-        if ("bookmark".equals(s)) {
-            return this.bookmark = new Bookmark();
-        }
-        return null;
-    }
-    
-    @Override
-    public void set(final String s, final Object o) {
-        if ("summary".equals(s)) {
-            this.summary = (Summary)o;
-        }
-        else {
-            if ("detail".equals(s)) {
-                this.detail = (Detail)o;
-                return;
-            }
-            if ("bookmark".equals(s)) {
-                this.bookmark = (Bookmark)o;
-            }
-        }
-    }
     
     public static class Detail extends Video.Detail
     {
         public String boxartUrl;
+        private VideoType enumType;
         private int episodeNumber;
+        public VideoType errorType;
         private String id;
         private String nextEpisodeId;
         private String nextEpisodeTitle;
@@ -89,6 +26,7 @@ public class Episode extends Video
         private String showRestUrl;
         private String showTitle;
         private String title;
+        private String type;
         
         public void deepCopy(final Detail detail) {
             super.deepCopy((Video.Detail)detail);
@@ -115,6 +53,10 @@ public class Episode extends Video
         
         public int getEpisodeNumber() {
             return this.episodeNumber;
+        }
+        
+        public VideoType getErrorType() {
+            return this.errorType;
         }
         
         public String getId() {
@@ -155,6 +97,13 @@ public class Episode extends Video
         
         public String getTitle() {
             return this.title;
+        }
+        
+        public VideoType getType() {
+            if (this.enumType == null) {
+                this.enumType = VideoType.create(this.type);
+            }
+            return this.enumType;
         }
         
         public boolean isAutoPlayEnabled() {

@@ -7,27 +7,23 @@ package com.netflix.mediaclient.service.webclient.model;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
-import java.util.List;
-import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
 import com.netflix.mediaclient.servicemgr.model.Playable;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.service.webclient.model.branches.Video;
 
-public class PlayableVideo implements Video, Playable
+public class PlayableVideo extends Video implements com.netflix.mediaclient.servicemgr.model.Video, Playable
 {
     private static final String TAG = "nf_model_playablevideo";
-    public com.netflix.mediaclient.service.webclient.model.branches.Video.Bookmark bookmark;
-    public com.netflix.mediaclient.service.webclient.model.branches.Video.BookmarkStill bookmarkStill;
+    public Bookmark bookmark;
+    public BookmarkStill bookmarkStill;
     public Episode.Detail currentEpisode;
-    public com.netflix.mediaclient.service.webclient.model.branches.Video.Bookmark currentEpisodeBookmark;
-    public com.netflix.mediaclient.service.webclient.model.branches.Video.Detail detail;
-    public com.netflix.mediaclient.service.webclient.model.branches.Video.InQueue inQueue;
-    public com.netflix.mediaclient.service.webclient.model.branches.Video.Rating rating;
-    public TrackableListSummary similarListSummary;
-    public List<Video> similarVideos;
+    public Bookmark currentEpisodeBookmark;
+    public Detail detail;
+    public InQueue inQueue;
+    public Rating rating;
     public SocialEvidence socialEvidence;
-    public com.netflix.mediaclient.service.webclient.model.branches.Video.Summary summary;
+    public Summary summary;
     public boolean userConnectedToFacebook;
     
     private String getCurrentEpisodeTitle() {
@@ -279,10 +275,5 @@ public class PlayableVideo implements Video, Playable
     @Override
     public boolean isPlayableEpisode() {
         return this.currentEpisode != null;
-    }
-    
-    @Override
-    public boolean isUserConnectedToFacebook() {
-        return this.userConnectedToFacebook;
     }
 }

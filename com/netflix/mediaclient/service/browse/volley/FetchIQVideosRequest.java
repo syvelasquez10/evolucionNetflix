@@ -14,9 +14,6 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
-import com.netflix.mediaclient.service.webclient.model.ShowDetails;
-import com.netflix.mediaclient.service.webclient.model.MovieDetails;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
@@ -69,34 +66,6 @@ public class FetchIQVideosRequest extends FalcorVolleyWebClientRequest<List<Vide
         }
     }
     
-    public static void updateMdpAndSdpWithIQInfo(final BrowseWebClientCache browseWebClientCache, final String s, final boolean b) {
-        while (true) {
-            Label_0096: {
-                synchronized (FetchIQVideosRequest.class) {
-                    final Object fromCaches = browseWebClientCache.getFromCaches(BrowseWebClientCache.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_MDP, s, "0", "0"));
-                    if (fromCaches != null) {
-                        final MovieDetails movieDetails = (MovieDetails)fromCaches;
-                        if (movieDetails.inQueue != null) {
-                            movieDetails.inQueue.inQueue = b;
-                        }
-                    }
-                    else {
-                        final Object fromCaches2 = browseWebClientCache.getFromCaches(BrowseWebClientCache.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_SDP, s, "0", "0"));
-                        if (fromCaches2 == null) {
-                            break Label_0096;
-                        }
-                        final ShowDetails showDetails = (ShowDetails)fromCaches2;
-                        if (showDetails.inQueue != null) {
-                            showDetails.inQueue.inQueue = b;
-                        }
-                    }
-                    return;
-                }
-            }
-            Log.d("nf_service_browse_fetchiqvideosrequest", "updateMdpWithIQInfo !(movie or show) id:" + s);
-        }
-    }
-    
     @Override
     protected List<String> getPQLQueries() {
         return Arrays.asList(this.pqlQuery);
@@ -127,16 +96,16 @@ public class FetchIQVideosRequest extends FalcorVolleyWebClientRequest<List<Vide
                 while (true) {
                     int n = 0;
                     String string = null;
-                Label_0290:
+                Label_0289:
                     while (true) {
-                        Label_0239: {
+                        Label_0238: {
                             try {
                                 if (this.iqInCache) {
                                     asJsonObject = dataObj.getAsJsonObject("lists").getAsJsonObject(this.iqId);
                                 }
                                 else {
                                     if (!this.lolomoIdInCache) {
-                                        break Label_0239;
+                                        break Label_0238;
                                     }
                                     final JsonObject asJsonObject2 = dataObj.getAsJsonObject("lolomos").getAsJsonObject(this.lolomoId).getAsJsonObject("queue");
                                     this.browseCache.putIQLoMoId(FalcorParseUtils.getIdFromPath("nf_service_browse_fetchiqvideosrequest", asJsonObject2));
@@ -147,11 +116,11 @@ public class FetchIQVideosRequest extends FalcorVolleyWebClientRequest<List<Vide
                                 for (int i = this.toVideo; i >= this.fromVideo; --i, n = n2) {
                                     string = Integer.toString(i);
                                     if (!((JsonObject)asJsonObject).has(string)) {
-                                        break Label_0290;
+                                        break Label_0289;
                                     }
                                     n2 = 1;
                                     final com.netflix.mediaclient.service.webclient.model.branches.Video.Summary summary = FalcorParseUtils.getPropertyObject(((JsonObject)asJsonObject).getAsJsonObject(string), "summary", com.netflix.mediaclient.service.webclient.model.branches.Video.Summary.class);
-                                    updateMdpAndSdpWithIQInfo(this.browseCache, summary.getId(), true);
+                                    this.browseCache.updateInQueueCacheRecord(summary.getId(), true);
                                     list.add(0, summary);
                                 }
                                 break;

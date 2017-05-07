@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.uiaction.model.StartPlayEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.SelectProfileEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.SearchEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.SayThanksEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.RemoveFromPlaylistEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.RegisterEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.RateTitleEndedEvent;
@@ -37,6 +38,7 @@ import com.netflix.mediaclient.service.logging.uiaction.StartPlaySession;
 import com.netflix.mediaclient.service.logging.uiaction.SelectProfileSession;
 import com.netflix.mediaclient.service.logging.uiaction.SearchSession;
 import java.util.Map;
+import com.netflix.mediaclient.service.logging.uiaction.SayThanksSession;
 import com.netflix.mediaclient.service.logging.uiaction.RemoveFromPlaylistSession;
 import com.netflix.mediaclient.service.logging.uiaction.RegisterSession;
 import com.netflix.mediaclient.service.logging.uiaction.RateTitleSession;
@@ -65,6 +67,7 @@ final class UserActionLoggingImpl implements UserActionLogging
     private RateTitleSession mRateTitleSession;
     private RegisterSession mRegisterSession;
     private RemoveFromPlaylistSession mRemoveFromPlaylistSession;
+    private SayThanksSession mSayThanksSession;
     private Map<Long, SearchSession> mSearchSessions;
     private SelectProfileSession mSelectProfileSession;
     private StartPlaySession mStartPlaySession;
@@ -448,6 +451,45 @@ final class UserActionLoggingImpl implements UserActionLogging
             value2 = IClientLogging.ModalView.valueOf(stringExtra2);
         }
         this.startRemoveFromPlaylistSession((CommandName)value, (IClientLogging.ModalView)value2);
+    }
+    
+    private void handleSayThanksEnded(Intent instance) {
+        final String stringExtra = instance.getStringExtra("reason");
+        final String stringExtra2 = instance.getStringExtra("error");
+        final String stringExtra3 = instance.getStringExtra("view");
+        instance = null;
+        while (true) {
+            try {
+                instance = (Intent)UIError.createInstance(stringExtra2);
+                Enum<IClientLogging.CompletionReason> value = null;
+                Enum<IClientLogging.ModalView> value2 = null;
+                if (StringUtils.isNotEmpty(stringExtra)) {
+                    value = IClientLogging.CompletionReason.valueOf(stringExtra);
+                }
+                if (StringUtils.isNotEmpty(stringExtra3)) {
+                    value2 = IClientLogging.ModalView.valueOf(stringExtra3);
+                }
+                this.endSayThanksSession((IClientLogging.CompletionReason)value, (IClientLogging.ModalView)value2, (UIError)instance);
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    private void handleSayThanksStart(final Intent intent) {
+        final String stringExtra = intent.getStringExtra("cmd");
+        Enum<CommandName> value = null;
+        if (!StringUtils.isEmpty(stringExtra)) {
+            value = CommandName.valueOf(stringExtra);
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        Enum<IClientLogging.ModalView> value2 = null;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+        }
+        this.startSayThanksSession((CommandName)value, (IClientLogging.ModalView)value2);
     }
     
     private void handleSearchEnded(Intent instance) {
@@ -1020,6 +1062,34 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
+    public void endSayThanksSession(final IClientLogging.CompletionReason completionReason, final IClientLogging.ModalView modalView, final UIError uiError) {
+        Log.d("nf_log", "SayThanks ended and posted to executor");
+        this.mEventHandler.executeInBackground(new Runnable() {
+            final /* synthetic */ DataContext val$dataContext = UserActionLoggingImpl.this.mDataContext;
+            
+            @Override
+            public void run() {
+                if (UserActionLoggingImpl.this.mSayThanksSession == null) {
+                    Log.w("nf_log", "SayThanks does NOT exist!");
+                    return;
+                }
+                final SayThanksEndedEvent endedEvent = UserActionLoggingImpl.this.mSayThanksSession.createEndedEvent(completionReason, uiError, modalView);
+                if (endedEvent == null) {
+                    Log.d("nf_log", "SayThanks still waits on session id, do not post at this time.");
+                    return;
+                }
+                UserActionLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, modalView);
+                UserActionLoggingImpl.this.mEventHandler.removeSession(UserActionLoggingImpl.this.mSayThanksSession);
+                Log.d("nf_log", "SayThanks end event posting...");
+                UserActionLoggingImpl.this.mEventHandler.post(endedEvent);
+                UserActionLoggingImpl.this.mSayThanksSession = null;
+                Log.d("nf_log", "SayThanks end event posted.");
+            }
+        });
+        Log.d("nf_log", "SayThanks end done.");
+    }
+    
+    @Override
     public void endSearchSession(final long n, final IClientLogging.CompletionReason completionReason, final UIError uiError) {
         Log.d("nf_log", "Search session ended and posted to executor");
         this.mEventHandler.executeInBackground(new Runnable() {
@@ -1311,6 +1381,16 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.handleDeleteProfileEnded(intent);
             return true;
         }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_START".equals(action)) {
+            Log.d("nf_log", "SAY_THANKS_START");
+            this.handleSayThanksStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_ENDED".equals(action)) {
+            Log.d("nf_log", "SAY_THANKS_ENDED");
+            this.handleSayThanksEnded(intent);
+            return true;
+        }
         if (Log.isLoggable("nf_log", 3)) {
             Log.d("nf_log", "We do not support action " + action);
         }
@@ -1452,6 +1532,18 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.addSession(mRemoveFromPlaylistSession);
         this.mRemoveFromPlaylistSession = mRemoveFromPlaylistSession;
         Log.d("nf_log", "RemoveFromPlaylist session start done.");
+    }
+    
+    @Override
+    public void startSayThanksSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+        if (this.mSayThanksSession != null) {
+            Log.e("nf_log", "SayThanks session already started!");
+            return;
+        }
+        Log.d("nf_log", "SayThanks session starting...");
+        this.mSayThanksSession = new SayThanksSession(commandName, modalView);
+        this.mEventHandler.addSession(this.mSayThanksSession);
+        Log.d("nf_log", "SayThanks  session start done.");
     }
     
     @Override

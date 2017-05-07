@@ -12,5 +12,5 @@ public interface User
     
     String getLastName();
     
-    String getUserId();
+    String getUserToken();
 }

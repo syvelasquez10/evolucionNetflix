@@ -5,11 +5,14 @@
 package com.netflix.mediaclient.util;
 
 import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.service.pushnotification.UserFeedbackOnReceivedPushNotification;
+import com.netflix.mediaclient.service.pushnotification.MessageData;
+import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.logging.apm.model.Display;
 import com.netflix.mediaclient.protocol.nflx.NflxHandler;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
-import com.netflix.mediaclient.service.pushnotification.UserFeedbackOnReceivedPushNotification;
-import com.netflix.mediaclient.service.pushnotification.MessageData;
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
@@ -239,32 +242,8 @@ public final class NflxProtocolUtils
         LocalBroadcastManager.getInstance((Context)activity).sendBroadcast(intent);
     }
     
-    public static void reportIfSourceIsNotification(final IClientLogging clientLogging, final Intent intent) {
-        if (!intent.hasExtra("guid")) {
-            Log.e("NflxHandler", "Guid not found, source is not push notification");
-            return;
-        }
-        final String stringExtra = intent.getStringExtra("guid");
-        if (intent.hasExtra("messageGuid")) {
-            final String stringExtra2 = intent.getStringExtra("messageGuid");
-            final String stringExtra3 = intent.getStringExtra("originator");
-            if (StringUtils.isEmpty(stringExtra3)) {
-                Log.w("NflxHandler", "Received notification WITHOUT ORIGINATOR! Pass default!");
-            }
-            final MessageData messageData = new MessageData(stringExtra, stringExtra2, stringExtra3);
-            if (Log.isLoggable("NflxHandler", 3)) {
-                Log.d("NflxHandler", "User opened notification " + messageData);
-            }
-            if (clientLogging != null && clientLogging.getCmpEventLogging() != null) {
-                clientLogging.getCmpEventLogging().reportUserFeedbackOnReceivedPushNotification(messageData, UserFeedbackOnReceivedPushNotification.opened);
-            }
-            return;
-        }
-        Log.e("NflxHandler", "Message guid not found, source is not push notification");
-    }
-    
     public static void reportOnProfileGate(final NetflixActivity netflixActivity, final Map<String, String> map, final long n) {
-        final Display display = LogUtils.getDisplay((Context)netflixActivity);
+        final Display display = ConsolidatedLoggingUtils.getDisplay((Context)netflixActivity);
         final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
         if (clientLogging != null) {
             clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.profilesGate, n, display);
@@ -276,11 +255,44 @@ public final class NflxProtocolUtils
     public static void reportUiSessions(final NetflixActivity netflixActivity, final NflxHandler.Response response, final boolean b, final IClientLogging.ModalView modalView, final long n) {
         final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
         if (clientLogging != null && (response == NflxHandler.Response.HANDLING || response == NflxHandler.Response.HANDLING_WITH_DELAY)) {
-            clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.externalControlProtocol, modalView, n, LogUtils.getDisplay((Context)netflixActivity));
+            clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.externalControlProtocol, modalView, n, ConsolidatedLoggingUtils.getDisplay((Context)netflixActivity));
             if (b) {
                 clientLogging.getApplicationPerformanceMetricsLogging().startUiBrowseStartupSession(n);
             }
         }
+    }
+    
+    public static void reportUserOpenedNotification(final NetflixService netflixService, final Intent intent) {
+        if (netflixService == null) {
+            Log.w("NflxHandler", "Netflix service is null, enable to report that user opened notification");
+            return;
+        }
+        reportUserOpenedNotification(netflixService.getClientLogging(), intent);
+    }
+    
+    private static void reportUserOpenedNotification(final IClientLogging clientLogging, final Intent intent) {
+        Log.d("NflxHandler", "reportIfSourceIsNotification", intent);
+        if (clientLogging == null || clientLogging.getCmpEventLogging() == null) {
+            Log.w("NflxHandler", "CL or CMP is null, enable to report that user opened notification");
+            return;
+        }
+        final MessageData instance = MessageData.createInstance(intent);
+        if (instance == null) {
+            Log.e("NflxHandler", "Unable to report since message data are missing!");
+            return;
+        }
+        if (Log.isLoggable("NflxHandler", 3)) {
+            Log.d("NflxHandler", "User opened notification " + instance);
+        }
+        clientLogging.getCmpEventLogging().reportUserFeedbackOnReceivedPushNotification(instance, UserFeedbackOnReceivedPushNotification.opened);
+    }
+    
+    public static void reportUserOpenedNotification(final ServiceManager serviceManager, final Intent intent) {
+        if (serviceManager == null) {
+            Log.w("NflxHandler", "Service manager is null, enable to report that user opened notification");
+            return;
+        }
+        reportUserOpenedNotification(serviceManager.getClientLogging(), intent);
     }
     
     public static class VideoInfo

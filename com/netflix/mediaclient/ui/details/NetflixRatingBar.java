@@ -4,14 +4,16 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement;
-import java.util.List;
+import com.netflix.mediaclient.service.logging.client.model.UIError;
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.widget.Toast;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import android.annotation.SuppressLint;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.MotionEvent;
 import android.graphics.Bitmap;
@@ -109,8 +111,8 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
     }
     
     private void init() {
-        this.netflixStars = this.tileify(this.getResources().getDrawable(2130837861), true);
-        this.userStars = this.tileify(this.getResources().getDrawable(2130837862), true);
+        this.netflixStars = this.tileify(this.getResources().getDrawable(2130837867), true);
+        this.userStars = this.tileify(this.getResources().getDrawable(2130837868), true);
         this.setOnRatingBarChangeListener((RatingBar$OnRatingBarChangeListener)this);
         final Context context = this.getContext();
         if (context instanceof VideoDetailsProvider) {
@@ -226,7 +228,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
         if (Log.isLoggable("NetflixRatingBar", 2)) {
             Log.v("NetflixRatingBar", "Rating changed: " + currRating + ", from user: " + b);
         }
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493197), currRating));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493198), currRating));
         if (b && this.getUserRating() != currRating) {
             final int progress = (int)(currRating * this.getProgressPerStar());
             Log.v("NetflixRatingBar", "Setting progress: " + progress);
@@ -245,6 +247,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
         this.updateRatingDrawable();
     }
     
+    @SuppressLint({ "ClickableViewAccessibility" })
     public boolean onTouchEvent(final MotionEvent motionEvent) {
         final boolean dragging = this.isDragging();
         Log.v("NetflixRatingBar", "isDragging: " + dragging);
@@ -255,7 +258,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
             switch (motionEvent.getAction()) {
                 case 0: {
                     Log.d("NetflixRatingBar", "Report rate action started");
-                    LogUtils.reportRateActionStarted((Context)netflixActivity, null, netflixActivity.getUiScreen());
+                    UserActionLogUtils.reportRateActionStarted((Context)netflixActivity, null, netflixActivity.getUiScreen());
                     return onTouchEvent;
                 }
                 case 1: {
@@ -319,12 +322,13 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
             NetflixRatingBar.this.setEnabled(true);
             if (status.isError()) {
                 Log.w("NetflixRatingBar", "Invalid status code");
-                Toast.makeText(NetflixRatingBar.this.getContext(), 2131493205, 1).show();
+                Toast.makeText(NetflixRatingBar.this.getContext(), 2131493206, 1).show();
                 NetflixRatingBar.this.setRating((float)NetflixRatingBar.this.currRating);
+                UserActionLogUtils.reportRateActionEnded(NetflixRatingBar.this.getContext(), IClientLogging.CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, NetflixRatingBar.this.getContext().getString(2131493206), ActionOnUIError.displayedError), null, NetflixRatingBar.this.currRating);
                 return;
             }
             Log.v("NetflixRatingBar", "Rating has been updated");
-            Toast.makeText(NetflixRatingBar.this.getContext(), 2131493206, 1).show();
+            Toast.makeText(NetflixRatingBar.this.getContext(), 2131493207, 1).show();
             NetflixRatingBar.this.currRating = this.rating;
             if (NetflixRatingBar.this.details != null) {
                 NetflixRatingBar.this.details.setUserRating(this.rating);
@@ -335,8 +339,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
             NetflixRatingBar.this.updateRatingDrawable();
             NetflixRatingBar.this.setRating((float)NetflixRatingBar.this.currRating);
             Log.d("NetflixRatingBar", "Report rate action ended");
-            final LogUtils.LogReportErrorArgs logReportErrorArgs = new LogUtils.LogReportErrorArgs(status, ActionOnUIError.displayedError, "", null);
-            LogUtils.reportRateActionEnded(NetflixRatingBar.this.getContext(), logReportErrorArgs.getReason(), logReportErrorArgs.getError(), null, NetflixRatingBar.this.currRating);
+            UserActionLogUtils.reportRateActionEnded(NetflixRatingBar.this.getContext(), IClientLogging.CompletionReason.success, null, null, NetflixRatingBar.this.currRating);
         }
     }
 }

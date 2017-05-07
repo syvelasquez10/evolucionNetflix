@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
@@ -18,6 +20,7 @@ import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
+import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
 import java.util.List;
@@ -38,6 +41,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onBBVideosFetched(list, status);
             }
         });
@@ -58,6 +62,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onCWVideosFetched(list, status);
             }
         });
@@ -88,6 +93,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onGenreListsFetched(list, status);
             }
         });
@@ -98,6 +104,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onGenreLoLoMoPrefetched(status);
             }
         });
@@ -108,6 +115,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onGenresFetched(list, status);
             }
         });
@@ -128,6 +136,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onKidsCharacterDetailsFetched(kidsCharacterDetails, b, status);
             }
         });
@@ -138,6 +147,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onLoLoMoPrefetched(status);
             }
         });
@@ -148,6 +158,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onLoLoMoSummaryFetched(loLoMo, status);
             }
         });
@@ -158,6 +169,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onLoMosFetched(list, status);
             }
         });
@@ -168,6 +180,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onMovieDetailsFetched(movieDetails, status);
             }
         });
@@ -218,6 +231,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onSeasonDetailsFetched(seasonDetails, status);
             }
         });
@@ -238,6 +252,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onShowDetailsFetched(showDetails, status);
             }
         });
@@ -248,7 +263,38 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onSimilarVideosFetched(list, status);
+            }
+        });
+    }
+    
+    @Override
+    public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+        this.handler.post((Runnable)new Runnable() {
+            @Override
+            public void run() {
+                PostToHandlerCallbackWrapper.this.callback.onSocialNotificationWasThanked(socialNotificationSummary, status);
+            }
+        });
+    }
+    
+    @Override
+    public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+        this.handler.post((Runnable)new Runnable() {
+            @Override
+            public void run() {
+                PostToHandlerCallbackWrapper.this.callback.onSocialNotificationsListFetched(list, status);
+            }
+        });
+    }
+    
+    @Override
+    public void onSocialNotificationsMarkedAsRead(final List<SocialNotificationSummary> list, final Status status) {
+        this.handler.post((Runnable)new Runnable() {
+            @Override
+            public void run() {
+                PostToHandlerCallbackWrapper.this.callback.onSocialNotificationsMarkedAsRead(list, status);
             }
         });
     }
@@ -268,6 +314,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onVideoRatingSet(status);
             }
         });
@@ -278,6 +325,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
         this.handler.post((Runnable)new Runnable() {
             @Override
             public void run() {
+                ThreadUtils.assertOnMain();
                 PostToHandlerCallbackWrapper.this.callback.onVideosFetched(list, status);
             }
         });

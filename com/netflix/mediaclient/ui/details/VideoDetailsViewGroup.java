@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.text.Html;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
@@ -13,10 +14,11 @@ import java.util.List;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.widget.ImageView$ScaleType;
 import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.LinearLayout$LayoutParams;
+import com.netflix.mediaclient.servicemgr.model.FriendProfilesProvider;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.view.ViewGroup$LayoutParams;
-import android.widget.FrameLayout$LayoutParams;
 import com.netflix.mediaclient.Log;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.app.Activity;
@@ -36,6 +38,8 @@ import android.widget.LinearLayout;
 
 public class VideoDetailsViewGroup extends LinearLayout
 {
+    private static final int MAX_SOCIAL_BITMAP_IMGS_LANDSCAPE = 4;
+    private static final int MAX_SOCIAL_BITMAP_IMGS_PORTRAIT = 3;
     private static final String TAG = "VideoDetailsViewGroup";
     private View actionBarDummyView;
     private Button addToMyList;
@@ -46,6 +50,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     private AdvancedImageView horzDispImg;
     private ViewGroup imgGroup;
     private NetflixRatingBar ratingBar;
+    private Button recommend;
     private LinearLayout socialGroup;
     private TextView socialTitle;
     private TextView starring;
@@ -68,7 +73,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private Drawable buildHdDrawable() {
-        final Drawable drawable = this.getResources().getDrawable(2130837663);
+        final Drawable drawable = this.getResources().getDrawable(2130837658);
         double n;
         if (drawable.getIntrinsicHeight() > 0) {
             n = this.basicInfo.getHeight() * drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
@@ -85,20 +90,21 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private void init() {
-        LayoutInflater.from(this.getContext()).inflate(2130903193, (ViewGroup)this, true);
+        LayoutInflater.from(this.getContext()).inflate(2130903199, (ViewGroup)this, true);
         this.setOrientation(1);
         this.addView(this.actionBarDummyView = ViewUtils.createActionBarDummyView((NetflixActivity)this.getContext()), 0);
-        this.imgGroup = (ViewGroup)this.findViewById(2131165654);
-        this.horzDispImg = (AdvancedImageView)this.findViewById(2131165647);
-        this.ratingBar = (NetflixRatingBar)this.findViewById(2131165588);
-        this.title = (TextView)this.findViewById(2131165656);
-        this.basicInfo = (TextView)this.findViewById(2131165587);
-        this.synopsis = (TextView)this.findViewById(2131165651);
-        this.starring = (TextView)this.findViewById(2131165652);
-        this.creators = (TextView)this.findViewById(2131165653);
-        (this.addToMyList = (Button)this.findViewById(2131165648)).setEnabled(false);
-        this.socialGroup = (LinearLayout)this.findViewById(2131165650);
-        this.socialTitle = (TextView)this.findViewById(2131165649);
+        this.imgGroup = (ViewGroup)this.findViewById(2131165684);
+        this.horzDispImg = (AdvancedImageView)this.findViewById(2131165676);
+        this.ratingBar = (NetflixRatingBar)this.findViewById(2131165589);
+        this.title = (TextView)this.findViewById(2131165677);
+        this.basicInfo = (TextView)this.findViewById(2131165588);
+        this.synopsis = (TextView)this.findViewById(2131165681);
+        this.starring = (TextView)this.findViewById(2131165682);
+        this.creators = (TextView)this.findViewById(2131165683);
+        (this.addToMyList = (Button)this.findViewById(2131165673)).setEnabled(false);
+        this.recommend = (Button)this.findViewById(2131165672);
+        this.socialGroup = (LinearLayout)this.findViewById(2131165680);
+        this.socialTitle = (TextView)this.findViewById(2131165679);
         this.hdDrawablePadding = this.getHdDrawablePadding();
         this.setImgLayoutListener();
     }
@@ -116,16 +122,21 @@ public class VideoDetailsViewGroup extends LinearLayout
         this.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 ViewUtils.removeGlobalLayoutListener((View)VideoDetailsViewGroup.this, (ViewTreeObserver$OnGlobalLayoutListener)this);
-                Log.v("VideoDetailsViewGroup", "img group width: " + VideoDetailsViewGroup.this.imgGroup.getWidth() + ", height: " + VideoDetailsViewGroup.this.imgGroup.getHeight());
-                final FrameLayout$LayoutParams layoutParams = (FrameLayout$LayoutParams)VideoDetailsViewGroup.this.horzDispImg.getLayoutParams();
+                if (Log.isLoggable("VideoDetailsViewGroup", 2)) {
+                    Log.v("VideoDetailsViewGroup", "img group width: " + VideoDetailsViewGroup.this.imgGroup.getWidth() + ", height: " + VideoDetailsViewGroup.this.imgGroup.getHeight());
+                }
+                final ViewGroup$LayoutParams layoutParams = VideoDetailsViewGroup.this.horzDispImg.getLayoutParams();
                 layoutParams.height = (int)(VideoDetailsViewGroup.this.imgGroup.getWidth() * 0.5625f);
-                VideoDetailsViewGroup.this.horzDispImg.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
+                VideoDetailsViewGroup.this.horzDispImg.setLayoutParams(layoutParams);
             }
         });
     }
     
     private void updateSocialGroup(final VideoDetails videoDetails) {
-        final List<FriendProfile> facebookFriends = videoDetails.getFacebookFriends();
+        List<FriendProfile> facebookFriends = null;
+        if (videoDetails instanceof FriendProfilesProvider) {
+            facebookFriends = ((FriendProfilesProvider)videoDetails).getFacebookFriends();
+        }
         boolean b;
         if (facebookFriends == null || facebookFriends.size() <= 0) {
             b = true;
@@ -155,19 +166,29 @@ public class VideoDetailsViewGroup extends LinearLayout
             Log.v("VideoDetailsViewGroup", "No friends available for this detail view");
         }
         else {
-            this.socialTitle.setText((CharSequence)this.getResources().getQuantityString(2131623938, facebookFriends.size(), new Object[] { facebookFriends.size() }));
-            final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361901);
+            this.socialTitle.setText(2131493235);
+            final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361905);
             final LinearLayout$LayoutParams linearLayout$LayoutParams = new LinearLayout$LayoutParams(dimensionPixelOffset, dimensionPixelOffset);
-            final int dimensionPixelOffset2 = this.getResources().getDimensionPixelOffset(2131361902);
+            final int dimensionPixelOffset2 = this.getResources().getDimensionPixelOffset(2131361906);
             linearLayout$LayoutParams.topMargin = dimensionPixelOffset2;
             linearLayout$LayoutParams.bottomMargin = dimensionPixelOffset2;
             final int n = dimensionPixelOffset2 / 2;
             linearLayout$LayoutParams.leftMargin = n;
             linearLayout$LayoutParams.rightMargin = n;
             this.socialGroup.removeAllViews();
-            for (int min = Math.min(facebookFriends.size(), 9), i = 0; i < min; ++i) {
+            final int size = facebookFriends.size();
+            int n2;
+            if (DeviceUtils.isPortrait(this.getContext())) {
+                n2 = 3;
+            }
+            else {
+                n2 = 4;
+            }
+            for (int min = Math.min(size, n2), i = 0; i < min; ++i) {
                 final FriendProfile friendProfile = facebookFriends.get(i);
-                Log.v("VideoDetailsViewGroup", "Updating img for friend: " + friendProfile.getFirstName() + ", url: " + friendProfile.getImageUrl());
+                if (Log.isLoggable("VideoDetailsViewGroup", 2)) {
+                    Log.v("VideoDetailsViewGroup", "Updating img for friend: " + friendProfile.getFirstName() + ", url: " + friendProfile.getImageUrl());
+                }
                 final AdvancedImageView advancedImageView = new AdvancedImageView(this.getContext());
                 advancedImageView.setAdjustViewBounds(true);
                 advancedImageView.setScaleType(ImageView$ScaleType.FIT_CENTER);
@@ -179,6 +200,10 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     public TextView getAddToMyListButton() {
         return (TextView)this.addToMyList;
+    }
+    
+    public TextView getRecommendButton() {
+        return (TextView)this.recommend;
     }
     
     public void refreshImagesIfNecessary() {
@@ -196,7 +221,17 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     public void updateDetails(final VideoDetails details, final DetailsStringProvider detailsStringProvider) {
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        NetflixActivity.getImageLoader((Context)netflixActivity).showImg(this.horzDispImg, details.getHorzDispUrl(), IClientLogging.AssetType.boxArt, String.format(this.getResources().getString(2131493192), details.getTitle()), true, true);
+        final String format = String.format(this.getResources().getString(2131493193), details.getTitle());
+        final ImageLoader imageLoader = NetflixActivity.getImageLoader((Context)netflixActivity);
+        final AdvancedImageView horzDispImg = this.horzDispImg;
+        String s;
+        if (DeviceUtils.isTabletByContext(this.getContext())) {
+            s = details.getHorzDispUrl();
+        }
+        else {
+            s = details.getStoryDispUrl();
+        }
+        imageLoader.showImg(horzDispImg, s, IClientLogging.AssetType.boxArt, format, true, true);
         this.horzDispImg.requestFocus();
         this.horzDispImg.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {

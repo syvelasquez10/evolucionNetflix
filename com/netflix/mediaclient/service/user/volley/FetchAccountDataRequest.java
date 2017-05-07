@@ -78,7 +78,7 @@ public class FetchAccountDataRequest extends FalcorVolleyWebClientRequest<Accoun
                         asJsonObject2 = asJsonObject.getAsJsonObject(string);
                         userProfile = new UserProfile();
                         userProfile.summary = FalcorParseUtils.getPropertyObject(asJsonObject2, "summary", UserProfile.Summary.class);
-                        if (userProfile.summary == null || StringUtils.isEmpty(userProfile.getUserId())) {
+                        if (userProfile.summary == null || StringUtils.isEmpty(userProfile.getProfileToken())) {
                             throw new FalcorParseException("response missing summary" + s);
                         }
                     }
@@ -100,7 +100,7 @@ public class FetchAccountDataRequest extends FalcorVolleyWebClientRequest<Accoun
             try {
                 asJsonObject3 = dataObj.getAsJsonObject("user");
                 user.summary = FalcorParseUtils.getPropertyObject(asJsonObject3, "summary", User.Summary.class);
-                if (user.summary == null || StringUtils.isEmpty(user.getUserId())) {
+                if (user.summary == null || StringUtils.isEmpty(user.getUserToken())) {
                     throw new FalcorParseException("response missing summary" + s);
                 }
             }

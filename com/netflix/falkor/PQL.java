@@ -750,6 +750,10 @@ public class PQL implements Cloneable
         return this.toString().hashCode();
     }
     
+    public boolean isEmpty() {
+        return this.keySegments == null || this.keySegments.size() == 0;
+    }
+    
     public PQL prepend(final PQL pql) {
         final ArrayList list = new ArrayList(pql.keySegments);
         list.addAll(this.keySegments);

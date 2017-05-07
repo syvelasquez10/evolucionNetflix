@@ -16,8 +16,8 @@ public interface PreferenceKeys
     public static final String PREFERENCE_AD_ID = "advertisement_id";
     public static final String PREFERENCE_AD_ID_OPTED_IN = "advertisement_id_opted_in";
     public static final String PREFERENCE_AD_ID_TIMESTAMP = "advertisement_id_ts";
+    public static final String PREFERENCE_ALLOW_SEND_VIA_FACEBOOK_PREF = "user_send_recommendation_via_facebook_approved";
     public static final String PREFERENCE_APM_USER_SESSION_TIMEOUT_OVERRIDE = "apm_user_session_timeout_duration_override";
-    public static final String PREFERENCE_BITRATE_CAP = "nflx_bitrate_cap";
     public static final String PREFERENCE_BREADCRUMB_LOGGING_CONFIGURATION = "breadcrumb_log_configuration";
     public static final String PREFERENCE_CL_CONFIGURATION = "cl_configuration";
     public static final String PREFERENCE_DEVICE_CATEGORY = "nf_device_category";
@@ -32,6 +32,7 @@ public interface PreferenceKeys
     public static final String PREFERENCE_ERROR_LOGGING_CONFIGURATION = "error_log_configuration";
     public static final String PREFERENCE_FIRST_APPLICATION_START_AFTER_INSTALLATION = "nf_first_start_after_install";
     public static final String PREFERENCE_GCM_BROWSE_EVENT_RATE_LIMIT = "gcm_browse_rate_limit";
+    public static final String PREFERENCE_GCM_NOTIFIC_CHANGE_EVENT_RATE_LIMIT = "gcm_tray_change_rate_limit";
     public static final String PREFERENCE_HARDWARE_ACCELERATION = "nflx_hardwarer_acc";
     public static final String PREFERENCE_IMAGE_PREF = "image_pref";
     public static final String PREFERENCE_IP_CONNECTIVITY_POLICY_OVERRIDE = "ip_connectivity_policy_overide";
@@ -40,11 +41,13 @@ public interface PreferenceKeys
     public static final String PREFERENCE_MDX_SELECTED_UUID = "mdx_selected_uuid";
     public static final String PREFERENCE_MDX_TARGET_LASTACTIVE = "mdx_target_lastactive";
     public static final String PREFERENCE_MDX_TARGET_UUID = "mdx_target_uuid";
+    public static final String PREFERENCE_NOTIFICATION_ID_DELETED_FROM_STATUSBAR = "notification_id_deleted_from_statusbar";
     public static final String PREFERENCE_NOTIFICATION_SETTINGS = "notification_settings";
     public static final String PREFERENCE_PLAYER_TYPE = "nflx_player_type";
     public static final String PREFERENCE_PLAYER_TYPE_QA_OVERRIDE = "nflx_player_type_qa";
     public static final String PREFERENCE_PRESENTATION_PAGE_AGGREGATION = "pt_aggregation_size";
     public static final String PREFERENCE_REPORTING_SERVICE = "reporting_service";
+    public static final String PREFERENCE_SHOWN_PROFILE_GATE_COUNTER = "user_saw_profile_gate";
     public static final String PREFERENCE_SIGNUP_ENABLED = "signup_enabled";
     public static final String PREFERENCE_SIGNUP_TIMEOUT = "signup_timeout";
     public static final String PREFERENCE_SKIPPED_OPTIONAL_UPDATE = "nflx_update_skipped";

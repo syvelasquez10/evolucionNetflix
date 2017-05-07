@@ -4,10 +4,11 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import android.content.Context;
 import android.widget.Toast;
 import android.os.Handler;
 import android.os.Debug;
+import android.content.Context;
+import com.netflix.mediaclient.android.activity.FalkorValidationActivity;
 import com.netflix.mediaclient.service.NetflixService;
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
@@ -88,6 +89,15 @@ public class DebugMenuItems
         });
     }
     
+    private void addValidateFalkorAgentItem(final Menu menu) {
+        menu.add((CharSequence)"Launch Falkor Validator Act").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
+            public boolean onMenuItemClick(final MenuItem menuItem) {
+                DebugMenuItems.this.activity.startActivity(FalkorValidationActivity.createStartIntent((Context)DebugMenuItems.this.activity));
+                return true;
+            }
+        });
+    }
+    
     private void beginTraceview() {
         Log.i(this.logTag, "Starting method trace...");
         Debug.startMethodTracing("nflx");
@@ -108,5 +118,6 @@ public class DebugMenuItems
         this.addFlushDataCacheItem(menu);
         this.addSendHomeRefreshBroadcast(menu);
         this.addSendCwRefreshBroadcast(menu);
+        this.addValidateFalkorAgentItem(menu);
     }
 }

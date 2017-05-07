@@ -23,8 +23,7 @@ public abstract class BaseUIEvent extends BaseNccpEvent
         super(s);
     }
     
-    @Override
-    protected String getJSON() {
+    public String getJSON() {
         final JSONObject jsonObject = null;
         while (true) {
             try {

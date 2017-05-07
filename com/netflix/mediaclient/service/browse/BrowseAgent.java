@@ -11,45 +11,56 @@ import java.io.Serializable;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.model.user.ProfileType;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
+import com.netflix.mediaclient.service.preapp.PreAppAgent;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsListSummary;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
 import com.netflix.mediaclient.servicemgr.model.LoLoMo;
 import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
-import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.servicemgr.model.Billboard;
 import com.netflix.mediaclient.service.browse.cache.BrowseCache;
-import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement;
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsStaticFactory;
+import com.netflix.mediaclient.NetflixApplication;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.util.UiUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.model.Billboard;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
-import java.util.Iterator;
 import com.netflix.mediaclient.service.webclient.model.CWVideo;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
-import android.support.v4.content.LocalBroadcastManager;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.webclient.model.MovieDetails;
 import com.netflix.mediaclient.ui.Asset;
+import android.app.NotificationManager;
+import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import java.lang.ref.WeakReference;
+import java.util.Iterator;
 import java.util.Random;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
-import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
-import android.os.Handler;
+import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import java.util.List;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
+import com.netflix.mediaclient.service.pushnotification.MessageData;
+import com.netflix.mediaclient.util.SocialNotificationsUtils;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import com.netflix.mediaclient.service.ServiceAgent;
@@ -62,16 +73,19 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     public static final String CACHE_KEY_PREFIX_EPISODE_DETAILS;
     public static final String CACHE_KEY_PREFIX_GENRE_LOMO;
     public static final String CACHE_KEY_PREFIX_GENRE_VIDEOS;
+    public static final String CACHE_KEY_PREFIX_IN_QUEUE = "inQueue";
     public static final String CACHE_KEY_PREFIX_IQ_VIDEOS;
     public static final String CACHE_KEY_PREFIX_KIDS_CDP;
     public static final String CACHE_KEY_PREFIX_LOMO;
     public static final String CACHE_KEY_PREFIX_MDP;
+    public static final String CACHE_KEY_PREFIX_NOTIFICATIONS;
     public static final String CACHE_KEY_PREFIX_SDP;
     public static final String CACHE_KEY_PREFIX_SEASON_DETAILS;
     public static final String CACHE_KEY_PREFIX_VIDEOS;
     private static final long EPISODE_RATE_LIMIT_DELAY = 30000L;
     private static final int MARGIN_FOR_BOOKMARK_RESET_SECONDS = 30;
     private static final int PREFETCH_BILLBOARD_VIDEO_INDEX = 9;
+    private static final int REFRESH_NOTIFICATIONS_INTERVAL = 3600000;
     private static final String TAG = "nf_service_browseagent";
     private static final boolean USE_HARD_CACHE_CONST = false;
     private static final boolean USE_SOFT_CACHE_CONST = true;
@@ -79,6 +93,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     private static int mPrefetchFromCWVideo;
     private static int mPrefetchFromVideo;
     private static int mPrefetchToCWVideo;
+    private static int mPrefetchToLoMo;
     private static int mPrefetchToVideo;
     private static long mPrevEpisodeRefreshTime;
     private DataDumper dataDumper;
@@ -86,6 +101,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     private BrowseWebClientCache mCache;
     private final PlayReceiver mPlayReceiver;
     public final BroadcastReceiver mUserAgentIntentReceiver;
+    private Runnable refreshNotificationsRunnable;
     
     static {
         CACHE_KEY_PREFIX_LOMO = getCacheKeyFromClassName(FetchLoMosTask.class);
@@ -100,10 +116,19 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         CACHE_KEY_PREFIX_GENRE_VIDEOS = getCacheKeyFromClassName(FetchGenreVideosTask.class);
         CACHE_KEY_PREFIX_KIDS_CDP = getCacheKeyFromClassName(FetchKidsCharacterDetailsTask.class);
         CACHE_KEY_PREFIX_SEASON_DETAILS = getCacheKeyFromClassName(FetchSeasonDetailsTask.class);
+        CACHE_KEY_PREFIX_NOTIFICATIONS = getCacheKeyFromClassName(FetchSocialNotificationsTask.class);
     }
     
     public BrowseAgent() {
         this.mPlayReceiver = new PlayReceiver();
+        this.refreshNotificationsRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (BrowseAgent.this.getService() != null && SocialNotificationsUtils.isSocialNotificationsFeatureSupported(BrowseAgent.this.getService().getCurrentProfile(), BrowseAgent.this.getContext())) {
+                    BrowseAgent.this.refreshSocialNotifications(true, true, null);
+                }
+            }
+        };
         this.mUserAgentIntentReceiver = new BroadcastReceiver() {
             public void onReceive(final Context context, final Intent intent) {
                 if (intent != null) {
@@ -146,6 +171,10 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         return BrowseAgent.isCurrentProfileActive;
     }
     
+    private void clearExistingNotificationsInCache() {
+        for (int n = 0, n2 = 0; n2 < this.mCache.getMaxItemsInSoftCache() && this.mCache.getSoftCache().remove(BrowseWebClientCache.buildNotificationsCacheKey(n)) != null; n += 20, ++n2) {}
+    }
+    
     public static int computePlayPos(final int n, int n2, final int n3) {
         if (n2 > 0 && n >= n2) {
             n2 = 0;
@@ -161,8 +190,26 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         return n2;
     }
     
+    private void fetchSocialNotificationsInternal(final int n, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+        Log.d("nf_service_browseagent", "fetchSocialNotifications");
+        this.launchTask(new FetchSocialNotificationsTask(n, b, browseAgentCallback));
+    }
+    
     private static String getCacheKeyFromClassName(final Class<?> clazz) {
         return clazz.getSimpleName();
+    }
+    
+    private SocialNotificationSummary getFirstUnreadNotification(final SocialNotificationsList list) {
+        final List<SocialNotificationSummary> socialNotifications = list.getSocialNotifications();
+        if (socialNotifications == null) {
+            return null;
+        }
+        for (final SocialNotificationSummary socialNotificationSummary : socialNotifications) {
+            if (!socialNotificationSummary.getWasRead()) {
+                return socialNotificationSummary;
+            }
+        }
+        return null;
     }
     
     private com.netflix.mediaclient.service.webclient.model.EpisodeDetails getNextPlayableEpisode(com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails, final long lastModified) {
@@ -207,6 +254,10 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         this.mBrowseWebClient = BrowseWebClientFactory.create(this.mCache, this.getService(), this.getResourceFetcher().getApiNextWebClient());
     }
     
+    private void insertNotificationsInCache(final int n, final SocialNotificationsList list) {
+        this.mCache.getSoftCache().put(BrowseWebClientCache.buildNotificationsCacheKey(n), list);
+    }
+    
     private Boolean isKidsCharacterDetailsNew(final KidsCharacterDetails kidsCharacterDetails, final KidsCharacterDetails kidsCharacterDetails2) {
         if (Log.isLoggable("nf_service_browseagent", 3)) {
             final String characterId = kidsCharacterDetails.getCharacterId();
@@ -226,6 +277,34 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         return !StringUtils.safeEquals(kidsCharacterDetails.getPlayable().getPlayableId(), kidsCharacterDetails2.getPlayable().getPlayableId());
     }
     
+    private boolean isSameAsCachedNotifications(final SocialNotificationsList list) {
+        final SocialNotificationsList list2 = (SocialNotificationsList)BrowseWebClientCache.getNotificationListFromCache(0, this.mCache);
+        if (list2 != null || list != null) {
+            if (list2 == null || list == null) {
+                return false;
+            }
+            final List<SocialNotificationSummary> socialNotifications = list.getSocialNotifications();
+            final List<SocialNotificationSummary> socialNotifications2 = list2.getSocialNotifications();
+            if (socialNotifications2 != null || socialNotifications != null) {
+                if (socialNotifications2 == null || socialNotifications == null) {
+                    return false;
+                }
+                if (socialNotifications2.size() != socialNotifications.size()) {
+                    return false;
+                }
+                int n = 0;
+                final Iterator<SocialNotificationSummary> iterator = socialNotifications.iterator();
+                while (iterator.hasNext()) {
+                    if (!iterator.next().equals(socialNotifications2.get(n))) {
+                        return false;
+                    }
+                    ++n;
+                }
+            }
+        }
+        return true;
+    }
+    
     private void launchTask(final Runnable runnable) {
         if (Log.isLoggable("nf_service_browseagent", 2)) {
             Log.v("nf_service_browseagent", "Launching task: " + runnable.getClass().getSimpleName());
@@ -235,6 +314,18 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
             return;
         }
         runnable.run();
+    }
+    
+    private void notifyOthersOfUnreadNotifications(final boolean b) {
+        if (Log.isLoggable("nf_service_browseagent", 4)) {
+            Log.i("nf_service_browseagent", "notifyOthersOfUnreadNotifications: " + b);
+        }
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED");
+        intent.putExtra("notifications_list_has_unread", b);
+        LocalBroadcastManager.getInstance(this.getContext()).sendBroadcast(intent);
+        if (!b) {
+            ((NotificationManager)this.getContext().getSystemService("notification")).cancel(1000);
+        }
     }
     
     private void refreshCacheWithLastPlayed(final Asset asset) {
@@ -342,6 +433,11 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     
     private void registerUserAgentIntentReceiver() {
         LocalBroadcastManager.getInstance(this.getContext()).registerReceiver(this.mUserAgentIntentReceiver, UserAgentBroadcastIntents.getNotificationIntentFilter());
+    }
+    
+    private void rescheduleNotificationsRefresh() {
+        this.getMainHandler().removeCallbacks(this.refreshNotificationsRunnable);
+        this.getMainHandler().postDelayed(this.refreshNotificationsRunnable, 3600000L);
     }
     
     private static void sendCwRefreshBrodcast(final Context context) {
@@ -541,6 +637,27 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         this.dataDumper.dumpHomeLoMos();
     }
     
+    @Override
+    public List<Billboard> fetchBillboardsFromCache(final int n) {
+        final List list = (List)BrowseWebClientCache.getBBVideosFromBrowseCache(0, 9, this.mCache);
+        if (list == null) {
+            return null;
+        }
+        return list.subList(0, Math.min(Math.min(n, 9), list.size()));
+    }
+    
+    @Override
+    public List<com.netflix.mediaclient.servicemgr.model.CWVideo> fetchCWFromCache(int min) {
+        final List list = (List)BrowseWebClientCache.getCWVideosFromBrowseCache(BrowseAgent.mPrefetchFromCWVideo, BrowseAgent.mPrefetchToCWVideo, this.mCache);
+        if (list != null) {
+            min = Math.min(Math.min(min, BrowseAgent.mPrefetchToCWVideo), list.size());
+            if (BrowseAgent.mPrefetchFromCWVideo <= min) {
+                return list.subList(BrowseAgent.mPrefetchFromCWVideo, min);
+            }
+        }
+        return null;
+    }
+    
     public void fetchCWVideos(final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
         this.launchTask(new FetchCWVideosTask(n, n2, browseAgentCallback, true));
     }
@@ -564,6 +681,18 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     
     public void fetchGenres(final String s, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
         this.launchTask(new FetchGenresTask(s, n, n2, browseAgentCallback));
+    }
+    
+    @Override
+    public List<Video> fetchIQFromCache(int min) {
+        final List list = (List)BrowseWebClientCache.getIQVideosFromBrowseCache(BrowseAgent.mPrefetchFromVideo, BrowseAgent.mPrefetchToVideo, this.mCache);
+        if (list != null) {
+            min = Math.min(Math.min(min, BrowseAgent.mPrefetchToVideo), list.size());
+            if (BrowseAgent.mPrefetchFromVideo <= min) {
+                return list.subList(BrowseAgent.mPrefetchFromVideo, min);
+            }
+        }
+        return null;
     }
     
     public void fetchIQVideos(final LoMo loMo, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
@@ -593,6 +722,40 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     }
     
     @Override
+    public List<Video> fetchRecommendedListFromCache(int min) {
+        final List list = (List)BrowseWebClientCache.getLoMoListFromBrowseCache(0, BrowseAgent.mPrefetchToLoMo, this.mCache);
+        if (list != null) {
+            final List<Video> list2 = null;
+            final Iterator<LoMo> iterator = list.iterator();
+            while (true) {
+                LoMo loMo;
+                do {
+                    final List<Video> list3 = list2;
+                    if (iterator.hasNext()) {
+                        loMo = iterator.next();
+                    }
+                    else {
+                        if (list3 == null) {
+                            return null;
+                        }
+                        min = Math.min(Math.min(min, BrowseAgent.mPrefetchToVideo), list3.size());
+                        if (BrowseAgent.mPrefetchFromVideo <= min) {
+                            return list3.subList(BrowseAgent.mPrefetchFromVideo, min);
+                        }
+                        return null;
+                    }
+                } while (loMo.getType() == LoMoType.BILLBOARD || loMo.getType() == LoMoType.CONTINUE_WATCHING || loMo.getType() == LoMoType.INSTANT_QUEUE || loMo.getType() == LoMoType.SOCIAL_GROUP || loMo.getType() == LoMoType.SOCIAL_FRIEND || loMo.getType() == LoMoType.SOCIAL_POPULAR);
+                if (Log.isLoggable("nf_service_browseagent", 4)) {
+                    Log.d("nf_service_browseagent", String.format("fetchNonSpecialRowFromCache listTitle: %s, listId: %s", loMo.getTitle(), loMo.getId()));
+                }
+                final List<Video> list3 = (List<Video>)BrowseWebClientCache.getVideoListFromBrowseCache(loMo.getId(), BrowseAgent.mPrefetchFromVideo, BrowseAgent.mPrefetchToVideo, this.mCache);
+                continue;
+            }
+        }
+        return null;
+    }
+    
+    @Override
     public void fetchSeasonDetails(final String s, final BrowseAgentCallback browseAgentCallback) {
         this.launchTask(new FetchSeasonDetailsTask(s, browseAgentCallback));
     }
@@ -612,6 +775,11 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     
     public void fetchSimilarVideosForQuerySuggestion(final String s, final int n, final BrowseAgentCallback browseAgentCallback, final String s2) {
         this.launchTask(new FetchSimilarVideosForQuerySuggestionTask(s, n, browseAgentCallback, s2));
+    }
+    
+    public void fetchSocialNotifications(final int n, final BrowseAgentCallback browseAgentCallback) {
+        Log.d("nf_service_browseagent", "fetchSocialNotifications");
+        this.fetchSocialNotificationsInternal(n, false, browseAgentCallback);
     }
     
     public void fetchVideos(final LoMo loMo, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
@@ -634,6 +802,11 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         this.launchTask(new LogBillboardActivityTask(video, billboardActivityType));
     }
     
+    public void markSocialNotificationsAsRead(final List<SocialNotificationSummary> list) {
+        Log.d("nf_service_browseagent", "markSocialNotificationsAsRead");
+        this.launchTask(new MarkNotificationsAsReadTask(list));
+    }
+    
     public void prefetchGenreLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final boolean b, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable("nf_service_browseagent", 4)) {
             Log.i("nf_service_browseagent", "Request to prefetchGenre  LoLoMo");
@@ -642,20 +815,34 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
             browseAgentCallback.onGenreLoLoMoPrefetched(CommonStatus.OK);
             return;
         }
-        this.launchTask(new PrefetchGenreLoLoMoTask(s, n, n2, n3, n4, b, browseAgentCallback));
+        this.launchTask(new PrefetchGenreLoLoMoTask(s, n, n2, n3, n4, browseAgentCallback));
     }
     
-    public void prefetchLoLoMo(final int n, final int n2, final int mPrefetchFromVideo, final int mPrefetchToVideo, final int mPrefetchFromCWVideo, final int mPrefetchToCWVideo, final boolean b, final boolean b2, final BrowseAgentCallback browseAgentCallback) {
+    public void prefetchLoLoMo(final int n, final int mPrefetchToLoMo, final int mPrefetchFromVideo, final int mPrefetchToVideo, final int mPrefetchFromCWVideo, final int mPrefetchToCWVideo, final boolean b, final boolean b2, final BrowseAgentCallback browseAgentCallback) {
         Log.i("nf_service_browseagent", "Request to prefetch LoLoMo");
         if (!this.mCache.needToPrefetch()) {
             browseAgentCallback.onLoLoMoPrefetched(CommonStatus.OK);
             return;
         }
+        BrowseAgent.mPrefetchToLoMo = mPrefetchToLoMo;
         BrowseAgent.mPrefetchToCWVideo = mPrefetchToCWVideo;
         BrowseAgent.mPrefetchFromCWVideo = mPrefetchFromCWVideo;
         BrowseAgent.mPrefetchToVideo = mPrefetchToVideo;
         BrowseAgent.mPrefetchFromVideo = mPrefetchFromVideo;
-        this.launchTask(new PrefetchLoLoMoTask(n2, mPrefetchToVideo, mPrefetchToCWVideo, 9, b, b2, browseAgentCallback));
+        this.launchTask(new PrefetchLoLoMoTask(mPrefetchToLoMo, mPrefetchToVideo, mPrefetchToCWVideo, 9, b, b2, browseAgentCallback));
+    }
+    
+    public void refreshAll() {
+        final int screenSizeCategory = DeviceUtils.getScreenSizeCategory(this.getContext());
+        boolean kidsProfile = false;
+        if (this.getUserAgent().getCurrentProfile() != null) {
+            kidsProfile = this.getUserAgent().getCurrentProfile().isKidsProfile();
+        }
+        if (kidsProfile) {
+            this.prefetchLoLoMo(0, 19, 0, 4, 0, 2, true, false, null);
+            return;
+        }
+        this.prefetchLoLoMo(0, 19, 0, UiUtils.computeNumVideosToFetchPerBatch(screenSizeCategory), 0, UiUtils.computeNumCWVideosToFetchPerBatch(screenSizeCategory), false, false, null);
     }
     
     public void refreshCW() {
@@ -707,12 +894,42 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         this.launchTask(new RefreshIQTask());
     }
     
+    public void refreshSocialNotifications(final boolean b, final boolean b2, final MessageData messageData) {
+        this.fetchSocialNotificationsInternal(0, b, new SimpleBrowseAgentCallback() {
+            @Override
+            public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+                boolean b = false;
+                if (list != null && status.getStatusCode() == StatusCode.OK) {
+                    if (!BrowseAgent.this.isSameAsCachedNotifications(list)) {
+                        BrowseAgent.this.clearExistingNotificationsInCache();
+                        BrowseAgent.this.insertNotificationsInCache(0, list);
+                    }
+                    final SocialNotificationSummary access$3500 = BrowseAgent.this.getFirstUnreadNotification(list);
+                    final BrowseAgent this$0 = BrowseAgent.this;
+                    if (access$3500 != null) {
+                        b = true;
+                    }
+                    this$0.notifyOthersOfUnreadNotifications(b);
+                    if (b2 && access$3500 != null && !NetflixApplication.isActivityVisible() && SocialNotificationsUtils.isSocialNotificationsFeatureSupported(BrowseAgent.this.getService().getCurrentProfile(), BrowseAgent.this.getContext()) && BrowseAgent.this.getService().getPushNotification().isOptIn()) {
+                        SocialNotificationsStaticFactory.getNotificationByType(access$3500.getType()).sendNotificationToStatusbar(access$3500, list.getSocialNotificationsListSummary(), BrowseAgent.this.getService().getImageLoader(), messageData, BrowseAgent.this.getContext());
+                    }
+                }
+            }
+        });
+        this.rescheduleNotificationsRefresh();
+    }
+    
     public void removeFromQueue(final String s, final String s2, final BrowseAgentCallback browseAgentCallback) {
         this.launchTask(new RemoveFromQueueTask(s, s2, browseAgentCallback));
     }
     
     public void searchNetflix(final String s, final BrowseAgentCallback browseAgentCallback) {
         this.launchTask(new SearchNetflixTask(s, browseAgentCallback));
+    }
+    
+    public void sendThanksToSocialNotification(final SocialNotificationSummary socialNotificationSummary, final BrowseAgentCallback browseAgentCallback) {
+        Log.d("nf_service_browseagent", "sendThanksToSocialNotification");
+        this.launchTask(new SendThanksToSocialNotificationTask(socialNotificationSummary, browseAgentCallback));
     }
     
     public void setVideoRating(final String s, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
@@ -770,10 +987,17 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                         if (AddToQueueTask.this.iqInCache) {
                             sendIqRefreshBrodcast(BrowseAgent.this.getContext());
                         }
-                        LogUtils.reportAddToQueueActionEnded(BrowseAgent.this.getContext(), IClientLogging.CompletionReason.success, null, null);
+                        UserActionLogUtils.reportAddToQueueActionEnded(BrowseAgent.this.getContext(), IClientLogging.CompletionReason.success, null, null);
                     }
                     else {
-                        LogUtils.reportAddToQueueActionEnded(BrowseAgent.this.getContext(), IClientLogging.CompletionReason.failed, new LogUtils.LogReportErrorArgs(status, ActionOnUIError.displayedError, "", null).getError(), null);
+                        String s;
+                        if (status.getStatusCode() == StatusCode.ALREADY_IN_QUEUE) {
+                            s = BrowseAgent.this.getContext().getString(2131493381);
+                        }
+                        else {
+                            s = BrowseAgent.this.getContext().getString(2131493380);
+                        }
+                        UserActionLogUtils.reportAddToQueueActionEnded(BrowseAgent.this.getContext(), IClientLogging.CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, s, ActionOnUIError.displayedError), null);
                     }
                     BrowseAgent.this.getMainHandler().post((Runnable)new Runnable() {
                         @Override
@@ -1415,7 +1639,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     
     private class FetchSimilarVideosForPersonTask extends CachedFetchTask<SearchVideoList>
     {
-        private String originalSearchTerm;
+        private final String originalSearchTerm;
         private final BrowseAgentCallback webClientCallback;
         
         public FetchSimilarVideosForPersonTask(final String s, final int n, final BrowseAgentCallback browseAgentCallback, final String originalSearchTerm) {
@@ -1448,7 +1672,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     
     private class FetchSimilarVideosForQuerySuggestionTask extends CachedFetchTask<SearchVideoList>
     {
-        private String originalSearchTerm;
+        private final String originalSearchTerm;
         private final BrowseAgentCallback webClientCallback;
         
         public FetchSimilarVideosForQuerySuggestionTask(final String s, final int n, final BrowseAgentCallback browseAgentCallback, final String originalSearchTerm) {
@@ -1476,6 +1700,45 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                 return;
             }
             this.webClientCallback.onSimilarVideosFetched(list, CommonStatus.OK);
+        }
+    }
+    
+    private class FetchSocialNotificationsTask extends CachedFetchTask<SocialNotificationsList>
+    {
+        private final int fromIndex;
+        BrowseAgentCallback mCallback;
+        private final boolean skipCache;
+        private final BrowseAgentCallback webClientCallback;
+        
+        public FetchSocialNotificationsTask(final int fromIndex, final boolean skipCache, final BrowseAgentCallback mCallback) {
+            super("socialNotificationsList", fromIndex, fromIndex + 20 - 1, mCallback);
+            this.webClientCallback = new SimpleBrowseAgentCallback() {
+                @Override
+                public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+                    ((CachedFetchTask<SocialNotificationsList>)FetchSocialNotificationsTask.this).updateCacheIfNecessary(list, status);
+                    BrowseAgent.this.getMainHandler().post((Runnable)new Runnable() {
+                        @Override
+                        public void run() {
+                            if (FetchSocialNotificationsTask.this.mCallback != null) {
+                                FetchSocialNotificationsTask.this.mCallback.onSocialNotificationsListFetched(list, status);
+                            }
+                        }
+                    });
+                }
+            };
+            this.mCallback = mCallback;
+            this.fromIndex = fromIndex;
+            this.skipCache = skipCache;
+        }
+        
+        @Override
+        public void run() {
+            final SocialNotificationsList list = ((CachedFetchTask<SocialNotificationsList>)this).getCachedValue();
+            if (this.skipCache || list == null) {
+                BrowseAgent.this.mBrowseWebClient.fetchSocialNotifications(this.fromIndex, this.webClientCallback);
+                return;
+            }
+            this.webClientCallback.onSocialNotificationsListFetched(list, CommonStatus.OK);
         }
     }
     
@@ -1588,6 +1851,32 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         }
     }
     
+    private class MarkNotificationsAsReadTask extends FetchTask<List<SocialNotificationsListSummary>>
+    {
+        private final List<SocialNotificationSummary> mNotifications;
+        private final BrowseAgentCallback webClientCallback;
+        
+        public MarkNotificationsAsReadTask(final List<SocialNotificationSummary> mNotifications) {
+            super("socialNotificationsList", 0, 19, null);
+            this.webClientCallback = new SimpleBrowseAgentCallback() {
+                @Override
+                public void onSocialNotificationsMarkedAsRead(final List<SocialNotificationSummary> list, final Status status) {
+                    if (status.isSucces()) {
+                        BrowseAgent.this.notifyOthersOfUnreadNotifications(false);
+                        return;
+                    }
+                    BrowseAgent.this.refreshSocialNotifications(true, false, null);
+                }
+            };
+            this.mNotifications = mNotifications;
+        }
+        
+        @Override
+        public void run() {
+            BrowseAgent.this.mBrowseWebClient.markSocialNotificationsAsRead(this.mNotifications, this.webClientCallback);
+        }
+    }
+    
     public final class PlayReceiver extends BroadcastReceiver
     {
         public void onReceive(final Context context, final Intent intent) {
@@ -1611,18 +1900,14 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     private class PrefetchGenreLoLoMoTask extends FetchTask<Void>
     {
         final int mFromLoMo;
-        final boolean mIncludeBoxshots;
         final int mToLoMo;
         private final BrowseAgentCallback webClientCallback;
         
-        public PrefetchGenreLoLoMoTask(final String s, final int mFromLoMo, final int mToLoMo, final int n, final int n2, final boolean mIncludeBoxshots, final BrowseAgentCallback browseAgentCallback) {
+        public PrefetchGenreLoLoMoTask(final String s, final int mFromLoMo, final int mToLoMo, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
             super(s, n, n2, browseAgentCallback);
             this.webClientCallback = new SimpleBrowseAgentCallback() {
                 @Override
                 public void onGenreLoLoMoPrefetched(final Status status) {
-                    if (PrefetchGenreLoLoMoTask.this.mIncludeBoxshots) {
-                        throw new RuntimeException("Unimplemented exception");
-                    }
                     BrowseAgent.this.getMainHandler().post((Runnable)new Runnable() {
                         @Override
                         public void run() {
@@ -1633,7 +1918,6 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
             };
             this.mFromLoMo = mFromLoMo;
             this.mToLoMo = mToLoMo;
-            this.mIncludeBoxshots = mIncludeBoxshots;
         }
         
         @Override
@@ -1662,7 +1946,10 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                     BrowseAgent.this.getMainHandler().post((Runnable)new Runnable() {
                         @Override
                         public void run() {
-                            ((FetchTask)PrefetchLoLoMoTask.this).getCallback().onLoLoMoPrefetched(status);
+                            if (((FetchTask)PrefetchLoLoMoTask.this).getCallback() != null) {
+                                ((FetchTask)PrefetchLoLoMoTask.this).getCallback().onLoLoMoPrefetched(status);
+                            }
+                            PreAppAgent.informPrefetched(BrowseAgent.this.getContext());
                         }
                     });
                 }
@@ -1690,6 +1977,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                 @Override
                 public void onCWListRefresh(final Status status) {
                     sendCwRefreshBrodcast(BrowseAgent.this.getContext());
+                    PreAppAgent.informCwUpdated(BrowseAgent.this.getContext());
                 }
             };
         }
@@ -1714,6 +2002,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                 @Override
                 public void onIQListRefresh(final Status status) {
                     sendIqRefreshBrodcast(BrowseAgent.this.getContext());
+                    PreAppAgent.informIqUpdated(BrowseAgent.this.getContext());
                 }
             };
         }
@@ -1744,14 +2033,14 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                         return;
                     }
                     final com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails kidsCharacterDetails2 = (com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails)kidsCharacterDetails;
-                    final Boolean access$1800 = BrowseAgent.this.isKidsCharacterDetailsNew(kidsCharacterDetailsFromCache, kidsCharacterDetails);
+                    final Boolean access$600 = BrowseAgent.this.isKidsCharacterDetailsNew(kidsCharacterDetailsFromCache, kidsCharacterDetails);
                     if (b && kidsCharacterDetailsFromCache != null) {
                         kidsCharacterDetailsFromCache.updateWatchNext(kidsCharacterDetails2);
                     }
                     BrowseAgent.this.getMainHandler().post((Runnable)new Runnable() {
                         @Override
                         public void run() {
-                            ((FetchTask)RefreshKidsCharacterDetailsTask.this).getCallback().onKidsCharacterDetailsFetched(kidsCharacterDetailsFromCache, access$1800, status);
+                            ((FetchTask)RefreshKidsCharacterDetailsTask.this).getCallback().onKidsCharacterDetailsFetched(kidsCharacterDetailsFromCache, access$600, status);
                         }
                     });
                 }
@@ -1780,10 +2069,15 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                         if (RemoveFromQueueTask.this.iqInCache) {
                             sendIqRefreshBrodcast(BrowseAgent.this.getContext());
                         }
-                        LogUtils.reportRemoveFromQueueActionEnded(BrowseAgent.this.getContext(), IClientLogging.CompletionReason.success, null);
+                        UserActionLogUtils.reportRemoveFromQueueActionEnded(BrowseAgent.this.getContext(), IClientLogging.CompletionReason.success, null);
                     }
                     else {
-                        LogUtils.reportRemoveFromQueueActionEnded(BrowseAgent.this.getContext(), IClientLogging.CompletionReason.failed, new LogUtils.LogReportErrorArgs(status, ActionOnUIError.displayedError, "", null).getError());
+                        int n = 2131493383;
+                        if (status.getStatusCode() == StatusCode.NOT_IN_QUEUE) {
+                            Log.w("nf_service_browseagent", "It was already removed");
+                            n = 2131493382;
+                        }
+                        UserActionLogUtils.reportRemoveFromQueueActionEnded(BrowseAgent.this.getContext(), IClientLogging.CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, BrowseAgent.this.getContext().getString(n), ActionOnUIError.displayedError));
                     }
                     BrowseAgent.this.getMainHandler().post((Runnable)new Runnable() {
                         @Override
@@ -1848,6 +2142,37 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                 return;
             }
             this.webClientCallback.onSearchResultsFetched(searchResults, CommonStatus.OK);
+        }
+    }
+    
+    private class SendThanksToSocialNotificationTask extends FetchTask<SocialNotificationSummary>
+    {
+        BrowseAgentCallback mCallback;
+        private final SocialNotificationSummary mNotification;
+        private final BrowseAgentCallback webClientCallback;
+        
+        public SendThanksToSocialNotificationTask(final SocialNotificationSummary mNotification, final BrowseAgentCallback mCallback) {
+            super("socialNotificationsList", 0, 19, null);
+            this.webClientCallback = new SimpleBrowseAgentCallback() {
+                @Override
+                public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+                    BrowseAgent.this.getMainHandler().post((Runnable)new Runnable() {
+                        @Override
+                        public void run() {
+                            if (SendThanksToSocialNotificationTask.this.mCallback != null) {
+                                SendThanksToSocialNotificationTask.this.mCallback.onSocialNotificationWasThanked(socialNotificationSummary, status);
+                            }
+                        }
+                    });
+                }
+            };
+            this.mCallback = mCallback;
+            this.mNotification = mNotification;
+        }
+        
+        @Override
+        public void run() {
+            BrowseAgent.this.mBrowseWebClient.sendThanksToSocialNotification(this.mNotification, this.webClientCallback);
         }
     }
     

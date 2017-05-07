@@ -37,11 +37,11 @@ public class DetailsMenu
     }
     
     private void updateShareItemAsUnshared() {
-        this.shareItem.setTitle(2131493135).setEnabled(false).setVisible(true);
+        this.shareItem.setTitle(2131493136).setEnabled(false).setVisible(true);
     }
     
     private void updateShareItemToUnshare(final ServiceManager serviceManager, final String s) {
-        this.shareItem.setTitle(2131493134).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new UnshareClickHandler(serviceManager, s)).setEnabled(true).setVisible(true);
+        this.shareItem.setTitle(2131493135).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new UnshareClickHandler(serviceManager, s)).setEnabled(true).setVisible(true);
     }
     
     public void updateShareItem(final ServiceManager serviceManager, final VideoDetails videoDetails) {
@@ -68,10 +68,10 @@ public class DetailsMenu
             DetailsMenu.this.shareItem.setEnabled(true);
             if (status.isError()) {
                 Log.w("DetailsMenu", "Invalid status code");
-                Toast.makeText((Context)DetailsMenu.this.activity, 2131493136, 1).show();
+                Toast.makeText((Context)DetailsMenu.this.activity, 2131493137, 1).show();
                 return;
             }
-            Toast.makeText((Context)DetailsMenu.this.activity, 2131493133, 1).show();
+            Toast.makeText((Context)DetailsMenu.this.activity, 2131493134, 1).show();
             DetailsMenu.this.updateShareItemAsUnshared();
         }
     }

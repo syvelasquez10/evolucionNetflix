@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;

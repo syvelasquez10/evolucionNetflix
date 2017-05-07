@@ -26,7 +26,7 @@ public class NetflixKidsActionBar extends NetflixActionBar
     
     @Override
     protected int getFullSizeLogoId() {
-        return 2130837714;
+        return 2130837712;
     }
     
     @Override

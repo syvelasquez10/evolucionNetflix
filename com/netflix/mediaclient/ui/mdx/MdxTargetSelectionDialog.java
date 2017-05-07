@@ -41,8 +41,8 @@ public class MdxTargetSelectionDialog
             MdxTargetSelectionDialog.mRowColor = activity.getResources().getColor(2131296372);
             final LayoutInflater layoutInflater = activity.getLayoutInflater();
             this.content = layoutInflater.inflate(2130903140, (ViewGroup)null);
-            this.title = (TextView)this.content.findViewById(2131165511);
-            this.listView = (ListView)this.content.findViewById(2131165512);
+            this.title = (TextView)this.content.findViewById(2131165512);
+            this.listView = (ListView)this.content.findViewById(2131165513);
             this.adapterWrapper = new TargetsAdapter(layoutInflater);
             this.listView.setAdapter((ListAdapter)this.adapterWrapper);
             this.setCancelable(true);
@@ -106,7 +106,7 @@ public class MdxTargetSelectionDialog
             ViewHolder tag;
             if (inflate == null) {
                 inflate = this.inflater.inflate(2130903123, (ViewGroup)null);
-                tag = new ViewHolder((TextView)inflate.findViewById(2131165463), (TextView)inflate.findViewById(2131165464), (CheckBox)inflate.findViewById(2131165462));
+                tag = new ViewHolder((TextView)inflate.findViewById(2131165464), (TextView)inflate.findViewById(2131165465), (CheckBox)inflate.findViewById(2131165463));
                 inflate.setTag((Object)tag);
             }
             else {

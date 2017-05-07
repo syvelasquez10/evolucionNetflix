@@ -129,8 +129,8 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
             linearLayout = new KidsLoMoViewGroup<Object>((Context)this.activity, false);
         }
         ((VideoViewGroup)linearLayout).init(1);
-        final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361958);
-        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361959);
+        final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361971);
+        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361972);
         ((VideoViewGroup)linearLayout).setPadding(dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2);
         int n;
         if (b) {

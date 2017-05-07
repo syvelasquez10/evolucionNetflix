@@ -106,6 +106,10 @@ public abstract class Event implements JsonSerializer
         this.activeSessions.addAll(list);
     }
     
+    public List<SessionKey> getAllActiveSessions() {
+        return this.activeSessions;
+    }
+    
     public String getCategory() {
         return this.category;
     }
@@ -140,7 +144,7 @@ public abstract class Event implements JsonSerializer
         return this.sequence;
     }
     
-    long getTime() {
+    public long getTime() {
         return this.time;
     }
     
@@ -154,6 +158,10 @@ public abstract class Event implements JsonSerializer
     
     public boolean isKids() {
         return this.kids;
+    }
+    
+    public boolean removeActiveSession(final SessionKey sessionKey) {
+        return this.activeSessions.remove(sessionKey);
     }
     
     public void setCategory(final String category) {

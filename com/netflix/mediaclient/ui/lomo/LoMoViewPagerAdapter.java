@@ -4,15 +4,15 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import com.netflix.mediaclient.ui.kids.lolomo.KidsCharacterPagerAdapter;
 import android.widget.LinearLayout$LayoutParams;
 import android.view.ViewGroup;
 import android.content.IntentFilter;
-import com.netflix.mediaclient.ui.kids.lolomo.KidsCharacterPagerAdapter;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.android.widget.ViewRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import android.view.View;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
@@ -27,25 +27,19 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     private static final EnumMap<LoMoType, Type> LOMO_TYPE_TABLE;
     private static final String TAG = "LoMoViewPagerAdapter";
     private final NetflixActivity activity;
-    private final RowAdapter billboard;
+    private final RowAdapterSet adapters;
     private final BroadcastReceiver browseReceiver;
-    private final RowAdapter character;
     private RowAdapter currentAdapter;
-    private final RowAdapter cw;
-    private final RowAdapter error;
-    private final RowAdapter iq;
     private boolean isDestroyed;
     private int listViewPos;
     private BasicLoMo loMo;
-    private final RowAdapter loading;
     private final View$OnClickListener onReloadClickListener;
     private final LoMoViewPager pager;
     private final RowAdapterCallbacks pagerAdapterCallbacks;
     private Type preErrorState;
     private final View reloadView;
-    private final RowAdapter standard;
     private Type state;
-    private final ViewRecycler viewRecycler;
+    private final ObjectRecycler.ViewRecycler viewRecycler;
     
     static {
         LOMO_TYPE_TABLE = new EnumMap<LoMoType, Type>(LoMoType.class) {
@@ -63,7 +57,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         };
     }
     
-    public LoMoViewPagerAdapter(final LoMoViewPager pager, final ServiceManager serviceManager, final ViewRecycler viewRecycler, final View reloadView, final boolean b) {
+    public LoMoViewPagerAdapter(final LoMoViewPager pager, final ServiceManager serviceManager, final ObjectRecycler.ViewRecycler viewRecycler, final View reloadView, final boolean b) {
         this.state = Type.LOADING;
         this.preErrorState = Type.LOADING;
         this.onReloadClickListener = (View$OnClickListener)new View$OnClickListener() {
@@ -137,23 +131,10 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         this.viewRecycler = viewRecycler;
         this.activity = (NetflixActivity)pager.getContext();
         this.reloadView = reloadView;
+        this.adapters = new RowAdapterSet(serviceManager, this.pagerAdapterCallbacks, viewRecycler, b);
         this.registerBrowseNotificationReceiver();
         reloadView.setOnClickListener(this.onReloadClickListener);
-        this.character = new KidsCharacterPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
-        this.billboard = new BillboardPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
-        this.cw = new CwPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
-        this.iq = new IqPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
-        ProgressiveLoMoPagerAdapter standard;
-        if (b) {
-            standard = new GenreLoMoPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
-        }
-        else {
-            standard = new StandardLoMoPagerAdapter(serviceManager, this.pagerAdapterCallbacks, viewRecycler);
-        }
-        this.standard = standard;
-        this.loading = new LoadingViewAdapter(this.pagerAdapterCallbacks, viewRecycler);
-        this.error = new ErrorViewAdapter(this.pagerAdapterCallbacks);
-        this.currentAdapter = this.loading;
+        this.currentAdapter = this.adapters.loading;
     }
     
     private View getView(final int n) {
@@ -161,7 +142,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
             Log.v("LoMoViewPagerAdapter", "getView pos: " + n);
         }
         if (this.currentAdapter.hasMoreData() && this.isLastItem(n)) {
-            return this.loading.getView(n);
+            return this.adapters.loading.getView(n);
         }
         return this.currentAdapter.getView(n);
     }
@@ -193,25 +174,25 @@ public class LoMoViewPagerAdapter extends PagerAdapter
                 throw new IllegalStateException("Bad state");
             }
             case STANDARD: {
-                this.currentAdapter = this.standard;
+                this.currentAdapter = this.adapters.standard;
             }
             case LOADING: {
-                this.currentAdapter = this.loading;
+                this.currentAdapter = this.adapters.loading;
             }
             case ERROR: {
-                this.currentAdapter = this.error;
+                this.currentAdapter = this.adapters.error;
             }
             case IQ: {
-                this.currentAdapter = this.iq;
+                this.currentAdapter = this.adapters.iq;
             }
             case CW: {
-                this.currentAdapter = this.cw;
+                this.currentAdapter = this.adapters.cw;
             }
             case BILLBOARD: {
-                this.currentAdapter = this.billboard;
+                this.currentAdapter = this.adapters.billboard;
             }
             case CHARACTER: {
-                this.currentAdapter = this.character;
+                this.currentAdapter = this.adapters.character;
             }
         }
     }
@@ -271,19 +252,19 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         int n = 0;
         switch (loMoType) {
             default: {
-                n = this.standard.getRowHeightInPx();
+                n = this.adapters.standard.getRowHeightInPx();
                 break;
             }
             case BILLBOARD: {
-                n = this.billboard.getRowHeightInPx();
+                n = this.adapters.billboard.getRowHeightInPx();
                 break;
             }
             case CONTINUE_WATCHING: {
-                n = this.cw.getRowHeightInPx();
+                n = this.adapters.cw.getRowHeightInPx();
                 break;
             }
             case CHARACTERS: {
-                n = this.character.getRowHeightInPx();
+                n = this.adapters.character.getRowHeightInPx();
                 break;
             }
         }
@@ -416,6 +397,34 @@ public class LoMoViewPagerAdapter extends PagerAdapter
                 title = this.lomo.getTitle();
             }
             return append.append(title).append(", state: ").append(this.state).append(", adapter: ").append(this.adapterMemento).toString();
+        }
+    }
+    
+    private static class RowAdapterSet
+    {
+        public final RowAdapter billboard;
+        public final RowAdapter character;
+        public final RowAdapter cw;
+        public final RowAdapter error;
+        public final RowAdapter iq;
+        public final RowAdapter loading;
+        public final RowAdapter standard;
+        
+        public RowAdapterSet(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler.ViewRecycler viewRecycler, final boolean b) {
+            this.character = new KidsCharacterPagerAdapter(serviceManager, rowAdapterCallbacks, viewRecycler);
+            this.billboard = new BillboardPagerAdapter(serviceManager, rowAdapterCallbacks, viewRecycler);
+            this.cw = new CwPagerAdapter(serviceManager, rowAdapterCallbacks, viewRecycler);
+            this.iq = new IqPagerAdapter(serviceManager, rowAdapterCallbacks, viewRecycler);
+            ProgressiveLoMoPagerAdapter standard;
+            if (b) {
+                standard = new GenreLoMoPagerAdapter(serviceManager, rowAdapterCallbacks, viewRecycler);
+            }
+            else {
+                standard = new StandardLoMoPagerAdapter(serviceManager, rowAdapterCallbacks, viewRecycler);
+            }
+            this.standard = standard;
+            this.loading = new LoadingViewAdapter(rowAdapterCallbacks, viewRecycler);
+            this.error = new ErrorViewAdapter(rowAdapterCallbacks);
         }
     }
     

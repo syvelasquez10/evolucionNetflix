@@ -19,7 +19,7 @@ import com.netflix.mediaclient.service.webclient.model.ShowDetails;
 import com.netflix.mediaclient.service.webclient.model.EpisodeDetails;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.service.webclient.model.MovieDetails;
-import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;

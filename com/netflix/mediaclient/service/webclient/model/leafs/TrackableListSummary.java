@@ -13,6 +13,10 @@ public class TrackableListSummary extends ListSummary implements Trackable
     private String requestId;
     private int trackId;
     
+    public TrackableListSummary() {
+        super(0);
+    }
+    
     protected TrackableListSummary(final int n, final int trackId, final int listPos, final String requestId) {
         super(n);
         this.trackId = trackId;

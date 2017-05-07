@@ -19,13 +19,12 @@ import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.app.Fragment;
 import android.os.Parcelable;
 import android.widget.Toast;
-import com.netflix.mediaclient.service.webclient.model.leafs.ListOfGenreSummary;
 import com.netflix.mediaclient.util.StringUtils;
 import java.io.Serializable;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsHomeActivity;
@@ -34,6 +33,7 @@ import android.content.Context;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import android.os.SystemClock;
 import com.netflix.mediaclient.android.app.LoadingStatus;
+import com.netflix.mediaclient.util.SocialNotificationsUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.Log;
@@ -47,7 +47,7 @@ import com.netflix.mediaclient.android.osp.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.content.Intent;
 import java.util.LinkedList;
-import com.netflix.mediaclient.android.widget.ViewRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 
 public class HomeActivity extends FragmentHostActivity implements OptInResponseHandler, ViewRecyclerProvider
@@ -69,9 +69,11 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     private long mStartedTimeMs;
     private ServiceManager manager;
     private final ManagerStatusListener managerStatusListener;
+    private MenuItem notificationsMenuItem;
     private long pauseTimeMs;
     private final BroadcastReceiver refreshHomeReceiver;
     private SlidingMenuAdapter slidingMenuAdapter;
+    private final BroadcastReceiver socialNotificationsListUpdateReceiver;
     private ViewRecycler viewRecycler;
     
     public HomeActivity() {
@@ -86,6 +88,9 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
                 HomeActivity.this.getPrimaryFrag().onManagerReady(serviceManager, status);
                 HomeActivity.this.slidingMenuAdapter.onManagerReady(serviceManager, status);
                 KidsUtils.updateKidsMenuItem(HomeActivity.this, HomeActivity.this.kidsEntryItem);
+                if (serviceManager != null && serviceManager.getBrowse() != null && SocialNotificationsUtils.isSocialNotificationsFeatureSupported(HomeActivity.this)) {
+                    serviceManager.getBrowse().refreshSocialNotifications(false);
+                }
                 HomeActivity.this.setLoadingStatusCallback(new LoadingStatusCallback() {
                     @Override
                     public void onDataLoaded(final Status status) {
@@ -122,12 +127,18 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
                 }
             }
         };
+        this.socialNotificationsListUpdateReceiver = new BroadcastReceiver() {
+            public void onReceive(final Context context, final Intent intent) {
+                SocialNotificationsUtils.handleNotificationsUpdateReceiver(intent, HomeActivity.this.notificationsMenuItem, "HomeActivity");
+            }
+        };
     }
     
     private void clearAllStateAndRefresh() {
         this.getServiceManager().getBrowse().flushCaches();
         this.getPrimaryFrag().refresh();
         this.slidingMenuAdapter.refresh();
+        this.refreshSocialNotificationsStateIfNeeded();
     }
     
     public static Intent createShowIntent(final NetflixActivity netflixActivity) {
@@ -186,7 +197,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
             this.backStackIntents.clear();
         }
         this.genreId = stringExtra;
-        this.genre = (ListOfGenreSummary)intent.getParcelableExtra("genre_parcel");
+        this.genre = (GenreList)intent.getParcelableExtra("genre_parcel");
         this.setIntent(intent);
         this.reportUiViewChanged(this.getCurrentViewType());
         return b2;
@@ -197,12 +208,24 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     }
     
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131493235, 1).show();
+        Toast.makeText((Context)this, 2131493238, 1).show();
         this.clearAllStateAndRefresh();
     }
     
-    private void registerRefreshHomeReceiver() {
+    private void refreshSocialNotificationsStateIfNeeded() {
+        final boolean b = this.notificationsMenuItem != null && true;
+        final boolean socialNotificationsFeatureSupported = SocialNotificationsUtils.isSocialNotificationsFeatureSupported(this);
+        if (b != socialNotificationsFeatureSupported) {
+            this.invalidateOptionsMenu();
+            if (socialNotificationsFeatureSupported && this.manager != null && this.manager.getBrowse() != null) {
+                this.manager.getBrowse().refreshSocialNotifications(true);
+            }
+        }
+    }
+    
+    private void registerReceivers() {
         this.registerReceiverWithAutoUnregister(this.refreshHomeReceiver, "com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO");
+        this.registerReceiverLocallyWithAutoUnregister(this.socialNotificationsListUpdateReceiver, "com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED");
     }
     
     public static void showGenreList(final NetflixActivity netflixActivity, final GenreList list) {
@@ -224,18 +247,18 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
         this.updateActionBar();
         this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131165389, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131165390, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, CommonStatus.OK);
     }
     
     private void toggleDrawer() {
         if (this.drawerLayout.isDrawerOpen(3)) {
-            LogUtils.reportUIViewCommand((Context)this, UIViewLogging.UIViewCommandName.slidingMenuClosed, this.getUiScreen(), this.getDataContext());
+            UIViewLogUtils.reportUIViewCommand((Context)this, UIViewLogging.UIViewCommandName.slidingMenuClosed, this.getUiScreen(), this.getDataContext());
             this.drawerLayout.closeDrawers();
             return;
         }
-        LogUtils.reportUIViewCommand((Context)this, UIViewLogging.UIViewCommandName.slidingMenuOpened, this.getUiScreen(), this.getDataContext());
+        UIViewLogUtils.reportUIViewCommand((Context)this, UIViewLogging.UIViewCommandName.slidingMenuOpened, this.getUiScreen(), this.getDataContext());
         this.drawerLayout.openDrawer(3);
     }
     
@@ -346,12 +369,12 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
         if (bundle != null) {
             this.backStackIntents.addAll((Collection<? extends Intent>)bundle.getSerializable("extra_back_stack_intents"));
         }
-        this.registerRefreshHomeReceiver();
+        this.registerReceivers();
         this.handleNewIntent(this.getIntent());
-        this.viewRecycler = new ViewRecycler();
+        this.viewRecycler = new ObjectRecycler.ViewRecycler();
         super.onCreate(bundle);
         this.showFetchErrorsToast();
-        this.drawerLayout = (DrawerLayout)this.findViewById(2131165391);
+        this.drawerLayout = (DrawerLayout)this.findViewById(2131165392);
         this.unlockSlidingDrawerIfPossible();
         SlidingMenuAdapter slidingMenuAdapter;
         if (this.isForKids()) {
@@ -361,7 +384,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
             slidingMenuAdapter = new SlidingMenuAdapter(this, this.drawerLayout);
         }
         this.slidingMenuAdapter = slidingMenuAdapter;
-        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2130837660, 2131493196, 2131493196);
+        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2130837655, 2131493197, 2131493197);
         this.drawerLayout.setDrawerListener((DrawerLayout.DrawerListener)this.drawerToggler);
         this.drawerLayout.setFocusable(false);
         this.updateActionBar();
@@ -374,6 +397,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
         MdxMenu.addSelectPlayTarget(this.getMdxMiniPlayerFrag(), menu);
         SearchMenu.addSearchNavigation(this, menu);
         this.kidsEntryItem = KidsUtils.createKidsMenuItem(this, menu);
+        this.notificationsMenuItem = SocialNotificationsUtils.addSocialNotificationsIconIfNeeded(this, menu);
         if (menu2 != null) {
             menu2.add((CharSequence)"Dump LoLoMo Data").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
                 public boolean onMenuItemClick(final MenuItem menuItem) {
@@ -403,13 +427,14 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     
     protected void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
+        Log.d("HomeActivity", "onNewIntent: ", intent);
         if (this.handleNewIntent(intent)) {
             this.showNewFrag();
         }
     }
     
     public boolean onOptionsItemSelected(final MenuItem menuItem) {
-        return this.drawerToggler.onOptionsItemSelected(menuItem) || super.onOptionsItemSelected(menuItem);
+        return this.drawerToggler.onOptionsItemSelected(menuItem) || SocialNotificationsUtils.tryHandleMenuItemClick(menuItem, (Context)this) || super.onOptionsItemSelected(menuItem);
     }
     
     @Override

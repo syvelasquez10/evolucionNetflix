@@ -16,6 +16,7 @@ import com.google.android.gms.cast.CastDevice;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import android.support.v7.media.MediaRouteSelector;
+import com.netflix.mediaclient.service.mdx.MdxNrdpLogger;
 import android.os.Handler;
 import java.util.List;
 import android.content.Context;
@@ -33,6 +34,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     private boolean mForceLaunch;
     private List<RouteInfo> mListOfRoutes;
     private Handler mMainHandler;
+    private MdxNrdpLogger mMdxNrdpLogger;
     private MediaRouteSelector mMediaRouteSelector;
     private MediaRouter mMediaRouter;
     private String mMyUuid;
@@ -46,7 +48,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
         TAG = CastManager.class.getSimpleName();
     }
     
-    public CastManager(final Context mContext, final Handler mMainHandler, final Handler mWorkerHandler, final String mMyUuid) {
+    public CastManager(final Context mContext, final Handler mMainHandler, final Handler mWorkerHandler, final String mMyUuid, final MdxNrdpLogger mMdxNrdpLogger) {
         this.mApplicationId = "CA5E8412";
         this.mListOfRoutes = new ArrayList<RouteInfo>();
         if (mMyUuid == null) {
@@ -56,6 +58,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
         this.mMainHandler = mMainHandler;
         this.mWorkerHandler = mWorkerHandler;
         this.mMyUuid = mMyUuid;
+        this.mMdxNrdpLogger = mMdxNrdpLogger;
         this.nativeInit();
     }
     
@@ -299,9 +302,10 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     }
     
     @Override
-    public void onApplicationStopped() {
+    public void onApplicationStopped(String uuid) {
         if (this.mSelectedRoute != null) {
-            final String uuid = this.getUuid(this.mSelectedRoute.getId());
+            this.mMdxNrdpLogger.logDebug(this.mSelectedRoute.getName() + ": netflix stopped, " + uuid);
+            uuid = this.getUuid(this.mSelectedRoute.getId());
             this.notifySessionend();
             this.mWorkerHandler.postDelayed((Runnable)new Runnable() {
                 @Override
@@ -313,15 +317,19 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     }
     
     @Override
-    public void onFailToConnect() {
+    public void onFailToConnect(final String s) {
         Log.d(CastManager.TAG, "onFailToConnect");
+        if (this.mSelectedRoute != null) {
+            this.mMdxNrdpLogger.logDebug(this.mSelectedRoute.getName() + ": cannot coonect to netflix, " + s);
+        }
         this.notifySessionend();
     }
     
     @Override
-    public void onFailToLaunch() {
+    public void onFailToLaunch(final String s) {
         Log.d(CastManager.TAG, "onFailToLaunch");
         if (this.mSelectedRoute != null) {
+            this.mMdxNrdpLogger.logDebug(this.mSelectedRoute.getName() + ": cannot launch netflix, " + s);
             this.nativeLaunchResultWrapper(false, this.getUuid(this.mSelectedRoute.getId()));
             return;
         }
@@ -329,9 +337,10 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     }
     
     @Override
-    public void onFailToSendMessage() {
+    public void onFailToSendMessage(final String s) {
         Log.d(CastManager.TAG, "onFailToSendMessage");
         if (this.mSelectedRoute != null) {
+            this.mMdxNrdpLogger.logDebug(this.mSelectedRoute.getName() + ": cannot send message, " + s);
             this.nativeSendMessageResultWrapper(false, this.getUuid(this.mSelectedRoute.getId()));
             return;
         }

@@ -12,18 +12,20 @@ import android.os.SystemClock;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClientFactory;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import com.netflix.mediaclient.servicemgr.UserActionLogging;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
-import com.netflix.mediaclient.servicemgr.UserActionLogging;
+import com.netflix.mediaclient.service.logging.client.model.SessionEvent;
 import com.netflix.mediaclient.service.logging.client.model.LoggingRequest;
-import android.support.v4.content.LocalBroadcastManager;
-import android.content.IntentFilter;
+import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebCallback;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
 import java.io.File;
+import com.netflix.mediaclient.service.logging.apm.UserSession;
+import com.netflix.mediaclient.service.logging.apm.ApplicationSession;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.service.logging.client.model.Event;
@@ -55,6 +57,7 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     private static final int DEFAULT_USER_SESSION_TIMEOUT_MS = 1800000;
     static final String REPOSITORY_DIR = "iclevents";
     private static final String TAG = "nf_log";
+    private static final int USER_SESSION_START_DELTA = 2000;
     private UserActionLoggingImpl mActionLogging;
     private ApmLoggingImpl mApmLogging;
     private ClientLoggingWebClient mClientLoggingWebClient;
@@ -71,6 +74,7 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     private SearchLogging mSearchLogging;
     private final AtomicLong mSequence;
     private final NetflixService mService;
+    private SocialLoggingImpl mSocialLogging;
     private SuspendLoggingImpl mSuspendLogging;
     private UIViewLoggingImpl mUIViewLogging;
     private final ServiceAgent.UserAgentInterface mUser;
@@ -186,9 +190,51 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         return 1000L * configuration.getApmUserSessionDurationInSeconds();
     }
     
+    private void handleAppSessionMissing(final Event event) {
+        Log.e("nf_log", "Application session is missing!");
+        final ApplicationSession applicationSession = this.mApmLogging.getApplicationSession();
+        if (applicationSession != null) {
+            if (event.getTime() < applicationSession.getStarted()) {
+                final String string = event.getName() + " event is created BEFORE application session";
+                Log.e("nf_log", string);
+                this.mOwner.getErrorLogging().logHandledException(string);
+            }
+            event.addActiveSession(applicationSession.getKey());
+            return;
+        }
+        final String string2 = "Application session does NOT exist, can not be added to event " + event.getName();
+        Log.e("nf_log", string2);
+        this.mOwner.getErrorLogging().logHandledException(string2);
+    }
+    
+    private void handleUserSessionMissing(final Event event) {
+        Log.d("nf_log", "User session is missing! This may be legit");
+        final UserSession userSession = this.mApmLogging.getUserSession();
+        if (userSession == null) {
+            final String string = "User session does NOT exist, can not be added to event " + event.getName();
+            Log.e("nf_log", string);
+            this.mOwner.getErrorLogging().logHandledException(string);
+            return;
+        }
+        if (Log.isLoggable("nf_log", 3)) {
+            Log.d("nf_log", "Event created: " + event.getTime());
+            Log.d("nf_log", "User session created: " + userSession.getStarted());
+            Log.d("nf_log", "Diff: " + (event.getTime() - userSession.getStarted()));
+        }
+        if (event.getTime() + 2000L < userSession.getStarted()) {
+            final String string2 = event.getName() + " event is created BEFORE user session";
+            Log.e("nf_log", string2);
+            this.mOwner.getErrorLogging().logHandledException(string2);
+            return;
+        }
+        event.addActiveSession(userSession.getKey());
+    }
+    
     private void initDataRepository() {
         Log.d("nf_log", "ICLManager::init data repository started ");
-        this.mDataRepository = new FileSystemDataRepositoryImpl(new File(this.mContext.getFilesDir(), "iclevents"));
+        final File file = new File(this.mContext.getFilesDir(), "iclevents");
+        file.mkdirs();
+        this.mDataRepository = new FileSystemDataRepositoryImpl(file);
         this.mExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -211,7 +257,7 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     private boolean isEventSuppressed(final String s, final String s2) {
         boolean b = true;
         boolean b2 = true;
-        final String sessionLookupKey = LogUtils.createSessionLookupKey(s, s2);
+        final String sessionLookupKey = ConsolidatedLoggingUtils.createSessionLookupKey(s, s2);
         final ServiceAgent.ConfigurationAgentInterface configuration = this.mService.getConfiguration();
         if (configuration == null) {
             b2 = false;
@@ -301,18 +347,7 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     }
     
     private void registerReceivers() {
-        final IntentFilter intentFilter = new IntentFilter("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_STARTED");
-        intentFilter.addCategory("com.netflix.mediaclient.intent.category.PLAYER");
-        intentFilter.addAction("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_ENDED");
-        intentFilter.addAction("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_PAUSED");
-        intentFilter.addAction("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_UNPAUSED");
-        intentFilter.setPriority(999);
-        try {
-            LocalBroadcastManager.getInstance(this.mContext).registerReceiver(this.mPlayerReceiver, intentFilter);
-        }
-        catch (Throwable t) {
-            Log.e("nf_log", "Failed to register ", t);
-        }
+        IntentUtils.registerSafelyLocalBroadcastReceiver(this.mContext, this.mPlayerReceiver, "com.netflix.mediaclient.intent.category.PLAYER", "com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_STARTED", "com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_ENDED", "com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_PAUSED", "com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_UNPAUSED");
     }
     
     private void removeSavedEvents(final String s) {
@@ -355,11 +390,64 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     }
     
     private void unRegisterReceivers() {
-        try {
-            LocalBroadcastManager.getInstance(this.mContext).unregisterReceiver(this.mPlayerReceiver);
+        IntentUtils.unregisterSafelyLocalBroadcastReceiver(this.mContext, this.mPlayerReceiver);
+    }
+    
+    private void validateActiveSession(final Event event) {
+        if (event instanceof SessionEvent && "appSession".equals(((SessionEvent)event).getSessionName())) {
+            Log.d("nf_log", "Do not check app session start event, skip");
+            return;
         }
-        catch (Throwable t) {
-            Log.e("nf_log", "Failed to unregister ", t);
+        final List<SessionKey> allActiveSessions = event.getAllActiveSessions();
+        int n = 0;
+        int n2 = 0;
+        final ArrayList<SessionKey> list = new ArrayList<SessionKey>();
+        for (final SessionKey sessionKey : allActiveSessions) {
+            int n3 = n;
+            if ("appSession".equals(sessionKey.getName())) {
+                if (sessionKey.getId() == null) {
+                    Log.e("nf_log", "Application session id was missing! Remove session key!");
+                    list.add(sessionKey);
+                    n3 = n;
+                }
+                else {
+                    n3 = n + 1;
+                }
+            }
+            n = n3;
+            if ("userSession".equals(sessionKey.getName())) {
+                if (sessionKey.getId() == null) {
+                    Log.e("nf_log", "User session id is missing!! Remove session key!");
+                    list.add(sessionKey);
+                    n = n3;
+                }
+                else {
+                    ++n2;
+                    n = n3;
+                }
+            }
+        }
+        final Iterator<Object> iterator2 = list.iterator();
+        while (iterator2.hasNext()) {
+            event.removeActiveSession(iterator2.next());
+        }
+        if (n < 1) {
+            this.handleAppSessionMissing(event);
+        }
+        if (n2 < 1) {
+            this.handleUserSessionMissing(event);
+        }
+        if (n < 1 || n2 < 1) {
+            Log.w("nf_log", "validate session found error");
+            return;
+        }
+        Log.d("nf_log", "validate session done with no errors");
+    }
+    
+    private void validateActiveSessions(final List<Event> list) {
+        final Iterator<Event> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            this.validateActiveSession(iterator.next());
         }
     }
     
@@ -429,6 +517,10 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         return this.mSequence.getAndAdd(1L);
     }
     
+    public SocialLoggingImpl getSocialLogging() {
+        return this.mSocialLogging;
+    }
+    
     public UIViewLogging getUiViewLogging() {
         return this.mUIViewLogging;
     }
@@ -464,6 +556,10 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
             Log.d("nf_log", "Handled by suspend logging logger");
             return;
         }
+        if (this.mSocialLogging.handleIntent(intent)) {
+            Log.d("nf_log", "Handled by social logging logger");
+            return;
+        }
         Log.w("nf_log", "Action not handled!");
     }
     
@@ -481,15 +577,15 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         Log.d("nf_log", "Add ICL manager as listener on user input done.");
         this.mSuspendLogging = new SuspendLoggingImpl(this);
         this.mSearchLogging = new SearchLogging(this);
+        this.mSocialLogging = new SocialLoggingImpl(this);
         this.initDataRepository();
-        this.mApmLogging.handleConnectivityChange(this.mContext);
         this.registerReceivers();
     }
     
     public boolean isConsolidatedLoggingSessionEnabled(String sessionLookupKey, final String s) {
         final boolean b = true;
         boolean booleanValue = true;
-        sessionLookupKey = LogUtils.createSessionLookupKey(sessionLookupKey, s);
+        sessionLookupKey = ConsolidatedLoggingUtils.createSessionLookupKey(sessionLookupKey, s);
         final Boolean b2 = this.mUserSessionEnabledStatusMap.get(sessionLookupKey);
         if (b2 != null) {
             if (Log.isLoggable("nf_log", 3)) {
@@ -638,6 +734,7 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         
         @Override
         protected void doFlush(final List<Event> list) {
+            IntegratedClientLoggingManager.this.validateActiveSessions(list);
             IntegratedClientLoggingManager.this.sendEvents(list);
         }
     }

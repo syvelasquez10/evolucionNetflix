@@ -35,7 +35,9 @@ public class FalcorParseException extends VolleyError
         if (StringUtils.isEmpty(s)) {
             return statusCode;
         }
-        Log.d(FalcorParseException.TAG, "errorMsg:" + s);
+        if (Log.isLoggable(FalcorParseException.TAG, 3)) {
+            Log.d(FalcorParseException.TAG, "errorMsg:" + s);
+        }
         if (FalcorParseUtils.isWrongState(s.toLowerCase(Locale.US))) {
             statusCode = StatusCode.BROWSE_AGENT_WRONG_STATE;
         }

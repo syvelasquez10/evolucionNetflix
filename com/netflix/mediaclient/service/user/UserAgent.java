@@ -4,16 +4,22 @@
 
 package com.netflix.mediaclient.service.user;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserBoundCookies;
+import android.widget.Toast;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
-import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.event.nrdp.registration.ActivateEvent;
 import com.netflix.mediaclient.event.UIEvent;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import java.util.Set;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.util.StatusUtils;
+import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.repository.UserLocale;
-import com.netflix.mediaclient.android.app.ActionIdStatus;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
@@ -29,8 +35,6 @@ import org.json.JSONException;
 import org.json.JSONTokener;
 import org.json.JSONArray;
 import java.util.ArrayList;
-import com.netflix.mediaclient.event.nrdp.registration.ActivateEvent;
-import android.os.Handler;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
 import com.netflix.mediaclient.service.configuration.SimpleConfigurationAgentWebCallback;
@@ -66,6 +70,7 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
     private final UserAgentWebCallback commonProfilesUpdateCallback;
     private final ConfigurationAgentWebCallback configDataCallback;
     private boolean isProfileSwitchingDisabled;
+    private AccountErrorReceiver mAccountErrorReceiver;
     private EventListener mActivateListener;
     private EventListener mAppResetListener;
     private EventListener mBindListener;
@@ -101,7 +106,7 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
                     UserAgent.this.persistListOfUserProfiles(userProfiles);
                     if (UserAgent.this.mCurrentUserProfile != null) {
                         for (final UserProfile userProfile : userProfiles) {
-                            if (StringUtils.safeEquals(UserAgent.this.mCurrentUserProfile.getProfileId(), userProfile.getProfileId())) {
+                            if (StringUtils.safeEquals(UserAgent.this.mCurrentUserProfile.getProfileGuid(), userProfile.getProfileGuid())) {
                                 UserAgent.this.checkCurrentProfileTypeWasChanged(userProfile);
                                 UserAgent.this.mCurrentUserProfile = userProfile;
                             }
@@ -116,7 +121,10 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         this.configDataCallback = new SimpleConfigurationAgentWebCallback() {
             @Override
             public void onConfigDataFetched(final ConfigData configData, final Status status) {
-                if (status.isSucces()) {
+                if (Log.isLoggable("nf_service_useragent", 3)) {
+                    Log.d("nf_service_useragent", String.format("onConfigDataFetched res.isSuccess:%b, isAccountDataAvailable:%b", status.isSucces(), UserAgent.this.isAccountDataAvailable()));
+                }
+                if (status.isSucces() || UserAgent.this.isAccountDataAvailable()) {
                     Log.d("nf_service_useragent", "pfetchUserData");
                     UserAgent.this.launchWebTask(new FetchAccountDataTask(null));
                     return;
@@ -167,10 +175,7 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
             NetflixActivity.finishAllActivities(this.getContext());
             if (NetflixApplication.isActivityVisible()) {
                 Log.i("nf_service_useragent", "Application is currently in foreground - restarting profiles gate");
-                final Intent startIntent = ProfileSelectionActivity.createStartIntent(this.getContext());
-                startIntent.addFlags(268435456);
-                startIntent.putExtra("app_was_restarted", true);
-                this.getContext().startActivity(startIntent);
+                this.getContext().startActivity(ProfileSelectionActivity.createStartIntentSingleTop(this.getContext()));
             }
         }
     }
@@ -220,7 +225,7 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
     }
     
     private boolean isLatestProfileDataValid(final UserProfile userProfile) {
-        return userProfile != null && StringUtils.safeEquals(this.getCurrentProfileId(), userProfile.getProfileId());
+        return userProfile != null && StringUtils.safeEquals(this.getCurrentProfileGuid(), userProfile.getProfileGuid());
     }
     
     private void launchTask(final FetchTask<?> fetchTask) {
@@ -316,6 +321,10 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         return user;
     }
     
+    private void registerAccountErrorReceiver() {
+        LocalBroadcastManager.getInstance(this.getContext()).registerReceiver(this.mAccountErrorReceiver, new IntentFilter("com.netflix.mediaclient.intent.action.DELETED_PROFILE"));
+    }
+    
     private void registerPlayStopReceiver() {
         this.getContext().registerReceiver((BroadcastReceiver)this.mPlayStopReceiver, new IntentFilter("com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP"));
     }
@@ -326,69 +335,13 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         this.getNrdController().setDeviceLocale(this.userLocaleRepository.getCurrentAppLocale().getLocale());
     }
     
-    private static Status toActionIdResult(final ActivateEvent activateEvent) {
-        final int actionID = activateEvent.getActionID();
-        StatusCode statusCode = null;
-        switch (actionID) {
-            default: {
-                return new NetflixStatus(StatusCode.NRD_ERROR);
-            }
-            case 1: {
-                statusCode = StatusCode.NRD_LOGIN_ACTIONID_1;
-                break;
-            }
-            case 2: {
-                statusCode = StatusCode.NRD_LOGIN_ACTIONID_2;
-                break;
-            }
-            case 3: {
-                statusCode = StatusCode.NRD_LOGIN_ACTIONID_3;
-                break;
-            }
-            case 4: {
-                statusCode = StatusCode.NRD_LOGIN_ACTIONID_4;
-                break;
-            }
-            case 5: {
-                statusCode = StatusCode.NRD_LOGIN_ACTIONID_5;
-                break;
-            }
-            case 6: {
-                statusCode = StatusCode.NRD_LOGIN_ACTIONID_6;
-                break;
-            }
-            case 7: {
-                statusCode = StatusCode.NRD_LOGIN_ACTIONID_7;
-                break;
-            }
-            case 8: {
-                statusCode = StatusCode.NRD_LOGIN_ACTIONID_8;
-                break;
-            }
-            case 9: {
-                statusCode = StatusCode.NRD_LOGIN_ACTIONID_9;
-                break;
-            }
-            case 10: {
-                statusCode = StatusCode.NRD_LOGIN_ACTIONID_10;
-                break;
-            }
-            case 11: {
-                statusCode = StatusCode.NRD_LOGIN_ACTIONID_11;
-                break;
-            }
-            case 12: {
-                statusCode = StatusCode.NRD_LOGIN_ACTIONID_12;
-                break;
-            }
+    private void unregisterAccountErrorReceiver() {
+        try {
+            LocalBroadcastManager.getInstance(this.getContext()).unregisterReceiver(this.mAccountErrorReceiver);
         }
-        final ActionIdStatus actionIdStatus = new ActionIdStatus(statusCode, actionID);
-        actionIdStatus.setReasonCode(activateEvent.getReasonCode());
-        actionIdStatus.setMessage(activateEvent.getMessage());
-        actionIdStatus.setBcp47(activateEvent.getBcp47());
-        actionIdStatus.setType(activateEvent.getType());
-        actionIdStatus.setOrigin(activateEvent.getOrigin());
-        return actionIdStatus;
+        catch (Exception ex) {
+            Log.i("nf_service_useragent", "unregisterAccountErrorReceiver " + ex);
+        }
     }
     
     private void unregisterPlayStopReceiver() {
@@ -410,7 +363,7 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
                 break;
             }
             userProfile3 = iterator.next();
-        } while (!StringUtils.safeEquals(userProfile3.getProfileId(), userProfile.getProfileId()));
+        } while (!StringUtils.safeEquals(userProfile3.getProfileGuid(), userProfile.getProfileGuid()));
         if (userProfile3 != null) {
             this.mListOfUserProfiles.remove(userProfile3);
         }
@@ -438,6 +391,7 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         }
         this.userLocaleRepository = null;
         this.unregisterPlayStopReceiver();
+        this.unregisterAccountErrorReceiver();
         super.destroy();
     }
     
@@ -452,6 +406,7 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         this.mCurrentUserProfile = null;
         this.mSubtitleSettings = null;
         this.mPlayStopReceiver = new PlayStopReceiver();
+        this.mAccountErrorReceiver = new AccountErrorReceiver();
         final String stringPref = PreferenceUtils.getStringPref(this.getContext(), "useragent_userprofiles_data", null);
         if (stringPref != null) {
             this.getApplication().setSignedInOnce();
@@ -487,6 +442,7 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         this.mRegistration.addEventListener("appResetRequired", this.mAppResetListener);
         (this.mUserAgentStateManager = new UserAgentStateManager(this.mRegistration, this.getConfigurationAgent().getDrmManager(), (UserAgentStateManager.StateManagerCallback)this, this.getContext(), this.getService().getClientLogging().getErrorLogging())).initialize(this.getConfigurationAgent().isLogoutRequired(), this.getConfigurationAgent().isEsnMigrationRequired());
         this.registerPlayStopReceiver();
+        this.registerAccountErrorReceiver();
     }
     
     public void editWebUserProfile(final String s, final String s2, final boolean b, final String s3, final UserAgentCallback userAgentCallback) {
@@ -505,9 +461,21 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         this.launchWebTask(new FetchAvailableAvatarsListTask(userAgentCallback));
     }
     
+    public void fetchFriendsForRecommendations(final String s, final int n, final String s2, final UserAgentCallback userAgentCallback) {
+        Log.d("nf_service_useragent", "fetchFriendsForRecommendations");
+        this.launchWebTask(new FetchFriendsForRecommendationsTask(s, n, s2, userAgentCallback));
+    }
+    
     public void fetchProfileData(final String s) {
         Log.d("nf_service_useragent", "fetchProfileData");
         this.launchWebTask(new FetchProfileDataTask(s, null));
+    }
+    
+    public String getAccountOwnerToken() {
+        if (this.mUser == null) {
+            return null;
+        }
+        return this.mUser.getUserToken();
     }
     
     public List<? extends com.netflix.mediaclient.servicemgr.model.user.UserProfile> getAllProfiles() {
@@ -541,12 +509,12 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
     }
     
     @Override
-    public String getCurrentProfileId() {
-        Log.d("nf_service_useragent", "getCurrentProfileId called");
+    public String getCurrentProfileGuid() {
+        Log.d("nf_service_useragent", "getCurrentProfileGuid called");
         if (this.mCurrentUserProfile == null) {
             return null;
         }
-        return this.mCurrentUserProfile.getProfileId();
+        return this.mCurrentUserProfile.getProfileGuid();
     }
     
     public String getCurrentProfileLastName() {
@@ -558,13 +526,12 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         return this.mCurrentUserProfile.getLastName();
     }
     
-    public String getCurrentProfileUserId() {
-        Log.d("nf_service_useragent", "getCurrentProfileUserId called");
+    public String getCurrentProfileToken() {
         if (this.mCurrentUserProfile == null) {
-            Log.d("nf_service_useragent", "getCurrentProfileUserId is null");
+            Log.d("nf_service_useragent", "currentProfile is null");
             return null;
         }
-        return this.mCurrentUserProfile.getUserId();
+        return this.mCurrentUserProfile.getProfileToken();
     }
     
     @Override
@@ -586,7 +553,6 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
     
     @Override
     public String getNetflixID() {
-        Log.d("nf_service_useragent", "getNetfilxID request");
         if (!this.isUserLoggedIn()) {
             return null;
         }
@@ -609,7 +575,6 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
     
     @Override
     public String getSecureNetflixID() {
-        Log.d("nf_service_useragent", "getSecureNetfilxID request");
         if (!this.isUserLoggedIn()) {
             return null;
         }
@@ -629,14 +594,6 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
     @Override
     public UserCredentialRegistry getUserCredentialRegistry() {
         return this;
-    }
-    
-    public String getUserId() {
-        Log.d("nf_service_useragent", "getUserId called");
-        if (this.mUser == null) {
-            return null;
-        }
-        return this.mUser.getUserId();
     }
     
     @Override
@@ -681,11 +638,11 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
     public void loginUser(final String s, final String s2, final UserAgentCallback mLoginCallback) {
         Log.d("nf_service_useragent", "loginUser activateAccByEmailPassword");
         if (this.mUserAgentStateManager == null) {
-            this.notifyLoginComplete(CommonStatus.NRD_ERROR);
+            this.notifyLoginComplete(StatusUtils.createStatus(StatusCode.NRD_ERROR, "UserAgent: activateAccByEmailPassword fails, UserAgentStateManager is null", true, RootCause.clientFailure));
             return;
         }
         if (!this.mUserAgentStateManager.activateAccByEmailPassword(s, s2)) {
-            this.notifyLoginComplete(new NetflixStatus(StatusCode.NRD_REGISTRATION_EXISTS));
+            this.notifyLoginComplete(StatusUtils.createStatus(StatusCode.NRD_REGISTRATION_EXISTS, "UserAgent: activateAccByEmailPassword fails, NRD registration exist", false, RootCause.clientFailure));
             return;
         }
         this.mLoginCallback = mLoginCallback;
@@ -706,22 +663,22 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         if (this.mCurrentUserProfile != null) {
             final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PUSH_ONLOGOUT");
             intent.addCategory("com.netflix.mediaclient.intent.category.PUSH");
-            intent.putExtra("uid", this.getService().getUserId());
+            intent.putExtra("uid", this.getService().getAccountOwnerToken());
             intent.putExtra("nid", this.getNetflixID());
             intent.putExtra("sid", this.getSecureNetflixID());
             intent.putExtra("esn", this.getConfigurationAgent().getEsnProvider().getEsn());
             intent.putExtra("device_cat", this.getConfigurationAgent().getDeviceCategory().getValue());
-            intent.putExtra("uid", this.getService().getCurrentProfileUserId());
+            intent.putExtra("uid", this.getService().getCurrentProfileToken());
             LocalBroadcastManager.getInstance(this.getContext()).sendBroadcast(intent);
         }
         this.mUserAgentStateManager.signoutAcc();
     }
     
     @Override
-    public void profileActivated(final String s, final DeviceAccount mCurrentUserAccount) {
+    public void profileActivated(String string, final DeviceAccount mCurrentUserAccount) {
         this.mCurrentUserAccount = mCurrentUserAccount;
         for (final UserProfile mCurrentUserProfile : this.mListOfUserProfiles) {
-            if (mCurrentUserProfile.getProfileId().equals(s)) {
+            if (mCurrentUserProfile.getProfileGuid().equals(string)) {
                 this.mCurrentUserProfile = mCurrentUserProfile;
                 if (this.mCurrentUserProfile != null && this.mCurrentUserProfile.getSubtitlePreference() != null) {
                     this.mSubtitleSettings = TextStyle.buildSubtitleSettings(this.getCurrentProfile().getSubtitlePreference());
@@ -732,6 +689,20 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
             }
         }
         Log.e("nf_service_useragent", "profileActivated cannot find profileId");
+        final NetflixService service = this.getService();
+        if (service != null) {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("ProfileId not found: ").append(string);
+            final ArrayList<String> list = new ArrayList<String>();
+            final Iterator<UserProfile> iterator2 = this.mListOfUserProfiles.iterator();
+            while (iterator2.hasNext()) {
+                list.add(iterator2.next().getProfileGuid());
+            }
+            sb.append(", guids: ").append(list.toString());
+            string = sb.toString();
+            Log.e("nf_service_useragent", string);
+            service.getClientLogging().getErrorLogging().logHandledException(string);
+        }
         this.mCurrentUserProfile = null;
         this.mSubtitleSettings = null;
     }
@@ -775,6 +746,11 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         UserAgentBroadcastIntents.signalProfileSelectionResult(this.getContext(), status.getStatusCode().getValue(), null);
     }
     
+    public void sendRecommendationsToFriends(final String s, final Set<FriendForRecommendation> set, final String s2) {
+        Log.d("nf_service_useragent", "sendRecommendationsToFriends");
+        this.launchWebTask(new SendRecommendationsTask(s, set, s2));
+    }
+    
     public void setCurrentAppLocale(final String s) {
         if (this.userLocaleRepository != null) {
             this.userLocaleRepository.setApplicationLanguage(new UserLocale(s));
@@ -791,10 +767,11 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
     public void tokenActivate(final ActivationTokens activationTokens, final UserAgentCallback mLoginCallback) {
         Log.d("nf_service_useragent", "loginUser tokenActivate");
         if (this.mUserAgentStateManager == null) {
-            this.notifyLoginComplete(CommonStatus.NRD_ERROR);
+            this.notifyLoginComplete(StatusUtils.createStatus(StatusCode.NRD_ERROR, "UserAgent: activateAccByToken fails UserAgentStateManager is null", true, RootCause.clientFailure));
             return;
         }
         if (!this.mUserAgentStateManager.activateAccByToken(activationTokens)) {
+            this.notifyLoginComplete(StatusUtils.createStatus(StatusCode.NRD_REGISTRATION_EXISTS, "UserAgent: activateAccByToken fails, NRD registration exist", false, RootCause.clientFailure));
             this.notifyLoginComplete(new NetflixStatus(StatusCode.NRD_REGISTRATION_EXISTS));
             return;
         }
@@ -841,6 +818,22 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         this.launchTask((FetchTask<?>)new VerifyPinTask(s, userAgentCallback));
     }
     
+    public final class AccountErrorReceiver extends BroadcastReceiver
+    {
+        public void onReceive(final Context context, final Intent intent) {
+            if (intent != null) {
+                final String action = intent.getAction();
+                if (Log.isLoggable("nf_service_useragent", 3)) {
+                    Log.i("nf_service_useragent", "AccountErrorReceiver inovoked and received Intent with Action " + action);
+                }
+                if ("com.netflix.mediaclient.intent.action.DELETED_PROFILE".equals(action)) {
+                    UserAgent.this.mCurrentUserProfile = null;
+                    UserAgent.this.mUserAgentStateManager.onAccountErrors(context, StatusCode.DELETED_PROFILE);
+                }
+            }
+        }
+    }
+    
     private class ActivateListener implements EventListener
     {
         @Override
@@ -862,22 +855,18 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
                         if (Log.isLoggable("nf_service_useragent", 3)) {
                             Log.d("nf_service_useragent", "Received a activate event with ActionID error: " + activateEvent.getActionID() + " Received msg " + activateEvent.getMessage());
                         }
-                        Status status;
-                        if ((status = toActionIdResult(activateEvent)) == null) {
-                            Log.w("nf_service_useragent", "Uknown action ID, going with NRD error!");
-                            status = CommonStatus.NRD_ERROR;
-                        }
-                        UserAgent.this.notifyLoginComplete(status);
-                        UserAgentBroadcastIntents.signalProfileSelectionResult(UserAgent.this.getContext(), status.getStatusCode().getValue(), null);
+                        final NetflixStatus actionIdResult = StatusUtils.toActionIdResult(activateEvent);
+                        UserAgent.this.notifyLoginComplete(actionIdResult);
+                        UserAgentBroadcastIntents.signalProfileSelectionResult(UserAgent.this.getContext(), actionIdResult.getStatusCode().getValue(), null);
                         return;
                     }
                     if (activateEvent.isNetworkError()) {
                         Log.d("nf_service_useragent", "Received a activate event with Network error");
-                        final NetflixStatus netflixStatus = new NetflixStatus(StatusCode.NETWORK_ERROR);
-                        netflixStatus.setDisplayMessage(true);
-                        netflixStatus.setMessage(activateEvent.getMessage());
+                        final NetflixStatus actionIdResult2 = StatusUtils.toActionIdResult(activateEvent);
+                        actionIdResult2.setDisplayMessage(true);
+                        actionIdResult2.setMessage(activateEvent.getMessage());
                         UserAgent.this.mUserAgentStateManager.accountOrProfileActivated(false, null, null);
-                        UserAgent.this.notifyLoginComplete(netflixStatus);
+                        UserAgent.this.notifyLoginComplete(actionIdResult2);
                         UserAgentBroadcastIntents.signalProfileSelectionResult(UserAgent.this.getContext(), StatusCode.NETWORK_ERROR.getValue(), null);
                         return;
                     }
@@ -1026,7 +1015,9 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
                         UserAgent.this.mUser = accountData.getUser();
                         UserAgent.this.mSubtitleDefaults = TextStyle.buildSubtitleSettings(UserAgent.this.mUser.getSubtitleDefaults());
                         for (final UserProfile userProfile : UserAgent.this.mListOfUserProfiles) {
-                            Log.d("nf_service_useragent", String.format("fetchAccountData profileName %s profileId %s socialStatus %s", userProfile.getFirstName(), userProfile.getProfileId(), userProfile.isSocialConnected()));
+                            if (Log.isLoggable("nf_service_useragent", 3)) {
+                                Log.d("nf_service_useragent", String.format("fetchAccountData profileName %s profileId %s socialStatus %s", userProfile.getFirstName(), userProfile.getProfileGuid(), userProfile.isSocialConnected()));
+                            }
                         }
                         if (UserAgent.this.mUserAgentStateManager != null) {
                             UserAgent.this.mUserAgentStateManager.accountDataFetched(accountData);
@@ -1070,6 +1061,33 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         @Override
         public void run() {
             UserAgent.this.mUserWebClient.fetchAvailableAvatarsList(this.webClientCallback);
+        }
+    }
+    
+    private class FetchFriendsForRecommendationsTask implements Runnable
+    {
+        private final int fromIndex;
+        UserAgentCallback mCallback;
+        private final String searchTerm;
+        private final String videoId;
+        private final UserAgentWebCallback webClientCallback;
+        
+        public FetchFriendsForRecommendationsTask(final String videoId, final int fromIndex, final String searchTerm, final UserAgentCallback mCallback) {
+            this.webClientCallback = new SimpleUserAgentWebCallback() {
+                @Override
+                public void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> list, final Status status) {
+                    FetchFriendsForRecommendationsTask.this.mCallback.onFriendsForRecommendationsListFetched(list, status);
+                }
+            };
+            this.mCallback = mCallback;
+            this.videoId = videoId;
+            this.fromIndex = fromIndex;
+            this.searchTerm = searchTerm;
+        }
+        
+        @Override
+        public void run() {
+            UserAgent.this.mUserWebClient.fetchFriendsForRecommendations(this.videoId, this.fromIndex, this.searchTerm, this.webClientCallback);
         }
     }
     
@@ -1129,9 +1147,9 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
                 final String action = intent.getAction();
                 Log.i("nf_service_useragent", "PlayStopReceiver inovoked and received Intent with Action " + action);
                 if ("com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP".equals(action)) {
-                    if (UserAgent.this.getCurrentProfileId() != null && UserAgent.this.mCurrentUserProfile != null) {
+                    if (UserAgent.this.getCurrentProfileGuid() != null && UserAgent.this.mCurrentUserProfile != null) {
                         Log.i("nf_service_useragent", "Starting userProfile fetch ");
-                        UserAgent.this.fetchProfileData(UserAgent.this.getCurrentProfileId());
+                        UserAgent.this.fetchProfileData(UserAgent.this.getCurrentProfileGuid());
                         return;
                     }
                     Log.i("nf_service_useragent", "canDoDataFetches false - skipping fetchProfileData request");
@@ -1168,6 +1186,62 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         @Override
         public void run() {
             UserAgent.this.mUserWebClient.removeWebUserProfile(this.profileId, new ProfilesUpdateCallBackWithResult(this.mCallback));
+        }
+    }
+    
+    private class SendRecommendationsTask implements Runnable
+    {
+        private final Set<FriendForRecommendation> friends;
+        private final String messageBody;
+        private final String videoId;
+        private final UserAgentWebCallback webClientCallback;
+        
+        public SendRecommendationsTask(final String videoId, final Set<FriendForRecommendation> friends, final String messageBody) {
+            this.webClientCallback = new SimpleUserAgentWebCallback() {
+                @Override
+                public void onRecommendationsSent(final Set<FriendForRecommendation> set, final Status status) {
+                    Label_0182: {
+                        if (!status.isSucces() || set == null || set.size() <= 0) {
+                            break Label_0182;
+                        }
+                        int n = 0;
+                        Object firstName = null;
+                        for (final FriendForRecommendation friendForRecommendation : set) {
+                            if (friendForRecommendation.wasRecommended()) {
+                                if (firstName == null) {
+                                    firstName = friendForRecommendation.getFriendProfile().getFirstName();
+                                }
+                                else {
+                                    ++n;
+                                }
+                            }
+                        }
+                        if (firstName == null) {
+                            break Label_0182;
+                        }
+                        String s;
+                        if (n == 0) {
+                            s = UserAgent.this.getContext().getString(2131493391, new Object[] { firstName });
+                        }
+                        else {
+                            s = UserAgent.this.getContext().getResources().getQuantityString(2131623938, n, new Object[] { n, firstName });
+                        }
+                        Toast.makeText(UserAgent.this.getContext(), (CharSequence)s, 1).show();
+                        return;
+                    }
+                    if (Log.isLoggable("nf_service_useragent", 6)) {
+                        Log.e("nf_service_useragent", "Problem occured trying to send recommendations! Result: " + status + "; Friends: " + set);
+                    }
+                }
+            };
+            this.videoId = videoId;
+            this.friends = friends;
+            this.messageBody = messageBody;
+        }
+        
+        @Override
+        public void run() {
+            UserAgent.this.mUserWebClient.sendRecommendationsToFriends(this.videoId, this.friends, this.messageBody, this.webClientCallback);
         }
     }
     
@@ -1213,6 +1287,8 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         
         void onConnectWithFacebook(final Status p0);
         
+        void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> p0, final Status p1);
+        
         void onLoginComplete(final Status p0);
         
         void onLogoutComplete(final Status p0);
@@ -1220,6 +1296,8 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         void onPinVerified(final boolean p0, final Status p1);
         
         void onProfilesListUpdateResult(final Status p0);
+        
+        void onSocialNotificationsListFetched(final SocialNotificationsList p0, final Status p1);
     }
     
     private class VerifyPinTask extends FetchTask<Void>

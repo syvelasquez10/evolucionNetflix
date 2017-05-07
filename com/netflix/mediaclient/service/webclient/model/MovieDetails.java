@@ -4,23 +4,20 @@
 
 package com.netflix.mediaclient.service.webclient.model;
 
+import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import java.io.Serializable;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import java.util.List;
-import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
 import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.service.webclient.model.branches.Movie;
 
 public class MovieDetails extends Movie implements com.netflix.mediaclient.servicemgr.model.details.MovieDetails, Playable
 {
     private static final String TAG = "nf_service_browse_moviedetails";
-    public TrackableListSummary similarListSummary;
-    public List<Video> similarVideos;
     public boolean userConnectedToFacebook;
     
     public static int getNumDirectors(final String s) {
@@ -288,6 +285,14 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     }
     
     @Override
+    public String getStoryDispUrl() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.storyImgDispUrl;
+    }
+    
+    @Override
     public String getStoryUrl() {
         if (this.detail == null) {
             return null;
@@ -366,11 +371,6 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     @Override
     public boolean isPlayableEpisode() {
         return VideoType.EPISODE.equals(this.getType());
-    }
-    
-    @Override
-    public boolean isUserConnectedToFacebook() {
-        return this.userConnectedToFacebook;
     }
     
     @Override

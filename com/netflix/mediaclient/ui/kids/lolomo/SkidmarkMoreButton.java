@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.kids.lolomo;
 
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
@@ -52,11 +52,11 @@ public class SkidmarkMoreButton extends FrameLayout
         Log.v("SkidmarkMoreButton", "Creating more button");
         activity.getLayoutInflater().inflate(2130903109, (ViewGroup)this);
         this.setOnClickListener(this.launchLomoDetailsClickListener);
-        this.imgViews.add(this.findAndConfigureView(2131165429));
         this.imgViews.add(this.findAndConfigureView(2131165430));
         this.imgViews.add(this.findAndConfigureView(2131165431));
-        this.lomoTitle = (TextView)this.findViewById(2131165433);
-        final int dimensionPixelSize = activity.getResources().getDimensionPixelSize(2131361958);
+        this.imgViews.add(this.findAndConfigureView(2131165432));
+        this.lomoTitle = (TextView)this.findViewById(2131165434);
+        final int dimensionPixelSize = activity.getResources().getDimensionPixelSize(2131361971);
         this.setPadding(dimensionPixelSize, 0, dimensionPixelSize, AndroidUtils.dipToPixels((Context)activity, 50));
         this.pressedStateHandler = new PressedStateHandler((View)this);
     }
@@ -68,9 +68,9 @@ public class SkidmarkMoreButton extends FrameLayout
     }
     
     private void launchAndLogKidsDetailsActivity() {
-        LogUtils.reportUIViewCommandStarted((Context)this.activity, UIViewLogging.UIViewCommandName.moreButton, IClientLogging.ModalView.homeScreen, new DataContext(this.lomo));
+        UIViewLogUtils.reportUIViewCommandStarted((Context)this.activity, UIViewLogging.UIViewCommandName.moreButton, IClientLogging.ModalView.homeScreen, new DataContext(this.lomo));
         KidsLomoDetailActivity.show(this.activity, this.lomo);
-        LogUtils.reportUIViewCommandEnded((Context)this.activity);
+        UIViewLogUtils.reportUIViewCommandEnded((Context)this.activity);
     }
     
     protected void dispatchSetPressed(final boolean b) {

@@ -6,14 +6,15 @@ package com.netflix.mediaclient.service.browse.volley;
 
 import com.netflix.mediaclient.servicemgr.model.user.ProfileType;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
@@ -45,7 +46,7 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
             @Override
             public void onVideosFetched(final List<Video> list, final Status status) {
                 if (status.isSucces() && n == 0) {
-                    PrefetchHomeLoLoMoRequest.injectSocialData(loMo, list);
+                    LoMoUtils.injectSocialData(loMo, list);
                 }
                 browseAgentCallback.onVideosFetched(list, status);
             }
@@ -136,7 +137,7 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     
     @Override
     public void fetchMovieDetails(final String s, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new FetchMovieDetailsRequest(this.service.getApplicationContext(), s, 0, 50, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
+        this.webclient.sendRequest(new FetchMovieDetailsRequest(this.service.getApplicationContext(), this.browseCache, s, 0, 50, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
     }
     
     @Override
@@ -156,7 +157,7 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     
     @Override
     public void fetchShowDetails(final String s, final String s2, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new FetchShowDetailsRequest(this.service.getApplicationContext(), s, s2, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
+        this.webclient.sendRequest(new FetchShowDetailsRequest(this.service.getApplicationContext(), this.browseCache, s, s2, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
     }
     
     @Override
@@ -167,6 +168,11 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     @Override
     public void fetchSimilarVideosForQuerySuggestion(final String s, final int n, final BrowseAgentCallback browseAgentCallback, final String s2) {
         this.webclient.sendRequest(new FetchSimilarVideosRequest.FetchSimilarVideosForQuerySuggestionRequest(this.service.getApplicationContext(), s, n, browseAgentCallback, s2));
+    }
+    
+    @Override
+    public void fetchSocialNotifications(final int n, final BrowseAgentCallback browseAgentCallback) {
+        this.webclient.sendRequest(new FetchSocialNotificationsRequest(this.service.getApplicationContext(), this.browseCache, n, browseAgentCallback));
     }
     
     @Override
@@ -191,6 +197,11 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     @Override
     public void logBillboardActivity(final Video video, final BrowseAgent.BillboardActivityType billboardActivityType) {
         this.webclient.sendRequest(new LogBillboardActivityRequest(this.service.getApplicationContext(), video, billboardActivityType));
+    }
+    
+    @Override
+    public void markSocialNotificationsAsRead(final List<SocialNotificationSummary> list, final BrowseAgentCallback browseAgentCallback) {
+        this.webclient.sendRequest(new MarkNotificationsAsReadRequest(this.service.getApplicationContext(), list, browseAgentCallback));
     }
     
     @Override
@@ -245,6 +256,11 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     @Override
     public void searchNetflix(final String s, final ProfileType profileType, final BrowseAgentCallback browseAgentCallback) {
         this.webclient.sendRequest(new FetchSearchRequest(this.service.getApplicationContext(), s, 0, 75, profileType, browseAgentCallback));
+    }
+    
+    @Override
+    public void sendThanksToSocialNotification(final SocialNotificationSummary socialNotificationSummary, final BrowseAgentCallback browseAgentCallback) {
+        this.webclient.sendRequest(new SendThanksToSocialNotificationRequest(this.service.getApplicationContext(), socialNotificationSummary, browseAgentCallback));
     }
     
     @Override

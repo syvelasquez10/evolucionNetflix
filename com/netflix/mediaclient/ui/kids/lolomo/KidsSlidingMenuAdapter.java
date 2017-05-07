@@ -32,7 +32,7 @@ public class KidsSlidingMenuAdapter extends SlidingMenuAdapter
         this.selectedTextColor = netflixActivity.getResources().getColor(2131296414);
         this.home.setTextColor(this.itemTextColor);
         ViewUtils.clearShadow(this.home);
-        this.home.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131361965)));
+        this.home.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131361978)));
         this.content.setBackgroundResource(2131296412);
     }
     
@@ -47,13 +47,13 @@ public class KidsSlidingMenuAdapter extends SlidingMenuAdapter
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         super.onManagerReady(serviceManager, status);
         if (KidsUtils.shouldShowKidsEntryInMenu(this.activity)) {
-            final TextView textViewToBold = (TextView)((ViewStub)this.content.findViewById(2131165397)).inflate().findViewById(2131165399);
+            final TextView textViewToBold = (TextView)((ViewStub)this.content.findViewById(2131165398)).inflate().findViewById(2131165400);
             textViewToBold.setText(2131492952);
             textViewToBold.setTextColor(this.activity.getResources().getColor(2131296352));
-            textViewToBold.setBackgroundResource(2130837723);
+            textViewToBold.setBackgroundResource(2130837722);
             ViewUtils.setTextViewToBold(textViewToBold);
             ViewUtils.clearShadow(textViewToBold);
-            textViewToBold.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361965)));
+            textViewToBold.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361978)));
             textViewToBold.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
                 public void onClick(final View view) {
                     KidsSlidingMenuAdapter.this.activity.startActivity(KidsUtils.createExitKidsIntent(KidsSlidingMenuAdapter.this.activity, UIViewLogging.UIViewCommandName.slidingMenuKidsExit));
@@ -79,6 +79,6 @@ public class KidsSlidingMenuAdapter extends SlidingMenuAdapter
         super.updateAdapterViews(holder, list);
         holder.tv.setTextColor(this.itemTextColor);
         ViewUtils.clearShadow(holder.tv);
-        holder.tv.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361965)));
+        holder.tv.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361978)));
     }
 }

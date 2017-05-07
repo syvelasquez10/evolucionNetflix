@@ -14,8 +14,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 
 class DialogManager implements OptInResponseHandler
 {
-    private static final String TAG = "HomeActivityDialogManager";
-    private HomeActivity mOwner;
+    private static final String TAG = "DialogManager";
+    private final HomeActivity mOwner;
     
     DialogManager(final HomeActivity mOwner) {
         this.mOwner = mOwner;
@@ -23,31 +23,31 @@ class DialogManager implements OptInResponseHandler
     
     private boolean displayGooglePlayServicesDialogIfNeeded() {
         final int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable((Context)this.mOwner);
-        if (Log.isLoggable("HomeActivityDialogManager", 3)) {
-            Log.d("HomeActivityDialogManager", "Google Play status: " + googlePlayServicesAvailable);
+        if (Log.isLoggable("DialogManager", 3)) {
+            Log.d("DialogManager", "Google Play status: " + googlePlayServicesAvailable);
         }
         if (googlePlayServicesAvailable == 0) {
-            Log.d("HomeActivityDialogManager", "Success!");
+            Log.d("DialogManager", "Success!");
             return false;
         }
         if (googlePlayServicesAvailable != 0) {
-            Log.d("HomeActivityDialogManager", "Device is not Google certified, skip");
+            Log.d("DialogManager", "Device is not Google certified, skip");
             return false;
         }
-        Log.d("HomeActivityDialogManager", "Device is Google certified, problem with Google Play Services");
+        Log.d("DialogManager", "Device is Google certified, problem with Google Play Services");
         if (GooglePlayServicesUtil.isUserRecoverableError(googlePlayServicesAvailable)) {
-            Log.d("HomeActivityDialogManager", "Error is recoverable, display dialog");
+            Log.d("DialogManager", "Error is recoverable, display dialog");
             GooglePlayServicesUtil.showErrorDialogFragment(googlePlayServicesAvailable, this.mOwner, 1001);
             return false;
         }
-        Log.e("HomeActivityDialogManager", "Error is NOT recoverable, skip");
+        Log.e("DialogManager", "Error is NOT recoverable, skip");
         return false;
     }
     
     private boolean displayOptInDialogIfNeeded() {
         boolean b = false;
         if (this.shouldDisplayOptInDialog()) {
-            Log.d("HomeActivityDialogManager", "Displaying opt-in dialog");
+            Log.d("DialogManager", "Displaying opt-in dialog");
             final SocialOptInDialogFrag instance = SocialOptInDialogFrag.newInstance();
             instance.setCancelable(false);
             this.mOwner.showDialog(instance);
@@ -58,23 +58,31 @@ class DialogManager implements OptInResponseHandler
     
     private boolean shouldDisplayOptInDialog() {
         if (this.mOwner.getServiceManager().getPushNotification().wasNotificationOptInDisplayed()) {
-            Log.d("HomeActivityDialogManager", "User was already prompted for opt-in to social");
+            Log.d("DialogManager", "User was already prompted for opt-in to social");
             return false;
         }
         if (this.mOwner.isDialogFragmentVisible()) {
-            Log.w("HomeActivityDialogManager", "Dialog fragment is already displayed. There should only be one visible at time. Do NOT display opt-in to social.");
+            Log.w("DialogManager", "Dialog fragment is already displayed. There should only be one visible at time. Do NOT display opt-in to social.");
             return false;
         }
-        Log.d("HomeActivityDialogManager", "User was NOT prompted for opt-in to social and no dialogs are visible.");
+        Log.d("DialogManager", "User was NOT prompted for opt-in to social and no dialogs are visible.");
         return true;
     }
     
     public void displayDialogsIfNeeded() {
-        if (this.displayOptInDialogIfNeeded()) {
-            Log.d("HomeActivityDialogManager", "OptIn dialog displayed");
+        if (this.mOwner.isInstanceStateSaved()) {
+            Log.d("DialogManager", "Activity has saved instance state - can't display dialog");
             return;
         }
-        Log.d("HomeActivityDialogManager", "OptIn Dialog does not need to be displayed.");
+        if (this.mOwner.destroyed()) {
+            Log.d("DialogManager", "Activity is destroyed - can't display dialog");
+            return;
+        }
+        if (this.displayOptInDialogIfNeeded()) {
+            Log.d("DialogManager", "OptIn dialog displayed");
+            return;
+        }
+        Log.d("DialogManager", "OptIn Dialog does not need to be displayed.");
         this.displayGooglePlayServicesDialogIfNeeded();
     }
     
@@ -83,11 +91,11 @@ class DialogManager implements OptInResponseHandler
         if (this.mOwner.destroyed()) {
             return;
         }
-        Log.v("HomeActivityDialogManager", "Sending PUSH_OPTIN...");
+        Log.v("DialogManager", "Sending PUSH_OPTIN...");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTIN");
         intent.addCategory("com.netflix.mediaclient.intent.category.PUSH");
         LocalBroadcastManager.getInstance((Context)this.mOwner).sendBroadcast(intent);
-        Log.v("HomeActivityDialogManager", "Sending PUSH_OPTIN done.");
+        Log.v("DialogManager", "Sending PUSH_OPTIN done.");
         this.displayGooglePlayServicesDialogIfNeeded();
     }
     
@@ -96,11 +104,11 @@ class DialogManager implements OptInResponseHandler
         if (this.mOwner.destroyed()) {
             return;
         }
-        Log.v("HomeActivityDialogManager", "Sending PUSH_OPTOUT...");
+        Log.v("DialogManager", "Sending PUSH_OPTOUT...");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTOUT");
         intent.addCategory("com.netflix.mediaclient.intent.category.PUSH");
         LocalBroadcastManager.getInstance((Context)this.mOwner).sendBroadcast(intent);
-        Log.v("HomeActivityDialogManager", "Sending PUSH_OPTOUT done.");
+        Log.v("DialogManager", "Sending PUSH_OPTOUT done.");
         this.displayGooglePlayServicesDialogIfNeeded();
     }
 }

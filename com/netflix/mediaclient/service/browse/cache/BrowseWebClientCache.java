@@ -10,8 +10,9 @@ import java.lang.ref.WeakReference;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
@@ -37,13 +38,14 @@ public class BrowseWebClientCache
     private static final int MAX_NUM_SEASONS_ITEMS;
     private static final int MAX_NUM_SOFTCACHE_ITEMS;
     public static final String SEPERATOR = "_";
+    public static final String SOCIAL_NOTIFICATIONS_LIST_KEY = "socialNotificationsList";
     private static final String TAG = "nf_browse_cache";
-    private List<String> cwKeysCache;
-    private HardCache hardCache;
-    private List<String> iqKeysCache;
-    private SoftCache softCache;
-    private SoftCache weakEpisodesCache;
-    private SoftCache weakSeasonsCache;
+    private final List<String> cwKeysCache;
+    private final HardCache hardCache;
+    private final List<String> iqKeysCache;
+    private final SoftCache softCache;
+    private final SoftCache weakEpisodesCache;
+    private final SoftCache weakSeasonsCache;
     
     static {
         final int n = 300;
@@ -79,6 +81,10 @@ public class BrowseWebClientCache
         this.iqKeysCache = new ArrayList<String>();
     }
     
+    public static String buildBrowseCacheKey(final String s, final String s2) {
+        return s + "_" + s2 + "_";
+    }
+    
     public static String buildBrowseCacheKey(final String s, final String s2, final String s3, final String s4) {
         return s + "_" + s2 + "_" + s3 + "_" + s4;
     }
@@ -91,12 +97,44 @@ public class BrowseWebClientCache
         return buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_EPISODE_DETAILS, s, "0", "0");
     }
     
+    public static String buildNotificationsCacheKey(final int n) {
+        return buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_NOTIFICATIONS, "socialNotificationsList", String.valueOf(n), String.valueOf(n + 20 - 1));
+    }
+    
     public static String buildSeasonDetailsCacheKey(final String s) {
         return buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_SEASON_DETAILS, s, "0", "0");
     }
     
+    public static Object getBBVideosFromBrowseCache(final int n, final int n2, final BrowseWebClientCache browseWebClientCache) {
+        return browseWebClientCache.getFromCaches(buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_BB_VIDEOS, "billboard", String.valueOf(n), String.valueOf(n2)));
+    }
+    
+    public static Object getCWVideosFromBrowseCache(final int n, final int n2, final BrowseWebClientCache browseWebClientCache) {
+        return browseWebClientCache.getFromCaches(buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_CW_VIDEOS, "continueWatching", String.valueOf(n), String.valueOf(n2)));
+    }
+    
     public static Object getIQVideosFromBrowseCache(final int n, final int n2, final BrowseWebClientCache browseWebClientCache) {
         return browseWebClientCache.getFromCaches(buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_IQ_VIDEOS, "queue", String.valueOf(n), String.valueOf(n2)));
+    }
+    
+    private Video.InQueue getInQueueData(final String s) {
+        final String buildBrowseCacheKey = buildBrowseCacheKey("inQueue", s);
+        if (Log.isLoggable("nf_browse_cache", 4)) {
+            Log.i("nf_browse_cache", "getInQueueData " + s + "; inQueue: " + this.getHardCache().get(buildBrowseCacheKey));
+        }
+        return (Video.InQueue)this.getHardCache().get(buildBrowseCacheKey);
+    }
+    
+    public static Object getLoMoListFromBrowseCache(final int n, final int n2, final BrowseWebClientCache browseWebClientCache) {
+        return browseWebClientCache.getFromCaches(buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_LOMO, "lolomo", String.valueOf(n), String.valueOf(n2)));
+    }
+    
+    public static Object getNotificationListFromCache(final int n, final BrowseWebClientCache browseWebClientCache) {
+        return browseWebClientCache.getFromCaches(buildNotificationsCacheKey(n));
+    }
+    
+    public static Object getVideoListFromBrowseCache(final String s, final int n, final int n2, final BrowseWebClientCache browseWebClientCache) {
+        return browseWebClientCache.getFromCaches(buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_VIDEOS, s, String.valueOf(n), String.valueOf(n2)));
     }
     
     private void putCWLoMoIndex(final String s) {
@@ -105,6 +143,20 @@ public class BrowseWebClientCache
     
     private void putIQLoMoIndex(final String s) {
         this.getHardCache().put("iq_lomo_index", s);
+    }
+    
+    private void putInQueueData(String buildBrowseCacheKey, final Video.InQueue inQueue) {
+        buildBrowseCacheKey = buildBrowseCacheKey("inQueue", buildBrowseCacheKey);
+        if (Log.isLoggable("nf_browse_cache", 4)) {
+            Log.i("nf_browse_cache", "putInQueueData " + buildBrowseCacheKey + "; inQueue: " + inQueue);
+        }
+        this.getHardCache().put(buildBrowseCacheKey, inQueue);
+    }
+    
+    private void putInQueueValue(final String s, final boolean inQueue) {
+        final Video.InQueue inQueue2 = new Video.InQueue();
+        inQueue2.inQueue = inQueue;
+        this.putInQueueData(s, inQueue2);
     }
     
     public boolean areIqIdsInCache() {
@@ -210,6 +262,10 @@ public class BrowseWebClientCache
     
     public String getLoLoMoId() {
         return (String)this.getHardCache().get("lolomo_id");
+    }
+    
+    public int getMaxItemsInSoftCache() {
+        return BrowseWebClientCache.MAX_NUM_SOFTCACHE_ITEMS;
     }
     
     public SoftCache getSoftCache() {
@@ -322,11 +378,59 @@ public class BrowseWebClientCache
         Log.d("nf_browse_cache", "lolomoId =" + s);
     }
     
-    public void putLoMoInBrowseCache(final String s, final Object o, final int n, final int n2) {
+    public void putLoMoListInBrowseCache(final Object o, final int n, final int n2) {
+        this.putInHardCache(buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_LOMO, "lolomo", String.valueOf(n), String.valueOf(n2)), o);
+    }
+    
+    public void putNotificationListInBrowseCache(final int n, final Object o) {
+        this.putInSoftCache(buildNotificationsCacheKey(n), o);
+    }
+    
+    public void putVideoListInBrowseCache(final String s, final Object o, final int n, final int n2) {
         this.putInHardCache(buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_VIDEOS, s, String.valueOf(n), String.valueOf(n2)), o);
     }
     
-    public void putLoMoSummaryInBrowseCache(final Object o, final int n, final int n2) {
-        this.putInHardCache(buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_LOMO, "lolomo", String.valueOf(n), String.valueOf(n2)), o);
+    public Video.InQueue updateInQueueCacheRecord(final String s, Video.InQueue inQueue) {
+        // monitorenter(this)
+        Label_0021: {
+            if (inQueue != null) {
+                break Label_0021;
+            }
+            while (true) {
+                Video.InQueue inQueueData;
+                try {
+                    Log.w("nf_browse_cache", "In queue is null!");
+                    inQueue = null;
+                    return inQueue;
+                    while (true) {
+                        this.putInQueueData(s, inQueue);
+                        return inQueue;
+                        inQueueData = this.getInQueueData(s);
+                        continue;
+                    }
+                }
+                // iftrue(Label_0045:, inQueueData != null)
+                finally {
+                }
+                // monitorexit(this)
+                Label_0045: {
+                    inQueueData.inQueue = inQueue.inQueue;
+                }
+                inQueue = inQueueData;
+                return inQueue;
+            }
+        }
+    }
+    
+    public void updateInQueueCacheRecord(final String s, final boolean inQueue) {
+        synchronized (this) {
+            final Video.InQueue inQueueData = this.getInQueueData(s);
+            if (inQueueData == null) {
+                this.putInQueueValue(s, inQueue);
+            }
+            else {
+                inQueueData.inQueue = inQueue;
+            }
+        }
     }
 }

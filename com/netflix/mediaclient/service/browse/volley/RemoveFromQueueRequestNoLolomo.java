@@ -113,7 +113,7 @@ public class RemoveFromQueueRequestNoLolomo extends FalcorVolleyWebClientRequest
             return Integer.toString(StatusCode.OK.getValue());
         }
         try {
-            FetchIQVideosRequest.updateMdpAndSdpWithIQInfo(this.browseCache, this.mVideoId, FalcorParseUtils.getPropertyObject(asJsonObject2.getAsJsonObject("videos").getAsJsonObject(this.mVideoId), "inQueue", Video.InQueue.class).inQueue);
+            this.browseCache.updateInQueueCacheRecord(this.mVideoId, FalcorParseUtils.getPropertyObject(asJsonObject2.getAsJsonObject("videos").getAsJsonObject(this.mVideoId), "inQueue", Video.InQueue.class).inQueue);
             return Integer.toString(StatusCode.OK.getValue());
         }
         catch (Exception ex2) {

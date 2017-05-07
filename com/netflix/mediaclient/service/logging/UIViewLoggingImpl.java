@@ -4,8 +4,11 @@
 
 package com.netflix.mediaclient.service.logging;
 
+import com.netflix.mediaclient.service.logging.uiview.model.ImpressionSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.uiview.model.CommandEndedEvent;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
+import com.netflix.mediaclient.service.logging.uiview.model.ImpressionEvent;
+import com.netflix.mediaclient.service.logging.client.model.Error;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
@@ -13,26 +16,18 @@ import com.netflix.mediaclient.util.StringUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.service.logging.client.model.Event;
+import com.netflix.mediaclient.service.logging.uiview.ImpressionSession;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.service.logging.uiview.CommandSession;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
 
 public class UIViewLoggingImpl implements UIViewLogging
 {
-    public static final String[] ACTIONS;
-    public static final String COMMAND_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_ENDED";
-    public static final String COMMAND_START = "com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_START";
-    public static final String EXTRA_CMD = "cmd";
-    public static final String EXTRA_DATA_CONTEXT = "dataContext";
-    public static final String EXTRA_VIEW = "view";
     private static final String TAG = "nf_log";
     private CommandSession mCommandSession;
     private DataContext mDataContext;
     private EventHandler mEventHandler;
-    
-    static {
-        ACTIONS = new String[] { "com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_START", "com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_ENDED" };
-    }
+    private ImpressionSession mImpressionSession;
     
     public UIViewLoggingImpl(final EventHandler mEventHandler) {
         this.mEventHandler = mEventHandler;
@@ -73,12 +68,54 @@ public class UIViewLoggingImpl implements UIViewLogging
         }
     }
     
+    private void handleUIViewImpression(final Intent intent) {
+        final int intExtra = intent.getIntExtra("trackId", 0);
+        final String stringExtra = intent.getStringExtra("cmd");
+        Enum<UIViewCommandName> value = null;
+        if (!StringUtils.isEmpty(stringExtra)) {
+            value = UIViewCommandName.valueOf(stringExtra);
+        }
+        this.createImpressionEvent((UIViewCommandName)value, intExtra);
+    }
+    
+    private void handleUIViewImpressionEnd(Intent instance) {
+        final boolean booleanExtra = instance.getBooleanExtra("success", false);
+        final String stringExtra = instance.getStringExtra("error");
+        instance = null;
+        while (true) {
+            try {
+                instance = (Intent)Error.createInstance(stringExtra);
+                this.endImpressionSession(booleanExtra, (Error)instance);
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    private void handleUIViewImpressionStart(final Intent intent) {
+        final String stringExtra = intent.getStringExtra("view");
+        Enum<IClientLogging.ModalView> value = null;
+        if (StringUtils.isNotEmpty(stringExtra)) {
+            value = IClientLogging.ModalView.valueOf(stringExtra);
+        }
+        this.startImpressionSession((IClientLogging.ModalView)value, intent.getStringExtra("guid"));
+    }
+    
     private void populateEvent(final Event event, final DataContext dataContext, final IClientLogging.ModalView modalView) {
         if (event == null) {
             return;
         }
         event.setDataContext(dataContext);
         event.setModalView(modalView);
+    }
+    
+    @Override
+    public void createImpressionEvent(final UIViewCommandName uiViewCommandName, final int n) {
+        final ImpressionEvent impressionEvent = new ImpressionEvent(uiViewCommandName, n);
+        this.populateEvent(impressionEvent, this.mDataContext, null);
+        this.mEventHandler.post(impressionEvent);
     }
     
     @Override
@@ -110,6 +147,31 @@ public class UIViewLoggingImpl implements UIViewLogging
         Log.d("nf_log", "uiView command session end done.");
     }
     
+    @Override
+    public void endImpressionSession(final boolean b, final Error error) {
+        Log.d("nf_log", "uiView impression session ended and posted to executor");
+        this.mEventHandler.executeInBackground(new Runnable() {
+            final /* synthetic */ DataContext val$dataContext = UIViewLoggingImpl.this.mDataContext;
+            
+            @Override
+            public void run() {
+                Log.d("nf_log", "uiView impression session ended");
+                if (UIViewLoggingImpl.this.mImpressionSession == null) {
+                    Log.w("nf_log", "uiView impression session does NOT exist!");
+                    return;
+                }
+                final ImpressionSessionEndedEvent endedEvent = UIViewLoggingImpl.this.mImpressionSession.createEndedEvent(b, error);
+                UIViewLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, UIViewLoggingImpl.this.mImpressionSession.getView());
+                UIViewLoggingImpl.this.mEventHandler.removeSession(UIViewLoggingImpl.this.mImpressionSession);
+                Log.d("nf_log", "uiView impression session end event posting...");
+                UIViewLoggingImpl.this.mEventHandler.post(endedEvent);
+                UIViewLoggingImpl.this.mCommandSession = null;
+                Log.d("nf_log", "uiView impression session end event posted.");
+            }
+        });
+        Log.d("nf_log", "uiView impression session end done.");
+    }
+    
     public boolean handleIntent(final Intent intent, final boolean b) {
         final String action = intent.getAction();
         if ("com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_START".equals(action)) {
@@ -120,6 +182,21 @@ public class UIViewLoggingImpl implements UIViewLogging
         if ("com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_ENDED".equals(action)) {
             Log.d("nf_log", "COMMAND_ENDED");
             this.handleUIViewCommandEnded(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION".equals(action)) {
+            Log.d("nf_log", "IMPRESSION");
+            this.handleUIViewImpression(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION_SESSION_STARTED".equals(action)) {
+            Log.d("nf_log", "IMPRESSION_SESSION_STARTED");
+            this.handleUIViewImpressionStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION_SESSION_ENDED".equals(action)) {
+            Log.d("nf_log", "IMPRESSION_SESSION_ENDED");
+            this.handleUIViewImpressionEnd(intent);
             return true;
         }
         if (Log.isLoggable("nf_log", 3)) {
@@ -140,5 +217,18 @@ public class UIViewLoggingImpl implements UIViewLogging
         this.mCommandSession = mCommandSession;
         this.mDataContext = mDataContext;
         Log.d("nf_log", "uiView command session start done.");
+    }
+    
+    @Override
+    public void startImpressionSession(final IClientLogging.ModalView modalView, final String s) {
+        if (this.mImpressionSession != null) {
+            Log.e("nf_log", "uiView impression session already started!");
+            return;
+        }
+        Log.d("nf_log", "uiView impression session starting...");
+        final ImpressionSession mImpressionSession = new ImpressionSession(modalView, s);
+        this.mEventHandler.addSession(mImpressionSession);
+        this.mImpressionSession = mImpressionSession;
+        Log.d("nf_log", "uiView impression session start done.");
     }
 }

@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.mdx.cast;
 import com.google.android.gms.common.api.Result;
 import java.io.IOException;
 import com.google.android.gms.common.api.Status;
+import java.util.concurrent.TimeUnit;
 import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
 import com.google.android.gms.cast.ApplicationMetadata;
@@ -15,27 +16,33 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.google.android.gms.cast.CastDevice;
 import android.content.Context;
+import java.util.concurrent.atomic.AtomicBoolean;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.cast.Cast;
 
 public class MdxCastApplication extends Listener implements OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, MessageReceivedCallback
 {
-    private static final long CAST_SEND_MEESAGE_TIMEOUT_MS = 1000L;
+    private static final long CAST_SEND_MEESAGE_TIMEOUT_MS = 5000L;
     private static final String MESSAGE_NAMESPACE = "urn:x-cast:mdx-netflix-com:service:target:2";
     private static final String TAG;
     private GoogleApiClient mApiClient;
     private final String mApplicationId;
     private MdxCastApplicaCallback mCallback;
-    private boolean mForceLaunch;
+    private AtomicBoolean mConnected;
+    private AtomicBoolean mConnectionSuspended;
+    private AtomicBoolean mForceLaunch;
     
     static {
         TAG = MdxCastApplication.class.getSimpleName();
     }
     
-    MdxCastApplication(final Context context, final String mApplicationId, final CastDevice castDevice, final MdxCastApplicaCallback mCallback, final boolean mForceLaunch) {
+    MdxCastApplication(final Context context, final String mApplicationId, final CastDevice castDevice, final MdxCastApplicaCallback mCallback, final boolean b) {
+        this.mForceLaunch = new AtomicBoolean(false);
+        this.mConnected = new AtomicBoolean(false);
+        this.mConnectionSuspended = new AtomicBoolean(false);
         this.mApplicationId = mApplicationId;
         this.mCallback = mCallback;
-        this.mForceLaunch = mForceLaunch;
+        this.mForceLaunch.set(b);
         final Cast.CastOptions.Builder builder = Cast.CastOptions.builder(castDevice, this);
         if (Log.isLoggable(MdxCastApplication.TAG, 3)) {
             Log.d(MdxCastApplication.TAG, "CastOptions.Builder setVerboseLoggingEnabled(true)");
@@ -81,7 +88,7 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
     @Override
     public void onApplicationDisconnected(final int n) {
         Log.d(MdxCastApplication.TAG, "Cast.Listener disconnected with statusCode" + n);
-        this.mCallback.onApplicationStopped();
+        this.mCallback.onApplicationStopped("onApplicationDisconnected: " + n);
     }
     
     @Override
@@ -91,22 +98,39 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
     
     @Override
     public void onConnected(final Bundle bundle) {
-        Log.d(MdxCastApplication.TAG, "GoogleApiClient connect(), success arg:" + bundle);
-        try {
-            if (this.mForceLaunch) {
-                Log.d(MdxCastApplication.TAG, "forced, GoogleApiClient launchApp()");
-                this.launchApp();
-                return;
+        while (true) {
+            Log.d(MdxCastApplication.TAG, "GoogleApiClient connect(), success arg:" + bundle);
+            this.mConnected.set(true);
+            this.mConnectionSuspended.set(false);
+            while (true) {
+                Label_0176: {
+                    try {
+                        if (this.mForceLaunch.get()) {
+                            Log.d(MdxCastApplication.TAG, "forced, GoogleApiClient launchApp()");
+                            this.launchApp();
+                            return;
+                        }
+                        if (!this.isOtherAppRunning()) {
+                            Log.d(MdxCastApplication.TAG, "not forced, no app is runnning");
+                            this.joinApp();
+                            return;
+                        }
+                    }
+                    catch (IllegalStateException ex) {
+                        final MdxCastApplicaCallback mCallback = this.mCallback;
+                        final StringBuilder append = new StringBuilder().append("onConnected ");
+                        if (this.mForceLaunch.get()) {
+                            final String s = "launch";
+                            mCallback.onFailToConnect(append.append(s).append(" has IllegalStateException: ").append(ex.getMessage()).toString());
+                            return;
+                        }
+                        break Label_0176;
+                    }
+                    break;
+                }
+                final String s = "join";
+                continue;
             }
-            if (!this.isOtherAppRunning()) {
-                Log.d(MdxCastApplication.TAG, "not forced, no app is runnning");
-                this.joinApp();
-                return;
-            }
-        }
-        catch (IllegalStateException ex) {
-            ex.printStackTrace();
-            return;
         }
         if (this.isNetflixRunning()) {
             Log.d(MdxCastApplication.TAG, "GoogleApiClient joinApp()");
@@ -117,13 +141,16 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
     @Override
     public void onConnectionFailed(final ConnectionResult connectionResult) {
         Log.d(MdxCastApplication.TAG, "GoogleApiClient connect(), failure" + connectionResult);
-        this.mCallback.onFailToConnect();
+        this.mConnected.set(false);
+        this.mConnectionSuspended.set(false);
+        this.mCallback.onFailToConnect("ConnectionResult ErrorCode: " + connectionResult.getErrorCode());
     }
     
     @Override
     public void onConnectionSuspended(final int n) {
         Log.d(MdxCastApplication.TAG, "GoogleApiClient connect(), suspended" + n);
-        this.mCallback.onFailToConnect();
+        this.mConnectionSuspended.set(true);
+        this.mCallback.onFailToConnect("onConnectionSuspended: " + n);
     }
     
     @Override
@@ -137,8 +164,16 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
     }
     
     public void sendMessage(final String s) {
-        Log.d(MdxCastApplication.TAG, "SendMessage(), message delivered to cast");
-        Cast.CastApi.sendMessage(this.mApiClient, "urn:x-cast:mdx-netflix-com:service:target:2", s).setResultCallback(new SendMessageResultCallback());
+        if (!this.mConnected.get()) {
+            Log.d(MdxCastApplication.TAG, "SendMessage(), disconnected, message can't be delivered");
+            return;
+        }
+        if (!this.mConnectionSuspended.get()) {
+            Log.d(MdxCastApplication.TAG, "SendMessage(), message delivered to cast");
+            Cast.CastApi.sendMessage(this.mApiClient, "urn:x-cast:mdx-netflix-com:service:target:2", s).setResultCallback(new SendMessageResultCallback(), 5000L, TimeUnit.MILLISECONDS);
+            return;
+        }
+        Log.d(MdxCastApplication.TAG, "SendMessage(), connection suspended, message can't be delivered");
     }
     
     public void stop() {
@@ -173,23 +208,20 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
                 Log.d(MdxCastApplication.TAG, "launchApplication(), success");
                 try {
                     Cast.CastApi.setMessageReceivedCallbacks(MdxCastApplication.this.mApiClient, "urn:x-cast:mdx-netflix-com:service:target:2", this.mMessageReceivedCallback);
-                    MdxCastApplication.this.mForceLaunch = false;
+                    MdxCastApplication.this.mForceLaunch.set(false);
                     MdxCastApplication.this.mCallback.onLaunched();
                     return;
                 }
                 catch (IllegalStateException ex) {
-                    ex.printStackTrace();
-                    MdxCastApplication.this.mCallback.onFailToLaunch();
+                    MdxCastApplication.this.mCallback.onFailToLaunch("IllegalStateException: " + ex.getMessage());
                     return;
                 }
                 catch (IOException ex2) {
-                    MdxCastApplication.this.mCallback.onFailToLaunch();
-                    ex2.printStackTrace();
+                    MdxCastApplication.this.mCallback.onFailToLaunch("IOException: " + ex2.getMessage());
                     return;
                 }
                 catch (Exception ex3) {
-                    MdxCastApplication.this.mCallback.onFailToLaunch();
-                    ex3.printStackTrace();
+                    MdxCastApplication.this.mCallback.onFailToLaunch("Exception: " + ex3.getMessage());
                     return;
                 }
             }
@@ -199,23 +231,23 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
             }
             if (applicationConnectionResult.getStatus().getStatusCode() == 15) {
                 Log.d(MdxCastApplication.TAG, "launchApplication(), timeout, wait - JUST A WORKAROUND");
-                MdxCastApplication.this.mCallback.onFailToLaunch();
+                MdxCastApplication.this.mCallback.onFailToLaunch("StatusCodes: TIMEOUT");
                 return;
             }
             Log.d(MdxCastApplication.TAG, "launchApplication(), failure, result: " + applicationConnectionResult.getStatus().getStatusCode());
-            MdxCastApplication.this.mCallback.onFailToLaunch();
+            MdxCastApplication.this.mCallback.onFailToLaunch("getStatusCode: " + applicationConnectionResult.getStatus().getStatusCode());
         }
     }
     
     public interface MdxCastApplicaCallback
     {
-        void onApplicationStopped();
+        void onApplicationStopped(final String p0);
         
-        void onFailToConnect();
+        void onFailToConnect(final String p0);
         
-        void onFailToLaunch();
+        void onFailToLaunch(final String p0);
         
-        void onFailToSendMessage();
+        void onFailToSendMessage(final String p0);
         
         void onLaunched();
         
@@ -238,8 +270,10 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
             }
             if (status.getStatus().getStatusCode() == 15) {
                 Log.d(MdxCastApplication.TAG, "SendMessage(), has timed out");
+                MdxCastApplication.this.mCallback.onFailToSendMessage("StatusCodes: TIMEOUT");
+                return;
             }
-            MdxCastApplication.this.mCallback.onFailToSendMessage();
+            MdxCastApplication.this.mCallback.onFailToSendMessage("getStatusCode: " + status.getStatus().getStatusCode());
         }
     }
 }

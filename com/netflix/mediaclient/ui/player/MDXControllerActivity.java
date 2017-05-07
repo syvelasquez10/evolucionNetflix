@@ -4,8 +4,9 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.os.Bundle;
@@ -54,7 +55,7 @@ public class MDXControllerActivity extends PlayerActivity
     }
     
     private void setupPostplayViews() {
-        this.postPlay = this.findViewById(2131165576);
+        this.postPlay = this.findViewById(2131165577);
         this.mPostPlay = PostPlayFactory.create(this, PostPlayFactory.PostPlayType.EpisodesForMDX);
     }
     
@@ -154,8 +155,8 @@ public class MDXControllerActivity extends PlayerActivity
         this.setupPostplayViews();
         AndroidUtils.logDeviceDensity(this);
         this.getWindow().getAttributes().buttonBrightness = 0.0f;
-        LogUtils.reportPlayActionStarted((Context)this, null, this.getUiScreen());
-        LogUtils.pauseReporting((Context)this);
+        UserActionLogUtils.reportPlayActionStarted((Context)this, null, this.getUiScreen());
+        ConsolidatedLoggingUtils.pauseReporting((Context)this);
     }
     
     @Override

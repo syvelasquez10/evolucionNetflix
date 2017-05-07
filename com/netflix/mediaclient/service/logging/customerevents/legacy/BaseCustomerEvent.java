@@ -30,12 +30,12 @@ public abstract class BaseCustomerEvent
     protected static final String DATA_NETFLIX_ID = "netflixId";
     protected static final String DATA_OS_VERSION = "os_version";
     protected static final String DATA_PROFILE_GUID = "profileGuid";
+    protected static final String DATA_PROFILE_TOKEN = "user_id";
     protected static final String DATA_PUSHOPTSTATUS = "pushOptStatus";
     protected static final String DATA_SECURE_NETFLIX_ID = "secureNetflixId";
     protected static final String DATA_SOURCE = "source";
     protected static final String DATA_TIMESTAMP = "timestamp";
     protected static final String DATA_UI_VERSION = "ui_version";
-    protected static final String DATA_USER_ID = "user_id";
     protected static final String ESN = "Esn";
     protected static final String EVENT_NAME = "EventName";
     protected static final String EVENT_TIME = "EventTime";
@@ -55,7 +55,7 @@ public abstract class BaseCustomerEvent
     
     protected CommonRequestParameters getCommonRequestParameters(final Context context) {
         final CommonRequestParameters instanceWithCredentials = CommonRequestParameters.getInstanceWithCredentials();
-        instanceWithCredentials.userId = this.mUser.currentProfileToken;
+        instanceWithCredentials.profileToken = this.mUser.currentProfileToken;
         instanceWithCredentials.osVersion = String.valueOf(AndroidUtils.getAndroidVersion());
         instanceWithCredentials.deviceCategory = this.mUser.deviceCategory;
         instanceWithCredentials.appVersion = AndroidManifestUtils.getVersion(context);
@@ -68,7 +68,7 @@ public abstract class BaseCustomerEvent
     
     protected JSONObject getEvent(final String s, final CommonRequestParameters commonRequestParameters, final AuthorizationCredentials authorizationCredentials, final long n, final String s2) throws JSONException {
         final JSONObject jsonObject = new JSONObject();
-        addIfNotNull(jsonObject, "user_id", commonRequestParameters.userId);
+        addIfNotNull(jsonObject, "user_id", commonRequestParameters.profileToken);
         addIfNotNull(jsonObject, "app_version", commonRequestParameters.appVersion);
         addIfNotNull(jsonObject, "os_version", commonRequestParameters.osVersion);
         addIfNotNull(jsonObject, "ui_version", commonRequestParameters.uiVersion);

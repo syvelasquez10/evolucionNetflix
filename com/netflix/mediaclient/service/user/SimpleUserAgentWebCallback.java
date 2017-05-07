@@ -5,7 +5,9 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.service.webclient.model.leafs.UserBoundCookies;
+import java.util.Set;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
 import com.netflix.mediaclient.android.app.Status;
@@ -34,11 +36,19 @@ public abstract class SimpleUserAgentWebCallback implements UserAgentWebCallback
     }
     
     @Override
+    public void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> list, final Status status) {
+    }
+    
+    @Override
     public void onPinVerified(final boolean b, final Status status) {
     }
     
     @Override
     public void onProfileDataFetched(final UserProfile userProfile, final Status status) {
+    }
+    
+    @Override
+    public void onRecommendationsSent(final Set<FriendForRecommendation> set, final Status status) {
     }
     
     @Override

@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
@@ -176,6 +178,24 @@ public class BrowseAgentCallbackWrapper implements BrowseAgentCallback
     public void onSimilarVideosFetched(final SearchVideoList list, final Status status) {
         this.handleResultTiming("onSimilarVideosFetched");
         this.callback.onSimilarVideosFetched(list, this.wrapStatus(status));
+    }
+    
+    @Override
+    public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+        this.handleResultTiming("onSocialNotificationWasThanked");
+        this.callback.onSocialNotificationWasThanked(socialNotificationSummary, this.wrapStatus(status));
+    }
+    
+    @Override
+    public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+        this.handleResultTiming("onSocialNotificationsListFetched");
+        this.callback.onSocialNotificationsListFetched(list, this.wrapStatus(status));
+    }
+    
+    @Override
+    public void onSocialNotificationsMarkedAsRead(final List<SocialNotificationSummary> list, final Status status) {
+        this.handleResultTiming("onSocialNotificationsMarkedAsRead");
+        this.callback.onSocialNotificationsMarkedAsRead(list, this.wrapStatus(status));
     }
     
     @Override

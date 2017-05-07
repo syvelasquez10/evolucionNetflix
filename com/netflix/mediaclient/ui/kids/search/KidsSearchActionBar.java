@@ -14,7 +14,7 @@ public class KidsSearchActionBar extends SearchActionBar
     public KidsSearchActionBar(final NetflixActivity netflixActivity) {
         super(netflixActivity);
         this.systemActionBar.setBackgroundDrawable((Drawable)new ColorDrawable(netflixActivity.getResources().getColor(2131296409)));
-        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131493211));
+        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131493212));
     }
     
     @Override

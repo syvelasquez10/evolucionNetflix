@@ -6,7 +6,6 @@ package com.netflix.mediaclient.protocol.nflx;
 
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import java.util.Locale;
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.util.StringUtils;
@@ -73,7 +72,7 @@ public final class NflxHandlerFactory
             Log.v("NflxHandler", "null intent");
             return new NotHandlingActionHandler();
         }
-        NflxProtocolUtils.reportIfSourceIsNotification(netflixActivity.getServiceManager().getClientLogging(), intent);
+        NflxProtocolUtils.reportUserOpenedNotification(netflixActivity.getServiceManager(), intent);
         if (!"android.intent.action.VIEW".equalsIgnoreCase(intent.getAction())) {
             Log.v("NflxHandler", "unknown action");
             return new NotHandlingActionHandler();
@@ -82,7 +81,7 @@ public final class NflxHandlerFactory
             Log.v("NflxHandler", "no uri");
             return new NotHandlingActionHandler();
         }
-        AndroidUtils.logVerboseIntentInfo("NflxHandler", intent);
+        Log.v("NflxHandler", intent);
         return getHandler(netflixActivity, intent.getData(), n);
     }
     
@@ -166,6 +165,13 @@ public final class NflxHandlerFactory
             final AddToMyListActionHandler addToMyListActionHandler = new AddToMyListActionHandler(netflixActivity, map);
             modalView2 = movieDetails2;
             homeActionHandler = (HomeActionHandler)addToMyListActionHandler;
+        }
+        else if ("send_thanks".equalsIgnoreCase(lowerCase)) {
+            Log.v("NflxHandler", "Send thanks to social notification starts...");
+            final IClientLogging.ModalView homeScreen3 = IClientLogging.ModalView.homeScreen;
+            final SendThanksToSocialNotificationActionHandler sendThanksToSocialNotificationActionHandler = new SendThanksToSocialNotificationActionHandler(netflixActivity, map);
+            modalView2 = homeScreen3;
+            homeActionHandler = (HomeActionHandler)sendThanksToSocialNotificationActionHandler;
         }
         else {
             Log.w("NflxHandler", "Unknown Nflx action: " + lowerCase);

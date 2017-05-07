@@ -123,7 +123,7 @@ public class UserAgentStateManager implements Callback
     }
     
     private boolean fallbackToPrimaryAccount() {
-        Log.d("nf_service_useragentstate", "fallbackToPrimaryAccount");
+        Log.d("nf_service_useragentstate", String.format("fallbackToPrimaryAccount state:%s", this.mState));
         final String primaryAccountKey = this.mProfileMap.getPrimaryAccountKey();
         if (!StringUtils.isEmpty(primaryAccountKey)) {
             final DeviceAccount[] deviceAccounts = this.mRegistration.getDeviceAccounts();
@@ -248,7 +248,7 @@ public class UserAgentStateManager implements Callback
         }
         final Iterator<UserProfile> iterator = list.iterator();
         while (iterator.hasNext()) {
-            if (this.mProfileId.equals(iterator.next().getProfileId())) {
+            if (this.mProfileId.equals(iterator.next().getProfileGuid())) {
                 return true;
             }
         }
@@ -402,8 +402,11 @@ public class UserAgentStateManager implements Callback
     }
     
     void accountDataFetchFailed(final Status status, final boolean b) {
+        Log.d("nf_service_useragentstate", "@event profileDataFetchFailed");
+        if (Log.isLoggable("nf_service_useragentstate", 3)) {
+            Log.d("nf_service_useragentstate", String.format("res:%s, isAccountDataAvailable:%b", status.getStatusCode(), b));
+        }
         while (true) {
-            Log.d("nf_service_useragentstate", "@event profileDataFetchFailed");
             synchronized (this.mState) {
                 if (this.validateState(STATES.NEED_FETCH_PROFILE_DATA, "accountDataFetchFailed") && !b) {
                     this.mUserAgent.userAccountDataResult(status);
@@ -577,6 +580,17 @@ public class UserAgentStateManager implements Callback
             this.mProfileMap.markAllAccountForEsnMigration();
         }
         this.init();
+    }
+    
+    void onAccountErrors(final Context context, final StatusCode statusCode) {
+        Log.d("nf_service_useragentstate", "onAccountErrors statusCode: " + statusCode);
+        if (StatusCode.DELETED_PROFILE.equals(statusCode)) {
+            if (this.fallbackToPrimaryAccount()) {
+                UserAgentBroadcastIntents.signalProfileInvalid(context);
+                return;
+            }
+            this.transitionTo(STATES.FATAL_ERROR);
+        }
     }
     
     void profileSwitched(UserBoundCookies acccountKeyFromProfileId) {

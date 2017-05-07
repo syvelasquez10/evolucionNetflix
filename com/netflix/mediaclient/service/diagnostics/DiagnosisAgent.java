@@ -25,7 +25,6 @@ import com.netflix.mediaclient.service.ServiceAgent;
 public class DiagnosisAgent extends ServiceAgent implements IDiagnosis
 {
     private static final String TAG = "nf_service_diagnosisagent";
-    private static final String desc = "desc";
     private static final String name = "name";
     private static final String ntwkDiagnostics = "NetworkDiagnostics";
     private static final String resultArrayString = "resultArray";

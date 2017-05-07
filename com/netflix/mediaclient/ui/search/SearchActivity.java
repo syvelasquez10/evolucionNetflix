@@ -4,8 +4,7 @@
 
 package com.netflix.mediaclient.ui.search;
 
-import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement;
-import java.util.List;
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
@@ -19,6 +18,7 @@ import android.view.View$OnFocusChangeListener;
 import java.io.Serializable;
 import com.netflix.mediaclient.ui.kids.search.KidsSearchActivity;
 import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.view.MotionEvent;
 import android.view.View$OnTouchListener;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
@@ -30,7 +30,7 @@ import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
 import android.content.Context;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.SearchView$OnQueryTextListener;
@@ -78,7 +78,7 @@ public class SearchActivity extends NetflixActivity
                 Log.v("SearchActivity", "handleQueryUpdateRunnable: \"" + SearchActivity.this.query + "\", request id: " + SearchActivity.this.requestId);
                 SearchActivity.this.isLoading = true;
                 SearchActivity.this.searchBar.showProgressSpinner();
-                LogUtils.reportSearchActionStarted(SearchActivity.this.requestId, (Context)SearchActivity.this, null, SearchActivity.this.getUiScreen(), SearchActivity.this.query);
+                UserActionLogUtils.reportSearchActionStarted(SearchActivity.this.requestId, (Context)SearchActivity.this, null, SearchActivity.this.getUiScreen(), SearchActivity.this.query);
                 SearchActivity.this.serviceManager.getBrowse().searchNetflix(SearchActivity.this.query, new FetchSearchResultsHandler(SearchActivity.this.requestId));
             }
         };
@@ -102,6 +102,7 @@ public class SearchActivity extends NetflixActivity
         };
     }
     
+    @SuppressLint({ "ClickableViewAccessibility" })
     private void addResetQueryOnTouch() {
         this.searchBar.setOnTouchTextListener((View$OnTouchListener)new View$OnTouchListener() {
             public boolean onTouch(final View view, final MotionEvent motionEvent) {
@@ -123,8 +124,8 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void findViews() {
-        this.fragGroup = (ViewGroup)this.findViewById(2131165616);
-        this.loadingWrapper = this.findViewById(2131165615);
+        this.fragGroup = (ViewGroup)this.findViewById(2131165631);
+        this.loadingWrapper = this.findViewById(2131165630);
     }
     
     private void handleNewIntent(final Intent intent) {
@@ -188,7 +189,7 @@ public class SearchActivity extends NetflixActivity
     private void setupFragments(final Bundle bundle) {
         if (bundle == null) {
             (this.resultsFrag = SearchResultsFrag.create()).setServiceManager(this.serviceManager);
-            this.getFragmentManager().beginTransaction().add(2131165616, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131165631, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
             return;
         }
@@ -200,7 +201,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void showEmpty() {
-        this.leWrapper.showErrorView(2131493228, false, false);
+        this.leWrapper.showErrorView(2131493230, false, false);
         this.fragGroup.setVisibility(4);
         this.searchBar.hideProgressSpinner();
     }
@@ -246,7 +247,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     protected int getInitMessageStringId() {
-        return 2131493210;
+        return 2131493211;
     }
     
     @Override
@@ -270,7 +271,7 @@ public class SearchActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.setupActionBar();
-        this.setContentView(2130903167);
+        this.setContentView(2130903169);
         this.findViews();
         this.setupLoadingWrapper();
         this.setupFragments(bundle);
@@ -299,7 +300,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     public void showError() {
-        this.leWrapper.showErrorView(2131493227, true, false);
+        this.leWrapper.showErrorView(2131493229, true, false);
         this.fragGroup.setVisibility(4);
         this.searchBar.hideProgressSpinner();
     }
@@ -318,28 +319,27 @@ public class SearchActivity extends NetflixActivity
             super.onSearchResultsFetched(searchResults, status);
             if (this.requestId != SearchActivity.this.requestId) {
                 Log.v("SearchActivity", "Ignoring stale onSearchResultsFetched callback");
-                LogUtils.reportSearchActionEnded(this.requestId, (Context)SearchActivity.this, IClientLogging.CompletionReason.canceled, null);
+                UserActionLogUtils.reportSearchActionEnded(this.requestId, (Context)SearchActivity.this, IClientLogging.CompletionReason.canceled, null);
                 return;
             }
             SearchActivity.this.isLoading = false;
             SearchActivity.this.searchBar.hideProgressSpinner();
-            final LogUtils.LogReportErrorArgs logReportErrorArgs = new LogUtils.LogReportErrorArgs(status, ActionOnUIError.displayedError, "", null);
             if (status.isError()) {
                 Log.w("SearchActivity", "Invalid status code");
                 SearchActivity.this.showError();
-                LogUtils.reportSearchActionEnded(this.requestId, (Context)SearchActivity.this, logReportErrorArgs.getReason(), logReportErrorArgs.getError());
+                UserActionLogUtils.reportSearchActionEnded(this.requestId, (Context)SearchActivity.this, IClientLogging.CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, SearchActivity.this.getString(2131493229), ActionOnUIError.displayedError));
                 return;
             }
             if (searchResults == null || !searchResults.hasResults()) {
                 Log.v("SearchActivity", "No results from server");
                 SearchActivity.this.showEmpty();
-                LogUtils.reportSearchActionEnded(this.requestId, (Context)SearchActivity.this, logReportErrorArgs.getReason(), logReportErrorArgs.getError());
+                UserActionLogUtils.reportSearchActionEnded(this.requestId, (Context)SearchActivity.this, IClientLogging.CompletionReason.success, null);
                 return;
             }
             Log.d("SearchActivity", String.format("searchResults size %d ", searchResults.getNumResults()));
             SearchActivity.this.reportUiViewChanged(IClientLogging.ModalView.searchResults);
             SearchActivity.this.showResults(searchResults);
-            LogUtils.reportSearchActionEnded(this.requestId, (Context)SearchActivity.this, logReportErrorArgs.getReason(), logReportErrorArgs.getError());
+            UserActionLogUtils.reportSearchActionEnded(this.requestId, (Context)SearchActivity.this, IClientLogging.CompletionReason.success, null);
         }
     }
 }

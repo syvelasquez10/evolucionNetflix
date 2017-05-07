@@ -397,39 +397,27 @@ public class TargetStateManager
                     }
                     break;
                 }
-                case StateRetryExhausted: {
-                    if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
-                        this.sessionEnded();
-                        return;
-                    }
-                    if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent) && this.mPreviousState != null) {
-                        this.transitionStateTo(this.mPreviousState);
-                        this.mListener.scheduleEvent(TargetContextEvent.SessionCommandReceived, 0);
-                        return;
-                    }
-                    break;
-                }
-                case StateTimeout: {
-                    if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
-                        this.sessionEnded();
-                        return;
-                    }
-                    if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent) && this.mPreviousState != null) {
-                        this.transitionStateTo(this.mPreviousState);
-                        this.mListener.scheduleEvent(TargetContextEvent.SessionCommandReceived, 0);
-                        return;
-                    }
-                    break;
-                }
+                case StateRetryExhausted:
+                case StateTimeout:
                 case StateHasError: {
                     if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
                         this.sessionEnded();
                         return;
                     }
-                    if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent) && this.mPreviousState != null) {
-                        this.transitionStateTo(this.mPreviousState);
-                        this.mListener.scheduleEvent(TargetContextEvent.SessionCommandReceived, 0);
-                        return;
+                    if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent)) {
+                        if (this.mPreviousState != null) {
+                            this.transitionStateTo(this.mPreviousState);
+                            this.mListener.scheduleEvent(TargetContextEvent.SessionCommandReceived, 0);
+                            return;
+                        }
+                        break;
+                    }
+                    else {
+                        if (TargetContextEvent.LaunchSucceed.equals(targetContextEvent)) {
+                            this.transitionStateTo(TargetState.StateHasPair);
+                            return;
+                        }
+                        break;
                     }
                     break;
                 }

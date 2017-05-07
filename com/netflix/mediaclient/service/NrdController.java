@@ -151,11 +151,6 @@ public class NrdController extends ServiceAgent
     private class NrdBridge implements Bridge
     {
         @Override
-        public int getBitrateCap() {
-            return NrdController.this.getConfigurationAgent().getBitrateCap();
-        }
-        
-        @Override
         public int getConfigVideoBufferSize() {
             return NrdController.this.getConfigurationAgent().getVideoBufferSize();
         }

@@ -25,6 +25,18 @@ public class UIError extends Error
     public UIError() {
     }
     
+    public UIError(final Error error, final ActionOnUIError uiAction, final String displayedMessage) {
+        super(error.getRootCause(), error.getDeepError());
+        this.displayedMessage = displayedMessage;
+        this.uiAction = uiAction;
+    }
+    
+    public UIError(final RootCause rootCause, final ActionOnUIError uiAction, final String displayedMessage) {
+        this.displayedMessage = displayedMessage;
+        this.uiAction = uiAction;
+        this.rootCause = rootCause;
+    }
+    
     public UIError(final RootCause rootCause, final ActionOnUIError uiAction, final String displayedMessage, final List<DeepErrorElement> list) {
         super(rootCause, list);
         this.displayedMessage = displayedMessage;

@@ -22,6 +22,7 @@ public interface Nflx
         public static final String PLAY = "play";
         public static final String PLAY_SHORT = "p";
         public static final String SEARCH = "search";
+        public static final String SEND_THANKS_TO_SOCIAL_NOTIFICATION = "send_thanks";
         public static final String SYNC = "sync";
         public static final String VIEW_DETAILS = "view_details";
         public static final String VIEW_DETAILS_SHORT = "v";
@@ -33,6 +34,7 @@ public interface Nflx
     {
         public static final String ACTION = "action";
         public static final String ACTION_SHORT = "a";
+        public static final String CLOSE_SYSTEM_DIALOGS_NEEDED = "close_system_dialogs_needed";
         public static final String EPISODE_ID = "episodeid";
         public static final String EPISODE_ID_URI_PATH_KEY = "programs/";
         public static final String GENRE_ID = "genreid";
@@ -46,6 +48,8 @@ public interface Nflx
         public static final String PROMO_CODE = "promoCode";
         public static final String QUERY = "query";
         public static final String RESPONSE = "response";
+        public static final String SOCIAL_NOTIFICATION_ID = "g";
+        public static final String SOCIAL_NOTIFICATION_STORY_ID = "story_id";
         public static final String SOURCE = "source";
         public static final String SOURCE_SHORT = "s";
         public static final String TARGET_ID = "targetid";

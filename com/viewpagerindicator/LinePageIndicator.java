@@ -7,6 +7,7 @@ package com.viewpagerindicator;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 import android.view.View$BaseSavedState;
+import android.annotation.SuppressLint;
 import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
 import android.os.Parcelable;
@@ -213,6 +214,7 @@ public class LinePageIndicator extends View implements PageIndicator
         return (Parcelable)savedState;
     }
     
+    @SuppressLint({ "ClickableViewAccessibility" })
     public boolean onTouchEvent(final MotionEvent motionEvent) {
         if (super.onTouchEvent(motionEvent)) {
             return true;

@@ -42,10 +42,10 @@ public final class LegacyCmpEventLoggingImpl implements CmpEventLogging
                 userData.netflixId = userCredentialRegistry.getNetflixID();
                 userData.secureNetflixId = userCredentialRegistry.getSecureNetflixID();
             }
-            userData.userId = this.mOwner.getUserId();
+            userData.accountOwnerToken = this.mOwner.getAccountOwnerToken();
             final UserProfile currentProfile = user.getCurrentProfile();
             if (currentProfile != null) {
-                userData.currentProfileToken = currentProfile.getUserId();
+                userData.currentProfileToken = currentProfile.getProfileToken();
             }
             userData.accountCountry = user.getReqCountry();
             userData.accountCountry = user.getGeoCountry();

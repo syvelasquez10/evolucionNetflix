@@ -23,10 +23,10 @@ public class Error implements JsonSerializer
     public static final String ROOT_CAUSE = "rootCause";
     @SerializedName("deepError")
     @Since(1.0)
-    private final List<DeepErrorElement> deepError;
+    protected final List<DeepErrorElement> deepError;
     @SerializedName("rootCause")
     @Since(1.0)
-    private RootCause rootCause;
+    protected RootCause rootCause;
     
     public Error() {
         this.deepError = new ArrayList<DeepErrorElement>();

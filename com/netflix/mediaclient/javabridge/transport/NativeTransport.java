@@ -8,7 +8,6 @@ import android.os.Message;
 import android.os.Looper;
 import android.annotation.SuppressLint;
 import android.os.Handler;
-import com.netflix.mediaclient.javabridge.invoke.media.Play;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
@@ -34,13 +33,10 @@ public class NativeTransport implements Transport
 {
     private static final String TAG = "nf-NativeTransport";
     private static final String TAG1 = "nf_net";
-    private static boolean drmPlayPresent;
-    private static boolean hdCapable;
     private static boolean isPropertyStreamingVideoDrs;
     private static boolean mpCapable;
     private Bridge bridge;
     private boolean destroyed;
-    private int mBitrateCap;
     private String mDeviceId;
     private boolean mDeviceLowMem;
     private String mDeviceModel;
@@ -56,15 +52,13 @@ public class NativeTransport implements Transport
     private final NrdProxy proxy;
     
     static {
-        NativeTransport.drmPlayPresent = native_init(AndroidUtils.getAndroidVersion());
-        NativeTransport.hdCapable = native_is_hd_capable();
+        native_init(AndroidUtils.getAndroidVersion());
         NativeTransport.mpCapable = native_is_mp_capable();
         NativeTransport.isPropertyStreamingVideoDrs = native_isPropertyStreamingVideoDrs();
     }
     
     public NativeTransport(final Bridge bridge, final NrdProxy proxy) {
         this.mVideoBufferSize = 0;
-        this.mBitrateCap = -1;
         this.mIpConnectivityPolicy = IpConnectivityPolicy.IP_V6_V4.getValue();
         Log.d("nf-NativeTransport", "NativeTransport constructor start");
         this.bridge = bridge;
@@ -112,11 +106,11 @@ public class NativeTransport implements Transport
     }
     
     public static final boolean isDrmPlayPresent() {
-        return NativeTransport.drmPlayPresent;
+        return false;
     }
     
     public static boolean isHdCapable() {
-        return NativeTransport.hdCapable;
+        return false;
     }
     
     public static boolean isOMXALmpCapable() {
@@ -139,8 +133,6 @@ public class NativeTransport implements Transport
     
     private static final synchronized native boolean native_isPropertyStreamingVideoDrs();
     
-    private static final synchronized native boolean native_is_hd_capable();
-    
     private static final synchronized native boolean native_is_mp_capable();
     
     private synchronized native void native_release();
@@ -154,8 +146,6 @@ public class NativeTransport implements Transport
     private final synchronized native void native_uiLoaded();
     
     private final synchronized native void native_uiUnloaded();
-    
-    private final synchronized native void native_updateBitrateCap();
     
     private void onCrashFromNative(final int n, final long n2, final long n3, final long n4) {
         Log.e("nf-NativeTransport", "Got crash from native: " + n + ", signo: " + n2 + ", errno: " + n3 + ", code: " + n4);
@@ -226,10 +216,6 @@ public class NativeTransport implements Transport
         else if (Log.isLoggable("nf-NativeTransport", 3)) {
             Log.d("nf-NativeTransport", "Player type is " + this.playerType.getDescription());
         }
-        this.mBitrateCap = this.bridge.getBitrateCap();
-        if (Log.isLoggable("nf-NativeTransport", 3)) {
-            Log.d("nf-NativeTransport", "bitrate cap is " + this.mBitrateCap);
-        }
         if (this.playerType == PlayerType.device12 || this.playerType == PlayerType.device10 || this.playerType == PlayerType.device11) {
             MediaPlayerHelperFactory.getInstance(this.playerType);
             Log.d("nf-NativeTransport", this.playerType.getDescription() + "helper initialized");
@@ -261,31 +247,16 @@ public class NativeTransport implements Transport
         if (invoke == null) {
             throw new IllegalArgumentException("Command can not be null!");
         }
-        while (true) {
-            if (!(invoke instanceof Play)) {
-                break Label_0048;
-            }
-            Log.d("nf-NativeTransport", "Play command, update bitrate cap");
-            this.mBitrateCap = this.bridge.getBitrateCap();
-            try {
-                this.native_updateBitrateCap();
-                if (this.handleAndroid(invoke)) {
-                    Log.d("nf-NativeTransport", "Handled directly by JNI");
-                    return;
-                }
-            }
-            catch (Throwable t) {
-                Log.w("nf-NativeTransport", "Failure in JNI. It may happend than NRDApp is null!", t);
-                continue;
-            }
-            break;
+        if (this.handleAndroid(invoke)) {
+            Log.d("nf-NativeTransport", "Handled directly by JNI");
+            return;
         }
         Log.d("nf-NativeTransport", "Handled by bridge");
         try {
             this.native_invokeMethod(invoke.getObject(), invoke.getMethod(), invoke.getArguments());
         }
-        catch (Throwable t2) {
-            Log.w("nf-NativeTransport", "Failure in JNI. It may happend than NRDApp is null!", t2);
+        catch (Throwable t) {
+            Log.w("nf-NativeTransport", "Failure in JNI. It may happend than NRDApp is null!", t);
         }
     }
     
@@ -294,31 +265,30 @@ public class NativeTransport implements Transport
         if (Log.isLoggable("nf-NativeTransport", 3)) {
             Log.d("nf-NativeTransport", " invokeMethod subobject = " + string + " method = " + s + " jsonString = " + s2);
         }
-        Label_0120: {
+        Label_0084: {
             if (string != null) {
-                break Label_0120;
+                break Label_0084;
             }
             string = "nrdp";
+        Block_5_Outer:
             while (true) {
                 String s3 = s2;
                 if (s2 == null) {
                     s3 = "";
                 }
-                if ("play".equals(s)) {
-                    Log.d("nf-NativeTransport", "Play command, update bitrate cap");
-                    this.mBitrateCap = this.bridge.getBitrateCap();
-                    this.native_updateBitrateCap();
-                }
                 try {
                     this.native_invokeMethod(string, s, s3);
                     return;
-                    // iftrue(Label_0142:, !string.startsWith("nrdp"))
-                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                    continue;
-                    Label_0142: {
+                    // iftrue(Label_0106:, !string.startsWith("nrdp"))
+                    while (true) {
+                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                        continue Block_5_Outer;
+                        continue;
+                    }
+                    Label_0106: {
                         string = "nrdp." + string;
                     }
-                    continue;
+                    continue Block_5_Outer;
                 }
                 catch (Throwable t) {
                     Log.w("nf-NativeTransport", "Failure in JNI. It may happend than NRDApp is null!", t);
@@ -343,13 +313,10 @@ public class NativeTransport implements Transport
                 while (true) {
                     this.native_setProperty(string, s, s2);
                     return;
-                    Block_4: {
-                        break Block_4;
-                        Label_0093: {
-                            string = "nrdp." + string;
-                        }
-                        continue;
+                    Label_0093: {
+                        string = "nrdp." + string;
                     }
+                    continue;
                     Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
                     continue;
                 }

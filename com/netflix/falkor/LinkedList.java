@@ -10,7 +10,7 @@ import java.util.List;
 public class LinkedList<T>
 {
     LinkedList<T> next;
-    T value;
+    final T value;
     
     public LinkedList(final T value) {
         this.value = value;

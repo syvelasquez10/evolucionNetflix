@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.signup;
 
 import android.webkit.ConsoleMessage;
+import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.NetflixApplication;
 import org.json.JSONException;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -15,7 +16,7 @@ import android.net.Uri;
 import java.util.Locale;
 import android.webkit.JavascriptInterface;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
@@ -130,11 +131,11 @@ public class SignupActivity extends AccountActivity
         }
         final StatusCode statusCode = status.getStatusCode();
         if (status.isSucces() || statusCode == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showToast(2131493221);
+            this.showToast(2131493223);
             this.clearCookies();
         }
         else {
-            this.provideDialog(this.getString(2131493281) + " (" + statusCode.getValue() + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131493284) + " (" + statusCode.getValue() + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 final String string = "javascript:" + this.mErrHandler + "('" + statusCode.getValue() + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -148,7 +149,7 @@ public class SignupActivity extends AccountActivity
         this.runOnUiThread((Runnable)new Runnable() {
             @Override
             public void run() {
-                SignupActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)SignupActivity.this, SignupActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, SignupActivity.this.getString(2131493139), SignupActivity.this.getString(17039370), null)));
+                SignupActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)SignupActivity.this, SignupActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, SignupActivity.this.getString(2131493140), SignupActivity.this.getString(17039370), null)));
             }
         });
     }
@@ -162,9 +163,9 @@ public class SignupActivity extends AccountActivity
     }
     
     private void setUpSignInView(final ServiceManager serviceManager) {
-        this.setContentView(2130903179);
-        this.mWebView = (WebView)this.findViewById(2131165635);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131165535);
+        this.setContentView(2130903182);
+        this.mWebView = (WebView)this.findViewById(2131165654);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131165537);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
         this.mSoftwareVersion = serviceManager.getSoftwareVersion();
@@ -182,6 +183,7 @@ public class SignupActivity extends AccountActivity
         this.mWebViewClient = new SignUpWebViewClient(this);
         this.mWebView.setWebViewClient((WebViewClient)this.mWebViewClient);
         this.mWebView.setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
+            @SuppressLint({ "ClickableViewAccessibility" })
             public boolean onTouch(final View view, final MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
                     case 0:
@@ -268,7 +270,7 @@ public class SignupActivity extends AccountActivity
             this.mWebView.goBack();
         }
         else {
-            this.provideTwoButtonDialog(this.getString(2131493282), new Runnable() {
+            this.provideTwoButtonDialog(this.getString(2131493285), new Runnable() {
                 @Override
                 public void run() {
                     SignupActivity.this.reloadSignUp(false);
@@ -296,19 +298,19 @@ public class SignupActivity extends AccountActivity
         super.onCreateOptionsMenu(menu, menu2);
         MenuItem menuItem;
         if (this.mSignupMenuItem) {
-            menuItem = menu.add((CharSequence)this.getString(2131493189));
+            menuItem = menu.add((CharSequence)this.getString(2131493190));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
                 public boolean onMenuItemClick(final MenuItem menuItem) {
                     Log.d("SignupActivity", "User tapped sign-in button");
-                    LogUtils.reportLoginActionStarted((Context)SignupActivity.this, null, SignupActivity.this.getUiScreen());
+                    UserActionLogUtils.reportLoginActionStarted((Context)SignupActivity.this, null, SignupActivity.this.getUiScreen());
                     SignupActivity.this.startNextActivity(LoginActivity.createStartIntent((Context)SignupActivity.this));
                     return true;
                 }
             });
         }
         else {
-            menuItem = menu.add((CharSequence)this.getString(2131493190));
+            menuItem = menu.add((CharSequence)this.getString(2131493191));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
                 public boolean onMenuItemClick(final MenuItem menuItem) {
@@ -457,7 +459,7 @@ public class SignupActivity extends AccountActivity
                 Log.e("SignupActivity", "Failed to LoginToApp");
                 ex.printStackTrace();
                 SignupActivity.this.mSignupOngoing = false;
-                SignupActivity.this.provideDialog(SignupActivity.this.getString(2131493281), SignupActivity.this.mHandleError);
+                SignupActivity.this.provideDialog(SignupActivity.this.getString(2131493284), SignupActivity.this.mHandleError);
                 return;
             }
             Log.d("SignupActivity", "loginToApp, invalid state to Login, bailing out");

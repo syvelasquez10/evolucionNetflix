@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
@@ -16,6 +18,7 @@ import com.netflix.mediaclient.servicemgr.model.LoLoMo;
 import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
@@ -36,6 +39,8 @@ public interface ManagerCallback
     void onEpisodeDetailsFetched(final EpisodeDetails p0, final Status p1);
     
     void onEpisodesFetched(final List<EpisodeDetails> p0, final Status p1);
+    
+    void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> p0, final Status p1);
     
     void onGenreListsFetched(final List<GenreList> p0, final Status p1);
     
@@ -78,6 +83,10 @@ public interface ManagerCallback
     void onShowDetailsFetched(final ShowDetails p0, final Status p1);
     
     void onSimilarVideosFetched(final SearchVideoList p0, final Status p1);
+    
+    void onSocialNotificationWasThanked(final SocialNotificationSummary p0, final Status p1);
+    
+    void onSocialNotificationsListFetched(final SocialNotificationsList p0, final Status p1);
     
     void onVideoHide(final Status p0);
     

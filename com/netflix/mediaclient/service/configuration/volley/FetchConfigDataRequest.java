@@ -66,6 +66,9 @@ public class FetchConfigDataRequest extends FalcorVolleyWebClientRequest<ConfigD
                 configData.deviceConfig = FalcorParseUtils.getPropertyObject(dataObj, "deviceConfig", DeviceConfigData.class);
             }
             if (dataObj.has("accountConfig")) {
+                if (Log.isLoggable("nf_config_data", 2)) {
+                    Log.v("nf_config_data", "Accnt config: " + dataObj.get("accountConfig"));
+                }
                 configData.accountConfig = FalcorParseUtils.getPropertyObject(dataObj, "accountConfig", AccountConfigData.class);
             }
             if (dataObj.has("streamingqoe")) {

@@ -76,7 +76,7 @@ public abstract class LanguageSelector
         final LanguageAlertDialog languageAlertDialog = new LanguageAlertDialog((Context)this.mController);
         languageAlertDialog.setView(view);
         languageAlertDialog.setCancelable(true);
-        languageAlertDialog.setButton(-1, (CharSequence)this.mController.getString(2131492982), (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        languageAlertDialog.setButton(-1, (CharSequence)this.mController.getString(2131492983), (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             final /* synthetic */ boolean val$wasPlaying = LanguageSelector.this.mCallback.wasPlaying();
             
             public void onClick(final DialogInterface dialogInterface, final int n) {
@@ -230,10 +230,10 @@ public abstract class LanguageSelector
     }
     
     protected void initLists(final View view, final Language language) {
-        (this.mAudiosListView = (ListView)view.findViewById(2131165436)).setChoiceMode(1);
+        (this.mAudiosListView = (ListView)view.findViewById(2131165437)).setChoiceMode(1);
         final AudioAdapter adapter = new AudioAdapter(language);
         this.mAudiosListView.setAdapter((ListAdapter)adapter);
-        (this.mSubtitlesListView = (ListView)view.findViewById(2131165437)).setChoiceMode(1);
+        (this.mSubtitlesListView = (ListView)view.findViewById(2131165438)).setChoiceMode(1);
         final SubtitleAdapter adapter2 = new SubtitleAdapter(language);
         this.mSubtitlesListView.setAdapter((ListAdapter)adapter2);
         this.mAudiosListView.setOnItemClickListener((AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
@@ -343,8 +343,8 @@ public abstract class LanguageSelector
         TextView name;
         
         RowHolder(final View view) {
-            this.name = (TextView)view.findViewById(2131165438);
-            this.choice = (RadioButton)view.findViewById(2131165439);
+            this.name = (TextView)view.findViewById(2131165439);
+            this.choice = (RadioButton)view.findViewById(2131165440);
         }
     }
     
@@ -389,14 +389,14 @@ public abstract class LanguageSelector
                 if (item.isCC()) {
                     Log.d("nf_language_selector", "Add CC");
                     sb.append(' ');
-                    sb.append(LanguageSelector.this.mController.getText(2131493137));
+                    sb.append(LanguageSelector.this.mController.getText(2131493138));
                 }
                 final String string = sb.toString();
                 equals = item.equals(subtitle);
                 text = string;
             }
             else {
-                final String string2 = LanguageSelector.this.mController.getString(2131493130);
+                final String string2 = LanguageSelector.this.mController.getString(2131493131);
                 if (subtitle == null) {
                     equals = true;
                 }

@@ -26,7 +26,7 @@ import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.Log;
 import java.util.HashMap;
-import com.netflix.mediaclient.android.widget.ViewRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import java.util.Map;
 import android.widget.AbsListView$RecyclerListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -56,7 +56,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     private ServiceManager manager;
     private final AbsListView$RecyclerListener recycleListener;
     private final Map<String, Object> stateMap;
-    private ViewRecycler viewRecycler;
+    private ObjectRecycler.ViewRecycler viewRecycler;
     
     public LoLoMoFrag() {
         this.stateMap = new HashMap<String, Object>();
@@ -84,7 +84,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
             Log.v("LoLoMoFrag", String.format("isForKids: %s, isKidsGenre: %s, shouldShowKidsEntryInGenreLomo: %s", homeActivity.isForKids(), homeActivity.isKidsGenre(), KidsUtils.shouldShowKidsEntryInGenreLomo(homeActivity)));
             if (!homeActivity.isForKids() && homeActivity.isKidsGenre() && KidsUtils.shouldShowKidsEntryInGenreLomo(homeActivity)) {
                 Log.v("LoLoMoFrag", "Adding Kids entry header to genre list view");
-                (this.kidsEntryHeader = (View)new KidsGenreEntryHeader(this.getActivity())).setVisibility(4);
+                (this.kidsEntryHeader = (View)new KidsGenreEntryHeader(this.getNetflixActivity())).setVisibility(4);
                 stickyListHeadersListView.addHeaderView(this.kidsEntryHeader);
             }
         }
@@ -146,11 +146,15 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         return this.focusHandler != null && this.focusHandler.dispatchKeyEvent(keyEvent);
     }
     
+    StickyListHeadersListView getListView() {
+        return this.listView;
+    }
+    
     public Map<String, Object> getStateMap() {
         return this.stateMap;
     }
     
-    public ViewRecycler getViewRecycler() {
+    public ObjectRecycler.ViewRecycler getViewRecycler() {
         return this.viewRecycler;
     }
     
@@ -182,7 +186,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         this.genreId = this.getArguments().getString("genre_id");
         this.genre = (GenreList)this.getArguments().getParcelable("genre_parcel");
         this.isGenreList = this.getArguments().getBoolean("is_genre_list");
-        this.viewRecycler = ((ViewRecycler.ViewRecyclerProvider)this.getActivity()).getViewRecycler();
+        this.viewRecycler = ((ObjectRecycler.ViewRecyclerProvider)this.getActivity()).getViewRecycler();
         if (bundle != null) {
             Log.v("LoLoMoFrag", "Clearing all frag state");
             this.stateMap.clear();

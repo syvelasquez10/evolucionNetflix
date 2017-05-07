@@ -6,12 +6,10 @@ package com.netflix.mediaclient.service.webclient.volley;
 
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import java.util.Iterator;
-import com.netflix.mediaclient.Log;
-import com.google.gson.JsonParser;
-import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
-import com.netflix.mediaclient.service.webclient.model.branches.Video;
-import com.google.gson.JsonElement;
 import java.util.Map;
+import com.google.gson.JsonParser;
+import com.netflix.mediaclient.Log;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.NetflixApplication;
 import com.google.gson.Gson;
@@ -62,28 +60,11 @@ public class FalcorParseUtils
         return jsonObject.has("error") || jsonObject.has("innerErrors");
     }
     
-    public static Object createObjectFromJsonEntry(final Map.Entry<String, JsonElement> entry) {
-        final JsonElement jsonElement = entry.getValue();
-        final String s = entry.getKey();
-        if ("summary".equals(s)) {
-            return FalcorParseUtils.gson.fromJson(jsonElement, Video.Summary.class);
+    public static Object createObjectFromJson(final String s, final JsonElement jsonElement, final Class<?> clazz) {
+        if (Log.isLoggable(s, 2)) {
+            Log.v(s, "Creating object from json of type: " + clazz);
         }
-        if ("detail".equals(s)) {
-            return FalcorParseUtils.gson.fromJson(jsonElement, Video.Detail.class);
-        }
-        if ("rating".equals(s)) {
-            return FalcorParseUtils.gson.fromJson(jsonElement, Video.Rating.class);
-        }
-        if ("inQueue".equals(s)) {
-            return FalcorParseUtils.gson.fromJson(jsonElement, Video.InQueue.class);
-        }
-        if ("bookmark".equals(s)) {
-            return FalcorParseUtils.gson.fromJson(jsonElement, Video.Bookmark.class);
-        }
-        if ("socialEvidence".equals(s)) {
-            return FalcorParseUtils.gson.fromJson(jsonElement, SocialEvidence.class);
-        }
-        return null;
+        return FalcorParseUtils.gson.fromJson(jsonElement, clazz);
     }
     
     public static JsonObject getDataObj(final String s, final String s2) throws FalcorParseException, FalcorServerException {
@@ -184,6 +165,10 @@ public class FalcorParseUtils
         return s != null && s.contains("AlreadyInQueue");
     }
     
+    public static boolean isDeletedProfile(final String s) {
+        return s.contains("deleted profile");
+    }
+    
     public static boolean isEmpty(final JsonObject jsonObject) {
         return jsonObject.isJsonNull() || jsonObject.toString().equals("{}");
     }
@@ -197,7 +182,7 @@ public class FalcorParseUtils
     }
     
     public static boolean isNotAuthorized(final String s) {
-        return s.contains("Not authorized") || s.contains("unauthorized");
+        return s.contains("not authorized") || s.contains("unauthorized");
     }
     
     public static boolean isNotInQueue(final String s) {
@@ -205,7 +190,7 @@ public class FalcorParseUtils
     }
     
     public static boolean isNullPointerException(final String s) {
-        return s.contains("NullPointerException");
+        return s.contains("nullpointerexception");
     }
     
     public static boolean isWrongState(final String s) {

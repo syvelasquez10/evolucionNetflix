@@ -72,7 +72,7 @@ public class NotificationFeedback extends BaseCmpEvent implements Runnable
         BaseCmpEvent.addIfNotNull(jsonObject3, "geolocation_country", commonRequestParameters.geolocationCountry);
         BaseCmpEvent.addIfNotNull(jsonObject3, "languages", commonRequestParameters.languages);
         BaseCmpEvent.addIfNotNull(jsonObject3, "accountCountry", commonRequestParameters.country);
-        BaseCmpEvent.addIfNotNull(jsonObject3, "user_id", commonRequestParameters.userId);
+        BaseCmpEvent.addIfNotNull(jsonObject3, "user_id", commonRequestParameters.profileToken);
         if (authorizationCredentials != null) {
             BaseCmpEvent.addIfNotNull(jsonObject3, "netflixId", authorizationCredentials.netflixId);
             BaseCmpEvent.addIfNotNull(jsonObject3, "secureNetflixId", authorizationCredentials.secureNetflixId);

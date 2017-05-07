@@ -13,8 +13,8 @@ public final class CommonRequestParameters
     public String geolocationCountry;
     public String languages;
     public String osVersion;
+    public String profileToken;
     public String uiVersion;
-    public String userId;
     public Boolean withCredentials;
     
     public static CommonRequestParameters getInstanceWithCredentials() {

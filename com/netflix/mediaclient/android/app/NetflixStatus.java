@@ -4,14 +4,13 @@
 
 package com.netflix.mediaclient.android.app;
 
-import java.util.ArrayList;
 import com.netflix.mediaclient.StatusCode;
-import java.util.List;
+import com.netflix.mediaclient.service.logging.client.model.Error;
 
 public class NetflixStatus implements Status
 {
     protected boolean mDisplayMessage;
-    protected List<NetflixError> mErrors;
+    protected Error mError;
     protected String mMessage;
     private int mRequestId;
     protected StatusCode mStatusCode;
@@ -21,7 +20,6 @@ public class NetflixStatus implements Status
     }
     
     public NetflixStatus(final StatusCode mStatusCode, final int mRequestId) {
-        this.mErrors = new ArrayList<NetflixError>();
         if (mStatusCode == null) {
             new IllegalArgumentException("Status code can not be null!");
         }
@@ -29,16 +27,9 @@ public class NetflixStatus implements Status
         this.mRequestId = mRequestId;
     }
     
-    public void addError(final NetflixError netflixError) {
-        if (netflixError == null) {
-            throw new IllegalArgumentException("AddError:: error can not be null!");
-        }
-        this.mErrors.add(netflixError);
-    }
-    
     @Override
-    public NetflixError[] getErrors() {
-        return this.mErrors.toArray(new NetflixError[this.mErrors.size()]);
+    public Error getError() {
+        return this.mError;
     }
     
     @Override
@@ -70,12 +61,25 @@ public class NetflixStatus implements Status
         this.mDisplayMessage = mDisplayMessage;
     }
     
+    public void setError(final Error mError) {
+        this.mError = mError;
+    }
+    
     public void setMessage(final String mMessage) {
         this.mMessage = mMessage;
+    }
+    
+    public void setRequestId(final int mRequestId) {
+        this.mRequestId = mRequestId;
     }
     
     @Override
     public boolean shouldDisplayMessage() {
         return this.mDisplayMessage;
+    }
+    
+    @Override
+    public String toString() {
+        return "NetflixStatus, " + this.mStatusCode;
     }
 }

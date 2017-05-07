@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
@@ -18,8 +19,17 @@ import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
+import android.content.Context;
+import android.widget.Toast;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.UserActionLogging;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
+import android.content.Intent;
+import com.netflix.mediaclient.service.pushnotification.MessageData;
+import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
@@ -149,6 +159,11 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
+    public void fetchSocialNotifications(final int n, final int n2, final int n3) {
+        this.mBrowseAgent.fetchSocialNotifications(n, this.wrapCallback(new BrowseAgentClientCallback(n2, n3)));
+    }
+    
+    @Override
     public void fetchVideos(final LoMo loMo, final int n, final int n2, final int n3, final int n4) {
         this.mBrowseAgent.fetchVideos(loMo, n, n2, this.wrapCallback(new BrowseAgentClientCallback(n3, n4)));
     }
@@ -169,6 +184,11 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
+    public void markSocialNotificationsAsRead(final List<SocialNotificationSummary> list) {
+        this.mBrowseAgent.markSocialNotificationsAsRead(list);
+    }
+    
+    @Override
     public void prefetchGenreLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final boolean b, final int n5, final int n6) {
         this.mBrowseAgent.prefetchGenreLoLoMo(s, n, n2, n3, n4, b, this.wrapCallback(new BrowseAgentClientCallback(n5, n6)));
     }
@@ -179,13 +199,28 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
+    public void refreshAll() {
+        this.mBrowseAgent.refreshAll();
+    }
+    
+    @Override
     public void refreshCW() {
         this.mBrowseAgent.refreshCW();
     }
     
     @Override
+    public void refreshEpisodeData(final Asset asset) {
+        this.mBrowseAgent.refreshEpisodesData(asset);
+    }
+    
+    @Override
     public void refreshIQ() {
         this.mBrowseAgent.refreshIQ();
+    }
+    
+    @Override
+    public void refreshSocialNotifications(final boolean b, final boolean b2, final MessageData messageData) {
+        this.mBrowseAgent.refreshSocialNotifications(b, b2, messageData);
     }
     
     @Override
@@ -199,8 +234,58 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
+    public void sendThanksToSocialNotification(final SocialNotificationSummary socialNotificationSummary, final int n, final int n2) {
+        this.mBrowseAgent.sendThanksToSocialNotification(socialNotificationSummary, this.wrapCallback(new BrowseAgentClientCallback(n, n2)));
+    }
+    
+    @Override
+    public void sendThanksToSocialNotificationFromService(final SocialNotificationSummary socialNotificationSummary, final NetflixService netflixService, final boolean b) {
+        if (b) {
+            netflixService.getApplicationContext().sendBroadcast(new Intent("android.intent.action.CLOSE_SYSTEM_DIALOGS"));
+        }
+        UserActionLogUtils.reportSayThanksActionStarted(netflixService.getApplicationContext(), null, null);
+        this.mBrowseAgent.sendThanksToSocialNotification(socialNotificationSummary, new SentThanksCallback(netflixService));
+    }
+    
+    @Override
     public void setVideoRating(final String s, final int n, final int n2, final int n3, final int n4) {
         this.mBrowseAgent.setVideoRating(s, n, n2, this.wrapCallback(new BrowseAgentClientCallback(n3, n4)));
+    }
+    
+    @Override
+    public void updateCachedVideoPosition(final Asset asset) {
+        this.mBrowseAgent.updateCachedVideoPosition(asset);
+    }
+    
+    class SentThanksCallback extends BrowseAgentClientCallback
+    {
+        private final NetflixService service;
+        
+        SentThanksCallback(final NetflixService service) {
+            super(0, 0);
+            this.service = service;
+        }
+        
+        @Override
+        public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+            if (this.service != null) {
+                final Context applicationContext = this.service.getApplicationContext();
+                IClientLogging.CompletionReason completionReason;
+                if (status.isSucces()) {
+                    completionReason = IClientLogging.CompletionReason.success;
+                }
+                else {
+                    completionReason = IClientLogging.CompletionReason.failed;
+                }
+                UserActionLogUtils.reportSayThanksActionEnded(applicationContext, completionReason, status.getError());
+            }
+            if (status.isSucces() && this.service != null) {
+                Toast.makeText(this.service.getApplicationContext(), 2131493411, 1).show();
+                if (this.service.getBrowse() != null) {
+                    this.service.getBrowse().refreshSocialNotifications(true, false, null);
+                }
+            }
+        }
     }
     
     private class BrowseAgentClientCallback implements BrowseAgentCallback
@@ -421,6 +506,33 @@ public class BrowseAccess implements IBrowseInterface
                 return;
             }
             netflixServiceCallback.onSimilarVideosFetched(this.requestId, list, status);
+        }
+        
+        @Override
+        public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+            final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)BrowseAccess.this.mClientCallbacks.get(this.clientId);
+            if (netflixServiceCallback == null) {
+                Log.w("NetflixServiceBrowse", "No client callback found for onSocialNotificationWasThanked");
+                return;
+            }
+            netflixServiceCallback.onSocialNotificationWasThanked(this.requestId, socialNotificationSummary, status);
+        }
+        
+        @Override
+        public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+            final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)BrowseAccess.this.mClientCallbacks.get(this.clientId);
+            if (netflixServiceCallback == null) {
+                Log.w("NetflixServiceBrowse", "No client callback found for onSocialNotificationsListFetched");
+                return;
+            }
+            netflixServiceCallback.onSocialNotificationsListFetched(this.requestId, list, status);
+        }
+        
+        @Override
+        public void onSocialNotificationsMarkedAsRead(final List<SocialNotificationSummary> list, final Status status) {
+            if (Log.isLoggable("NetflixServiceBrowse", 4)) {
+                Log.i("NetflixServiceBrowse", "onSocialNotificationsMarkedAsRead: " + status);
+            }
         }
         
         @Override

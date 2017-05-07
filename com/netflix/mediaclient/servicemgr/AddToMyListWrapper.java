@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.ui.details.DetailsActivity;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.view.View;
 import android.view.View$OnClickListener;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import android.content.Context;
 import android.widget.Toast;
 import com.netflix.mediaclient.android.app.Status;
 import android.widget.TextView;
-import com.netflix.mediaclient.ui.details.DetailsActivity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 
 public class AddToMyListWrapper
@@ -47,8 +47,8 @@ public class AddToMyListWrapper
         addToListData.setStateAndNotify(stateAndNotify);
     }
     
-    public TextViewWrapper createAddToMyListWrapper(final DetailsActivity detailsActivity, final TextView textView) {
-        return new TextViewWrapper(detailsActivity, textView);
+    public TextViewWrapper createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final int n, final boolean b) {
+        return new TextViewWrapper(netflixActivity, textView, s, n, b);
     }
     
     public void register(final String s, final AddToListData.StateListener stateListener) {
@@ -102,7 +102,7 @@ public class AddToMyListWrapper
             }
             addToListData.revertState();
             if (b) {
-                Toast.makeText((Context)this.serviceMan.getActivity(), 2131493204, 1).show();
+                Toast.makeText((Context)this.serviceMan.getActivity(), 2131493205, 1).show();
             }
         }
     }
@@ -117,42 +117,51 @@ public class AddToMyListWrapper
     
     private class TextViewWrapper implements StateListener
     {
-        private final DetailsActivity activity;
+        private final NetflixActivity activity;
+        private final boolean keepVisibilityState;
         private final TextView textView;
+        private final int trackId;
+        private final String videoId;
         
-        public TextViewWrapper(final DetailsActivity activity, final TextView textView) {
+        public TextViewWrapper(final NetflixActivity activity, final TextView textView, final String videoId, final int trackId, final boolean keepVisibilityState) {
             this.activity = activity;
             this.textView = textView;
+            this.videoId = videoId;
+            this.trackId = trackId;
+            this.keepVisibilityState = keepVisibilityState;
         }
         
         @Override
         public void update(final AddToListState addToListState) {
             switch (addToListState) {
                 case IN_LIST: {
-                    this.textView.setContentDescription((CharSequence)this.activity.getString(2131492976));
-                    this.textView.setCompoundDrawablesWithIntrinsicBounds(2130837832, 0, 0, 0);
+                    this.textView.setContentDescription((CharSequence)this.activity.getString(2131492977));
+                    this.textView.setText((CharSequence)this.activity.getString(2131492974, new Object[] { "\u2212" }));
                     this.textView.setEnabled(true);
                     this.textView.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
                         public void onClick(final View view) {
-                            LogUtils.reportRemoveFromQueueActionStarted((Context)TextViewWrapper.this.activity, null, TextViewWrapper.this.activity.getUiScreen());
-                            AddToMyListWrapper.this.removeVideoFromMyList(TextViewWrapper.this.activity.getVideoId(), TextViewWrapper.this.activity.getActionToken());
+                            UserActionLogUtils.reportRemoveFromQueueActionStarted((Context)TextViewWrapper.this.activity, null, TextViewWrapper.this.activity.getUiScreen());
+                            String actionToken = null;
+                            if (TextViewWrapper.this.activity instanceof DetailsActivity) {
+                                actionToken = ((DetailsActivity)TextViewWrapper.this.activity).getActionToken();
+                            }
+                            AddToMyListWrapper.this.removeVideoFromMyList(TextViewWrapper.this.videoId, actionToken);
                         }
                     });
                     break;
                 }
                 case NOT_IN_LIST: {
-                    this.textView.setContentDescription((CharSequence)this.activity.getString(2131492975));
-                    this.textView.setCompoundDrawablesWithIntrinsicBounds(2130837562, 0, 0, 0);
+                    this.textView.setContentDescription((CharSequence)this.activity.getString(2131492976));
+                    this.textView.setText((CharSequence)this.activity.getString(2131492974, new Object[] { "+" }));
                     this.textView.setEnabled(true);
                     this.textView.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
                         public void onClick(final View view) {
-                            int trackId = -1;
-                            final PlayContext playContext = TextViewWrapper.this.activity.getPlayContext();
-                            if (playContext != null) {
-                                trackId = playContext.getTrackId();
+                            UserActionLogUtils.reportAddToQueueActionStarted((Context)TextViewWrapper.this.activity, null, TextViewWrapper.this.activity.getUiScreen());
+                            String actionToken = null;
+                            if (TextViewWrapper.this.activity instanceof DetailsActivity) {
+                                actionToken = ((DetailsActivity)TextViewWrapper.this.activity).getActionToken();
                             }
-                            LogUtils.reportAddToQueueActionStarted((Context)TextViewWrapper.this.activity, null, TextViewWrapper.this.activity.getUiScreen());
-                            AddToMyListWrapper.this.addVideoToMyList(TextViewWrapper.this.activity.getVideoId(), trackId, TextViewWrapper.this.activity.getActionToken());
+                            AddToMyListWrapper.this.addVideoToMyList(TextViewWrapper.this.videoId, TextViewWrapper.this.trackId, actionToken);
                         }
                     });
                     break;
@@ -162,11 +171,13 @@ public class AddToMyListWrapper
                     break;
                 }
             }
-            if (AddToMyListWrapper.this.serviceMan.isCurrentProfileIQEnabled()) {
+            if (!this.keepVisibilityState) {
+                if (!AddToMyListWrapper.this.serviceMan.isCurrentProfileIQEnabled()) {
+                    this.textView.setVisibility(8);
+                    return;
+                }
                 this.textView.setVisibility(0);
-                return;
             }
-            this.textView.setVisibility(8);
         }
     }
 }

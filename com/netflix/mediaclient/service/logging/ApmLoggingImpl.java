@@ -408,8 +408,16 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         Log.d("nf_log_apm", "User session end done.");
     }
     
+    public ApplicationSession getApplicationSession() {
+        return this.mApplicationSession;
+    }
+    
     IClientLogging.ModalView getCurrentUiView() {
         return this.mCurrentUiView;
+    }
+    
+    public UserSession getUserSession() {
+        return this.mUserSession;
     }
     
     public void handleAssetRequestEnded(final Intent intent) {
@@ -439,6 +447,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         this.startAssetRequestSession(intent.getStringExtra("url"), IClientLogging.AssetType.valueOf(intent.getStringExtra("asset_type")));
     }
     
+    @Override
     public void handleConnectivityChange(final Context context) {
         this.mNetworkStatusMonitor.handleConnectivityChange(context);
     }

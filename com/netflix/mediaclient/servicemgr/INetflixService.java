@@ -4,7 +4,10 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import java.util.Set;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import android.os.Handler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent;
@@ -26,6 +29,8 @@ public interface INetflixService
     
     void fetchResource(final String p0, final IClientLogging.AssetType p1, final int p2, final int p3);
     
+    String getAccountOwnerToken();
+    
     List<? extends UserProfile> getAllProfiles();
     
     void getAvailableAvatarsList(final int p0, final int p1);
@@ -46,13 +51,17 @@ public interface INetflixService
     
     String getCurrentProfileLastName();
     
-    String getCurrentProfileUserId();
+    String getCurrentProfileToken();
     
     DeviceCategory getDeviceCategory();
     
     IDiagnosis getDiagnosis();
     
     EsnProvider getESN();
+    
+    void getFriendsForRecommendationList(final String p0, final int p1, final String p2, final int p3, final int p4);
+    
+    Handler getHandler();
     
     IMdx getMdx();
     
@@ -65,8 +74,6 @@ public interface INetflixService
     SignUpParams getSignUpParams();
     
     String getSoftwareVersion();
-    
-    String getUserId();
     
     boolean isCurrentProfileFacebookConnected();
     
@@ -93,6 +100,8 @@ public interface INetflixService
     void removeProfile(final String p0, final int p1, final int p2);
     
     void selectProfile(final String p0);
+    
+    void sendRecommendationsToFriends(final String p0, final Set<FriendForRecommendation> p1, final String p2);
     
     void setCurrentAppLocale(final String p0);
     

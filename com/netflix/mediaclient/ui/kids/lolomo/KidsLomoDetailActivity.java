@@ -17,7 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
-import com.netflix.mediaclient.android.widget.ViewRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 
 public class KidsLomoDetailActivity extends FragmentHostActivity implements ViewRecyclerProvider

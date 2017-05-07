@@ -4,10 +4,10 @@
 
 package com.netflix.mediaclient.servicemgr.model;
 
-import com.netflix.mediaclient.service.webclient.model.client.SocialPlaceholder;
-import com.netflix.mediaclient.service.webclient.model.client.SocialConnectPlaceholder;
-import com.netflix.mediaclient.service.webclient.model.client.SocialFriendPlaceholder;
-import com.netflix.mediaclient.service.webclient.model.client.SocialGroupPlaceholder;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialPlaceholder;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialConnectPlaceholder;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialFriendPlaceholder;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialGroupPlaceholder;
 import com.netflix.mediaclient.Log;
 import java.util.List;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -32,19 +32,20 @@ public class LoMoUtils
     
     public static int getLomoFragOffsetLeftPx(final NetflixActivity netflixActivity) {
         if (netflixActivity.isForKids()) {
-            return (int)(0.667f * netflixActivity.getResources().getDimensionPixelOffset(2131361955));
+            return (int)(0.667f * netflixActivity.getResources().getDimensionPixelOffset(2131361968));
         }
         return netflixActivity.getResources().getDimensionPixelOffset(2131361896);
     }
     
     public static int getLomoFragOffsetRightPx(final NetflixActivity netflixActivity) {
         if (netflixActivity.isForKids()) {
-            return (int)(1.333f * netflixActivity.getResources().getDimensionPixelOffset(2131361955));
+            return (int)(1.333f * netflixActivity.getResources().getDimensionPixelOffset(2131361968));
         }
         return netflixActivity.getResources().getDimensionPixelOffset(2131361896);
     }
     
     public static void injectSocialData(final LoMo loMo, final List<Video> list) {
+        list.remove(0);
         final SocialGroupPlaceholder socialGroupPlaceholder = null;
         final LoMoType type = loMo.getType();
         Log.d("LoMoUtils", "Injecting social data for type: " + type);

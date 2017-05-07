@@ -8,7 +8,7 @@ import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import com.netflix.mediaclient.service.player.subtitles.TextStyle;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
-import com.netflix.mediaclient.media.bitrate.VideoBitrateRange;
+import com.netflix.mediaclient.media.VideoResolutionRange;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration;
 import org.json.JSONObject;
@@ -23,7 +23,11 @@ import org.json.JSONArray;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
+import com.netflix.mediaclient.servicemgr.model.CWVideo;
+import com.netflix.mediaclient.servicemgr.model.Billboard;
+import java.util.List;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
@@ -62,7 +66,7 @@ public abstract class ServiceAgent
         return null;
     }
     
-    protected BrowseAgentInterface getBrowseAgent() {
+    public BrowseAgentInterface getBrowseAgent() {
         final AgentContext agentContext = this.agentContext;
         if (agentContext != null) {
             return agentContext.getBrowseAgent();
@@ -86,7 +90,7 @@ public abstract class ServiceAgent
         return null;
     }
     
-    protected Handler getMainHandler() {
+    public Handler getMainHandler() {
         return this.mainHandler;
     }
     
@@ -94,6 +98,14 @@ public abstract class ServiceAgent
         final AgentContext agentContext = this.agentContext;
         if (agentContext != null) {
             return agentContext.getNrdController();
+        }
+        return null;
+    }
+    
+    public PreAppAgentInterface getPreAppAgent() {
+        final AgentContext agentContext = this.agentContext;
+        if (agentContext != null) {
+            return agentContext.getPreAppAgent();
         }
         return null;
     }
@@ -181,6 +193,8 @@ public abstract class ServiceAgent
         
         NrdController getNrdController();
         
+        PreAppAgentInterface getPreAppAgent();
+        
         ResourceFetcher getResourceFetcher();
         
         NetflixService getService();
@@ -190,11 +204,19 @@ public abstract class ServiceAgent
     
     public interface BrowseAgentInterface
     {
+        List<Billboard> fetchBillboardsFromCache(final int p0);
+        
+        List<CWVideo> fetchCWFromCache(final int p0);
+        
         void fetchEpisodeDetails(final String p0, final BrowseAgentCallback p1);
+        
+        List<Video> fetchIQFromCache(final int p0);
         
         void fetchMovieDetails(final String p0, final BrowseAgentCallback p1);
         
         void fetchPostPlayVideos(final String p0, final BrowseAgentCallback p1);
+        
+        List<Video> fetchRecommendedListFromCache(final int p0);
         
         void fetchSeasonDetails(final String p0, final BrowseAgentCallback p1);
         
@@ -214,8 +236,6 @@ public abstract class ServiceAgent
         int getApmUserSessionDurationInSeconds();
         
         int getAppVersionCode();
-        
-        int getBitrateCap();
         
         BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification();
         
@@ -253,6 +273,8 @@ public abstract class ServiceAgent
         
         int getRateLimitForGcmBrowseEvents();
         
+        int getRateLimitForNListChangeEvents();
+        
         int getResFetcherThreadPoolSize();
         
         int getResourceRequestTimeout();
@@ -265,9 +287,9 @@ public abstract class ServiceAgent
         
         SubtitleConfiguration getSubtitleConfiguration();
         
-        VideoBitrateRange[] getVideoBitrateRange();
-        
         int getVideoBufferSize();
+        
+        VideoResolutionRange getVideoResolutionRange();
         
         boolean isCurrentDrmWidevine();
         
@@ -295,13 +317,18 @@ public abstract class ServiceAgent
         void onInitComplete(final ServiceAgent p0, final Status p1);
     }
     
+    public interface PreAppAgentInterface
+    {
+        boolean isWidgetInstalled();
+    }
+    
     public interface UserAgentInterface
     {
         void doDummyWebCall(final UserAgentWebCallback p0);
         
         UserProfile getCurrentProfile();
         
-        String getCurrentProfileId();
+        String getCurrentProfileGuid();
         
         String getGeoCountry();
         

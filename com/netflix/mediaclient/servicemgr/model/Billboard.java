@@ -4,13 +4,11 @@
 
 package com.netflix.mediaclient.servicemgr.model;
 
-public interface Billboard extends Video
+public interface Billboard extends Playable, Video
 {
     String getCertification();
     
     int getNumOfSeasons();
-    
-    Playable getPlayable();
     
     String getStoryUrl();
     

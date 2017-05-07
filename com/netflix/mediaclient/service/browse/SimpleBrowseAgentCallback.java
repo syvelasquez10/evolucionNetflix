@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
@@ -110,6 +112,18 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     
     @Override
     public void onSimilarVideosFetched(final SearchVideoList list, final Status status) {
+    }
+    
+    @Override
+    public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+    }
+    
+    @Override
+    public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+    }
+    
+    @Override
+    public void onSocialNotificationsMarkedAsRead(final List<SocialNotificationSummary> list, final Status status) {
     }
     
     @Override

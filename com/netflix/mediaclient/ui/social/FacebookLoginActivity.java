@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.social;
 
+import com.netflix.mediaclient.servicemgr.SocialLogging;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import android.os.Bundle;
 import java.io.Serializable;
@@ -13,9 +14,10 @@ import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.content.Intent;
 import android.app.Activity;
 import com.netflix.mediaclient.repository.SecurityRepository;
-import android.content.Context;
 import android.widget.Toast;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import android.content.Context;
+import com.netflix.mediaclient.util.log.SocialLoggingUtils;
 import com.netflix.mediaclient.Log;
 import com.facebook.SessionState;
 import com.facebook.internal.SessionTracker;
@@ -35,6 +37,7 @@ public class FacebookLoginActivity extends AccountActivity
             @Override
             public void call(final Session session, final SessionState sessionState, final Exception ex) {
                 Log.v("FacebookLoginActivity", "Callback - Session: " + session + ", State: " + sessionState + ", Exception: " + ex);
+                SocialLoggingUtils.reportEndSocialConnectSession((Context)FacebookLoginActivity.this);
                 if (sessionState.isOpened()) {
                     FacebookLoginActivity.this.executeMeRequestIfDebug();
                     FacebookLoginActivity.this.manager.connectWithFacebook(Session.getActiveSession().getAccessToken(), new ConnectedToFacebookCallback());
@@ -50,13 +53,13 @@ public class FacebookLoginActivity extends AccountActivity
     }
     
     private void handleConnectFailure() {
-        Toast.makeText((Context)this, 2131493232, 1).show();
+        Toast.makeText((Context)this, 2131493234, 1).show();
         this.finish();
     }
     
     private void handleConnectSuccess() {
         this.sendHomeRefreshBrodcast();
-        Toast.makeText((Context)this, 2131493231, 1).show();
+        Toast.makeText((Context)this, 2131493233, 1).show();
         this.finish();
     }
     
@@ -136,6 +139,7 @@ public class FacebookLoginActivity extends AccountActivity
         @Override
         public void onConnectWithFacebookComplete(final Status status) {
             super.onConnectWithFacebookComplete(status);
+            SocialLoggingUtils.reportSocialConnectActionResponseEvent((Context)FacebookLoginActivity.this, SocialLogging.Channel.Facebook, SocialLogging.Source.MDP, status.isSucces(), status.getError());
             if (status.isSucces()) {
                 FacebookLoginActivity.this.handleConnectSuccess();
                 return;

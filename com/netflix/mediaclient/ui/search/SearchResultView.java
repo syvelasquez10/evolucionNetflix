@@ -48,7 +48,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     public SearchResultView(final Context context, final int resId) {
         super(context);
-        this.resId = 2130903169;
+        this.resId = 2130903171;
         this.ignoreClicks = false;
         this.resId = resId;
         this.init();
@@ -56,14 +56,14 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     public SearchResultView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.resId = 2130903169;
+        this.resId = 2130903171;
         this.ignoreClicks = false;
         this.init();
     }
     
     private void findViews() {
-        this.img = (AdvancedImageView)this.findViewById(2131165619);
-        this.title = (TextView)this.findViewById(2131165620);
+        this.img = (AdvancedImageView)this.findViewById(2131165634);
+        this.title = (TextView)this.findViewById(2131165635);
     }
     
     private CharSequence getFormattedYearSpannable(final String s, final String s2) {
@@ -82,7 +82,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(this.resId, (ViewGroup)this);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        this.setForeground(this.getResources().getDrawable(2130837843));
+        this.setForeground(this.getResources().getDrawable(2130837848));
         this.findViews();
         this.setupViews();
         this.videoClickListener = new VideoDetailsClickListener(netflixActivity, this);
@@ -130,7 +130,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
                 NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, imgUrl, IClientLogging.AssetType.heroImage, name, false, false);
             }
             else {
-                this.img.setImageResource(2130837566);
+                this.img.setImageResource(2130837565);
             }
         }
         if (!this.ignoreClicks) {

@@ -36,7 +36,7 @@ public class KidsSeasonSpinner extends RelativeLayout
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         final List<SeasonDetails> seasons = this.showAdapter.getSeasons();
         Log.v("KidsSeasonSpinner", "Creating season spinner, num seasons: " + seasons.size());
-        (this.spinner = (SeasonsSpinner)this.findViewById(2131165428)).updateSeasonData(seasons);
+        (this.spinner = (SeasonsSpinner)this.findViewById(2131165429)).updateSeasonData(seasons);
         this.spinner.setOnItemSelectedListener((AdapterView$OnItemSelectedListener)new AdapterView$OnItemSelectedListener() {
             public void onItemSelected(final AdapterView<?> adapterView, final View view, int seasonNumberForPosition, final long n) {
                 seasonNumberForPosition = KidsSeasonSpinner.this.spinner.getSeasonNumberForPosition(seasonNumberForPosition);

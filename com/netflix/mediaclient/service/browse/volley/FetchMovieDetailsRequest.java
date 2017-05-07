@@ -7,7 +7,7 @@ package com.netflix.mediaclient.service.browse.volley;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
-import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
@@ -19,6 +19,7 @@ import java.util.List;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
+import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
@@ -26,6 +27,7 @@ public class FetchMovieDetailsRequest extends FalcorVolleyWebClientRequest<Movie
 {
     private static final String FIELD_MOVIES = "movies";
     private static final String TAG = "nf_service_browse_fetchmoviedetailsrequest";
+    private BrowseWebClientCache browseCache;
     private final int fromVideo;
     private final String mMovieId;
     private final String pqlQuery;
@@ -35,13 +37,14 @@ public class FetchMovieDetailsRequest extends FalcorVolleyWebClientRequest<Movie
     private final int toVideo;
     private final boolean userConnectedToFacebook;
     
-    public FetchMovieDetailsRequest(final Context context, final String mMovieId, final int fromVideo, final int toVideo, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
+    public FetchMovieDetailsRequest(final Context context, final BrowseWebClientCache browseCache, final String mMovieId, final int fromVideo, final int toVideo, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
         super(context);
         this.responseCallback = responseCallback;
         this.mMovieId = mMovieId;
         this.fromVideo = fromVideo;
         this.toVideo = toVideo;
         this.userConnectedToFacebook = userConnectedToFacebook;
+        this.browseCache = browseCache;
         this.pqlQuery = String.format("['movies', '%s', ['summary','detail', 'rating', 'inQueue', 'bookmark', 'socialEvidence']]", this.mMovieId);
         this.pqlQuery2 = String.format("['movies', '%s', 'similars', {'from':%d,'to':%d}, 'summary']", this.mMovieId, fromVideo, toVideo);
         this.pqlQuery3 = String.format("['movies', '%s', 'similars', 'summary']", this.mMovieId);
@@ -106,6 +109,7 @@ public class FetchMovieDetailsRequest extends FalcorVolleyWebClientRequest<Movie
         }
         movieDetails.similarVideos = (List<com.netflix.mediaclient.servicemgr.model.Video>)similarVideos;
         movieDetails.userConnectedToFacebook = this.userConnectedToFacebook;
+        movieDetails.inQueue = this.browseCache.updateInQueueCacheRecord(movieDetails.getId(), movieDetails.inQueue);
         return movieDetails;
     }
 }

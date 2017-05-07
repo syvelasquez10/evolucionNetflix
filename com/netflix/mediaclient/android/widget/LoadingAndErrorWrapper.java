@@ -13,7 +13,7 @@ public class LoadingAndErrorWrapper extends ErrorWrapper
     
     public LoadingAndErrorWrapper(final View view, final Callback callback) {
         super(view, callback);
-        this.loading = view.findViewById(2131165445);
+        this.loading = view.findViewById(2131165446);
         this.showLoadingView(false);
     }
     

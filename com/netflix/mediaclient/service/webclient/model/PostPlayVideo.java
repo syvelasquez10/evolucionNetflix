@@ -5,10 +5,8 @@
 package com.netflix.mediaclient.service.webclient.model;
 
 import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
-import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.netflix.mediaclient.servicemgr.model.Playable;
@@ -114,11 +112,6 @@ public class PostPlayVideo implements com.netflix.mediaclient.servicemgr.model.d
             return null;
         }
         return this.summary.getErrorType();
-    }
-    
-    @Override
-    public List<FriendProfile> getFacebookFriends() {
-        return null;
     }
     
     @Override
@@ -311,6 +304,19 @@ public class PostPlayVideo implements com.netflix.mediaclient.servicemgr.model.d
     }
     
     @Override
+    public String getStoryDispUrl() {
+        if (VideoType.EPISODE.equals(this.getType())) {
+            if (this.episodeDetail != null) {
+                return this.episodeDetail.storyImgDispUrl;
+            }
+        }
+        else if (this.detail != null) {
+            return this.detail.storyImgDispUrl;
+        }
+        return null;
+    }
+    
+    @Override
     public String getStoryUrl() {
         if (VideoType.EPISODE.equals(this.getType())) {
             if (this.episodeDetail != null) {
@@ -430,11 +436,6 @@ public class PostPlayVideo implements com.netflix.mediaclient.servicemgr.model.d
     @Override
     public boolean isPlayableEpisode() {
         return !VideoType.MOVIE.equals(this.getType());
-    }
-    
-    @Override
-    public boolean isUserConnectedToFacebook() {
-        return this.userConnectedToFacebook;
     }
     
     @Override

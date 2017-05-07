@@ -10,7 +10,7 @@ import android.view.View;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
-import com.netflix.mediaclient.android.widget.ViewRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.lomo.PaginatedLoMoAdapter;
@@ -32,9 +32,9 @@ public class KidsPaginatedCharacterAdapter extends PaginatedLoMoAdapter
     }
     
     @Override
-    protected View getView(final ViewRecycler viewRecycler, final List<Video> list, final int n, final int n2, final BasicLoMo basicLoMo) {
+    protected View getView(final ObjectRecycler.ViewRecycler viewRecycler, final List<Video> list, final int n, final int n2, final BasicLoMo basicLoMo) {
         KidsCharacterViewGroup kidsCharacterViewGroup;
-        if ((kidsCharacterViewGroup = (KidsCharacterViewGroup)viewRecycler.pop(KidsCharacterViewGroup.class)) == null) {
+        if ((kidsCharacterViewGroup = ((ObjectRecycler<KidsCharacterViewGroup>)viewRecycler).pop(KidsCharacterViewGroup.class)) == null) {
             kidsCharacterViewGroup = new KidsCharacterViewGroup((Context)this.getActivity(), true);
             kidsCharacterViewGroup.init(n);
         }

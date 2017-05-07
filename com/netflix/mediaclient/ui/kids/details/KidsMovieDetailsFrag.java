@@ -70,7 +70,7 @@ public class KidsMovieDetailsFrag extends NetflixFrag
     
     private View createSimilarMoviesHeader() {
         final View inflate = this.getActivity().getLayoutInflater().inflate(2130903111, (ViewGroup)null);
-        ((TextView)inflate.findViewById(2131165434)).setText(2131492959);
+        ((TextView)inflate.findViewById(2131165435)).setText(2131492959);
         return inflate;
     }
     

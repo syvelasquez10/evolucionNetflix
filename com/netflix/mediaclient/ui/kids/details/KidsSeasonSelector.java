@@ -51,15 +51,15 @@ public class KidsSeasonSelector extends RelativeLayout
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         this.selectedColor = this.getResources().getColor(2131296420);
         this.unselectedColor = this.getResources().getColor(2131296421);
-        this.itemWidth = this.getResources().getDimensionPixelSize(2131361952);
+        this.itemWidth = this.getResources().getDimensionPixelSize(2131361965);
         this.halfItemWidth = this.itemWidth / 2;
         this.centerOffset = (DeviceUtils.getScreenWidthInPixels((Context)this.activity) - this.itemWidth) / 2;
         this.padViewWidth = this.centerOffset;
         Log.v("KidsSeasonSelector", "Item width: " + this.itemWidth + ", centerOffset: " + this.centerOffset);
         this.activity.getLayoutInflater().inflate(2130903106, (ViewGroup)this);
         this.setBackgroundColor(this.activity.getResources().getColor(2131296419));
-        this.seasonsGroup = (LinearLayout)this.findViewById(2131165427);
-        (this.scroller = (HorizontalScrollView)this.findViewById(2131165426)).setHorizontalScrollBarEnabled(false);
+        this.seasonsGroup = (LinearLayout)this.findViewById(2131165428);
+        (this.scroller = (HorizontalScrollView)this.findViewById(2131165427)).setHorizontalScrollBarEnabled(false);
         this.scroller.setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
             public boolean onTouch(final View view, final MotionEvent motionEvent) {
                 if (motionEvent.getAction() == 1) {

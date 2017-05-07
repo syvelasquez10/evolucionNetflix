@@ -200,18 +200,18 @@ public abstract class PostPlay
     abstract void findViews();
     
     protected void findViewsCommon() {
-        this.mInterrupterPlayFromStart = this.mContext.findViewById(2131165531);
-        this.mInterrupterContinue = this.mContext.findViewById(2131165530);
-        this.mBackground = (AdvancedImageView)this.mContext.findViewById(2131165583);
-        this.mSynopsis = (TextView)this.mContext.findViewById(2131165581);
-        this.mInterrupterStop = this.mContext.findViewById(2131165532);
-        this.mPostPlayIgnoreTap = this.mContext.findViewById(2131165579);
-        this.mMoreButton = this.mContext.findViewById(2131165571);
-        this.mPlayButton = this.mContext.findViewById(2131165569);
-        this.mStopButton = this.mContext.findViewById(2131165570);
-        this.mTitle = (TextView)this.mContext.findViewById(2131165580);
-        this.mInterrupter = this.mContext.findViewById(2131165529);
-        this.mPostPlay = this.mContext.findViewById(2131165576);
+        this.mInterrupterPlayFromStart = this.mContext.findViewById(2131165532);
+        this.mInterrupterContinue = this.mContext.findViewById(2131165531);
+        this.mBackground = (AdvancedImageView)this.mContext.findViewById(2131165584);
+        this.mSynopsis = (TextView)this.mContext.findViewById(2131165582);
+        this.mInterrupterStop = this.mContext.findViewById(2131165533);
+        this.mPostPlayIgnoreTap = this.mContext.findViewById(2131165580);
+        this.mMoreButton = this.mContext.findViewById(2131165572);
+        this.mPlayButton = this.mContext.findViewById(2131165570);
+        this.mStopButton = this.mContext.findViewById(2131165571);
+        this.mTitle = (TextView)this.mContext.findViewById(2131165581);
+        this.mInterrupter = this.mContext.findViewById(2131165530);
+        this.mPostPlay = this.mContext.findViewById(2131165577);
     }
     
     protected abstract void handlePlayNow(final boolean p0);

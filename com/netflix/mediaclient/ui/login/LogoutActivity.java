@@ -11,6 +11,7 @@ import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.content.DialogInterface;
 import android.content.DialogInterface$OnClickListener;
 import android.app.AlertDialog$Builder;
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.app.Activity;
@@ -18,7 +19,7 @@ import com.netflix.mediaclient.ui.RelaunchActivity;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.Toast;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
@@ -35,14 +36,17 @@ public class LogoutActivity extends AccountActivity
     
     private void handleLogoutComplete() {
         Log.i("LogoutActivity", "Handling logout completion...");
-        LogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging.CompletionReason.success, null);
-        Toast.makeText(this.getApplicationContext(), 2131493220, 1).show();
+        UserActionLogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging.CompletionReason.success, null);
+        Toast.makeText(this.getApplicationContext(), 2131493222, 1).show();
         relaunchApp(this, "handleLogoutComplete()");
     }
     
     public static void relaunchApp(final NetflixActivity netflixActivity, final String s) {
         final ServiceManager serviceManager = netflixActivity.getServiceManager();
-        if (serviceManager != null) {
+        if (serviceManager == null) {
+            Log.w("LogoutActivity", "ServiceManager is null - can't flush caches!");
+        }
+        else {
             serviceManager.getBrowse().flushCaches();
         }
         NetflixActivity.finishAllActivities((Context)netflixActivity);
@@ -50,11 +54,11 @@ public class LogoutActivity extends AccountActivity
     }
     
     private void reportError(final Status status, final String s) {
-        LogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging.CompletionReason.failed, LogUtils.createUIError(status, s, ActionOnUIError.displayedError));
+        UserActionLogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging.CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, s, ActionOnUIError.displayedError));
     }
     
     public static void showLogoutDialog(final Activity activity) {
-        new AlertDialog$Builder((Context)activity).setMessage(2131493218).setNegativeButton(2131493126, (DialogInterface$OnClickListener)null).setPositiveButton(2131493190, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        new AlertDialog$Builder((Context)activity).setMessage(2131493220).setNegativeButton(2131493127, (DialogInterface$OnClickListener)null).setPositiveButton(2131493191, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 activity.startActivity(LogoutActivity.create((Context)activity));
                 activity.overridePendingTransition(0, 0);
@@ -108,8 +112,8 @@ public class LogoutActivity extends AccountActivity
             if (Log.isLoggable("LogoutActivity", 6)) {
                 Log.e("LogoutActivity", "Could not log user out - status code: " + status.getStatusCode());
             }
-            LogoutActivity.this.reportError(status, LogoutActivity.this.getString(2131493219));
-            Toast.makeText(LogoutActivity.this.getApplicationContext(), 2131493219, 1).show();
+            LogoutActivity.this.reportError(status, LogoutActivity.this.getString(2131493221));
+            Toast.makeText(LogoutActivity.this.getApplicationContext(), 2131493221, 1).show();
             LogoutActivity.this.finish();
         }
     }

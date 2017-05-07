@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.service.webclient.model;
 
-import com.netflix.mediaclient.servicemgr.model.Playable;
-
 public class CWVideo extends PlayableVideo implements com.netflix.mediaclient.servicemgr.model.CWVideo
 {
     @Override
@@ -14,11 +12,6 @@ public class CWVideo extends PlayableVideo implements com.netflix.mediaclient.se
             return null;
         }
         return this.detail.intrUrl;
-    }
-    
-    @Override
-    public Playable getPlayable() {
-        return this;
     }
     
     @Override
@@ -31,6 +24,6 @@ public class CWVideo extends PlayableVideo implements com.netflix.mediaclient.se
     
     @Override
     public String toString() {
-        return "CWVideo [summary=" + this.summary + ", bookmark=" + this.bookmark + ", bookmarkStill=" + this.bookmarkStill + ", detail=" + this.detail + ", socialEvidence=" + this.socialEvidence + ", currentEpisode=" + this.currentEpisode + ", currentEpisodeBookmark=" + this.currentEpisodeBookmark + ", userConnectedToFacebook=" + this.userConnectedToFacebook + ", inQueue=" + this.inQueue + ", rating=" + this.rating + ", similarVideos=" + this.similarVideos + ", similarListSummary=" + this.similarListSummary + "]";
+        return "CWVideo [summary=" + this.summary + ", bookmark=" + this.bookmark + ", bookmarkStill=" + this.bookmarkStill + ", detail=" + this.detail + ", socialEvidence=" + this.socialEvidence + ", currentEpisode=" + this.currentEpisode + ", currentEpisodeBookmark=" + this.currentEpisodeBookmark + ", userConnectedToFacebook=" + this.userConnectedToFacebook + ", inQueue=" + this.inQueue + ", rating=" + this.rating + "]";
     }
 }

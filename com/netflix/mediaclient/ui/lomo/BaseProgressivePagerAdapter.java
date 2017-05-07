@@ -8,7 +8,7 @@ import java.util.List;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import android.content.Context;
-import com.netflix.mediaclient.android.widget.ViewRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.servicemgr.FetchVideosHandler;
@@ -24,9 +24,9 @@ public abstract class BaseProgressivePagerAdapter<T extends Video> implements Ro
     private final ServiceManager manager;
     private final BasePaginatedAdapter<T> paginatedAdapter;
     private long requestId;
-    private final ViewRecycler viewRecycler;
+    private final ObjectRecycler.ViewRecycler viewRecycler;
     
-    public BaseProgressivePagerAdapter(final ServiceManager manager, final RowAdapterCallbacks adapterCallbacks, final ViewRecycler viewRecycler) {
+    public BaseProgressivePagerAdapter(final ServiceManager manager, final RowAdapterCallbacks adapterCallbacks, final ObjectRecycler.ViewRecycler viewRecycler) {
         this.adapterCallbacks = adapterCallbacks;
         this.manager = manager;
         this.viewRecycler = viewRecycler;

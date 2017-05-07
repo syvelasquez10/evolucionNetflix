@@ -64,20 +64,20 @@ class ao extends aj
                             byte[] array = j.getBytes();
                             try {
                                 return di.u(com.google.android.gms.tagmanager.j.d(this.d((String)i, array)));
-                                k = di.j(a2);
-                                continue;
                                 // iftrue(Label_0135:, !"base16".equals((Object)k))
                                 Block_6: {
                                     break Block_6;
-                                    Label_0135: {
-                                        bh.T("Hash: unknown input format: " + k);
-                                    }
-                                    return di.pI();
                                     i = di.j((d.a)i);
                                     continue Label_0073_Outer;
                                 }
                                 array = com.google.android.gms.tagmanager.j.cj(j);
                                 return di.u(com.google.android.gms.tagmanager.j.d(this.d((String)i, array)));
+                                k = di.j(a2);
+                                continue;
+                                Label_0135: {
+                                    bh.T("Hash: unknown input format: " + k);
+                                }
+                                return di.pI();
                             }
                             catch (NoSuchAlgorithmException ex) {
                                 bh.T("Hash: unknown algorithm: " + (String)i);

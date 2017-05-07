@@ -4,10 +4,13 @@
 
 package com.netflix.mediaclient.service;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import com.netflix.mediaclient.service.resfetcher.LoggingResourceFetcherCallback;
 import android.os.Binder;
 import android.util.SparseArray;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import java.util.Set;
 import android.os.Process;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
@@ -48,6 +51,7 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgent;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
 import com.netflix.mediaclient.service.pushnotification.PushNotificationAgent;
+import com.netflix.mediaclient.service.preapp.PreAppAgent;
 import com.netflix.mediaclient.service.player.PlayerAgent;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
@@ -68,11 +72,11 @@ public final class NetflixService extends Service implements INetflixService
 {
     public static final String ACTION_EXPAND_MDX_MINI_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_EXPAND_MDX_MINI_PLAYER";
     private static final String ACTION_SHOW_MDX_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER";
+    public static final boolean ENABLE_FALKOR_AGENT = false;
     public static final String INTENT_EXTRA_ALREADY_RUNNING = "isRunning";
     private static final long SERVICE_INIT_TIMEOUT_MS = 90000L;
     private static final long SERVICE_KILL_DELAY_MS = 28800000L;
     private static final String TAG = "NetflixService";
-    private static final boolean USE_FALKOR_AGENT = false;
     private static boolean fetchErrorsEnabled;
     private static boolean isCreated;
     private final ServiceAgent.AgentContext agentContext;
@@ -97,6 +101,7 @@ public final class NetflixService extends Service implements INetflixService
     private final BroadcastReceiver mNetworkChangeReceiver;
     private NrdController mNrdController;
     private PlayerAgent mPlayerAgent;
+    private PreAppAgent mPreAppAgent;
     private PushNotificationAgent mPushAgent;
     private ResourceFetcher mResourceFetcher;
     private UserAgent mUserAgent;
@@ -131,6 +136,11 @@ public final class NetflixService extends Service implements INetflixService
             @Override
             public NrdController getNrdController() {
                 return NetflixService.this.mNrdController;
+            }
+            
+            @Override
+            public PreAppAgentInterface getPreAppAgent() {
+                return NetflixService.this.mPreAppAgent;
             }
             
             @Override
@@ -198,7 +208,7 @@ public final class NetflixService extends Service implements INetflixService
                     }
                     PinVerifier.getInstance().registerPlayEvent(pinProtected);
                     Log.d("NetflixService", "Refreshing CW for MDXUPDATE_PLAYBACKEND...");
-                    NetflixService.this.mBrowseAgent.refreshCW();
+                    NetflixService.this.getBrowse().refreshCW();
                 }
                 else if ("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART".equals(action)) {
                     if (NetflixService.this.mMdxAgent == null || !NetflixService.this.mMdxAgent.hasActiveSession()) {
@@ -210,7 +220,7 @@ public final class NetflixService extends Service implements INetflixService
                     final Asset mdxAgentVideoAsset2 = this.getMdxAgentVideoAsset();
                     if (mdxAgentVideoAsset2 != null) {
                         Log.d("NetflixService", "refreshing episodes data on play start");
-                        NetflixService.this.mBrowseAgent.refreshEpisodesData(mdxAgentVideoAsset2);
+                        NetflixService.this.getBrowse().refreshEpisodeData(mdxAgentVideoAsset2);
                     }
                 }
                 else if ("com.netflix.mediaclient.intent.action.MDXUPDATE_STATE".equals(action)) {
@@ -221,7 +231,7 @@ public final class NetflixService extends Service implements INetflixService
                     if (mdxAgentVideoAsset3 != null) {
                         mdxAgentVideoAsset3.setPlaybackBookmark(intExtra);
                         Log.v("NetflixService", "updating cached video position");
-                        NetflixService.this.mBrowseAgent.updateCachedVideoPosition(mdxAgentVideoAsset3);
+                        NetflixService.this.getBrowse().updateCachedVideoPosition(mdxAgentVideoAsset3);
                         pinProtected2 = mdxAgentVideoAsset3.isPinProtected();
                     }
                     PinVerifier.getInstance().registerPlayEvent(pinProtected2);
@@ -231,8 +241,7 @@ public final class NetflixService extends Service implements INetflixService
         this.mMdxShowPlayerIntent = new BroadcastReceiver() {
             public void onReceive(final Context context, final Intent intent) {
                 if (intent == null || !"com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER".equals(intent.getAction())) {
-                    Log.v("NetflixService", "Invalid intent: ");
-                    AndroidUtils.logIntent("NetflixService", intent);
+                    Log.d("NetflixService", "Invalid intent: ", intent);
                     return;
                 }
                 Log.v("NetflixService", "Sending show app intent");
@@ -268,16 +277,14 @@ public final class NetflixService extends Service implements INetflixService
     }
     
     private void doStartCommand(final Intent intent, final int n, final int n2) {
-        if (Log.isLoggable("NetflixService", 4)) {
-            Log.i("NetflixService", "Received start command intent " + intent);
-        }
+        Log.d("NetflixService", "Received start command intent ", intent);
         if (!StringUtils.isEmpty(intent.getAction())) {
             this.cancelPendingSelfStop();
             if (intent.hasCategory("com.netflix.mediaclient.intent.category.MDX") && this.mMdxEnabled) {
                 Log.d("NetflixService", "MDX command intent ");
                 this.mMdxAgent.handleCommand(intent);
             }
-            if (intent.hasCategory("com.netflix.mediaclient.intent.category.PUSH") && this.mPushAgent.isSupported()) {
+            if (intent.hasCategory("com.netflix.mediaclient.intent.category.PUSH") && (this.mPushAgent.isSupported() || intent.hasExtra("swiped_social_notification_id"))) {
                 Log.d("NetflixService", "Push notification command intent ");
                 this.mPushAgent.handleCommand(intent);
             }
@@ -313,6 +320,7 @@ public final class NetflixService extends Service implements INetflixService
                     ((ArrayList<PlayerAgent>)this).add(NetflixService.this.mPlayerAgent);
                     ((ArrayList<PushNotificationAgent>)this).add(NetflixService.this.mPushAgent);
                     ((ArrayList<DiagnosisAgent>)this).add(NetflixService.this.mDiagnosisAgent);
+                    ((ArrayList<PreAppAgent>)this).add(NetflixService.this.mPreAppAgent);
                 }
             };
             
@@ -437,6 +445,7 @@ public final class NetflixService extends Service implements INetflixService
         }
         this.mClientLoggingAgent.getApplicationPerformanceMetricsLogging().startApplicationSession(true);
         this.mClientLoggingAgent.getApplicationPerformanceMetricsLogging().startUserSession(ApplicationPerformanceMetricsLogging.Trigger.appStart);
+        this.mClientLoggingAgent.getApplicationPerformanceMetricsLogging().handleConnectivityChange((Context)this);
     }
     
     private void registerMdxReceiver() {
@@ -463,8 +472,8 @@ public final class NetflixService extends Service implements INetflixService
         }
     }
     
-    public static boolean toggleFetchErrorsEnabled() {
-        return NetflixService.fetchErrorsEnabled = !NetflixService.fetchErrorsEnabled;
+    public static void toggleFetchErrorsEnabled() {
+        NetflixService.fetchErrorsEnabled = !NetflixService.fetchErrorsEnabled;
     }
     
     public void addProfile(final String s, final boolean b, final String s2, final int n, final int n2) {
@@ -483,6 +492,10 @@ public final class NetflixService extends Service implements INetflixService
         this.mResourceFetcher.fetchResource(s, assetType, new ResourceFetcherClientCallback(n, n2));
     }
     
+    public String getAccountOwnerToken() {
+        return this.mUserAgent.getAccountOwnerToken();
+    }
+    
     public List<? extends UserProfile> getAllProfiles() {
         return this.mUserAgent.getAllProfiles();
     }
@@ -492,6 +505,10 @@ public final class NetflixService extends Service implements INetflixService
     }
     
     public IBrowseInterface getBrowse() {
+        return this.mBrowseAccess;
+    }
+    
+    public BrowseAccess getBrowseAgent() {
         return this.mBrowseAccess;
     }
     
@@ -523,8 +540,8 @@ public final class NetflixService extends Service implements INetflixService
         return this.mUserAgent.getCurrentProfileLastName();
     }
     
-    public String getCurrentProfileUserId() {
-        return this.mUserAgent.getCurrentProfileUserId();
+    public String getCurrentProfileToken() {
+        return this.mUserAgent.getCurrentProfileToken();
     }
     
     public DeviceCategory getDeviceCategory() {
@@ -537,6 +554,18 @@ public final class NetflixService extends Service implements INetflixService
     
     public EsnProvider getESN() {
         return this.mConfigurationAgent.getEsnProvider();
+    }
+    
+    public FalkorAccess getFalkorAgent() {
+        return this.mFalkorAccess;
+    }
+    
+    public void getFriendsForRecommendationList(final String s, final int n, final String s2, final int n2, final int n3) {
+        this.mUserAgent.fetchFriendsForRecommendations(s, n, s2, (UserAgent.UserAgentCallback)new UserAgentClientCallback(n2, n3));
+    }
+    
+    public Handler getHandler() {
+        return this.handler;
     }
     
     public ImageLoader getImageLoader() {
@@ -591,10 +620,6 @@ public final class NetflixService extends Service implements INetflixService
         return this.mConfigurationAgent.getSoftwareVersion();
     }
     
-    public String getUserId() {
-        return this.mUserAgent.getUserId();
-    }
-    
     public boolean isCurrentProfileFacebookConnected() {
         return this.mUserAgent.isCurrentProfileFacebookConnected();
     }
@@ -617,6 +642,10 @@ public final class NetflixService extends Service implements INetflixService
     
     public boolean isUserLoggedIn() {
         return this.mUserAgent.isUserLoggedIn();
+    }
+    
+    public boolean isWidgetInstalled() {
+        return this.agentContext.getPreAppAgent().isWidgetInstalled();
     }
     
     public void loginUser(final String s, final String s2, final int n, final int n2) {
@@ -652,6 +681,7 @@ public final class NetflixService extends Service implements INetflixService
         this.mDiagnosisAgent = new DiagnosisAgent();
         this.mBrowseAgent = new BrowseAgent();
         this.mBrowseAccess = new BrowseAccess(this.mBrowseAgent, this.mClientCallbacks);
+        this.mPreAppAgent = new PreAppAgent();
         this.init();
     }
     
@@ -744,6 +774,10 @@ public final class NetflixService extends Service implements INetflixService
     
     public void selectProfile(final String s) {
         this.mUserAgent.selectProfile(s);
+    }
+    
+    public void sendRecommendationsToFriends(final String s, final Set<FriendForRecommendation> set, final String s2) {
+        this.mUserAgent.sendRecommendationsToFriends(s, set, s2);
     }
     
     public void setCurrentAppLocale(final String currentAppLocale) {
@@ -887,6 +921,17 @@ public final class NetflixService extends Service implements INetflixService
         }
         
         @Override
+        public void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> list, final Status status) {
+            final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)NetflixService.this.mClientCallbacks.get(this.clientId);
+            if (netflixServiceCallback == null) {
+                Log.w("NetflixService", "No client callback found for onFriendsForRecommendationsListFetched");
+                return;
+            }
+            Log.d("NetflixService", "Notified onFriendsForRecommendationsListFetched");
+            netflixServiceCallback.onFriendsForRecommendationsListFetched(this.requestId, list, status);
+        }
+        
+        @Override
         public void onLoginComplete(final Status status) {
             final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)NetflixService.this.mClientCallbacks.get(this.clientId);
             if (netflixServiceCallback == null) {
@@ -928,6 +973,17 @@ public final class NetflixService extends Service implements INetflixService
             }
             Log.d("NetflixService", "Notified onProfilesListUpdateResult");
             netflixServiceCallback.onProfileListUpdateStatus(this.requestId, status);
+        }
+        
+        @Override
+        public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+            final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)NetflixService.this.mClientCallbacks.get(this.clientId);
+            if (netflixServiceCallback == null) {
+                Log.w("NetflixService", "No client callback found for onSocialNotificationsListFetched");
+                return;
+            }
+            Log.d("NetflixService", "Notified onSocialNotificationsListFetched");
+            netflixServiceCallback.onSocialNotificationsListFetched(this.requestId, list, status);
         }
     }
 }

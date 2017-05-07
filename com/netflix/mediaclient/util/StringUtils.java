@@ -76,7 +76,7 @@ public final class StringUtils
         spannableStringBuilder.setSpan((Object)new StyleSpan(1), 0, string.length(), 0);
         string = s;
         if (isEmpty(s)) {
-            string = context.getString(2131493179);
+            string = context.getString(2131493180);
         }
         spannableStringBuilder.append((CharSequence)" ");
         spannableStringBuilder.append((CharSequence)string);
@@ -162,7 +162,7 @@ public final class StringUtils
         if (isNotEmpty(s)) {
             sb.append(s).append("   ");
         }
-        sb.append(String.format(resources.getString(2131493184), TimeUtils.convertSecondsToMinutes(n2)));
+        sb.append(String.format(resources.getString(2131493185), TimeUtils.convertSecondsToMinutes(n2)));
         return sb.toString();
     }
     
@@ -767,6 +767,13 @@ public final class StringUtils
             return s2 == null;
         }
         return s.equals(s2);
+    }
+    
+    public static String safeGetClassName(final Object o) {
+        if (o == null) {
+            return "null object";
+        }
+        return o.getClass().getSimpleName();
     }
     
     public static Integer safeParsePercentage(final String s) {

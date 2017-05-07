@@ -12,7 +12,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import android.graphics.Bitmap$Config;
 import com.android.volley.Response;
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.UriUtil;
 import com.android.volley.Request;
@@ -119,8 +119,8 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
             if (bitmap != null) {
                 final ImageContainer imageContainer2 = new ImageContainer(bitmap, s, null, null);
                 imageListener.onResponse(imageContainer2, true);
-                LogUtils.reportAssetRequest(s, assetType, this.mApmLogger);
-                LogUtils.reportAssetRequestResult(s, StatusCode.OK, this.mApmLogger);
+                ApmLogUtils.reportAssetRequest(s, assetType, this.mApmLogger);
+                ApmLogUtils.reportAssetRequestResult(s, StatusCode.OK, this.mApmLogger);
                 return imageContainer2;
             }
             final ImageContainer imageContainer3 = new ImageContainer(null, s, cacheKey, imageListener);
@@ -132,18 +132,18 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
             }
             final ImageRequest imageRequest = new ImageRequest(s, new Response.Listener<Bitmap>() {
                 public void onResponse(final Bitmap bitmap) {
-                    LogUtils.reportAssetRequestResult(s, StatusCode.OK, ImageLoader.this.mApmLogger);
+                    ApmLogUtils.reportAssetRequestResult(s, StatusCode.OK, ImageLoader.this.mApmLogger);
                     ImageLoader.this.onGetImageSuccess(cacheKey, bitmap);
                 }
             }, n, n2, Bitmap$Config.RGB_565, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(final VolleyError volleyError) {
-                    LogUtils.reportAssetRequestFailure(s, volleyError, ImageLoader.this.mApmLogger);
+                    ApmLogUtils.reportAssetRequestFailure(s, volleyError, ImageLoader.this.mApmLogger);
                     ImageLoader.this.onGetImageError(cacheKey, volleyError);
                 }
             }, priority, this.mRequestSocketTimeout, this.mMinimumCacheTtl);
             imageRequest.setTag(this.mRequestTag);
-            LogUtils.reportAssetRequest(s, null, this.mApmLogger);
+            ApmLogUtils.reportAssetRequest(s, null, this.mApmLogger);
             this.mRequestQueue.add(imageRequest);
             this.mInFlightRequests.put(cacheKey, new BatchedImageRequest(imageRequest, imageContainer3));
             return imageContainer3;
@@ -219,7 +219,9 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
     
     @Override
     public void cancelAllRequests() {
-        this.mRequestQueue.cancelAll(this.mRequestTag);
+        if (this.mRequestQueue != null) {
+            this.mRequestQueue.cancelAll(this.mRequestTag);
+        }
         this.mInFlightRequests.clear();
     }
     
@@ -402,7 +404,7 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
                 return;
             }
             Log.w("ImageLoader", "Error loading bitmap for url: " + this.imgUrl);
-            ImageLoader.this.setDrawableResource(this.view, 2130837567);
+            ImageLoader.this.setDrawableResource(this.view, 2130837566);
         }
         
         @Override
@@ -452,7 +454,7 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         @Override
         protected void updateView(final ImageView imageView, final Bitmap bitmap) {
             if (bitmap == null) {
-                ImageLoader.this.setDrawableResource(imageView, 2130837567);
+                ImageLoader.this.setDrawableResource(imageView, 2130837566);
                 return;
             }
             AnimationUtils.setImageBitmapWithPropertyFade(imageView, bitmap);

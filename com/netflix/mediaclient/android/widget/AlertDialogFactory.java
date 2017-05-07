@@ -27,10 +27,10 @@ public final class AlertDialogFactory
             string = s2;
         }
         else {
-            string = context.getString(2131492982);
+            string = context.getString(2131492983);
         }
         if (string2 == null) {
-            string2 = context.getString(2131493126);
+            string2 = context.getString(2131493127);
         }
         if (handler != null) {
             builder.setPositiveButton(string, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {

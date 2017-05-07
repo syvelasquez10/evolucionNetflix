@@ -45,6 +45,9 @@ public class FalcorServerException extends VolleyError
         if (FalcorParseUtils.isNotAuthorized(lowerCase)) {
             statusCode = StatusCode.USER_NOT_AUTHORIZED;
         }
+        else if (FalcorParseUtils.isDeletedProfile(lowerCase)) {
+            statusCode = StatusCode.DELETED_PROFILE;
+        }
         else if (FalcorParseUtils.isNullPointerException(lowerCase)) {
             if (errorLogging != null) {
                 errorLogging.logHandledException("Endpoint NPE " + lowerCase);

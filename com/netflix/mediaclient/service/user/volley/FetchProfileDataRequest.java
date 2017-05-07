@@ -72,7 +72,7 @@ public class FetchProfileDataRequest extends FalcorVolleyWebClientRequest<UserPr
             asJsonObject = dataObj.getAsJsonObject("profiles").getAsJsonObject(this.mProfileId);
             userProfile = new UserProfile();
             userProfile.summary = FalcorParseUtils.getPropertyObject(asJsonObject, "summary", UserProfile.Summary.class);
-            if (userProfile.summary == null || StringUtils.isEmpty(userProfile.getUserId())) {
+            if (userProfile.summary == null || StringUtils.isEmpty(userProfile.getProfileToken())) {
                 throw new FalcorParseException("response missing summary" + s);
             }
         }

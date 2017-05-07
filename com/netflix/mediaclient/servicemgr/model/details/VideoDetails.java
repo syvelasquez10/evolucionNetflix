@@ -5,8 +5,6 @@
 package com.netflix.mediaclient.servicemgr.model.details;
 
 import com.netflix.mediaclient.servicemgr.model.Playable;
-import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
-import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.Video;
 
 public interface VideoDetails extends Video
@@ -19,8 +17,6 @@ public interface VideoDetails extends Video
     
     String getCertification();
     
-    List<FriendProfile> getFacebookFriends();
-    
     String getGenres();
     
     String getHighResolutionLandscapeBoxArtUrl();
@@ -32,6 +28,8 @@ public interface VideoDetails extends Video
     float getPredictedRating();
     
     String getQuality();
+    
+    String getStoryDispUrl();
     
     String getStoryUrl();
     

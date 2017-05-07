@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.servicemgr.model.user.ProfileType;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 
@@ -48,6 +50,8 @@ public interface BrowseWebClient
     
     void fetchSimilarVideosForQuerySuggestion(final String p0, final int p1, final BrowseAgentCallback p2, final String p3);
     
+    void fetchSocialNotifications(final int p0, final BrowseAgentCallback p1);
+    
     void fetchVideos(final LoMo p0, final int p1, final int p2, final BrowseAgentCallback p3);
     
     void hideVideo(final String p0, final BrowseAgentCallback p1);
@@ -55,6 +59,8 @@ public interface BrowseWebClient
     boolean isSynchronous();
     
     void logBillboardActivity(final Video p0, final BrowseAgent.BillboardActivityType p1);
+    
+    void markSocialNotificationsAsRead(final List<SocialNotificationSummary> p0, final BrowseAgentCallback p1);
     
     void prefetchGenreLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final BrowseAgentCallback p5);
     
@@ -69,6 +75,8 @@ public interface BrowseWebClient
     void removeFromQueue(final String p0, final int p1, final int p2, final boolean p3, final String p4, final BrowseAgentCallback p5);
     
     void searchNetflix(final String p0, final ProfileType p1, final BrowseAgentCallback p2);
+    
+    void sendThanksToSocialNotification(final SocialNotificationSummary p0, final BrowseAgentCallback p1);
     
     void setVideoRating(final String p0, final int p1, final int p2, final BrowseAgentCallback p3);
 }

@@ -27,7 +27,7 @@ public final class PushNotificationOptInStatus extends BaseCustomerEvent
         jsonObject.put("Esn", (Object)s);
         final JSONObject jsonObject2 = new JSONObject();
         jsonObject.put("data", (Object)jsonObject2);
-        BaseCustomerEvent.addIfNotNull(jsonObject2, "user_id", commonRequestParameters.userId);
+        BaseCustomerEvent.addIfNotNull(jsonObject2, "user_id", commonRequestParameters.profileToken);
         BaseCustomerEvent.addIfNotNull(jsonObject2, "profileGuid", s3);
         BaseCustomerEvent.addIfNotNull(jsonObject2, "app_version", commonRequestParameters.appVersion);
         BaseCustomerEvent.addIfNotNull(jsonObject2, "os_version", commonRequestParameters.osVersion);

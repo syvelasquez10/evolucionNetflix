@@ -6,7 +6,17 @@ package com.netflix.falkor;
 
 public class Undefined extends Sentinel<Object>
 {
-    public Undefined() {
+    private static final Undefined instance;
+    
+    static {
+        instance = new Undefined();
+    }
+    
+    private Undefined() {
         super(null);
+    }
+    
+    public static Undefined getInstance() {
+        return Undefined.instance;
     }
 }

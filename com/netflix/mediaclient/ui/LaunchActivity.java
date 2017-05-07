@@ -6,12 +6,11 @@ package com.netflix.mediaclient.ui;
 
 import android.app.ActionBar;
 import com.netflix.mediaclient.android.fragment.LoadingView;
-import com.netflix.mediaclient.util.AndroidUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import android.support.v4.content.LocalBroadcastManager;
-import android.content.IntentFilter;
+import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.util.IntentUtils;
 import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.widget.ImageView$ScaleType;
@@ -24,7 +23,7 @@ import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.ui.login.LoginActivity;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.app.Activity;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -43,6 +42,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 public class LaunchActivity extends NetflixActivity
 {
     private static final boolean HANG_ON_LOADING_SCREEN = false;
+    private static final int PROFILE_GATE_SHOULD_BE_SHOWN_TIMES = 2;
     private static final boolean START_DETAILS_ACTIVITY_ON_LAUNCH = false;
     private static final String TAG = "LaunchActivity";
     private static final Video sampleVideo;
@@ -125,14 +125,14 @@ public class LaunchActivity extends NetflixActivity
     }
     
     private void createContentView() {
-        this.setContentView(2130903182);
-        final ImageView imageView = (ImageView)this.findViewById(2131165639);
+        this.setContentView(2130903187);
+        final ImageView imageView = (ImageView)this.findViewById(2131165666);
         int imageResource;
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            imageResource = 2130837857;
+            imageResource = 2130837863;
         }
         else {
-            imageResource = 2130837856;
+            imageResource = 2130837862;
         }
         imageView.setImageResource(imageResource);
         if (DeviceUtils.getScreenResolutionDpi(this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
@@ -148,7 +148,7 @@ public class LaunchActivity extends NetflixActivity
             Log.d("LaunchActivity", "Splash screen was displayed, reporting");
             applicationPerformanceMetricsLogging.uiViewChanged(DeviceUtils.isPortrait((Context)this), IClientLogging.ModalView.appLoading, this.mSplashScreenStarted);
         }
-        final Display display = LogUtils.getDisplay((Context)this);
+        final Display display = ConsolidatedLoggingUtils.getDisplay((Context)this);
         if (!userLoggedIn) {
             if (signUpEnabled && !this.getNetflixApplication().hasSignedUpOnce()) {
                 Log.d("LaunchActivity", "User has not signed up, redirect to Signup screen");
@@ -183,16 +183,16 @@ public class LaunchActivity extends NetflixActivity
             Log.d("LaunchActivity", "Handled by nflx workflow with delay. Stay on splash screen...");
             return;
         }
-        if (serviceManager.getCurrentProfile() == null) {
+        if (serviceManager.getCurrentProfile() == null || this.shouldProfileGateBeShown(serviceManager)) {
             if (this.shouldCreateUiSessions()) {
                 applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.profilesGate, this.mStarted, display);
                 applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
             }
-            this.startNextActivity(ProfileSelectionActivity.createStartIntent((Context)this));
+            this.startNextActivity(ProfileSelectionActivity.createStartIntentForAppRestart((Context)this));
             this.finish();
             return;
         }
-        Log.d("LaunchActivity", String.format("Redirect to home with profile %s, %s", serviceManager.getCurrentProfile().getProfileName(), serviceManager.getCurrentProfile().getProfileId()));
+        Log.d("LaunchActivity", String.format("Redirect to home with profile %s, %s", serviceManager.getCurrentProfile().getProfileName(), serviceManager.getCurrentProfile().getProfileGuid()));
         this.startNextActivity(HomeActivity.createStartIntent(this));
         if (this.shouldCreateUiSessions()) {
             applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.homeScreen, this.mStarted, display);
@@ -202,10 +202,10 @@ public class LaunchActivity extends NetflixActivity
     }
     
     private void manipulateSplashBackground() {
-        final ImageView imageView = (ImageView)this.findViewById(2131165639);
+        final ImageView imageView = (ImageView)this.findViewById(2131165666);
         imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
-            final /* synthetic */ ImageView val$logo = (ImageView)LaunchActivity.this.findViewById(2131165419);
-            final /* synthetic */ ProgressBar val$progress = (ProgressBar)LaunchActivity.this.findViewById(2131165420);
+            final /* synthetic */ ImageView val$logo = (ImageView)LaunchActivity.this.findViewById(2131165420);
+            final /* synthetic */ ProgressBar val$progress = (ProgressBar)LaunchActivity.this.findViewById(2131165421);
             
             public void onGlobalLayout() {
                 if (imageView.getWidth() <= 0) {
@@ -229,15 +229,36 @@ public class LaunchActivity extends NetflixActivity
     
     private void registerNflxReceiver() {
         Log.d("LaunchActivity", "Register receiver");
-        final IntentFilter intentFilter = new IntentFilter("com.netflix.mediaclient.intent.action.HANDLER_RESULT");
-        intentFilter.addCategory("LocalIntentNflxUi");
-        intentFilter.setPriority(999);
-        try {
-            LocalBroadcastManager.getInstance((Context)this).registerReceiver(this.nflxBroadcastReceiver, intentFilter);
+        IntentUtils.registerSafelyLocalBroadcastReceiver((Context)this, this.nflxBroadcastReceiver, "LocalIntentNflxUi", "com.netflix.mediaclient.intent.action.HANDLER_RESULT");
+    }
+    
+    private boolean shouldProfileGateBeShown(final ServiceManager serviceManager) {
+        boolean b = false;
+        boolean b2 = false;
+        if (serviceManager == null) {
+            Log.e("LaunchActivity", "shouldProfileGateBeShown was called with null manager");
         }
-        catch (Throwable t) {
-            Log.e("LaunchActivity", "Failed to register ", t);
+        else {
+            int n;
+            if (serviceManager.getAllProfiles().size() == 1 && !(this instanceof RelaunchActivity)) {
+                n = 1;
+            }
+            else {
+                n = 0;
+            }
+            if (n != 0) {
+                final int intPref = PreferenceUtils.getIntPref((Context)this, "user_saw_profile_gate", 0);
+                if (intPref < 2) {
+                    b = true;
+                }
+                b2 = b;
+                if (b) {
+                    PreferenceUtils.putIntPref((Context)this, "user_saw_profile_gate", intPref + 1);
+                    return b;
+                }
+            }
         }
+        return b2;
     }
     
     private void startNextActivity(final Intent intent) {
@@ -247,12 +268,7 @@ public class LaunchActivity extends NetflixActivity
     
     private void unregisterNflxReceiver() {
         Log.d("LaunchActivity", "Unregistering Nflx receiver");
-        try {
-            LocalBroadcastManager.getInstance((Context)this).unregisterReceiver(this.nflxBroadcastReceiver);
-        }
-        catch (Throwable t) {
-            Log.e("LaunchActivity", "Failed to unregister ", t);
-        }
+        IntentUtils.unregisterSafelyLocalBroadcastReceiver((Context)this, this.nflxBroadcastReceiver);
     }
     
     @Override
@@ -294,7 +310,7 @@ public class LaunchActivity extends NetflixActivity
         this.mStarted = System.currentTimeMillis();
         super.onCreate(bundle);
         if (Log.isLoggable("LaunchActivity", 3)) {
-            AndroidUtils.logIntent("LaunchActivity", this.getIntent());
+            Log.d("LaunchActivity", this.getIntent());
             Log.d("LaunchActivity", "Time: " + System.nanoTime());
         }
         final ActionBar actionBar = this.getActionBar();
@@ -319,8 +335,7 @@ public class LaunchActivity extends NetflixActivity
     }
     
     protected void onNewIntent(final Intent intent) {
-        Log.d("LaunchActivity", "Received new intent:");
-        AndroidUtils.logIntent("LaunchActivity", intent);
+        Log.d("LaunchActivity", "Received new intent:", intent);
         super.onNewIntent(intent);
     }
     

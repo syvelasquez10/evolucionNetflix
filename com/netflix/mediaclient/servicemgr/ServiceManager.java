@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
@@ -18,18 +20,21 @@ import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
+import com.netflix.mediaclient.android.app.NetflixStatus;
 import java.util.Iterator;
 import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import java.util.Set;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import java.util.List;
-import android.widget.TextView;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
+import android.widget.TextView;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.util.ThreadUtils;
 import android.content.Context;
@@ -52,10 +57,12 @@ public final class ServiceManager implements IServiceManagerAccess
     public static final String BROWSE_PARAM_CUR_SEASON_NUMBER = "curSeasonNumber";
     public static final String LOCAL_PLAYER_PLAY_START = "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_START";
     public static final String LOCAL_PLAYER_PLAY_STOP = "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP";
+    public static final String SOCIAL_NOTIFICATIONS_LIST_HAS_UNREAD = "notifications_list_has_unread";
+    public static final String SOCIAL_NOTIFICATIONS_LIST_UPDATED = "com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED";
     private static final String TAG = "ServiceManager";
     private AddToMyListWrapper addToMyListWrapper;
     private final NetflixActivity mActivity;
-    private IBrowseManager mBrowseManager;
+    private final IBrowseManager mBrowseManager;
     private ManagerStatusListener mCallback;
     private final CallbackMuxer mCallbackMuxer;
     private int mClientId;
@@ -162,8 +169,12 @@ public final class ServiceManager implements IServiceManagerAccess
         return false;
     }
     
-    public AddToListData.StateListener createAddToMyListWrapper(final DetailsActivity detailsActivity, final TextView textView) {
-        return this.addToMyListWrapper.createAddToMyListWrapper(detailsActivity, textView);
+    public AddToListData.StateListener createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final int n, final boolean b) {
+        return this.addToMyListWrapper.createAddToMyListWrapper(netflixActivity, textView, s, n, b);
+    }
+    
+    public AddToListData.StateListener createAddToMyListWrapper(final DetailsActivity detailsActivity, final TextView textView, final boolean b) {
+        return this.addToMyListWrapper.createAddToMyListWrapper(detailsActivity, textView, detailsActivity.getVideoId(), detailsActivity.getTrackId(), b);
     }
     
     public void editProfile(final String s, final String s2, final boolean b, final String s3, final ManagerCallback managerCallback) {
@@ -184,6 +195,17 @@ public final class ServiceManager implements IServiceManagerAccess
         }
         Log.w("ServiceManager", "fetchAvailableAvatarsList:: service is not available");
         return false;
+    }
+    
+    public int fetchFriendsForRecommendationList(final String s, final int n, final String s2, final ManagerCallback managerCallback) {
+        final INetflixService mService = this.mService;
+        if (mService != null) {
+            final int addCallback = this.addCallback(managerCallback);
+            mService.getFriendsForRecommendationList(s, n, s2, this.mClientId, addCallback);
+            return addCallback;
+        }
+        Log.w("ServiceManager", "fetchFriendsForRecommendationList:: service is not available");
+        return -1;
     }
     
     public boolean fetchResource(final String s, final IClientLogging.AssetType assetType, final ManagerCallback managerCallback) {
@@ -514,6 +536,16 @@ public final class ServiceManager implements IServiceManagerAccess
         Log.w("ServiceManager", "selectProfile:: service is not available");
     }
     
+    public boolean sendRecommendationsToFriends(final String s, final Set<FriendForRecommendation> set, final String s2) {
+        final INetflixService mService = this.mService;
+        if (mService != null) {
+            mService.sendRecommendationsToFriends(s, set, s2);
+            return true;
+        }
+        Log.w("ServiceManager", "sendRecommendationsToFriends:: service is not available");
+        return false;
+    }
+    
     public boolean setCurrentAppLocale(final String currentAppLocale) {
         final INetflixService mService = this.mService;
         if (mService != null) {
@@ -528,6 +560,12 @@ public final class ServiceManager implements IServiceManagerAccess
         final AddToMyListWrapper addToMyListWrapper = this.addToMyListWrapper;
         if (addToMyListWrapper != null) {
             addToMyListWrapper.unregister(s, stateListener);
+        }
+    }
+    
+    public void updateMyListState(final String s, final boolean b) {
+        if (this.addToMyListWrapper != null) {
+            this.addToMyListWrapper.updateState(s, b);
         }
     }
     
@@ -658,6 +696,12 @@ public final class ServiceManager implements IServiceManagerAccess
     
     private class ServiceListener implements INetflixServiceCallback
     {
+        private void updateStatusRequestId(final Status status, final int requestId) {
+            if (status instanceof NetflixStatus) {
+                ((NetflixStatus)status).setRequestId(requestId);
+            }
+        }
+        
         @Override
         public int hashCode() {
             int hashCode;
@@ -670,6 +714,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onAvailableAvatarsListFetched(final int n, final List<AvatarInfo> list, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onAvailableAvatarsListFetched requestId=" + n + " erroCode=" + status.getStatusCode());
             }
@@ -683,6 +728,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onBBVideosFetched(final int n, final List<Billboard> list, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onBBVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
                 Log.d("ServiceManager", "onBBVideosFetched requestedVideos=" + list);
@@ -697,6 +743,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onCWVideosFetched(final int n, final List<CWVideo> list, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onCWVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
                 Log.d("ServiceManager", "onCWVideosFetched requestedVideos=" + list);
@@ -711,6 +758,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onConnectWithFacebookComplete(final int n, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onConnectWithFacebookComplete requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
             }
@@ -724,6 +772,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onEpisodeDetailsFetched(final int n, final EpisodeDetails episodeDetails, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onEpisodeDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
                 Log.d("ServiceManager", "onEpisodeDetailsFetched requestedEdp=" + episodeDetails);
@@ -738,6 +787,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onEpisodesFetched(final int n, final List<EpisodeDetails> list, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onEpisodesFetched requestId=" + n + " erroCode=" + status.getStatusCode());
                 Log.d("ServiceManager", "onEpisodesFetched requestedEpisodes=" + list);
@@ -751,7 +801,22 @@ public final class ServiceManager implements IServiceManagerAccess
         }
         
         @Override
+        public void onFriendsForRecommendationsListFetched(final int n, final List<FriendForRecommendation> list, final Status status) {
+            this.updateStatusRequestId(status, n);
+            if (Log.isLoggable("ServiceManager", 3)) {
+                Log.d("ServiceManager", "onFriendsForRecommendationsListFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            }
+            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
+            if (access$400 == null) {
+                Log.d("ServiceManager", "No callback for onFriendsForRecommendationsListFetched requestId " + n);
+                return;
+            }
+            access$400.onFriendsForRecommendationsListFetched(list, status);
+        }
+        
+        @Override
         public void onGenreListsFetched(final int n, final List<GenreList> list, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onGenreListsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
                 Log.d("ServiceManager", "onGenreListsFetched requestedGenreLists=" + list);
@@ -766,6 +831,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onGenreLoLoMoPrefetched(final int n, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onGenreLoLoMoPrefetched requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
             }
@@ -781,6 +847,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onGenresFetched(final int n, final List<Genre> list, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onGenresFetched requestId=" + n + " erroCode=" + status.getStatusCode());
                 Log.d("ServiceManager", "onGenresFetched requestedGenres=" + list);
@@ -795,6 +862,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onKidsCharacterDetailsFetched(final int n, final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onKidsCharacterDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
                 Log.d("ServiceManager", "onKidsCharacterDetailsFetched kidsCharacterDetails=" + kidsCharacterDetails);
@@ -813,6 +881,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onLoLoMoPrefetched(final int n, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onLoLoMoPrefetched requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
             }
@@ -828,6 +897,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onLoLoMoSummaryFetched(final int n, final LoLoMo loLoMo, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onLoLoMoSummaryFetched requestId=" + n + " erroCode=" + status.getStatusCode());
             }
@@ -841,6 +911,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onLoMosFetched(final int n, final List<LoMo> list, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onLoMosFetched requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
             }
@@ -859,6 +930,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onLoginComplete(final int n, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onLoginComplete requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
             }
@@ -872,6 +944,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onLogoutComplete(final int n, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onLogoutComplete requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
             }
@@ -885,6 +958,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onMovieDetailsFetched(final int n, final MovieDetails movieDetails, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onMovieDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
                 Log.d("ServiceManager", "onMovieDetailsFetched requestedMdp=" + movieDetails);
@@ -903,6 +977,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onPinVerified(final int n, final boolean b, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onPinVerified requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
             }
@@ -916,6 +991,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onPostPlayVideosFetched(final int n, final List<PostPlayVideo> list, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onPostPlayVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
                 Log.d("ServiceManager", "onPostPlayVideosFetched requestedVideos=" + list);
@@ -930,6 +1006,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onProfileListUpdateStatus(final int n, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onProfileListUpdateStatus requestId=" + n + " erroCode=" + status.getStatusCode());
             }
@@ -943,6 +1020,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onQueueAdd(final int n, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onQueueAdd requestId=" + n + " erroCode=" + status.getStatusCode());
             }
@@ -956,6 +1034,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onQueueRemove(final int n, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onQueueRemove requestId=" + n + " erroCode=" + status.getStatusCode());
             }
@@ -969,6 +1048,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onResourceFetched(final int n, final String s, final String s2, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 2)) {
                 Log.v("ServiceManager", "onResourceFetched requestId=" + n + " requestedUrl=" + s + " localUrl=" + s2 + " res.getStatusCode()=" + status.getStatusCode());
             }
@@ -982,6 +1062,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onSearchResultsFetched(final int n, final ISearchResults searchResults, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onSearchResultsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
                 Log.d("ServiceManager", "onSearchResultsFetched results=" + searchResults);
@@ -996,6 +1077,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onSeasonDetailsFetched(final int n, final SeasonDetails seasonDetails, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onSeasonDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
                 final StringBuilder append = new StringBuilder().append("onSeasonDetailsFetched seasonDetailsId=");
@@ -1018,6 +1100,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onSeasonsFetched(final int n, final List<SeasonDetails> list, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onSeasonsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
                 Log.d("ServiceManager", "onSeasonsFetched requestedSeasons=" + list);
@@ -1049,6 +1132,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onShowDetailsFetched(final int n, final ShowDetails showDetails, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onShowDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
                 Log.d("ServiceManager", "onShowDetailsFetched requestedSdp=" + showDetails);
@@ -1063,6 +1147,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onSimilarVideosFetched(final int n, final SearchVideoList list, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onSimilarVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
             }
@@ -1075,7 +1160,36 @@ public final class ServiceManager implements IServiceManagerAccess
         }
         
         @Override
+        public void onSocialNotificationWasThanked(final int n, final SocialNotificationSummary socialNotificationSummary, final Status status) {
+            this.updateStatusRequestId(status, n);
+            if (Log.isLoggable("ServiceManager", 3)) {
+                Log.d("ServiceManager", "onSocialNotificationWasThanked requestId=" + n + " erroCode=" + status.getStatusCode());
+            }
+            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
+            if (access$400 == null) {
+                Log.d("ServiceManager", "No callback for onSocialNotificationWasThanked requestId " + n);
+                return;
+            }
+            access$400.onSocialNotificationWasThanked(socialNotificationSummary, status);
+        }
+        
+        @Override
+        public void onSocialNotificationsListFetched(final int n, final SocialNotificationsList list, final Status status) {
+            this.updateStatusRequestId(status, n);
+            if (Log.isLoggable("ServiceManager", 3)) {
+                Log.d("ServiceManager", "onSocialNotificationsListFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            }
+            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
+            if (access$400 == null) {
+                Log.d("ServiceManager", "No callback for onSocialNotificationsListFetched requestId " + n);
+                return;
+            }
+            access$400.onSocialNotificationsListFetched(list, status);
+        }
+        
+        @Override
         public void onVideoHide(final int n, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onVideoHide requestId=" + n + " erroCode=" + status.getStatusCode());
             }
@@ -1089,6 +1203,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onVideoRatingSet(final int n, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onVideoRatingSet requestId=" + n + " erroCode=" + status.getStatusCode());
             }
@@ -1102,6 +1217,7 @@ public final class ServiceManager implements IServiceManagerAccess
         
         @Override
         public void onVideosFetched(final int n, final List<Video> list, final Status status) {
+            this.updateStatusRequestId(status, n);
             if (Log.isLoggable("ServiceManager", 3)) {
                 Log.d("ServiceManager", "onVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
                 Log.d("ServiceManager", "onVideosFetched requestedVideos=" + list);

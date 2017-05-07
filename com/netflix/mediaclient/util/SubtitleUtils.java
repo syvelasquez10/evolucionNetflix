@@ -135,6 +135,12 @@ public final class SubtitleUtils
             rect.top = (int)(view.getHeight() * doubleLength2.getSecondLength());
             rect.right = rect.left + n;
             rect.bottom = rect.top + n2;
+            if (rect.bottom > view.getHeight()) {
+                Log.w("nf_subtitles_render", "Extent h is too big!");
+            }
+            if (rect.right > view.getWidth()) {
+                Log.w("nf_subtitles_render", "Extent w is too big!");
+            }
         }
         else {
             Log.w("nf_subtitles_render", "Origin is null!");

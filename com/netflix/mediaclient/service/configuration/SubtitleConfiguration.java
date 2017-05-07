@@ -13,9 +13,9 @@ public enum SubtitleConfiguration
 {
     public static SubtitleConfiguration DEFAULT;
     
-    ENHANCED_XML(IMedia.SubtitleProfile.ENHANCED, IMedia.SubtitleOutputMode.DATA_XML, 1, 2131493298), 
-    SIMPLE_EVENTS(IMedia.SubtitleProfile.SIMPLE, IMedia.SubtitleOutputMode.EVENTS, 3, 2131493300), 
-    SIMPLE_XML(IMedia.SubtitleProfile.SIMPLE, IMedia.SubtitleOutputMode.DATA_XML, 2, 2131493299);
+    ENHANCED_XML(IMedia.SubtitleProfile.ENHANCED, IMedia.SubtitleOutputMode.DATA_XML, 1, 2131493301), 
+    SIMPLE_EVENTS(IMedia.SubtitleProfile.SIMPLE, IMedia.SubtitleOutputMode.EVENTS, 3, 2131493303), 
+    SIMPLE_XML(IMedia.SubtitleProfile.SIMPLE, IMedia.SubtitleOutputMode.DATA_XML, 2, 2131493302);
     
     private static final String TAG = "nf_conf";
     private int mLabelId;

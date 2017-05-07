@@ -7,7 +7,7 @@ package com.netflix.mediaclient.android.widget;
 import android.view.MenuItem;
 import android.view.ViewGroup$LayoutParams;
 import android.content.Context;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import android.view.View$OnClickListener;
 import android.app.Activity;
@@ -110,8 +110,8 @@ public class NetflixActionBar
         this.systemActionBar.setLogo(2131296350);
         this.systemActionBar.setTitle((CharSequence)"");
         this.content = this.systemActionBar.getCustomView();
-        this.logo = (ImageView)this.content.findViewById(2131165285);
-        this.title = (TextView)this.content.findViewById(2131165286);
+        this.logo = (ImageView)this.content.findViewById(2131165286);
+        this.title = (TextView)this.content.findViewById(2131165287);
         this.fixBackgroundRepeat(this.content);
         this.setupFocusability();
         this.setLogoType(LogoType.FULL_SIZE);
@@ -153,7 +153,7 @@ public class NetflixActionBar
             actionBar.setDisplayShowHomeEnabled(false);
             if (!b || DeviceUtils.getScreenResolutionDpi(this.activity) >= 320) {
                 Log.v("NetflixActionBar", "Configuring action bar 'up' affordance for back behavior");
-                final View viewById = this.content.findViewById(2131165284);
+                final View viewById = this.content.findViewById(2131165285);
                 final ViewGroup$LayoutParams layoutParams = viewById.getLayoutParams();
                 final int actionBarHeight = this.activity.getActionBarHeight();
                 layoutParams.width = actionBarHeight;
@@ -165,7 +165,7 @@ public class NetflixActionBar
                 viewById.setVisibility(0);
                 viewById.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
                     public void onClick(final View view) {
-                        LogUtils.reportUIViewCommand((Context)NetflixActionBar.this.activity, UIViewLogging.UIViewCommandName.actionBarBackButton, NetflixActionBar.this.activity.getUiScreen(), NetflixActionBar.this.activity.getDataContext());
+                        UIViewLogUtils.reportUIViewCommand((Context)NetflixActionBar.this.activity, UIViewLogging.UIViewCommandName.actionBarBackButton, NetflixActionBar.this.activity.getUiScreen(), NetflixActionBar.this.activity.getDataContext());
                         NetflixActionBar.this.activity.finish();
                     }
                 });

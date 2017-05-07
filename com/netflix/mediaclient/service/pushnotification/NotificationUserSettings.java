@@ -19,31 +19,31 @@ class NotificationUserSettings
     static final int NOTIFICATION_SOUND_PREFERENCE_DISABLED = 2;
     static final int NOTIFICATION_SOUND_PREFERENCE_ENABLED = 1;
     static final int NOTIFICATION_SOUND_PREFERENCE_NOT_SAVED = 0;
-    private static String PARAM_CURRENT_USER_ID;
+    private static String PARAM_ACCOUNT_OWNER_TOKEN;
+    private static String PARAM_CURRENT_PROFILE_TOKEN;
     private static String PARAM_OLD_APP_VERSION;
     private static String PARAM_OPT_IN;
     private static String PARAM_OPT_IN_DISPLAYED;
     private static String PARAM_SOUND_ENABLED;
     private static String PARAM_TIMESTAMP;
-    private static String PARAM_USER_ID;
     private static final String TAG = "nf_push";
+    public String accountOwnerToken;
     public boolean current;
-    public String currentProfileUserId;
+    public String currentProfileToken;
     public int oldAppVersion;
     public boolean optInDisplayed;
     public boolean optedIn;
     public int soundEnabled;
     public long timestamp;
-    public String userId;
     
     static {
-        NotificationUserSettings.PARAM_USER_ID = "userId";
+        NotificationUserSettings.PARAM_ACCOUNT_OWNER_TOKEN = "userId";
         NotificationUserSettings.PARAM_OLD_APP_VERSION = "oldAppVersion";
         NotificationUserSettings.PARAM_OPT_IN = "optIn";
         NotificationUserSettings.PARAM_SOUND_ENABLED = "soundEnabled";
         NotificationUserSettings.PARAM_OPT_IN_DISPLAYED = "optInDisplayed";
         NotificationUserSettings.PARAM_TIMESTAMP = "ts";
-        NotificationUserSettings.PARAM_CURRENT_USER_ID = "currentUserId";
+        NotificationUserSettings.PARAM_CURRENT_PROFILE_TOKEN = "currentUserId";
     }
     
     NotificationUserSettings() {
@@ -62,7 +62,7 @@ class NotificationUserSettings
     
     static NotificationUserSettings load(final JSONObject jsonObject) throws JSONException {
         final NotificationUserSettings notificationUserSettings = new NotificationUserSettings();
-        notificationUserSettings.userId = jsonObject.getString(NotificationUserSettings.PARAM_USER_ID);
+        notificationUserSettings.accountOwnerToken = jsonObject.getString(NotificationUserSettings.PARAM_ACCOUNT_OWNER_TOKEN);
         notificationUserSettings.optedIn = jsonObject.getBoolean(NotificationUserSettings.PARAM_OPT_IN);
         notificationUserSettings.soundEnabled = jsonObject.getInt(NotificationUserSettings.PARAM_SOUND_ENABLED);
         notificationUserSettings.oldAppVersion = jsonObject.getInt(NotificationUserSettings.PARAM_OLD_APP_VERSION);
@@ -73,7 +73,7 @@ class NotificationUserSettings
         else {
             notificationUserSettings.optInDisplayed = true;
         }
-        notificationUserSettings.currentProfileUserId = jsonObject.getString(NotificationUserSettings.PARAM_CURRENT_USER_ID);
+        notificationUserSettings.currentProfileToken = jsonObject.getString(NotificationUserSettings.PARAM_CURRENT_PROFILE_TOKEN);
         if (Log.isLoggable("nf_push", 3)) {
             Log.d("nf_push", "Loaded " + notificationUserSettings);
         }
@@ -140,7 +140,7 @@ class NotificationUserSettings
         //   101: pop            
         //   102: aload_2        
         //   103: aload_3        
-        //   104: getfield        com/netflix/mediaclient/service/pushnotification/NotificationUserSettings.userId:Ljava/lang/String;
+        //   104: getfield        com/netflix/mediaclient/service/pushnotification/NotificationUserSettings.accountOwnerToken:Ljava/lang/String;
         //   107: aload_3        
         //   108: invokeinterface java/util/Map.put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
         //   113: pop            
@@ -226,7 +226,7 @@ class NotificationUserSettings
     
     private JSONObject toJson() throws JSONException {
         final JSONObject jsonObject = new JSONObject();
-        jsonObject.put(NotificationUserSettings.PARAM_USER_ID, (Object)this.userId);
+        jsonObject.put(NotificationUserSettings.PARAM_ACCOUNT_OWNER_TOKEN, (Object)this.accountOwnerToken);
         jsonObject.put(NotificationUserSettings.PARAM_OLD_APP_VERSION, this.oldAppVersion);
         jsonObject.put(NotificationUserSettings.PARAM_OPT_IN, this.optedIn);
         jsonObject.put(NotificationUserSettings.PARAM_SOUND_ENABLED, this.soundEnabled);
@@ -235,7 +235,7 @@ class NotificationUserSettings
             this.timestamp = System.currentTimeMillis();
         }
         jsonObject.put(NotificationUserSettings.PARAM_TIMESTAMP, this.timestamp);
-        jsonObject.put(NotificationUserSettings.PARAM_CURRENT_USER_ID, (Object)this.currentProfileUserId);
+        jsonObject.put(NotificationUserSettings.PARAM_CURRENT_PROFILE_TOKEN, (Object)this.currentProfileToken);
         return jsonObject;
     }
     
@@ -249,12 +249,12 @@ class NotificationUserSettings
                 return false;
             }
             final NotificationUserSettings notificationUserSettings = (NotificationUserSettings)o;
-            if (this.userId == null) {
-                if (notificationUserSettings.userId != null) {
+            if (this.accountOwnerToken == null) {
+                if (notificationUserSettings.accountOwnerToken != null) {
                     return false;
                 }
             }
-            else if (!this.userId.equals(notificationUserSettings.userId)) {
+            else if (!this.accountOwnerToken.equals(notificationUserSettings.accountOwnerToken)) {
                 return false;
             }
         }
@@ -264,17 +264,17 @@ class NotificationUserSettings
     @Override
     public int hashCode() {
         int hashCode;
-        if (this.userId == null) {
+        if (this.accountOwnerToken == null) {
             hashCode = 0;
         }
         else {
-            hashCode = this.userId.hashCode();
+            hashCode = this.accountOwnerToken.hashCode();
         }
         return hashCode + 31;
     }
     
     @Override
     public String toString() {
-        return "NotificationUserSettings [userId=" + this.userId + ", current=" + this.current + ", optedIn=" + this.optedIn + ", optInDisplayed=" + this.optInDisplayed + ", oldAppVersion=" + this.oldAppVersion + ", soundEnabled=" + this.soundEnabled + ", timestamp=" + this.timestamp + ", currentUserId=" + this.currentProfileUserId + "]";
+        return "NotificationUserSettings [userId=" + this.accountOwnerToken + ", current=" + this.current + ", optedIn=" + this.optedIn + ", optInDisplayed=" + this.optInDisplayed + ", oldAppVersion=" + this.oldAppVersion + ", soundEnabled=" + this.soundEnabled + ", timestamp=" + this.timestamp + ", currentUserId=" + this.currentProfileToken + "]";
     }
 }

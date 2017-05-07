@@ -6,7 +6,6 @@ package com.netflix.mediaclient.android.widget;
 
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
-import com.netflix.mediaclient.servicemgr.model.Video;
 import android.text.Layout$Alignment;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.BitmapDrawable;
@@ -25,7 +24,8 @@ import com.netflix.mediaclient.Log;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.model.FriendProfilesProvider;
 import android.graphics.Rect;
 import android.text.StaticLayout;
 import android.graphics.Bitmap;
@@ -33,7 +33,7 @@ import android.text.TextPaint;
 
 public class SocialVideoView extends VideoView
 {
-    public static final int MAX_SOCIAL_BITMAP_IMGS = 9;
+    private static final int MAX_SOCIAL_BITMAP_IMGS = 9;
     private static final String TAG = "SocialVideoView";
     private static TextPaint microSecondaryCenterPaint;
     private static TextPaint microSecondaryLeftPaint;
@@ -46,9 +46,10 @@ public class SocialVideoView extends VideoView
     private boolean isSocialView;
     private int padding;
     private int singleImgSize;
-    private VideoDetails socialData;
+    private FriendProfilesProvider socialData;
     private StaticLayout socialGroupText;
     private int textSizeMicro;
+    private Video video;
     
     public SocialVideoView(final Context context) {
         super(context);
@@ -87,7 +88,7 @@ public class SocialVideoView extends VideoView
     
     @SuppressLint({ "WrongCall" })
     private void drawConnectToFacebook(final Canvas canvas) {
-        this.setImageResource(2130837650);
+        this.setImageResource(2130837646);
         super.onDraw(canvas);
         Log.v("SocialVideoView", "drawConnectToFacebook: " + this.getWidth() + "x" + this.getHeight());
         canvas.save();
@@ -96,7 +97,7 @@ public class SocialVideoView extends VideoView
         canvas.restore();
     }
     
-    private void drawMultipleFriends(final Canvas canvas, final VideoDetails videoDetails) {
+    private void drawMultipleFriends(final Canvas canvas) {
         final int n = this.padding / 2;
         int n2 = 1;
         int singleImgSize;
@@ -139,7 +140,7 @@ public class SocialVideoView extends VideoView
         this.drawSocialBitmaps(canvas, n2, n3, centerXOffset, n7);
     }
     
-    private void drawSingleFriend(final Canvas canvas, final VideoDetails videoDetails) {
+    private void drawSingleFriend(final Canvas canvas) {
         final Bitmap bitmap = this.bitmaps[0];
         if (bitmap == null || bitmap.isRecycled()) {
             return;
@@ -182,18 +183,18 @@ public class SocialVideoView extends VideoView
     }
     
     private void drawSocialView(final Canvas canvas) {
-        final VideoType type = this.socialData.getType();
-        Log.v("SocialVideoView", "** Drawing social view for: " + this.socialData.getTitle() + ", type: " + type + ", friend count: " + this.friendCount);
+        final VideoType type = this.video.getType();
+        Log.v("SocialVideoView", "** Drawing social view for: " + this.video.getTitle() + ", type: " + type + ", friend count: " + this.friendCount);
         if (type == VideoType.SOCIAL_POPULAR && this.friendCount == 0) {
             this.drawConnectToFacebook(canvas);
             return;
         }
         if (type == VideoType.SOCIAL_FRIEND) {
-            this.drawSingleFriend(canvas, this.socialData);
+            this.drawSingleFriend(canvas);
             return;
         }
         if (type == VideoType.SOCIAL_GROUP) {
-            this.drawMultipleFriends(canvas, this.socialData);
+            this.drawMultipleFriends(canvas);
             return;
         }
         Log.w("SocialVideoView", "Couldn't draw unknown social type: " + type);
@@ -214,7 +215,7 @@ public class SocialVideoView extends VideoView
     
     private String getTruncatedName(final Paint paint) {
         String s;
-        for (s = this.socialData.getTitle(); paint.measureText(s) > this.getWidth(); s = s.substring(0, s.length() / 2) + "...") {
+        for (s = this.video.getTitle(); paint.measureText(s) > this.getWidth(); s = s.substring(0, s.length() / 2) + "...") {
             Log.v("SocialVideoView", "Name too long... halving");
         }
         return s;
@@ -300,8 +301,8 @@ public class SocialVideoView extends VideoView
         if (n == 0 || n == n3) {
             return;
         }
-        this.connectText = new StaticLayout((CharSequence)this.getResources().getString(2131493230), SocialVideoView.smallPrimaryLeftPaint, n - this.padding * 2, Layout$Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
-        this.socialGroupText = new StaticLayout((CharSequence)this.getResources().getString(2131493229), SocialVideoView.microSecondaryLeftPaint, n - this.padding * 2, Layout$Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
+        this.connectText = new StaticLayout((CharSequence)this.getResources().getString(2131493232), SocialVideoView.smallPrimaryLeftPaint, n - this.padding * 2, Layout$Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
+        this.socialGroupText = new StaticLayout((CharSequence)this.getResources().getString(2131493231), SocialVideoView.microSecondaryLeftPaint, n - this.padding * 2, Layout$Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
     }
     
     @Override
@@ -320,9 +321,10 @@ public class SocialVideoView extends VideoView
         NetflixActivity.getImageLoader(this.getContext()).showImg(this, null, IClientLogging.AssetType.boxArt, video.getTitle(), false, false);
         this.setImageBitmap(null);
         this.setVisibility(0);
-        this.socialData = (VideoDetails)video;
+        this.video = video;
+        this.socialData = (FriendProfilesProvider)video;
         this.cachedName = null;
-        if (VideoType.SOCIAL_POPULAR.equals(this.socialData.getType())) {
+        if (VideoType.SOCIAL_POPULAR.equals(video.getType())) {
             this.clicker.update((View)this, video);
         }
         else {

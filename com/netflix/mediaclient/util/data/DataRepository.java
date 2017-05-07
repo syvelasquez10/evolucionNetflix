@@ -18,9 +18,16 @@ public interface DataRepository
     
     String save(final String p0, final byte[] p1);
     
+    String save(final String p0, final byte[] p1, final DataSavedCallback p2);
+    
     public interface DataLoadedCallback
     {
         void onDataLoaded(final String p0, final byte[] p1, final long p2);
+    }
+    
+    public interface DataSavedCallback
+    {
+        void onDataSaved(final String p0);
     }
     
     public interface Entry

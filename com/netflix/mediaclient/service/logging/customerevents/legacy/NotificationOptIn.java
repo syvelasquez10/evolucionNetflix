@@ -31,7 +31,7 @@ public class NotificationOptIn implements Runnable
     
     protected CommonRequestParameters getCommonRequestParameters(final Context context, final UserData userData) {
         final CommonRequestParameters instanceWithCredentials = CommonRequestParameters.getInstanceWithCredentials();
-        instanceWithCredentials.userId = userData.currentProfileToken;
+        instanceWithCredentials.profileToken = userData.currentProfileToken;
         instanceWithCredentials.osVersion = String.valueOf(AndroidUtils.getAndroidVersion());
         instanceWithCredentials.deviceCategory = this.mUser.deviceCategory;
         instanceWithCredentials.appVersion = AndroidManifestUtils.getVersion(context);

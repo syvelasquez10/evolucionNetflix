@@ -33,7 +33,6 @@ public class BrowseVideoSentinels
     
     private BrowseVideoSentinels() {
         BrowseVideoSentinels.videoSummarySentinel.setErrorType(VideoType.UNAVAILABLE);
-        (BrowseVideoSentinels.episodeDetailsSentinel.summary = new Video.Summary()).setErrorType(VideoType.UNAVAILABLE);
         ((Video.Summary)(BrowseVideoSentinels.seasonDetailsSentinel.detail = new Season.Detail())).setErrorType(VideoType.UNAVAILABLE);
         (BrowseVideoSentinels.cwVideoSentinel.summary = new Video.Summary()).setErrorType(VideoType.UNAVAILABLE);
     }

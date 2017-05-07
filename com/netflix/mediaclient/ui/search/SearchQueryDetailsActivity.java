@@ -66,7 +66,6 @@ public class SearchQueryDetailsActivity extends NetflixActivity
     private long requestId;
     private String title;
     private TextView titleView;
-    private View topSpacer;
     private SearchQueryDetailsType type;
     
     public SearchQueryDetailsActivity() {
@@ -100,11 +99,10 @@ public class SearchQueryDetailsActivity extends NetflixActivity
     }
     
     private void findViews() {
-        this.titleView = (TextView)this.findViewById(2131165630);
-        this.gridView = (StaticGridView)this.findViewById(2131165638);
-        this.loadingWrapper = this.findViewById(2131165617);
-        this.content = (LoggingScrollView)this.findViewById(2131165618);
-        this.topSpacer = this.findViewById(2131165637);
+        this.titleView = (TextView)this.findViewById(2131165645);
+        this.gridView = (StaticGridView)this.findViewById(2131165656);
+        this.loadingWrapper = this.findViewById(2131165632);
+        this.content = (LoggingScrollView)this.findViewById(2131165633);
     }
     
     private String getTitleForType(final SearchQueryDetailsType searchQueryDetailsType, final String s) {
@@ -112,7 +110,7 @@ public class SearchQueryDetailsActivity extends NetflixActivity
             return s;
         }
         if (searchQueryDetailsType == SearchQueryDetailsType.SEARCH_SUGGESTION) {
-            return this.getString(2131493291, new Object[] { s });
+            return this.getString(2131493294, new Object[] { s });
         }
         throw new IllegalStateException("Bad type");
     }
@@ -183,7 +181,6 @@ public class SearchQueryDetailsActivity extends NetflixActivity
         final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361896);
         this.content.setPadding(dimensionPixelOffset, 0, dimensionPixelOffset, 0);
         this.content.setVisibility(4);
-        this.topSpacer.setVisibility(0);
         this.titleView.setText((CharSequence)this.getTitleForType(this.type, this.title));
         this.titleView.setVisibility(0);
     }
@@ -256,7 +253,7 @@ public class SearchQueryDetailsActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.setupMetaData();
-        this.setContentView(2130903168);
+        this.setContentView(2130903170);
         this.findViews();
         this.setupLoading();
         this.setupViews();

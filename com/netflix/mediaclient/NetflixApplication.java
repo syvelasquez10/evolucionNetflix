@@ -18,8 +18,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.content.IntentFilter;
+import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.ui.LaunchActivity;
 import android.content.Intent;
 import android.content.Context;
@@ -307,21 +306,12 @@ public class NetflixApplication extends Application
     
     private void registerReceiver() {
         Log.d("NetflixApplication", "Register receiver");
-        final IntentFilter intentFilter = new IntentFilter("com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_INIT_COMPLETE");
-        intentFilter.addAction("com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_DESTROYED");
-        intentFilter.addCategory("com.netflix.mediaclient.intent.category.NETFLIX_SERVICE");
-        intentFilter.setPriority(999);
-        try {
-            LocalBroadcastManager.getInstance((Context)this).registerReceiver(this.broadcastReceiver, intentFilter);
-        }
-        catch (Throwable t) {
-            Log.e("NetflixApplication", "Failed to register ", t);
-        }
+        IntentUtils.registerSafelyLocalBroadcastReceiver((Context)this, this.broadcastReceiver, "com.netflix.mediaclient.intent.category.NETFLIX_SERVICE", "com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_INIT_COMPLETE", "com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_DESTROYED");
     }
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat.Builder setAutoCancel = new NotificationCompat.Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837702).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493287, new Object[] { n })).setContentTitle(this.getString(2131493285, new Object[] { n })).setContentText(this.getString(2131493286, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat.Builder setAutoCancel = new NotificationCompat.Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837700).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493290, new Object[] { n })).setContentTitle(this.getString(2131493288, new Object[] { n })).setContentText(this.getString(2131493289, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");

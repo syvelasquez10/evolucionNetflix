@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.webclient.model;
 
-import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
 
@@ -24,11 +23,6 @@ public class BillboardDetails extends PlayableVideo implements Billboard
             return 0;
         }
         return this.detail.seasonCount;
-    }
-    
-    @Override
-    public Playable getPlayable() {
-        return this;
     }
     
     @Override

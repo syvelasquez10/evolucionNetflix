@@ -72,7 +72,7 @@ public class AddToQueueRequest extends FalcorVolleyWebClientRequest<String>
     private static void clearMdpAndSdpMyListStatus(final int n, final int n2, final BrowseWebClientCache browseWebClientCache) {
         final Iterator<Video> iterator = ((List)BrowseWebClientCache.getIQVideosFromBrowseCache(n, n2, browseWebClientCache)).iterator();
         while (iterator.hasNext()) {
-            FetchIQVideosRequest.updateMdpAndSdpWithIQInfo(browseWebClientCache, iterator.next().getId(), false);
+            browseWebClientCache.updateInQueueCacheRecord(iterator.next().getId(), false);
         }
     }
     
@@ -83,7 +83,7 @@ public class AddToQueueRequest extends FalcorVolleyWebClientRequest<String>
             final String string = Integer.toString(i);
             if (jsonObject.has(string)) {
                 final com.netflix.mediaclient.service.webclient.model.branches.Video.Summary summary = FalcorParseUtils.getPropertyObject(jsonObject.getAsJsonObject(string), "summary", com.netflix.mediaclient.service.webclient.model.branches.Video.Summary.class);
-                FetchIQVideosRequest.updateMdpAndSdpWithIQInfo(browseWebClientCache, summary.getId(), true);
+                browseWebClientCache.updateInQueueCacheRecord(summary.getId(), true);
                 list.add(summary);
             }
         }

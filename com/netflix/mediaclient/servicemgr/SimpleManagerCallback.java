@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
@@ -16,6 +18,7 @@ import com.netflix.mediaclient.servicemgr.model.LoLoMo;
 import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
@@ -47,6 +50,10 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     
     @Override
     public void onEpisodesFetched(final List<EpisodeDetails> list, final Status status) {
+    }
+    
+    @Override
+    public void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> list, final Status status) {
     }
     
     @Override
@@ -131,6 +138,14 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     
     @Override
     public void onSimilarVideosFetched(final SearchVideoList list, final Status status) {
+    }
+    
+    @Override
+    public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+    }
+    
+    @Override
+    public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
     }
     
     @Override

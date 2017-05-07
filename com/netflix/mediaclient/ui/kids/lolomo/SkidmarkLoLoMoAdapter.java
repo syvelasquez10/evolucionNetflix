@@ -270,8 +270,8 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
             Log.d("SkidmarkLoLoMoAdapter", "activity destroyed - can't getView");
             return this.dummyView;
         }
-        final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361959);
-        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361958);
+        final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361972);
+        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361971);
         final int itemViewType = this.getItemViewType(n);
         Object o;
         if ((o = view) == null) {
@@ -311,7 +311,7 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
                 case 4: {
                     Log.v("SkidmarkLoLoMoAdapter", "Creating spacer view");
                     o = new View((Context)this.activity);
-                    ((View)o).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361960)));
+                    ((View)o).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361973)));
                     break;
                 }
             }

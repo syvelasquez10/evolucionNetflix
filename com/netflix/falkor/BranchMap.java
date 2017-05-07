@@ -70,9 +70,16 @@ public class BranchMap<T> extends HashMap<String, T> implements BranchNode, Expi
                 this.errorsOrUndefineds = new HashMap<String, Object>();
             }
             this.errorsOrUndefineds.put(s, o);
-            return;
+            if (this.containsKey(s)) {
+                this.remove(s);
+            }
         }
-        super.put(s, (T)o);
+        else {
+            super.put(s, (T)o);
+            if (this.errorsOrUndefineds.containsKey(s)) {
+                this.errorsOrUndefineds.remove(s);
+            }
+        }
     }
     
     @Override

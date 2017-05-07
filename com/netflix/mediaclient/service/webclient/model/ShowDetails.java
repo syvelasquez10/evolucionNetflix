@@ -300,6 +300,14 @@ public class ShowDetails extends Show implements com.netflix.mediaclient.service
     }
     
     @Override
+    public String getStoryDispUrl() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.storyImgDispUrl;
+    }
+    
+    @Override
     public String getStoryUrl() {
         if (this.detail == null) {
             return null;
@@ -378,11 +386,6 @@ public class ShowDetails extends Show implements com.netflix.mediaclient.service
     @Override
     public boolean isPlayableEpisode() {
         return this.currentEpisode != null;
-    }
-    
-    @Override
-    public boolean isUserConnectedToFacebook() {
-        return this.userConnectedToFacebook;
     }
     
     @Override

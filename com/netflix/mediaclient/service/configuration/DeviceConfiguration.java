@@ -42,6 +42,7 @@ public class DeviceConfiguration
     private boolean mIsDisableWidevine;
     private int mPTAggregationSize;
     private int mRateLimitForGcmBrowseEvents;
+    private int mRateLimitForNListChangeEvents;
     private SignUpConfiguration mSignUpConfig;
     private SubtitleConfiguration mSubtitleConfiguration;
     private int mUserSessionDurationInSeconds;
@@ -77,6 +78,7 @@ public class DeviceConfiguration
         this.mErrorLoggingSpecification = ErrorLoggingSpecification.loadFromPreferences(mContext);
         this.mVideoResolutionOverride = PreferenceUtils.getIntPref(this.mContext, "video_resolution_override", Integer.MAX_VALUE);
         this.mRateLimitForGcmBrowseEvents = PreferenceUtils.getIntPref(this.mContext, "gcm_browse_rate_limit", 0);
+        this.mRateLimitForNListChangeEvents = PreferenceUtils.getIntPref(this.mContext, "gcm_tray_change_rate_limit", 0);
     }
     
     private Map<String, ConsolidatedLoggingSessionSpecification> loadConsolidateLoggingSpecification() {
@@ -208,6 +210,10 @@ public class DeviceConfiguration
         return this.mRateLimitForGcmBrowseEvents;
     }
     
+    public int getRateLimitForNListChangeEvents() {
+        return this.mRateLimitForNListChangeEvents;
+    }
+    
     public SignUpConfiguration getSignUpConfiguration() {
         return this.mSignUpConfig;
     }
@@ -248,7 +254,6 @@ public class DeviceConfiguration
             }
             PlayerTypeFactory.updateDevicePlayerType(this.mContext, deviceConfigData.getPlayerType());
             this.mDeviceRepository.update(this.mContext, deviceConfigData.getDeviceCategory());
-            BitrateRangeFactory.updateDeviceBitrateCap(this.mContext, deviceConfigData.getBitrateCap());
             this.mImagePrefRepository.update(this.mContext, deviceConfigData.getImagePref());
             this.mSignUpConfig.update(this.mContext, deviceConfigData.getSignUpEnabled(), deviceConfigData.getSignUpTimeout());
             this.updateDisableWidevineFlag(deviceConfigData.getWidevineDisabled());
@@ -291,6 +296,8 @@ public class DeviceConfiguration
             PreferenceUtils.putIntPref(this.mContext, "video_resolution_override", deviceConfigData.getVideoResolutionOverride());
             this.mRateLimitForGcmBrowseEvents = deviceConfigData.getRateLimitForGcmBrowseEvents();
             PreferenceUtils.putIntPref(this.mContext, "gcm_browse_rate_limit", deviceConfigData.getRateLimitForGcmBrowseEvents());
+            this.mRateLimitForNListChangeEvents = deviceConfigData.getRateLimitForGcmNListChangeEvents();
+            PreferenceUtils.putIntPref(this.mContext, "gcm_tray_change_rate_limit", deviceConfigData.getRateLimitForGcmNListChangeEvents());
             if (!this.isDeviceConfigInCache()) {
                 this.updateDeviceConfigFlag(true);
             }

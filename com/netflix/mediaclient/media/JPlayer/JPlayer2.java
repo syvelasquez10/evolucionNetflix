@@ -11,6 +11,7 @@ import android.media.MediaFormat;
 import com.netflix.mediaclient.Log;
 import java.nio.ByteBuffer;
 import android.view.Surface;
+import com.netflix.mediaclient.media.VideoResolutionRange;
 import android.media.MediaCrypto;
 import android.annotation.SuppressLint;
 
@@ -27,7 +28,7 @@ public class JPlayer2
     private MediaDecoderBase mAudioPipe;
     private MediaCrypto mCrypto;
     private DecoderListener mDecoderListener;
-    private int mMaxVideoBitrate;
+    private VideoResolutionRange mMaxVideoRes;
     private long mNativePlayer;
     private volatile int mState;
     private Surface mSurface;
@@ -35,7 +36,6 @@ public class JPlayer2
     
     public JPlayer2(final Surface mSurface) {
         this.mState = -1;
-        this.mMaxVideoBitrate = -1;
         this.mDecoderListener = new DecoderListener();
         this.mSurface = mSurface;
     }
@@ -64,7 +64,7 @@ public class JPlayer2
         final MediaFormat mediaFormat = new MediaFormat();
         mediaFormat.setString("mime", "video/avc");
         if (AndroidUtils.getAndroidVersion() > 18) {
-            final Pair<Integer, Integer> requiredMaximumResolution = AdaptiveMediaDecoderHelper.getRequiredMaximumResolution(this.mMaxVideoBitrate, this.mCrypto != null);
+            final Pair<Integer, Integer> requiredMaximumResolution = AdaptiveMediaDecoderHelper.getRequiredMaximumResolution(this.mMaxVideoRes, this.mCrypto != null);
             if (Log.isLoggable("NF_JPlayer2", 3)) {
                 Log.d("NF_JPlayer2", "video max resolution is " + requiredMaximumResolution.first + " x " + requiredMaximumResolution.second);
             }
@@ -151,6 +151,9 @@ public class JPlayer2
     
     private void videoToForeground() {
         Log.d("NF_JPlayer2", "new surface, reconfigure decoder ");
+        if (this.mCrypto != null) {
+            this.mCrypto = DrmManagerRegistry.getWidevineMediaDrmEngine().renewMediaCrypto();
+        }
         while (true) {
             try {
                 this.configureVideoPipe();
@@ -299,8 +302,8 @@ public class JPlayer2
         this.nativeReleasePlayer(this.mNativePlayer);
     }
     
-    public void setMaxVideoBitrate(final int mMaxVideoBitrate) {
-        this.mMaxVideoBitrate = mMaxVideoBitrate;
+    public void setMaxVideoHeight(final VideoResolutionRange mMaxVideoRes) {
+        this.mMaxVideoRes = mMaxVideoRes;
     }
     
     public void updateSurface(final Surface mSurface) {

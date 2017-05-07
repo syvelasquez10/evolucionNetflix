@@ -24,15 +24,15 @@ public interface UserProfile
     
     String getLastName();
     
-    String getProfileId();
+    String getProfileGuid();
     
     String getProfileName();
+    
+    String getProfileToken();
     
     ProfileType getProfileType();
     
     String getReqCountry();
-    
-    String getUserId();
     
     boolean isAutoPlayEnabled();
     
