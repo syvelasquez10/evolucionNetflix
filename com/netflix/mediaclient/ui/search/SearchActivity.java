@@ -186,12 +186,12 @@ public class SearchActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.searchBar.hideProgressSpinner();
-        this.setContentView(2130903135);
-        (this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131231043), this.errorsCallback)).hide(false);
-        this.fragGroup = (ViewGroup)this.findViewById(2131231044);
+        this.setContentView(2130903142);
+        (this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131231066), this.errorsCallback)).hide(false);
+        this.fragGroup = (ViewGroup)this.findViewById(2131231067);
         if (bundle == null) {
             this.resultsFrag = SearchResultsFrag.create();
-            this.getFragmentManager().beginTransaction().add(2131231044, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131231067, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
         }
         else {

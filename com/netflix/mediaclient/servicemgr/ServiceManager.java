@@ -27,7 +27,6 @@ import android.content.ServiceConnection;
 
 public final class ServiceManager
 {
-    public static final String BROWSE_AGENT_CW_DATA_CHANGED = "com.netflix.mediaclient.intent.action.BA_CW_DATA_CHANGED";
     public static final String BROWSE_AGENT_CW_REFRESH = "com.netflix.mediaclient.intent.action.BA_CW_REFRESH";
     public static final String BROWSE_AGENT_EPISODE_REFRESH = "com.netflix.mediaclient.intent.action.BA_EPISODE_REFRESH";
     public static final String BROWSE_AGENT_IQ_REFRESH = "com.netflix.mediaclient.intent.action.BA_IQ_REFRESH";
@@ -417,6 +416,26 @@ public final class ServiceManager
         }
         // monitorexit(this)
         return b;
+    }
+    
+    public boolean fetchPostPlayVideos(final String s, final ManagerCallback managerCallback) {
+        synchronized (this) {
+            final int addCallback = this.addCallback(managerCallback);
+            if (Log.isLoggable("ServiceManager", 3)) {
+                Log.d("ServiceManager", "fetchPostPlayVideos requestId=" + addCallback + " currentPlayableId=" + s);
+            }
+            final INetflixService validateService = this.validateService();
+            boolean b;
+            if (validateService != null) {
+                validateService.fetchPostPlayVideos(s, this.mClientId, addCallback);
+                b = true;
+            }
+            else {
+                Log.w("ServiceManager", "fetchPostPlayVideos:: service is not available");
+                b = false;
+            }
+            return b;
+        }
     }
     
     public boolean fetchResource(final String s, final IClientLogging.AssetType assetType, final ManagerCallback managerCallback) {
@@ -1303,6 +1322,20 @@ public final class ServiceManager
                 return;
             }
             access$400.onMovieDetailsFetched(movieDetails, n2);
+        }
+        
+        @Override
+        public void onPostPlayVideosFetched(final int n, final List<PostPlayVideo> list, final int n2) {
+            if (Log.isLoggable("ServiceManager", 3)) {
+                Log.d("ServiceManager", "onPostPlayVideosFetched requestId=" + n + " erroCode=" + n2);
+                Log.d("ServiceManager", "onPostPlayVideosFetched requestedVideos=" + list);
+            }
+            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
+            if (access$400 == null) {
+                Log.d("ServiceManager", "No callback for onPostPlayVideoFetched requestId " + n);
+                return;
+            }
+            access$400.onPostPlayVideosFetched(list, n2);
         }
         
         @Override

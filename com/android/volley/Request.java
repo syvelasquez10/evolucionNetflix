@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import java.util.Iterator;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.net.MalformedURLException;
@@ -82,17 +81,33 @@ public abstract class Request<T> implements Comparable<Request<T>>
     }
     
     private byte[] encodeParameters(final Map<String, String> map, final String s) {
-        final StringBuilder sb = new StringBuilder();
-        try {
-            for (final Map.Entry<String, String> entry : map.entrySet()) {
-                sb.append(URLEncoder.encode(entry.getKey(), s));
-                sb.append('=');
-                sb.append(URLEncoder.encode(entry.getValue(), s));
-                sb.append('&');
+        StringBuilder sb;
+        while (true) {
+            sb = new StringBuilder();
+            while (true) {
+                Map.Entry<String, String> entry = null;
+                Label_0137: {
+                    try {
+                        final Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
+                        while (iterator.hasNext()) {
+                            entry = iterator.next();
+                            if (entry.getValue() == null) {
+                                break Label_0137;
+                            }
+                            sb.append(URLEncoder.encode(entry.getKey(), s));
+                            sb.append('=');
+                            sb.append(URLEncoder.encode(entry.getValue(), s));
+                            sb.append('&');
+                        }
+                        break;
+                    }
+                    catch (Exception ex) {
+                        throw new RuntimeException("Encoding not supported: " + s, ex);
+                    }
+                }
+                VolleyLog.d("valueNull for key: %s, params %s", entry.getKey(), map.toString());
+                continue;
             }
-        }
-        catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException("Encoding not supported: " + s, ex);
         }
         return sb.toString().getBytes(s);
     }

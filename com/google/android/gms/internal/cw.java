@@ -223,14 +223,16 @@ public final class cw extends WebView implements DownloadListener
     }
     
     protected void onMeasure(int n, int n2) {
-    Label_0080_Outer:
+        int n3;
+        int mode;
+        int size = 0;
+        int mode2 = 0;
+        int size2 = 0;
+        Label_0102_Outer:Label_0080_Outer:
         while (true) {
-            final int n3 = Integer.MAX_VALUE;
+            n3 = Integer.MAX_VALUE;
             while (true) {
-                final int mode2;
-                final int size2;
                 Label_0250: {
-                    final int size;
                     Label_0248: {
                         Label_0241: {
                             synchronized (this.fx) {
@@ -238,7 +240,7 @@ public final class cw extends WebView implements DownloadListener
                                     super.onMeasure(n, n2);
                                     return;
                                 }
-                                final int mode = View$MeasureSpec.getMode(n);
+                                mode = View$MeasureSpec.getMode(n);
                                 size = View$MeasureSpec.getSize(n);
                                 mode2 = View$MeasureSpec.getMode(n2);
                                 size2 = View$MeasureSpec.getSize(n2);
@@ -246,19 +248,19 @@ public final class cw extends WebView implements DownloadListener
                                     break Label_0241;
                                 }
                                 break Label_0248;
+                                // iftrue(Label_0188:, this.getVisibility() == 8)
                                 while (true) {
-                                    this.setVisibility(4);
-                                    Label_0188: {
-                                        break Label_0188;
+                                    while (true) {
+                                        this.setMeasuredDimension(0, 0);
+                                        return;
+                                        ct.v("Not enough space to show ad. Needs " + this.fU.widthPixels + "x" + this.fU.heightPixels + " pixels, but only has " + size + "x" + size2 + " pixels.");
+                                        this.setVisibility(4);
+                                        continue Label_0102_Outer;
                                     }
-                                    this.setMeasuredDimension(0, 0);
-                                    return;
-                                    ct.v("Not enough space to show ad. Needs " + this.fU.widthPixels + "x" + this.fU.heightPixels + " pixels, but only has " + size + "x" + size2 + " pixels.");
                                     continue Label_0080_Outer;
                                 }
                             }
                             // iftrue(Label_0206:, this.fU.widthPixels <= n && this.fU.heightPixels <= n2)
-                            // iftrue(Label_0188:, this.getVisibility() == 8)
                             Label_0206: {
                                 if (this.getVisibility() != 8) {
                                     this.setVisibility(0);

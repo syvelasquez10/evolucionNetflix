@@ -57,14 +57,14 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
     public View getView(int backgroundResource, final View view, final ViewGroup viewGroup) {
         TextView textView;
         if ((textView = (TextView)view) == null) {
-            textView = (TextView)this.inflater.inflate(2130903141, (ViewGroup)null, false);
+            textView = (TextView)this.inflater.inflate(2130903148, (ViewGroup)null, false);
         }
         textView.setText((CharSequence)this.getItem(backgroundResource).getSeasonNumberTitle(this.context));
         if (viewGroup instanceof SeasonsSpinner) {
             backgroundResource = 2131165219;
         }
         else {
-            backgroundResource = 2130837822;
+            backgroundResource = 2130837829;
         }
         textView.setBackgroundResource(backgroundResource);
         return (View)textView;

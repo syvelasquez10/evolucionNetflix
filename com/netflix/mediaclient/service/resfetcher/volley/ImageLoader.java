@@ -249,7 +249,9 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
     
     @Override
     public void showImg(final AdvancedImageView drawableToNull, final String urlTag, final IClientLogging.AssetType assetType, String urlTag2, final boolean b, final boolean b2, final int n) {
-        drawableToNull.setContentDescription((CharSequence)urlTag2);
+        if (urlTag2 != null) {
+            drawableToNull.setContentDescription((CharSequence)urlTag2);
+        }
         urlTag2 = drawableToNull.getUrlTag();
         drawableToNull.setUrlTag(urlTag);
         if (urlTag == null) {

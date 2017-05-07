@@ -8,6 +8,7 @@ import com.netflix.mediaclient.service.webclient.model.branches.Season;
 import com.netflix.mediaclient.servicemgr.VideoType;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.netflix.mediaclient.service.webclient.model.SeasonDetails;
+import com.netflix.mediaclient.service.webclient.model.PostPlayVideo;
 import com.netflix.mediaclient.service.webclient.model.EpisodeDetails;
 import com.netflix.mediaclient.service.webclient.model.CWVideo;
 
@@ -15,6 +16,7 @@ public class BrowseVideoSentinels
 {
     private static final CWVideo cwVideoSentinel;
     private static final EpisodeDetails episodeDetailsSentinel;
+    private static final PostPlayVideo postPlayVideoSentinel;
     private static final SeasonDetails seasonDetailsSentinel;
     private static final Video.Summary videoSummarySentinel;
     
@@ -23,6 +25,7 @@ public class BrowseVideoSentinels
         episodeDetailsSentinel = new EpisodeDetails();
         seasonDetailsSentinel = new SeasonDetails();
         cwVideoSentinel = new CWVideo();
+        postPlayVideoSentinel = new PostPlayVideo();
     }
     
     private BrowseVideoSentinels() {
@@ -38,6 +41,10 @@ public class BrowseVideoSentinels
     
     public static EpisodeDetails getUnavailableEpisodeDetails() {
         return BrowseVideoSentinels.episodeDetailsSentinel;
+    }
+    
+    public static PostPlayVideo getUnavailablePostPlayVideo() {
+        return BrowseVideoSentinels.postPlayVideoSentinel;
     }
     
     public static SeasonDetails getUnavailableSeasonsDetails() {

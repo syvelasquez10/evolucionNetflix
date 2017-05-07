@@ -21,13 +21,14 @@ public class SharingDialogFrag extends NetflixDialogFrag implements MdxMiniPlaye
         return sharingDialogFrag;
     }
     
+    @Override
     public boolean isLoadingData() {
         return false;
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903142, viewGroup, false);
-        inflate.findViewById(2131231053).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
+        final View inflate = layoutInflater.inflate(2130903149, viewGroup, false);
+        inflate.findViewById(2131231076).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
                 ((NetflixActivity)SharingDialogFrag.this.getActivity()).getMdxMiniPlayerFrag().unshareVideo();
                 SharingDialogFrag.this.dismiss();

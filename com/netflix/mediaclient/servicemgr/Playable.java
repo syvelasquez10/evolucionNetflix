@@ -28,6 +28,10 @@ public interface Playable extends Video
     
     int getSeasonNumber();
     
+    boolean isAutoPlayEnabled();
+    
+    boolean isNextPlayableEpisode();
+    
     boolean isPlayableEpisode();
     
     boolean isUserConnectedToFacebook();

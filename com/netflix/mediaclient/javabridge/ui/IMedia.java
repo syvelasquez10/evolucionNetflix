@@ -104,6 +104,8 @@ public interface IMedia
     
     void setWifiApsInfo(final Context p0, final String p1, final boolean p2);
     
+    void setWifiLinkSpeed(final Context p0);
+    
     void stop();
     
     void unpause();

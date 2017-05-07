@@ -61,6 +61,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
                 this.add("PROGRESS");
                 this.add("PLAYING");
                 this.add("PAUSE");
+                this.add("STALLED");
                 this.add("AUTO_ADVANCE");
                 this.add("prepause");
                 this.add("preseek");

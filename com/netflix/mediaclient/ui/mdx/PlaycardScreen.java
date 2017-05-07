@@ -194,11 +194,11 @@ class PlaycardScreen implements Screen
     public void setPausePlayButtonState(final boolean b) {
         if (b) {
             Log.d("playcard", "State is now PAUSED, change Play/Pause button to PLAY");
-            this.mPlayPauseButton.setImageResource(2130837804);
+            this.mPlayPauseButton.setImageResource(2130837806);
             return;
         }
         Log.d("playcard", "State is now PLAYING, change Play/Pause button to PAUSE");
-        this.mPlayPauseButton.setImageResource(2130837803);
+        this.mPlayPauseButton.setImageResource(2130837805);
     }
     
     int setProgress(final int n, final int n2, final boolean b) {

@@ -90,11 +90,14 @@ public class PartnerJSObject extends JSObject
                             Log.e("nf_partner", "Service not found!");
                             PartnerJSObject.this.returnResultToJS("nrdpPartner.Signup._handleExternalUserData", getErrorForPartner(null, n, s, "101", "Service not found!"));
                             return;
-                            // iftrue(Label_0132:, partner.getSignup() != null)
-                            Log.e("nf_partner", "Service does not support SSO!");
-                            PartnerJSObject.this.returnResultToJS("nrdpPartner.Signup._handleExternalUserData", getErrorForPartner(s2, n, s, "102", "Service does not support Signup!"));
-                            return;
+                            while (true) {
+                                Log.e("nf_partner", "Service does not support SSO!");
+                                PartnerJSObject.this.returnResultToJS("nrdpPartner.Signup._handleExternalUserData", getErrorForPartner(s2, n, s, "102", "Service does not support Signup!"));
+                                return;
+                                continue;
+                            }
                         }
+                        // iftrue(Label_0132:, partner.getSignup() != null)
                         catch (Exception ex) {
                             Log.e("nf_partner", "Failed to work with JSON", ex);
                             return;
@@ -238,11 +241,14 @@ public class PartnerJSObject extends JSObject
                             Log.e("nf_partner", "Service not found!");
                             PartnerJSObject.this.returnResultToJS("nrdpPartner.Signup._handleExternalUserConfirmation", getErrorForPartner(null, n, s, "101", "Service not found!"));
                             return;
-                            // iftrue(Label_0132:, partner.getSignup() != null)
-                            Log.e("nf_partner", "Service does not support Signup!");
-                            PartnerJSObject.this.returnResultToJS("nrdpPartner.Signup._handleExternalUserConfirmation", getErrorForPartner(s2, n, s, "102", "Service does not support Signup!"));
-                            return;
+                            while (true) {
+                                Log.e("nf_partner", "Service does not support Signup!");
+                                PartnerJSObject.this.returnResultToJS("nrdpPartner.Signup._handleExternalUserConfirmation", getErrorForPartner(s2, n, s, "102", "Service does not support Signup!"));
+                                return;
+                                continue;
+                            }
                         }
+                        // iftrue(Label_0132:, partner.getSignup() != null)
                         catch (Exception ex) {
                             Log.e("nf_partner", "Failed to work with JSON", ex);
                             return;

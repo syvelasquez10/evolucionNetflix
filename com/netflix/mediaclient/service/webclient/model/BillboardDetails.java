@@ -304,8 +304,18 @@ public class BillboardDetails extends Billboard implements ShowDetails, MovieDet
     }
     
     @Override
+    public boolean isAutoPlayEnabled() {
+        return this.billboardDetail != null && this.billboardDetail.isAutoPlayEnabled;
+    }
+    
+    @Override
     public boolean isInQueue() {
         throw new IllegalStateException("Not implemented by BillboardDetails");
+    }
+    
+    @Override
+    public boolean isNextPlayableEpisode() {
+        return this.billboardDetail != null && this.billboardDetail.isAutoPlayEnabled;
     }
     
     @Override

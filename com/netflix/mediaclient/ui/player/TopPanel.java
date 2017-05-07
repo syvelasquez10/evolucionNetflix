@@ -5,9 +5,11 @@
 package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
 import android.media.AudioManager;
+import android.widget.SeekBar$OnSeekBarChangeListener;
 import android.widget.ImageView;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -18,7 +20,6 @@ import android.view.MotionEvent;
 import android.view.View$OnTouchListener;
 import com.netflix.mediaclient.media.Language;
 import android.app.Activity;
-import android.widget.SeekBar$OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.SeekBar;
 import com.netflix.mediaclient.ui.common.Social;
@@ -36,6 +37,8 @@ public final class TopPanel extends PlayerSection
     private Button mBtnLog;
     private Button mBtnMetadata;
     private String mDialogLanguageId;
+    private ImageButton mEpisodeSelector;
+    private boolean mEpisodeSelectorEnabled;
     private ImageButton mLanguage;
     private LanguageSelector mLanguageSelector;
     private final Social mSocial;
@@ -43,14 +46,14 @@ public final class TopPanel extends PlayerSection
     private TextView mTitleLabel;
     private View mTopPanel;
     
-    public TopPanel(final PlayerActivity playerActivity, final SeekBar$OnSeekBarChangeListener seekBar$OnSeekBarChangeListener) {
+    public TopPanel(final PlayerActivity playerActivity, final PlayScreen.Listeners listeners) {
         super(playerActivity);
         this.mSocial = new Social(playerActivity, playerActivity.getSocialProviderCallback());
-        this.initGeneric();
+        this.initGeneric(listeners);
         this.initBack();
         this.initQa();
         this.initLanguages();
-        this.initSound(seekBar$OnSeekBarChangeListener);
+        this.initSound(listeners.audioPositionListener);
     }
     
     private void initBack() {
@@ -80,12 +83,16 @@ public final class TopPanel extends PlayerSection
         }
     }
     
-    private void initGeneric() {
+    private void initGeneric(final PlayScreen.Listeners listeners) {
         this.mTopPanel = this.context.findViewById(2131230969);
         if (this.mTopPanel == null) {
             Log.e("screen", "========>top null!");
         }
-        this.mTitleLabel = (TextView)this.context.findViewById(2131231027);
+        this.mTitleLabel = (TextView)this.context.findViewById(2131231031);
+        this.mEpisodeSelector = (ImageButton)this.context.findViewById(2131230994);
+        if (this.mEpisodeSelector != null) {
+            this.mEpisodeSelector.setOnClickListener(listeners.episodeSelectorListener);
+        }
     }
     
     private void initLanguages() {
@@ -224,6 +231,7 @@ public final class TopPanel extends PlayerSection
     public void changeActionState(final boolean b) {
         synchronized (this) {
             this.enableButton((View)this.mLanguage, b);
+            this.enableButton((View)this.mEpisodeSelector, b);
             if (this.mBtnLog != null) {
                 this.mBtnLog.setEnabled(b);
             }
@@ -249,6 +257,9 @@ public final class TopPanel extends PlayerSection
             }
             if (this.mBackPadding != null) {
                 this.mBackPadding.setOnTouchListener((View$OnTouchListener)null);
+            }
+            if (this.mEpisodeSelector != null) {
+                this.mEpisodeSelector.setOnTouchListener((View$OnTouchListener)null);
             }
         }
     }
@@ -302,6 +313,9 @@ public final class TopPanel extends PlayerSection
             if (this.mTitleLabel != null) {
                 this.mTitleLabel.setVisibility(0);
             }
+            if (this.mEpisodeSelectorEnabled && this.mEpisodeSelector != null) {
+                this.mEpisodeSelector.setVisibility(0);
+            }
         }
     }
     
@@ -324,6 +338,14 @@ public final class TopPanel extends PlayerSection
             this.mSound.setProgress(progress);
         }
         return progress;
+    }
+    
+    void setEpisodeSelectorVisibility(final boolean mEpisodeSelectorEnabled) {
+        if (this.mEpisodeSelector == null) {
+            return;
+        }
+        this.mEpisodeSelectorEnabled = mEpisodeSelectorEnabled;
+        ViewUtils.setVisibility((View)this.mEpisodeSelector, mEpisodeSelectorEnabled);
     }
     
     public void setLanguage(final Language language) {
@@ -436,6 +458,9 @@ public final class TopPanel extends PlayerSection
                 this.mBtnMetadata.setVisibility(8);
             }
             this.mSocial.hide();
+            if (this.mEpisodeSelector != null) {
+                this.mEpisodeSelector.setVisibility(8);
+            }
             if (this.mTitleLabel != null) {
                 this.mTitleLabel.setVisibility(4);
             }

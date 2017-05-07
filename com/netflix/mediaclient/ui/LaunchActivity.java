@@ -232,10 +232,10 @@ public class LaunchActivity extends NetflixActivity
         Log.d("LaunchActivity", "Service is NOT ready, use splash screen...");
         this.mSplashScreenStarted = System.currentTimeMillis();
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            this.setContentView(2130903148);
+            this.setContentView(2130903155);
             return;
         }
-        this.setContentView(2130903147);
+        this.setContentView(2130903154);
     }
     
     @Override

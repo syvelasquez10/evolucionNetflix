@@ -87,7 +87,7 @@ public class SocialVideoView extends VideoView
     
     @SuppressLint({ "WrongCall" })
     private void drawConnectToFacebook(final Canvas canvas) {
-        this.setImageResource(2130837680);
+        this.setImageResource(2130837681);
         super.onDraw(canvas);
         Log.v("SocialVideoView", "drawConnectToFacebook: " + this.getWidth() + "x" + this.getHeight());
         canvas.save();

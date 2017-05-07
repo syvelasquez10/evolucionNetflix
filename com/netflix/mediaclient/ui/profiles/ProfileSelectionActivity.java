@@ -260,10 +260,10 @@ public class ProfileSelectionActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.columnWidth = this.getResources().getDimensionPixelSize(2131492934);
-        this.setContentView(2130903133);
-        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131231036), this.errorCallback);
-        this.content = this.findViewById(2131231037);
-        (this.gridView = (StaticGridView)this.findViewById(2131231039)).setOnItemClickListener(this.onAvatarClickListener);
+        this.setContentView(2130903140);
+        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131231059), this.errorCallback);
+        this.content = this.findViewById(2131231060);
+        (this.gridView = (StaticGridView)this.findViewById(2131231062)).setOnItemClickListener(this.onAvatarClickListener);
         this.gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 ProfileSelectionActivity.this.adjustGridViewMargins();
@@ -311,8 +311,8 @@ public class ProfileSelectionActivity extends NetflixActivity
         public View getView(final int n, final View view, final ViewGroup viewGroup) {
             View inflate = view;
             if (view == null) {
-                inflate = ProfileSelectionActivity.this.getLayoutInflater().inflate(2130903134, (ViewGroup)null, false);
-                inflate.setTag((Object)new Holder((AdvancedImageView)inflate.findViewById(2131231041), (TextView)inflate.findViewById(2131231042)));
+                inflate = ProfileSelectionActivity.this.getLayoutInflater().inflate(2130903141, (ViewGroup)null, false);
+                inflate.setTag((Object)new Holder((AdvancedImageView)inflate.findViewById(2131231064), (TextView)inflate.findViewById(2131231065)));
             }
             final Holder holder = (Holder)inflate.getTag();
             final UserProfile item = this.getItem(n);

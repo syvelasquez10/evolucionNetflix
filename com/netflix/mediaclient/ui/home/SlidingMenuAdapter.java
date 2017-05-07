@@ -181,7 +181,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             imageResource = 17301535;
         }
         else {
-            imageResource = 2130837687;
+            imageResource = 2130837688;
         }
         switchProfilesIcon.setImageResource(imageResource);
     }

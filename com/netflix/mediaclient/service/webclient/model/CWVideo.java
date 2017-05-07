@@ -245,6 +245,24 @@ public class CWVideo implements com.netflix.mediaclient.servicemgr.CWVideo
     }
     
     @Override
+    public boolean isAutoPlayEnabled() {
+        if (VideoType.MOVIE.equals(this.getType())) {
+            if (this.detail != null) {
+                return this.detail.isAutoPlayEnabled;
+            }
+        }
+        else if (this.currentEpisode != null) {
+            return this.currentEpisode.isAutoPlayEnabled();
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean isNextPlayableEpisode() {
+        return VideoType.SHOW.equals(this.getType()) && this.currentEpisode != null && this.currentEpisode.isNextPlayableEpisode();
+    }
+    
+    @Override
     public boolean isPlayableEpisode() {
         return this.currentEpisode != null;
     }

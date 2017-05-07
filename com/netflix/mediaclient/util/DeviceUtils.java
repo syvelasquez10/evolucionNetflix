@@ -6,6 +6,7 @@ package com.netflix.mediaclient.util;
 
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.view.KeyCharacterMap;
 import android.annotation.SuppressLint;
 import android.util.DisplayMetrics;
 import android.app.Activity;
@@ -124,6 +125,14 @@ public final class DeviceUtils
             versionName = "N/A";
         }
         return versionName;
+    }
+    
+    public static boolean hasHardwareNavigationKeys() {
+        final boolean deviceHasKey = KeyCharacterMap.deviceHasKey(4);
+        final boolean deviceHasKey2 = KeyCharacterMap.deviceHasKey(3);
+        Log.d("@@@", "Back " + deviceHasKey);
+        Log.d("@@@", "Home " + deviceHasKey2);
+        return deviceHasKey && deviceHasKey2;
     }
     
     public static void hideSoftKeyboard(final Activity activity) {

@@ -59,9 +59,9 @@ public class SearchResultsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903138, (ViewGroup)null);
+        final View inflate = layoutInflater.inflate(2130903145, (ViewGroup)null);
         this.adapter = new SearchResultsAdapter();
-        (this.gridView = (StickyGridHeadersGridView)inflate.findViewById(2131231050)).setAdapter((ListAdapter)this.adapter);
+        (this.gridView = (StickyGridHeadersGridView)inflate.findViewById(2131231073)).setAdapter((ListAdapter)this.adapter);
         this.gridView.setOnItemClickListener((AdapterView$OnItemClickListener)this.adapter);
         this.gridView.setAreHeadersSticky(false);
         this.gridView.setNumColumns(((SparseIntArray)SearchResultsFrag.numColsTable.get(DeviceUtils.getBasicScreenOrientation((Context)this.getActivity()))).get(DeviceUtils.getScreenSizeCategory((Context)this.getActivity())));
@@ -103,9 +103,9 @@ public class SearchResultsFrag extends NetflixFrag
             }
             View inflate;
             if ((inflate = view) == null) {
-                inflate = SearchResultsFrag.this.getActivity().getLayoutInflater().inflate(2130903139, (ViewGroup)null);
+                inflate = SearchResultsFrag.this.getActivity().getLayoutInflater().inflate(2130903146, (ViewGroup)null);
             }
-            ((TextView)inflate.findViewById(2131231051)).setText(SearchResultsFrag.this.results.getSectionTitle((Context)SearchResultsFrag.this.getActivity(), n));
+            ((TextView)inflate.findViewById(2131231074)).setText(SearchResultsFrag.this.results.getSectionTitle((Context)SearchResultsFrag.this.getActivity(), n));
             return inflate;
         }
         

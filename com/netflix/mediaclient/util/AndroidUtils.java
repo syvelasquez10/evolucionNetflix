@@ -36,10 +36,10 @@ import android.os.StrictMode$VmPolicy$Builder;
 import android.os.StrictMode;
 import android.os.StrictMode$ThreadPolicy$Builder;
 import android.os.Debug;
-import com.netflix.mediaclient.Log;
-import java.io.File;
 import android.os.Environment;
 import java.io.IOException;
+import com.netflix.mediaclient.Log;
+import java.io.File;
 import android.content.Context;
 import java.util.regex.Pattern;
 
@@ -75,6 +75,34 @@ public final class AndroidUtils
         }
         AndroidUtils.rootShell = null;
         return false;
+    }
+    
+    public static void clearApplicationData(final Context context) {
+        final File file = new File(context.getCacheDir().getParent());
+        if (file.exists()) {
+            final String[] list = file.list();
+            for (int length = list.length, i = 0; i < length; ++i) {
+                final String s = list[i];
+                if (!s.equals("lib")) {
+                    deleteDir(new File(file, s));
+                    if (Log.isLoggable("nf_utils", 3)) {
+                        Log.i("TAG", "File /data/data/com.netflix.mediaclient/" + s + " DELETED");
+                    }
+                }
+            }
+        }
+    }
+    
+    public static boolean deleteDir(final File file) {
+        if (file != null && file.isDirectory()) {
+            final String[] list = file.list();
+            for (int i = 0; i < list.length; ++i) {
+                if (!deleteDir(new File(file, list[i]))) {
+                    return false;
+                }
+            }
+        }
+        return file.delete();
     }
     
     public static int dipToPixels(final Context context, final int n) {

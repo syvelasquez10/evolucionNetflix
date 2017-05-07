@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.mdx;
 
+import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.media.RemoteControlClient$MetadataEditor;
@@ -98,6 +99,7 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
         this.updateMatadata();
     }
     
+    @TargetApi(18)
     public void start() {
         Log.d("nf_mdx_RemoteClient", "RemoteControlClientManager start");
         if (1 != this.mAudioManager.requestAudioFocus((AudioManager$OnAudioFocusChangeListener)this, 3, 1)) {
@@ -109,7 +111,7 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
         this.mRemoteControlClient = new RemoteControlClient(PendingIntent.getBroadcast(this.mContext, 0, intent, 0));
         this.mAudioManager.registerRemoteControlClient(this.mRemoteControlClient);
         this.mRemoteControlClient.setPlaybackState(3);
-        this.mRemoteControlClient.setTransportControlFlags(52);
+        this.mRemoteControlClient.setTransportControlFlags(308);
     }
     
     public void stop() {

@@ -118,6 +118,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
+    public String getInterestingUrl() {
+        return null;
+    }
+    
+    @Override
     public String getNextEpisodeId() {
         return null;
     }
@@ -223,7 +228,17 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
+    public boolean isAutoPlayEnabled() {
+        return false;
+    }
+    
+    @Override
     public boolean isInQueue() {
+        return false;
+    }
+    
+    @Override
+    public boolean isNextPlayableEpisode() {
         return false;
     }
     

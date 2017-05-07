@@ -16,7 +16,7 @@ import android.widget.Spinner;
 
 public class SeasonsSpinner extends Spinner
 {
-    private static final int STANDARD_BG_ID = 2130837832;
+    private static final int STANDARD_BG_ID = 2130837839;
     private AdapterView$OnItemSelectedListener itemSelectedListener;
     private SeasonsSpinnerAdapter spinnerAdapter;
     
@@ -36,7 +36,7 @@ public class SeasonsSpinner extends Spinner
     }
     
     private void init() {
-        this.setBackgroundResource(2130837832);
+        this.setBackgroundResource(2130837839);
         this.setAdapter((SpinnerAdapter)(this.spinnerAdapter = new SeasonsSpinnerAdapter(this.getContext())));
     }
     
@@ -64,7 +64,7 @@ public class SeasonsSpinner extends Spinner
         this.setEnabled(enabled);
         int backgroundResource;
         if (enabled) {
-            backgroundResource = 2130837832;
+            backgroundResource = 2130837839;
         }
         else {
             backgroundResource = 2131165219;

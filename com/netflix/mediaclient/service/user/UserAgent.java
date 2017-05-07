@@ -6,6 +6,8 @@ package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.service.webclient.model.leafs.UserBoundCookies;
 import com.netflix.mediaclient.service.webclient.model.leafs.AccountData;
+import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.event.nrdp.registration.ActivateEvent;
 import com.netflix.mediaclient.event.UIEvent;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
@@ -45,6 +47,7 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
 {
     private static final String ACTIVATE = "activate";
     private static final String ACTIVATE_COMPLETE = "activateComplete";
+    private static final String APP_RESET_Required = "appResetRequired";
     private static final String BIND = "bind";
     private static final String DEACTIVATED = "deactivated";
     private static final String NETFLIX_ID = "NetflixId";
@@ -55,6 +58,7 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
     private final ConfigurationAgentWebCallback configDataCallback;
     private boolean isProfileSwitchingDisabled;
     private EventListener mActivateListener;
+    private EventListener mAppResetListener;
     private EventListener mBindListener;
     private DeviceAccount mCurrentUserAccount;
     private UserProfile mCurrentUserProfile;
@@ -308,6 +312,7 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
             this.mRegistration.removeEventListener("activate", this.mActivateListener);
             this.mRegistration.removeEventListener("deactivated", this.mDeactivateListener);
             this.mRegistration.removeEventListener("bind", this.mBindListener);
+            this.mRegistration.removeEventListener("appResetRequired", this.mAppResetListener);
         }
         this.userLocaleRepository = null;
         this.unregisterPlayStopReceiver();
@@ -352,10 +357,12 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         this.mActivateListener = new ActivateListener();
         this.mDeactivateListener = new DeactivateListener();
         this.mBindListener = new BindListener();
+        this.mAppResetListener = new AppResetListener();
         this.mRegistration.addEventListener("activateComplete", this.mActivateListener);
         this.mRegistration.addEventListener("activate", this.mActivateListener);
         this.mRegistration.addEventListener("deactivated", this.mDeactivateListener);
         this.mRegistration.addEventListener("bind", this.mBindListener);
+        this.mRegistration.addEventListener("appResetRequired", this.mAppResetListener);
         (this.mUserAgentStateManager = new UserAgentStateManager(this.mRegistration, this.getConfigurationAgent().getDrmManager(), (UserAgentStateManager.StateManagerCallback)this, this.getContext(), this.getService().getClientLogging().getErrorLogging())).initialize(this.getConfigurationAgent().isLogoutRequired(), this.getConfigurationAgent().isEsnMigrationRequired());
         this.registerPlayStopReceiver();
     }
@@ -696,10 +703,10 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
                 final ActivateEvent activateEvent = (ActivateEvent)uiEvent;
                 if (!activateEvent.failed()) {
                     final String cookies = activateEvent.getCookies();
-                    final String access$500 = UserAgent.this.extractToken(UserAgent.this.getNetflixIdName() + "=", cookies);
-                    final String access$501 = UserAgent.this.extractToken(UserAgent.this.getSecureNetflixIdName() + "=", cookies);
-                    if (StringUtils.isNotEmpty(access$500) && StringUtils.isNotEmpty(access$501)) {
-                        UserAgent.this.mUserAgentStateManager.accountOrProfileActivated(true, access$500, access$501);
+                    final String access$600 = UserAgent.this.extractToken(UserAgent.this.getNetflixIdName() + "=", cookies);
+                    final String access$601 = UserAgent.this.extractToken(UserAgent.this.getSecureNetflixIdName() + "=", cookies);
+                    if (StringUtils.isNotEmpty(access$600) && StringUtils.isNotEmpty(access$601)) {
+                        UserAgent.this.mUserAgentStateManager.accountOrProfileActivated(true, access$600, access$601);
                     }
                 }
                 else if (activateEvent.isActionId()) {
@@ -772,6 +779,19 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
                     Log.e("nf_service_useragent", "Received a unexpected Activate event");
                 }
             }
+        }
+    }
+    
+    private class AppResetListener implements EventListener
+    {
+        @Override
+        public void received(final UIEvent uiEvent) {
+            Log.d("nf_service_useragent", "Received an App reset event ");
+            AndroidUtils.clearApplicationData(UserAgent.this.getContext());
+            NetflixActivity.finishAllActivities(UserAgent.this.getContext());
+            final Intent intent = new Intent();
+            intent.setClass(UserAgent.this.getContext(), (Class)NetflixService.class);
+            UserAgent.this.getContext().stopService(intent);
         }
     }
     

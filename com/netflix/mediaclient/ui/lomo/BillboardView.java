@@ -11,7 +11,7 @@ import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.ShowDetails;
-import com.netflix.mediaclient.servicemgr.MovieDetails;
+import com.netflix.mediaclient.servicemgr.VideoDetails;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.VideoType;
 import com.netflix.mediaclient.servicemgr.Video;
@@ -219,10 +219,10 @@ public class BillboardView extends RelativeLayout implements IVideoView<Billboar
             final TextView info = this.info;
             CharSequence text;
             if (billboardDetails.getType() == VideoType.MOVIE) {
-                text = StringUtils.getBasicInfoString(this.getContext(), (MovieDetails)billboardDetails);
+                text = StringUtils.getBasicInfoString(this.getContext(), (VideoDetails)billboardDetails);
             }
             else {
-                text = StringUtils.getBasicInfoString(this.getContext(), (ShowDetails)billboardDetails);
+                text = StringUtils.getBasicInfoString(this.getContext(), billboardDetails);
             }
             info.setText(text);
             this.synopsis.setText((CharSequence)billboardDetails.getSynopsis());

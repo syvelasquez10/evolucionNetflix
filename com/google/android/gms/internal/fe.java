@@ -93,13 +93,9 @@ public final class fe
             }
             final JSONObject jsonObject = (JSONObject)o;
             final JSONObject jsonObject2 = (JSONObject)o2;
-            Iterator keys = null;
-            String s;
-            JSONArray jsonArray;
-            JSONArray jsonArray2;
-            int n;
-            Block_8_Outer:Label_0135_Outer:
+        Label_0135_Outer:
             while (true) {
+                final Iterator keys;
                 if (jsonObject.length() == jsonObject2.length()) {
                     keys = jsonObject.keys();
                     break Label_0043;
@@ -110,7 +106,7 @@ public final class fe
                 if (!keys.hasNext()) {
                     return true;
                 }
-                s = keys.next();
+                final String s = keys.next();
                 if (!jsonObject2.has(s)) {
                     return false;
                 }
@@ -118,40 +114,40 @@ public final class fe
                     if (!d(jsonObject.get(s), jsonObject2.get(s))) {
                         return false;
                     }
-                    continue Block_8_Outer;
-                    // iftrue(Label_0035:, jsonArray.length() != jsonArray2.length())
-                    // iftrue(Label_0168:, n >= jsonArray.length())
+                    continue Label_0135_Outer;
                     // iftrue(Label_0170:, !o instanceof JSONArray || !o2 instanceof JSONArray)
+                    // iftrue(Label_0168:, n >= jsonArray.length())
                     while (true) {
-                        Block_10: {
-                        Block_9:
-                            while (true) {
-                                jsonArray = (JSONArray)o;
-                                jsonArray2 = (JSONArray)o2;
-                                break Block_9;
+                        Block_8: {
+                            break Block_8;
+                            Block_10: {
                                 break Block_10;
-                                continue Label_0135_Outer;
                             }
-                            n = 0;
-                            continue;
-                        }
-                        try {
-                            if (d(jsonArray.get(n), jsonArray2.get(n))) {
-                                ++n;
-                                continue;
+                            try {
+                                final int n;
+                                final JSONArray jsonArray;
+                                final JSONArray jsonArray2;
+                                if (d(jsonArray.get(n), jsonArray2.get(n))) {
+                                    ++n;
+                                    continue;
+                                }
+                                return false;
+                                Label_0170:
+                                return o.equals(o2);
+                                Label_0168:
+                                return true;
                             }
-                            return false;
-                            Label_0168:
-                            return true;
-                            Label_0170:
-                            return o.equals(o2);
+                            catch (JSONException ex) {
+                                return false;
+                            }
                         }
-                        catch (JSONException ex) {
-                            return false;
-                        }
-                        break;
+                        final JSONArray jsonArray = (JSONArray)o;
+                        final JSONArray jsonArray2 = (JSONArray)o2;
+                        int n = 0;
+                        continue;
                     }
                 }
+                // iftrue(Label_0035:, jsonArray.length() != jsonArray2.length())
                 catch (JSONException ex2) {
                     return false;
                 }

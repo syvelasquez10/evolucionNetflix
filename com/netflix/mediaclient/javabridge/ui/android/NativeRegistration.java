@@ -128,6 +128,11 @@ public final class NativeRegistration extends NativeNrdObject implements Registr
                     this.accounts.add(deviceAccount);
                 }
             }
+            // monitorexit(this.accounts)
+            if (jsonObject2.has("appResetRequired")) {
+                Log.d("nf_reg", "handlePropertyUpdate:: appResetRequired");
+                this.handleListener("appResetRequired", null);
+            }
             return 1;
         }
     }

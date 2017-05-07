@@ -13,6 +13,10 @@ public interface PreferenceKeys
     public static final String PARAM_NOTIFICATION_ID_COUNTER = "nf_notification_id_counter";
     public static final String PARAM_RND_DEVICE_ID = "nf_rnd_device_id";
     public static final String PREFERENCE_ACCOUNT_CONFIG = "accountConfig";
+    public static final String PREFERENCE_AD_ID = "advertisement_id";
+    public static final String PREFERENCE_AD_ID_OPTED_IN = "advertisement_id_opted_in";
+    public static final String PREFERENCE_AD_ID_TIMESTAMP = "advertisement_id_ts";
+    public static final String PREFERENCE_APM_USER_SESSION_TIMEOUT_OVERRIDE = "apm_user_session_timeout_duration_override";
     public static final String PREFERENCE_BITRATE_CAP = "nflx_bitrate_cap";
     public static final String PREFERENCE_CL_CONFIGURATION = "cl_configuration";
     public static final String PREFERENCE_DEVICE_CATEGORY = "nf_device_category";
@@ -26,7 +30,7 @@ public interface PreferenceKeys
     public static final String PREFERENCE_DRM_SYSTEM_ID = "nf_drm_system_id";
     public static final String PREFERENCE_HARDWARE_ACCELERATION = "nflx_hardwarer_acc";
     public static final String PREFERENCE_IMAGE_PREF = "image_pref";
-    public static final String PREFERENCE_IP_CONNECTIVITY_POLICY_OVERIDE = "ip_connectivity_policy_overide";
+    public static final String PREFERENCE_IP_CONNECTIVITY_POLICY_OVERRIDE = "ip_connectivity_policy_overide";
     public static final String PREFERENCE_MDX_ELECTED_DIALUUID = "mdx_selected_dialuuid";
     public static final String PREFERENCE_MDX_ELECTED_FNAME = "mdx_selected_fname";
     public static final String PREFERENCE_MDX_SELECTED_UUID = "mdx_selected_uuid";

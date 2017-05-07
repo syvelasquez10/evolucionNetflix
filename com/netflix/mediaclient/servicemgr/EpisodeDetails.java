@@ -12,6 +12,8 @@ public interface EpisodeDetails extends VideoDetails
     
     int getEpisodeNumber();
     
+    String getInterestingUrl();
+    
     String getNextEpisodeId();
     
     String getNextEpisodeTitle();

@@ -205,7 +205,17 @@ public class DummyMovieDetails implements MovieDetails
     }
     
     @Override
+    public boolean isAutoPlayEnabled() {
+        return false;
+    }
+    
+    @Override
     public boolean isInQueue() {
+        return false;
+    }
+    
+    @Override
+    public boolean isNextPlayableEpisode() {
         return false;
     }
     

@@ -144,7 +144,9 @@ public class PresentationRequest
     public JSONObject toJSONObject() throws JSONException {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("esn", (Object)this.esn);
-        jsonObject.putOpt("country", (Object)this.country);
+        if (StringUtils.isNotEmpty(this.country)) {
+            jsonObject.putOpt("country", (Object)this.country);
+        }
         jsonObject.putOpt("device_type", (Object)this.device_type);
         jsonObject.putOpt("application_name", (Object)this.app_name);
         jsonObject.putOpt("application_v", (Object)this.app_ver);

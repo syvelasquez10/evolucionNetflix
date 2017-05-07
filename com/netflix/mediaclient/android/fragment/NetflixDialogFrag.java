@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.android.fragment;
 
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import android.content.DialogInterface;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -21,6 +22,10 @@ public abstract class NetflixDialogFrag extends DialogFragment implements Loadin
         return this.isDestroyed;
     }
     
+    public boolean isLoadingData() {
+        return false;
+    }
+    
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         if (Log.isLoggable("NetflixDialogFrag", 2)) {
@@ -34,6 +39,11 @@ public abstract class NetflixDialogFrag extends DialogFragment implements Loadin
             Log.v("NetflixDialogFrag", "Destroying frag: " + this.getClass().getSimpleName() + ", hash: " + this.hashCode());
         }
         this.isDestroyed = true;
+    }
+    
+    public void onDismiss(final DialogInterface dialogInterface) {
+        super.onDismiss(dialogInterface);
+        Log.d("NetflixDialogFrag", "NetflixDialogFrag is dismissed");
     }
     
     protected void onLoaded(final int n) {
@@ -54,5 +64,15 @@ public abstract class NetflixDialogFrag extends DialogFragment implements Loadin
             return;
         }
         this.mLoadingStatusCallback = mLoadingStatusCallback;
+    }
+    
+    public interface DialogCanceledListener
+    {
+        void onDialogCanceled(final NetflixDialogFrag p0);
+    }
+    
+    public interface DialogCanceledListenerProvider
+    {
+        DialogCanceledListener getDialogCanceledListener();
     }
 }

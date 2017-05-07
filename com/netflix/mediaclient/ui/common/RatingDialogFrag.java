@@ -51,6 +51,7 @@ public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnR
         return ratingDialogFrag;
     }
     
+    @Override
     public boolean isLoadingData() {
         return false;
     }

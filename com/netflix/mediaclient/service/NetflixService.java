@@ -11,6 +11,7 @@ import com.netflix.mediaclient.servicemgr.VideoList;
 import com.netflix.mediaclient.servicemgr.ShowDetails;
 import com.netflix.mediaclient.servicemgr.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.SearchResults;
+import com.netflix.mediaclient.servicemgr.PostPlayVideo;
 import com.netflix.mediaclient.servicemgr.MovieDetails;
 import com.netflix.mediaclient.servicemgr.LoLoMo;
 import com.netflix.mediaclient.servicemgr.Genre;
@@ -505,6 +506,10 @@ public final class NetflixService extends Service implements INetflixService
         this.mBrowseAgent.fetchMovieDetails(s, this.wrapCallback(new BrowseAgentClientCallback(n, n2)));
     }
     
+    public void fetchPostPlayVideos(final String s, final int n, final int n2) {
+        this.mBrowseAgent.fetchPostPlayVideos(s, this.wrapCallback(new BrowseAgentClientCallback(n, n2)));
+    }
+    
     public void fetchResource(final String s, final IClientLogging.AssetType assetType, final int n, final int n2) {
         this.mResourceFetcher.fetchResource(s, assetType, new ResourceFetcherClientCallback(n, n2));
     }
@@ -936,6 +941,16 @@ public final class NetflixService extends Service implements INetflixService
                 return;
             }
             netflixServiceCallback.onMovieDetailsFetched(this.requestId, movieDetails, n);
+        }
+        
+        @Override
+        public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final int n) {
+            final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)NetflixService.this.mClientCallbacks.get(this.clientId);
+            if (netflixServiceCallback == null) {
+                Log.w("NetflixService", "No client callback found for onPostPlayVideosFetched");
+                return;
+            }
+            netflixServiceCallback.onPostPlayVideosFetched(this.requestId, list, n);
         }
         
         @Override

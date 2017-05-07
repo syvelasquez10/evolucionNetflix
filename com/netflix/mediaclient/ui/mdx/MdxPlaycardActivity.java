@@ -1272,6 +1272,7 @@ public class MdxPlaycardActivity extends NetflixActivity implements EpisodeRowLi
         return true;
     }
     
+    @Override
     public boolean isTablet() {
         return this.mIsTablet;
     }

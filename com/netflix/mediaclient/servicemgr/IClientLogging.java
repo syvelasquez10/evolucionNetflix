@@ -5,20 +5,23 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
-import com.netflix.mediaclient.service.logging.ads.AdvertisingIdProvider;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
 import java.util.List;
 
 public interface IClientLogging
 {
+    public static final String APM_LOGGING_REQUEST_DELIVERY_STATUS = "com.netflix.mediaclient.intent.action.APM_LOGGING_REQUEST_DELIVERY_STATUS";
     public static final String CATEGORY_NFLOGGING = "com.netflix.mediaclient.intent.category.LOGGING";
+    public static final String EXTRA_DELIVERED = "delivered";
     public static final String EXTRA_FLUSH = "flush";
+    public static final String EXTRA_PAYLOAD = "payload";
     public static final String PAUSE_EVENTS_DELIVERY = "com.netflix.mediaclient.intent.action.LOG_PAUSE_EVENTS_DELIVERY";
+    public static final String PRESENTATION_TRACKING_LOGGING_REQUEST_DELIVERY_STATUS = "com.netflix.mediaclient.intent.action.PRESENTATION_TRACKING_LOGGING_REQUEST_DELIVERY_STATUS";
     public static final String RESUME_EVENTS_DELIVERY = "com.netflix.mediaclient.intent.action.LOG_RESUME_EVENTS_DELIVERY";
     
     List<SessionKey> getActiveLoggingSessions();
     
-    AdvertisingIdProvider getAdvertisingIdProvider();
+    AdvertiserIdLogging getAdvertiserIdLogging();
     
     ApplicationPerformanceMetricsLogging getApplicationPerformanceMetricsLogging();
     

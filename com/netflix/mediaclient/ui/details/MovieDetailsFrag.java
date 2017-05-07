@@ -100,10 +100,10 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
         final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131492938);
-        final View inflate = ((ViewStub)onCreateView.findViewById(2131231074)).inflate();
+        final View inflate = ((ViewStub)onCreateView.findViewById(2131231095)).inflate();
         inflate.setPadding(dimensionPixelOffset, 0, dimensionPixelOffset, 0);
-        this.similarShowsTitle = (TextView)inflate.findViewById(2131231057);
-        (this.gridView = (StaticGridView)inflate.findViewById(2131231058)).setLayoutAnimation(AnimationUtils.createGridLayoutAnimator((Context)this.getActivity()));
+        this.similarShowsTitle = (TextView)inflate.findViewById(2131231080);
+        (this.gridView = (StaticGridView)inflate.findViewById(2131231081)).setLayoutAnimation(AnimationUtils.createGridLayoutAnimator((Context)this.getActivity()));
         this.gridView.setFocusable(false);
         this.adapter = new SimilarItemsGridViewAdapter(this.getActivity(), this.gridView, true);
         this.gridView.setAdapter((ListAdapter)this.adapter);

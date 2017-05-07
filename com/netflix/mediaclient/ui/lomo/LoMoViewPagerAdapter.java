@@ -105,11 +105,6 @@ public class LoMoViewPagerAdapter extends PagerAdapter
                             LoMoViewPagerAdapter.this.refresh(Type.IQ, LoMoViewPagerAdapter.this.loMo, LoMoViewPagerAdapter.this.listViewPos);
                         }
                         LoMoViewPagerAdapter.this.pager.invalidateIqCache();
-                        return;
-                    }
-                    if ("com.netflix.mediaclient.intent.action.BA_CW_DATA_CHANGED".equals(action) && Type.CW.equals(LoMoViewPagerAdapter.this.state)) {
-                        Log.v("LoMoViewPagerAdapter", "CW row data changed");
-                        LoMoViewPagerAdapter.this.notifyDataSetChanged();
                     }
                 }
             }
@@ -161,7 +156,6 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         }
         final IntentFilter intentFilter = new IntentFilter("com.netflix.mediaclient.intent.action.BA_IQ_REFRESH");
         intentFilter.addAction("com.netflix.mediaclient.intent.action.BA_CW_REFRESH");
-        intentFilter.addAction("com.netflix.mediaclient.intent.action.BA_CW_DATA_CHANGED");
         this.activity.registerReceiver(this.browseReceiver, intentFilter);
     }
     

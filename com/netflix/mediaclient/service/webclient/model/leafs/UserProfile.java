@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 public class UserProfile implements com.netflix.mediaclient.servicemgr.UserProfile
 {
+    private static final String FIELD_AUTOPLAY_ON = "autoPlayOn";
     private static final String FIELD_AVATAR_URL = "avatarUrl";
     private static final String FIELD_EMAIL = "email";
     private static final String FIELD_EPERIENCE = "experienceType";
@@ -59,6 +60,7 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.UserProfi
             this.summary.email = JsonUtils.getString(jsonObject, "email", null);
             this.summary.isIqEnabled = JsonUtils.getBoolean(jsonObject, "isIqEnabled", false);
             this.summary.isPrimaryProfile = JsonUtils.getBoolean(jsonObject, "isPrimaryProfile", false);
+            this.summary.isAutoPlayEnabled = JsonUtils.getBoolean(jsonObject, "autoPlayOn", false);
             this.summary.experienceType = JsonUtils.getString(jsonObject, "experienceType", null);
             this.summary.social.socialStatus = JsonUtils.getBoolean(jsonObject, "socialStatus", false);
             this.summary.avatarUrl = JsonUtils.getString(jsonObject, "avatarUrl", null);
@@ -230,6 +232,11 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.UserProfi
     }
     
     @Override
+    public boolean isAutoPlayEnabled() {
+        return this.summary != null && this.summary.isAutoPlayEnabled;
+    }
+    
+    @Override
     public boolean isIQEnabled() {
         return this.summary != null && this.summary.isIqEnabled;
     }
@@ -261,6 +268,7 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.UserProfi
                 jsonObject.put("email", (Object)this.getEmail());
                 jsonObject.put("isIqEnabled", this.isIQEnabled());
                 jsonObject.put("isPrimaryProfile", this.isPrimaryProfile());
+                jsonObject.put("autoPlayOn", this.isAutoPlayEnabled());
                 jsonObject.put("experienceType", (Object)this.getEperienceType());
                 jsonObject.put("socialStatus", this.isSocialConnected());
                 jsonObject.put("avatarUrl", (Object)this.getAvatarUrl());
@@ -307,6 +315,7 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.UserProfi
         private String experienceType;
         private String firstName;
         private String geoCountry;
+        private boolean isAutoPlayEnabled;
         private boolean isIqEnabled;
         private boolean isPrimaryProfile;
         public List<Language> languages;

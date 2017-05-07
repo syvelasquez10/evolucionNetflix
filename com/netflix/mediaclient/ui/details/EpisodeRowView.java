@@ -59,7 +59,7 @@ public class EpisodeRowView extends RelativeLayout implements Checkable
     
     private void init() {
         ((Activity)this.getContext()).getLayoutInflater().inflate(2130903082, (ViewGroup)this);
-        this.setBackgroundResource(2130837825);
+        this.setBackgroundResource(2130837832);
         this.title = (TextView)this.findViewById(2131230847);
         this.synopsis = (TextView)this.findViewById(2131230849);
         this.playButton = (ImageView)this.findViewById(2131230846);

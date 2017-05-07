@@ -61,6 +61,10 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     }
     
     @Override
+    public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final int n) {
+    }
+    
+    @Override
     public void onQueueAdd(final int n) {
     }
     

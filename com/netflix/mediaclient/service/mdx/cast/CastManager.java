@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.mdx.cast;
 
+import android.widget.Toast;
 import com.google.android.gms.cast.CastMediaControlIntent;
 import com.netflix.mediaclient.service.configuration.CastConfiguration;
 import java.util.Iterator;
@@ -64,7 +65,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
             Log.d(CastManager.TAG, "createCastHandShakeMessage " + s + ", " + s2);
         }
         try {
-            jsonObject.put("type", (Object)"castHandShake").put("uuid", (Object)s).put("friendlyName", (Object)s2);
+            jsonObject.put("type", (Object)"castHandShake").put("uuid", (Object)s).put("friendlyName", (Object)s2).put("payload", (Object)"intent=sync");
             if (Log.isLoggable(CastManager.TAG, 3)) {
                 Log.d(CastManager.TAG, "createCastHandShakeMessage " + jsonObject.toString());
             }
@@ -105,6 +106,23 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
             }
         }
         return null;
+    }
+    
+    private String getIpAddress(final RouteInfo routeInfo) {
+        final String hostAddress = CastDevice.getFromBundle(routeInfo.getExtras()).getIpAddress().getHostAddress();
+        String string;
+        final String s = string = null;
+        if (StringUtils.isNotEmpty(hostAddress)) {
+            final int index = hostAddress.indexOf(".");
+            string = s;
+            if (index > 0) {
+                string = "0" + hostAddress.substring(index);
+            }
+        }
+        if (StringUtils.isNotEmpty(string)) {
+            return "cast://" + string;
+        }
+        return "cast://0.1.2.3";
     }
     
     private String getUuid(final String s) {
@@ -214,6 +232,12 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
                 Log.d(CastManager.TAG, "onMessageReceived @session, body:" + string);
             }
             this.nativeMessageReceived(string, this.getUuid(this.mSelectedRoute.getId()), "session");
+            this.mMainHandler.postDelayed((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    CastManager.this.nativeLaunchResult(false, CastManager.this.getUuid(CastManager.this.mSelectedRoute.getId()));
+                }
+            }, 50L);
         }
     }
     
@@ -341,7 +365,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
                 this.castLaunchApplication(this.mSelectedRoute = routeInfo);
             }
         }
-        this.nativeDeviceFound(this.getUuid(routeInfo.getId()), "cast://192.168.1.107", "CAST:" + routeInfo.getName());
+        this.nativeDeviceFound(this.getUuid(routeInfo.getId()), this.getIpAddress(routeInfo), "CAST:" + routeInfo.getName());
     }
     
     @Override
@@ -357,7 +381,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
             Log.d(CastManager.TAG, "onRouteRemoved " + routeInfo);
         }
         this.mListOfRoutes.remove(routeInfo);
-        if (routeInfo.equals(this.mSelectedRoute)) {
+        if (routeInfo != null) {
             this.nativeDeviceLost(this.getUuid(routeInfo.getId()));
         }
     }
@@ -425,8 +449,15 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
             public void run() {
                 new ArrayList<String>().add("urn:mdx-netflix-com:service:target:2");
                 CastManager.this.mMediaRouter = MediaRouter.getInstance(CastManager.this.mContext);
-                CastManager.this.mMediaRouteSelector = new MediaRouteSelector.Builder().addControlCategory(CastMediaControlIntent.categoryForCast(CastManager.this.mApplicationId)).build();
-                CastManager.this.startDiscovery();
+                try {
+                    CastManager.this.mMediaRouteSelector = new MediaRouteSelector.Builder().addControlCategory(CastMediaControlIntent.categoryForCast(CastManager.this.mApplicationId)).build();
+                    CastManager.this.startDiscovery();
+                }
+                catch (IllegalArgumentException ex) {
+                    Log.e(CastManager.TAG, "MediaRouteSelector: " + ex);
+                    CastConfiguration.setCastApplicationId(CastManager.this.mContext, "==invalid ApplicationId==");
+                    Toast.makeText(CastManager.this.mContext, (CharSequence)"Invalid ApplicationId, Enter New One", 1).show();
+                }
             }
         });
     }

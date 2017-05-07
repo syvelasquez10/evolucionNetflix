@@ -102,6 +102,11 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
+    public String getInterestingUrl() {
+        return null;
+    }
+    
+    @Override
     public String getNextEpisodeId() {
         return null;
     }
@@ -207,7 +212,17 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
+    public boolean isAutoPlayEnabled() {
+        return false;
+    }
+    
+    @Override
     public boolean isInQueue() {
+        return false;
+    }
+    
+    @Override
+    public boolean isNextPlayableEpisode() {
         return false;
     }
     

@@ -118,6 +118,8 @@ public interface IPlayer
         
         void onSubtitleShow(final String p0);
         
+        void onUpdatePts(final int p0);
+        
         void onVideoSizeChanged(final int p0, final int p1);
         
         void playbackClosed();

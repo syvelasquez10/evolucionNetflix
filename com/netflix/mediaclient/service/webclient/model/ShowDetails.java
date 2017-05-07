@@ -330,8 +330,18 @@ public class ShowDetails extends Show implements com.netflix.mediaclient.service
     }
     
     @Override
+    public boolean isAutoPlayEnabled() {
+        return this.currentEpisode != null && this.currentEpisode.isAutoPlayEnabled();
+    }
+    
+    @Override
     public boolean isInQueue() {
         return this.inQueue != null && this.inQueue.inQueue;
+    }
+    
+    @Override
+    public boolean isNextPlayableEpisode() {
+        return this.currentEpisode != null && this.currentEpisode.isNextPlayableEpisode();
     }
     
     @Override

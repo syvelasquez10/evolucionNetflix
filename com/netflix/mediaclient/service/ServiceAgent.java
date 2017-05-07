@@ -202,6 +202,8 @@ public abstract class ServiceAgent
         
         ApiEndpointRegistry getApiEndpointRegistry();
         
+        int getApmUserSessionDurationInSeconds();
+        
         int getAppVersionCode();
         
         int getBitrateCap();

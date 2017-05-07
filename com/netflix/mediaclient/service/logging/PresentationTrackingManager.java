@@ -4,21 +4,21 @@
 
 package com.netflix.mediaclient.service.logging;
 
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.EventQueue;
 import com.netflix.mediaclient.servicemgr.UiLocation;
 import com.netflix.mediaclient.servicemgr.Trackable;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebClientFactory;
+import com.netflix.mediaclient.service.logging.presentation.PresentationWebCallback;
 import com.netflix.mediaclient.service.logging.presentation.PresentationRequest;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
 import java.io.File;
+import java.util.concurrent.TimeUnit;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.presentation.PresentationEvent;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebClient;
-import com.netflix.mediaclient.service.logging.presentation.PresentationWebCallback;
 import java.util.concurrent.ScheduledExecutorService;
 import com.netflix.mediaclient.util.data.DataRepository;
 import android.content.Context;
@@ -34,38 +34,11 @@ class PresentationTrackingManager implements PresentationTracking
     private DataRepository mDataRepository;
     private ScheduledExecutorService mExecutor;
     private LoggingAgent mOwner;
-    private PresentationWebCallback mPresentationCallback;
     private PresentationTrackingEventQueue mPresentationEventQueue;
     private PresentationWebClient mPresentationWebClient;
     private ServiceAgent.UserAgentInterface mUser;
     
     PresentationTrackingManager(final Context mContext, final LoggingAgent mOwner, final ServiceAgent.UserAgentInterface mUser) {
-        this.mPresentationCallback = new PresentationWebCallback() {
-            @Override
-            public void onEventsDelivered(final String s) {
-                if (Log.isLoggable("nf_presentation", 3)) {
-                    Log.d("nf_presentation", "Events delivered for  " + s);
-                }
-                PresentationTrackingManager.this.mOwner.clearFailureCounter();
-                PresentationTrackingManager.this.removeSavedEvents(s);
-            }
-            
-            @Override
-            public void onEventsDeliveryFailed(final String s) {
-                if (Log.isLoggable("nf_presentation", 6)) {
-                    Log.e("nf_presentation", "Events delivery failed for  " + s);
-                }
-                if (StringUtils.isEmpty(s)) {
-                    return;
-                }
-                PresentationTrackingManager.this.mExecutor.schedule(new Runnable() {
-                    @Override
-                    public void run() {
-                        PresentationTrackingManager.this.loadAndSendEvent(s);
-                    }
-                }, PresentationTrackingManager.this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
-            }
-        };
         this.mOwner = mOwner;
         this.mContext = mContext;
         this.mUser = mUser;
@@ -135,8 +108,9 @@ class PresentationTrackingManager implements PresentationTracking
                 }
                 final PresentationRequest presentationRequest = new PresentationRequest();
                 try {
-                    presentationRequest.initFromString(new String(array, "utf-8"));
-                    PresentationTrackingManager.this.mPresentationWebClient.sendPresentationEvents(s, presentationRequest, PresentationTrackingManager.this.mPresentationCallback);
+                    final String s2 = new String(array, "utf-8");
+                    presentationRequest.initFromString(s2);
+                    PresentationTrackingManager.this.mPresentationWebClient.sendPresentationEvents(s, presentationRequest, new PresentationWebCallbackImpl(s2));
                 }
                 catch (Throwable t) {
                     Log.e("nf_presentation", "Failed to send events. Try to delete it.", t);
@@ -177,7 +151,7 @@ class PresentationTrackingManager implements PresentationTracking
             if (Log.isLoggable("nf_presentation", 2)) {
                 Log.d("nf_presentation", "Payload for presentation request " + string);
             }
-            this.mPresentationWebClient.sendPresentationEvents(this.saveEvents(string), presentationRequest, this.mPresentationCallback);
+            this.mPresentationWebClient.sendPresentationEvents(this.saveEvents(string), presentationRequest, new PresentationWebCallbackImpl(string));
         }
         catch (Exception ex) {
             Log.e("nf_presentation", "Failed to create JSON object for presentation request", ex);
@@ -228,6 +202,39 @@ class PresentationTrackingManager implements PresentationTracking
         @Override
         protected void doFlush(final List<PresentationEvent> list) {
             PresentationTrackingManager.this.sendPresentationEvents(list);
+        }
+    }
+    
+    private class PresentationWebCallbackImpl implements PresentationWebCallback
+    {
+        private String payload;
+        
+        public PresentationWebCallbackImpl(final String s) {
+        }
+        
+        @Override
+        public void onEventsDelivered(final String s) {
+            if (Log.isLoggable("nf_presentation", 3)) {
+                Log.d("nf_presentation", "Events delivered for  " + s);
+            }
+            PresentationTrackingManager.this.mOwner.clearFailureCounter();
+            PresentationTrackingManager.this.removeSavedEvents(s);
+        }
+        
+        @Override
+        public void onEventsDeliveryFailed(final String s) {
+            if (Log.isLoggable("nf_presentation", 6)) {
+                Log.e("nf_presentation", "Events delivery failed for  " + s);
+            }
+            if (StringUtils.isEmpty(s)) {
+                return;
+            }
+            PresentationTrackingManager.this.mExecutor.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    PresentationTrackingManager.this.loadAndSendEvent(s);
+                }
+            }, PresentationTrackingManager.this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
         }
     }
 }

@@ -58,7 +58,7 @@ public class CwView extends RelativeLayout implements IVideoView<CWVideo>
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837824);
+        this.setBackgroundResource(2130837831);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final Activity activity = (Activity)this.getContext();
         activity.getLayoutInflater().inflate(2130903081, (ViewGroup)this);

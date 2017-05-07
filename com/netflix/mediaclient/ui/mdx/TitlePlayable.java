@@ -14,6 +14,8 @@ class TitlePlayable implements Playable
     private int mEndtime;
     private boolean mEpisode;
     private int mEpisodeNumber;
+    private boolean mIsAutoPlayEnabled;
+    private boolean mIsNextPlayableEpisode;
     private String mParentId;
     private String mParentTitle;
     private String mPlayableId;
@@ -35,6 +37,8 @@ class TitlePlayable implements Playable
         this.mSeasonNumber = asset.getSeasonNumber();
         this.mEpisodeNumber = asset.getEpisodeNumber();
         this.mDuration = asset.getDuration();
+        this.mIsAutoPlayEnabled = asset.isAutoPlayEnabled();
+        this.mIsNextPlayableEpisode = asset.isNextPlayableEpisode();
     }
     
     @Override
@@ -115,6 +119,16 @@ class TitlePlayable implements Playable
     @Override
     public VideoType getType() {
         return null;
+    }
+    
+    @Override
+    public boolean isAutoPlayEnabled() {
+        return this.mIsAutoPlayEnabled;
+    }
+    
+    @Override
+    public boolean isNextPlayableEpisode() {
+        return this.mIsNextPlayableEpisode;
     }
     
     @Override

@@ -145,9 +145,9 @@ public class SignupActivity extends AccountActivity
     }
     
     private void setUpSignInView(final ServiceManager serviceManager) {
-        this.setContentView(2130903143);
-        this.mWebView = (WebView)this.findViewById(2131231054);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131231022);
+        this.setContentView(2130903150);
+        this.mWebView = (WebView)this.findViewById(2131231077);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131231026);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
         this.mSoftwareVersion = serviceManager.getSoftwareVersion();

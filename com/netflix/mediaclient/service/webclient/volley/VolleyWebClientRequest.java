@@ -243,7 +243,6 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                                                     return Response.error(new ParseException((String)networkResponse));
                                                 }
                                                 break Label_0397;
-                                                // iftrue(Label_0187:, !this.mUserCredentialRegistry.getSecureNetflixIdName().equalsIgnoreCase(split2[0].trim()))
                                                 while (true) {
                                                     s5 = split2[1];
                                                     s4 = s2;
@@ -252,13 +251,14 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                                                     s2 = s4;
                                                     s3 = s5;
                                                     continue Label_0187_Outer;
+                                                    responseValid = true;
+                                                    continue Label_0124_Outer;
                                                     s4 = s2;
                                                     s5 = s3;
                                                     continue;
                                                 }
-                                                responseValid = true;
-                                                continue Label_0124_Outer;
                                             }
+                                            // iftrue(Label_0187:, !this.mUserCredentialRegistry.getSecureNetflixIdName().equalsIgnoreCase(split2[0].trim()))
                                             catch (UnsupportedEncodingException ex2) {
                                                 networkResponse = (NetworkResponse)new String(networkResponse.data);
                                                 continue;

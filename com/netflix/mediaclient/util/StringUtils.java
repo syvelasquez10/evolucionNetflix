@@ -7,12 +7,12 @@ package com.netflix.mediaclient.util;
 import java.util.regex.Matcher;
 import java.util.Locale;
 import java.io.IOException;
-import android.content.res.Resources;
 import android.net.Uri;
 import com.netflix.mediaclient.Log;
 import java.io.File;
+import com.netflix.mediaclient.servicemgr.VideoDetails;
+import android.content.res.Resources;
 import com.netflix.mediaclient.servicemgr.ShowDetails;
-import com.netflix.mediaclient.servicemgr.MovieDetails;
 import java.util.StringTokenizer;
 import android.util.Pair;
 import android.text.Html;
@@ -62,6 +62,9 @@ public final class StringUtils
     }
     
     public static CharSequence createBoldLabeledText(final Context context, final int n, final String s) {
+        if (context == null) {
+            return "";
+        }
         final String string = context.getString(n);
         final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder((CharSequence)string);
         spannableStringBuilder.setSpan((Object)new StyleSpan(1), 0, string.length(), 0);
@@ -138,12 +141,27 @@ public final class StringUtils
         return array;
     }
     
-    public static CharSequence getBasicInfoString(final Context context, final MovieDetails movieDetails) {
-        return movieDetails.getYear() + "   " + movieDetails.getCertification() + "   " + String.format(context.getResources().getString(2131296553), TimeUtils.convertSecondsToMinutes(movieDetails.getRuntime()));
+    public static CharSequence getBasicInfoString(final Context context, final ShowDetails showDetails) {
+        if (context == null) {
+            return "";
+        }
+        final Resources resources = context.getResources();
+        if (resources == null) {
+            return "";
+        }
+        return showDetails.getYear() + "   " + showDetails.getCertification() + "   " + resources.getQuantityString(2131623936, showDetails.getNumOfSeasons(), new Object[] { showDetails.getNumOfSeasons() });
     }
     
-    public static CharSequence getBasicInfoString(final Context context, final ShowDetails showDetails) {
-        return showDetails.getYear() + "   " + showDetails.getCertification() + "   " + context.getResources().getQuantityString(2131623936, showDetails.getNumOfSeasons(), new Object[] { showDetails.getNumOfSeasons() });
+    public static CharSequence getBasicInfoString(final Context context, final VideoDetails videoDetails) {
+        final StringBuilder sb = new StringBuilder();
+        if (videoDetails.getYear() > 0) {
+            sb.append(videoDetails.getYear()).append("   ");
+        }
+        if (videoDetails.getCertification() != null) {
+            sb.append(videoDetails.getCertification()).append("   ");
+        }
+        sb.append(String.format(context.getResources().getString(2131296553), TimeUtils.convertSecondsToMinutes(videoDetails.getRuntime())));
+        return sb.toString();
     }
     
     public static String getFileAsString(final File p0) throws Exception {

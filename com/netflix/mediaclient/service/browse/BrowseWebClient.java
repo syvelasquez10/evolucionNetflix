@@ -32,6 +32,8 @@ public interface BrowseWebClient
     
     void fetchMovieDetails(final String p0, final BrowseAgentCallback p1);
     
+    void fetchPostPlayVideos(final String p0, final BrowseAgentCallback p1);
+    
     void fetchSeasonDetails(final String p0, final BrowseAgentCallback p1);
     
     void fetchSeasons(final String p0, final int p1, final int p2, final BrowseAgentCallback p3);

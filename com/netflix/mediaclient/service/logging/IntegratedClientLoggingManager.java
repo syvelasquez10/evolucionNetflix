@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.logging;
 
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.EventQueue;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
@@ -15,6 +16,7 @@ import java.util.Iterator;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
 import com.netflix.mediaclient.service.logging.client.model.LoggingRequest;
+import com.netflix.mediaclient.service.logging.client.ClientLoggingWebCallback;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
@@ -22,11 +24,10 @@ import java.io.File;
 import com.netflix.mediaclient.servicemgr.UserProfile;
 import com.netflix.mediaclient.servicemgr.ProfileType;
 import com.netflix.mediaclient.service.logging.client.model.UIMode;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
-import com.netflix.mediaclient.service.logging.client.model.Event;
 import java.util.concurrent.TimeUnit;
-import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.logging.client.model.Event;
 import java.util.HashMap;
 import java.util.Collections;
 import java.util.ArrayList;
@@ -42,19 +43,17 @@ import java.util.Map;
 import com.netflix.mediaclient.util.data.DataRepository;
 import android.content.Context;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClient;
-import com.netflix.mediaclient.service.logging.client.ClientLoggingWebCallback;
 import com.netflix.mediaclient.android.app.ApplicationStateListener;
 
 class IntegratedClientLoggingManager implements EventHandler, ApplicationStateListener
 {
     private static final int CL_MAX_TIME_THAN_EVENT_CAN_STAY_IN_QUEUE_MS = 60000;
     private static final int CL_MIN_NUMBER_OF_EVENTS_TO_POST = 30;
+    private static final int DEFAULT_USER_SESSION_TIMEOUT_MS = 1800000;
     static final String REPOSITORY_DIR = "iclevents";
     private static final String TAG = "nf_log";
-    private static final int USER_SESSION_TIMEOUT_MS = 1800000;
     private UserActionLoggingImpl mActionLogging;
     private ApmLoggingImpl mApmLogging;
-    private ClientLoggingWebCallback mCallback;
     private ClientLoggingWebClient mClientLoggingWebClient;
     private Context mContext;
     private DataRepository mDataRepository;
@@ -75,32 +74,6 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         this.mEventQueue = new ClientLoggingEventQueue();
         this.mUserSessionEnabledStatusMap = new HashMap<String, Boolean>();
         this.mEventPerSessionRndGeneratorMap = new HashMap<String, Random>();
-        this.mCallback = new ClientLoggingWebCallback() {
-            @Override
-            public void onEventsDelivered(final String s) {
-                if (Log.isLoggable("nf_log", 3)) {
-                    Log.d("nf_log", "Events delivered for  " + s);
-                }
-                IntegratedClientLoggingManager.this.mOwner.clearFailureCounter();
-                IntegratedClientLoggingManager.this.removeSavedEvents(s);
-            }
-            
-            @Override
-            public void onEventsDeliveryFailed(final String s) {
-                if (Log.isLoggable("nf_log", 6)) {
-                    Log.e("nf_log", "Events delivery failed for  " + s);
-                }
-                if (StringUtils.isEmpty(s)) {
-                    return;
-                }
-                IntegratedClientLoggingManager.this.mExecutor.schedule(new Runnable() {
-                    @Override
-                    public void run() {
-                        IntegratedClientLoggingManager.this.loadAndSendEvent(s);
-                    }
-                }, IntegratedClientLoggingManager.this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
-            }
-        };
         this.mOwner = mOwner;
         this.mContext = mContext;
         this.mUser = mUser;
@@ -112,11 +85,12 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         if (Log.isLoggable("nf_log", 3)) {
             Log.d("nf_log", "Since last user interaction elapsed (sec): " + timeSinceLastUserInteraction / 1000L);
         }
-        if (timeSinceLastUserInteraction >= 1800000L && this.mApmLogging.isUserSessionExist()) {
+        final long userSessionDurationInMs = this.getUserSessionDurationInMs();
+        if (timeSinceLastUserInteraction >= userSessionDurationInMs && this.mApmLogging.isUserSessionExist()) {
             Log.d("nf_log", "It is more than 30 minutes and user session exist. End user session");
             this.mApmLogging.endUserSession(ApplicationPerformanceMetricsLogging.EndReason.timeout, System.currentTimeMillis() - timeSinceLastUserInteraction);
         }
-        else if (timeSinceLastUserInteraction < 1800000L && !this.mApmLogging.isUserSessionExist()) {
+        else if (timeSinceLastUserInteraction < userSessionDurationInMs && !this.mApmLogging.isUserSessionExist()) {
             Log.d("nf_log", "It is less than 30 minutes and user session does NOT exist. Start user session");
             this.mApmLogging.startUserSession(ApplicationPerformanceMetricsLogging.Trigger.inputEvent);
         }
@@ -166,6 +140,14 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
             return UIMode.jfk;
         }
         return UIMode.member;
+    }
+    
+    private long getUserSessionDurationInMs() {
+        final ServiceAgent.ConfigurationAgentInterface configuration = this.mService.getConfiguration();
+        if (configuration == null) {
+            return 1800000L;
+        }
+        return 1000L * configuration.getApmUserSessionDurationInSeconds();
     }
     
     private void initDataRepository() {
@@ -246,14 +228,15 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         }
         this.mDataRepository.load(s, (DataRepository.DataLoadedCallback)new DataRepository.DataLoadedCallback() {
             @Override
-            public void onDataLoaded(final String s, final byte[] array, final long n) {
+            public void onDataLoaded(String s, final byte[] array, final long n) {
                 if (array == null || array.length < 1) {
                     Log.e("nf_log", "We failed to retrieve payload. Trying to delete it");
                     IntegratedClientLoggingManager.this.removeSavedEvents(s);
                     return;
                 }
                 try {
-                    IntegratedClientLoggingManager.this.mClientLoggingWebClient.sendLoggingEvents(s, new String(array, "utf-8"), IntegratedClientLoggingManager.this.mCallback);
+                    s = new String(array, "utf-8");
+                    IntegratedClientLoggingManager.this.mClientLoggingWebClient.sendLoggingEvents(s, s, new ClientLoggingWebCallbackImpl(s));
                 }
                 catch (Throwable t) {
                     Log.e("nf_log", "Failed to send events. Try to delete it.", t);
@@ -295,7 +278,7 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
                 Log.v("nf_log", "Payload for log request: ");
                 Log.dumpVerbose("nf_log", string);
             }
-            this.mClientLoggingWebClient.sendLoggingEvents(this.saveEvents(string), string, this.mCallback);
+            this.mClientLoggingWebClient.sendLoggingEvents(this.saveEvents(string), string, new ClientLoggingWebCallbackImpl(string));
         }
         catch (Exception ex) {
             Log.e("nf_log", "Failed to create JSON object for logging request", ex);
@@ -540,6 +523,39 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         @Override
         protected void doFlush(final List<Event> list) {
             IntegratedClientLoggingManager.this.sendEvents(list);
+        }
+    }
+    
+    private class ClientLoggingWebCallbackImpl implements ClientLoggingWebCallback
+    {
+        private String payload;
+        
+        public ClientLoggingWebCallbackImpl(final String s) {
+        }
+        
+        @Override
+        public void onEventsDelivered(final String s) {
+            if (Log.isLoggable("nf_log", 3)) {
+                Log.d("nf_log", "Events delivered for  " + s);
+            }
+            IntegratedClientLoggingManager.this.mOwner.clearFailureCounter();
+            IntegratedClientLoggingManager.this.removeSavedEvents(s);
+        }
+        
+        @Override
+        public void onEventsDeliveryFailed(final String s) {
+            if (Log.isLoggable("nf_log", 6)) {
+                Log.e("nf_log", "Events delivery failed for  " + s);
+            }
+            if (StringUtils.isEmpty(s)) {
+                return;
+            }
+            IntegratedClientLoggingManager.this.mExecutor.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    IntegratedClientLoggingManager.this.loadAndSendEvent(s);
+                }
+            }, IntegratedClientLoggingManager.this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
         }
     }
 }

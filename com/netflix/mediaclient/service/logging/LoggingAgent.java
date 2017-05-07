@@ -6,9 +6,9 @@ package com.netflix.mediaclient.service.logging;
 
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.servicemgr.PresentationTracking;
+import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
 import java.util.List;
-import com.netflix.mediaclient.service.logging.ads.AdvertisingIdProviderFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import android.support.v4.content.LocalBroadcastManager;
@@ -36,14 +36,14 @@ import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import com.netflix.mediaclient.servicemgr.CustomerEventLogging;
 import com.netflix.mediaclient.servicemgr.CmpEventLogging;
 import com.netflix.mediaclient.servicemgr.BreadcrumbLogging;
-import com.netflix.mediaclient.service.logging.ads.AdvertisingIdProvider;
+import com.netflix.mediaclient.service.logging.ads.AdvertiserIdLoggingManager;
 import java.util.concurrent.ThreadFactory;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.service.ServiceAgent;
 
 public final class LoggingAgent extends ServiceAgent implements IClientLogging
 {
-    private static final String CRITTER_VERSION_NAME = "3.4.2";
+    private static final String CRITTER_VERSION_NAME = "3.5.0";
     private static final boolean ENABLE_CRITTERCISM = true;
     private static final long EVENT_POST_TIMEOUT_MS = 60000L;
     static final String ICL_REPOSITORY_DIR = "iclevents";
@@ -52,7 +52,7 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
     private static final String TAG = "nf_log";
     private static final ThreadFactory sThreadFactory;
     private boolean crittercismReady;
-    private AdvertisingIdProvider mAdvertisingIdProvider;
+    private AdvertiserIdLoggingManager mAdvertiserIdLoggingManager;
     private BreadcrumbLogging mBreadcrumbLogging;
     private CmpEventLogging mCmpEventLogging;
     private CustomerEventLogging mCustomerEventLogging;
@@ -110,7 +110,7 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
         Log.d("nf_log", "Crittercism init starts...");
         final CrittercismConfig crittercismConfig = new CrittercismConfig();
         crittercismConfig.setNdkCrashReportingEnabled(true);
-        crittercismConfig.setCustomVersionName("3.4.2");
+        crittercismConfig.setCustomVersionName("3.5.0");
         Crittercism.initialize(this.getService().getApplicationContext(), SecurityRepository.getCrittercismAppId(), crittercismConfig);
         final JSONObject metadata = new JSONObject();
         try {
@@ -176,6 +176,9 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
     public void destroy() {
         Log.d("nf_log", "PNA:: destroy and unregister receiver");
         this.unregisterReceiver();
+        if (this.mAdvertiserIdLoggingManager != null) {
+            this.mAdvertiserIdLoggingManager.destroy();
+        }
         super.destroy();
     }
     
@@ -189,14 +192,15 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
         this.mCmpEventLogging = new LegacyCmpEventLoggingImpl(this, this.getContext());
         this.mIntegratedClientLoggingManager = new IntegratedClientLoggingManager(this.getContext(), this, this.getUser(), this.getService());
         this.mPresentationTrackingManager = new PresentationTrackingManager(this.getContext(), this, this.getUser());
+        this.mAdvertiserIdLoggingManager = new AdvertiserIdLoggingManager(this.getContext(), this);
         Log.d("nf_log", "ClientLoggingAgent::init create executor thread start ");
         this.mExecutor = Executors.newSingleThreadScheduledExecutor(LoggingAgent.sThreadFactory);
         Log.d("nf_log", "ClientLoggingAgent::init create executor thread done ");
         this.mExecutor.scheduleAtFixedRate(this.mEventPostCheck, 60000L, 60000L, TimeUnit.MILLISECONDS);
         this.mIntegratedClientLoggingManager.init(this.mExecutor);
         this.mPresentationTrackingManager.init(this.mExecutor);
+        this.mAdvertiserIdLoggingManager.init();
         this.registerReceiver();
-        this.mAdvertisingIdProvider = AdvertisingIdProviderFactory.getInstance(this.getContext());
         this.initCompleted(0);
         Log.d("nf_log", "ClientLoggingAgent::init done ");
     }
@@ -210,8 +214,8 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
     }
     
     @Override
-    public AdvertisingIdProvider getAdvertisingIdProvider() {
-        return this.mAdvertisingIdProvider;
+    public AdvertiserIdLogging getAdvertiserIdLogging() {
+        return this.mAdvertiserIdLoggingManager;
     }
     
     @Override

@@ -124,6 +124,11 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     }
     
     @Override
+    public void fetchPostPlayVideos(final String s, final BrowseAgentCallback browseAgentCallback) {
+        this.webclient.sendRequest(new FetchPostPlayVideosRequest(this.service.getApplicationContext(), this.service.getConfiguration(), s, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
+    }
+    
+    @Override
     public void fetchSeasonDetails(final String s, final BrowseAgentCallback browseAgentCallback) {
         this.webclient.sendRequest(new FetchSeasonDetailsRequest(this.service.getApplicationContext(), this.service.getConfiguration(), s, browseAgentCallback));
     }

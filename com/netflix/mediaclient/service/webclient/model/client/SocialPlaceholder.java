@@ -192,7 +192,17 @@ public abstract class SocialPlaceholder implements VideoDetails
     }
     
     @Override
+    public boolean isAutoPlayEnabled() {
+        throw new RuntimeException("Not implemented");
+    }
+    
+    @Override
     public boolean isInQueue() {
+        throw new RuntimeException("Not implemented");
+    }
+    
+    @Override
+    public boolean isNextPlayableEpisode() {
         throw new RuntimeException("Not implemented");
     }
     

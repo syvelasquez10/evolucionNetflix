@@ -53,7 +53,7 @@ public class SearchActionBar extends NetflixActionBar
     private void configureSearchViewIcon() {
         final ImageView imageView = (ImageView)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_mag_icon", (String)null, (String)null));
         if (imageView != null) {
-            imageView.setImageResource(2130837712);
+            imageView.setImageResource(2130837713);
         }
     }
     
@@ -75,8 +75,8 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     private void replaceBackgroundDrawables() {
-        this.replaceBackgroundDrawable("android:id/search_plate", 2130837816);
-        this.replaceBackgroundDrawable("android:id/submit_area", 2130837817);
+        this.replaceBackgroundDrawable("android:id/search_plate", 2130837823);
+        this.replaceBackgroundDrawable("android:id/submit_area", 2130837824);
     }
     
     public void clearFocus() {

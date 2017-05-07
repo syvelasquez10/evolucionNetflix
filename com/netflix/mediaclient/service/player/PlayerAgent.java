@@ -78,6 +78,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private static final int NETWORK_CHECK_TIMEOUT = 30000;
     public static final int PLAYBACK_ENDED = 4;
     public static final int PLAYBACK_INITIATED = 2;
+    private static final int SIXTY_COUNT = 60;
     private static final int STATE_CLOSED = 4;
     private static final int STATE_CREATED = -1;
     private static final int STATE_OPENING = 0;
@@ -133,6 +134,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private final BroadcastReceiver playerChangesReceiver;
     private boolean preparedCompleted;
     private int prevEndPosition;
+    private int ptsTicker;
     private int seekedToPosition;
     private boolean seeking;
     private boolean splashScreenRemoved;
@@ -157,6 +159,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         this.splashScreenRemoved = false;
         this.mBufferingCompleted = false;
         this.ignoreErrorsWhileActionId12IsProcessed = false;
+        this.ptsTicker = 0;
         this.mState = -1;
         this.toPlayAfterStop = false;
         this.toOpenAfterClose = false;
@@ -164,65 +167,70 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         this.onOpenRunnable = new Runnable() {
             @Override
             public void run() {
+            Label_0494_Outer:
                 while (true) {
-                    Label_0544: {
-                    Label_0519:
+                    Label_0562: {
                         while (true) {
-                            synchronized (PlayerAgent.this) {
-                                PlayerAgent.this.mMedia.reset();
-                                PlayerAgent.this.prevEndPosition = -1;
-                                PlayerAgent.this.validPtsRecieved = false;
-                                PlayerAgent.this.mInPlayback = false;
-                                PlayerAgent.this.inPlaybackSession = false;
-                                PlayerAgent.this.preparedCompleted = false;
-                                PlayerAgent.this.seekedToPosition = (int)(Object)Long.valueOf(PlayerAgent.this.mBookmark);
-                                PlayerAgent.this.mBufferingCompleted = false;
-                                PlayerAgent.this.pendingError = null;
-                                if (PlayerAgent.this.mTimer != null) {
-                                    PlayerAgent.this.mStartPlayTimeoutTask = new StartPlayTimeoutTask();
-                                    PlayerAgent.this.mTimer.schedule(PlayerAgent.this.mStartPlayTimeoutTask, 30000L);
-                                }
-                                if (Log.isLoggable(PlayerAgent.TAG, 3)) {
-                                    Log.d(PlayerAgent.TAG, "Player state is " + PlayerAgent.this.mState);
-                                }
-                                if (PlayerAgent.this.mState != 4 && PlayerAgent.this.mState != -1) {
-                                    break Label_0544;
-                                }
-                                Log.d(PlayerAgent.TAG, "Player state was CLOSED or CREATED, cancel timeout task!");
-                                PlayerAgent.this.mState = 5;
-                                if (PlayerAgent.this.mStartPlayTimeoutTask != null) {
-                                    final boolean cancel = PlayerAgent.this.mStartPlayTimeoutTask.cancel();
+                        Label_0537:
+                            while (true) {
+                                synchronized (PlayerAgent.this) {
+                                    PlayerAgent.this.mMedia.reset();
+                                    PlayerAgent.this.prevEndPosition = -1;
+                                    PlayerAgent.this.validPtsRecieved = false;
+                                    PlayerAgent.this.mInPlayback = false;
+                                    PlayerAgent.this.inPlaybackSession = false;
+                                    PlayerAgent.this.splashScreenRemoved = false;
+                                    PlayerAgent.this.preparedCompleted = false;
+                                    PlayerAgent.this.seekedToPosition = (int)(Object)Long.valueOf(PlayerAgent.this.mBookmark);
+                                    PlayerAgent.this.mBufferingCompleted = false;
+                                    PlayerAgent.this.pendingError = null;
+                                    if (PlayerAgent.this.mTimer != null) {
+                                        PlayerAgent.this.mStartPlayTimeoutTask = new StartPlayTimeoutTask();
+                                        PlayerAgent.this.mTimer.schedule(PlayerAgent.this.mStartPlayTimeoutTask, 30000L);
+                                    }
                                     if (Log.isLoggable(PlayerAgent.TAG, 3)) {
-                                        Log.d(PlayerAgent.TAG, "Task was canceled " + cancel);
+                                        Log.d(PlayerAgent.TAG, "Player state is " + PlayerAgent.this.mState);
+                                    }
+                                    if (PlayerAgent.this.mState != 4 && PlayerAgent.this.mState != -1) {
+                                        break Label_0562;
+                                    }
+                                    Log.d(PlayerAgent.TAG, "Player state was CLOSED or CREATED, cancel timeout task!");
+                                    PlayerAgent.this.mState = 5;
+                                    if (PlayerAgent.this.mStartPlayTimeoutTask != null) {
+                                        final boolean cancel = PlayerAgent.this.mStartPlayTimeoutTask.cancel();
+                                        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                                            Log.d(PlayerAgent.TAG, "Task was canceled " + cancel);
+                                        }
+                                    }
+                                    else {
+                                        Log.w(PlayerAgent.TAG, "Timer task was null!!!");
+                                    }
+                                    if (PlayerAgent.this.mTimer != null) {
+                                        final int purge = PlayerAgent.this.mTimer.purge();
+                                        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                                            Log.d(PlayerAgent.TAG, "Canceled tasks: " + purge);
+                                        }
+                                        PlayerAgent.this.reloadPlayer();
+                                        PlayerAgent.this.mMedia.setStreamingQoe(PlayerAgent.this.getConfigurationAgent().getStreamingQoe());
+                                        PlayerAgent.this.mMedia.open(PlayerAgent.this.mMovieId, PlayerAgent.this.mPlayContext, PlayerAgent.this.getCurrentNetType());
+                                        PlayerAgent.this.toOpenAfterClose = false;
+                                        final String value = PlayerAgent.this.getConfigurationAgent().getDeviceCategory().getValue();
+                                        if (Open.NetType.wifi.equals(PlayerAgent.this.getCurrentNetType())) {
+                                            Log.i(PlayerAgent.TAG, "Setting WifiApInfo");
+                                            PlayerAgent.this.mMedia.setWifiApsInfo(PlayerAgent.this.getContext(), value, true);
+                                            PlayerAgent.this.ptsTicker = -1;
+                                            return;
+                                        }
+                                        break Label_0537;
                                     }
                                 }
-                                else {
-                                    Log.w(PlayerAgent.TAG, "Timer task was null!!!");
-                                }
-                                if (PlayerAgent.this.mTimer != null) {
-                                    final int purge = PlayerAgent.this.mTimer.purge();
-                                    if (Log.isLoggable(PlayerAgent.TAG, 3)) {
-                                        Log.d(PlayerAgent.TAG, "Canceled tasks: " + purge);
-                                    }
-                                    PlayerAgent.this.reloadPlayer();
-                                    PlayerAgent.this.mMedia.setStreamingQoe(PlayerAgent.this.getConfigurationAgent().getStreamingQoe());
-                                    PlayerAgent.this.mMedia.open(PlayerAgent.this.mMovieId, PlayerAgent.this.mPlayContext, PlayerAgent.this.getCurrentNetType());
-                                    PlayerAgent.this.toOpenAfterClose = false;
-                                    final String value = PlayerAgent.this.getConfigurationAgent().getDeviceCategory().getValue();
-                                    if (Open.NetType.wifi.equals(PlayerAgent.this.getCurrentNetType())) {
-                                        Log.i(PlayerAgent.TAG, "Setting WifiApInfo");
-                                        PlayerAgent.this.mMedia.setWifiApsInfo(PlayerAgent.this.getContext(), value, true);
-                                        return;
-                                    }
-                                    break Label_0519;
-                                }
+                                Log.w(PlayerAgent.TAG, "Timer was null!!!");
+                                continue Label_0494_Outer;
                             }
-                            Log.w(PlayerAgent.TAG, "Timer was null!!!");
+                            final String s;
+                            PlayerAgent.this.mMedia.setWifiApsInfo(PlayerAgent.this.getContext(), s, false);
                             continue;
                         }
-                        final String s;
-                        PlayerAgent.this.mMedia.setWifiApsInfo(PlayerAgent.this.getContext(), s, false);
-                        return;
                     }
                     PlayerAgent.this.toOpenAfterClose = true;
                     Log.d(PlayerAgent.TAG, "invokeMethod(open) has to wait...");
@@ -251,17 +259,17 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
                     PlayerAgent.this.seeking = true;
                     PlayerAgent.this.mInPlayback = false;
                     final int duration = PlayerAgent.this.getDuration();
-                    final int access$700 = PlayerAgent.this.seekedToPosition;
+                    final int access$800 = PlayerAgent.this.seekedToPosition;
                     int n;
                     if (PlayerAgent.this.seekedToPosition + 10000 >= duration && duration > 0) {
                         Log.d(PlayerAgent.TAG, "seek to close to EOS, defaulting to 10 seconss before EOS.");
                         n = duration - 10000;
                     }
                     else {
-                        n = access$700;
+                        n = access$800;
                         if (Log.isLoggable(PlayerAgent.TAG, 3)) {
                             Log.d(PlayerAgent.TAG, "seek to position " + PlayerAgent.this.seekedToPosition + ", duration " + duration);
-                            n = access$700;
+                            n = access$800;
                         }
                     }
                     PlayerAgent.this.mMedia.seekTo(n, PlayerAgent.this.mForcedRebuffer);
@@ -326,6 +334,14 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
                 }
             }
         };
+    }
+    
+    private void clearBifs() {
+        Log.d(PlayerAgent.TAG, "preRelease()");
+        if (this.mBifManager != null) {
+            this.mBifManager.release();
+            this.mBifManager = null;
+        }
     }
     
     private void close2() {
@@ -860,6 +876,25 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
             }
         }
         this.handleSubtitleUpdate(n);
+        if (this.isPlaying()) {
+            final int ptsTicker = this.ptsTicker + 1;
+            this.ptsTicker = ptsTicker;
+            if (ptsTicker % 60 == 0 && Open.NetType.wifi.equals(this.getCurrentNetType())) {
+                this.mMedia.setWifiLinkSpeed(this.getContext());
+                this.ptsTicker = 0;
+            }
+        }
+        final Iterator<PlayerListener> iterator2 = this.mPlayerListeners.iterator();
+        while (iterator2.hasNext()) {
+            this.getMainHandler().post((Runnable)new Runnable() {
+                final /* synthetic */ PlayerListener val$listener = iterator2.next();
+                
+                @Override
+                public void run() {
+                    this.val$listener.onUpdatePts(n);
+                }
+            });
+        }
     }
     
     private void muteAudio(final boolean muted) {
@@ -964,29 +999,22 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     }
     
     private void release() {
-        synchronized (this) {
-            Log.d(PlayerAgent.TAG, "release()");
-            this.mSurface = null;
-            this.mSurfaceHolder = null;
-            if (this.mHelper != null) {
-                this.mHelper.release();
-                this.mHelper = null;
-            }
-            if (this.mJPlayerListener != null) {
-                this.mJPlayerListener = null;
-            }
-            this.mBookmark = 0L;
-            this.preparedCompleted = false;
-            this.splashScreenRemoved = false;
-            this.seekedToPosition = 0;
-            this.mBufferingCompleted = false;
-            this.pendingError = null;
-            this.muteAudio(false);
-            if (this.mBifManager != null) {
-                this.mBifManager.release();
-                this.mBifManager = null;
-            }
+        Log.d(PlayerAgent.TAG, "release()");
+        if (this.mHelper != null) {
+            this.mHelper.release();
+            this.mHelper = null;
         }
+        if (this.mJPlayerListener != null) {
+            this.mJPlayerListener = null;
+        }
+        this.mBookmark = 0L;
+        this.preparedCompleted = false;
+        this.splashScreenRemoved = false;
+        this.seekedToPosition = 0;
+        this.mBufferingCompleted = false;
+        this.pendingError = null;
+        this.muteAudio(false);
+        this.clearBifs();
     }
     
     private void startBif() {
@@ -1017,6 +1045,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
                 this.mTimer.purge();
             }
             this.reloadPlayer();
+            this.clearBifs();
             this.mMedia.setStreamingQoe(this.getConfigurationAgent().getStreamingQoe());
             this.mMedia.open(this.mMovieId, this.mPlayContext, this.getCurrentNetType());
             return;
@@ -1326,13 +1355,15 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     
     @Override
     public void open(final long mMovieId, final PlayContext mPlayContext, final long mBookmark) {
-        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
-            Log.d(PlayerAgent.TAG, "Open called movieId:" + mMovieId + " trackId:" + mPlayContext.getTrackId() + " bookmark:" + mBookmark);
+        synchronized (this) {
+            if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                Log.d(PlayerAgent.TAG, "Open called movieId:" + mMovieId + " trackId:" + mPlayContext.getTrackId() + " bookmark:" + mBookmark);
+            }
+            this.mMovieId = mMovieId;
+            this.mPlayContext = mPlayContext;
+            this.mBookmark = mBookmark;
+            this.mPlayerExecutor.execute(this.onOpenRunnable);
         }
-        this.mMovieId = mMovieId;
-        this.mPlayContext = mPlayContext;
-        this.mBookmark = mBookmark;
-        this.mPlayerExecutor.execute(this.onOpenRunnable);
     }
     
     @Override
@@ -1520,16 +1551,6 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     @Override
     public void removePlayerListener(final PlayerListener playerListener) {
         Log.d(PlayerAgent.TAG, "Removed listener: " + this.mPlayerListeners.remove(playerListener));
-    }
-    
-    public void reset() {
-        synchronized (this) {
-            this.preparedCompleted = false;
-            this.splashScreenRemoved = false;
-            this.seekedToPosition = 0;
-            this.mInPlayback = false;
-            this.inPlaybackSession = false;
-        }
     }
     
     @Override

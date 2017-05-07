@@ -56,7 +56,9 @@ public class Video
         public int episodeCount;
         public String genres;
         public String horzDispUrl;
+        public boolean isAutoPlayEnabled;
         public boolean isHdAvailable;
+        public boolean isNextPlayableEpisode;
         public String mdxHorzUrl;
         public String mdxVertUrl;
         public float predictedRating;
@@ -66,12 +68,13 @@ public class Video
         public int seasonCount;
         public String storyImgUrl;
         public String synopsis;
+        public String synopsisNarrative;
         public String tvCardUrl;
         public int year;
         
         @Override
         public String toString() {
-            return "Detail [year=" + this.year + ", synopsis=" + this.synopsis + ", quality=" + this.quality + ", directors=" + this.directors + ", actors=" + this.actors + ", genres=" + this.genres + ", certification=" + this.certification + ", predictedRating=" + this.predictedRating + ", horzDispUrl=" + this.horzDispUrl + ", restUrl=" + this.restUrl + ", bifUrl=" + this.bifUrl + ", baseUrl=" + this.baseUrl + ", tvCardUrl=" + this.tvCardUrl + ", mdxHorzUrl=" + this.mdxHorzUrl + ", mdxVertUrl=" + this.mdxVertUrl + ", storyImgUrl=" + this.storyImgUrl + ", episodeCount=" + this.episodeCount + ", seasonCount=" + this.seasonCount + ", isHdAvailable=" + this.isHdAvailable + ", runtime=" + this.runtime + ", endtime=" + this.endtime + "]";
+            return "Detail [year=" + this.year + ", synopsis=" + this.synopsis + ", synopsisNarrative=" + this.synopsisNarrative + ", quality=" + this.quality + ", directors=" + this.directors + ", actors=" + this.actors + ", genres=" + this.genres + ", certification=" + this.certification + ", predictedRating=" + this.predictedRating + ", horzDispUrl=" + this.horzDispUrl + ", restUrl=" + this.restUrl + ", bifUrl=" + this.bifUrl + ", baseUrl=" + this.baseUrl + ", tvCardUrl=" + this.tvCardUrl + ", mdxHorzUrl=" + this.mdxHorzUrl + ", mdxVertUrl=" + this.mdxVertUrl + ", storyImgUrl=" + this.storyImgUrl + ", episodeCount=" + this.episodeCount + ", seasonCount=" + this.seasonCount + ", isHdAvailable=" + this.isHdAvailable + ", isAutoPlayEnabled=" + this.isAutoPlayEnabled + ", isNextPlayableEpisode=" + this.isNextPlayableEpisode + ", runtime=" + this.runtime + ", endtime=" + this.endtime + "]";
         }
     }
     

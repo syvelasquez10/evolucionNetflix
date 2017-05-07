@@ -6,6 +6,7 @@ package com.netflix.mediaclient.javabridge.ui.android;
 
 import com.netflix.mediaclient.javabridge.invoke.media.Unpause;
 import com.netflix.mediaclient.javabridge.invoke.media.Stop;
+import com.netflix.mediaclient.javabridge.invoke.android.SetWifiLinkSpeed;
 import com.netflix.mediaclient.javabridge.invoke.android.SetWifiApsInfo;
 import android.content.Context;
 import com.netflix.mediaclient.media.bitrate.VideoBitrateRange;
@@ -869,6 +870,12 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     public void setWifiApsInfo(final Context context, final String s, final boolean b) {
         this.bridge.getNrdProxy().invokeMethod(new SetWifiApsInfo(context, s, b));
         Log.d("nf-bridge", "invokeMethod setWifiApsInfo just called...");
+    }
+    
+    @Override
+    public void setWifiLinkSpeed(final Context context) {
+        this.bridge.getNrdProxy().invokeMethod(new SetWifiLinkSpeed(context));
+        Log.d("nf-bridge", "invokeMethod setWifiLinkSpeed just called...");
     }
     
     @Override

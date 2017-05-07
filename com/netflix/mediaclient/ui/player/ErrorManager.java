@@ -27,8 +27,8 @@ import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
-import java.io.File;
 import com.netflix.mediaclient.ui.login.LogoutActivity;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.service.NetflixService;
 import android.content.Intent;
 import android.content.Context;
@@ -90,7 +90,7 @@ public class ErrorManager
         this.resetApp = new Runnable() {
             @Override
             public void run() {
-                ErrorManager.this.clearApplicationData();
+                AndroidUtils.clearApplicationData((Context)ErrorManager.this.context);
                 Log.e("ErrorManager", "resetApp");
                 if (ErrorManager.this.context instanceof NetflixActivity) {
                     NetflixActivity.finishAllActivities((Context)ErrorManager.this.context);
@@ -128,18 +128,6 @@ public class ErrorManager
         this.handler = handler;
         this.context = context;
         this.mConfig = mConfig;
-    }
-    
-    public static boolean deleteDir(final File file) {
-        if (file != null && file.isDirectory()) {
-            final String[] list = file.list();
-            for (int i = 0; i < list.length; ++i) {
-                if (!deleteDir(new File(file, list[i]))) {
-                    return false;
-                }
-            }
-        }
-        return file.delete();
     }
     
     private LinkTag extractLink(final String s, final StringBuilder sb) {
@@ -574,15 +562,11 @@ public class ErrorManager
             Log.d("ErrorManager", "Not action ID error");
             return false;
         }
-        if (((NccpActionId)mediaEvent).getReasonCode() != 113L) {
-            Log.e("ErrorManager", "Regular error, handle as popup");
+        if (((NccpActionId)mediaEvent).getReasonCode() == 113L) {
+            Log.e("ErrorManager", "Playready certificate revocated, we do not have backup player, report an error!");
             return false;
         }
-        Log.e("ErrorManager", "Playready certificate revocated, do not display error!");
-        if (this.context instanceof PlayerActivity) {
-            return this.context.restartPlaybackWithSoftwarePlayer();
-        }
-        Log.e("ErrorManager", "Context is not player, fail back to regular error handling. This should NOT happen!");
+        Log.e("ErrorManager", "Regular error, handle as popup");
         return false;
     }
     
@@ -643,22 +627,6 @@ public class ErrorManager
         this.handler.post(this.handle(reportedError));
         // monitorexit(this)
         return true;
-    }
-    
-    public void clearApplicationData() {
-        final File file = new File(this.context.getCacheDir().getParent());
-        if (file.exists()) {
-            final String[] list = file.list();
-            for (int length = list.length, i = 0; i < length; ++i) {
-                final String s = list[i];
-                if (!s.equals("lib")) {
-                    deleteDir(new File(file, s));
-                    if (Log.isLoggable("ErrorManager", 3)) {
-                        Log.i("TAG", "File /data/data/com.netflix.mediaclient/" + s + " DELETED");
-                    }
-                }
-            }
-        }
     }
     
     public void destroy() {

@@ -32,6 +32,7 @@ public class SocialOptInDialogFrag extends NetflixDialogFrag
         return socialOptInDialogFrag;
     }
     
+    @Override
     public boolean isLoadingData() {
         return false;
     }

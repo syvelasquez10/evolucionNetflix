@@ -177,13 +177,14 @@ class UserProfileMap
         if (this.mProfileMap != null) {
             boolean b = false;
             final Iterator keys = this.mProfileMap.keys();
-        Block_6_Outer:
+            String s;
+            Block_6_Outer:Label_0131_Outer:
             while (true) {
                 Label_0090: {
                     if (!keys.hasNext()) {
                         break Label_0090;
                     }
-                    final String s = keys.next();
+                    s = keys.next();
                     if ("currentAcc".equals(s) || "primaryAcc".equals(s)) {
                         continue;
                     }
@@ -193,16 +194,18 @@ class UserProfileMap
                         continue Block_6_Outer;
                         // iftrue(Label_0131:, !Log.isLoggable("nf_service_useragentproilemap", 3))
                         // iftrue(Label_0024:, !b)
-                    Block_7:
                         while (true) {
-                            break Block_7;
+                            Block_7: {
+                                while (true) {
+                                    break Block_7;
+                                    continue Label_0131_Outer;
+                                }
+                                PreferenceUtils.putStringPref(this.mContext, "useragent_esnmigration_flags", this.mEsnMigrationFlags.toString());
+                                return;
+                            }
+                            Log.d("nf_service_useragentproilemap", "markAllAccountForEsnMigration " + this.mEsnMigrationFlags);
                             continue;
                         }
-                        Log.d("nf_service_useragentproilemap", "markAllAccountForEsnMigration " + this.mEsnMigrationFlags);
-                        Label_0131: {
-                            PreferenceUtils.putStringPref(this.mContext, "useragent_esnmigration_flags", this.mEsnMigrationFlags.toString());
-                        }
-                        return;
                     }
                     catch (JSONException ex) {}
                 }

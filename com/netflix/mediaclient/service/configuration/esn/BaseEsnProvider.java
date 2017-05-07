@@ -171,18 +171,26 @@ public abstract class BaseEsnProvider implements EsnProvider
         return s;
     }
     
-    private static String getManufactorer() {
+    protected static String getManufactorer() {
         final String manufacturer = Build.MANUFACTURER;
-        Log.d("ESN", "manufacturer: " + manufacturer + "'");
+        if (Log.isLoggable("ESN", 3)) {
+            Log.d("ESN", "manufacturer: " + manufacturer + "'");
+        }
         String string = manufacturer;
         if (manufacturer.length() < 5) {
             string = manufacturer + "       ";
         }
-        Log.d("ESN", "manufacturer: " + string + "'");
+        if (Log.isLoggable("ESN", 3)) {
+            Log.d("ESN", "manufacturer: " + string + "'");
+        }
         final String substring = string.substring(0, 5);
-        Log.d("ESN", "manufacturer: " + substring + "'");
+        if (Log.isLoggable("ESN", 3)) {
+            Log.d("ESN", "manufacturer: " + substring + "'");
+        }
         final String replaceWhiteSpace = StringUtils.replaceWhiteSpace(substring, BaseEsnProvider.DELIM, false);
-        Log.d("ESN", "manufacturer: " + replaceWhiteSpace + "'");
+        if (Log.isLoggable("ESN", 3)) {
+            Log.d("ESN", "manufacturer: " + replaceWhiteSpace + "'");
+        }
         return replaceWhiteSpace;
     }
     

@@ -87,7 +87,7 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
         notification$Builder.setAutoCancel(true);
         notification$Builder.setContentTitle((CharSequence)title);
         notification$Builder.setContentText((CharSequence)payload.text);
-        notification$Builder.setSmallIcon(2130837761);
+        notification$Builder.setSmallIcon(2130837762);
         notification$Builder.setWhen(when);
         while (true) {
             if (!NotificationBuilder.isSoundEnabled(context)) {

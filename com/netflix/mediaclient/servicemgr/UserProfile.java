@@ -34,6 +34,8 @@ public interface UserProfile
     
     String getUserId();
     
+    boolean isAutoPlayEnabled();
+    
     boolean isIQEnabled();
     
     boolean isPrimaryProfile();

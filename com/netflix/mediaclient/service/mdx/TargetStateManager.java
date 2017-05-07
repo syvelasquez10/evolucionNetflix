@@ -105,122 +105,97 @@ public class TargetStateManager
     }
     
     public void receivedEvent(final TargetContextEvent targetContextEvent) {
-        switch (this.mCurrentState.getId()) {
-            case StateNotLaunched: {
-                if (TargetContextEvent.StartTarget.equals(targetContextEvent) || TargetContextEvent.SessionCommandReceived.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateNeedLaunched);
-                    return;
+        if (TargetContextEvent.LaunchFailed.equals(targetContextEvent) && this.mCurrentState.getId() != StateId.StateNeedLaunched) {
+            this.transitionStateTo(TargetState.StateNotLaunched);
+            this.mLaunched = false;
+        }
+        else {
+            switch (this.mCurrentState.getId()) {
+                case StateLaunched: {
+                    break;
                 }
-                if ((!TargetContextEvent.TargetUpdate.equals(targetContextEvent) || !this.mLaunched) && !TargetContextEvent.LaunchSucceed.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateNotLaunched);
-                    return;
-                }
-                if (this.mIsPreviouslyPaired) {
-                    this.transitionStateTo(TargetState.StateHasPair);
-                    return;
-                }
-                this.transitionStateTo(TargetState.StateNoPair);
-            }
-            case StateNeedLaunched: {
-                if (TargetContextEvent.LaunchSucceed.equals(targetContextEvent)) {
+                default: {}
+                case StateNotLaunched: {
+                    if (TargetContextEvent.StartTarget.equals(targetContextEvent) || TargetContextEvent.SessionCommandReceived.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateNeedLaunched);
+                        return;
+                    }
+                    if ((!TargetContextEvent.TargetUpdate.equals(targetContextEvent) || !this.mLaunched) && !TargetContextEvent.LaunchSucceed.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateNotLaunched);
+                        return;
+                    }
                     if (this.mIsPreviouslyPaired) {
                         this.transitionStateTo(TargetState.StateHasPair);
                         return;
                     }
-                    if (!this.mActivated) {
-                        this.transitionStateTo(TargetState.StateNeedRegPair);
-                        return;
-                    }
                     this.transitionStateTo(TargetState.StateNoPair);
-                    return;
                 }
-                else {
-                    if (TargetContextEvent.LaunchFailed.equals(targetContextEvent)) {
-                        this.scheduleRetry(TargetContextEvent.LaunchRetry);
-                        return;
-                    }
-                    if (TargetContextEvent.LaunchRetry.equals(targetContextEvent)) {
-                        this.transitionStateTo(TargetState.StateNeedLaunched);
-                        return;
-                    }
-                    if (TargetContextEvent.TargetUpdate.equals(targetContextEvent) && this.mLaunched) {
+                case StateNeedLaunched: {
+                    if (TargetContextEvent.LaunchSucceed.equals(targetContextEvent)) {
                         if (this.mIsPreviouslyPaired) {
                             this.transitionStateTo(TargetState.StateHasPair);
+                            return;
+                        }
+                        if (!this.mActivated) {
+                            this.transitionStateTo(TargetState.StateNeedRegPair);
                             return;
                         }
                         this.transitionStateTo(TargetState.StateNoPair);
                         return;
                     }
                     else {
-                        if (TargetContextEvent.Timeout.equals(targetContextEvent)) {
-                            this.transitionStateTo(TargetState.StateTimeout);
-                            this.mListener.stateHasTimedOut(this.mPreviousState);
+                        if (TargetContextEvent.LaunchFailed.equals(targetContextEvent)) {
+                            this.scheduleRetry(TargetContextEvent.LaunchRetry);
                             return;
                         }
-                        break;
+                        if (TargetContextEvent.LaunchRetry.equals(targetContextEvent)) {
+                            this.transitionStateTo(TargetState.StateNeedLaunched);
+                            return;
+                        }
+                        if (TargetContextEvent.TargetUpdate.equals(targetContextEvent) && this.mLaunched) {
+                            if (this.mIsPreviouslyPaired) {
+                                this.transitionStateTo(TargetState.StateHasPair);
+                                return;
+                            }
+                            this.transitionStateTo(TargetState.StateNoPair);
+                            return;
+                        }
+                        else {
+                            if (TargetContextEvent.Timeout.equals(targetContextEvent)) {
+                                this.transitionStateTo(TargetState.StateTimeout);
+                                this.mListener.stateHasTimedOut(this.mPreviousState);
+                                return;
+                            }
+                            break;
+                        }
                     }
+                    break;
                 }
-                break;
-            }
-            case StateHasPair: {
-                if (TargetContextEvent.StartSessionSucceed.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateNeedHandShake);
-                    return;
-                }
-                if (TargetContextEvent.SendMessageFailedNeedRepair.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateBadPair);
-                    return;
-                }
-                if (TargetContextEvent.SendMessageFailed.equals(targetContextEvent) || TargetContextEvent.SendMessageFailedNeedNewSession.equals(targetContextEvent)) {
-                    this.scheduleRetry(TargetContextEvent.SessionRetry);
-                    return;
-                }
-                if (TargetContextEvent.SessionRetry.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateHasPair);
-                    return;
-                }
-                if (TargetContextEvent.Timeout.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateHasPair);
-                    return;
-                }
-                break;
-            }
-            case StateBadPair: {
-                if (TargetContextEvent.DeletePairSucceed.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateNoPair);
-                    return;
-                }
-                if (TargetContextEvent.Timeout.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateTimeout);
-                    this.mListener.stateHasTimedOut(this.mPreviousState);
-                    return;
-                }
-                break;
-            }
-            case StateNoPair: {
-                if (TargetContextEvent.PairSucceed.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateHasPair);
-                    return;
-                }
-                if (TargetContextEvent.PairFailedNeedRegPair.equals(targetContextEvent)) {
-                    if (this.mRegistrationAcceptance != 0 && this.mHasUiCommand) {
-                        this.transitionStateTo(TargetState.StateNeedRegPair);
+                case StateHasPair: {
+                    if (TargetContextEvent.StartSessionSucceed.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateNeedHandShake);
                         return;
                     }
-                    if (this.mRegistrationAcceptance != 0) {
-                        this.transitionStateTo(TargetState.StateNoPairNeedRegPair);
+                    if (TargetContextEvent.SendMessageFailedNeedRepair.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateBadPair);
                         return;
                     }
-                    this.transitionStateTo(TargetState.StateHasError);
-                    this.mListener.stateHasError(this.mPreviousState);
-                    return;
+                    if (TargetContextEvent.SendMessageFailed.equals(targetContextEvent) || TargetContextEvent.SendMessageFailedNeedNewSession.equals(targetContextEvent)) {
+                        this.scheduleRetry(TargetContextEvent.SessionRetry);
+                        return;
+                    }
+                    if (TargetContextEvent.SessionRetry.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateHasPair);
+                        return;
+                    }
+                    if (TargetContextEvent.Timeout.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateHasPair);
+                        return;
+                    }
+                    break;
                 }
-                else {
-                    if (TargetContextEvent.PairFailed.equals(targetContextEvent)) {
-                        this.scheduleRetry(TargetContextEvent.PairingRetry);
-                        return;
-                    }
-                    if (TargetContextEvent.PairingRetry.equals(targetContextEvent)) {
+                case StateBadPair: {
+                    if (TargetContextEvent.DeletePairSucceed.equals(targetContextEvent)) {
                         this.transitionStateTo(TargetState.StateNoPair);
                         return;
                     }
@@ -231,161 +206,200 @@ public class TargetStateManager
                     }
                     break;
                 }
-                break;
-            }
-            case StateNoPairNeedRegPair: {
-                if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent) && this.mRegistrationAcceptance != 0) {
-                    this.transitionStateTo(TargetState.StateNeedRegPair);
-                    return;
-                }
-                break;
-            }
-            case StateNeedRegPair: {
-                if (TargetContextEvent.PairSucceed.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateHasPair);
-                    return;
-                }
-                if (TargetContextEvent.PairFailedExistedPair.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateBadPair);
-                    return;
-                }
-                if (TargetContextEvent.Timeout.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateTimeout);
-                    this.mListener.stateHasTimedOut(this.mPreviousState);
-                    return;
-                }
-                if (TargetContextEvent.PairFailed.equals(targetContextEvent)) {
-                    this.scheduleRetry(TargetContextEvent.PairingRetry);
-                    return;
-                }
-                if (TargetContextEvent.PairingRetry.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateNeedRegPair);
-                    return;
-                }
-                break;
-            }
-            case StateNeedHandShake: {
-                if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
-                    this.sessionEnded();
-                    return;
-                }
-                if (TargetContextEvent.HandShakeSucceed.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateSessionReady);
-                    if (!this.mSessionRequested.isEmpty()) {
-                        this.mListener.scheduleEvent(TargetContextEvent.SessionCommandReceived, 0);
-                        return;
-                    }
-                    break;
-                }
-                else {
-                    if (TargetContextEvent.HandShakeFailed.equals(targetContextEvent)) {
-                        this.scheduleRetry(TargetContextEvent.SessionRetry);
-                        return;
-                    }
-                    if (TargetContextEvent.SessionRetry.equals(targetContextEvent)) {
-                        this.transitionStateTo(TargetState.StateNeedHandShake);
-                        return;
-                    }
-                    if (TargetContextEvent.Timeout.equals(targetContextEvent)) {
-                        this.transitionStateTo(TargetState.StateNeedHandShake);
-                        return;
-                    }
-                    break;
-                }
-                break;
-            }
-            case StateSessionReady: {
-                if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
-                    this.sessionEnded();
-                    return;
-                }
-                if (!TargetContextEvent.SessionCommandReceived.equals(targetContextEvent)) {
-                    break;
-                }
-                if (!this.mSessionRequested.isEmpty()) {
-                    this.setDefaultAction(StateId.StateSendingMessage, this.mSessionRequested.remove(0));
-                    this.transitionStateTo(TargetState.StateSendingMessage);
-                    return;
-                }
-                Log.e("nf_mdx", "StateMachine: SessionCommandReceived, but no task!");
-            }
-            case StateSendingMessage: {
-                if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
-                    this.sessionEnded();
-                    return;
-                }
-                if (TargetContextEvent.SendMessageSucceed.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateSessionReady);
-                    if (!this.mSessionRequested.isEmpty()) {
-                        this.mListener.scheduleEvent(TargetContextEvent.SessionCommandReceived, 0);
-                        return;
-                    }
-                    break;
-                }
-                else {
-                    if (TargetContextEvent.SendMessageFailedNeedRepair.equals(targetContextEvent)) {
-                        this.transitionStateTo(TargetState.StateBadPair);
-                        return;
-                    }
-                    if (TargetContextEvent.SendMessageFailedNeedNewSession.equals(targetContextEvent)) {
+                case StateNoPair: {
+                    if (TargetContextEvent.PairSucceed.equals(targetContextEvent)) {
                         this.transitionStateTo(TargetState.StateHasPair);
                         return;
                     }
-                    if (TargetContextEvent.SendMessageFailed.equals(targetContextEvent)) {
-                        this.scheduleRetry(TargetContextEvent.SessionRetry);
+                    if (TargetContextEvent.PairFailedNeedRegPair.equals(targetContextEvent)) {
+                        if (this.mRegistrationAcceptance != 0 && this.mHasUiCommand) {
+                            this.transitionStateTo(TargetState.StateNeedRegPair);
+                            return;
+                        }
+                        if (this.mRegistrationAcceptance != 0) {
+                            this.transitionStateTo(TargetState.StateNoPairNeedRegPair);
+                            return;
+                        }
+                        this.transitionStateTo(TargetState.StateHasError);
+                        this.mListener.stateHasError(this.mPreviousState);
                         return;
                     }
-                    if (TargetContextEvent.SessionRetry.equals(targetContextEvent)) {
-                        this.transitionStateTo(TargetState.StateSendingMessage);
-                        return;
+                    else {
+                        if (TargetContextEvent.PairFailedExistedPair.equals(targetContextEvent)) {
+                            this.transitionStateTo(TargetState.StateBadPair);
+                            return;
+                        }
+                        if (TargetContextEvent.PairFailed.equals(targetContextEvent)) {
+                            this.scheduleRetry(TargetContextEvent.PairingRetry);
+                            return;
+                        }
+                        if (TargetContextEvent.PairingRetry.equals(targetContextEvent)) {
+                            this.transitionStateTo(TargetState.StateNoPair);
+                            return;
+                        }
+                        if (TargetContextEvent.Timeout.equals(targetContextEvent)) {
+                            this.transitionStateTo(TargetState.StateTimeout);
+                            this.mListener.stateHasTimedOut(this.mPreviousState);
+                            return;
+                        }
+                        break;
                     }
-                    if (TargetContextEvent.Timeout.equals(targetContextEvent)) {
-                        this.transitionStateTo(TargetState.StateSendingMessage);
+                    break;
+                }
+                case StateNoPairNeedRegPair: {
+                    if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent) && this.mRegistrationAcceptance != 0) {
+                        this.transitionStateTo(TargetState.StateNeedRegPair);
                         return;
                     }
                     break;
                 }
-                break;
-            }
-            case StateSessionEnd: {
-                if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent)) {
-                    this.transitionStateTo(TargetState.StateHasPair);
-                    return;
+                case StateNeedRegPair: {
+                    if (TargetContextEvent.PairSucceed.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateHasPair);
+                        return;
+                    }
+                    if (TargetContextEvent.PairFailedExistedPair.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateBadPair);
+                        return;
+                    }
+                    if (TargetContextEvent.Timeout.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateTimeout);
+                        this.mListener.stateHasTimedOut(this.mPreviousState);
+                        return;
+                    }
+                    if (TargetContextEvent.PairFailed.equals(targetContextEvent)) {
+                        this.scheduleRetry(TargetContextEvent.PairingRetry);
+                        return;
+                    }
+                    if (TargetContextEvent.PairingRetry.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateNeedRegPair);
+                        return;
+                    }
+                    break;
                 }
-                break;
-            }
-            case StateRetryExhausted: {
-                if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
-                    this.sessionEnded();
-                    return;
+                case StateNeedHandShake: {
+                    if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
+                        this.sessionEnded();
+                        return;
+                    }
+                    if (TargetContextEvent.HandShakeSucceed.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateSessionReady);
+                        if (!this.mSessionRequested.isEmpty()) {
+                            this.mListener.scheduleEvent(TargetContextEvent.SessionCommandReceived, 0);
+                            return;
+                        }
+                        break;
+                    }
+                    else {
+                        if (TargetContextEvent.HandShakeFailed.equals(targetContextEvent)) {
+                            this.scheduleRetry(TargetContextEvent.SessionRetry);
+                            return;
+                        }
+                        if (TargetContextEvent.SessionRetry.equals(targetContextEvent)) {
+                            this.transitionStateTo(TargetState.StateNeedHandShake);
+                            return;
+                        }
+                        if (TargetContextEvent.Timeout.equals(targetContextEvent)) {
+                            this.transitionStateTo(TargetState.StateNeedHandShake);
+                            return;
+                        }
+                        break;
+                    }
+                    break;
                 }
-                if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent) && this.mPreviousState != null) {
-                    this.transitionStateTo(this.mPreviousState);
-                    return;
+                case StateSessionReady: {
+                    if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
+                        this.sessionEnded();
+                        return;
+                    }
+                    if (!TargetContextEvent.SessionCommandReceived.equals(targetContextEvent)) {
+                        break;
+                    }
+                    if (!this.mSessionRequested.isEmpty()) {
+                        this.setDefaultAction(StateId.StateSendingMessage, this.mSessionRequested.remove(0));
+                        this.transitionStateTo(TargetState.StateSendingMessage);
+                        return;
+                    }
+                    Log.e("nf_mdx", "StateMachine: SessionCommandReceived, but no task!");
                 }
-                break;
-            }
-            case StateTimeout: {
-                if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
-                    this.sessionEnded();
-                    return;
+                case StateSendingMessage: {
+                    if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
+                        this.sessionEnded();
+                        return;
+                    }
+                    if (TargetContextEvent.SendMessageSucceed.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateSessionReady);
+                        if (!this.mSessionRequested.isEmpty()) {
+                            this.mListener.scheduleEvent(TargetContextEvent.SessionCommandReceived, 0);
+                            return;
+                        }
+                        break;
+                    }
+                    else {
+                        if (TargetContextEvent.SendMessageFailedNeedRepair.equals(targetContextEvent)) {
+                            this.transitionStateTo(TargetState.StateBadPair);
+                            return;
+                        }
+                        if (TargetContextEvent.SendMessageFailedNeedNewSession.equals(targetContextEvent)) {
+                            this.transitionStateTo(TargetState.StateHasPair);
+                            return;
+                        }
+                        if (TargetContextEvent.SendMessageFailed.equals(targetContextEvent)) {
+                            this.scheduleRetry(TargetContextEvent.SessionRetry);
+                            return;
+                        }
+                        if (TargetContextEvent.SessionRetry.equals(targetContextEvent)) {
+                            this.transitionStateTo(TargetState.StateSendingMessage);
+                            return;
+                        }
+                        if (TargetContextEvent.Timeout.equals(targetContextEvent)) {
+                            this.transitionStateTo(TargetState.StateSendingMessage);
+                            return;
+                        }
+                        break;
+                    }
+                    break;
                 }
-                if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent) && this.mPreviousState != null) {
-                    this.transitionStateTo(this.mPreviousState);
-                    return;
+                case StateSessionEnd: {
+                    if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateHasPair);
+                        return;
+                    }
+                    break;
                 }
-                break;
-            }
-            case StateHasError: {
-                if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
-                    this.sessionEnded();
-                    return;
+                case StateRetryExhausted: {
+                    if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
+                        this.sessionEnded();
+                        return;
+                    }
+                    if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent) && this.mPreviousState != null) {
+                        this.transitionStateTo(this.mPreviousState);
+                        return;
+                    }
+                    break;
                 }
-                if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent) && this.mPreviousState != null) {
-                    this.transitionStateTo(this.mPreviousState);
-                    return;
+                case StateTimeout: {
+                    if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
+                        this.sessionEnded();
+                        return;
+                    }
+                    if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent) && this.mPreviousState != null) {
+                        this.transitionStateTo(this.mPreviousState);
+                        return;
+                    }
+                    break;
                 }
-                break;
+                case StateHasError: {
+                    if (TargetContextEvent.SessionEnd.equals(targetContextEvent)) {
+                        this.sessionEnded();
+                        return;
+                    }
+                    if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent) && this.mPreviousState != null) {
+                        this.transitionStateTo(this.mPreviousState);
+                        return;
+                    }
+                    break;
+                }
             }
         }
     }

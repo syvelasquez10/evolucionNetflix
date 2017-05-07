@@ -150,7 +150,7 @@ public final class BottomPanel extends PlayerSection
             this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.context, this.context.getUiResources().timelineThumbOffsetInDip));
             this.timeline.setProgressBarPadding(AndroidUtils.dipToPixels((Context)this.context, this.context.getUiResources().timelineHeightPaddingInDip));
         }
-        this.media = (ImageButton)this.context.findViewById(2131231030);
+        this.media = (ImageButton)this.context.findViewById(2131231034);
         if (this.media != null) {
             this.media.setOnClickListener(listeners.playPauseListener);
             this.media.setBackgroundColor(this.transpColor);
@@ -174,8 +174,8 @@ public final class BottomPanel extends PlayerSection
             this.mdxTarget.setOnClickListener((View$OnClickListener)onClickListener);
             this.mdxTarget.setBackgroundColor(this.transpColor);
         }
-        this.zoomDivider = this.context.findViewById(2131231031);
-        this.zoom = (ImageButton)this.context.findViewById(2131231032);
+        this.zoomDivider = this.context.findViewById(2131231035);
+        this.zoom = (ImageButton)this.context.findViewById(2131231036);
         if (this.zoom != null) {
             this.zoom.setOnClickListener(listeners.zoomListener);
             this.zoom.setBackgroundColor(this.transpColor);

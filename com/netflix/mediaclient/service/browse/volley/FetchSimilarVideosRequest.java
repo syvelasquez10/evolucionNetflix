@@ -10,6 +10,7 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
@@ -29,11 +30,12 @@ public class FetchSimilarVideosRequest extends FalcorVolleyWebClientRequest<Vide
     private FetchSimilarVideosRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final SimilarRequestType type, final String id, final int to, final BrowseAgentCallback responseCallback) {
         super(context, configurationAgentInterface);
         this.responseCallback = responseCallback;
-        this.type = type;
         this.id = id;
+        final String escapeJsonChars = StringUtils.escapeJsonChars(id);
+        this.type = type;
         this.from = 0;
         this.to = to;
-        this.pqlQuery = String.format("['%s', '%s', 'relatedVideos', {'from':%d, 'to':%d}, 'summary']", type.keyName, id, this.from, to);
+        this.pqlQuery = String.format("['%s', '%s', 'relatedVideos', {'from':%d, 'to':%d}, 'summary']", type.keyName, escapeJsonChars, this.from, to);
         if (Log.isLoggable("nf_fetch_sims_request", 2)) {
             Log.v("nf_fetch_sims_request", "PQL = " + this.pqlQuery);
         }

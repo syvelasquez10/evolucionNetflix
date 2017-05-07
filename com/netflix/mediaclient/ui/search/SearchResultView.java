@@ -62,12 +62,12 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     private void init() {
         final Activity activity = (Activity)this.getContext();
-        activity.getLayoutInflater().inflate(2130903137, (ViewGroup)this);
+        activity.getLayoutInflater().inflate(2130903144, (ViewGroup)this);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        this.setForeground(this.getResources().getDrawable(2130837823));
-        (this.img = (AdvancedImageView)this.findViewById(2131231047)).setPressedStateHandlerEnabled(false);
-        this.title = (TextView)this.findViewById(2131231048);
-        this.verticalDivider = this.findViewById(2131231049);
+        this.setForeground(this.getResources().getDrawable(2130837830));
+        (this.img = (AdvancedImageView)this.findViewById(2131231070)).setPressedStateHandlerEnabled(false);
+        this.title = (TextView)this.findViewById(2131231071);
+        this.verticalDivider = this.findViewById(2131231072);
         this.videoClickListener = new VideoDetailsClickListener(activity, this);
     }
     
@@ -87,7 +87,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final String imgUrl = searchPerson.getImgUrl();
         NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, imgUrl, IClientLogging.AssetType.heroImage, name, false, false);
         if (StringUtils.isEmpty(imgUrl)) {
-            this.img.setImageResource(2130837842);
+            this.img.setImageResource(2130837849);
         }
         this.videoClickListener.remove((View)this);
         this.setOnClickListener((View$OnClickListener)new PersonClickListener(searchPerson.getId(), searchPerson.getName()));

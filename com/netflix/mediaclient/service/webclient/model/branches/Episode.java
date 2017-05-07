@@ -15,6 +15,7 @@ public class Episode extends Video
     {
         private int episodeNumber;
         private String id;
+        private String intrUrl;
         private String nextEpisodeId;
         private String nextEpisodeTitle;
         private String seasonId;
@@ -39,6 +40,10 @@ public class Episode extends Video
         
         public String getId() {
             return this.id;
+        }
+        
+        public String getInterestingUrl() {
+            return this.intrUrl;
         }
         
         public String getNextEpisodeId() {
@@ -73,6 +78,14 @@ public class Episode extends Video
             return this.title;
         }
         
+        public boolean isAutoPlayEnabled() {
+            return this.isAutoPlayEnabled;
+        }
+        
+        public boolean isNextPlayableEpisode() {
+            return this.isNextPlayableEpisode;
+        }
+        
         public Detail setId(final String id) {
             this.id = id;
             return this;
@@ -80,7 +93,7 @@ public class Episode extends Video
         
         @Override
         public String toString() {
-            return "Detail [id=" + this.id + ", seasonNumber=" + this.seasonNumber + ", episodeNumber=" + this.episodeNumber + ", showTitle=" + this.showTitle + ", title=" + this.title + ", nextEpisodeId=" + this.nextEpisodeId + ", nextEpisodeTitle=" + this.nextEpisodeTitle + "]";
+            return "Detail [id=" + this.id + ", episodeNumber=" + this.episodeNumber + ", seasonNumber=" + this.seasonNumber + ", seasonId=" + this.seasonId + ", showId=" + this.showId + ", showTitle=" + this.showTitle + ", showRestUrl=" + this.showRestUrl + ", title=" + this.title + ", vertArtUrl=" + this.vertArtUrl + ", nextEpisodeId=" + this.nextEpisodeId + ", nextEpisodeTitle=" + this.nextEpisodeTitle + ", intrUrl=" + this.intrUrl + "]";
         }
     }
 }

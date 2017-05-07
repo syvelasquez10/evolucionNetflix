@@ -48,6 +48,8 @@ public interface INetflixService
     
     void fetchMovieDetails(final String p0, final int p1, final int p2);
     
+    void fetchPostPlayVideos(final String p0, final int p1, final int p2);
+    
     void fetchResource(final String p0, final IClientLogging.AssetType p1, final int p2, final int p3);
     
     void fetchSeasonDetails(final String p0, final int p1, final int p2);

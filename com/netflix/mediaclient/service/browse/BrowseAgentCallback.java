@@ -9,6 +9,7 @@ import com.netflix.mediaclient.servicemgr.VideoList;
 import com.netflix.mediaclient.servicemgr.ShowDetails;
 import com.netflix.mediaclient.servicemgr.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.SearchResults;
+import com.netflix.mediaclient.servicemgr.PostPlayVideo;
 import com.netflix.mediaclient.servicemgr.MovieDetails;
 import com.netflix.mediaclient.servicemgr.LoMo;
 import com.netflix.mediaclient.servicemgr.LoLoMo;
@@ -43,6 +44,8 @@ public interface BrowseAgentCallback
     void onLoMosFetched(final List<LoMo> p0, final int p1);
     
     void onMovieDetailsFetched(final MovieDetails p0, final int p1);
+    
+    void onPostPlayVideosFetched(final List<PostPlayVideo> p0, final int p1);
     
     void onQueueAdd(final int p0);
     

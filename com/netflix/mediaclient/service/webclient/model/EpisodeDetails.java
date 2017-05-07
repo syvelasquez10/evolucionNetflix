@@ -163,6 +163,14 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
     }
     
     @Override
+    public String getInterestingUrl() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.getInterestingUrl();
+    }
+    
+    @Override
     public String getNextEpisodeId() {
         if (this.detail == null) {
             return null;
@@ -336,8 +344,18 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
     }
     
     @Override
+    public boolean isAutoPlayEnabled() {
+        return this.detail != null && this.detail.isAutoPlayEnabled();
+    }
+    
+    @Override
     public boolean isInQueue() {
         return false;
+    }
+    
+    @Override
+    public boolean isNextPlayableEpisode() {
+        return this.detail != null && this.detail.isNextPlayableEpisode();
     }
     
     @Override

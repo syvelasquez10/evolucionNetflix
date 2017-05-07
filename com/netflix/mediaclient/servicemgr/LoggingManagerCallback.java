@@ -137,6 +137,19 @@ public class LoggingManagerCallback implements ManagerCallback
     }
     
     @Override
+    public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final int n) {
+        final String tag = this.tag;
+        int size;
+        if (list == null) {
+            size = -1;
+        }
+        else {
+            size = list.size();
+        }
+        Log.v(tag, String.format("onPostPlayVideosFetched, num: %d, status: %d", size, n));
+    }
+    
+    @Override
     public void onQueueAdd(final int n) {
         Log.v(this.tag, String.format("onQueueAdd, status: %d", n));
     }

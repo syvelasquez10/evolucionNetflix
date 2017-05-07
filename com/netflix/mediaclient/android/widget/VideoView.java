@@ -42,7 +42,7 @@ public class VideoView extends AdvancedImageView implements IVideoView<Video>
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
-        this.setBackgroundResource(2130837824);
+        this.setBackgroundResource(2130837831);
         this.clicker = new VideoDetailsClickListener((Activity)this.getContext(), this);
     }
     

@@ -35,7 +35,7 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
         this.mApplicationId = mApplicationId;
         this.mCallback = mCallback;
         this.mForceLaunch = mForceLaunch;
-        (this.mApiClient = new GoogleApiClient.Builder(context).addApi(Cast.API, Cast.CastOptions.builder(castDevice, this).build()).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build()).connect();
+        (this.mApiClient = new GoogleApiClient.Builder(context).addApi(Cast.API, Cast.CastOptions.builder(castDevice, this).setDebuggingEnabled().build()).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build()).connect();
     }
     
     private boolean isNetflixRunning() {
@@ -57,14 +57,19 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
     }
     
     private void logAppStatus() {
-        final ApplicationMetadata applicationMetadata = Cast.CastApi.getApplicationMetadata(this.mApiClient);
-        Log.d(MdxCastApplication.TAG, "getApplicationMetadata: " + applicationMetadata);
-        if (applicationMetadata != null) {
-            Log.d(MdxCastApplication.TAG, "getApplicationId :" + applicationMetadata.getApplicationId());
-            Log.d(MdxCastApplication.TAG, "getName: " + applicationMetadata.getName());
-            Log.d(MdxCastApplication.TAG, "getSenderAppIdentifier: " + applicationMetadata.getSenderAppIdentifier());
+        try {
+            final ApplicationMetadata applicationMetadata = Cast.CastApi.getApplicationMetadata(this.mApiClient);
+            Log.d(MdxCastApplication.TAG, "getApplicationMetadata: " + applicationMetadata);
+            if (applicationMetadata != null) {
+                Log.d(MdxCastApplication.TAG, "getApplicationId :" + applicationMetadata.getApplicationId());
+                Log.d(MdxCastApplication.TAG, "getName: " + applicationMetadata.getName());
+                Log.d(MdxCastApplication.TAG, "getSenderAppIdentifier: " + applicationMetadata.getSenderAppIdentifier());
+            }
+            Log.d(MdxCastApplication.TAG, "getApplicationStatus: " + Cast.CastApi.getApplicationStatus(this.mApiClient));
         }
-        Log.d(MdxCastApplication.TAG, "getApplicationStatus: " + Cast.CastApi.getApplicationStatus(this.mApiClient));
+        catch (IllegalStateException ex) {
+            ex.printStackTrace();
+        }
     }
     
     @Override
@@ -83,20 +88,25 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
     @Override
     public void onConnected(final Bundle bundle) {
         Log.d(MdxCastApplication.TAG, "GoogleApiClient connect(), success arg:" + bundle);
-        if (this.mForceLaunch) {
-            Log.d(MdxCastApplication.TAG, "forced, GoogleApiClient launchApp()");
-            this.launchApp();
-        }
-        else {
+        try {
+            if (this.mForceLaunch) {
+                Log.d(MdxCastApplication.TAG, "forced, GoogleApiClient launchApp()");
+                this.launchApp();
+                return;
+            }
             if (!this.isOtherAppRunning()) {
                 Log.d(MdxCastApplication.TAG, "not forced, no app is runnning");
                 this.joinApp();
                 return;
             }
-            if (this.isNetflixRunning()) {
-                Log.d(MdxCastApplication.TAG, "GoogleApiClient joinApp()");
-                this.joinApp();
-            }
+        }
+        catch (IllegalStateException ex) {
+            ex.printStackTrace();
+            return;
+        }
+        if (this.isNetflixRunning()) {
+            Log.d(MdxCastApplication.TAG, "GoogleApiClient joinApp()");
+            this.joinApp();
         }
     }
     
@@ -158,6 +168,7 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
                 Log.d(MdxCastApplication.TAG, "launchApplication(), success");
                 try {
                     Cast.CastApi.setMessageReceivedCallbacks(MdxCastApplication.this.mApiClient, "urn:mdx-netflix-com:service:target:2", this.mMessageReceivedCallback);
+                    MdxCastApplication.this.mForceLaunch = false;
                     MdxCastApplication.this.mCallback.onLaunched();
                     return;
                 }

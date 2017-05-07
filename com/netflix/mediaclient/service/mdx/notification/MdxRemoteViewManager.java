@@ -72,29 +72,29 @@ public final class MdxRemoteViewManager
             return;
         }
         if (!this.mInTransition) {
-            remoteViews.setImageViewResource(2131230960, 2130837767);
+            remoteViews.setImageViewResource(2131230960, 2130837768);
             remoteViews.setOnClickPendingIntent(2131230960, this.mIntentRetriever.getSkipbackIntent(-30));
-            remoteViews.setImageViewResource(2131230962, 2130837773);
+            remoteViews.setImageViewResource(2131230962, 2130837774);
             remoteViews.setOnClickPendingIntent(2131230962, this.mIntentRetriever.getStopIntent());
             if (this.mPaused) {
-                remoteViews.setImageViewResource(2131230961, 2130837771);
+                remoteViews.setImageViewResource(2131230961, 2130837772);
                 remoteViews.setOnClickPendingIntent(2131230961, this.mIntentRetriever.getResumeIntent());
                 return;
             }
-            remoteViews.setImageViewResource(2131230961, 2130837769);
+            remoteViews.setImageViewResource(2131230961, 2130837770);
             remoteViews.setOnClickPendingIntent(2131230961, this.mIntentRetriever.getPauseIntent());
         }
         else {
-            remoteViews.setImageViewResource(2131230960, 2130837768);
+            remoteViews.setImageViewResource(2131230960, 2130837769);
             remoteViews.setOnClickPendingIntent(2131230960, this.mIntentRetriever.getNoActionIntent());
-            remoteViews.setImageViewResource(2131230962, 2130837774);
+            remoteViews.setImageViewResource(2131230962, 2130837775);
             remoteViews.setOnClickPendingIntent(2131230962, this.mIntentRetriever.getNoActionIntent());
             if (this.mPaused) {
-                remoteViews.setImageViewResource(2131230961, 2130837772);
+                remoteViews.setImageViewResource(2131230961, 2130837773);
                 remoteViews.setOnClickPendingIntent(2131230961, this.mIntentRetriever.getNoActionIntent());
                 return;
             }
-            remoteViews.setImageViewResource(2131230961, 2130837770);
+            remoteViews.setImageViewResource(2131230961, 2130837771);
             remoteViews.setOnClickPendingIntent(2131230961, this.mIntentRetriever.getNoActionIntent());
         }
     }

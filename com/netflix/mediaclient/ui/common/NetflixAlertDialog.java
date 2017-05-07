@@ -106,6 +106,7 @@ public class NetflixAlertDialog extends NetflixDialogFrag
         return this.mCancelableOnTouchOutside;
     }
     
+    @Override
     public boolean isLoadingData() {
         return false;
     }

@@ -11,6 +11,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.LinearLayout;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
+import android.content.DialogInterface;
 import com.netflix.mediaclient.servicemgr.VideoDetails;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.content.IntentFilter;
@@ -272,6 +273,7 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
         return this.listView.getVisibility() == 0;
     }
     
+    @Override
     public boolean isLoadingData() {
         return this.isLoading || this.adapter.isLoadingData();
     }
@@ -280,6 +282,17 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
         Log.v("EpisodeListFrag", "onActivityCreated");
         super.onActivityCreated(bundle);
         this.completeInitIfPossible();
+    }
+    
+    public void onCancel(final DialogInterface dialogInterface) {
+        super.onCancel(dialogInterface);
+        final Activity activity = this.getActivity();
+        if (activity instanceof DialogCanceledListenerProvider) {
+            final DialogCanceledListener dialogCanceledListener = ((DialogCanceledListenerProvider)activity).getDialogCanceledListener();
+            if (dialogCanceledListener != null) {
+                dialogCanceledListener.onDialogCanceled(this);
+            }
+        }
     }
     
     @Override

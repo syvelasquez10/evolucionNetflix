@@ -214,7 +214,17 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
+    public boolean isAutoPlayEnabled() {
+        return false;
+    }
+    
+    @Override
     public boolean isInQueue() {
+        return false;
+    }
+    
+    @Override
+    public boolean isNextPlayableEpisode() {
         return false;
     }
     

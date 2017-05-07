@@ -80,7 +80,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
-        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131231075);
+        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131231096);
         if (linearLayout != null) {
             linearLayout.setOrientation(1);
             for (int i = 0; i < linearLayout.getChildCount(); ++i) {
@@ -90,7 +90,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
                 child.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
             }
         }
-        final View viewById = onCreateView.findViewById(2131231061);
+        final View viewById = onCreateView.findViewById(2131231084);
         if (viewById != null && DeviceUtils.isTabletByContext((Context)this.getActivity())) {
             viewById.setVisibility(0);
         }

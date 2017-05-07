@@ -42,6 +42,7 @@ public class DeviceConfiguration
     private int mPTAggregationSize;
     private SignUpConfiguration mSignUpConfig;
     private SubtitleConfiguration mSubtitleConfiguration;
+    private int mUserSessionDurationInSeconds;
     
     static {
         DeviceConfiguration.TAG = "nf_configuration_device";
@@ -68,6 +69,7 @@ public class DeviceConfiguration
             b = false;
         }
         this.mIsDisableWidevine = PreferenceUtils.getBooleanPref(mContext, "disable_widevine", b);
+        this.mUserSessionDurationInSeconds = this.loadUserSessionTimeoutDuration();
     }
     
     private int fetchDeviceConfigSynchronously(String remoteDataAsString) {
@@ -118,6 +120,10 @@ public class DeviceConfiguration
     
     private IpConnectivityPolicy loadIpConnectivityPolicy() {
         return IpConnectivityPolicy.from(PreferenceUtils.getIntPref(this.mContext, "ip_connectivity_policy_overide", Integer.MIN_VALUE));
+    }
+    
+    private int loadUserSessionTimeoutDuration() {
+        return PreferenceUtils.getIntPref(this.mContext, "apm_user_session_timeout_duration_override", Integer.MIN_VALUE);
     }
     
     private static Map<String, ConsolidatedLoggingSessionSpecification> toMap(final List<ConsolidatedLoggingSessionSpecification> list) {
@@ -215,6 +221,10 @@ public class DeviceConfiguration
         return this.mSubtitleConfiguration;
     }
     
+    public int getUserSessionDurationInSeconds() {
+        return this.mUserSessionDurationInSeconds;
+    }
+    
     public boolean isDisableMdx() {
         return this.mIsDisableMdx;
     }
@@ -278,6 +288,8 @@ public class DeviceConfiguration
             final int ipConnectivityPolicy = deviceConfigData.getIpConnectivityPolicy();
             this.mIpConnectivityPolicy = IpConnectivityPolicy.from(ipConnectivityPolicy);
             PreferenceUtils.putIntPref(this.mContext, "ip_connectivity_policy_overide", ipConnectivityPolicy);
+            this.mUserSessionDurationInSeconds = deviceConfigData.getUserSessionTimeoutDuration();
+            PreferenceUtils.putIntPref(this.mContext, "apm_user_session_timeout_duration_override", this.mUserSessionDurationInSeconds);
             if (!this.isDeviceConfigInCache()) {
                 this.updateDeviceConfigFlag(true);
             }

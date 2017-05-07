@@ -34,6 +34,8 @@ public interface INetflixServiceCallback
     
     void onMovieDetailsFetched(final int p0, final MovieDetails p1, final int p2);
     
+    void onPostPlayVideosFetched(final int p0, final List<PostPlayVideo> p1, final int p2);
+    
     void onQueueAdd(final int p0, final int p1);
     
     void onQueueRemove(final int p0, final int p1);

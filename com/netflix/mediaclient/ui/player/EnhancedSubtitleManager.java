@@ -262,7 +262,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
         Log.v("nf_subtitles_render", "Create handler.");
         this.mHandler = new Handler();
         Log.v("nf_subtitles_render", "Find root display area");
-        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131231026);
+        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131231030);
         if (this.mDisplayArea == null) {
             Log.e("nf_subtitles_render", "Display area NOT found! This should NOT happen!");
             return;

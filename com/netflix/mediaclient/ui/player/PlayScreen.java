@@ -28,10 +28,7 @@ import com.netflix.mediaclient.ui.Screen;
 
 public class PlayScreen implements Screen
 {
-    public static final int STATE_LOADED = 1;
-    public static final int STATE_LOADED_TAPPED = 2;
-    public static final int STATE_LOADING = 0;
-    private static final String TAG = "screen";
+    protected static final String TAG = "screen";
     protected Listeners listeners;
     protected RelativeLayout mBackground;
     protected ImageView mBif;
@@ -41,21 +38,24 @@ public class PlayScreen implements Screen
     protected TextView mDebugData;
     protected ViewFlipper mFlipper;
     protected SurfaceHolder mHolder;
-    public boolean mNavigationBarSetVisibleInProgress;
+    protected boolean mNavigationBarSetVisibleInProgress;
+    private PlayerUiState mPendingState;
     private String mPlaybackControlOverlayId;
-    private int mState;
+    private PostPlay mPostPlayManager;
+    private PlayerUiState mState;
     protected final TappableSurfaceView mSurface;
     protected TopPanel mTopPanel;
     private boolean mZoomEnabled;
     private final Runnable removeSoundBar;
     
-    PlayScreen(final PlayerActivity mController, final Listeners listeners) {
+    PlayScreen(final PlayerActivity mController, final Listeners listeners, final PostPlay.PostPlayType postPlayType) {
+        this.mState = PlayerUiState.Loading;
         this.mNavigationBarSetVisibleInProgress = false;
         this.mZoomEnabled = true;
         this.removeSoundBar = new Runnable() {
             @Override
             public void run() {
-                if (PlayScreen.this.mState == 1) {
+                if (PlayScreen.this.mState == PlayerUiState.Playing) {
                     Log.d("screen", "AUDIO:: sound bar hide");
                     final TopPanel mTopPanel = PlayScreen.this.mTopPanel;
                     if (mTopPanel != null) {
@@ -71,9 +71,9 @@ public class PlayScreen implements Screen
         }
         this.mController = mController;
         this.listeners = listeners;
-        this.mTopPanel = new TopPanel(mController, listeners.audioPositionListener);
+        this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
-        this.mSurface = (TappableSurfaceView)mController.findViewById(2131231021);
+        this.mSurface = (TappableSurfaceView)mController.findViewById(2131231025);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -82,33 +82,34 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)mController.findViewById(2131231022);
-        this.mBackground = (RelativeLayout)mController.findViewById(2131231020);
+        this.mFlipper = (ViewFlipper)mController.findViewById(2131231026);
+        this.mBackground = (RelativeLayout)mController.findViewById(2131231024);
         this.mBufferingOverlay = mController.findViewById(2131231002);
         this.mBif = (ImageView)mController.findViewById(2131230967);
-        this.moveToState(0);
+        this.mPostPlayManager = PostPlay.createPostPlay(mController, postPlayType);
+        this.moveToState(PlayerUiState.Loading);
     }
     
-    static PlayScreen createInstance(final PlayerActivity playerActivity, final Listeners listeners) {
+    static PlayScreen createInstance(final PlayerActivity playerActivity, final Listeners listeners, final PostPlay.PostPlayType postPlayType) {
         final int androidVersion = AndroidUtils.getAndroidVersion();
         if (androidVersion >= 16) {
-            Log.d("screen", "PlayScreen for ICS (Android 4.1+");
-            return new PlayScreenJB(playerActivity, listeners);
+            Log.d("screen", "PlayScreen for JB (Android 4.1+");
+            return new PlayScreenJB(playerActivity, listeners, postPlayType);
         }
         if (Build.MANUFACTURER.equals("Amazon") && (Build.MODEL.equals("KFOT") || Build.MODEL.equals("KFTT") || Build.MODEL.equals("KFJWA") || Build.MODEL.equals("KFJWI"))) {
             Log.d("screen", "PlayScreen for Amazon Kindle HD");
-            return new PlayScreenKindleHD(playerActivity, listeners);
+            return new PlayScreenKindleHD(playerActivity, listeners, postPlayType);
         }
         if (androidVersion >= 14) {
             Log.d("screen", "PlayScreen for ICS (Android 4+");
-            return new PlayScreenICS(playerActivity, listeners);
+            return new PlayScreenICS(playerActivity, listeners, postPlayType);
         }
         if (Build.MODEL.equals("Kindle Fire") && Build.MANUFACTURER.equals("Amazon")) {
             Log.d("screen", "PlayScreen for Amazon Kindle Fire");
-            return new PlayScreenKindleFire(playerActivity, listeners);
+            return new PlayScreenKindleFire(playerActivity, listeners, postPlayType);
         }
         Log.d("screen", "PlayScreen for Froyo/Gingerbread (Android 2.2-2.3) - default");
-        return new PlayScreen(playerActivity, listeners);
+        return new PlayScreen(playerActivity, listeners, postPlayType);
     }
     
     private boolean isZoomEnabled() {
@@ -116,6 +117,17 @@ public class PlayScreen implements Screen
             Log.d("screen", "mZoomEnabled = " + this.mZoomEnabled + ", surface.canVideoBeZoomed()=" + this.mSurface.canVideoBeZoomed());
         }
         return this.mZoomEnabled && this.mSurface.canVideoBeZoomed();
+    }
+    
+    private void moveToInterrupted() {
+        this.mController.removeVisibleDialog();
+        if (this.mController.isDialogFragmentVisible()) {
+            this.mController.removeDialogFrag();
+        }
+        this.clearPanel();
+        this.mNavigationBarSetVisibleInProgress = true;
+        this.showNavigationBar();
+        Log.d("screen", "Interrupted");
     }
     
     private void moveToLoaded() {
@@ -153,6 +165,66 @@ public class PlayScreen implements Screen
         this.playerOverlayVisibility(true);
     }
     
+    private void moveToLoading() {
+        Log.d("screen", "STATE_LOADING, default");
+    }
+    
+    private void moveToPostPlay() {
+        this.mController.removeVisibleDialog();
+        if (this.mController.isDialogFragmentVisible()) {
+            this.mController.removeDialogFrag();
+        }
+        this.clearPanel();
+        Log.d("screen", "POST_PLAY");
+        this.mNavigationBarSetVisibleInProgress = true;
+        this.mPostPlayManager.transitionToPostPlay();
+        this.showNavigationBar();
+    }
+    
+    static int resolveContentView(final PostPlay.PostPlayType postPlayType) {
+        if (postPlayType == PostPlay.PostPlayType.EpisodesForPhone) {
+            Log.d("screen", "playout_phone_episode");
+            return 2130903128;
+        }
+        if (postPlayType == PostPlay.PostPlayType.EpisodesForTablet) {
+            Log.d("screen", "playout_tablet_episode");
+            return 2130903134;
+        }
+        if (postPlayType == PostPlay.PostPlayType.RecommendationForTablet) {
+            Log.d("screen", "playout_tablet_movie");
+            return 2130903135;
+        }
+        Log.d("screen", "playout_phone_movie");
+        return 2130903129;
+    }
+    
+    public boolean canExitPlaybackEndOfPlay() {
+        while (true) {
+            boolean b = false;
+            Label_0083: {
+                synchronized (this) {
+                    if (this.mState == PlayerUiState.PostPlay) {
+                        Log.d("screen", "We are in post play state, do not exit player activity");
+                        this.mPostPlayManager.endOfPlay();
+                    }
+                    else {
+                        if (!this.mPostPlayManager.wasPostPlayDismissed()) {
+                            break Label_0083;
+                        }
+                        Log.d("screen", "Postplay was dismissed, force postplay");
+                        this.moveToState(PlayerUiState.PostPlay);
+                        this.mPostPlayManager.endOfPlay();
+                        this.mPostPlayManager.setBackgroundImageVisible(true);
+                    }
+                    return b;
+                }
+            }
+            Log.d("screen", "Not in postplay, exit activity");
+            b = true;
+            return b;
+        }
+    }
+    
     public void changeActionState(final boolean b, final boolean b2) {
         if (this.mTopPanel != null) {
             this.mTopPanel.changeActionState(b);
@@ -168,10 +240,10 @@ public class PlayScreen implements Screen
     
     void clearPanel() {
         this.mNavigationBarSetVisibleInProgress = false;
-        if (this.mState == 0) {
+        if (this.mState == PlayerUiState.Loading) {
             return;
         }
-        this.moveToState(1);
+        this.moveToState(PlayerUiState.Playing);
     }
     
     void destroy() {
@@ -189,6 +261,9 @@ public class PlayScreen implements Screen
             }
             if (this.mBottomPanel != null) {
                 this.mBottomPanel.destroy();
+            }
+            if (this.mPostPlayManager != null) {
+                this.mPostPlayManager.destroy();
             }
         }
     }
@@ -221,7 +296,11 @@ public class PlayScreen implements Screen
         return (ImageView)this.mBottomPanel.getMedia();
     }
     
-    public int getState() {
+    PostPlay getPostPlay() {
+        return this.mPostPlayManager;
+    }
+    
+    public PlayerUiState getState() {
         return this.mState;
     }
     
@@ -239,6 +318,25 @@ public class PlayScreen implements Screen
             return (ImageView)mBottomPanel.getZoom();
         }
         return null;
+    }
+    
+    void hideNavigationBar() {
+        Log.d("screen", "hide nav noop");
+    }
+    
+    boolean inInterruptedOrPendingInterrupted() {
+        synchronized (this) {
+            return this.mState == PlayerUiState.Interrupter || this.mPendingState == PlayerUiState.Interrupter;
+        }
+    }
+    
+    boolean inPostPlayOrPendingPostplay() {
+        synchronized (this) {
+            if (Log.isLoggable("screen", 3)) {
+                Log.d("screen", "canIgnoreSurfaceDestroyed, state: " + this.mState + ", pending state: " + this.mPendingState);
+            }
+            return this.mState == PlayerUiState.PostPlay || this.mPendingState == PlayerUiState.PostPlay;
+        }
     }
     
     void initAudioProgress(final int n) {
@@ -259,67 +357,90 @@ public class PlayScreen implements Screen
         }
     }
     
-    protected void moveToLoading() {
-        Log.d("screen", "STATE_LOADING, default");
-    }
-    
-    protected void moveToState(final int mState) {
-        if (this.mState == mState) {
-            Log.d("screen", "Already in this state, do nothing: " + mState);
-            return;
-        }
-        switch (mState) {
-            default: {
+    protected void moveToState(final PlayerUiState playerUiState) {
+        while (true) {
+            while (true) {
+                Label_0073: {
+                    synchronized (this) {
+                        if (this.mState == playerUiState) {
+                            Log.d("screen", "Already in this state, do nothing: " + playerUiState);
+                        }
+                        else {
+                            if ((this.mPendingState = playerUiState) != PlayerUiState.Loading) {
+                                break Label_0073;
+                            }
+                            this.moveToLoading();
+                            this.mState = playerUiState;
+                            this.mPendingState = null;
+                        }
+                        return;
+                    }
+                }
+                if (playerUiState == PlayerUiState.Playing) {
+                    this.moveToLoaded();
+                    continue;
+                }
+                if (playerUiState == PlayerUiState.PlayingWithTrickPlayOverlay) {
+                    this.moveToLoadedTapped();
+                    continue;
+                }
+                if (playerUiState == PlayerUiState.PostPlay) {
+                    this.moveToPostPlay();
+                    continue;
+                }
+                if (playerUiState == PlayerUiState.Interrupter) {
+                    this.moveToInterrupted();
+                    continue;
+                }
                 Log.e("screen", "Invalid state set, ignoring");
-                return;
-            }
-            case 0: {
-                this.moveToLoading();
-                break;
-            }
-            case 1: {
-                this.moveToLoaded();
-                break;
-            }
-            case 2: {
-                this.moveToLoadedTapped();
-                break;
+                continue;
             }
         }
-        this.mState = mState;
     }
     
     void onTap(final boolean b) {
         if (Log.isLoggable("screen", 3)) {
             Log.d("screen", "PlayScreen tap received. Event driven: " + b);
         }
-        Label_0079: {
-            if (b) {
-                Log.d("screen", "Event is received. We are either not on ICS+ phone or this is tap to hide overlay.");
-                this.mNavigationBarSetVisibleInProgress = false;
-                break Label_0079;
-            }
+        if (!b) {
             Log.d("screen", "Hack to make player overlay visible on ICS+ devices. It is only called when event is null");
-            if (!this.mNavigationBarSetVisibleInProgress) {
-                Log.d("screen", "Navigation bar is now visible. Make player overlay visible.");
-                this.mNavigationBarSetVisibleInProgress = true;
-                break Label_0079;
+            if (this.mNavigationBarSetVisibleInProgress) {
+                Log.d("screen", "Navigation bar visibility was already triggered. Ignore.");
+                return;
             }
-            Log.d("screen", "Navigation bar visibility was already triggered. Ignore.");
+            Log.d("screen", "Navigation bar is now visible. Make player overlay visible.");
+            this.mNavigationBarSetVisibleInProgress = true;
+        }
+        else {
+            Log.d("screen", "Event is received. We are either not on ICS+ phone or this is tap to hide overlay.");
+            this.mNavigationBarSetVisibleInProgress = false;
+        }
+        if (this.mState == PlayerUiState.Loading) {
+            Log.d("screen", "Loading, noop");
             return;
         }
-        switch (this.mState) {
-            case 0: {}
-            default: {
-                Log.e("screen", "This should not be possible, ignoring");
-            }
-            case 1: {
-                this.moveToState(2);
-            }
-            case 2: {
-                this.moveToState(1);
-            }
+        if (this.mState == PlayerUiState.Playing) {
+            Log.d("screen", "Move to PlayingWithTrickPlayOverlay");
+            this.moveToState(PlayerUiState.PlayingWithTrickPlayOverlay);
+            return;
         }
+        if (this.mState == PlayerUiState.PlayingWithTrickPlayOverlay) {
+            Log.d("screen", "Move to Playing");
+            this.moveToState(PlayerUiState.Playing);
+            return;
+        }
+        if (this.mState != PlayerUiState.PostPlay) {
+            Log.e("screen", "This should not be possible, ignoring");
+            return;
+        }
+        if (this.mPostPlayManager.wasPostPlayDismissed()) {
+            Log.d("screen", "PostPlay was dismissed before, stay in it!");
+            return;
+        }
+        Log.d("screen", "Move to PlayingWithTrickPlayOverlay from post play");
+        this.moveToState(PlayerUiState.Playing);
+        this.mPostPlayManager.transitionFromPostPlay();
+        this.hideNavigationBar();
     }
     
     protected void playerOverlayVisibility(final boolean b) {
@@ -347,17 +468,17 @@ public class PlayScreen implements Screen
     }
     
     void removeSplashScreen() {
-        if (this.mState == 0) {
+        if (this.mState == PlayerUiState.Loading) {
             Log.d("screen", "=========================>");
             if (this.mFlipper != null) {
                 this.mFlipper.showNext();
             }
-            this.moveToState(2);
+            this.moveToState(PlayerUiState.PlayingWithTrickPlayOverlay);
         }
     }
     
     public void resetToLoadingState() {
-        this.moveToState(0);
+        this.moveToState(PlayerUiState.Loading);
         this.showSplashScreen();
     }
     
@@ -429,7 +550,7 @@ public class PlayScreen implements Screen
     }
     
     void setSoundBarVisibility(final boolean b) {
-        if (this.mState == 1) {
+        if (this.mState == PlayerUiState.Playing) {
             Log.d("screen", "AUDIO:: sound bar is NOT visible");
             if (b) {
                 Log.d("screen", "AUDIO:: sound bar make it visible");
@@ -441,7 +562,7 @@ public class PlayScreen implements Screen
             this.mSurface.postDelayed(this.removeSoundBar, 500L);
         }
         else {
-            if (this.mState == 2) {
+            if (this.mState == PlayerUiState.PlayingWithTrickPlayOverlay) {
                 Log.d("screen", "AUDIO:: state loaded tapped. Sound bar is already visible");
                 return;
             }
@@ -462,7 +583,7 @@ public class PlayScreen implements Screen
                 this.mTopPanel.hide();
                 return;
             }
-            if (this.mState == 2) {
+            if (this.mState == PlayerUiState.PlayingWithTrickPlayOverlay) {
                 this.mTopPanel.show();
                 return;
             }
@@ -485,7 +606,7 @@ public class PlayScreen implements Screen
     }
     
     protected boolean shouldPlaybackRelatedOptionBePossible() {
-        return !this.mController.isStalled() && this.mState != 0;
+        return !this.mController.isStalled() && this.mState != PlayerUiState.Loading;
     }
     
     public void showBif(final ByteBuffer byteBuffer) {
@@ -505,8 +626,12 @@ public class PlayScreen implements Screen
         Log.d("screen", "bitmap is null");
     }
     
+    void showNavigationBar() {
+        Log.d("screen", "show nav noop");
+    }
+    
     void showSplashScreen() {
-        if (this.mState != 0) {
+        if (this.mState != PlayerUiState.Loading) {
             Log.d("screen", "=========================> display spash screen");
             if (this.mFlipper != null) {
                 this.mFlipper.showPrevious();
@@ -548,6 +673,7 @@ public class PlayScreen implements Screen
     public static class Listeners
     {
         public SeekBar$OnSeekBarChangeListener audioPositionListener;
+        public View$OnClickListener episodeSelectorListener;
         public View$OnClickListener playPauseListener;
         public View$OnClickListener skipBackListener;
         public SurfaceHolder$Callback surfaceListener;

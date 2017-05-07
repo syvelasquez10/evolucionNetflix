@@ -11,8 +11,11 @@ import com.google.gson.Gson;
 
 public class FalcorParseUtils
 {
+    public static final String FIELD_CURRENT = "current";
+    public static final String FIELD_EPISODES = "episodes";
     private static final String FIELD_PATH = "path";
     private static final String FIELD_VALUE = "value";
+    public static final String FIELD_VIDEOS = "videos";
     private static final String METHOD_TYPE_CALL = "call";
     private static final String METHOD_TYPE_GET = "get";
     private static final String PARAM_NAME_CALLPATH = "callPath";

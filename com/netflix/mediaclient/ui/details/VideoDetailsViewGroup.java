@@ -68,7 +68,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private Drawable buildHdDrawable() {
-        final Drawable drawable = this.getResources().getDrawable(2130837691);
+        final Drawable drawable = this.getResources().getDrawable(2130837692);
         double n;
         if (drawable.getIntrinsicHeight() > 0) {
             n = this.basicInfo.getHeight() * drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
@@ -85,19 +85,19 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private void init() {
-        LayoutInflater.from(this.getContext()).inflate(2130903154, (ViewGroup)this, true);
+        LayoutInflater.from(this.getContext()).inflate(2130903161, (ViewGroup)this, true);
         this.setOrientation(1);
-        this.imgGroup = (ViewGroup)this.findViewById(2131231071);
-        this.horzDispImg = (AdvancedImageView)this.findViewById(2131231062);
-        this.ratingBar = (NetflixRatingBar)this.findViewById(2131231065);
-        this.title = (TextView)this.findViewById(2131231073);
-        this.basicInfo = (TextView)this.findViewById(2131231064);
-        this.synopsis = (TextView)this.findViewById(2131231068);
-        this.starring = (TextView)this.findViewById(2131231069);
-        this.creators = (TextView)this.findViewById(2131231070);
-        (this.addToMyList = (Button)this.findViewById(2131231063)).setEnabled(false);
-        this.socialGroup = (LinearLayout)this.findViewById(2131231067);
-        this.socialTitle = (TextView)this.findViewById(2131231066);
+        this.imgGroup = (ViewGroup)this.findViewById(2131231092);
+        this.horzDispImg = (AdvancedImageView)this.findViewById(2131231085);
+        this.ratingBar = (NetflixRatingBar)this.findViewById(2131231051);
+        this.title = (TextView)this.findViewById(2131231094);
+        this.basicInfo = (TextView)this.findViewById(2131231050);
+        this.synopsis = (TextView)this.findViewById(2131231089);
+        this.starring = (TextView)this.findViewById(2131231090);
+        this.creators = (TextView)this.findViewById(2131231091);
+        (this.addToMyList = (Button)this.findViewById(2131231086)).setEnabled(false);
+        this.socialGroup = (LinearLayout)this.findViewById(2131231088);
+        this.socialTitle = (TextView)this.findViewById(2131231087);
         this.hdDrawablePadding = this.getHdDrawablePadding();
         this.setImgLayoutListener();
     }

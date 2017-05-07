@@ -207,42 +207,35 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             this.mCurrentUserSettings = this.createNewCurrentUserSettings(userId, currentProfileUserId);
             try {
                 // iftrue(Label_0100:, !Log.isLoggable("nf_push", 3))
-                // iftrue(Label_0170:, StringUtils.safeEquals(this.mCurrentUserSettings.currentProfileUserId, currentProfileUserId))
-                Label_0170_Outer:Block_5_Outer:
                 while (true) {
-                    Log.d("nf_push", "Checks if application is updated (only if app was registered before)...");
-                    if (this.isApplicationUpdated()) {
-                        Log.d("nf_push", "Application was updated, execute silent reregistration!");
-                        this.doRegisterForNotifications();
-                    }
-                    else if (!this.validateRegistration()) {
-                        if (b2 || this.isBeaconDeltaExpire()) {
-                            Log.d("nf_push", "Report");
-                            this.report(this.mGcmRegistered);
-                            return;
+                    while (true) {
+                        Log.d("nf_push", "Checks if application is updated (only if app was registered before)...");
+                        if (this.isApplicationUpdated()) {
+                            Log.d("nf_push", "Application was updated, execute silent reregistration!");
+                            this.doRegisterForNotifications();
                         }
-                        break Label_0130;
-                    }
-                    return;
-                    Block_6: {
-                        while (true) {
-                            while (true) {
-                                b2 = b;
-                                break Block_6;
-                                Log.d("nf_push", "currentProfile change detected");
-                                b = true;
-                                this.updateCurrentUserSettings(currentProfileUserId);
-                                continue Block_5_Outer;
+                        else if (!this.validateRegistration()) {
+                            if (b2 || this.isBeaconDeltaExpire()) {
+                                Log.d("nf_push", "Report");
+                                this.report(this.mGcmRegistered);
+                                return;
                             }
-                            this.mCurrentUserSettings.current = true;
-                            continue;
+                            break Label_0130;
                         }
+                        return;
+                        b2 = b;
+                        Log.d("nf_push", "User was know from before and he opted in " + this.mCurrentUserSettings.optedIn);
+                        b2 = b;
+                        continue;
                     }
-                    Log.d("nf_push", "User was know from before and he opted in " + this.mCurrentUserSettings.optedIn);
-                    b2 = b;
-                    continue Label_0170_Outer;
+                    this.mCurrentUserSettings.current = true;
+                    Log.d("nf_push", "currentProfile change detected");
+                    b = true;
+                    this.updateCurrentUserSettings(currentProfileUserId);
+                    continue;
                 }
             }
+            // iftrue(Label_0170:, StringUtils.safeEquals(this.mCurrentUserSettings.currentProfileUserId, currentProfileUserId))
             catch (Throwable t) {
                 Log.e("nf_push", "Check if we are registered already failed!", t);
                 return;
@@ -254,15 +247,15 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
     private void onNotificationCanceled(final Intent intent) {
         final String stringExtra = intent.getStringExtra("guid");
         if (StringUtils.isEmpty(stringExtra)) {
-            Log.e("nf_push", "Received cancel notification WITHOUT Event GUID! Do nothing!");
+            Log.e("nf_push", "Received cancel notification WITHOUT GUID! Do nothing!");
             return;
         }
         final String stringExtra2 = intent.getStringExtra("messageGuid");
         if (StringUtils.isEmpty(stringExtra2)) {
-            Log.e("nf_push", "Received cancel notification WITHOUT GUID! Do nothing!");
+            Log.e("nf_push", "Received cancel notification WITHOUT MESSAGE GUID! Do nothing!");
             return;
         }
-        this.getService().getClientLogging().getCmpEventLogging().reportUserFeedbackOnReceivedPushNotification(new MessageData(stringExtra2, stringExtra), UserFeedbackOnReceivedPushNotification.canceled);
+        this.getService().getClientLogging().getCmpEventLogging().reportUserFeedbackOnReceivedPushNotification(new MessageData(stringExtra, stringExtra2), UserFeedbackOnReceivedPushNotification.canceled);
     }
     
     private void registerForPushNotification() {

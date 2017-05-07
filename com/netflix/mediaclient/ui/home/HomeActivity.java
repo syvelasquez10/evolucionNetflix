@@ -249,7 +249,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
                 logo = 2130837505;
             }
             else {
-                logo = 2130837759;
+                logo = 2130837760;
             }
             netflixActionBar.setLogo(logo);
         }
@@ -352,7 +352,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
         this.showFetchErrorsToast();
         (this.drawerLayout = (DrawerLayout)this.findViewById(2131230885)).setDrawerLockMode(0);
         this.slidingMenuAdapter = new SlidingMenuAdapter(this, this.drawerLayout);
-        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2130837689, 2131296565, 2131296565);
+        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2130837690, 2131296565, 2131296565);
         this.drawerLayout.setDrawerListener(this.createDrawerListenerWrapper(this.drawerToggler));
         this.drawerLayout.setFocusable(false);
         this.updateActionBar();

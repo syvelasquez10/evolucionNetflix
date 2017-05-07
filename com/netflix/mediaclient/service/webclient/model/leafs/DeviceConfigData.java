@@ -27,10 +27,13 @@ public class DeviceConfigData
     private String signup_timeout;
     private String subtitle_configuration;
     private String type;
+    @SerializedName("user_session_timeout_duration")
+    private int user_session_timeout_duration;
     
     public DeviceConfigData() {
         this.consolidated_logging_specification = new ArrayList<ConsolidatedLoggingSessionSpecification>();
         this.ip_connectivity_policy = -1;
+        this.user_session_timeout_duration = -1;
     }
     
     public String getAppMinVresion() {
@@ -83,6 +86,10 @@ public class DeviceConfigData
     
     public String getSubtitleConfiguration() {
         return this.subtitle_configuration;
+    }
+    
+    public int getUserSessionTimeoutDuration() {
+        return this.user_session_timeout_duration;
     }
     
     public String getWebsocketDisabled() {

@@ -24,6 +24,9 @@ import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.api.Api19Util;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
+import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.Log;
 import android.os.Handler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
@@ -33,6 +36,7 @@ import com.netflix.mediaclient.service.ServiceAgent;
 
 public class ConfigurationAgent extends ServiceAgent implements ConfigurationAgentInterface
 {
+    private static final int APM_USER_SESSION_TIMEOUT_SEC = 1800;
     private static final long CONFIG_REFRESH_DELAY_MS = 28800000L;
     private static final int DATA_REQUEST_TIMEOUT_MS = 10000;
     private static final float DISK_CACHE_SIZE_AS_PERCENTAGE_OF_AVLBLMEM = 0.25f;
@@ -54,7 +58,6 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     private static final String VIDEO_PLAYREADY_H264_MPL30_DASH = "playready-h264mpl30-dash";
     private static final String VIDEO_PLAYREADY_H264_MPL31_DASH = "playready-h264mpl31-dash";
     private static final String sMemLevel;
-    private final Runnable configRefreshRunnable;
     private AccountConfiguration mAccountConfigOverride;
     private int mAppVersionCode;
     private final ArrayList<ConfigAgentListener> mConfigAgentListeners;
@@ -71,6 +74,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     private boolean mNeedLogout;
     private String mSoftwareVersion;
     private Handler refreshHandler;
+    private final Runnable refreshRunnable;
     
     static {
         sMemLevel = getMemLevel();
@@ -84,11 +88,23 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         this.mSoftwareVersion = null;
         this.mNeedLogout = false;
         this.mNeedEsMigration = false;
-        this.configRefreshRunnable = new Runnable() {
+        this.refreshRunnable = new Runnable() {
             @Override
             public void run() {
-                Log.i("nf_configurationagent", "Refershing config via runnable");
+                Log.i("nf_configurationagent", "Refreshing config via runnable");
                 ConfigurationAgent.this.fetchAccountConfigData(null);
+                Log.i("nf_configurationagent", "Check if we should report ad id via runnable");
+                final IClientLogging clientLogging = ConfigurationAgent.this.getService().getClientLogging();
+                if (clientLogging == null) {
+                    Log.e("nf_configurationagent", "CL is not available!");
+                    return;
+                }
+                final AdvertiserIdLogging advertiserIdLogging = clientLogging.getAdvertiserIdLogging();
+                if (advertiserIdLogging == null) {
+                    Log.e("nf_configurationagent", "AD logger is not available!");
+                    return;
+                }
+                advertiserIdLogging.sendAdvertiserId();
             }
         };
     }
@@ -200,7 +216,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     public void destroy() {
         super.destroy();
         if (this.refreshHandler != null) {
-            this.refreshHandler.removeCallbacks(this.configRefreshRunnable);
+            this.refreshHandler.removeCallbacks(this.refreshRunnable);
         }
         if (this.mDeviceConfigOverride != null) {
             this.mDeviceConfigOverride.clear();
@@ -269,7 +285,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         };
         NccpKeyStore.init(this.getContext());
         this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), drmReadyCallback);
-        this.mESN = EsnProviderRegistry.createESN(this.getContext(), this.mDrmManager);
+        this.mESN = EsnProviderRegistry.createESN(this.getContext(), this.mDrmManager, this);
         Log.d("nf_configurationagent", "Inject ESN to PlayerTypeFactory");
         PlayerTypeFactory.initialize(this.mESN);
         this.mDrmManager.init();
@@ -291,6 +307,15 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     @Override
     public ApiEndpointRegistry getApiEndpointRegistry() {
         return this.mEndpointRegistry;
+    }
+    
+    @Override
+    public int getApmUserSessionDurationInSeconds() {
+        final int userSessionDurationInSeconds = this.mDeviceConfigOverride.getUserSessionDurationInSeconds();
+        if (userSessionDurationInSeconds > 0) {
+            return userSessionDurationInSeconds;
+        }
+        return 1800;
     }
     
     @Override
@@ -662,7 +687,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
                         ConfigurationAgent.this.mConfigRefreshStatus = 0;
                     }
                     ConfigurationAgent.this.mIsConfigRefreshInBackground = false;
-                    ConfigurationAgent.this.refreshHandler.postDelayed(ConfigurationAgent.this.configRefreshRunnable, 28800000L);
+                    ConfigurationAgent.this.refreshHandler.postDelayed(ConfigurationAgent.this.refreshRunnable, 28800000L);
                     ConfigurationAgent.this.notifyConfigRefreshed();
                     if (((FetchTask)FetchConfigDataTask.this).getCallback() != null) {
                         ((FetchTask)FetchConfigDataTask.this).getCallback().onConfigDataFetched(configData, ConfigurationAgent.this.mConfigRefreshStatus);

@@ -21,7 +21,7 @@ final class LanguageSelectorTablet extends LanguageSelector
         final int n2 = (int)this.mController.getResources().getDimension(2131492931);
         final int n3 = (int)this.mController.getResources().getDimension(2131492954);
         int intrinsicHeight;
-        if ((intrinsicHeight = this.mController.getResources().getDrawable(2130837723).getIntrinsicHeight()) == -1) {
+        if ((intrinsicHeight = this.mController.getResources().getDrawable(2130837724).getIntrinsicHeight()) == -1) {
             intrinsicHeight = (int)this.mController.getResources().getDimension(2131492955);
         }
         final Language language = this.getLanguage();

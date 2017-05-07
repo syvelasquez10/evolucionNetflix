@@ -305,8 +305,18 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     }
     
     @Override
+    public boolean isAutoPlayEnabled() {
+        return this.detail != null && this.detail.isAutoPlayEnabled;
+    }
+    
+    @Override
     public boolean isInQueue() {
         return this.inQueue != null && this.inQueue.inQueue;
+    }
+    
+    @Override
+    public boolean isNextPlayableEpisode() {
+        return this.detail != null && this.detail.isNextPlayableEpisode;
     }
     
     @Override
@@ -338,10 +348,5 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     @Override
     public void setUserRating(final float userRating) {
         this.rating.userRating = userRating;
-    }
-    
-    @Override
-    public String toString() {
-        return "MovieDetails [similarListSummary=" + this.similarListSummary + ", userConnectedToFacebook=" + this.userConnectedToFacebook + ", summary=" + this.summary + ", detail=" + this.detail + ", bookmark=" + this.bookmark + ", inQueue=" + this.inQueue + ", rating=" + this.rating + ", bookmarkStill=" + this.bookmarkStill + ", similars=" + this.similars + ", socialEvidence=" + this.socialEvidence + "]";
     }
 }

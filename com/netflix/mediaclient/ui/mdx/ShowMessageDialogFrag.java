@@ -47,6 +47,7 @@ public class ShowMessageDialogFrag extends NetflixDialogFrag implements MdxMiniP
         return showMessageDialogFrag;
     }
     
+    @Override
     public boolean isLoadingData() {
         return false;
     }

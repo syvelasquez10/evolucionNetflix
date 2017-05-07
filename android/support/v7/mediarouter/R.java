@@ -143,7 +143,7 @@ public final class R
     
     public static final class color
     {
-        public static final int abc_search_url_text_holo = 2131165268;
+        public static final int abc_search_url_text_holo = 2131165278;
         public static final int abc_search_url_text_normal = 2131165194;
         public static final int abc_search_url_text_pressed = 2131165196;
         public static final int abc_search_url_text_selected = 2131165195;
@@ -259,23 +259,23 @@ public final class R
         public static final int abc_textfield_searchview_holo_light = 2130837594;
         public static final int abc_textfield_searchview_right_holo_dark = 2130837595;
         public static final int abc_textfield_searchview_right_holo_light = 2130837596;
-        public static final int mr_ic_audio_vol = 2130837742;
-        public static final int mr_ic_media_route_connecting_holo_dark = 2130837743;
-        public static final int mr_ic_media_route_connecting_holo_light = 2130837744;
-        public static final int mr_ic_media_route_disabled_holo_dark = 2130837745;
-        public static final int mr_ic_media_route_disabled_holo_light = 2130837746;
-        public static final int mr_ic_media_route_holo_dark = 2130837747;
-        public static final int mr_ic_media_route_holo_light = 2130837748;
-        public static final int mr_ic_media_route_off_holo_dark = 2130837749;
-        public static final int mr_ic_media_route_off_holo_light = 2130837750;
-        public static final int mr_ic_media_route_on_0_holo_dark = 2130837751;
-        public static final int mr_ic_media_route_on_0_holo_light = 2130837752;
-        public static final int mr_ic_media_route_on_1_holo_dark = 2130837753;
-        public static final int mr_ic_media_route_on_1_holo_light = 2130837754;
-        public static final int mr_ic_media_route_on_2_holo_dark = 2130837755;
-        public static final int mr_ic_media_route_on_2_holo_light = 2130837756;
-        public static final int mr_ic_media_route_on_holo_dark = 2130837757;
-        public static final int mr_ic_media_route_on_holo_light = 2130837758;
+        public static final int mr_ic_audio_vol = 2130837743;
+        public static final int mr_ic_media_route_connecting_holo_dark = 2130837744;
+        public static final int mr_ic_media_route_connecting_holo_light = 2130837745;
+        public static final int mr_ic_media_route_disabled_holo_dark = 2130837746;
+        public static final int mr_ic_media_route_disabled_holo_light = 2130837747;
+        public static final int mr_ic_media_route_holo_dark = 2130837748;
+        public static final int mr_ic_media_route_holo_light = 2130837749;
+        public static final int mr_ic_media_route_off_holo_dark = 2130837750;
+        public static final int mr_ic_media_route_off_holo_light = 2130837751;
+        public static final int mr_ic_media_route_on_0_holo_dark = 2130837752;
+        public static final int mr_ic_media_route_on_0_holo_light = 2130837753;
+        public static final int mr_ic_media_route_on_1_holo_dark = 2130837754;
+        public static final int mr_ic_media_route_on_1_holo_light = 2130837755;
+        public static final int mr_ic_media_route_on_2_holo_dark = 2130837756;
+        public static final int mr_ic_media_route_on_2_holo_light = 2130837757;
+        public static final int mr_ic_media_route_on_holo_dark = 2130837758;
+        public static final int mr_ic_media_route_on_holo_light = 2130837759;
     }
     
     public static final class id
@@ -380,7 +380,7 @@ public final class R
         public static final int mr_media_route_chooser_dialog = 2130903121;
         public static final int mr_media_route_controller_dialog = 2130903122;
         public static final int mr_media_route_list_item = 2130903123;
-        public static final int support_simple_spinner_dropdown_item = 2130903146;
+        public static final int support_simple_spinner_dropdown_item = 2130903153;
     }
     
     public static final class string

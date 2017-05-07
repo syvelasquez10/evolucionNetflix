@@ -138,7 +138,7 @@ public final class R
     
     public static final class color
     {
-        public static final int abc_search_url_text_holo = 2131165268;
+        public static final int abc_search_url_text_holo = 2131165278;
         public static final int abc_search_url_text_normal = 2131165194;
         public static final int abc_search_url_text_pressed = 2131165196;
         public static final int abc_search_url_text_selected = 2131165195;
@@ -350,7 +350,7 @@ public final class R
         public static final int abc_popup_menu_item_layout = 2130903060;
         public static final int abc_search_dropdown_item_icons_2line = 2130903061;
         public static final int abc_search_view = 2130903062;
-        public static final int support_simple_spinner_dropdown_item = 2130903146;
+        public static final int support_simple_spinner_dropdown_item = 2130903153;
     }
     
     public static final class string
