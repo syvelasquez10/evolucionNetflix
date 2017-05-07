@@ -31,7 +31,7 @@ public interface UIViewLogging
     
     void startCommandSession(final UIViewCommandName p0, final IClientLogging.ModalView p1, final DataContext p2);
     
-    void startImpressionSession(final IClientLogging.ModalView p0, final String p1);
+    void startImpressionSession(final IClientLogging.ModalView p0);
     
     public enum UIViewCommandName
     {

@@ -263,7 +263,6 @@ public class an extends Thread
                     gs.b("Error in ContentFetchTask", t);
                     this.nw.b(t);
                 }
-            Label_0092_Outer:
                 while (true) {
                     final Object o = this.mw;
                     synchronized (o) {
@@ -275,15 +274,14 @@ public class an extends Thread
                             catch (InterruptedException ex) {}
                         }
                         continue Label_0051_Outer;
-                        while (true) {
-                            Thread.sleep(this.nx * 1000);
-                            continue Label_0092_Outer;
-                            this.a((Activity)o);
-                            continue;
+                        this.a((Activity)o);
+                        Label_0092: {
+                            break Label_0092;
                             gs.S("ContentFetchTask: sleeping");
                             this.aY();
-                            continue;
                         }
+                        Thread.sleep(this.nx * 1000);
+                        continue;
                     }
                     break;
                 }

@@ -574,8 +574,8 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     }
     
     boolean updateNccpSessionKeyResponse(final byte[] array, final byte[] array2, final byte[] array3, final String s) {
-    Label_0043_Outer:
         while (true) {
+        Label_0061_Outer:
             while (true) {
                 while (true) {
                     final byte[] array4;
@@ -585,7 +585,9 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                                 Log.d(WidevineDrmManager.TAG, "Update key response for account " + s);
                             }
                             break Label_0200;
-                            boolean b = false;
+                            Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
+                            return false;
+                            b = false;
                             try {
                                 final byte[] pendingSessionId = this.nccpCryptoFactoryCryptoSession.pendingSessionId;
                                 if (pendingSessionId != null) {
@@ -607,17 +609,14 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                                 Log.e(WidevineDrmManager.TAG, "We failed to update key response...", t);
                                 this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE, t);
                             }
-                            Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
-                            b = false;
-                            return b;
                         }
                     }
                     if (array4 != null && array2 != null && array3 != null) {
-                        continue Label_0043_Outer;
+                        continue;
                     }
                     break;
                 }
-                continue;
+                continue Label_0061_Outer;
             }
         }
     }

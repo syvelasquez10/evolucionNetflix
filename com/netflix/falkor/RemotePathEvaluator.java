@@ -49,6 +49,7 @@ public class RemotePathEvaluator extends BasePathEvaluator
     Label_0072_Outer:
         while (iterator.hasNext()) {
             final String string = iterator.next().toString();
+        Block_8_Outer:
             while (true) {
                 Label_0248: {
                     if (genericReturnType == null) {
@@ -69,32 +70,29 @@ public class RemotePathEvaluator extends BasePathEvaluator
                         final Class<?> returnType = method.getReturnType();
                         // iftrue(Label_0239:, !returnType instanceof Class)
                         // iftrue(Label_0024:, !genericReturnType2 instanceof ParameterizedType)
+                        // iftrue(Label_0171:, !List.class.isAssignableFrom((Class<?>)returnType))
                         while (true) {
-                            Block_7: {
-                                final Type genericReturnType2;
-                                Block_9: {
-                                    Block_6: {
-                                        break Block_6;
-                                        Label_0239: {
-                                            return JsonObject.class;
-                                        }
-                                        genericReturnType2 = method.getGenericReturnType();
-                                        rootType = returnType;
-                                        genericReturnType = clazz2;
-                                        type = clazz3;
-                                        break Block_9;
+                            while (true) {
+                                Block_6: {
+                                    break Block_6;
+                                    Label_0239: {
+                                        return JsonObject.class;
                                     }
-                                    break Block_7;
+                                    genericReturnType = method.getGenericReturnType();
+                                    rootType = returnType;
+                                    type = clazz3;
+                                    continue Label_0072_Outer;
+                                    final Type genericReturnType2 = method.getGenericReturnType();
+                                    rootType = returnType;
+                                    genericReturnType = clazz2;
+                                    type = clazz3;
+                                    type = ((ParameterizedType)genericReturnType2).getActualTypeArguments()[1];
+                                    rootType = returnType;
+                                    genericReturnType = clazz2;
+                                    continue Label_0072_Outer;
                                 }
-                                type = ((ParameterizedType)genericReturnType2).getActualTypeArguments()[1];
-                                rootType = returnType;
-                                genericReturnType = clazz2;
-                                continue Label_0072_Outer;
+                                continue Block_8_Outer;
                             }
-                            genericReturnType = method.getGenericReturnType();
-                            rootType = returnType;
-                            type = clazz3;
-                            continue Label_0072_Outer;
                             Label_0171: {
                                 rootType = returnType;
                             }
@@ -103,7 +101,6 @@ public class RemotePathEvaluator extends BasePathEvaluator
                             continue;
                         }
                     }
-                    // iftrue(Label_0171:, !List.class.isAssignableFrom((Class<?>)returnType))
                     // iftrue(Label_0024:, !Map.class.isAssignableFrom((Class<?>)returnType))
                     catch (Exception ex) {
                         return JsonObject.class;

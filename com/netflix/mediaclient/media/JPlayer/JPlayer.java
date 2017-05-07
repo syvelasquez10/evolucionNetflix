@@ -19,6 +19,7 @@ public class JPlayer
 {
     static final int INIT_AUDIO_ERROR = -1;
     static final int INIT_VIDEO_ERROR = -2;
+    static final int MAX_INPUT_SIZE = 163840;
     static final int RUNTIME_ERROR = -3;
     static final int SD_HEIGHT = 480;
     static final int SD_WIDTH = 720;
@@ -140,7 +141,7 @@ public class JPlayer
                                     return;
                                 }
                                 break Label_0194_Outer;
-                                mediaFormat.setInteger("max-input-size", 131072);
+                                mediaFormat.setInteger("max-input-size", 163840);
                                 mediaFormat.setInteger("width", 720);
                                 mediaFormat.setInteger("height", 480);
                                 continue Label_0194_Outer;
@@ -425,25 +426,45 @@ public class JPlayer
             assert n == inputBufInfo.mDataSize;
             bufferMeta.offset = 0;
             bufferMeta.timestamp = inputBufInfo.mTimeStamp;
-            if ((inputBufInfo.mFlags & 0x4) != 0x0) {
-                if (JPlayer.this.mEnablePlatformDrs) {
+            Label_0235: {
+                if ((inputBufInfo.mFlags & 0x4) == 0x0) {
+                    break Label_0235;
+                }
+                Label_0204: {
+                    if (!JPlayer.this.mEnablePlatformDrs) {
+                        break Label_0204;
+                    }
                     bufferMeta.flags = 1;
                     bufferMeta.size = inputBufInfo.mDataSize;
-                }
-                else {
-                    bufferMeta.flags = 256;
-                    bufferMeta.size = 0;
-                    JPlayer.this.configureVideoPipe();
-                    JPlayer.this.mSwitchingPending = true;
+                Label_0196_Outer:
+                    while (true) {
+                        if (byteBuffer.capacity() < bufferMeta.size) {
+                            bufferMeta.size = byteBuffer.capacity();
+                        }
+                        while (true) {
+                            try {
+                                byteBuffer.limit(bufferMeta.size);
+                                byteBuffer.position(0);
+                                return bufferMeta;
+                                bufferMeta.flags = inputBufInfo.mFlags;
+                                bufferMeta.size = inputBufInfo.mDataSize;
+                                continue Label_0196_Outer;
+                                bufferMeta.flags = 256;
+                                bufferMeta.size = 0;
+                                JPlayer.this.configureVideoPipe();
+                                JPlayer.this.mSwitchingPending = true;
+                                continue Label_0196_Outer;
+                            }
+                            catch (IllegalArgumentException ex) {
+                                bufferMeta.size = 0;
+                                continue;
+                            }
+                            break;
+                        }
+                        break;
+                    }
                 }
             }
-            else {
-                bufferMeta.flags = inputBufInfo.mFlags;
-                bufferMeta.size = inputBufInfo.mDataSize;
-            }
-            byteBuffer.limit(inputBufInfo.mDataSize);
-            byteBuffer.position(0);
-            return bufferMeta;
         }
     }
     

@@ -1308,15 +1308,12 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
                             ActionBarActivityDelegateBase.this.mActivity.onSupportActionModeFinished(ActionBarActivityDelegateBase.this.mActionMode);
                             ActionBarActivityDelegateBase.this.mActionMode = null;
                             return;
-                            while (true) {
-                                ViewCompat.requestApplyInsets((View)ActionBarActivityDelegateBase.this.mActionModeView.getParent());
-                                continue Label_0101_Outer;
-                                ActionBarActivityDelegateBase.this.mActionModeView.setVisibility(8);
-                                continue;
-                            }
+                            // iftrue(Label_0054:, this.this$0.mActionModeView == null)
+                            ActionBarActivityDelegateBase.this.mActionModeView.setVisibility(8);
+                            // iftrue(Label_0054:, this.this$0.mActionModeView.getParent() == null)
+                            ViewCompat.requestApplyInsets((View)ActionBarActivityDelegateBase.this.mActionModeView.getParent());
+                            continue Label_0101_Outer;
                         }
-                        // iftrue(Label_0054:, this.this$0.mActionModeView == null)
-                        // iftrue(Label_0054:, this.this$0.mActionModeView.getParent() == null)
                         catch (AbstractMethodError abstractMethodError) {
                             continue;
                         }

@@ -41,7 +41,7 @@ public class AdaptiveMediaDecoderHelper
         if (!b || videoResolutionRange == null) {
             return (Pair<Integer, Integer>)Pair.create((Object)720, (Object)480);
         }
-        return (Pair<Integer, Integer>)Pair.create((Object)videoResolutionRange.getMaxHeight(), (Object)videoResolutionRange.getMaxWidth());
+        return (Pair<Integer, Integer>)Pair.create((Object)videoResolutionRange.getMaxWidth(), (Object)videoResolutionRange.getMaxHeight());
     }
     
     public static boolean isAvcDecoderSupportsAdaptivePlayback() {

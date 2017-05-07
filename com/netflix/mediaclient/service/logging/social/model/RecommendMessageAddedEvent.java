@@ -5,20 +5,19 @@
 package com.netflix.mediaclient.service.logging.social.model;
 
 import org.json.JSONException;
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 
 public final class RecommendMessageAddedEvent extends BaseSocialDiscreteEvent
 {
     protected static final String NAME = "recommendMessageAdded ";
-    private String mOriginatingRequestGuid;
     private int mTrackId;
     private IClientLogging.ModalView mView;
     
-    public RecommendMessageAddedEvent(final IClientLogging.ModalView mView, final String mOriginatingRequestGuid, final int mTrackId) {
+    public RecommendMessageAddedEvent(final IClientLogging.ModalView mView, final int mTrackId) {
         super("recommendMessageAdded ");
         this.mView = mView;
-        this.mOriginatingRequestGuid = mOriginatingRequestGuid;
         this.mTrackId = mTrackId;
     }
     
@@ -32,9 +31,7 @@ public final class RecommendMessageAddedEvent extends BaseSocialDiscreteEvent
         if (this.mView != null) {
             data.put("view", (Object)this.mView.name());
         }
-        if (this.mOriginatingRequestGuid != null) {
-            data.put("originatingRequestGuid", (Object)this.mOriginatingRequestGuid);
-        }
+        data.put("originatingRequestGuid", (Object)ConsolidatedLoggingUtils.createGUID());
         return data;
     }
 }

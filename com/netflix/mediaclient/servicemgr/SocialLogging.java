@@ -18,7 +18,6 @@ public interface SocialLogging
     public static final String EXTRA_DATA_CONTEXT = "dataContext";
     public static final String EXTRA_ERROR = "error";
     public static final String EXTRA_FRIEND_POSITIONS = "friendPositions";
-    public static final String EXTRA_GUID = "guid";
     public static final String EXTRA_MSG_ID = "msgId";
     public static final String EXTRA_SOURCE = "source";
     public static final String EXTRA_STORY_ID = "storyId";
@@ -38,15 +37,15 @@ public interface SocialLogging
     public static final String SOCIAL_RECOMMEND_SCROLLED = "com.netflix.mediaclient.intent.action.LOG_SOCIAL_RECOMMEND_SCROLLED";
     public static final String SOCIAL_RECOMMEND_SEARCHED = "com.netflix.mediaclient.intent.action.LOG_SOCIAL_RECOMMEND_SEARCHED";
     
-    void createRecommendFriendSelectedEvent(final IClientLogging.ModalView p0, final String p1, final FriendPosition[] p2, final int p3);
+    void createRecommendFriendSelectedEvent(final IClientLogging.ModalView p0, final FriendPosition[] p1, final int p2);
     
     void createRecommendImplicitFeedbackReadEvent(final String p0, final String p1, final int p2);
     
-    void createRecommendMessageAddedEvent(final IClientLogging.ModalView p0, final String p1, final int p2);
+    void createRecommendMessageAddedEvent(final IClientLogging.ModalView p0, final int p1);
     
-    void createRecommendPanelScrolledEvent(final IClientLogging.ModalView p0, final String p1, final int p2);
+    void createRecommendPanelScrolledEvent(final IClientLogging.ModalView p0, final int p1);
     
-    void createRecommendPanelSearchedEvent(final IClientLogging.ModalView p0, final String p1, final int p2);
+    void createRecommendPanelSearchedEvent(final IClientLogging.ModalView p0, final int p1);
     
     void createSocialConnectActionResponseEvent(final Channel p0, final Source p1, final boolean p2, final Error p3);
     
@@ -60,7 +59,7 @@ public interface SocialLogging
     
     void startSocialConnectSession(final Channel p0);
     
-    void startSocialImpressionSession(final IClientLogging.ModalView p0, final String p1, final String p2, final int p3);
+    void startSocialImpressionSession(final IClientLogging.ModalView p0, final String p1, final int p2);
     
     public enum Channel
     {

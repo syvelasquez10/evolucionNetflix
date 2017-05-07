@@ -73,33 +73,37 @@ public final class pn
                                     try {
                                         a(substring, class1.getMethod("get" + substring, (Class<?>[])new Class[0]).invoke(o, new Object[0]), sb, sb2);
                                         break Label_0349;
-                                        // iftrue(Label_0490:, !o instanceof String)
                                         // iftrue(Label_0004:, s == null)
-                                        Label_0482: {
-                                        Block_18:
+                                        // iftrue(Label_0490:, !o instanceof String)
+                                        // iftrue(Label_0511:, !o instanceof byte[])
+                                        Label_0482:Block_18_Outer:
+                                        while (true) {
+                                            a((byte[])o, sb2);
+                                            break Label_0482;
                                             while (true) {
+                                                Block_17: {
+                                                    break Block_17;
+                                                    s = dh((String)o);
+                                                    sb2.append("\"").append(s).append("\"");
+                                                    break Label_0482;
+                                                }
                                                 sb.setLength(length);
                                                 sb2.append(sb).append(">\n");
                                                 return;
-                                                Label_0511: {
-                                                    sb2.append(o);
-                                                }
-                                                break Label_0482;
                                                 s = dg(s);
                                                 sb2.append(sb).append(s).append(": ");
-                                                break Block_18;
-                                                a((byte[])o, sb2);
-                                                break Label_0482;
                                                 continue;
                                             }
-                                            s = dh((String)o);
-                                            sb2.append("\"").append(s).append("\"");
+                                            Label_0490: {
+                                                continue Block_18_Outer;
+                                            }
                                         }
                                         sb2.append("\n");
                                         return;
-                                        Label_0490:;
+                                        Label_0511: {
+                                            sb2.append(o);
+                                        }
                                     }
-                                    // iftrue(Label_0511:, !o instanceof byte[])
                                     catch (NoSuchMethodException ex) {}
                                 }
                                 ++n;

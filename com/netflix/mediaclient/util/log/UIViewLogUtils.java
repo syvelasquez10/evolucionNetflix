@@ -16,12 +16,10 @@ import android.content.Context;
 
 public final class UIViewLogUtils extends ConsolidatedLoggingUtils
 {
-    public static String MISSING_GUID;
     public static int MISSING_TRACK_ID;
     
     static {
         UIViewLogUtils.MISSING_TRACK_ID = 0;
-        UIViewLogUtils.MISSING_GUID = null;
     }
     
     public static void reportUIViewCommand(final Context context, final UIViewLogging.UIViewCommandName uiViewCommandName, final IClientLogging.ModalView modalView, final DataContext dataContext) {
@@ -98,13 +96,10 @@ public final class UIViewLogUtils extends ConsolidatedLoggingUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
-    public static void reportUIViewImpressionStarted(final Context context, final IClientLogging.ModalView modalView, final String s) {
+    public static void reportUIViewImpressionStarted(final Context context, final IClientLogging.ModalView modalView) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION_SESSION_STARTED");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        if (s != null) {
-            intent.putExtra("guid", s);
-        }
         if (modalView != null) {
             intent.putExtra("view", modalView.name());
         }

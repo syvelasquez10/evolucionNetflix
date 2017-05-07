@@ -29,7 +29,7 @@ public final class VideoResolutionRange
     
     public static VideoResolutionRange getVideoResolutionRangeFromMaxHieght(final int n) {
         if (n < 480) {
-            return new VideoResolutionRange(480, 360);
+            return new VideoResolutionRange(512, 384);
         }
         if (n < 720) {
             return new VideoResolutionRange(720, 480);

@@ -317,18 +317,15 @@ final class b implements GoogleApiClient
                             }
                             break Label_0108;
                             while (true) {
-                                Block_5: {
-                                    break Block_5;
-                                    final boolean b;
-                                    n.a(b, (Object)"GoogleApiClient is not connected yet.");
-                                    continue Label_0026_Outer;
-                                }
                                 try {
                                     this.a((c<?>)this.IS.remove());
                                 }
                                 catch (DeadObjectException ex) {
                                     Log.w("GoogleApiClientImpl", "Service died while flushing queue", (Throwable)ex);
                                 }
+                                continue Label_0026_Outer;
+                                final boolean b;
+                                n.a(b, (Object)"GoogleApiClient is not connected yet.");
                                 continue Label_0026_Outer;
                             }
                         }

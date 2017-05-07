@@ -168,7 +168,6 @@ public class BaseImplementation
                         }
                         Label_0055: {
                             break Label_0055;
-                        Label_0041_Outer:
                             while (true) {
                                 boolean b3 = false;
                                 n.a(b3, (Object)"Result has already been consumed");
@@ -177,10 +176,9 @@ public class BaseImplementation
                                         this.mg.await();
                                         n.a(this.isReady(), (Object)"Result is not ready.");
                                         return this.gg();
-                                        b3 = false;
-                                        continue Label_0041_Outer;
                                         b2 = false;
                                         break;
+                                        b3 = false;
                                     }
                                     catch (InterruptedException ex) {
                                         this.gi();

@@ -447,7 +447,7 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.retryFetchFriendsCallback);
         (this.mFriendsList = (ListView)inflate.findViewById(2131165622)).setOnScrollListener((AbsListView$OnScrollListener)new AbsListView$OnScrollListener() {
             public void onScroll(final AbsListView absListView, final int n, final int n2, final int n3) {
-                SocialLoggingUtils.reportRecommendPanelScrolledEvent((Context)RecommendToFriendsFrag.this.getActivity(), IClientLogging.ModalView.movieDetails, UIViewLogUtils.MISSING_GUID, UIViewLogUtils.MISSING_TRACK_ID);
+                SocialLoggingUtils.reportRecommendPanelScrolledEvent((Context)RecommendToFriendsFrag.this.getActivity(), IClientLogging.ModalView.movieDetails, UIViewLogUtils.MISSING_TRACK_ID);
             }
             
             public void onScrollStateChanged(final AbsListView absListView, final int n) {
@@ -475,7 +475,7 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
                     visibility = 8;
                 }
                 access$300.setVisibility(visibility);
-                SocialLoggingUtils.reportRecommendPanelSearchedEvent((Context)RecommendToFriendsFrag.this.getActivity(), IClientLogging.ModalView.movieDetails, UIViewLogUtils.MISSING_GUID, UIViewLogUtils.MISSING_TRACK_ID);
+                SocialLoggingUtils.reportRecommendPanelSearchedEvent((Context)RecommendToFriendsFrag.this.getActivity(), IClientLogging.ModalView.movieDetails, UIViewLogUtils.MISSING_TRACK_ID);
                 RecommendToFriendsFrag.this.fetchFriends();
             }
         });
@@ -498,9 +498,9 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
                 final String string = RecommendToFriendsFrag.this.getArguments().getString("video_id");
                 final String string2 = RecommendToFriendsFrag.this.mEditMessage.getText().toString();
                 if (StringUtils.isNotEmpty(string2)) {
-                    SocialLoggingUtils.reportRecommendMessageAddedEvent((Context)RecommendToFriendsFrag.this.getActivity(), IClientLogging.ModalView.movieDetails, UIViewLogUtils.MISSING_GUID, UIViewLogUtils.MISSING_TRACK_ID);
+                    SocialLoggingUtils.reportRecommendMessageAddedEvent((Context)RecommendToFriendsFrag.this.getActivity(), IClientLogging.ModalView.movieDetails, UIViewLogUtils.MISSING_TRACK_ID);
                 }
-                SocialLoggingUtils.reportRecommendFriendSelectedEvent((Context)RecommendToFriendsFrag.this.getActivity(), IClientLogging.ModalView.movieDetails, UIViewLogUtils.MISSING_GUID, array, UIViewLogUtils.MISSING_TRACK_ID);
+                SocialLoggingUtils.reportRecommendFriendSelectedEvent((Context)RecommendToFriendsFrag.this.getActivity(), IClientLogging.ModalView.movieDetails, array, UIViewLogUtils.MISSING_TRACK_ID);
                 if (!b || PreferenceUtils.getBooleanPref((Context)RecommendToFriendsFrag.this.getActivity(), SendAsFacebookMessageDialog.getFacebookMsgOptInKey(RecommendToFriendsFrag.this.mServiceManager), false)) {
                     RecommendToFriendsFrag.this.mServiceManager.sendRecommendationsToFriends(string, RecommendToFriendsFrag.this.mCheckedFriends, string2);
                 }
@@ -552,7 +552,7 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
         if (this.mErrorOccurred) {
             this.fetchFriends();
         }
-        UIViewLogUtils.reportUIViewImpressionStarted((Context)this.getActivity(), IClientLogging.ModalView.movieDetails, UIViewLogUtils.MISSING_GUID);
+        UIViewLogUtils.reportUIViewImpressionStarted((Context)this.getActivity(), IClientLogging.ModalView.movieDetails);
     }
     
     public void onSaveInstanceState(final Bundle bundle) {

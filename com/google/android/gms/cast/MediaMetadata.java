@@ -143,11 +143,15 @@ public class MediaMetadata
         array = (String[])(Object)new HashSet((Collection<? extends E>)Arrays.asList(array));
         try {
             final Iterator keys = jsonObject.keys();
-        Block_17_Outer:
+            String s;
+            String aa;
+            Object value;
+            Object value2 = null;
+            Block_17_Outer:Block_16_Outer:
             while (keys.hasNext()) {
-                final String s = keys.next();
+                s = keys.next();
                 if (!"metadataType".equals(s)) {
-                    final String aa = MediaMetadata.Fo.aA(s);
+                    aa = MediaMetadata.Fo.aA(s);
                     Label_0249: {
                         if (aa == null) {
                             break Label_0249;
@@ -156,7 +160,7 @@ public class MediaMetadata
                             continue;
                         }
                         try {
-                            final Object value = jsonObject.get(s);
+                            value = jsonObject.get(s);
                             if (value == null) {
                                 continue Block_17_Outer;
                             }
@@ -193,29 +197,27 @@ public class MediaMetadata
                                     continue Block_17_Outer;
                                 }
                             }
-                        Label_0282:
+                            // iftrue(Label_0018:, !value2 instanceof Double)
                             while (true) {
-                                final Object value2;
-                                Block_15: {
-                                    Block_16: {
-                                        break Block_16;
-                                        value2 = jsonObject.get(s);
-                                        break Block_15;
-                                    }
-                                    this.Fp.putInt(s, (int)value2);
-                                    continue Block_17_Outer;
-                                    this.Fp.putDouble(s, (double)value2);
-                                    continue Block_17_Outer;
-                                }
-                                this.Fp.putString(s, (String)value2);
+                                this.Fp.putDouble(s, (double)value2);
                                 continue Block_17_Outer;
-                                Label_0310:
-                                continue;
+                                Label_0310: {
+                                    continue Block_16_Outer;
+                                }
+                            }
+                            value2 = jsonObject.get(s);
+                            // iftrue(Label_0282:, !value2 instanceof String)
+                            this.Fp.putString(s, (String)value2);
+                            continue Block_17_Outer;
+                            while (true) {
+                                this.Fp.putInt(s, (int)value2);
+                                continue Block_17_Outer;
+                                Label_0282: {
+                                    continue;
+                                }
                             }
                         }
                         // iftrue(Label_0310:, !value2 instanceof Integer)
-                        // iftrue(Label_0282:, !value2 instanceof String)
-                        // iftrue(Label_0018:, !value2 instanceof Double)
                         catch (JSONException ex) {}
                     }
                 }

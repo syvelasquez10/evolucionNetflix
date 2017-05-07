@@ -13,7 +13,7 @@ public interface Build
     {
         public interface Logging
         {
-            public static final String CRITTER_VERSION_NAME = "3.9.0";
+            public static final String CRITTER_VERSION_NAME = "3.9.1";
             public static final boolean ENABLE_CRITTERCISM = true;
         }
         

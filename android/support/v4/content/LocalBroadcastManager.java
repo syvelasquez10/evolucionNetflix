@@ -198,162 +198,153 @@ public class LocalBroadcastManager
         // monitorexit(hashMap)
         while (true) {
             while (true) {
-                String action;
-                String resolveTypeIfNeeded;
-                Uri data;
-                String scheme;
-                Set categories;
-                int n;
-                ArrayList<ReceiverRecord> list;
-                ArrayList<ReceiverRecord> list2 = null;
-                Object o = null;
-                int n2 = 0;
-                ReceiverRecord receiverRecord;
-                int match;
-                String s;
-                int i;
-                Label_0492_Outer:Block_4_Outer:
+            Label_0454_Outer:
                 while (true) {
-                    Block_11_Outer:Label_0161_Outer:
+                    ArrayList<ReceiverRecord> list3 = null;
+                Label_0161_Outer:
                     while (true) {
-                        Label_0521: {
-                            while (true) {
-                                Label_0510: {
-                                    Label_0502: {
-                                        synchronized (this.mReceivers) {
-                                            action = intent.getAction();
-                                            resolveTypeIfNeeded = intent.resolveTypeIfNeeded(this.mAppContext.getContentResolver());
-                                            data = intent.getData();
-                                            scheme = intent.getScheme();
-                                            categories = intent.getCategories();
-                                            if ((intent.getFlags() & 0x8) == 0x0) {
-                                                break Label_0521;
-                                            }
-                                            n = 1;
-                                            if (n != 0) {
-                                                Log.v("LocalBroadcastManager", "Resolving type " + resolveTypeIfNeeded + " scheme " + scheme + " of intent " + intent);
-                                            }
-                                            list = this.mActions.get(intent.getAction());
-                                            if (list == null) {
-                                                break;
-                                            }
-                                            if (n != 0) {
-                                                Log.v("LocalBroadcastManager", "Action list: " + list);
-                                            }
-                                            break Label_0502;
-                                            // iftrue(Label_0323:, o = list2 != null)
-                                            // iftrue(Label_0214:, n == 0)
-                                            // iftrue(Label_0510:, n == 0)
-                                            // iftrue(Label_0305:, n == 0)
-                                            // iftrue(Label_0245:, !receiverRecord.broadcasting)
-                                            // iftrue(Label_0346:, match < 0)
-                                            while (true) {
-                                                Label_0323:Block_15_Outer:
-                                                while (true) {
-                                                    Block_16: {
-                                                        Block_14: {
-                                                            while (true) {
-                                                                while (true) {
-                                                                    Label_0214: {
-                                                                        Block_17: {
-                                                                            break Block_17;
-                                                                            receiverRecord = list.get(n2);
-                                                                            Log.v("LocalBroadcastManager", "Matching against filter " + receiverRecord.filter);
-                                                                            break Label_0214;
-                                                                            o = list2;
-                                                                            break Block_14;
-                                                                        }
-                                                                        o = new ArrayList<ReceiverRecord>();
-                                                                        break Label_0323;
-                                                                        break Block_16;
-                                                                    }
-                                                                    continue Block_15_Outer;
-                                                                }
-                                                                Label_0245: {
-                                                                    match = receiverRecord.filter.match(action, resolveTypeIfNeeded, scheme, data, categories, "LocalBroadcastManager");
-                                                                }
-                                                                continue Label_0161_Outer;
-                                                            }
-                                                        }
-                                                        Log.v("LocalBroadcastManager", "  Filter's target already added");
-                                                        o = list2;
-                                                        break Label_0510;
-                                                    }
-                                                    Log.v("LocalBroadcastManager", "  Filter matched!  match=0x" + Integer.toHexString(match));
-                                                    continue Block_11_Outer;
-                                                }
-                                                ((ArrayList<ReceiverRecord>)o).add(receiverRecord);
-                                                receiverRecord.broadcasting = true;
-                                                break Label_0510;
-                                                continue Label_0161_Outer;
-                                            }
+                    Label_0323_Outer:
+                        while (true) {
+                            int n2 = 0;
+                            ArrayList<ReceiverRecord> list2 = null;
+                            Label_0510: {
+                                Label_0502: {
+                                    final int n;
+                                    int match;
+                                    synchronized (this.mReceivers) {
+                                        final String action = intent.getAction();
+                                        final String resolveTypeIfNeeded = intent.resolveTypeIfNeeded(this.mAppContext.getContentResolver());
+                                        final Uri data = intent.getData();
+                                        final String scheme = intent.getScheme();
+                                        final Set categories = intent.getCategories();
+                                        if ((intent.getFlags() & 0x8) == 0x0) {
+                                            break Label_0323_Outer;
                                         }
-                                        // iftrue(Label_0554:, n2 >= list.size())
-                                        Label_0346: {
-                                            o = list2;
+                                        n = 1;
+                                        if (n != 0) {
+                                            Log.v("LocalBroadcastManager", "Resolving type " + resolveTypeIfNeeded + " scheme " + scheme + " of intent " + intent);
+                                        }
+                                        final ArrayList<ReceiverRecord> list = this.mActions.get(intent.getAction());
+                                        if (list == null) {
+                                            break;
                                         }
                                         if (n != 0) {
-                                            switch (match) {
-                                                default: {
-                                                    s = "unknown reason";
-                                                    break;
-                                                }
-                                                case -3: {
-                                                    s = "action";
-                                                    break;
-                                                }
-                                                case -4: {
-                                                    s = "category";
-                                                    break;
-                                                }
-                                                case -2: {
-                                                    s = "data";
-                                                    break;
-                                                }
-                                                case -1: {
-                                                    s = "type";
-                                                    break;
-                                                }
-                                            }
-                                            Log.v("LocalBroadcastManager", "  Filter did not match: " + s);
-                                            o = list2;
+                                            Log.v("LocalBroadcastManager", "Action list: " + list);
                                         }
-                                        break Label_0510;
+                                        break Label_0502;
+                                        // iftrue(Label_0305:, n == 0)
+                                        // iftrue(Label_0554:, n2 >= list.size())
+                                        // iftrue(Label_0214:, n == 0)
+                                        // iftrue(Label_0510:, n == 0)
+                                        // iftrue(Label_0245:, !receiverRecord.broadcasting)
+                                        // iftrue(Label_0346:, match < 0)
+                                        while (true) {
+                                            ReceiverRecord receiverRecord;
+                                            Label_0305:Block_14_Outer:
+                                            while (true) {
+                                                while (true) {
+                                                    Label_0214: {
+                                                        while (true) {
+                                                            while (true) {
+                                                                Block_11: {
+                                                                    Block_16: {
+                                                                        break Block_16;
+                                                                        break Block_11;
+                                                                        Log.v("LocalBroadcastManager", "Matching against filter " + receiverRecord.filter);
+                                                                        break Label_0214;
+                                                                    }
+                                                                    Log.v("LocalBroadcastManager", "  Filter matched!  match=0x" + Integer.toHexString(match));
+                                                                    break Label_0305;
+                                                                    Log.v("LocalBroadcastManager", "  Filter's target already added");
+                                                                    list2 = list3;
+                                                                    break Label_0510;
+                                                                    list2.add(receiverRecord);
+                                                                    receiverRecord.broadcasting = true;
+                                                                    break Label_0510;
+                                                                }
+                                                                receiverRecord = list.get(n2);
+                                                                continue Block_14_Outer;
+                                                            }
+                                                            list2 = list3;
+                                                            continue Label_0323_Outer;
+                                                        }
+                                                    }
+                                                    continue Label_0454_Outer;
+                                                }
+                                                Label_0245: {
+                                                    match = receiverRecord.filter.match(action, resolveTypeIfNeeded, scheme, data, categories, "LocalBroadcastManager");
+                                                }
+                                                continue Label_0161_Outer;
+                                            }
+                                            list2 = new ArrayList<ReceiverRecord>();
+                                            continue Label_0454_Outer;
+                                        }
                                     }
-                                    list2 = null;
-                                    n2 = 0;
-                                    continue Label_0492_Outer;
+                                    // iftrue(Label_0323:, list2 = list3 != null)
+                                    Label_0346: {
+                                        list2 = list3;
+                                    }
+                                    if (n != 0) {
+                                        String s = null;
+                                        switch (match) {
+                                            default: {
+                                                s = "unknown reason";
+                                                break;
+                                            }
+                                            case -3: {
+                                                s = "action";
+                                                break;
+                                            }
+                                            case -4: {
+                                                s = "category";
+                                                break;
+                                            }
+                                            case -2: {
+                                                s = "data";
+                                                break;
+                                            }
+                                            case -1: {
+                                                s = "type";
+                                                break;
+                                            }
+                                        }
+                                        Log.v("LocalBroadcastManager", "  Filter did not match: " + s);
+                                        list2 = list3;
+                                    }
+                                    break Label_0510;
                                 }
-                                ++n2;
-                                list2 = (ArrayList<ReceiverRecord>)o;
-                                continue Label_0492_Outer;
+                                list3 = null;
+                                n2 = 0;
+                                continue Label_0454_Outer;
                             }
+                            ++n2;
+                            list3 = list2;
+                            continue Label_0454_Outer;
                         }
-                        n = 0;
-                        continue Label_0492_Outer;
+                        int n = 0;
+                        continue Label_0454_Outer;
                     }
-                    // monitorexit(hashMap)
                     while (true) {
-                    Label_0454:
-                        while (true) {
+                        this.mPendingBroadcasts.add(new BroadcastRecord(intent, list3));
+                        this.mHandler.sendEmptyMessage(1);
+                        Label_0492: {
                             return true;
-                            while (i < list2.size()) {
-                                list2.get(i).broadcasting = false;
-                                ++i;
-                            }
-                            break Label_0454;
-                            this.mHandler.sendEmptyMessage(1);
-                            continue Block_4_Outer;
                         }
-                        this.mPendingBroadcasts.add(new BroadcastRecord(intent, list2));
+                        int i = 0;
+                        while (i < list3.size()) {
+                            ((ReceiverRecord)list3.get(i)).broadcasting = false;
+                            ++i;
+                        }
                         continue;
                     }
                 }
                 // iftrue(Label_0492:, this.mHandler.hasMessages(1))
+                // monitorexit(hashMap)
                 return false;
                 Label_0554: {
-                    if (list2 != null) {
-                        i = 0;
+                    final ArrayList<ReceiverRecord> list3;
+                    if (list3 != null) {
+                        final int i = 0;
                         continue;
                     }
                 }
@@ -370,83 +361,80 @@ public class LocalBroadcastManager
     }
     
     public void unregisterReceiver(final BroadcastReceiver broadcastReceiver) {
+    Label_0031_Outer:
         while (true) {
-            ArrayList<IntentFilter> list;
-            int n = 0;
-            int n2;
-            ArrayList<ReceiverRecord> list2;
-            int n3 = 0;
-            IntentFilter intentFilter;
-            String action;
-            int n4 = 0;
-            Label_0094_Outer:Label_0054_Outer:
+        Label_0031:
             while (true) {
-            Label_0054:
+                int n2 = 0;
+            Label_0094_Outer:
                 while (true) {
-                Label_0181:
+                    int n = 0;
+                Label_0094:
                     while (true) {
+                        int n3 = 0;
                         Label_0173: {
                             Label_0168: {
                                 synchronized (this.mReceivers) {
-                                    list = this.mReceivers.remove(broadcastReceiver);
+                                    final ArrayList<IntentFilter> list = this.mReceivers.remove(broadcastReceiver);
                                     if (list == null) {
                                         return;
                                     }
                                     break Label_0168;
-                                    // iftrue(Label_0158:, n >= list.size())
-                                    // iftrue(Label_0137:, n2 >= list2.size())
-                                    // iftrue(Label_0190:, n3 >= intentFilter.countActions())
                                     // iftrue(Label_0181:, list2.size() > 0)
+                                    // iftrue(Label_0190:, n >= intentFilter.countActions())
                                     // iftrue(Label_0181:, list2 == null)
-                                    // iftrue(Label_0173:, (ReceiverRecord)list2.get(n2).receiver != broadcastReceiver2)
-                                    Block_8: {
-                                        Block_9: {
-                                        Block_7:
-                                            while (true) {
-                                                Block_5: {
+                                    // iftrue(Label_0158:, n2 >= list.size())
+                                    // iftrue(Label_0173:, (ReceiverRecord)list2.get(n4).receiver != broadcastReceiver2)
+                                    // iftrue(Label_0137:, n4 >= list2.size())
+                                    final String action;
+                                    Block_9: {
+                                        break Block_9;
+                                        IntentFilter intentFilter = null;
+                                        action = intentFilter.getAction(n);
+                                        final ArrayList<ReceiverRecord> list2 = this.mActions.get(action);
+                                        while (true) {
+                                            final int n4;
+                                            Block_8: {
+                                                Block_6: {
+                                                    break Block_6;
                                                     Block_4: {
                                                         break Block_4;
+                                                        n3 = n4;
+                                                        break Block_8;
                                                         Label_0158: {
                                                             return;
                                                         }
-                                                        n2 = 0;
-                                                        break Block_7;
-                                                        break Block_5;
-                                                        Label_0137:
-                                                        break Block_9;
                                                     }
-                                                    intentFilter = list.get(n);
-                                                    n3 = 0;
-                                                    continue Label_0054;
+                                                    intentFilter = list.get(n2);
+                                                    n = 0;
+                                                    continue Label_0031_Outer;
                                                 }
-                                                action = intentFilter.getAction(n3);
-                                                list2 = this.mActions.get(action);
-                                                continue Label_0094_Outer;
+                                                n4 = 0;
+                                                break Label_0094;
                                             }
-                                            n4 = n2;
-                                            break Block_8;
+                                            list2.remove(n4);
+                                            n3 = n4 - 1;
+                                            break Label_0173;
+                                            continue Label_0094_Outer;
                                         }
-                                        this.mActions.remove(action);
-                                        break Label_0181;
                                     }
-                                    list2.remove(n2);
-                                    n4 = n2 - 1;
-                                    break Label_0173;
+                                    this.mActions.remove(action);
+                                    break Label_0094;
                                 }
                             }
-                            n = 0;
-                            continue Label_0094_Outer;
+                            n2 = 0;
+                            continue Label_0031;
                         }
-                        n2 = n4 + 1;
-                        continue Label_0054_Outer;
+                        int n4 = n3 + 1;
+                        continue Label_0094;
                     }
-                    ++n3;
-                    continue Label_0054;
+                    ++n;
+                    continue Label_0031_Outer;
                 }
                 Label_0190: {
-                    ++n;
+                    ++n2;
                 }
-                continue Label_0094_Outer;
+                continue Label_0031;
             }
         }
     }

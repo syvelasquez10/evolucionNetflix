@@ -65,13 +65,22 @@ public class JPlayer2
         mediaFormat.setString("mime", "video/avc");
         if (AndroidUtils.getAndroidVersion() > 18) {
             final Pair<Integer, Integer> requiredMaximumResolution = AdaptiveMediaDecoderHelper.getRequiredMaximumResolution(this.mMaxVideoRes, this.mCrypto != null);
+            int intValue;
+            if ((intValue = (int)requiredMaximumResolution.first) > 1920) {
+                intValue = 1920;
+            }
+            int intValue2;
+            if ((intValue2 = (int)requiredMaximumResolution.second) > 1080) {
+                intValue2 = 1080;
+            }
             if (Log.isLoggable("NF_JPlayer2", 3)) {
                 Log.d("NF_JPlayer2", "video max resolution is " + requiredMaximumResolution.first + " x " + requiredMaximumResolution.second);
+                Log.d("NF_JPlayer2", "video real resolution is " + intValue + " x " + intValue2);
             }
-            mediaFormat.setInteger("max-width", (int)requiredMaximumResolution.first);
-            mediaFormat.setInteger("max-height", (int)requiredMaximumResolution.second);
-            mediaFormat.setInteger("width", (int)requiredMaximumResolution.first);
-            mediaFormat.setInteger("height", (int)requiredMaximumResolution.second);
+            mediaFormat.setInteger("max-width", intValue);
+            mediaFormat.setInteger("max-height", intValue2);
+            mediaFormat.setInteger("width", intValue);
+            mediaFormat.setInteger("height", intValue2);
         }
         else {
             mediaFormat.setInteger("max-input-size", 1048576);

@@ -577,26 +577,38 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     @SuppressLint({ "NewApi" })
     @Override
     public VideoResolutionRange getVideoResolutionRange() {
-        final int maxResolutionConfigured = this.getMaxResolutionConfigured();
+        int maxResolutionConfigured = this.getMaxResolutionConfigured();
+        if (!this.isTablet()) {
+            maxResolutionConfigured = maxResolutionConfigured;
+            if (!PlayerTypeFactory.isJPlayer2(this.getCurrentPlayerType())) {
+                final int n = maxResolutionConfigured = 384;
+                if (Log.isLoggable("nf_configurationagent", 3)) {
+                    Log.d("nf_configurationagent", "apply phone restriction, max height " + 384);
+                    maxResolutionConfigured = n;
+                }
+            }
+        }
         int heightPixels = Integer.MAX_VALUE;
         if (AndroidUtils.getAndroidVersion() >= 17) {
             final Display[] displays = ((DisplayManager)this.getContext().getSystemService("display")).getDisplays();
             final int length = displays.length;
-            int n = 0;
+            int n2 = 0;
             while (true) {
                 heightPixels = heightPixels;
-                if (n >= length) {
+                if (n2 >= length) {
                     break;
                 }
-                final Display display = displays[n];
-                Log.d("nf_configurationagent", "getMaxResolutionRestriction " + display.toString());
+                final Display display = displays[n2];
+                if (Log.isLoggable("nf_configurationagent", 3)) {
+                    Log.d("nf_configurationagent", "getMaxResolutionRestriction " + display.toString());
+                }
                 if (display.isValid() && display.getDisplayId() == 0) {
                     final DisplayMetrics displayMetrics = new DisplayMetrics();
                     display.getMetrics(displayMetrics);
                     heightPixels = displayMetrics.heightPixels;
                     break;
                 }
-                ++n;
+                ++n2;
             }
         }
         return VideoResolutionRange.getVideoResolutionRangeFromMaxHieght(Math.min(maxResolutionConfigured, heightPixels));

@@ -5,8 +5,8 @@
 package com.google.android.gms.internal;
 
 import java.util.Iterator;
-import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.regex.Matcher;
 import android.text.TextUtils;
@@ -93,9 +93,13 @@ public final class jz
             }
             final JSONObject jsonObject = (JSONObject)o;
             final JSONObject jsonObject2 = (JSONObject)o2;
-        Block_10_Outer:
+            Iterator keys = null;
+            String s;
+            int n;
+            JSONArray jsonArray;
+            JSONArray jsonArray2;
+            Block_9_Outer:Label_0135_Outer:
             while (true) {
-                final Iterator keys;
                 if (jsonObject.length() == jsonObject2.length()) {
                     keys = jsonObject.keys();
                     break Label_0043;
@@ -106,7 +110,7 @@ public final class jz
                 if (!keys.hasNext()) {
                     return true;
                 }
-                final String s = keys.next();
+                s = keys.next();
                 if (!jsonObject2.has(s)) {
                     return false;
                 }
@@ -114,38 +118,37 @@ public final class jz
                     if (!d(jsonObject.get(s), jsonObject2.get(s))) {
                         return false;
                     }
-                    continue Block_10_Outer;
+                    continue Block_9_Outer;
+                    // iftrue(Label_0035:, jsonArray.length() != jsonArray2.length())
+                Label_0135:
                     while (true) {
-                        Label_0135: {
-                            try {
-                                final JSONArray jsonArray;
-                                final int n;
-                                final JSONArray jsonArray2;
-                                if (d(jsonArray.get(n), jsonArray2.get(n))) {
-                                    ++n;
-                                    break Label_0135;
-                                }
-                                return false;
-                                Label_0168:
-                                return true;
-                                Label_0170:
-                                return o.equals(o2);
-                            }
-                            catch (JSONException ex) {
-                                return false;
-                            }
+                        while (true) {
                             while (true) {
-                                final JSONArray jsonArray = (JSONArray)o;
-                                final JSONArray jsonArray2 = (JSONArray)o2;
-                                final int n = 0;
+                                n = 0;
                                 break Label_0135;
-                                continue;
+                                jsonArray = (JSONArray)o;
+                                jsonArray2 = (JSONArray)o2;
+                                continue Label_0135_Outer;
                             }
+                            continue;
                         }
-                        continue;
+                        try {
+                            if (d(jsonArray.get(n), jsonArray2.get(n))) {
+                                ++n;
+                                continue Label_0135;
+                            }
+                            return false;
+                            Label_0170:
+                            return o.equals(o2);
+                            Label_0168:
+                            return true;
+                        }
+                        catch (JSONException ex) {
+                            return false;
+                        }
+                        break;
                     }
                 }
-                // iftrue(Label_0035:, jsonArray.length() != jsonArray2.length())
                 // iftrue(Label_0170:, !o instanceof JSONArray || !o2 instanceof JSONArray)
                 // iftrue(Label_0168:, n >= jsonArray.length())
                 catch (JSONException ex2) {

@@ -328,6 +328,7 @@ public class gv extends WebView implements DownloadListener
     }
     
     protected void onMeasure(int n, int n2) {
+    Label_0081_Outer:
         while (true) {
             final int n3 = Integer.MAX_VALUE;
             while (true) {
@@ -350,22 +351,19 @@ public class gv extends WebView implements DownloadListener
                                     break Label_0273;
                                 }
                                 break Label_0280;
+                                // iftrue(Label_0220:, this.getVisibility() == 8)
                                 // iftrue(Label_0238:, this.qr.widthPixels <= n && this.qr.heightPixels <= n2)
+                            Label_0220:
                                 while (true) {
-                                    Label_0103: {
-                                        break Label_0103;
-                                        this.setVisibility(4);
-                                        Label_0220: {
-                                            this.setMeasuredDimension(0, 0);
-                                        }
-                                        return;
-                                    }
                                     final float density = this.wI.getResources().getDisplayMetrics().density;
                                     gs.W("Not enough space to show ad. Needs " + (int)(this.qr.widthPixels / density) + "x" + (int)(this.qr.heightPixels / density) + " dp, but only has " + (int)(size / density) + "x" + (int)(size2 / density) + " dp.");
-                                    continue;
+                                    this.setVisibility(4);
+                                    break Label_0220;
+                                    continue Label_0081_Outer;
                                 }
+                                this.setMeasuredDimension(0, 0);
+                                return;
                             }
-                            // iftrue(Label_0220:, this.getVisibility() == 8)
                             Label_0238: {
                                 if (this.getVisibility() != 8) {
                                     this.setVisibility(0);

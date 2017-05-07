@@ -100,7 +100,7 @@ public class UIViewLoggingImpl implements UIViewLogging
         if (StringUtils.isNotEmpty(stringExtra)) {
             value = IClientLogging.ModalView.valueOf(stringExtra);
         }
-        this.startImpressionSession((IClientLogging.ModalView)value, intent.getStringExtra("guid"));
+        this.startImpressionSession((IClientLogging.ModalView)value);
     }
     
     private void populateEvent(final Event event, final DataContext dataContext, final IClientLogging.ModalView modalView) {
@@ -220,13 +220,13 @@ public class UIViewLoggingImpl implements UIViewLogging
     }
     
     @Override
-    public void startImpressionSession(final IClientLogging.ModalView modalView, final String s) {
+    public void startImpressionSession(final IClientLogging.ModalView modalView) {
         if (this.mImpressionSession != null) {
             Log.e("nf_log", "uiView impression session already started!");
             return;
         }
         Log.d("nf_log", "uiView impression session starting...");
-        final ImpressionSession mImpressionSession = new ImpressionSession(modalView, s);
+        final ImpressionSession mImpressionSession = new ImpressionSession(modalView);
         this.mEventHandler.addSession(mImpressionSession);
         this.mImpressionSession = mImpressionSession;
         Log.d("nf_log", "uiView impression session start done.");
