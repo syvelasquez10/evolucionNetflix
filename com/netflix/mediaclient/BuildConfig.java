@@ -14,7 +14,7 @@ public final class BuildConfig
     public static final String CLIENT_LOGGING_ENDPOINT = "ichnaea.netflix.com";
     public static final String CLIENT_LOGGING_PATH = "/log";
     public static final String CMS_BEACON_ENDPOINT_URL = "ichnaea.netflix.com";
-    public static final String CRITTER_VERSION_NAME = "3.15.2";
+    public static final String CRITTER_VERSION_NAME = "3.15.3";
     public static final String CUSTOMER_EVENTS_BEACON_ENDPOINT_URL = "customerevents.netflix.com";
     public static final String CUSTOMER_SUPPORT_SIP_PROXY = "netflixvoip.vailsys.com";
     public static final boolean CUSTOMER_SUPPORT_SIP_PROXY_VALIDATION = true;
@@ -30,8 +30,8 @@ public final class BuildConfig
     public static final String PRESENTATION_TRACKING_PATH = "/users/presentationtracking";
     public static final String SELECTED_WEBCLIENT = "volley";
     public static final String SENDER_ID = "484286080282";
-    public static final int VERSION_CODE = 5267;
-    public static final String VERSION_NAME = "3.15.2 build 5267";
+    public static final int VERSION_CODE = 5269;
+    public static final String VERSION_NAME = "3.15.3 build 5269";
     public static final String WEBAPI_ENDPOINT_URL = "api-global.netflix.com";
     public static final String WEBCLIENT_ENDPOINT = "api-global.netflix.com";
     public static final boolean enableTestServer = false;

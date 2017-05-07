@@ -119,11 +119,15 @@ public abstract class GCMBaseIntentService extends IntentService
     protected abstract void onError(final Context p0, final String p1);
     
     public final void onHandleIntent(Intent intent) {
-    Block_26_Outer:
+        Context applicationContext;
+        String s;
+        int int1;
+        final Context context;
+        Label_0386_Outer:Label_0331_Outer:
         while (true) {
             Label_0265: {
                 try {
-                    final Context applicationContext = this.getApplicationContext();
+                    applicationContext = this.getApplicationContext();
                     if (intent == null) {
                         synchronized (GCMBaseIntentService.LOCK) {
                             if (GCMBaseIntentService.sWakeLock != null && GCMBaseIntentService.sWakeLock.isHeld()) {
@@ -135,7 +139,7 @@ public abstract class GCMBaseIntentService extends IntentService
                             return;
                         }
                     }
-                    String s = intent.getAction();
+                    s = intent.getAction();
                     Label_0125: {
                         if (!s.equals("com.google.android.c2dm.intent.REGISTRATION")) {
                             break Label_0125;
@@ -163,7 +167,7 @@ public abstract class GCMBaseIntentService extends IntentService
                     intent = (Intent)intent.getStringExtra("total_deleted");
                     if (intent != null) {
                         try {
-                            final int int1 = Integer.parseInt((String)intent);
+                            int1 = Integer.parseInt((String)intent);
                             this.mLogger.log(2, "Received notification for %d deletedmessages", int1);
                             this.onDeletedMessages(applicationContext, int1);
                         }
@@ -185,36 +189,39 @@ public abstract class GCMBaseIntentService extends IntentService
                             }
                             // monitorexit(intent)
                             break EndFinally_4;
-                            final String s;
                             this.mLogger.log(6, "Received unknown special message: %s", s);
-                            continue Block_26_Outer;
+                            continue Label_0386_Outer;
                             Label_0419: {
-                                final Context context;
                                 GCMRegistrar.internalRegister(context, this.getSenderIds(context));
                             }
-                            continue Block_26_Outer;
-                            final Context context;
-                            this.onMessage(context, intent);
-                            continue Block_26_Outer;
-                            GCMRegistrar.internalUnregister(context);
-                            continue Block_26_Outer;
-                            // iftrue(Label_0405:, intent != null && intent.equals((Object)this.getApplicationContext().getPackageName()))
-                            // iftrue(Label_0090:, !s.equals((Object)"com.google.android.gcm.intent.RETRY"))
-                            while (true) {
-                                intent = (Intent)intent.getPackage();
-                                this.mLogger.log(6, "Ignoring retry intent from another package (%s)", intent);
-                                synchronized (GCMBaseIntentService.LOCK) {
-                                    if (GCMBaseIntentService.sWakeLock != null && GCMBaseIntentService.sWakeLock.isHeld()) {
-                                        GCMBaseIntentService.sWakeLock.release();
-                                        return;
-                                    }
-                                }
-                                this.mLogger.log(6, "Wakelock reference is null", new Object[0]);
-                                return;
-                                continue;
-                            }
+                            continue Label_0386_Outer;
                             this.mLogger.log(6, "Wakelock reference is null", new Object[0]);
                             return;
+                            // iftrue(Label_0090:, !s.equals((Object)"com.google.android.gcm.intent.RETRY"))
+                            // iftrue(Label_0405:, intent != null && intent.equals((Object)this.getApplicationContext().getPackageName()))
+                            while (true) {
+                                Block_26: {
+                                    while (true) {
+                                        this.mLogger.log(6, "Wakelock reference is null", new Object[0]);
+                                        return;
+                                        this.onMessage(context, intent);
+                                        continue Label_0386_Outer;
+                                        break Block_26;
+                                        this.mLogger.log(6, "Ignoring retry intent from another package (%s)", intent);
+                                        synchronized (GCMBaseIntentService.LOCK) {
+                                            if (GCMBaseIntentService.sWakeLock != null && GCMBaseIntentService.sWakeLock.isHeld()) {
+                                                GCMBaseIntentService.sWakeLock.release();
+                                                return;
+                                            }
+                                        }
+                                        continue Label_0331_Outer;
+                                    }
+                                    GCMRegistrar.internalUnregister(context);
+                                    continue Label_0386_Outer;
+                                }
+                                intent = (Intent)intent.getPackage();
+                                continue;
+                            }
                             Label_0405:;
                         }
                         // iftrue(Label_0419:, !GCMRegistrar.isRegistered(context))

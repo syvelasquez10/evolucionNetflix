@@ -92,27 +92,27 @@ public final class dw
                                         b = true;
                                         continue Label_0086_Outer;
                                         // iftrue(Label_0173:, opt2.equals(opt))
-                                        // iftrue(Label_0031:, !b)
-                                        Block_10: {
-                                            while (true) {
-                                                this.b(a);
-                                                this.a(true);
-                                                return;
+                                        while (true) {
+                                            Block_10: {
                                                 break Block_10;
                                                 n = 0;
-                                                continue Block_11_Outer;
+                                                continue Label_0129_Outer;
                                                 Label_0173: {
                                                     n = 0;
                                                 }
                                                 continue Block_11_Outer;
-                                                continue;
+                                                this.b(a);
+                                                this.a(true);
+                                                return;
+                                                n = 0;
+                                                continue Block_11_Outer;
                                             }
-                                            n = 0;
-                                            continue Label_0129_Outer;
+                                            n = 1;
+                                            continue Block_11_Outer;
+                                            continue;
                                         }
-                                        n = 1;
-                                        continue Block_11_Outer;
                                     }
+                                    // iftrue(Label_0031:, !b)
                                     catch (JSONException ex) {}
                                     break;
                                 }

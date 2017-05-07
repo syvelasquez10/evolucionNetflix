@@ -231,18 +231,18 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
     }
     
     public void onStopTrackingTouch(final SeekBar seekBar) {
-    Label_0183_Outer:
+        boolean b;
+        TimelineSeekBar timelineSeekBar;
+        PlayScreen access$800;
+        boolean b2;
+        int access$801;
+        Block_7_Outer:Label_0054_Outer:
         while (true) {
-            final boolean b = true;
-        Label_0054:
+            b = true;
+        Label_0183_Outer:
             while (true) {
-                TimelineSeekBar timelineSeekBar;
-                boolean b2;
-                PlayScreen access$800;
-                int access$801;
-                Label_0183:Label_0100_Outer:
+            Label_0100_Outer:
                 while (true) {
-                Label_0100:
                     while (true) {
                         Label_0222: {
                             synchronized (this) {
@@ -257,60 +257,61 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
                                 if (!this.mIsInCancelZone && !this.skipSeek(timelineSeekBar)) {
                                     break Label_0222;
                                 }
-                                break Label_0183;
-                                // iftrue(Label_0168:, !Log.isLoggable())
+                                break Label_0100_Outer;
                                 // iftrue(Label_0246:, b2)
-                                Label_0168_Outer:Block_6_Outer:
-                                while (true) {
-                                    while (true) {
-                                    Block_8:
+                                // iftrue(Label_0227:, b2)
+                                // iftrue(Label_0168:, !Log.isLoggable())
+                                // iftrue(Label_0121:, PlayerFragment.access$800(this.this$0) == null)
+                                Block_6: {
+                                    Block_9: {
                                         while (true) {
-                                            b2 = b;
-                                            break Label_0183;
-                                            this.this$0.mScreen.setTopPanelVisibility(true);
-                                            Label_0121: {
+                                            while (true) {
+                                                Label_0121: {
+                                                    while (true) {
+                                                        access$800 = this.this$0.mScreen;
+                                                        break Block_9;
+                                                        this.this$0.mScreen.setTopPanelVisibility(true);
+                                                        break Label_0121;
+                                                        break Block_6;
+                                                        Log.d("PlayerFragment", "Stop current time " + b2);
+                                                        continue Block_7_Outer;
+                                                    }
+                                                    access$800.stopCurrentTime(b2);
+                                                    this.this$0.mState.resetTimeline();
+                                                    return;
+                                                }
                                                 this.this$0.mSubtitleManager.setSubtitleVisibility(true);
+                                                ((TimelineSeekBar)access$800).hideThumb(false);
+                                                continue Label_0183_Outer;
                                             }
-                                            ((TimelineSeekBar)access$800).hideThumb(false);
-                                            break Block_8;
-                                            access$800.stopCurrentTime(b2);
-                                            this.this$0.mState.resetTimeline();
-                                            return;
-                                            access$800 = this.this$0.mScreen;
-                                            continue Label_0183_Outer;
+                                            continue Label_0054_Outer;
                                         }
-                                        Log.d("PlayerFragment", "Stop current time " + b2);
-                                        continue Block_6_Outer;
                                     }
-                                    while (true) {
-                                        access$801 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getBottomPanel().getCurrentProgress());
-                                        ((TimelineSeekBar)access$800).setProgress(access$801);
-                                        Log.d("PlayerFragment", "Seek!");
-                                        this.this$0.doSeek(access$801);
-                                        break Label_0100;
-                                        continue Label_0100_Outer;
-                                    }
-                                    continue Label_0168_Outer;
+                                    b2 = b;
+                                    continue Label_0100_Outer;
                                 }
+                                access$801 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getBottomPanel().getCurrentProgress());
+                                ((TimelineSeekBar)access$800).setProgress(access$801);
+                                Log.d("PlayerFragment", "Seek!");
+                                this.this$0.doSeek(access$801);
+                                continue;
                             }
-                            // iftrue(Label_0227:, b2)
-                            // iftrue(Label_0121:, PlayerFragment.access$800(this.this$0) == null)
                         }
                         b2 = false;
-                        continue Label_0054;
+                        continue Label_0183_Outer;
                         Label_0227: {
                             Log.d("PlayerFragment", "Do not seek!");
                         }
                         ((TimelineSeekBar)access$800).setProgress(((TimelineSeekBar)access$800).getProgress());
-                        continue Label_0100;
+                        continue;
                     }
                     Label_0246: {
                         b2 = false;
                     }
-                    continue Label_0183;
+                    continue Label_0100_Outer;
                 }
                 b2 = true;
-                continue Label_0054;
+                continue;
             }
         }
     }

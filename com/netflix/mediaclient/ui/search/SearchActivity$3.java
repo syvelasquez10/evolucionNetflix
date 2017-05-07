@@ -46,7 +46,6 @@ class SearchActivity$3 implements ManagerStatusListener
     @Override
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         this.this$0.serviceManager = serviceManager;
-        this.this$0.createUI();
         if (this.this$0.resultsFrag != null) {
             this.this$0.resultsFrag.setServiceManager(this.this$0.serviceManager);
         }

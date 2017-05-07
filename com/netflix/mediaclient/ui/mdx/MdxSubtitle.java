@@ -20,7 +20,7 @@ public final class MdxSubtitle extends Subtitle
         this.languageDescription = JsonUtils.getString(jsonObject, "label", "English");
         this.nccpOrderNumber = nccpOrderNumber;
         this.mSelected = JsonUtils.getBoolean(jsonObject, "selected", false);
-        this.trackType = 0;
+        this.trackType = 1;
     }
     
     public static final MdxSubtitle newInstance(final JSONObject jsonObject, final int n) {

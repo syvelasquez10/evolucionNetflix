@@ -249,6 +249,7 @@ public class SearchActivity extends NetflixActivity
         if (BrowseExperience.isKubrickKids()) {
             this.setTheme(2131362162);
         }
+        this.createUI();
         if (savedInstanceState == null) {
             DeviceUtils.showSoftKeyboard(this);
         }

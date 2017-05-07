@@ -19,10 +19,14 @@ public abstract class Subtitle implements Comparable<Subtitle>
     protected static final String ATTR_ORDER = "order";
     protected static final String ATTR_SELECTED = "selected";
     protected static final String ATTR_TRACK_TYPE = "trackType";
-    public static final int CLOSED_CAPTION_SUBTITLE = 1;
+    public static final int CLOSED_CAPTION_SUBTITLE = 2;
+    public static final int COMMENTARY = 4;
+    public static final int DESCRIPTIONS = 5;
+    public static final int FORCED_NARRATIVE = 6;
     protected static final String IMPL = "impl";
-    public static final int PRIMARY_SUBTITLE = 0;
-    public static final int UNKNOWN_SUBTITLE = -1;
+    public static final int PRIMARY_SUBTITLE = 1;
+    public static final int SUBTITLES = 3;
+    public static final int UNKNOWN_SUBTITLE = 0;
     protected boolean canDeviceRender;
     protected String id;
     protected String languageCodeIso639_1;
@@ -123,7 +127,7 @@ public abstract class Subtitle implements Comparable<Subtitle>
     }
     
     public boolean isCC() {
-        return this.trackType == 1;
+        return this.trackType == 2;
     }
     
     public abstract JSONObject toJson();

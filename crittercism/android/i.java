@@ -180,11 +180,14 @@ public final class i
                     ad ad = new ad(socketImplFactory, this.h, this.i);
                     a(ad);
                     while (true) {
-                        this.d = ad;
+                        while (true) {
+                            this.d = ad;
+                            return true;
+                            ad = new ad(class1, this.h, this.i);
+                            Socket.setSocketImplFactory(ad);
+                            continue;
+                        }
                         return true;
-                        return true;
-                        ad = new ad(class1, this.h, this.i);
-                        Socket.setSocketImplFactory(ad);
                         continue;
                     }
                 }

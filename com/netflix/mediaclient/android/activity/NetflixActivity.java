@@ -462,14 +462,17 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
                     }
                     this.displayDialog(dialog);
                     return;
-                    // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
-                    // iftrue(Label_0144:, !Log.isLoggable())
-                    Log.d("NetflixActivity", "displayUserAgentDialog " + s);
-                    Label_0144: {
-                        this.displayDialog(dialog);
+                    while (true) {
+                        Log.d("NetflixActivity", "displayUserAgentDialog " + s);
+                        Label_0144: {
+                            this.displayDialog(dialog);
+                        }
+                        return;
+                        continue;
                     }
-                    return;
                 }
+                // iftrue(Label_0144:, !Log.isLoggable())
+                // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
                 finally {
                 }
                 // monitorexit(visibleDialogLock)

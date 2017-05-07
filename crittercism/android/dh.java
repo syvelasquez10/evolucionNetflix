@@ -127,13 +127,13 @@ public final class dh extends dj
                                         continue Label_0428_Outer;
                                         h = null;
                                         continue Label_0428_Outer;
+                                        h = null;
+                                        continue Label_0428_Outer;
+                                        h = null;
+                                        continue Label_0428_Outer;
                                         a3.e.open();
                                         bg.a(this.f);
                                         continue Label_0509_Outer;
-                                        h = null;
-                                        continue Label_0428_Outer;
-                                        h = null;
-                                        continue Label_0428_Outer;
                                     }
                                     catch (Throwable t2) {
                                         new StringBuilder("Exception installing ndk library: ").append(t2.getClass().getName());

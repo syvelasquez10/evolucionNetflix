@@ -12,6 +12,7 @@ public class NccpSubtitle extends Subtitle
 {
     public static final int IMPL_VALUE = 1;
     private static final String TRACK_TYPE_ASSISTIVE = "ASSISTIVE";
+    private static final String TRACK_TYPE_FORCED_NARRATIVE_SUBTITLE = "FORCED_NARRATIVE_SUBTITLE";
     private static final String TRACK_TYPE_PRIMARY = "PRIMARY";
     
     protected NccpSubtitle(final JSONObject jsonObject, final int nccpOrderNumber) {
@@ -22,15 +23,19 @@ public class NccpSubtitle extends Subtitle
         this.nccpOrderNumber = nccpOrderNumber;
         final String string = JsonUtils.getString(jsonObject, "trackType", null);
         if (string == null) {
-            this.trackType = -1;
+            this.trackType = 0;
         }
         else {
             if ("ASSISTIVE".equalsIgnoreCase(string)) {
-                this.trackType = 1;
+                this.trackType = 2;
                 return;
             }
             if ("PRIMARY".equalsIgnoreCase(string)) {
-                this.trackType = 0;
+                this.trackType = 1;
+                return;
+            }
+            if ("FORCED_NARRATIVE_SUBTITLE".equalsIgnoreCase(string)) {
+                this.trackType = 6;
             }
         }
     }
@@ -49,10 +54,10 @@ public class NccpSubtitle extends Subtitle
         jsonObject.put("language", (Object)this.languageCodeIso639_1);
         jsonObject.put("languageDescription", (Object)this.languageDescription);
         Object o = null;
-        if (this.trackType == 1) {
+        if (this.trackType == 2) {
             o = "ASSISTIVE";
         }
-        else if (this.trackType == 0) {
+        else if (this.trackType == 1) {
             o = "PRIMARY";
         }
         jsonObject.put("trackType", o);

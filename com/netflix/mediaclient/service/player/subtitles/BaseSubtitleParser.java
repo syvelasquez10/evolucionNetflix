@@ -41,89 +41,124 @@ public abstract class BaseSubtitleParser implements SubtitleParser
         // Original Bytecode:
         // 
         //     0: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
-        //     3: ifeq            52
+        //     3: ifeq            55
         //     6: ldc             "nf_subtitles"
         //     8: new             Ljava/lang/StringBuilder;
         //    11: dup            
         //    12: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    15: ldc             "Cache for playable id "
+        //    15: ldc             "Language code from event "
         //    17: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
         //    20: aload_0        
-        //    21: getfield        com/netflix/mediaclient/service/player/subtitles/BaseSubtitleParser.mPlayer:Lcom/netflix/mediaclient/service/player/PlayerAgent;
-        //    24: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getCurrentPlayableId:()J
-        //    27: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-        //    30: ldc             " and language "
+        //    21: getfield        com/netflix/mediaclient/service/player/subtitles/BaseSubtitleParser.mSubtitleData:Lcom/netflix/mediaclient/event/nrdp/media/SubtitleData;
+        //    24: invokevirtual   com/netflix/mediaclient/event/nrdp/media/SubtitleData.getLanguage:()Ljava/lang/String;
+        //    27: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    30: ldc             " Media current subtitle language for reference is "
         //    32: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
         //    35: aload_0        
         //    36: getfield        com/netflix/mediaclient/service/player/subtitles/BaseSubtitleParser.mPlayer:Lcom/netflix/mediaclient/service/player/PlayerAgent;
         //    39: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getCurrentSubtitleTrack:()Lcom/netflix/mediaclient/media/Subtitle;
-        //    42: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
-        //    45: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //    48: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    51: pop            
-        //    52: aload_0        
-        //    53: getfield        com/netflix/mediaclient/service/player/subtitles/BaseSubtitleParser.mPlayer:Lcom/netflix/mediaclient/service/player/PlayerAgent;
-        //    56: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getPlayerFileCache:()Lcom/netflix/mediaclient/servicemgr/IPlayerFileCache;
-        //    59: aload_0        
-        //    60: getfield        com/netflix/mediaclient/service/player/subtitles/BaseSubtitleParser.mPlayer:Lcom/netflix/mediaclient/service/player/PlayerAgent;
-        //    63: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getCurrentPlayableId:()J
-        //    66: invokestatic    java/lang/String.valueOf:(J)Ljava/lang/String;
-        //    69: aload_0        
-        //    70: getfield        com/netflix/mediaclient/service/player/subtitles/BaseSubtitleParser.mPlayer:Lcom/netflix/mediaclient/service/player/PlayerAgent;
-        //    73: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getCurrentSubtitleTrack:()Lcom/netflix/mediaclient/media/Subtitle;
-        //    76: invokevirtual   com/netflix/mediaclient/media/Subtitle.getLanguageCodeIso639_1:()Ljava/lang/String;
-        //    79: invokeinterface com/netflix/mediaclient/servicemgr/IPlayerFileCache.getSubtitleCache:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-        //    84: astore_1       
-        //    85: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
-        //    88: ifeq            131
-        //    91: ldc             "nf_subtitles"
-        //    93: new             Ljava/lang/StringBuilder;
-        //    96: dup            
-        //    97: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   100: ldc             "Cache created for playable "
-        //   102: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   105: aload_0        
-        //   106: getfield        com/netflix/mediaclient/service/player/subtitles/BaseSubtitleParser.mPlayer:Lcom/netflix/mediaclient/service/player/PlayerAgent;
-        //   109: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getCurrentPlayableId:()J
-        //   112: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-        //   115: ldc             ", cache name: "
-        //   117: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   120: aload_1        
-        //   121: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   124: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   127: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   130: pop            
-        //   131: aload_1        
-        //   132: areturn        
-        //   133: astore_2       
-        //   134: aconst_null    
-        //   135: astore_1       
-        //   136: ldc             "nf_subtitles"
-        //   138: new             Ljava/lang/StringBuilder;
-        //   141: dup            
-        //   142: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   145: ldc             "Failed to create cache "
-        //   147: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   150: aload_2        
-        //   151: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
-        //   154: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   157: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   160: pop            
-        //   161: aload_1        
-        //   162: areturn        
-        //   163: astore_2       
-        //   164: goto            136
+        //    42: invokevirtual   com/netflix/mediaclient/media/Subtitle.getLanguageCodeIso639_1:()Ljava/lang/String;
+        //    45: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    48: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    51: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    54: pop            
+        //    55: new             Ljava/lang/StringBuilder;
+        //    58: dup            
+        //    59: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    62: aload_0        
+        //    63: getfield        com/netflix/mediaclient/service/player/subtitles/BaseSubtitleParser.mPlayer:Lcom/netflix/mediaclient/service/player/PlayerAgent;
+        //    66: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getCurrentSubtitleTrack:()Lcom/netflix/mediaclient/media/Subtitle;
+        //    69: invokevirtual   com/netflix/mediaclient/media/Subtitle.getLanguageCodeIso639_1:()Ljava/lang/String;
+        //    72: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    75: ldc             "_"
+        //    77: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    80: aload_0        
+        //    81: getfield        com/netflix/mediaclient/service/player/subtitles/BaseSubtitleParser.mPlayer:Lcom/netflix/mediaclient/service/player/PlayerAgent;
+        //    84: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getCurrentSubtitleTrack:()Lcom/netflix/mediaclient/media/Subtitle;
+        //    87: invokevirtual   com/netflix/mediaclient/media/Subtitle.getTrackType:()I
+        //    90: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //    93: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    96: astore_1       
+        //    97: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   100: ifeq            143
+        //   103: ldc             "nf_subtitles"
+        //   105: new             Ljava/lang/StringBuilder;
+        //   108: dup            
+        //   109: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   112: ldc             "Cache for playable id "
+        //   114: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   117: aload_0        
+        //   118: getfield        com/netflix/mediaclient/service/player/subtitles/BaseSubtitleParser.mPlayer:Lcom/netflix/mediaclient/service/player/PlayerAgent;
+        //   121: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getCurrentPlayableId:()J
+        //   124: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+        //   127: ldc             " and language "
+        //   129: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   132: aload_1        
+        //   133: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   136: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   139: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   142: pop            
+        //   143: aload_0        
+        //   144: getfield        com/netflix/mediaclient/service/player/subtitles/BaseSubtitleParser.mPlayer:Lcom/netflix/mediaclient/service/player/PlayerAgent;
+        //   147: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getPlayerFileCache:()Lcom/netflix/mediaclient/servicemgr/IPlayerFileCache;
+        //   150: aload_0        
+        //   151: getfield        com/netflix/mediaclient/service/player/subtitles/BaseSubtitleParser.mPlayer:Lcom/netflix/mediaclient/service/player/PlayerAgent;
+        //   154: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getCurrentPlayableId:()J
+        //   157: invokestatic    java/lang/String.valueOf:(J)Ljava/lang/String;
+        //   160: aload_1        
+        //   161: invokeinterface com/netflix/mediaclient/servicemgr/IPlayerFileCache.getSubtitleCache:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+        //   166: astore_1       
+        //   167: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   170: ifeq            213
+        //   173: ldc             "nf_subtitles"
+        //   175: new             Ljava/lang/StringBuilder;
+        //   178: dup            
+        //   179: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   182: ldc             "Cache created for playable "
+        //   184: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   187: aload_0        
+        //   188: getfield        com/netflix/mediaclient/service/player/subtitles/BaseSubtitleParser.mPlayer:Lcom/netflix/mediaclient/service/player/PlayerAgent;
+        //   191: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getCurrentPlayableId:()J
+        //   194: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+        //   197: ldc             ", cache name: "
+        //   199: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   202: aload_1        
+        //   203: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   206: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   209: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   212: pop            
+        //   213: aload_1        
+        //   214: areturn        
+        //   215: astore_2       
+        //   216: aconst_null    
+        //   217: astore_1       
+        //   218: ldc             "nf_subtitles"
+        //   220: new             Ljava/lang/StringBuilder;
+        //   223: dup            
+        //   224: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   227: ldc             "Failed to create cache "
+        //   229: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   232: aload_2        
+        //   233: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //   236: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   239: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   242: pop            
+        //   243: aload_1        
+        //   244: areturn        
+        //   245: astore_2       
+        //   246: goto            218
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  0      52     133    136    Ljava/lang/Throwable;
-        //  52     85     133    136    Ljava/lang/Throwable;
-        //  85     131    163    167    Ljava/lang/Throwable;
+        //  0      55     215    218    Ljava/lang/Throwable;
+        //  55     143    215    218    Ljava/lang/Throwable;
+        //  143    167    215    218    Ljava/lang/Throwable;
+        //  167    213    245    249    Ljava/lang/Throwable;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0131:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0213:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)

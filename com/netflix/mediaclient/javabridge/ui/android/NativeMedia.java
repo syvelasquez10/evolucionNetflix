@@ -408,24 +408,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
             Log.w("nf-bridge", "handlePropertyUpdate:: properties does not exist");
             return 0;
         }
-        if (jsonObject.has("currentAudioTrack")) {
-            this.mCurrentAudioTrackIndex = this.getInt(jsonObject, "currentAudioTrack", -1);
-            if (this.mAudioTrackList != null && this.mAudioTrackList.length > this.mCurrentAudioTrackIndex && this.mCurrentAudioTrackIndex > -1) {
-                this.mCurrentAudioTrack = this.mAudioTrackList[this.mCurrentAudioTrackIndex];
-            }
-            else {
-                this.mCurrentAudioTrack = null;
-            }
-        }
-        if (jsonObject.has("currentSubtitleTrack")) {
-            this.mCurrentSubtitleTrackIndex = this.getInt(jsonObject, "currentSubtitleTrack", -1);
-            if (this.mSubtitleTrackList != null && this.mSubtitleTrackList.length > this.mCurrentSubtitleTrackIndex && this.mCurrentSubtitleTrackIndex > -1) {
-                this.mCurrentSubtitleTrack = this.mSubtitleTrackList[this.mCurrentSubtitleTrackIndex];
-            }
-            else {
-                this.mCurrentSubtitleTrack = null;
-            }
-        }
+        this.setCurrentAudioTrackIndex(jsonObject);
+        this.setCurrentSubtitleTrackIndex(jsonObject);
         if (jsonObject.has("state")) {
             this.mState = this.getInt(jsonObject, "state", -1);
         }
@@ -516,6 +500,54 @@ public class NativeMedia extends NativeNrdObject implements IMedia
             }
         }
         return false;
+    }
+    
+    private void setCurrentAudioTrackIndex(final JSONObject jsonObject) {
+        if (jsonObject.has("currentAudioTrack")) {
+            this.mCurrentAudioTrackIndex = this.getInt(jsonObject, "currentAudioTrack", -1);
+            if (this.mAudioTrackList == null || this.mCurrentAudioTrackIndex <= -1) {
+                this.mCurrentAudioTrack = null;
+                return;
+            }
+            final AudioSource[] mAudioTrackList = this.mAudioTrackList;
+            for (int length = mAudioTrackList.length, i = 0; i < length; ++i) {
+                final AudioSource mCurrentAudioTrack = mAudioTrackList[i];
+                if (this.mCurrentAudioTrackIndex == mCurrentAudioTrack.getNccpOrderNumber()) {
+                    if (Log.isLoggable()) {
+                        Log.d("nf-bridge", "currentAudioTrack: " + mCurrentAudioTrack);
+                    }
+                    this.mCurrentAudioTrack = mCurrentAudioTrack;
+                    return;
+                }
+            }
+            if (Log.isLoggable()) {
+                Log.w("nf-bridge", "Audio NOT found for index " + this.mCurrentAudioTrackIndex);
+            }
+        }
+    }
+    
+    private void setCurrentSubtitleTrackIndex(final JSONObject jsonObject) {
+        if (jsonObject.has("currentSubtitleTrack")) {
+            this.mCurrentSubtitleTrackIndex = this.getInt(jsonObject, "currentSubtitleTrack", -1);
+            if (this.mSubtitleTrackList == null || this.mCurrentSubtitleTrackIndex <= -1) {
+                this.mCurrentSubtitleTrack = null;
+                return;
+            }
+            final Subtitle[] mSubtitleTrackList = this.mSubtitleTrackList;
+            for (int length = mSubtitleTrackList.length, i = 0; i < length; ++i) {
+                final Subtitle mCurrentSubtitleTrack = mSubtitleTrackList[i];
+                if (this.mCurrentSubtitleTrackIndex == mCurrentSubtitleTrack.getNccpOrderNumber()) {
+                    if (Log.isLoggable()) {
+                        Log.d("nf-bridge", "currentSubtitleTrack: " + mCurrentSubtitleTrack);
+                    }
+                    this.mCurrentSubtitleTrack = mCurrentSubtitleTrack;
+                    return;
+                }
+            }
+            if (Log.isLoggable()) {
+                Log.w("nf-bridge", "Subtitle NOT found for index " + this.mCurrentSubtitleTrackIndex);
+            }
+        }
     }
     
     private TrickplayUrl[] toTrickplayUrlList(final JSONArray jsonArray) {

@@ -55,7 +55,7 @@ public class AppEventsLogger
                 break Label_0100;
             }
             this.accessTokenAppId = new AppEventsLogger$AccessTokenAppIdPair(activeSession);
-        Label_0111_Outer:
+        Block_8_Outer:
             while (true) {
                 session = (Session)AppEventsLogger.staticLock;
                 synchronized (session) {
@@ -68,10 +68,12 @@ public class AppEventsLogger
                     initializeTimersIfNeeded();
                     return;
                     while (true) {
-                        this.accessTokenAppId = new AppEventsLogger$AccessTokenAppIdPair(null, (String)session);
-                        s = (String)session;
-                        continue Label_0111_Outer;
                         session = (Session)Utility.getMetadataApplicationId(context);
+                        Label_0111: {
+                            this.accessTokenAppId = new AppEventsLogger$AccessTokenAppIdPair(null, (String)session);
+                        }
+                        s = (String)session;
+                        continue Block_8_Outer;
                         continue;
                     }
                 }

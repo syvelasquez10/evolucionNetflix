@@ -149,6 +149,7 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
             if (googleApiClient != null) {
                 break Label_0018;
             }
+        Block_3_Outer:
             while (true) {
                 Object o;
                 String string;
@@ -157,15 +158,21 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
                     Label_0015: {
                         return;
                     }
-                    // iftrue(Label_0015:, !this.saveCredentials)
-                    Log.d("LoginActivity", "Trying to save credentials to GPS");
-                    this.saveCredentials = false;
-                    o = this.emailView.getText().toString();
-                    string = this.passwordView.getText().toString();
                     // iftrue(Label_0092:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
-                    Log.w("LoginActivity", "Credential is empty, do not save it.");
-                    return;
+                    while (true) {
+                        while (true) {
+                            Log.w("LoginActivity", "Credential is empty, do not save it.");
+                            return;
+                            Log.d("LoginActivity", "Trying to save credentials to GPS");
+                            this.saveCredentials = false;
+                            o = this.emailView.getText().toString();
+                            string = this.passwordView.getText().toString();
+                            continue Block_3_Outer;
+                        }
+                        continue;
+                    }
                 }
+                // iftrue(Label_0015:, !this.saveCredentials)
                 finally {
                 }
                 // monitorexit(this)
