@@ -84,7 +84,7 @@ public class DeviceConfiguration
         }
         catch (Exception ex) {
             Log.e(DeviceConfiguration.TAG, "Could not fetch configuration! ", ex);
-            return -3;
+            return -12;
         }
         this.persistDeviceConfigOverride(configString.getDeviceConfig());
         return 0;

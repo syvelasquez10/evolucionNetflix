@@ -95,10 +95,10 @@ public final class fe
             final JSONObject jsonObject2 = (JSONObject)o2;
             Iterator keys = null;
             String s;
-            int n;
             JSONArray jsonArray;
             JSONArray jsonArray2;
-            Block_9_Outer:Label_0135_Outer:
+            int n;
+            Block_8_Outer:Label_0135_Outer:
             while (true) {
                 if (jsonObject.length() == jsonObject2.length()) {
                     keys = jsonObject.keys();
@@ -118,36 +118,39 @@ public final class fe
                     if (!d(jsonObject.get(s), jsonObject2.get(s))) {
                         return false;
                     }
-                    continue Block_9_Outer;
-                    // iftrue(Label_0170:, !o instanceof JSONArray || !o2 instanceof JSONArray)
+                    continue Block_8_Outer;
                     // iftrue(Label_0035:, jsonArray.length() != jsonArray2.length())
                     // iftrue(Label_0168:, n >= jsonArray.length())
-                Label_0135:
+                    // iftrue(Label_0170:, !o instanceof JSONArray || !o2 instanceof JSONArray)
                     while (true) {
-                        while (true) {
+                        Block_10: {
+                        Block_9:
+                            while (true) {
+                                jsonArray = (JSONArray)o;
+                                jsonArray2 = (JSONArray)o2;
+                                break Block_9;
+                                break Block_10;
+                                continue Label_0135_Outer;
+                            }
                             n = 0;
-                            break Label_0135;
-                            jsonArray = (JSONArray)o;
-                            jsonArray2 = (JSONArray)o2;
-                            continue Label_0135_Outer;
+                            continue;
                         }
                         try {
                             if (d(jsonArray.get(n), jsonArray2.get(n))) {
                                 ++n;
-                                continue Label_0135;
+                                continue;
                             }
                             return false;
-                            Label_0170:
-                            return o.equals(o2);
                             Label_0168:
                             return true;
+                            Label_0170:
+                            return o.equals(o2);
                         }
                         catch (JSONException ex) {
                             return false;
                         }
                         break;
                     }
-                    return true;
                 }
                 catch (JSONException ex2) {
                     return false;

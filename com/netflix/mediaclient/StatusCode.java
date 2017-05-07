@@ -9,6 +9,7 @@ public interface StatusCode
     public static final int BROWSE_AGENT_WRONG_STATE = -66;
     public static final int BROWSE_CW_WRONG_STATE = -68;
     public static final int BROWSE_IQ_WRONG_STATE = -67;
+    public static final int CONFIG_DOWNLOAD_FAILED = -12;
     public static final int CONFIG_REFRESH_FAILED = -7;
     public static final int DRM_FAILURE_CDM = -100;
     public static final int DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED = -101;

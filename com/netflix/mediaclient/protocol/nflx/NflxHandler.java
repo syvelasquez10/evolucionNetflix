@@ -36,16 +36,17 @@ import java.security.InvalidParameterException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.ui.common.PlayContextImp;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import com.netflix.mediaclient.Log;
 import java.util.Map;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.Playable;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import android.app.Activity;
+import com.netflix.mediaclient.ui.common.PlayContext;
 
 public class NflxHandler
 {
@@ -71,6 +72,7 @@ public class NflxHandler
     private static final String NFLX_PARAM_QUERY = "query";
     private static final String NFLX_PARAM_TARGET_ID = "targetid";
     private static final String NFLX_PARAM_TARGET_URL = "target_url";
+    private static final String NFLX_PARAM_TRACKID = "trkid";
     private static final String NFLX_SCHEME = "nflx";
     public static final String PARAM_STATUS = "status";
     private static final String TAG = "NflxHandler";
@@ -139,6 +141,18 @@ public class NflxHandler
             Log.d("NflxHandler", "Expanded tiny URL: " + string);
         }
         return string;
+    }
+    
+    private PlayContext getPlayContext(final String s) {
+        if (StringUtils.isNotEmpty(s)) {
+            try {
+                return new PlayContextImp(null, Integer.parseInt(s), 0, 0);
+            }
+            catch (Exception ex) {
+                Log.e("NflxHandler", String.format("Error parsing trackId %s", s));
+            }
+        }
+        return PlayContext.NFLX_MDX_CONTEXT;
     }
     
     private String getSource(final Map<String, String> map) {
@@ -239,20 +253,20 @@ public class NflxHandler
             @Override
             public void run() {
                 Log.d("NflxHandler", "Resolving tiny URL in background");
-                NflxHandler.this.handleTinyUrl(netflixActivity, mdx, s, s2, NflxHandler.this.extractJustUuid(map.get("targetid")));
+                NflxHandler.this.handleTinyUrl(netflixActivity, mdx, s, s2, NflxHandler.this.extractJustUuid(map.get("targetid")), map.get("trkid"));
             }
         });
         return VideoInfo.DELAYED;
     }
     
-    private Response handleEpisodeFromTinyUrl(final NetflixActivity netflixActivity, final IMdx mdx, final String s, final JSONObject jsonObject, final String s2) throws JSONException, InvalidParameterException {
+    private Response handleEpisodeFromTinyUrl(final NetflixActivity netflixActivity, final IMdx mdx, final String s, final JSONObject jsonObject, final String s2, final String s3) throws JSONException, InvalidParameterException {
         final Response handling = Response.HANDLING;
         if ("play".equalsIgnoreCase(s)) {
-            this.handleEpisodePlayFromTinyUrl(netflixActivity, mdx, s, jsonObject, s2);
+            this.handleEpisodePlayFromTinyUrl(netflixActivity, mdx, s, jsonObject, s2, s3);
             return Response.HANDLING_WITH_DELAY;
         }
         if ("view_details".equalsIgnoreCase(s)) {
-            this.handleEpisodeVideoDetailFromTinyUrl(netflixActivity, s, jsonObject);
+            this.handleEpisodeVideoDetailFromTinyUrl(netflixActivity, s, jsonObject, s3);
             return handling;
         }
         if (Log.isLoggable("NflxHandler", 6)) {
@@ -262,16 +276,16 @@ public class NflxHandler
         return handling;
     }
     
-    private void handleEpisodePlayFromTinyUrl(final NetflixActivity netflixActivity, final IMdx mdx, final String s, final JSONObject jsonObject, final String s2) throws JSONException, InvalidParameterException {
+    private void handleEpisodePlayFromTinyUrl(final NetflixActivity netflixActivity, final IMdx mdx, final String s, final JSONObject jsonObject, final String s2, final String s3) throws JSONException, InvalidParameterException {
         if (!jsonObject.has("id")) {
             Log.e("NflxHandler", "It should be episode JSON, failed to get title series id! Default to LOLOMO!");
             this.handleHomeAction(netflixActivity);
             return;
         }
-        this.playVideo(netflixActivity, mdx, String.valueOf(WebApiUtils.extractIsd(null, jsonObject.getString("id")).episodeId), VideoType.EPISODE, s2);
+        this.playVideo(netflixActivity, mdx, String.valueOf(WebApiUtils.extractIsd(null, jsonObject.getString("id")).episodeId), VideoType.EPISODE, s2, s3);
     }
     
-    private void handleEpisodeVideoDetailFromTinyUrl(final Activity activity, String optString, JSONObject optJSONObject) throws JSONException, InvalidParameterException {
+    private void handleEpisodeVideoDetailFromTinyUrl(final Activity activity, String optString, JSONObject optJSONObject, final String s) throws JSONException, InvalidParameterException {
         optString = optJSONObject.optString("id");
         if (StringUtils.isEmpty(optString)) {
             Log.e("NflxHandler", "It should be episode JSON, failed to get id! Default to LOLOMO!");
@@ -304,7 +318,7 @@ public class NflxHandler
         final String id2 = this.extractId(optString);
         if (StringUtils.isEmpty(id2)) {
             Log.e("NflxHandler", "It should be episode, failed to get episode id from url! Default to show SDP! Url was: " + optString);
-            DetailsActivity.show(activity, VideoType.SHOW, id, PlayContext.NFLX_MDX_CONTEXT);
+            DetailsActivity.show(activity, VideoType.SHOW, id, this.getPlayContext(s));
             return;
         }
         if (Log.isLoggable("NflxHandler", 3)) {
@@ -312,7 +326,7 @@ public class NflxHandler
             Log.d("NflxHandler", "Expanded from: episodeIdUri " + optString + " and shodIdUri " + string);
             Log.v("NflxHandler", "Showing SDP");
         }
-        DetailsActivity.showEpisodeDetails(activity, id, id2, PlayContext.NFLX_MDX_CONTEXT);
+        DetailsActivity.showEpisodeDetails(activity, id, id2, this.getPlayContext(s));
     }
     
     private Response handleHomeAction(final Activity activity) {
@@ -322,7 +336,7 @@ public class NflxHandler
         return Response.HANDLING;
     }
     
-    private Response handleMovieFromTinyUrl(final NetflixActivity netflixActivity, final IMdx mdx, final String s, final JSONObject jsonObject, final String s2) throws JSONException {
+    private Response handleMovieFromTinyUrl(final NetflixActivity netflixActivity, final IMdx mdx, final String s, final JSONObject jsonObject, final String s2, final String s3) throws JSONException {
         if (!jsonObject.has("id")) {
             Log.e("NflxHandler", "It should be movie JSON, failed to get ID URL! Default to LOLOMO!");
             this.handleHomeAction(netflixActivity);
@@ -335,14 +349,14 @@ public class NflxHandler
         }
         if (videoIdFromUri != null) {
             if ("play".equalsIgnoreCase(s)) {
-                this.playVideo(netflixActivity, mdx, videoIdFromUri, VideoType.MOVIE, s2);
+                this.playVideo(netflixActivity, mdx, videoIdFromUri, VideoType.MOVIE, s2, s3);
                 return Response.HANDLING_WITH_DELAY;
             }
             if ("view_details".equalsIgnoreCase(s)) {
                 if (Log.isLoggable("NflxHandler", 2)) {
                     Log.v("NflxHandler", "Showing MDP for: " + videoIdFromUri);
                 }
-                DetailsActivity.show(netflixActivity, VideoType.MOVIE, videoIdFromUri, PlayContext.NFLX_MDX_CONTEXT);
+                DetailsActivity.show(netflixActivity, VideoType.MOVIE, videoIdFromUri, this.getPlayContext(s3));
             }
             else {
                 if (Log.isLoggable("NflxHandler", 6)) {
@@ -458,7 +472,7 @@ public class NflxHandler
             Log.v("NflxHandler", "handlePlayAction ends, handling.");
             final VideoType videoType = videoInfo.getVideoType();
             if (videoType == VideoType.MOVIE) {
-                this.playVideo(netflixActivity, mdx, videoInfo.getCatalogId(), VideoType.MOVIE, justUuid);
+                this.playVideo(netflixActivity, mdx, videoInfo.getCatalogId(), VideoType.MOVIE, justUuid, map.get("trkid"));
                 return Response.HANDLING_WITH_DELAY;
             }
             if (videoType == VideoType.EPISODE) {
@@ -467,7 +481,7 @@ public class NflxHandler
                     Log.v("NflxHandler", "no episode id");
                     return Response.NOT_HANDLING;
                 }
-                this.playVideo(netflixActivity, mdx, episodeId, VideoType.EPISODE, justUuid);
+                this.playVideo(netflixActivity, mdx, episodeId, VideoType.EPISODE, justUuid, map.get("trkid"));
                 return Response.HANDLING_WITH_DELAY;
             }
             else if (Log.isLoggable("NflxHandler", 2)) {
@@ -505,7 +519,7 @@ public class NflxHandler
         return Response.NOT_HANDLING;
     }
     
-    private void handleTinyUrl(final NetflixActivity netflixActivity, final IMdx mdx, final String s, String remoteDataAsString, final String s2) {
+    private void handleTinyUrl(final NetflixActivity netflixActivity, final IMdx mdx, final String s, String remoteDataAsString, final String s2, final String s3) {
         ThreadUtils.assertNotOnMain();
         final Response handling = Response.HANDLING;
         while (true) {
@@ -525,11 +539,11 @@ public class NflxHandler
                     final JSONObject jsonObject2 = jsonObject.getJSONObject("catalog_title");
                     if (!jsonObject2.has("title_series")) {
                         Log.d("NflxHandler", "No title series in JSON object title. It must be movie. ");
-                        response = this.handleMovieFromTinyUrl(netflixActivity, mdx, s, jsonObject2, s2);
+                        response = this.handleMovieFromTinyUrl(netflixActivity, mdx, s, jsonObject2, s2, s3);
                     }
                     else {
                         Log.d("NflxHandler", "Title series in JSON object title. It must be episode. ");
-                        response = this.handleEpisodeFromTinyUrl(netflixActivity, mdx, s, jsonObject2, s2);
+                        response = this.handleEpisodeFromTinyUrl(netflixActivity, mdx, s, jsonObject2, s2, s3);
                     }
                 }
                 if (!Response.HANDLING_WITH_DELAY.equals(response)) {
@@ -583,13 +597,13 @@ public class NflxHandler
             if (Log.isLoggable("NflxHandler", 2)) {
                 Log.v("NflxHandler", "Showing details for episode: " + catalogId + ", type: " + videoType + ", show: " + videoInfo.getShowId());
             }
-            DetailsActivity.showEpisodeDetails(netflixActivity, videoInfo.getShowId(), catalogId, PlayContext.NFLX_MDX_CONTEXT);
+            DetailsActivity.showEpisodeDetails(netflixActivity, videoInfo.getShowId(), catalogId, this.getPlayContext(map.get("trkid")));
         }
         else {
             if (Log.isLoggable("NflxHandler", 2)) {
                 Log.v("NflxHandler", "Showing details for: " + catalogId + ", type: " + videoType);
             }
-            DetailsActivity.show(netflixActivity, videoType, catalogId, PlayContext.NFLX_MDX_CONTEXT);
+            DetailsActivity.show(netflixActivity, videoType, catalogId, this.getPlayContext(map.get("trkid")));
         }
         return Response.HANDLING;
     }
@@ -628,15 +642,15 @@ public class NflxHandler
         PlayerActivity.playVideo(activity, playable, playContext);
     }
     
-    private void playVideo(final NetflixActivity netflixActivity, final IMdx mdx, final String s, final VideoType videoType, final String s2) {
+    private void playVideo(final NetflixActivity netflixActivity, final IMdx mdx, final String s, final VideoType videoType, final String s2, final String s3) {
         if (Log.isLoggable("NflxHandler", 2)) {
             Log.v("NflxHandler", "Playing video: " + s);
         }
         if (VideoType.MOVIE.equals(videoType)) {
-            netflixActivity.getServiceManager().fetchMovieDetails(s, new FetchPlayableCallback((Activity)netflixActivity, mdx, s2));
+            netflixActivity.getServiceManager().fetchMovieDetails(s, new FetchPlayableCallback((Activity)netflixActivity, s3, mdx, s2));
         }
         else if (VideoType.EPISODE.equals(videoType)) {
-            netflixActivity.getServiceManager().fetchEpisodeDetails(s, new FetchPlayableCallback((Activity)netflixActivity, mdx, s2));
+            netflixActivity.getServiceManager().fetchEpisodeDetails(s, new FetchPlayableCallback((Activity)netflixActivity, s3, mdx, s2));
         }
     }
     
@@ -733,19 +747,21 @@ public class NflxHandler
     class FetchPlayableCallback extends SimpleManagerCallback
     {
         private final Activity activity;
+        private final String trackId;
         final /* synthetic */ IMdx val$mdx;
         final /* synthetic */ String val$targetDialUuid;
         
-        FetchPlayableCallback(final Activity activity, final IMdx val$mdx, final Activity val$targetDialUuid) {
-            this.val$mdx = val$mdx;
-            this.val$targetDialUuid = (String)val$targetDialUuid;
+        FetchPlayableCallback(final Activity activity, final String trackId, final Activity val$mdx, final String val$targetDialUuid) {
+            this.val$mdx = (IMdx)val$mdx;
+            this.val$targetDialUuid = val$targetDialUuid;
             this.activity = activity;
+            this.trackId = trackId;
         }
         
         @Override
         public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final int n) {
             if (n == 0) {
-                NflxHandler.this.play(this.activity, this.val$mdx, episodeDetails, this.val$targetDialUuid, PlayContext.NFLX_MDX_CONTEXT);
+                NflxHandler.this.play(this.activity, this.val$mdx, episodeDetails, this.val$targetDialUuid, NflxHandler.this.getPlayContext(this.trackId));
             }
             NflxHandler.this.reportDelayedResponseHandled(this.activity);
         }
@@ -753,7 +769,7 @@ public class NflxHandler
         @Override
         public void onMovieDetailsFetched(final MovieDetails movieDetails, final int n) {
             if (n == 0) {
-                NflxHandler.this.play(this.activity, this.val$mdx, movieDetails, this.val$targetDialUuid, PlayContext.NFLX_MDX_CONTEXT);
+                NflxHandler.this.play(this.activity, this.val$mdx, movieDetails, this.val$targetDialUuid, NflxHandler.this.getPlayContext(this.trackId));
             }
             NflxHandler.this.reportDelayedResponseHandled(this.activity);
         }
@@ -785,6 +801,13 @@ public class NflxHandler
             this.mShowId = null;
         }
         
+        private VideoInfo(final boolean mHandleWithDelay, final String mCatalogId) {
+            this.mHandleWithDelay = mHandleWithDelay;
+            this.mVideoType = VideoType.SHOW;
+            this.mCatalogId = mCatalogId;
+            this.mShowId = null;
+        }
+        
         private VideoInfo(final boolean mHandleWithDelay, final String mShowId, final String mCatalogId) {
             this.mHandleWithDelay = mHandleWithDelay;
             this.mVideoType = VideoType.EPISODE;
@@ -793,6 +816,9 @@ public class NflxHandler
         }
         
         public static VideoInfo createFromEpisode(final String s, final String s2) {
+            if (StringUtils.safeEquals(s, s2)) {
+                return new VideoInfo(false, s);
+            }
             return new VideoInfo(false, s, s2);
         }
         
