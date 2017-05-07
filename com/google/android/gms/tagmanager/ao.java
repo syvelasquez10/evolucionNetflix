@@ -61,7 +61,6 @@ class ao extends aj
                         break Label_0110;
                     }
                     String k = "text";
-                Block_6_Outer:
                     while (true) {
                         Label_0118: {
                             if (!"text".equals(k)) {
@@ -70,21 +69,21 @@ class ao extends aj
                             byte[] array = j.getBytes();
                             try {
                                 return dh.r(com.google.android.gms.tagmanager.j.d(this.c((String)i, array)));
-                                i = dh.j((d.a)i);
-                                continue Label_0073_Outer;
+                                // iftrue(Label_0135:, !"base16".equals((Object)k))
+                                Block_6: {
+                                    break Block_6;
+                                    i = dh.j((d.a)i);
+                                    continue Label_0073_Outer;
+                                }
+                                array = com.google.android.gms.tagmanager.j.bm(j);
+                                return dh.r(com.google.android.gms.tagmanager.j.d(this.c((String)i, array)));
+                                k = dh.j(a2);
+                                continue;
                                 Label_0135: {
                                     bh.w("Hash: unknown input format: " + k);
                                 }
                                 return dh.lT();
-                                while (true) {
-                                    array = com.google.android.gms.tagmanager.j.bm(j);
-                                    return dh.r(com.google.android.gms.tagmanager.j.d(this.c((String)i, array)));
-                                    k = dh.j(a2);
-                                    continue Block_6_Outer;
-                                    continue;
-                                }
                             }
-                            // iftrue(Label_0135:, !"base16".equals((Object)k))
                             catch (NoSuchAlgorithmException ex) {
                                 bh.w("Hash: unknown algorithm: " + (String)i);
                                 return dh.lT();

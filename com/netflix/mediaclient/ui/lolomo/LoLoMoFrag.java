@@ -6,9 +6,6 @@ package com.netflix.mediaclient.ui.lolomo;
 
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.android.app.LoadingStatus;
-import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
-import android.database.DataSetObserver;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.graphics.drawable.Drawable;
 import android.view.ViewGroup;
@@ -19,6 +16,8 @@ import com.netflix.mediaclient.ui.kids.lolomo.SkidmarkLoLoMoAdapter;
 import com.netflix.mediaclient.servicemgr.LoMo;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsLomoDetailAdapter;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsGenreWrapper;
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+import android.database.DataSetObserver;
 import android.app.Activity;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
@@ -35,6 +34,7 @@ import java.util.HashMap;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
 import java.util.Map;
 import android.widget.AbsListView$RecyclerListener;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper;
@@ -55,6 +55,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     private final ErrorWrapper.Callback leCallback;
     private LoadingAndErrorWrapper leWrapper;
     private StickyListHeadersListView listView;
+    private ServiceManager manager;
     private final AbsListView$RecyclerListener recycleListener;
     private final Map<String, Object> stateMap;
     private ViewRecycler viewRecycler;
@@ -111,6 +112,27 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         return (View)textView;
     }
     
+    private void handleInitIfReady() {
+        if (this.getActivity() == null) {
+            Log.d("LoLoMoFrag", "Activity is null - can't continue init");
+            return;
+        }
+        if (this.manager == null || !this.manager.isReady()) {
+            Log.d("LoLoMoFrag", "Manager not available - can't continue init");
+            return;
+        }
+        this.addKidsEntryHeaderIfNecessary(this.listView);
+        if (this.adapter != null && this.focusHandler != null) {
+            this.adapter.unregisterDataSetObserver((DataSetObserver)this.focusHandler);
+        }
+        this.adapter = this.createAdapter();
+        if (this.focusHandler != null) {
+            this.adapter.registerDataSetObserver((DataSetObserver)this.focusHandler);
+        }
+        this.listView.setAdapter(this.adapter);
+        this.adapter.onManagerReady(this.manager, 0);
+    }
+    
     protected ILoLoMoAdapter createAdapter() {
         if (this.getNetflixActivity() == null) {
             Log.w("LoLoMoFrag", "createAdapter(): activity is null - should not happen");
@@ -163,6 +185,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
             Log.v("LoLoMoFrag", "Clearing all frag state");
             this.stateMap.clear();
         }
+        this.handleInitIfReady();
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
@@ -172,7 +195,6 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         this.listView.setDivider(null);
         this.listView.setFocusable(false);
         ViewUtils.addActionBarPaddingView(this.listView);
-        this.addKidsEntryHeaderIfNecessary(this.listView);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.leCallback);
         return inflate;
     }
@@ -186,14 +208,14 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     }
     
     @Override
-    public void onManagerReady(final ServiceManager serviceManager, final int n) {
+    public void onManagerReady(final ServiceManager manager, final int n) {
         Log.v("LoLoMoFrag", "onManagerReady");
-        this.adapter = this.createAdapter();
-        if (this.focusHandler != null) {
-            this.adapter.registerDataSetObserver((DataSetObserver)this.focusHandler);
+        this.manager = manager;
+        if (n != 0) {
+            Log.w("LoLoMoFrag", "Manager status code not okay");
+            return;
         }
-        this.listView.setAdapter(this.adapter);
-        this.adapter.onManagerReady(serviceManager, n);
+        this.handleInitIfReady();
     }
     
     @Override

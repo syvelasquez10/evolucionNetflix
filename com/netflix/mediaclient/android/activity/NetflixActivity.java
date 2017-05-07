@@ -440,6 +440,8 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
             if (!b) {
                 break Label_0098;
             }
+            final String s2;
+            Block_10_Outer:Block_9_Outer:
             while (true) {
                 try {
                     if (Log.isLoggable("NetflixActivity", 3)) {
@@ -447,19 +449,24 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
                     }
                     this.displayDialog(dialog);
                     return;
+                    // iftrue(Label_0150:, !Log.isLoggable("NetflixActivity", 3))
                     while (true) {
-                        this.displayDialog(dialog);
-                        return;
-                        Log.d("NetflixActivity", "displayUserAgentDialog " + s);
+                        while (true) {
+                            while (true) {
+                                this.displayDialog(dialog);
+                                return;
+                                Log.d("NetflixActivity", "displayUserAgentDialog " + s);
+                                continue Block_10_Outer;
+                            }
+                            continue Block_9_Outer;
+                        }
                         continue;
                     }
                 }
                 // iftrue(Label_0165:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
-                // iftrue(Label_0150:, !Log.isLoggable("NetflixActivity", 3))
                 finally {
                 }
                 // monitorexit(visibleDialogLock)
-                final String s2;
                 Label_0165: {
                     if (this.getVisibleDialog() == null) {
                         if (Log.isLoggable("NetflixActivity", 3)) {
