@@ -10,7 +10,6 @@ import java.util.concurrent.BlockingQueue;
 
 public class NetworkDispatcher extends Thread
 {
-    private static final String NETWORK_REQUEST_BLOCKED_TAG = "RequestQueue_Blocked";
     private final Cache mCache;
     private final ResponseDelivery mDelivery;
     private final Network mNetwork;

@@ -656,7 +656,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     public boolean shouldUseLegacyBrowseVolleyClient() {
-        return true;
+        return this.mAccountConfigOverride.shouldUseLegacyBrowseVolleyClient();
     }
     
     @Override

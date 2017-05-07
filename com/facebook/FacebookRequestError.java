@@ -12,38 +12,10 @@ import java.net.HttpURLConnection;
 
 public final class FacebookRequestError
 {
-    private static final String BODY_KEY = "body";
-    private static final String CODE_KEY = "code";
-    private static final int EC_APP_NOT_INSTALLED = 458;
-    private static final int EC_APP_TOO_MANY_CALLS = 4;
-    private static final int EC_EXPIRED = 463;
-    private static final int EC_INVALID_SESSION = 102;
-    private static final int EC_INVALID_TOKEN = 190;
-    private static final int EC_PASSWORD_CHANGED = 460;
-    private static final int EC_PERMISSION_DENIED = 10;
     private static final FacebookRequestError$Range EC_RANGE_PERMISSION;
-    private static final int EC_SERVICE_UNAVAILABLE = 2;
-    private static final int EC_UNCONFIRMED_USER = 464;
-    private static final int EC_UNKNOWN_ERROR = 1;
-    private static final int EC_USER_CHECKPOINTED = 459;
-    private static final int EC_USER_TOO_MANY_CALLS = 17;
-    private static final String ERROR_CODE_FIELD_KEY = "code";
-    private static final String ERROR_CODE_KEY = "error_code";
-    private static final String ERROR_IS_TRANSIENT_KEY = "is_transient";
-    private static final String ERROR_KEY = "error";
-    private static final String ERROR_MESSAGE_FIELD_KEY = "message";
-    private static final String ERROR_MSG_KEY = "error_msg";
-    private static final String ERROR_REASON_KEY = "error_reason";
-    private static final String ERROR_SUB_CODE_KEY = "error_subcode";
-    private static final String ERROR_TYPE_FIELD_KEY = "type";
-    private static final String ERROR_USER_MSG_KEY = "error_user_msg";
-    private static final String ERROR_USER_TITLE_KEY = "error_user_title";
     private static final FacebookRequestError$Range HTTP_RANGE_CLIENT_ERROR;
     private static final FacebookRequestError$Range HTTP_RANGE_SERVER_ERROR;
     private static final FacebookRequestError$Range HTTP_RANGE_SUCCESS;
-    public static final int INVALID_ERROR_CODE = -1;
-    public static final int INVALID_HTTP_STATUS_CODE = -1;
-    private static final int INVALID_MESSAGE_ID = 0;
     private final Object batchRequestResult;
     private final FacebookRequestError$Category category;
     private final HttpURLConnection connection;
@@ -254,24 +226,8 @@ public final class FacebookRequestError
         return null;
     }
     
-    public Object getBatchRequestResult() {
-        return this.batchRequestResult;
-    }
-    
-    public FacebookRequestError$Category getCategory() {
-        return this.category;
-    }
-    
-    public HttpURLConnection getConnection() {
-        return this.connection;
-    }
-    
     public int getErrorCode() {
         return this.errorCode;
-    }
-    
-    public boolean getErrorIsTransient() {
-        return this.errorIsTransient;
     }
     
     public String getErrorMessage() {
@@ -285,40 +241,12 @@ public final class FacebookRequestError
         return this.errorType;
     }
     
-    public String getErrorUserMessage() {
-        return this.errorUserMessage;
-    }
-    
-    public String getErrorUserTitle() {
-        return this.errorUserTitle;
-    }
-    
     public FacebookException getException() {
         return this.exception;
     }
     
-    public JSONObject getRequestResult() {
-        return this.requestResult;
-    }
-    
-    public JSONObject getRequestResultBody() {
-        return this.requestResultBody;
-    }
-    
     public int getRequestStatusCode() {
         return this.requestStatusCode;
-    }
-    
-    public int getSubErrorCode() {
-        return this.subErrorCode;
-    }
-    
-    public int getUserActionMessageId() {
-        return this.userActionMessageId;
-    }
-    
-    public boolean shouldNotifyUser() {
-        return this.shouldNotifyUser;
     }
     
     @Override

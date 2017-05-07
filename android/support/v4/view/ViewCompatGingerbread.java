@@ -11,8 +11,4 @@ class ViewCompatGingerbread
     public static int getOverScrollMode(final View view) {
         return view.getOverScrollMode();
     }
-    
-    public static void setOverScrollMode(final View view, final int overScrollMode) {
-        view.setOverScrollMode(overScrollMode);
-    }
 }

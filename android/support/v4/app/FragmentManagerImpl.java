@@ -44,22 +44,10 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
 {
     static final Interpolator ACCELERATE_CUBIC;
     static final Interpolator ACCELERATE_QUINT;
-    static final int ANIM_DUR = 220;
-    public static final int ANIM_STYLE_CLOSE_ENTER = 3;
-    public static final int ANIM_STYLE_CLOSE_EXIT = 4;
-    public static final int ANIM_STYLE_FADE_ENTER = 5;
-    public static final int ANIM_STYLE_FADE_EXIT = 6;
-    public static final int ANIM_STYLE_OPEN_ENTER = 1;
-    public static final int ANIM_STYLE_OPEN_EXIT = 2;
-    static boolean DEBUG = false;
+    static boolean DEBUG;
     static final Interpolator DECELERATE_CUBIC;
     static final Interpolator DECELERATE_QUINT;
     static final boolean HONEYCOMB;
-    static final String TAG = "FragmentManager";
-    static final String TARGET_REQUEST_CODE_STATE_TAG = "android:target_req_state";
-    static final String TARGET_STATE_TAG = "android:target_state";
-    static final String USER_VISIBLE_HINT_TAG = "android:user_visible_hint";
-    static final String VIEW_STATE_TAG = "android:view_state";
     ArrayList<Fragment> mActive;
     FragmentActivity mActivity;
     ArrayList<Fragment> mAdded;
@@ -236,14 +224,6 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                 this.moveToState(fragment);
             }
         }
-    }
-    
-    @Override
-    public void addOnBackStackChangedListener(final FragmentManager$OnBackStackChangedListener fragmentManager$OnBackStackChangedListener) {
-        if (this.mBackStackChangeListeners == null) {
-            this.mBackStackChangeListeners = new ArrayList<FragmentManager$OnBackStackChangedListener>();
-        }
-        this.mBackStackChangeListeners.add(fragmentManager$OnBackStackChangedListener);
     }
     
     public int allocBackStackIndex(final BackStackRecord backStackRecord) {
@@ -520,7 +500,6 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         this.moveToState(3, false);
     }
     
-    @Override
     public void dump(final String s, final FileDescriptor fileDescriptor, final PrintWriter printWriter, final String[] array) {
         final int n = 0;
         final String string = s + "    ";
@@ -755,7 +734,6 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         return this.execPendingActions();
     }
     
-    @Override
     public Fragment findFragmentById(final int n) {
         if (this.mAdded != null) {
             for (int i = this.mAdded.size() - 1; i >= 0; --i) {
@@ -809,21 +787,6 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         return null;
     }
     
-    public Fragment findFragmentByWho(final String s) {
-        if (this.mActive != null && s != null) {
-            for (int i = this.mActive.size() - 1; i >= 0; --i) {
-                final Fragment fragment = this.mActive.get(i);
-                if (fragment != null) {
-                    final Fragment fragmentByWho = fragment.findFragmentByWho(s);
-                    if (fragmentByWho != null) {
-                        return fragmentByWho;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-    
     public void freeBackStackIndex(final int n) {
         synchronized (this) {
             this.mBackStackIndices.set(n, null);
@@ -837,20 +800,6 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         }
     }
     
-    @Override
-    public FragmentManager$BackStackEntry getBackStackEntryAt(final int n) {
-        return this.mBackStack.get(n);
-    }
-    
-    @Override
-    public int getBackStackEntryCount() {
-        if (this.mBackStack != null) {
-            return this.mBackStack.size();
-        }
-        return 0;
-    }
-    
-    @Override
     public Fragment getFragment(final Bundle bundle, final String s) {
         final int int1 = bundle.getInt(s, -1);
         Fragment fragment;
@@ -897,11 +846,6 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
             }
             fragment.onHiddenChanged(true);
         }
-    }
-    
-    @Override
-    public boolean isDestroyed() {
-        return this.mDestroyed;
     }
     
     Animation loadAnimation(final Fragment fragment, int n, final boolean b, final int n2) {
@@ -1069,7 +1013,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
             int n5 = n;
             int n6 = n;
             int n7 = n;
-            Label_0567: {
+            Label_0571: {
                 switch (fragment.mState) {
                     default: {
                         mState2 = n;
@@ -1120,7 +1064,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                         fragment.mRetaining = false;
                         n5 = n8;
                         if (!fragment.mFromLayout) {
-                            break Label_0567;
+                            break Label_0571;
                         }
                         fragment.mView = fragment.performCreateView(fragment.getLayoutInflater(fragment.mSavedFragmentState), null, fragment.mSavedFragmentState);
                         if (fragment.mView != null) {
@@ -1131,11 +1075,11 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                             }
                             fragment.onViewCreated(fragment.mView, fragment.mSavedFragmentState);
                             n5 = n8;
-                            break Label_0567;
+                            break Label_0571;
                         }
                         fragment.mInnerView = null;
                         n5 = n8;
-                        break Label_0567;
+                        break Label_0571;
                     }
                     case 1: {
                         if ((n6 = n5) > 1) {
@@ -1428,11 +1372,6 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     }
     
     @Override
-    public void popBackStack() {
-        this.enqueueAction(new FragmentManagerImpl$2(this), false);
-    }
-    
-    @Override
     public void popBackStack(final int n, final int n2) {
         if (n < 0) {
             throw new IllegalArgumentException("Bad id: " + n);
@@ -1440,33 +1379,10 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         this.enqueueAction(new FragmentManagerImpl$4(this, n, n2), false);
     }
     
-    @Override
-    public void popBackStack(final String s, final int n) {
-        this.enqueueAction(new FragmentManagerImpl$3(this, s, n), false);
-    }
-    
-    @Override
     public boolean popBackStackImmediate() {
         this.checkStateLoss();
         this.executePendingTransactions();
         return this.popBackStackState(this.mActivity.mHandler, null, -1, 0);
-    }
-    
-    @Override
-    public boolean popBackStackImmediate(final int n, final int n2) {
-        this.checkStateLoss();
-        this.executePendingTransactions();
-        if (n < 0) {
-            throw new IllegalArgumentException("Bad id: " + n);
-        }
-        return this.popBackStackState(this.mActivity.mHandler, null, n, n2);
-    }
-    
-    @Override
-    public boolean popBackStackImmediate(final String s, final int n) {
-        this.checkStateLoss();
-        this.executePendingTransactions();
-        return this.popBackStackState(this.mActivity.mHandler, s, -1, n);
     }
     
     boolean popBackStackState(final Handler handler, final String s, int i, int n) {
@@ -1555,7 +1471,6 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         return false;
     }
     
-    @Override
     public void putFragment(final Bundle bundle, final String s, final Fragment fragment) {
         if (fragment.mIndex < 0) {
             this.throwException(new IllegalStateException("Fragment " + fragment + " is not currently in the FragmentManager"));
@@ -1591,13 +1506,6 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                 n3 = 1;
             }
             this.moveToState(fragment, n3, n, n2, false);
-        }
-    }
-    
-    @Override
-    public void removeOnBackStackChangedListener(final FragmentManager$OnBackStackChangedListener fragmentManager$OnBackStackChangedListener) {
-        if (this.mBackStackChangeListeners != null) {
-            this.mBackStackChangeListeners.remove(fragmentManager$OnBackStackChangedListener);
         }
     }
     
@@ -1801,7 +1709,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
             }
             if (b) {
                 int[] mAdded = null;
-                Label_0561: {
+                Label_0563: {
                     if (this.mAdded != null) {
                         final int size2 = this.mAdded.size();
                         if (size2 > 0) {
@@ -1810,7 +1718,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                             while (true) {
                                 mAdded = array2;
                                 if (n >= size2) {
-                                    break Label_0561;
+                                    break Label_0563;
                                 }
                                 array2[n] = this.mAdded.get(n).mIndex;
                                 if (array2[n] < 0) {
@@ -1890,23 +1798,6 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
             bundle2.putBoolean("android:user_visible_hint", fragment.mUserVisibleHint);
         }
         return bundle2;
-    }
-    
-    @Override
-    public Fragment$SavedState saveFragmentInstanceState(final Fragment fragment) {
-        final Fragment$SavedState fragment$SavedState = null;
-        if (fragment.mIndex < 0) {
-            this.throwException(new IllegalStateException("Fragment " + fragment + " is not currently in the FragmentManager"));
-        }
-        Fragment$SavedState fragment$SavedState2 = fragment$SavedState;
-        if (fragment.mState > 0) {
-            final Bundle saveFragmentBasicState = this.saveFragmentBasicState(fragment);
-            fragment$SavedState2 = fragment$SavedState;
-            if (saveFragmentBasicState != null) {
-                fragment$SavedState2 = new Fragment$SavedState(saveFragmentBasicState);
-            }
-        }
-        return fragment$SavedState2;
     }
     
     void saveFragmentViewState(final Fragment fragment) {

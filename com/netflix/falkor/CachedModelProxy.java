@@ -4,6 +4,7 @@
 
 package com.netflix.falkor;
 
+import com.netflix.model.leafs.Video$Bookmark;
 import com.netflix.mediaclient.ui.Asset;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
@@ -2983,13 +2984,21 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
                     s = VideoType.MOVIE.getValue();
                 }
                 final FalkorVideo falkorVideo = (FalkorVideo)this.getVideo(PQL.create(s, asset.getPlayableId(), "bookmark"));
-                if (falkorVideo != null) {
-                    falkorVideo.getBookmark().setBookmarkPosition(playbackBookmark);
-                    falkorVideo.getBookmark().setLastModified(System.currentTimeMillis());
-                    return;
+                if (falkorVideo == null) {
+                    if (Log.isLoggable("CachedModelProxy", 5)) {
+                        Log.w("CachedModelProxy", "updateBookmarkPosition - video is null, id: " + asset.getPlayableId());
+                    }
                 }
-                if (Log.isLoggable("CachedModelProxy", 5)) {
-                    Log.w("CachedModelProxy", "updateBookmarkPosition - video is null, id: " + asset.getPlayableId());
+                else {
+                    final Video$Bookmark bookmark = falkorVideo.getBookmark();
+                    if (bookmark != null) {
+                        bookmark.setBookmarkPosition(playbackBookmark);
+                        bookmark.setLastModified(System.currentTimeMillis());
+                        return;
+                    }
+                    if (Log.isLoggable("CachedModelProxy", 5)) {
+                        Log.w("CachedModelProxy", "updateBookmarkPosition - bookmark is null, video id: " + asset.getPlayableId());
+                    }
                 }
             }
         }

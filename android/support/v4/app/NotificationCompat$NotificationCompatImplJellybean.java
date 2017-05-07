@@ -6,8 +6,6 @@ package android.support.v4.app;
 
 import java.util.Iterator;
 import android.os.Build$VERSION;
-import android.os.Bundle;
-import android.os.Parcelable;
 import java.util.ArrayList;
 import android.app.Notification;
 
@@ -19,50 +17,5 @@ class NotificationCompat$NotificationCompatImplJellybean extends NotificationCom
         addActionsToBuilder(notificationCompatJellybean$Builder, notificationCompat$Builder.mActions);
         addStyleToBuilderJellybean(notificationCompatJellybean$Builder, notificationCompat$Builder.mStyle);
         return notificationCompatJellybean$Builder.build();
-    }
-    
-    @Override
-    public NotificationCompat$Action getAction(final Notification notification, final int n) {
-        return (NotificationCompat$Action)NotificationCompatJellybean.getAction(notification, n, NotificationCompat$Action.FACTORY, RemoteInput.FACTORY);
-    }
-    
-    @Override
-    public int getActionCount(final Notification notification) {
-        return NotificationCompatJellybean.getActionCount(notification);
-    }
-    
-    @Override
-    public NotificationCompat$Action[] getActionsFromParcelableArrayList(final ArrayList<Parcelable> list) {
-        return (NotificationCompat$Action[])NotificationCompatJellybean.getActionsFromParcelableArrayList(list, NotificationCompat$Action.FACTORY, RemoteInput.FACTORY);
-    }
-    
-    @Override
-    public Bundle getExtras(final Notification notification) {
-        return NotificationCompatJellybean.getExtras(notification);
-    }
-    
-    @Override
-    public String getGroup(final Notification notification) {
-        return NotificationCompatJellybean.getGroup(notification);
-    }
-    
-    @Override
-    public boolean getLocalOnly(final Notification notification) {
-        return NotificationCompatJellybean.getLocalOnly(notification);
-    }
-    
-    @Override
-    public ArrayList<Parcelable> getParcelableArrayListForActions(final NotificationCompat$Action[] array) {
-        return NotificationCompatJellybean.getParcelableArrayListForActions(array);
-    }
-    
-    @Override
-    public String getSortKey(final Notification notification) {
-        return NotificationCompatJellybean.getSortKey(notification);
-    }
-    
-    @Override
-    public boolean isGroupSummary(final Notification notification) {
-        return NotificationCompatJellybean.isGroupSummary(notification);
     }
 }

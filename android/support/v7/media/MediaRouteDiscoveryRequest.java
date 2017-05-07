@@ -8,14 +8,8 @@ import android.os.Bundle;
 
 public final class MediaRouteDiscoveryRequest
 {
-    private static final String KEY_ACTIVE_SCAN = "activeScan";
-    private static final String KEY_SELECTOR = "selector";
     private final Bundle mBundle;
     private MediaRouteSelector mSelector;
-    
-    private MediaRouteDiscoveryRequest(final Bundle mBundle) {
-        this.mBundle = mBundle;
-    }
     
     public MediaRouteDiscoveryRequest(final MediaRouteSelector mSelector, final boolean b) {
         if (mSelector == null) {
@@ -34,13 +28,6 @@ public final class MediaRouteDiscoveryRequest
                 this.mSelector = MediaRouteSelector.EMPTY;
             }
         }
-    }
-    
-    public static MediaRouteDiscoveryRequest fromBundle(final Bundle bundle) {
-        if (bundle != null) {
-            return new MediaRouteDiscoveryRequest(bundle);
-        }
-        return null;
     }
     
     public Bundle asBundle() {

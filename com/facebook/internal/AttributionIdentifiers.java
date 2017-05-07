@@ -12,12 +12,7 @@ import android.net.Uri;
 
 public class AttributionIdentifiers
 {
-    private static final String ANDROID_ID_COLUMN_NAME = "androidid";
-    private static final String ATTRIBUTION_ID_COLUMN_NAME = "aid";
     private static final Uri ATTRIBUTION_ID_CONTENT_URI;
-    private static final int CONNECTION_RESULT_SUCCESS = 0;
-    private static final long IDENTIFIER_REFRESH_INTERVAL_MILLIS = 3600000L;
-    private static final String LIMIT_TRACKING_COLUMN_NAME = "limit_tracking";
     private static final String TAG;
     private static AttributionIdentifiers recentlyFetchedIdentifiers;
     private String androidAdvertiserId;

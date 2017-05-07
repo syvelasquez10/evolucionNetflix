@@ -4,7 +4,6 @@
 
 package android.support.v7.internal.widget;
 
-import android.support.annotation.NonNull;
 import android.graphics.Outline;
 
 class ActionBarBackgroundDrawableV21 extends ActionBarBackgroundDrawable
@@ -13,7 +12,7 @@ class ActionBarBackgroundDrawableV21 extends ActionBarBackgroundDrawable
         super(actionBarContainer);
     }
     
-    public void getOutline(@NonNull final Outline outline) {
+    public void getOutline(final Outline outline) {
         if (this.mContainer.mIsSplit) {
             if (this.mContainer.mSplitBackground != null) {
                 this.mContainer.mSplitBackground.getOutline(outline);

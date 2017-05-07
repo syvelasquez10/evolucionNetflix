@@ -37,10 +37,6 @@ public class EdgeEffectCompat
         return EdgeEffectCompat.IMPL.isFinished(this.mEdgeEffect);
     }
     
-    public boolean onAbsorb(final int n) {
-        return EdgeEffectCompat.IMPL.onAbsorb(this.mEdgeEffect, n);
-    }
-    
     public boolean onPull(final float n) {
         return EdgeEffectCompat.IMPL.onPull(this.mEdgeEffect, n);
     }

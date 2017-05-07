@@ -40,6 +40,6 @@ public class KidsSeasonSpinner extends RelativeLayout
     
     public void setSeasonNumber(final int n) {
         Log.v("KidsSeasonSpinner", "Setting curr season number: " + n);
-        this.spinner.setSelectionWithoutCallback(this.spinner.getSeasonIndexBySeasonNumber(n));
+        this.spinner.setSelectionWithoutCallback(this.spinner.tryGetSeasonIndexBySeasonNumber(n));
     }
 }

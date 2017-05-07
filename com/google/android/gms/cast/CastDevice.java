@@ -7,7 +7,6 @@ package com.google.android.gms.cast;
 import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Collections;
-import java.util.Iterator;
 import com.google.android.gms.internal.ik;
 import android.os.Bundle;
 import java.net.UnknownHostException;
@@ -118,49 +117,6 @@ public class CastDevice implements SafeParcelable
         return this.EU;
     }
     
-    public WebImage getIcon(final int n, final int n2) {
-        WebImage webImage = null;
-        if (this.EY.isEmpty()) {
-            return null;
-        }
-        if (n <= 0 || n2 <= 0) {
-            return this.EY.get(0);
-        }
-        final Iterator<WebImage> iterator = this.EY.iterator();
-        WebImage webImage2 = null;
-    Label_0127_Outer:
-        while (iterator.hasNext()) {
-            final WebImage webImage3 = iterator.next();
-            final int width = webImage3.getWidth();
-            final int height = webImage3.getHeight();
-            if (width >= n && height >= n2) {
-                if (webImage2 != null && (webImage2.getWidth() <= width || webImage2.getHeight() <= height)) {
-                    continue Label_0127_Outer;
-                }
-                webImage2 = webImage3;
-            }
-            else {
-                if (width >= n || height >= n2 || (webImage != null && (webImage.getWidth() >= width || webImage.getHeight() >= height))) {
-                    continue Label_0127_Outer;
-                }
-                webImage = webImage3;
-            }
-            while (true) {
-                continue Label_0127_Outer;
-                continue;
-            }
-        }
-        if (webImage2 == null) {
-            if (webImage != null) {
-                webImage2 = webImage;
-            }
-            else {
-                webImage2 = this.EY.get(0);
-            }
-        }
-        return webImage2;
-    }
-    
     public List<WebImage> getIcons() {
         return Collections.unmodifiableList((List<? extends WebImage>)this.EY);
     }
@@ -185,28 +141,12 @@ public class CastDevice implements SafeParcelable
         return this.BR;
     }
     
-    public boolean hasIcons() {
-        return !this.EY.isEmpty();
-    }
-    
     @Override
     public int hashCode() {
         if (this.ER == null) {
             return 0;
         }
         return this.ER.hashCode();
-    }
-    
-    public boolean isSameDevice(final CastDevice castDevice) {
-        if (castDevice != null) {
-            if (this.getDeviceId() != null) {
-                return ik.a(this.getDeviceId(), castDevice.getDeviceId());
-            }
-            if (castDevice.getDeviceId() == null) {
-                return true;
-            }
-        }
-        return false;
     }
     
     public void putInBundle(final Bundle bundle) {

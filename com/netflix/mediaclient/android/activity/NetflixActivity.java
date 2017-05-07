@@ -355,16 +355,14 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
                     this.displayDialog(dialog);
                     return;
                     while (true) {
-                        Log.d("NetflixActivity", "displayUserAgentDialog " + s);
-                        Label_0150: {
-                            this.displayDialog(dialog);
-                        }
+                        this.displayDialog(dialog);
                         return;
+                        Log.d("NetflixActivity", "displayUserAgentDialog " + s);
                         continue;
                     }
                 }
-                // iftrue(Label_0150:, !Log.isLoggable("NetflixActivity", 3))
                 // iftrue(Label_0165:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
+                // iftrue(Label_0150:, !Log.isLoggable("NetflixActivity", 3))
                 finally {
                 }
                 // monitorexit(visibleDialogLock)

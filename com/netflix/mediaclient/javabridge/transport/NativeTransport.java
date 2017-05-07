@@ -266,6 +266,7 @@ public class NativeTransport implements Transport
                 break Label_0084;
             }
             string = "nrdp";
+        Block_5_Outer:
             while (true) {
                 String s3 = s2;
                 if (s2 == null) {
@@ -274,17 +275,17 @@ public class NativeTransport implements Transport
                 try {
                     this.native_invokeMethod(string, s, s3);
                     return;
-                    // iftrue(Label_0106:, !string.startsWith("nrdp"))
-                    Block_5: {
-                        break Block_5;
-                        Label_0106: {
-                            string = "nrdp." + string;
-                        }
+                    Label_0106: {
+                        string = "nrdp." + string;
+                    }
+                    continue Block_5_Outer;
+                    while (true) {
+                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                        continue Block_5_Outer;
                         continue;
                     }
-                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                    continue;
                 }
+                // iftrue(Label_0106:, !string.startsWith("nrdp"))
                 catch (Throwable t) {
                     Log.w("nf-NativeTransport", "Failure in JNI. It may happend than NRDApp is null!", t);
                 }
@@ -305,19 +306,15 @@ public class NativeTransport implements Transport
             string = "nrdp";
             try {
                 // iftrue(Label_0093:, !string.startsWith("nrdp"))
-            Block_4_Outer:
                 while (true) {
                     this.native_setProperty(string, s, s2);
                     return;
-                    while (true) {
-                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                        continue Block_4_Outer;
-                        continue;
-                    }
+                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                    continue;
                     Label_0093: {
                         string = "nrdp." + string;
                     }
-                    continue Block_4_Outer;
+                    continue;
                 }
             }
             catch (Throwable t) {

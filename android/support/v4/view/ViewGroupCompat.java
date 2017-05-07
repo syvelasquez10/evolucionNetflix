@@ -4,16 +4,12 @@
 
 package android.support.v4.view;
 
-import android.view.accessibility.AccessibilityEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build$VERSION;
 
 public class ViewGroupCompat
 {
     static final ViewGroupCompat$ViewGroupCompatImpl IMPL;
-    public static final int LAYOUT_MODE_CLIP_BOUNDS = 0;
-    public static final int LAYOUT_MODE_OPTICAL_BOUNDS = 1;
     
     static {
         final int sdk_INT = Build$VERSION.SDK_INT;
@@ -36,27 +32,7 @@ public class ViewGroupCompat
         IMPL = new ViewGroupCompat$ViewGroupCompatStubImpl();
     }
     
-    public static int getLayoutMode(final ViewGroup viewGroup) {
-        return ViewGroupCompat.IMPL.getLayoutMode(viewGroup);
-    }
-    
-    public static boolean isTransitionGroup(final ViewGroup viewGroup) {
-        return ViewGroupCompat.IMPL.isTransitionGroup(viewGroup);
-    }
-    
-    public static boolean onRequestSendAccessibilityEvent(final ViewGroup viewGroup, final View view, final AccessibilityEvent accessibilityEvent) {
-        return ViewGroupCompat.IMPL.onRequestSendAccessibilityEvent(viewGroup, view, accessibilityEvent);
-    }
-    
-    public static void setLayoutMode(final ViewGroup viewGroup, final int n) {
-        ViewGroupCompat.IMPL.setLayoutMode(viewGroup, n);
-    }
-    
     public static void setMotionEventSplittingEnabled(final ViewGroup viewGroup, final boolean b) {
         ViewGroupCompat.IMPL.setMotionEventSplittingEnabled(viewGroup, b);
-    }
-    
-    public static void setTransitionGroup(final ViewGroup viewGroup, final boolean b) {
-        ViewGroupCompat.IMPL.setTransitionGroup(viewGroup, b);
     }
 }

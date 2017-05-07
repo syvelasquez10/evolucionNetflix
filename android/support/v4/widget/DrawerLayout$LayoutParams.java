@@ -4,14 +4,11 @@
 
 package android.support.v4.widget;
 
-import android.graphics.drawable.ColorDrawable;
-import android.support.v4.content.ContextCompat;
 import android.os.Parcelable;
 import android.view.View$MeasureSpec;
 import android.support.v4.view.KeyEventCompat;
 import android.view.KeyEvent;
 import android.support.v4.view.MotionEventCompat;
-import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
@@ -40,11 +37,6 @@ public class DrawerLayout$LayoutParams extends ViewGroup$MarginLayoutParams
     public DrawerLayout$LayoutParams(final int n, final int n2) {
         super(n, n2);
         this.gravity = 0;
-    }
-    
-    public DrawerLayout$LayoutParams(final int n, final int n2, final int gravity) {
-        this(n, n2);
-        this.gravity = gravity;
     }
     
     public DrawerLayout$LayoutParams(final Context context, final AttributeSet set) {

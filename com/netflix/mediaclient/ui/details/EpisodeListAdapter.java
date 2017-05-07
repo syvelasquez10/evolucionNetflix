@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.util.StringUtils;
 import java.util.Collection;
 import com.netflix.mediaclient.Log;
 import android.view.ViewGroup$LayoutParams;
@@ -77,6 +78,14 @@ public class EpisodeListAdapter extends BaseAdapter implements AdapterView$OnIte
         this.fetchMoreData();
     }
     
+    private void logEmptySeasonId(final SeasonDetails seasonDetails) {
+        if (seasonDetails == null) {
+            Log.v("EpisodeListAdapter", "No season details");
+            return;
+        }
+        this.activity.getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("For Show Id %s, the Current Season Details Id is empty - %s, see SPY-7455", ((EpisodeListFrag)this.episodeListFrag).getShowId(), seasonDetails.toString()));
+    }
+    
     private void onFetchError() {
         Log.d("EpisodeListAdapter", "Fetch error");
         this.hasError = true;
@@ -116,6 +125,10 @@ public class EpisodeListAdapter extends BaseAdapter implements AdapterView$OnIte
         final String id = this.currSeasonDetails.getId();
         if (Log.isLoggable("EpisodeListAdapter", 2)) {
             Log.v("EpisodeListAdapter", "Fetching data for: " + id + ", start: " + this.episodeStartIndex + ", end: " + n);
+        }
+        if (StringUtils.isEmpty(id)) {
+            this.logEmptySeasonId(this.currSeasonDetails);
+            return;
         }
         serviceManager.getBrowse().fetchEpisodes(id, VideoType.SEASON, this.episodeStartIndex, n, new EpisodeListAdapter$FetchEpisodesCallback(this, this.requestId, n - this.episodeStartIndex + 1));
     }

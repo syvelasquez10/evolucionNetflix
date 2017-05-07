@@ -4,11 +4,11 @@
 
 package android.support.v7.widget;
 
-import android.support.v7.internal.view.menu.ae;
+import android.support.v7.internal.view.menu.ad;
 import android.support.v7.internal.view.menu.i;
-import android.support.v7.internal.view.menu.z;
+import android.support.v7.internal.view.menu.y;
 
-class ActionMenuPresenter$PopupPresenterCallback implements z
+class ActionMenuPresenter$PopupPresenterCallback implements y
 {
     final /* synthetic */ ActionMenuPresenter this$0;
     
@@ -18,10 +18,10 @@ class ActionMenuPresenter$PopupPresenterCallback implements z
     
     @Override
     public void onCloseMenu(final i i, final boolean b) {
-        if (i instanceof ae) {
-            ((ae)i).q().b(false);
+        if (i instanceof ad) {
+            ((ad)i).p().a(false);
         }
-        final z callback = this.this$0.getCallback();
+        final y callback = this.this$0.getCallback();
         if (callback != null) {
             callback.onCloseMenu(i, b);
         }
@@ -32,8 +32,8 @@ class ActionMenuPresenter$PopupPresenterCallback implements z
         if (i == null) {
             return false;
         }
-        this.this$0.mOpenSubMenuId = ((ae)i).getItem().getItemId();
-        final z callback = this.this$0.getCallback();
+        this.this$0.mOpenSubMenuId = ((ad)i).getItem().getItemId();
+        final y callback = this.this$0.getCallback();
         return callback != null && callback.onOpenSubMenu(i);
     }
 }

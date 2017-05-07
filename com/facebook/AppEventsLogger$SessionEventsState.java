@@ -4,18 +4,11 @@
 
 package com.facebook;
 
-import java.util.Currency;
-import java.math.BigDecimal;
-import android.content.Intent;
-import android.content.ComponentName;
-import bolts.AppLinks;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import com.facebook.internal.Utility$FetchedAppSettings;
 import com.facebook.internal.Logger;
 import java.util.Set;
-import android.util.Log;
-import android.app.Activity;
 import com.facebook.internal.Validate;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
@@ -35,9 +28,6 @@ import java.util.List;
 
 class AppEventsLogger$SessionEventsState
 {
-    public static final String ENCODED_EVENTS_KEY = "encoded_events";
-    public static final String EVENT_COUNT_KEY = "event_count";
-    public static final String NUM_SKIPPED_KEY = "num_skipped";
     private final int MAX_ACCUMULATED_LOG_EVENTS;
     private List<AppEventsLogger$AppEvent> accumulatedEvents;
     private AttributionIdentifiers attributionIdentifiers;

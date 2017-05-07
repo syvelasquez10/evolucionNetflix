@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.util.StringUtils;
 import java.util.Collection;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;

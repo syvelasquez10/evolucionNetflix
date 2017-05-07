@@ -10,7 +10,7 @@ import android.os.Build$VERSION;
 import android.content.res.Configuration;
 import android.view.MenuItem;
 import android.support.v7.internal.view.menu.m;
-import android.support.v7.internal.view.menu.y;
+import android.support.v7.internal.view.menu.x;
 import android.view.Menu;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.ViewGroup$LayoutParams;
@@ -21,16 +21,13 @@ import android.util.AttributeSet;
 import android.support.v7.internal.view.menu.j;
 import android.support.v7.internal.view.menu.i;
 import android.content.Context;
+import android.support.v7.internal.view.menu.y;
 import android.support.v7.internal.view.menu.z;
 import android.support.v7.internal.view.menu.k;
-import android.support.v7.internal.view.menu.aa;
 
-public class ActionMenuView extends LinearLayoutCompat implements aa, k
+public class ActionMenuView extends LinearLayoutCompat implements k, z
 {
-    static final int GENERATED_ITEM_PADDING = 4;
-    static final int MIN_CELL_SIZE = 56;
-    private static final String TAG = "ActionMenuView";
-    private z mActionMenuPresenterCallback;
+    private y mActionMenuPresenterCallback;
     private Context mContext;
     private boolean mFormatItems;
     private int mFormatItemsWidth;
@@ -412,7 +409,7 @@ public class ActionMenuView extends LinearLayoutCompat implements aa, k
             (this.mMenu = new i(context)).a(new ActionMenuView$MenuBuilderCallback(this, null));
             (this.mPresenter = new ActionMenuPresenter(context)).setReserveOverflow(true);
             final ActionMenuPresenter mPresenter = this.mPresenter;
-            z mActionMenuPresenterCallback;
+            y mActionMenuPresenterCallback;
             if (this.mActionMenuPresenterCallback != null) {
                 mActionMenuPresenterCallback = this.mActionMenuPresenterCallback;
             }
@@ -424,15 +421,6 @@ public class ActionMenuView extends LinearLayoutCompat implements aa, k
             this.mPresenter.setMenuView(this);
         }
         return (Menu)this.mMenu;
-    }
-    
-    public int getPopupTheme() {
-        return this.mPopupTheme;
-    }
-    
-    @Override
-    public int getWindowAnimations() {
-        return 0;
     }
     
     protected boolean hasSupportDividerBeforeChildAt(final int n) {
@@ -652,7 +640,7 @@ public class ActionMenuView extends LinearLayoutCompat implements aa, k
         final int size = View$MeasureSpec.getSize(n);
         if (this.mFormatItems && this.mMenu != null && size != this.mFormatItemsWidth) {
             this.mFormatItemsWidth = size;
-            this.mMenu.c(true);
+            this.mMenu.b(true);
         }
         final int childCount = this.getChildCount();
         if (this.mFormatItems && childCount > 0) {
@@ -675,7 +663,7 @@ public class ActionMenuView extends LinearLayoutCompat implements aa, k
         this.mPresenter.setExpandedActionViewsExclusive(expandedActionViewsExclusive);
     }
     
-    public void setMenuCallbacks(final z mActionMenuPresenterCallback, final j mMenuBuilderCallback) {
+    public void setMenuCallbacks(final y mActionMenuPresenterCallback, final j mMenuBuilderCallback) {
         this.mActionMenuPresenterCallback = mActionMenuPresenterCallback;
         this.mMenuBuilderCallback = mMenuBuilderCallback;
     }

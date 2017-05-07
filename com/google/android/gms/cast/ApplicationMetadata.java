@@ -7,7 +7,6 @@ package com.google.android.gms.cast;
 import android.os.Parcel;
 import com.google.android.gms.common.internal.m;
 import com.google.android.gms.internal.ik;
-import java.util.Collection;
 import java.util.ArrayList;
 import android.net.Uri;
 import com.google.android.gms.common.images.WebImage;
@@ -44,10 +43,6 @@ public final class ApplicationMetadata implements SafeParcelable
         this.EB = eb;
         this.EC = ec;
         this.ED = ed;
-    }
-    
-    public boolean areNamespacesSupported(final List<String> list) {
-        return this.EB != null && this.EB.containsAll(list);
     }
     
     public int describeContents() {
@@ -95,10 +90,6 @@ public final class ApplicationMetadata implements SafeParcelable
     @Override
     public int hashCode() {
         return m.hashCode(this.BR, this.Ez, this.mName, this.EA, this.EB, this.EC, this.ED);
-    }
-    
-    public boolean isNamespaceSupported(final String s) {
-        return this.EB != null && this.EB.contains(s);
     }
     
     @Override

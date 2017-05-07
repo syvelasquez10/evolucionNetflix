@@ -9,18 +9,15 @@ import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
 import android.view.MenuItem;
 import android.support.v4.view.MenuItemCompat;
+import android.os.Parcelable;
 import android.support.v7.internal.widget.ViewUtils;
-import android.text.Layout;
 import android.support.v7.internal.widget.DecorToolbar;
-import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.support.v7.app.ActionBar$LayoutParams;
 import android.content.res.TypedArray;
 import android.view.ContextThemeWrapper;
 import android.view.View$MeasureSpec;
 import android.os.Build$VERSION;
-import android.support.v7.internal.view.SupportMenuInflater;
-import android.view.MenuInflater;
 import android.support.v4.view.MarginLayoutParamsCompat;
 import android.view.ViewGroup$MarginLayoutParams;
 import android.view.View$OnClickListener;
@@ -41,20 +38,18 @@ import android.widget.ImageView;
 import android.support.v7.internal.widget.RtlSpacingHelper;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageButton;
-import android.support.v7.internal.view.menu.z;
-import android.support.v7.internal.view.menu.ae;
-import android.os.Parcelable;
-import android.content.Context;
-import android.support.v7.internal.view.menu.aa;
+import android.support.v7.internal.view.menu.y;
 import android.view.ViewGroup;
+import android.support.v7.internal.view.menu.ad;
+import android.content.Context;
 import android.view.ViewGroup$LayoutParams;
 import android.view.View;
 import android.support.v7.view.CollapsibleActionView;
 import android.support.v7.internal.view.menu.i;
 import android.support.v7.internal.view.menu.m;
-import android.support.v7.internal.view.menu.y;
+import android.support.v7.internal.view.menu.x;
 
-class Toolbar$ExpandedActionViewMenuPresenter implements y
+class Toolbar$ExpandedActionViewMenuPresenter implements x
 {
     m mCurrentExpandedItem;
     i mMenu;
@@ -109,16 +104,6 @@ class Toolbar$ExpandedActionViewMenuPresenter implements y
     }
     
     @Override
-    public int getId() {
-        return 0;
-    }
-    
-    @Override
-    public aa getMenuView(final ViewGroup viewGroup) {
-        return null;
-    }
-    
-    @Override
     public void initForMenu(final Context context, final i mMenu) {
         if (this.mMenu != null && this.mCurrentExpandedItem != null) {
             this.mMenu.d(this.mCurrentExpandedItem);
@@ -131,21 +116,8 @@ class Toolbar$ExpandedActionViewMenuPresenter implements y
     }
     
     @Override
-    public void onRestoreInstanceState(final Parcelable parcelable) {
-    }
-    
-    @Override
-    public Parcelable onSaveInstanceState() {
-        return null;
-    }
-    
-    @Override
-    public boolean onSubMenuSelected(final ae ae) {
+    public boolean onSubMenuSelected(final ad ad) {
         return false;
-    }
-    
-    @Override
-    public void setCallback(final z z) {
     }
     
     @Override

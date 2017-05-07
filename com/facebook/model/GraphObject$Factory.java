@@ -383,20 +383,6 @@ public final class GraphObject$Factory
         }
     }
     
-    public static boolean hasSameId(final GraphObject graphObject, final GraphObject graphObject2) {
-        if (graphObject != null && graphObject2 != null && graphObject.asMap().containsKey("id") && graphObject2.asMap().containsKey("id")) {
-            if (graphObject.equals(graphObject2)) {
-                return true;
-            }
-            final Object property = graphObject.getProperty("id");
-            final Object property2 = graphObject2.getProperty("id");
-            if (property != null && property2 != null && property instanceof String && property2 instanceof String) {
-                return property.equals(property2);
-            }
-        }
-        return false;
-    }
-    
     private static <T extends GraphObject> void recordClassHasBeenVerified(final Class<T> clazz) {
         synchronized (GraphObject$Factory.class) {
             GraphObject$Factory.verifiedGraphObjectClasses.add(clazz);

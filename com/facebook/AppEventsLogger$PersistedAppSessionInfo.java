@@ -4,11 +4,6 @@
 
 package com.facebook;
 
-import java.util.Currency;
-import java.math.BigDecimal;
-import android.content.Intent;
-import android.content.ComponentName;
-import bolts.AppLinks;
 import org.json.JSONException;
 import org.json.JSONArray;
 import com.facebook.internal.AttributionIdentifiers;
@@ -18,8 +13,6 @@ import com.facebook.model.GraphObject;
 import com.facebook.internal.Logger;
 import java.util.ArrayList;
 import java.util.Set;
-import android.util.Log;
-import android.app.Activity;
 import java.util.List;
 import java.util.Iterator;
 import com.facebook.internal.Utility;
@@ -32,7 +25,6 @@ import java.util.Map;
 
 class AppEventsLogger$PersistedAppSessionInfo
 {
-    private static final String PERSISTED_SESSION_INFO_FILENAME = "AppEventsLogger.persistedsessioninfo";
     private static final Runnable appSessionInfoFlushRunnable;
     private static Map<AppEventsLogger$AccessTokenAppIdPair, FacebookTimeSpentData> appSessionInfoMap;
     private static boolean hasChanges;
@@ -59,13 +51,6 @@ class AppEventsLogger$PersistedAppSessionInfo
     static void onResume(final Context context, final AppEventsLogger$AccessTokenAppIdPair appEventsLogger$AccessTokenAppIdPair, final AppEventsLogger appEventsLogger, final long n, final String s) {
         synchronized (AppEventsLogger$PersistedAppSessionInfo.staticLock) {
             getTimeSpentData(context, appEventsLogger$AccessTokenAppIdPair).onResume(appEventsLogger, n, s);
-            onTimeSpentDataUpdate();
-        }
-    }
-    
-    static void onSuspend(final Context context, final AppEventsLogger$AccessTokenAppIdPair appEventsLogger$AccessTokenAppIdPair, final AppEventsLogger appEventsLogger, final long n) {
-        synchronized (AppEventsLogger$PersistedAppSessionInfo.staticLock) {
-            getTimeSpentData(context, appEventsLogger$AccessTokenAppIdPair).onSuspend(appEventsLogger, n);
             onTimeSpentDataUpdate();
         }
     }

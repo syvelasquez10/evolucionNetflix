@@ -5,23 +5,18 @@
 package android.support.v7.internal.view.menu;
 
 import android.view.MenuItem;
-import android.view.MenuItem$OnActionExpandListener;
-import android.support.v4.view.MenuItemCompat$OnActionExpandListener;
+import android.view.MenuItem$OnMenuItemClickListener;
 
-class s extends f<MenuItemCompat$OnActionExpandListener> implements MenuItem$OnActionExpandListener
+class s extends f<MenuItem$OnMenuItemClickListener> implements MenuItem$OnMenuItemClickListener
 {
     final /* synthetic */ o b;
     
-    s(final o b, final MenuItemCompat$OnActionExpandListener menuItemCompat$OnActionExpandListener) {
+    s(final o b, final MenuItem$OnMenuItemClickListener menuItem$OnMenuItemClickListener) {
         this.b = b;
-        super(menuItemCompat$OnActionExpandListener);
+        super(menuItem$OnMenuItemClickListener);
     }
     
-    public boolean onMenuItemActionCollapse(final MenuItem menuItem) {
-        return ((MenuItemCompat$OnActionExpandListener)this.a).onMenuItemActionCollapse((MenuItem)this.b.a(menuItem));
-    }
-    
-    public boolean onMenuItemActionExpand(final MenuItem menuItem) {
-        return ((MenuItemCompat$OnActionExpandListener)this.a).onMenuItemActionExpand((MenuItem)this.b.a(menuItem));
+    public boolean onMenuItemClick(final MenuItem menuItem) {
+        return ((MenuItem$OnMenuItemClickListener)this.a).onMenuItemClick((MenuItem)this.b.a(menuItem));
     }
 }

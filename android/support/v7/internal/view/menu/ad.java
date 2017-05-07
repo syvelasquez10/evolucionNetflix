@@ -4,126 +4,118 @@
 
 package android.support.v7.internal.view.menu;
 
-import android.view.KeyEvent;
-import android.view.SubMenu;
-import android.content.Intent;
-import android.content.ComponentName;
-import android.view.MenuItem;
-import android.support.v4.internal.view.SupportMenu;
+import android.view.View;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.content.Context;
+import android.view.SubMenu;
 
-class ad extends e<Menu> implements SupportMenu
+public class ad extends i implements SubMenu
 {
-    ad(final Menu menu) {
-        super(menu);
+    private i d;
+    private m e;
+    
+    public ad(final Context context, final i d, final m e) {
+        super(context);
+        this.d = d;
+        this.e = e;
     }
     
-    public MenuItem add(final int n) {
-        return (MenuItem)this.a(((Menu)this.a).add(n));
-    }
-    
-    public MenuItem add(final int n, final int n2, final int n3, final int n4) {
-        return (MenuItem)this.a(((Menu)this.a).add(n, n2, n3, n4));
-    }
-    
-    public MenuItem add(final int n, final int n2, final int n3, final CharSequence charSequence) {
-        return (MenuItem)this.a(((Menu)this.a).add(n, n2, n3, charSequence));
-    }
-    
-    public MenuItem add(final CharSequence charSequence) {
-        return (MenuItem)this.a(((Menu)this.a).add(charSequence));
-    }
-    
-    public int addIntentOptions(int i, int addIntentOptions, int length, final ComponentName componentName, final Intent[] array, final Intent intent, final int n, final MenuItem[] array2) {
-        MenuItem[] array3 = null;
-        if (array2 != null) {
-            array3 = new MenuItem[array2.length];
+    public String a() {
+        int itemId;
+        if (this.e != null) {
+            itemId = this.e.getItemId();
         }
-        addIntentOptions = ((Menu)this.a).addIntentOptions(i, addIntentOptions, length, componentName, array, intent, n, array3);
-        if (array3 != null) {
-            for (i = 0, length = array3.length; i < length; ++i) {
-                array2[i] = (MenuItem)this.a(array3[i]);
-            }
+        else {
+            itemId = 0;
         }
-        return addIntentOptions;
+        if (itemId == 0) {
+            return null;
+        }
+        return super.a() + ":" + itemId;
     }
     
-    public SubMenu addSubMenu(final int n) {
-        return this.a(((Menu)this.a).addSubMenu(n));
+    @Override
+    public void a(final j j) {
+        this.d.a(j);
     }
     
-    public SubMenu addSubMenu(final int n, final int n2, final int n3, final int n4) {
-        return this.a(((Menu)this.a).addSubMenu(n, n2, n3, n4));
+    @Override
+    boolean a(final i i, final MenuItem menuItem) {
+        return super.a(i, menuItem) || this.d.a(i, menuItem);
     }
     
-    public SubMenu addSubMenu(final int n, final int n2, final int n3, final CharSequence charSequence) {
-        return this.a(((Menu)this.a).addSubMenu(n, n2, n3, charSequence));
+    public boolean b() {
+        return this.d.b();
     }
     
-    public SubMenu addSubMenu(final CharSequence charSequence) {
-        return this.a(((Menu)this.a).addSubMenu(charSequence));
+    @Override
+    public boolean c() {
+        return this.d.c();
     }
     
-    public void clear() {
-        this.a();
-        ((Menu)this.a).clear();
+    @Override
+    public boolean c(final m m) {
+        return this.d.c(m);
     }
     
-    public void close() {
-        ((Menu)this.a).close();
+    @Override
+    public boolean d(final m m) {
+        return this.d.d(m);
     }
     
-    public MenuItem findItem(final int n) {
-        return (MenuItem)this.a(((Menu)this.a).findItem(n));
+    public MenuItem getItem() {
+        return (MenuItem)this.e;
     }
     
-    public MenuItem getItem(final int n) {
-        return (MenuItem)this.a(((Menu)this.a).getItem(n));
+    @Override
+    public i p() {
+        return this.d;
     }
     
-    public boolean hasVisibleItems() {
-        return ((Menu)this.a).hasVisibleItems();
+    public Menu s() {
+        return (Menu)this.d;
     }
     
-    public boolean isShortcutKey(final int n, final KeyEvent keyEvent) {
-        return ((Menu)this.a).isShortcutKey(n, keyEvent);
+    public SubMenu setHeaderIcon(final int n) {
+        super.a(ContextCompat.getDrawable(this.e(), n));
+        return (SubMenu)this;
     }
     
-    public boolean performIdentifierAction(final int n, final int n2) {
-        return ((Menu)this.a).performIdentifierAction(n, n2);
+    public SubMenu setHeaderIcon(final Drawable drawable) {
+        super.a(drawable);
+        return (SubMenu)this;
     }
     
-    public boolean performShortcut(final int n, final KeyEvent keyEvent, final int n2) {
-        return ((Menu)this.a).performShortcut(n, keyEvent, n2);
+    public SubMenu setHeaderTitle(final int n) {
+        super.a(this.e().getResources().getString(n));
+        return (SubMenu)this;
     }
     
-    public void removeGroup(final int n) {
-        this.a(n);
-        ((Menu)this.a).removeGroup(n);
+    public SubMenu setHeaderTitle(final CharSequence charSequence) {
+        super.a(charSequence);
+        return (SubMenu)this;
     }
     
-    public void removeItem(final int n) {
-        this.b(n);
-        ((Menu)this.a).removeItem(n);
+    public SubMenu setHeaderView(final View view) {
+        super.a(view);
+        return (SubMenu)this;
     }
     
-    public void setGroupCheckable(final int n, final boolean b, final boolean b2) {
-        ((Menu)this.a).setGroupCheckable(n, b, b2);
+    public SubMenu setIcon(final int icon) {
+        this.e.setIcon(icon);
+        return (SubMenu)this;
     }
     
-    public void setGroupEnabled(final int n, final boolean b) {
-        ((Menu)this.a).setGroupEnabled(n, b);
+    public SubMenu setIcon(final Drawable icon) {
+        this.e.setIcon(icon);
+        return (SubMenu)this;
     }
     
-    public void setGroupVisible(final int n, final boolean b) {
-        ((Menu)this.a).setGroupVisible(n, b);
-    }
-    
+    @Override
     public void setQwertyMode(final boolean qwertyMode) {
-        ((Menu)this.a).setQwertyMode(qwertyMode);
-    }
-    
-    public int size() {
-        return ((Menu)this.a).size();
+        this.d.setQwertyMode(qwertyMode);
     }
 }

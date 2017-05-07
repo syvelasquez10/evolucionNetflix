@@ -14,8 +14,6 @@ import java.util.AbstractMap;
 public final class StringMap<V> extends AbstractMap<String, V>
 {
     private static final Entry[] EMPTY_TABLE;
-    private static final int MAXIMUM_CAPACITY = 1073741824;
-    private static final int MINIMUM_CAPACITY = 4;
     private static final int seed;
     private Set<Entry<String, V>> entrySet;
     private StringMap$LinkedEntry<V> header;

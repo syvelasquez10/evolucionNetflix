@@ -12,9 +12,7 @@ import java.io.Closeable;
 
 public class JsonReader implements Closeable
 {
-    private static final String FALSE = "false";
     private static final char[] NON_EXECUTE_PREFIX;
-    private static final String TRUE = "true";
     private final char[] buffer;
     private int bufferStartColumn;
     private int bufferStartLine;

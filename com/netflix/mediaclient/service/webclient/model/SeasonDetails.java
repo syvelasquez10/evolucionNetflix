@@ -69,4 +69,9 @@ public class SeasonDetails implements com.netflix.mediaclient.servicemgr.model.d
         }
         return this.detail.getYear();
     }
+    
+    @Override
+    public String toString() {
+        return "SeasonDetails [getId()=" + this.getId() + ", getTitle()=" + this.getTitle() + ", getType()=" + this.getType() + ", getSeasonNumber()=" + this.getSeasonNumber() + ", getNumOfEpisodes()=" + this.getNumOfEpisodes() + ", getCurrentEpisodeNumber()=" + this.getCurrentEpisodeNumber() + ", getYear()=" + this.getYear() + "]";
+    }
 }

@@ -4,19 +4,17 @@
 
 package android.support.v7.internal.view.menu;
 
+import android.support.v4.view.ActionProvider;
 import android.view.MenuItem;
-import android.view.MenuItem$OnMenuItemClickListener;
 
-class t extends f<MenuItem$OnMenuItemClickListener> implements MenuItem$OnMenuItemClickListener
+class t extends o
 {
-    final /* synthetic */ o b;
-    
-    t(final o b, final MenuItem$OnMenuItemClickListener menuItem$OnMenuItemClickListener) {
-        this.b = b;
-        super(menuItem$OnMenuItemClickListener);
+    t(final MenuItem menuItem) {
+        super(menuItem, false);
     }
     
-    public boolean onMenuItemClick(final MenuItem menuItem) {
-        return ((MenuItem$OnMenuItemClickListener)this.a).onMenuItemClick((MenuItem)this.b.a(menuItem));
+    @Override
+    p a(final ActionProvider actionProvider) {
+        return new u(this, actionProvider);
     }
 }

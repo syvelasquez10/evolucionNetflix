@@ -299,16 +299,6 @@ public class JsonWriter implements Closeable, Flushable
         this.serializeNulls = serializeNulls;
     }
     
-    public JsonWriter value(final double n) {
-        if (Double.isNaN(n) || Double.isInfinite(n)) {
-            throw new IllegalArgumentException("Numeric values must be finite, but was " + n);
-        }
-        this.writeDeferredName();
-        this.beforeValue(false);
-        this.out.append((CharSequence)Double.toString(n));
-        return this;
-    }
-    
     public JsonWriter value(final long n) {
         this.writeDeferredName();
         this.beforeValue(false);

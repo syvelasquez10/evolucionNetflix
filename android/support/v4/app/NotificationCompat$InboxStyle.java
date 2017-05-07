@@ -13,25 +13,4 @@ public class NotificationCompat$InboxStyle extends NotificationCompat$Style
     public NotificationCompat$InboxStyle() {
         this.mTexts = new ArrayList<CharSequence>();
     }
-    
-    public NotificationCompat$InboxStyle(final NotificationCompat$Builder builder) {
-        this.mTexts = new ArrayList<CharSequence>();
-        this.setBuilder(builder);
-    }
-    
-    public NotificationCompat$InboxStyle addLine(final CharSequence charSequence) {
-        this.mTexts.add(NotificationCompat$Builder.limitCharSequenceLength(charSequence));
-        return this;
-    }
-    
-    public NotificationCompat$InboxStyle setBigContentTitle(final CharSequence charSequence) {
-        this.mBigContentTitle = NotificationCompat$Builder.limitCharSequenceLength(charSequence);
-        return this;
-    }
-    
-    public NotificationCompat$InboxStyle setSummaryText(final CharSequence charSequence) {
-        this.mSummaryText = NotificationCompat$Builder.limitCharSequenceLength(charSequence);
-        this.mSummaryTextSet = true;
-        return this;
-    }
 }

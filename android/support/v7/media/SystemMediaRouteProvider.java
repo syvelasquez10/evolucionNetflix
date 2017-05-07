@@ -10,10 +10,6 @@ import android.content.Context;
 
 abstract class SystemMediaRouteProvider extends MediaRouteProvider
 {
-    public static final String DEFAULT_ROUTE_ID = "DEFAULT_ROUTE";
-    public static final String PACKAGE_NAME = "android";
-    private static final String TAG = "SystemMediaRouteProvider";
-    
     protected SystemMediaRouteProvider(final Context context) {
         super(context, new MediaRouteProvider$ProviderMetadata(new ComponentName("android", SystemMediaRouteProvider.class.getName())));
     }

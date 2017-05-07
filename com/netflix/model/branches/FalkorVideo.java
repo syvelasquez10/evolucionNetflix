@@ -17,6 +17,7 @@ import com.netflix.mediaclient.servicemgr.model.IconFontGlyph;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.model.leafs.Episode$Detail;
+import com.netflix.falkor.Sentinel;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.netflix.falkor.BranchNode;
@@ -120,11 +121,11 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
         if (this.episodes == null) {
             return null;
         }
-        final Ref ref = (Ref)this.episodes.get("current");
-        if (ref == null) {
+        final Object value = this.episodes.get("current");
+        if (value == null || value instanceof Sentinel) {
             return null;
         }
-        return (FalkorEpisode)ref.getValue(this.getModelProxy());
+        return (FalkorEpisode)((Ref)value).getValue(this.getModelProxy());
     }
     
     private Episode$Detail getCurrentEpisodeDetail() {
@@ -651,11 +652,27 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     
     @Override
     public List<PostPlayContext> getPostPlayContexts() {
+        if (this.getType() == null) {
+            Log.w("FalkorVideo", "Can't get post play contexts because video type is null");
+            return null;
+        }
+        if (this.getId() == null) {
+            Log.w("FalkorVideo", "Can't get post play contexts because video ID is null");
+            return null;
+        }
         return this.proxy.getItemsAsList(PQL.create(this.getType().getValue(), this.getId(), "postplay", PQL.range(2), "postplayContext"));
     }
     
     @Override
     public List<PostPlayVideo> getPostPlayVideos() {
+        if (this.getType() == null) {
+            Log.w("FalkorVideo", "Can't get post play videos because video type is null");
+            return null;
+        }
+        if (this.getId() == null) {
+            Log.w("FalkorVideo", "Can't get post play videos because video ID is null");
+            return null;
+        }
         return this.proxy.getItemsAsList(PQL.create(this.getType().getValue(), this.getId(), "postplay", PQL.range(2), "videoRef", "summary"));
     }
     

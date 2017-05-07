@@ -4,9 +4,6 @@
 
 package com.google.android.gms.common.api;
 
-import android.support.v4.app.FragmentActivity;
-import java.util.concurrent.TimeUnit;
-import android.app.PendingIntent;
 import android.os.DeadObjectException;
 import android.util.Log;
 import com.google.android.gms.common.internal.n;

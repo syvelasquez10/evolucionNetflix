@@ -9,7 +9,6 @@ import android.content.Intent;
 
 abstract class AuthorizationClient$KatanaAuthHandler extends AuthorizationClient$AuthHandler
 {
-    private static final long serialVersionUID = 1L;
     final /* synthetic */ AuthorizationClient this$0;
     
     AuthorizationClient$KatanaAuthHandler(final AuthorizationClient this$0) {

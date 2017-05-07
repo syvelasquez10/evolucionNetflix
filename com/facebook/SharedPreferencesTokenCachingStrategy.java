@@ -21,30 +21,7 @@ import android.content.SharedPreferences;
 
 public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
 {
-    private static final String DEFAULT_CACHE_KEY = "com.facebook.SharedPreferencesTokenCachingStrategy.DEFAULT_KEY";
-    private static final String JSON_VALUE = "value";
-    private static final String JSON_VALUE_ENUM_TYPE = "enumType";
-    private static final String JSON_VALUE_TYPE = "valueType";
     private static final String TAG;
-    private static final String TYPE_BOOLEAN = "bool";
-    private static final String TYPE_BOOLEAN_ARRAY = "bool[]";
-    private static final String TYPE_BYTE = "byte";
-    private static final String TYPE_BYTE_ARRAY = "byte[]";
-    private static final String TYPE_CHAR = "char";
-    private static final String TYPE_CHAR_ARRAY = "char[]";
-    private static final String TYPE_DOUBLE = "double";
-    private static final String TYPE_DOUBLE_ARRAY = "double[]";
-    private static final String TYPE_ENUM = "enum";
-    private static final String TYPE_FLOAT = "float";
-    private static final String TYPE_FLOAT_ARRAY = "float[]";
-    private static final String TYPE_INTEGER = "int";
-    private static final String TYPE_INTEGER_ARRAY = "int[]";
-    private static final String TYPE_LONG = "long";
-    private static final String TYPE_LONG_ARRAY = "long[]";
-    private static final String TYPE_SHORT = "short";
-    private static final String TYPE_SHORT_ARRAY = "short[]";
-    private static final String TYPE_STRING = "string";
-    private static final String TYPE_STRING_LIST = "stringList";
     private SharedPreferences cache;
     private String cacheKey;
     

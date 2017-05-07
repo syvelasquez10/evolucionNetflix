@@ -9,18 +9,6 @@ import android.view.View;
 
 class ViewCompatApi21
 {
-    public static float getElevation(final View view) {
-        return view.getElevation();
-    }
-    
-    public static String getTransitionName(final View view) {
-        return view.getTransitionName();
-    }
-    
-    public static float getTranslationZ(final View view) {
-        return view.getTranslationZ();
-    }
-    
     public static void requestApplyInsets(final View view) {
         view.requestApplyInsets();
     }
@@ -31,13 +19,5 @@ class ViewCompatApi21
     
     public static void setOnApplyWindowInsetsListener(final View view, final OnApplyWindowInsetsListener onApplyWindowInsetsListener) {
         view.setOnApplyWindowInsetsListener((View$OnApplyWindowInsetsListener)new ViewCompatApi21$1(onApplyWindowInsetsListener));
-    }
-    
-    public static void setTransitionName(final View view, final String transitionName) {
-        view.setTransitionName(transitionName);
-    }
-    
-    public static void setTranslationZ(final View view, final float translationZ) {
-        view.setTranslationZ(translationZ);
     }
 }

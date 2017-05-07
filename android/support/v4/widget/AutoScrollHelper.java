@@ -19,22 +19,6 @@ import android.view.View$OnTouchListener;
 public abstract class AutoScrollHelper implements View$OnTouchListener
 {
     private static final int DEFAULT_ACTIVATION_DELAY;
-    private static final int DEFAULT_EDGE_TYPE = 1;
-    private static final float DEFAULT_MAXIMUM_EDGE = Float.MAX_VALUE;
-    private static final int DEFAULT_MAXIMUM_VELOCITY_DIPS = 1575;
-    private static final int DEFAULT_MINIMUM_VELOCITY_DIPS = 315;
-    private static final int DEFAULT_RAMP_DOWN_DURATION = 500;
-    private static final int DEFAULT_RAMP_UP_DURATION = 500;
-    private static final float DEFAULT_RELATIVE_EDGE = 0.2f;
-    private static final float DEFAULT_RELATIVE_VELOCITY = 1.0f;
-    public static final int EDGE_TYPE_INSIDE = 0;
-    public static final int EDGE_TYPE_INSIDE_EXTEND = 1;
-    public static final int EDGE_TYPE_OUTSIDE = 2;
-    private static final int HORIZONTAL = 0;
-    public static final float NO_MAX = Float.MAX_VALUE;
-    public static final float NO_MIN = 0.0f;
-    public static final float RELATIVE_UNSPECIFIED = 0.0f;
-    private static final int VERTICAL = 1;
     private int mActivationDelay;
     private boolean mAlreadyDelayed;
     private boolean mAnimating;
@@ -205,14 +189,6 @@ public abstract class AutoScrollHelper implements View$OnTouchListener
     
     public abstract boolean canTargetScrollVertically(final int p0);
     
-    public boolean isEnabled() {
-        return this.mEnabled;
-    }
-    
-    public boolean isExclusive() {
-        return this.mExclusive;
-    }
-    
     public boolean onTouch(final View view, final MotionEvent motionEvent) {
         boolean b = true;
         if (!this.mEnabled) {
@@ -260,11 +236,6 @@ public abstract class AutoScrollHelper implements View$OnTouchListener
             this.requestStop();
         }
         this.mEnabled = mEnabled;
-        return this;
-    }
-    
-    public AutoScrollHelper setExclusive(final boolean mExclusive) {
-        this.mExclusive = mExclusive;
         return this;
     }
     

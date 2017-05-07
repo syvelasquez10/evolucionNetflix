@@ -4,9 +4,6 @@
 
 package com.google.android.gms.common.api;
 
-import android.support.v4.app.FragmentActivity;
-import java.util.concurrent.TimeUnit;
-import android.app.PendingIntent;
 import android.os.DeadObjectException;
 import android.util.Log;
 import com.google.android.gms.common.internal.n;
@@ -99,7 +96,7 @@ final class b implements GoogleApiClient
     private <A extends Api$a> void a(final b$c<A> b$c) {
         this.IO.lock();
         try {
-            n.b(b$c.gf() != null, (Object)"This task can not be executed or enqueued (it's probably a Batch or malformed)");
+            n.b(b$c.gf() != null, "This task can not be executed or enqueued (it's probably a Batch or malformed)");
             this.Jg.add(b$c);
             b$c.a(this.Iu);
             if (this.gp()) {
@@ -222,7 +219,6 @@ final class b implements GoogleApiClient
     }
     
     private void go() {
-    Label_0026_Outer:
         while (true) {
             this.IO.lock();
             while (true) {
@@ -233,20 +229,19 @@ final class b implements GoogleApiClient
                                 break Label_0093;
                             }
                             break Label_0108;
+                            final boolean b;
+                            n.a(b, "GoogleApiClient is not connected yet.");
                             while (true) {
-                                Block_5: {
-                                    break Block_5;
-                                    final boolean b;
-                                    n.a(b, (Object)"GoogleApiClient is not connected yet.");
-                                    continue Label_0026_Outer;
+                                Label_0033: {
+                                    break Label_0033;
+                                    try {
+                                        this.a(this.IS.remove());
+                                    }
+                                    catch (DeadObjectException ex) {
+                                        Log.w("GoogleApiClientImpl", "Service died while flushing queue", (Throwable)ex);
+                                    }
                                 }
-                                try {
-                                    this.a((b$c<?>)this.IS.remove());
-                                }
-                                catch (DeadObjectException ex) {
-                                    Log.w("GoogleApiClientImpl", "Service died while flushing queue", (Throwable)ex);
-                                }
-                                continue Label_0026_Outer;
+                                continue;
                             }
                         }
                         // iftrue(Label_0098:, this.IS.isEmpty())
@@ -289,29 +284,6 @@ final class b implements GoogleApiClient
     }
     
     @Override
-    public <A extends Api$a, R extends Result, T extends BaseImplementation$a<R, A>> T a(final T t) {
-        this.IO.lock();
-        try {
-            t.a((BaseImplementation$CallbackHandler<R>)new BaseImplementation$CallbackHandler<Result>(this.getLooper()));
-            if (this.isConnected()) {
-                this.b(t);
-            }
-            else {
-                this.IS.add(t);
-            }
-            return t;
-        }
-        finally {
-            this.IO.unlock();
-        }
-    }
-    
-    @Override
-    public boolean a(final Scope scope) {
-        return this.Jd.contains(scope.gt());
-    }
-    
-    @Override
     public <A extends Api$a, T extends BaseImplementation$a<? extends Result, A>> T b(final T t) {
         Label_0034: {
             if (!this.isConnected() && !this.gp()) {
@@ -319,7 +291,7 @@ final class b implements GoogleApiClient
             }
             boolean b = true;
             while (true) {
-                n.a(b, (Object)"GoogleApiClient is not connected yet.");
+                n.a(b, "GoogleApiClient is not connected yet.");
                 this.go();
                 try {
                     this.a((b$c<Api$a>)t);
@@ -331,110 +303,6 @@ final class b implements GoogleApiClient
                     return t;
                 }
             }
-        }
-    }
-    
-    @Override
-    public ConnectionResult blockingConnect() {
-        Label_0081: {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                break Label_0081;
-            }
-            boolean connecting = true;
-            while (true) {
-                n.a(connecting, (Object)"blockingConnect must not be called on the UI thread");
-                this.IO.lock();
-                try {
-                    this.connect();
-                    while (true) {
-                        connecting = this.isConnecting();
-                        if (connecting) {
-                            try {
-                                this.IP.await();
-                                continue;
-                            }
-                            catch (InterruptedException ex) {
-                                Thread.currentThread().interrupt();
-                                return new ConnectionResult(15, null);
-                            }
-                            connecting = false;
-                            break;
-                        }
-                        if (this.isConnected()) {
-                            return ConnectionResult.HE;
-                        }
-                        if (this.IT != null) {
-                            return this.IT;
-                        }
-                        return new ConnectionResult(13, null);
-                    }
-                }
-                finally {
-                    this.IO.unlock();
-                }
-            }
-        }
-    }
-    
-    @Override
-    public ConnectionResult blockingConnect(long n, final TimeUnit timeUnit) {
-        Label_0094: {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                break Label_0094;
-            }
-            boolean connecting = true;
-        Label_0012:
-            while (true) {
-                n.a(connecting, (Object)"blockingConnect must not be called on the UI thread");
-                this.IO.lock();
-                try {
-                    this.connect();
-                    n = timeUnit.toNanos(n);
-                    while (true) {
-                        connecting = this.isConnecting();
-                        if (connecting) {
-                            try {
-                                if ((n = this.IP.awaitNanos(n)) <= 0L) {
-                                    return new ConnectionResult(14, null);
-                                }
-                                continue;
-                                connecting = false;
-                                continue Label_0012;
-                            }
-                            catch (InterruptedException ex) {
-                                Thread.currentThread().interrupt();
-                                return new ConnectionResult(15, null);
-                            }
-                            break;
-                        }
-                        break;
-                    }
-                    if (this.isConnected()) {
-                        return ConnectionResult.HE;
-                    }
-                    if (this.IT != null) {
-                        return this.IT;
-                    }
-                    return new ConnectionResult(13, null);
-                }
-                finally {
-                    this.IO.unlock();
-                }
-            }
-        }
-    }
-    
-    @Override
-    public <L> c<L> c(final L l) {
-        n.b(l, "Listener must not be null");
-        this.IO.lock();
-        try {
-            final c<Object> c = new c<Object>(this.IB, l);
-            this.Jf.add(c);
-            return (c<L>)c;
-        }
-        finally {
-            this.IO.unlock();
         }
     }
     
@@ -469,11 +337,6 @@ final class b implements GoogleApiClient
     }
     
     @Override
-    public Looper getLooper() {
-        return this.IB;
-    }
-    
-    @Override
     public boolean isConnected() {
         return this.IV == 2;
     }
@@ -484,22 +347,6 @@ final class b implements GoogleApiClient
     }
     
     @Override
-    public boolean isConnectionCallbacksRegistered(final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks) {
-        return this.IQ.isConnectionCallbacksRegistered(googleApiClient$ConnectionCallbacks);
-    }
-    
-    @Override
-    public boolean isConnectionFailedListenerRegistered(final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
-        return this.IQ.isConnectionFailedListenerRegistered(googleApiClient$OnConnectionFailedListener);
-    }
-    
-    @Override
-    public void reconnect() {
-        this.disconnect();
-        this.connect();
-    }
-    
-    @Override
     public void registerConnectionCallbacks(final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks) {
         this.IQ.registerConnectionCallbacks(googleApiClient$ConnectionCallbacks);
     }
@@ -507,12 +354,6 @@ final class b implements GoogleApiClient
     @Override
     public void registerConnectionFailedListener(final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
         this.IQ.registerConnectionFailedListener(googleApiClient$OnConnectionFailedListener);
-    }
-    
-    @Override
-    public void stopAutoManage(final FragmentActivity fragmentActivity) {
-        n.a(this.IR >= 0, (Object)"Called stopAutoManage but automatic lifecycle management is not enabled.");
-        d.a(fragmentActivity).al(this.IR);
     }
     
     @Override

@@ -29,27 +29,7 @@ final class ij$a implements Cast$ApplicationConnectionResult
     }
     
     @Override
-    public ApplicationMetadata getApplicationMetadata() {
-        return this.GN;
-    }
-    
-    @Override
-    public String getApplicationStatus() {
-        return this.GO;
-    }
-    
-    @Override
-    public String getSessionId() {
-        return this.vL;
-    }
-    
-    @Override
     public Status getStatus() {
         return this.CM;
-    }
-    
-    @Override
-    public boolean getWasLaunched() {
-        return this.GP;
     }
 }

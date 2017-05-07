@@ -4,17 +4,6 @@
 
 package android.support.v4.app;
 
-import android.os.Bundle;
-
 final class RemoteInput$1 implements RemoteInputCompatBase$RemoteInput$Factory
 {
-    @Override
-    public RemoteInput build(final String s, final CharSequence charSequence, final CharSequence[] array, final boolean b, final Bundle bundle) {
-        return new RemoteInput(s, charSequence, array, b, bundle);
-    }
-    
-    @Override
-    public RemoteInput[] newArray(final int n) {
-        return new RemoteInput[n];
-    }
 }

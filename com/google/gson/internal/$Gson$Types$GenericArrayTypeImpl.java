@@ -10,7 +10,6 @@ import java.io.Serializable;
 
 final class $Gson$Types$GenericArrayTypeImpl implements Serializable, GenericArrayType
 {
-    private static final long serialVersionUID = 0L;
     private final Type componentType;
     
     public $Gson$Types$GenericArrayTypeImpl(final Type type) {

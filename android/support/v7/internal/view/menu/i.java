@@ -5,85 +5,79 @@
 package android.support.v7.internal.view.menu;
 
 import java.util.Collection;
-import android.support.v4.view.MenuItemCompat;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.Intent;
 import android.content.ComponentName;
 import android.support.v4.view.ActionProvider;
 import android.view.SubMenu;
+import android.util.SparseArray;
+import android.support.v4.view.MenuItemCompat;
+import android.os.Bundle;
 import android.view.KeyCharacterMap$KeyData;
 import java.util.List;
 import android.view.KeyEvent;
 import android.support.v7.appcompat.R$bool;
-import android.os.Bundle;
 import java.util.Iterator;
 import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
-import android.os.Parcelable;
-import android.util.SparseArray;
+import java.lang.ref.WeakReference;
+import java.util.concurrent.CopyOnWriteArrayList;
 import android.view.ContextMenu$ContextMenuInfo;
+import java.util.ArrayList;
 import android.content.res.Resources;
 import android.content.Context;
 import android.view.View;
 import android.graphics.drawable.Drawable;
-import java.lang.ref.WeakReference;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.ArrayList;
 import android.support.v4.internal.view.SupportMenu;
 
 public class i implements SupportMenu
 {
-    private static final String d = "MenuBuilder";
-    private static final String e = "android:menu:presenters";
-    private static final String f = "android:menu:actionviewstates";
-    private static final String g = "android:menu:expandedactionview";
-    private static final int[] h;
-    private ArrayList<m> A;
-    private CopyOnWriteArrayList<WeakReference<y>> B;
-    private m C;
+    private static final int[] d;
     CharSequence a;
     Drawable b;
     View c;
-    private final Context i;
-    private final Resources j;
-    private boolean k;
+    private final Context e;
+    private final Resources f;
+    private boolean g;
+    private boolean h;
+    private j i;
+    private ArrayList<m> j;
+    private ArrayList<m> k;
     private boolean l;
-    private j m;
+    private ArrayList<m> m;
     private ArrayList<m> n;
-    private ArrayList<m> o;
-    private boolean p;
-    private ArrayList<m> q;
-    private ArrayList<m> r;
+    private boolean o;
+    private int p;
+    private ContextMenu$ContextMenuInfo q;
+    private boolean r;
     private boolean s;
-    private int t;
-    private ContextMenu$ContextMenuInfo u;
-    private SparseArray<Parcelable> v;
-    private boolean w;
-    private boolean x;
-    private boolean y;
-    private boolean z;
+    private boolean t;
+    private boolean u;
+    private ArrayList<m> v;
+    private CopyOnWriteArrayList<WeakReference<x>> w;
+    private m x;
     
     static {
-        h = new int[] { 1, 4, 5, 3, 2, 0 };
+        d = new int[] { 1, 4, 5, 3, 2, 0 };
     }
     
-    public i(final Context i) {
-        this.t = 0;
-        this.w = false;
-        this.x = false;
-        this.y = false;
-        this.z = false;
-        this.A = new ArrayList<m>();
-        this.B = new CopyOnWriteArrayList<WeakReference<y>>();
-        this.i = i;
-        this.j = i.getResources();
+    public i(final Context e) {
+        this.p = 0;
+        this.r = false;
+        this.s = false;
+        this.t = false;
+        this.u = false;
+        this.v = new ArrayList<m>();
+        this.w = new CopyOnWriteArrayList<WeakReference<x>>();
+        this.e = e;
+        this.f = e.getResources();
+        this.j = new ArrayList<m>();
+        this.k = new ArrayList<m>();
+        this.l = true;
+        this.m = new ArrayList<m>();
         this.n = new ArrayList<m>();
-        this.o = new ArrayList<m>();
-        this.p = true;
-        this.q = new ArrayList<m>();
-        this.r = new ArrayList<m>();
-        this.f(this.s = true);
+        this.d(this.o = true);
     }
     
     private static int a(final ArrayList<m> list, final int n) {
@@ -100,18 +94,18 @@ public class i implements SupportMenu
     }
     
     private MenuItem a(final int n, final int n2, final int n3, final CharSequence charSequence) {
-        final int g = g(n3);
-        final m a = this.a(n, n2, n3, g, charSequence, this.t);
-        if (this.u != null) {
-            a.a(this.u);
+        final int d = d(n3);
+        final m a = this.a(n, n2, n3, d, charSequence, this.p);
+        if (this.q != null) {
+            a.a(this.q);
         }
-        this.n.add(a(this.n, g), a);
-        this.c(true);
+        this.j.add(a(this.j, d), a);
+        this.b(true);
         return (MenuItem)a;
     }
     
     private void a(final int n, final CharSequence a, final int n2, final Drawable b, final View c) {
-        final Resources e = this.e();
+        final Resources d = this.d();
         if (c != null) {
             this.c = c;
             this.a = null;
@@ -119,130 +113,82 @@ public class i implements SupportMenu
         }
         else {
             if (n > 0) {
-                this.a = e.getText(n);
+                this.a = d.getText(n);
             }
             else if (a != null) {
                 this.a = a;
             }
             if (n2 > 0) {
-                this.b = ContextCompat.getDrawable(this.f(), n2);
+                this.b = ContextCompat.getDrawable(this.e(), n2);
             }
             else if (b != null) {
                 this.b = b;
             }
             this.c = null;
         }
-        this.c(false);
+        this.b(false);
     }
     
     private void a(final int n, final boolean b) {
-        if (n >= 0 && n < this.n.size()) {
-            this.n.remove(n);
+        if (n >= 0 && n < this.j.size()) {
+            this.j.remove(n);
             if (b) {
-                this.c(true);
+                this.b(true);
             }
         }
     }
     
-    private boolean a(final ae ae, final y y) {
+    private boolean a(final ad ad, final x x) {
         boolean b = false;
-        if (this.B.isEmpty()) {
+        if (this.w.isEmpty()) {
             return false;
         }
-        if (y != null) {
-            b = y.onSubMenuSelected(ae);
+        if (x != null) {
+            b = x.onSubMenuSelected(ad);
         }
-        for (final WeakReference<y> weakReference : this.B) {
-            final y y2 = weakReference.get();
-            if (y2 == null) {
-                this.B.remove(weakReference);
+        for (final WeakReference<x> weakReference : this.w) {
+            final x x2 = weakReference.get();
+            if (x2 == null) {
+                this.w.remove(weakReference);
             }
             else {
                 if (b) {
                     continue;
                 }
-                b = y2.onSubMenuSelected(ae);
+                b = x2.onSubMenuSelected(ad);
             }
         }
         return b;
     }
     
-    private void e(final Bundle bundle) {
-        if (this.B.isEmpty()) {
+    private void c(final boolean b) {
+        if (this.w.isEmpty()) {
             return;
         }
-        final SparseArray sparseArray = new SparseArray();
-        for (final WeakReference<y> weakReference : this.B) {
-            final y y = weakReference.get();
-            if (y == null) {
-                this.B.remove(weakReference);
+        this.g();
+        for (final WeakReference<x> weakReference : this.w) {
+            final x x = weakReference.get();
+            if (x == null) {
+                this.w.remove(weakReference);
             }
             else {
-                final int id = y.getId();
-                if (id <= 0) {
-                    continue;
-                }
-                final Parcelable onSaveInstanceState = y.onSaveInstanceState();
-                if (onSaveInstanceState == null) {
-                    continue;
-                }
-                sparseArray.put(id, (Object)onSaveInstanceState);
+                x.updateMenuView(b);
             }
-        }
-        bundle.putSparseParcelableArray("android:menu:presenters", sparseArray);
-    }
-    
-    private void e(final boolean b) {
-        if (this.B.isEmpty()) {
-            return;
         }
         this.h();
-        for (final WeakReference<y> weakReference : this.B) {
-            final y y = weakReference.get();
-            if (y == null) {
-                this.B.remove(weakReference);
-            }
-            else {
-                y.updateMenuView(b);
-            }
-        }
-        this.i();
     }
     
-    private void f(final Bundle bundle) {
-        final SparseArray sparseParcelableArray = bundle.getSparseParcelableArray("android:menu:presenters");
-        if (sparseParcelableArray != null && !this.B.isEmpty()) {
-            for (final WeakReference<y> weakReference : this.B) {
-                final y y = weakReference.get();
-                if (y == null) {
-                    this.B.remove(weakReference);
-                }
-                else {
-                    final int id = y.getId();
-                    if (id <= 0) {
-                        continue;
-                    }
-                    final Parcelable parcelable = (Parcelable)sparseParcelableArray.get(id);
-                    if (parcelable == null) {
-                        continue;
-                    }
-                    y.onRestoreInstanceState(parcelable);
-                }
-            }
-        }
-    }
-    
-    private void f(final boolean b) {
-        final boolean b2 = true;
-        this.l = (b && this.j.getConfiguration().keyboard != 1 && this.j.getBoolean(R$bool.abc_config_showMenuShortcutsWhenKeyboardPresent) && b2);
-    }
-    
-    private static int g(final int n) {
+    private static int d(final int n) {
         final int n2 = (0xFFFF0000 & n) >> 16;
-        if (n2 < 0 || n2 >= i.h.length) {
+        if (n2 < 0 || n2 >= i.d.length) {
             throw new IllegalArgumentException("order does not contain a valid category.");
         }
-        return i.h[n2] << 16 | (0xFFFF & n);
+        return i.d[n2] << 16 | (0xFFFF & n);
+    }
+    
+    private void d(final boolean b) {
+        final boolean b2 = true;
+        this.h = (b && this.f.getConfiguration().keyboard != 1 && this.f.getBoolean(R$bool.abc_config_showMenuShortcutsWhenKeyboardPresent) && b2);
     }
     
     public int a(final int n, final int n2) {
@@ -252,7 +198,7 @@ public class i implements SupportMenu
             i = 0;
         }
         while (i < size) {
-            if (this.n.get(i).getGroupId() == n) {
+            if (this.j.get(i).getGroupId() == n) {
                 return i;
             }
             ++i;
@@ -260,8 +206,8 @@ public class i implements SupportMenu
         return -1;
     }
     
-    public i a(final int t) {
-        this.t = t;
+    public i a(final int p) {
+        this.p = p;
         return this;
     }
     
@@ -281,44 +227,44 @@ public class i implements SupportMenu
     }
     
     m a(final int n, final KeyEvent keyEvent) {
-        final ArrayList<m> a = this.A;
-        a.clear();
-        this.a(a, n, keyEvent);
+        final ArrayList<m> v = this.v;
+        v.clear();
+        this.a(v, n, keyEvent);
         m m;
-        if (a.isEmpty()) {
+        if (v.isEmpty()) {
             m = null;
         }
         else {
             final int metaState = keyEvent.getMetaState();
             final KeyCharacterMap$KeyData keyCharacterMap$KeyData = new KeyCharacterMap$KeyData();
             keyEvent.getKeyData(keyCharacterMap$KeyData);
-            final int size = a.size();
+            final int size = v.size();
             if (size == 1) {
-                return a.get(0);
+                return v.get(0);
             }
-            final boolean c = this.c();
+            final boolean b = this.b();
             for (int i = 0; i < size; ++i) {
-                final m j = a.get(i);
-                char c2;
-                if (c) {
-                    c2 = j.getAlphabeticShortcut();
+                final m j = v.get(i);
+                char c;
+                if (b) {
+                    c = j.getAlphabeticShortcut();
                 }
                 else {
-                    c2 = j.getNumericShortcut();
+                    c = j.getNumericShortcut();
                 }
-                if (c2 == keyCharacterMap$KeyData.meta[0]) {
+                if (c == keyCharacterMap$KeyData.meta[0]) {
                     m = j;
                     if ((metaState & 0x2) == 0x0) {
                         return m;
                     }
                 }
-                if (c2 == keyCharacterMap$KeyData.meta[2]) {
+                if (c == keyCharacterMap$KeyData.meta[2]) {
                     m = j;
                     if ((metaState & 0x2) != 0x0) {
                         return m;
                     }
                 }
-                if (c && c2 == '\b') {
+                if (b && c == '\b') {
                     m = j;
                     if (n == 67) {
                         return m;
@@ -335,82 +281,117 @@ public class i implements SupportMenu
     }
     
     public void a(final Bundle bundle) {
-        this.e(bundle);
+        final int size = this.size();
+        int i = 0;
+        SparseArray sparseArray = null;
+        while (i < size) {
+            final MenuItem item = this.getItem(i);
+            final View actionView = MenuItemCompat.getActionView(item);
+            SparseArray sparseArray2 = sparseArray;
+            if (actionView != null) {
+                sparseArray2 = sparseArray;
+                if (actionView.getId() != -1) {
+                    SparseArray sparseArray3;
+                    if ((sparseArray3 = sparseArray) == null) {
+                        sparseArray3 = new SparseArray();
+                    }
+                    actionView.saveHierarchyState(sparseArray3);
+                    sparseArray2 = sparseArray3;
+                    if (MenuItemCompat.isActionViewExpanded(item)) {
+                        bundle.putInt("android:menu:expandedactionview", item.getItemId());
+                        sparseArray2 = sparseArray3;
+                    }
+                }
+            }
+            if (item.hasSubMenu()) {
+                ((ad)item.getSubMenu()).a(bundle);
+            }
+            ++i;
+            sparseArray = sparseArray2;
+        }
+        if (sparseArray != null) {
+            bundle.putSparseParcelableArray(this.a(), sparseArray);
+        }
     }
     
-    public void a(final j m) {
-        this.m = m;
+    public void a(final j i) {
+        this.i = i;
     }
     
     void a(final m m) {
-        this.c(this.p = true);
+        this.b(this.l = true);
     }
     
-    public void a(final y y) {
-        this.a(y, this.i);
+    public void a(final x x) {
+        this.a(x, this.e);
     }
     
-    public void a(final y y, final Context context) {
-        this.B.add(new WeakReference<y>(y));
-        y.initForMenu(context, this);
-        this.s = true;
-    }
-    
-    public void a(final ContextMenu$ContextMenuInfo u) {
-        this.u = u;
+    public void a(final x x, final Context context) {
+        this.w.add(new WeakReference<x>(x));
+        x.initForMenu(context, this);
+        this.o = true;
     }
     
     void a(final MenuItem menuItem) {
         final int groupId = menuItem.getGroupId();
-        for (int size = this.n.size(), i = 0; i < size; ++i) {
-            final m m = this.n.get(i);
-            if (m.getGroupId() == groupId && m.g() && m.isCheckable()) {
+        for (int size = this.j.size(), i = 0; i < size; ++i) {
+            final m m = this.j.get(i);
+            if (m.getGroupId() == groupId && m.f() && m.isCheckable()) {
                 m.b(m == menuItem);
             }
         }
     }
     
     void a(final List<m> list, final int n, final KeyEvent keyEvent) {
-        final boolean c = this.c();
+        final boolean b = this.b();
         final int metaState = keyEvent.getMetaState();
         final KeyCharacterMap$KeyData keyCharacterMap$KeyData = new KeyCharacterMap$KeyData();
         if (keyEvent.getKeyData(keyCharacterMap$KeyData) || n == 67) {
-            for (int size = this.n.size(), i = 0; i < size; ++i) {
-                final m m = this.n.get(i);
+            for (int size = this.j.size(), i = 0; i < size; ++i) {
+                final m m = this.j.get(i);
                 if (m.hasSubMenu()) {
                     ((i)m.getSubMenu()).a(list, n, keyEvent);
                 }
-                char c2;
-                if (c) {
-                    c2 = m.getAlphabeticShortcut();
+                char c;
+                if (b) {
+                    c = m.getAlphabeticShortcut();
                 }
                 else {
-                    c2 = m.getNumericShortcut();
+                    c = m.getNumericShortcut();
                 }
-                if ((metaState & 0x5) == 0x0 && c2 != '\0' && (c2 == keyCharacterMap$KeyData.meta[0] || c2 == keyCharacterMap$KeyData.meta[2] || (c && c2 == '\b' && n == 67)) && m.isEnabled()) {
+                if ((metaState & 0x5) == 0x0 && c != '\0' && (c == keyCharacterMap$KeyData.meta[0] || c == keyCharacterMap$KeyData.meta[2] || (b && c == '\b' && n == 67)) && m.isEnabled()) {
                     list.add(m);
                 }
             }
         }
     }
     
-    public void a(final boolean b) {
-        if (this.l == b) {
+    public final void a(final boolean b) {
+        if (this.u) {
             return;
         }
-        this.f(b);
-        this.c(false);
+        this.u = true;
+        for (final WeakReference<x> weakReference : this.w) {
+            final x x = weakReference.get();
+            if (x == null) {
+                this.w.remove(weakReference);
+            }
+            else {
+                x.onCloseMenu(this, b);
+            }
+        }
+        this.u = false;
     }
     
     boolean a(final i i, final MenuItem menuItem) {
-        return this.m != null && this.m.onMenuItemSelected(i, menuItem);
+        return this.i != null && this.i.onMenuItemSelected(i, menuItem);
     }
     
     public boolean a(final MenuItem menuItem, final int n) {
         return this.a(menuItem, null, n);
     }
     
-    public boolean a(final MenuItem menuItem, final y y, final int n) {
+    public boolean a(final MenuItem menuItem, final x x, final int n) {
         final boolean b = false;
         final m m = (m)menuItem;
         boolean b2 = b;
@@ -420,33 +401,33 @@ public class i implements SupportMenu
             }
             else {
                 final boolean a = m.a();
-                final ActionProvider supportActionProvider = m.getSupportActionProvider();
-                final boolean b3 = supportActionProvider != null && supportActionProvider.hasSubMenu();
-                if (m.n()) {
+                final ActionProvider l = m.l();
+                final boolean b3 = l != null && l.hasSubMenu();
+                if (m.m()) {
                     final boolean b4 = b2 = (m.expandActionView() | a);
                     if (b4) {
-                        this.b(true);
+                        this.a(true);
                         return b4;
                     }
                 }
                 else {
                     if (!m.hasSubMenu() && !b3) {
                         if ((n & 0x1) == 0x0) {
-                            this.b(true);
+                            this.a(true);
                         }
                         return a;
                     }
-                    this.b(false);
+                    this.a(false);
                     if (!m.hasSubMenu()) {
-                        m.a(new ae(this.f(), this, m));
+                        m.a(new ad(this.e(), this, m));
                     }
-                    final ae ae = (ae)m.getSubMenu();
+                    final ad ad = (ad)m.getSubMenu();
                     if (b3) {
-                        supportActionProvider.onPrepareSubMenu((SubMenu)ae);
+                        l.onPrepareSubMenu((SubMenu)ad);
                     }
-                    final boolean b5 = b2 = (this.a(ae, y) | a);
+                    final boolean b5 = b2 = (this.a(ad, x) | a);
                     if (!b5) {
-                        this.b(true);
+                        this.a(true);
                         return b5;
                     }
                 }
@@ -456,11 +437,11 @@ public class i implements SupportMenu
     }
     
     public MenuItem add(final int n) {
-        return this.a(0, 0, 0, this.j.getString(n));
+        return this.a(0, 0, 0, this.f.getString(n));
     }
     
     public MenuItem add(final int n, final int n2, final int n3, final int n4) {
-        return this.a(n, n2, n3, this.j.getString(n4));
+        return this.a(n, n2, n3, this.f.getString(n4));
     }
     
     public MenuItem add(final int n, final int n2, final int n3, final CharSequence charSequence) {
@@ -472,7 +453,7 @@ public class i implements SupportMenu
     }
     
     public int addIntentOptions(final int n, final int n2, final int n3, final ComponentName componentName, final Intent[] array, final Intent intent, int i, final MenuItem[] array2) {
-        final PackageManager packageManager = this.i.getPackageManager();
+        final PackageManager packageManager = this.e.getPackageManager();
         final List queryIntentActivityOptions = packageManager.queryIntentActivityOptions(componentName, array, intent, 0);
         int size;
         if (queryIntentActivityOptions != null) {
@@ -507,188 +488,34 @@ public class i implements SupportMenu
     }
     
     public SubMenu addSubMenu(final int n) {
-        return this.addSubMenu(0, 0, 0, this.j.getString(n));
+        return this.addSubMenu(0, 0, 0, this.f.getString(n));
     }
     
     public SubMenu addSubMenu(final int n, final int n2, final int n3, final int n4) {
-        return this.addSubMenu(n, n2, n3, this.j.getString(n4));
+        return this.addSubMenu(n, n2, n3, this.f.getString(n4));
     }
     
     public SubMenu addSubMenu(final int n, final int n2, final int n3, final CharSequence charSequence) {
         final m m = (m)this.a(n, n2, n3, charSequence);
-        final ae ae = new ae(this.i, this, m);
-        m.a(ae);
-        return (SubMenu)ae;
+        final ad ad = new ad(this.e, this, m);
+        m.a(ad);
+        return (SubMenu)ad;
     }
     
     public SubMenu addSubMenu(final CharSequence charSequence) {
         return this.addSubMenu(0, 0, 0, charSequence);
     }
     
-    public void b() {
-        this.w = true;
-        this.clear();
-        this.clearHeader();
-        this.w = false;
-        this.x = false;
-        this.c(true);
-    }
-    
-    public void b(final int n) {
-        this.a(n, true);
-    }
-    
-    public void b(final Bundle bundle) {
-        this.f(bundle);
-    }
-    
-    void b(final m m) {
-        this.c(this.s = true);
-    }
-    
-    public void b(final y y) {
-        for (final WeakReference<y> weakReference : this.B) {
-            final y y2 = weakReference.get();
-            if (y2 == null || y2 == y) {
-                this.B.remove(weakReference);
-            }
-        }
-    }
-    
-    public final void b(final boolean b) {
-        if (this.z) {
-            return;
-        }
-        this.z = true;
-        for (final WeakReference<y> weakReference : this.B) {
-            final y y = weakReference.get();
-            if (y == null) {
-                this.B.remove(weakReference);
-            }
-            else {
-                y.onCloseMenu(this, b);
-            }
-        }
-        this.z = false;
-    }
-    
-    public int c(final int n) {
+    public int b(final int n) {
         for (int size = this.size(), i = 0; i < size; ++i) {
-            if (this.n.get(i).getItemId() == n) {
+            if (this.j.get(i).getItemId() == n) {
                 return i;
             }
         }
         return -1;
     }
     
-    public void c(final Bundle bundle) {
-        final int size = this.size();
-        int i = 0;
-        SparseArray sparseArray = null;
-        while (i < size) {
-            final MenuItem item = this.getItem(i);
-            final View actionView = MenuItemCompat.getActionView(item);
-            SparseArray sparseArray2 = sparseArray;
-            if (actionView != null) {
-                sparseArray2 = sparseArray;
-                if (actionView.getId() != -1) {
-                    SparseArray sparseArray3;
-                    if ((sparseArray3 = sparseArray) == null) {
-                        sparseArray3 = new SparseArray();
-                    }
-                    actionView.saveHierarchyState(sparseArray3);
-                    sparseArray2 = sparseArray3;
-                    if (MenuItemCompat.isActionViewExpanded(item)) {
-                        bundle.putInt("android:menu:expandedactionview", item.getItemId());
-                        sparseArray2 = sparseArray3;
-                    }
-                }
-            }
-            if (item.hasSubMenu()) {
-                ((ae)item.getSubMenu()).c(bundle);
-            }
-            ++i;
-            sparseArray = sparseArray2;
-        }
-        if (sparseArray != null) {
-            bundle.putSparseParcelableArray(this.a(), sparseArray);
-        }
-    }
-    
-    public void c(final boolean b) {
-        if (!this.w) {
-            if (b) {
-                this.p = true;
-                this.s = true;
-            }
-            this.e(b);
-            return;
-        }
-        this.x = true;
-    }
-    
-    boolean c() {
-        return this.k;
-    }
-    
-    public boolean c(final m c) {
-        boolean b = false;
-        if (!this.B.isEmpty()) {
-            this.h();
-            final Iterator<WeakReference<y>> iterator = this.B.iterator();
-            boolean expandItemActionView = false;
-            while (true) {
-                while (iterator.hasNext()) {
-                    final WeakReference<y> weakReference = iterator.next();
-                    final y y = weakReference.get();
-                    if (y == null) {
-                        this.B.remove(weakReference);
-                    }
-                    else {
-                        final boolean b2 = expandItemActionView = y.expandItemActionView(this, c);
-                        if (!b2) {
-                            continue;
-                        }
-                        expandItemActionView = b2;
-                        this.i();
-                        b = expandItemActionView;
-                        if (expandItemActionView) {
-                            this.C = c;
-                            return expandItemActionView;
-                        }
-                        return b;
-                    }
-                }
-                continue;
-            }
-        }
-        return b;
-    }
-    
-    public void clear() {
-        if (this.C != null) {
-            this.d(this.C);
-        }
-        this.n.clear();
-        this.c(true);
-    }
-    
-    public void clearHeader() {
-        this.b = null;
-        this.a = null;
-        this.c = null;
-        this.c(false);
-    }
-    
-    public void close() {
-        this.b(true);
-    }
-    
-    public int d(final int n) {
-        return this.a(n, 0);
-    }
-    
-    public void d(final Bundle bundle) {
+    public void b(final Bundle bundle) {
         if (bundle != null) {
             final SparseArray sparseParcelableArray = bundle.getSparseParcelableArray(this.a());
             for (int size = this.size(), i = 0; i < size; ++i) {
@@ -698,7 +525,7 @@ public class i implements SupportMenu
                     actionView.restoreHierarchyState(sparseParcelableArray);
                 }
                 if (item.hasSubMenu()) {
-                    ((ae)item.getSubMenu()).d(bundle);
+                    ((ad)item.getSubMenu()).b(bundle);
                 }
             }
             final int int1 = bundle.getInt("android:menu:expandedactionview");
@@ -711,38 +538,124 @@ public class i implements SupportMenu
         }
     }
     
-    void d(final boolean y) {
-        this.y = y;
+    void b(final m m) {
+        this.b(this.o = true);
     }
     
-    public boolean d() {
-        return this.l;
+    public void b(final x x) {
+        for (final WeakReference<x> weakReference : this.w) {
+            final x x2 = weakReference.get();
+            if (x2 == null || x2 == x) {
+                this.w.remove(weakReference);
+            }
+        }
+    }
+    
+    public void b(final boolean b) {
+        if (!this.r) {
+            if (b) {
+                this.l = true;
+                this.o = true;
+            }
+            this.c(b);
+            return;
+        }
+        this.s = true;
+    }
+    
+    boolean b() {
+        return this.g;
+    }
+    
+    public int c(final int n) {
+        return this.a(n, 0);
+    }
+    
+    public boolean c() {
+        return this.h;
+    }
+    
+    public boolean c(final m x) {
+        boolean b = false;
+        if (!this.w.isEmpty()) {
+            this.g();
+            final Iterator<WeakReference<x>> iterator = this.w.iterator();
+            boolean expandItemActionView = false;
+            while (true) {
+                while (iterator.hasNext()) {
+                    final WeakReference<x> weakReference = iterator.next();
+                    final x x2 = weakReference.get();
+                    if (x2 == null) {
+                        this.w.remove(weakReference);
+                    }
+                    else {
+                        final boolean b2 = expandItemActionView = x2.expandItemActionView(this, x);
+                        if (!b2) {
+                            continue;
+                        }
+                        expandItemActionView = b2;
+                        this.h();
+                        b = expandItemActionView;
+                        if (expandItemActionView) {
+                            this.x = x;
+                            return expandItemActionView;
+                        }
+                        return b;
+                    }
+                }
+                continue;
+            }
+        }
+        return b;
+    }
+    
+    public void clear() {
+        if (this.x != null) {
+            this.d(this.x);
+        }
+        this.j.clear();
+        this.b(true);
+    }
+    
+    public void clearHeader() {
+        this.b = null;
+        this.a = null;
+        this.c = null;
+        this.b(false);
+    }
+    
+    public void close() {
+        this.a(true);
+    }
+    
+    Resources d() {
+        return this.f;
     }
     
     public boolean d(final m m) {
         boolean b = false;
-        if (!this.B.isEmpty()) {
-            if (this.C == m) {
-                this.h();
-                final Iterator<WeakReference<y>> iterator = this.B.iterator();
+        if (!this.w.isEmpty()) {
+            if (this.x == m) {
+                this.g();
+                final Iterator<WeakReference<x>> iterator = this.w.iterator();
                 boolean collapseItemActionView = false;
                 while (true) {
                     while (iterator.hasNext()) {
-                        final WeakReference<y> weakReference = iterator.next();
-                        final y y = weakReference.get();
-                        if (y == null) {
-                            this.B.remove(weakReference);
+                        final WeakReference<x> weakReference = iterator.next();
+                        final x x = weakReference.get();
+                        if (x == null) {
+                            this.w.remove(weakReference);
                         }
                         else {
-                            final boolean b2 = collapseItemActionView = y.collapseItemActionView(this, m);
+                            final boolean b2 = collapseItemActionView = x.collapseItemActionView(this, m);
                             if (!b2) {
                                 continue;
                             }
                             collapseItemActionView = b2;
-                            this.i();
+                            this.h();
                             b = collapseItemActionView;
                             if (collapseItemActionView) {
-                                this.C = null;
+                                this.x = null;
                                 return collapseItemActionView;
                             }
                             return b;
@@ -756,27 +669,19 @@ public class i implements SupportMenu
         return b;
     }
     
-    Resources e() {
-        return this.j;
+    public Context e() {
+        return this.e;
     }
     
-    protected i e(final int n) {
-        this.a(n, null, 0, null, null);
-        return this;
-    }
-    
-    public Context f() {
-        return this.i;
-    }
-    
-    protected i f(final int n) {
-        this.a(0, null, n, null, null);
-        return this;
+    public void f() {
+        if (this.i != null) {
+            this.i.onMenuModeChange(this);
+        }
     }
     
     public MenuItem findItem(final int n) {
         for (int size = this.size(), i = 0; i < size; ++i) {
-            Object item = this.n.get(i);
+            Object item = this.j.get(i);
             if (((m)item).getItemId() == n || (((m)item).hasSubMenu() && (item = ((m)item).getSubMenu().findItem(n)) != null)) {
                 return (MenuItem)item;
             }
@@ -785,117 +690,115 @@ public class i implements SupportMenu
     }
     
     public void g() {
-        if (this.m != null) {
-            this.m.onMenuModeChange(this);
+        if (!this.r) {
+            this.r = true;
+            this.s = false;
         }
     }
     
     public MenuItem getItem(final int n) {
-        return (MenuItem)this.n.get(n);
+        return (MenuItem)this.j.get(n);
     }
     
     public void h() {
-        if (!this.w) {
-            this.w = true;
-            this.x = false;
+        this.r = false;
+        if (this.s) {
+            this.s = false;
+            this.b(true);
         }
     }
     
     public boolean hasVisibleItems() {
         for (int size = this.size(), i = 0; i < size; ++i) {
-            if (this.n.get(i).isVisible()) {
+            if (this.j.get(i).isVisible()) {
                 return true;
             }
         }
         return false;
     }
     
-    public void i() {
-        this.w = false;
-        if (this.x) {
-            this.x = false;
-            this.c(true);
+    public ArrayList<m> i() {
+        if (!this.l) {
+            return this.k;
         }
+        this.k.clear();
+        for (int size = this.j.size(), i = 0; i < size; ++i) {
+            final m m = this.j.get(i);
+            if (m.isVisible()) {
+                this.k.add(m);
+            }
+        }
+        this.l = false;
+        this.o = true;
+        return this.k;
     }
     
     public boolean isShortcutKey(final int n, final KeyEvent keyEvent) {
         return this.a(n, keyEvent) != null;
     }
     
-    public ArrayList<m> j() {
-        if (!this.p) {
-            return this.o;
-        }
-        this.o.clear();
-        for (int size = this.n.size(), i = 0; i < size; ++i) {
-            final m m = this.n.get(i);
-            if (m.isVisible()) {
-                this.o.add(m);
-            }
-        }
-        this.p = false;
-        this.s = true;
-        return this.o;
-    }
-    
-    public void k() {
-        final ArrayList<m> j = this.j();
-        if (!this.s) {
+    public void j() {
+        final ArrayList<m> i = this.i();
+        if (!this.o) {
             return;
         }
-        final Iterator<WeakReference<y>> iterator = this.B.iterator();
+        final Iterator<WeakReference<x>> iterator = this.w.iterator();
         boolean b = false;
         while (iterator.hasNext()) {
-            final WeakReference<y> weakReference = iterator.next();
-            final y y = weakReference.get();
-            if (y == null) {
-                this.B.remove(weakReference);
+            final WeakReference<x> weakReference = iterator.next();
+            final x x = weakReference.get();
+            if (x == null) {
+                this.w.remove(weakReference);
             }
             else {
-                b |= y.flagActionItems();
+                b |= x.flagActionItems();
             }
         }
         if (b) {
-            this.q.clear();
-            this.r.clear();
-            for (int size = j.size(), i = 0; i < size; ++i) {
-                final m m = j.get(i);
-                if (m.j()) {
-                    this.q.add(m);
+            this.m.clear();
+            this.n.clear();
+            for (int size = i.size(), j = 0; j < size; ++j) {
+                final m m = i.get(j);
+                if (m.h()) {
+                    this.m.add(m);
                 }
                 else {
-                    this.r.add(m);
+                    this.n.add(m);
                 }
             }
         }
         else {
-            this.q.clear();
-            this.r.clear();
-            this.r.addAll(this.j());
+            this.m.clear();
+            this.n.clear();
+            this.n.addAll(this.i());
         }
-        this.s = false;
+        this.o = false;
+    }
+    
+    public ArrayList<m> k() {
+        this.j();
+        return this.m;
     }
     
     public ArrayList<m> l() {
-        this.k();
-        return this.q;
+        this.j();
+        return this.n;
     }
     
-    public ArrayList<m> m() {
-        this.k();
-        return this.r;
-    }
-    
-    public CharSequence n() {
+    public CharSequence m() {
         return this.a;
     }
     
-    public Drawable o() {
+    public Drawable n() {
         return this.b;
     }
     
-    public View p() {
+    public View o() {
         return this.c;
+    }
+    
+    public i p() {
+        return this;
     }
     
     public boolean performIdentifierAction(final int n, final int n2) {
@@ -909,40 +812,36 @@ public class i implements SupportMenu
             a2 = this.a((MenuItem)a, n2);
         }
         if ((n2 & 0x2) != 0x0) {
-            this.b(true);
+            this.a(true);
         }
         return a2;
     }
     
-    public i q() {
-        return this;
+    boolean q() {
+        return this.t;
     }
     
-    boolean r() {
-        return this.y;
+    public m r() {
+        return this.x;
     }
     
     public void removeGroup(final int n) {
-        final int d = this.d(n);
-        if (d >= 0) {
-            for (int size = this.n.size(), n2 = 0; n2 < size - d && this.n.get(d).getGroupId() == n; ++n2) {
-                this.a(d, false);
+        final int c = this.c(n);
+        if (c >= 0) {
+            for (int size = this.j.size(), n2 = 0; n2 < size - c && this.j.get(c).getGroupId() == n; ++n2) {
+                this.a(c, false);
             }
-            this.c(true);
+            this.b(true);
         }
     }
     
     public void removeItem(final int n) {
-        this.a(this.c(n), true);
-    }
-    
-    public m s() {
-        return this.C;
+        this.a(this.b(n), true);
     }
     
     public void setGroupCheckable(final int n, final boolean checkable, final boolean b) {
-        for (int size = this.n.size(), i = 0; i < size; ++i) {
-            final m m = this.n.get(i);
+        for (int size = this.j.size(), i = 0; i < size; ++i) {
+            final m m = this.j.get(i);
             if (m.getGroupId() == n) {
                 m.a(b);
                 m.setCheckable(checkable);
@@ -951,8 +850,8 @@ public class i implements SupportMenu
     }
     
     public void setGroupEnabled(final int n, final boolean enabled) {
-        for (int size = this.n.size(), i = 0; i < size; ++i) {
-            final m m = this.n.get(i);
+        for (int size = this.j.size(), i = 0; i < size; ++i) {
+            final m m = this.j.get(i);
             if (m.getGroupId() == n) {
                 m.setEnabled(enabled);
             }
@@ -960,27 +859,27 @@ public class i implements SupportMenu
     }
     
     public void setGroupVisible(final int n, final boolean b) {
-        final int size = this.n.size();
+        final int size = this.j.size();
         int i = 0;
         boolean b2 = false;
         while (i < size) {
-            final m m = this.n.get(i);
+            final m m = this.j.get(i);
             if (m.getGroupId() == n && m.c(b)) {
                 b2 = true;
             }
             ++i;
         }
         if (b2) {
-            this.c(true);
+            this.b(true);
         }
     }
     
-    public void setQwertyMode(final boolean k) {
-        this.k = k;
-        this.c(false);
+    public void setQwertyMode(final boolean g) {
+        this.g = g;
+        this.b(false);
     }
     
     public int size() {
-        return this.n.size();
+        return this.j.size();
     }
 }

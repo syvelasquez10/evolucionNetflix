@@ -40,8 +40,8 @@ class b extends ListPopupWindow$ForwardingListener
     
     @Override
     public ListPopupWindow getPopup() {
-        if (this.a.g != null) {
-            return this.a.g.getPopup();
+        if (this.a.f != null) {
+            return this.a.f.getPopup();
         }
         return null;
     }
@@ -50,9 +50,9 @@ class b extends ListPopupWindow$ForwardingListener
     protected boolean onForwardingStarted() {
         boolean b2;
         final boolean b = b2 = false;
-        if (this.a.e != null) {
+        if (this.a.d != null) {
             b2 = b;
-            if (this.a.e.invokeItem(this.a.b)) {
+            if (this.a.d.invokeItem(this.a.a)) {
                 final ListPopupWindow popup = this.getPopup();
                 b2 = b;
                 if (popup != null) {

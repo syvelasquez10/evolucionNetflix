@@ -20,13 +20,6 @@ import android.widget.Adapter;
 
 public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
 {
-    public static final int INVALID_POSITION = -1;
-    public static final long INVALID_ROW_ID = Long.MIN_VALUE;
-    static final int ITEM_VIEW_TYPE_HEADER_OR_FOOTER = -2;
-    static final int ITEM_VIEW_TYPE_IGNORE = -1;
-    static final int SYNC_FIRST_POSITION = 1;
-    static final int SYNC_MAX_DURATION_MILLIS = 100;
-    static final int SYNC_SELECTED_POSITION = 0;
     boolean mBlockLayoutRequests;
     boolean mDataChanged;
     private boolean mDesiredFocusableInTouchModeState;
@@ -46,7 +39,6 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
     int mOldSelectedPosition;
     long mOldSelectedRowId;
     AdapterViewCompat$OnItemClickListener mOnItemClickListener;
-    AdapterViewCompat$OnItemLongClickListener mOnItemLongClickListener;
     AdapterViewCompat$OnItemSelectedListener mOnItemSelectedListener;
     @ViewDebug$ExportedProperty(category = "list")
     int mSelectedPosition;
@@ -57,36 +49,6 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
     int mSyncMode;
     int mSyncPosition;
     long mSyncRowId;
-    
-    AdapterViewCompat(final Context context) {
-        super(context);
-        this.mFirstPosition = 0;
-        this.mSyncRowId = Long.MIN_VALUE;
-        this.mNeedSync = false;
-        this.mInLayout = false;
-        this.mNextSelectedPosition = -1;
-        this.mNextSelectedRowId = Long.MIN_VALUE;
-        this.mSelectedPosition = -1;
-        this.mSelectedRowId = Long.MIN_VALUE;
-        this.mOldSelectedPosition = -1;
-        this.mOldSelectedRowId = Long.MIN_VALUE;
-        this.mBlockLayoutRequests = false;
-    }
-    
-    AdapterViewCompat(final Context context, final AttributeSet set) {
-        super(context, set);
-        this.mFirstPosition = 0;
-        this.mSyncRowId = Long.MIN_VALUE;
-        this.mNeedSync = false;
-        this.mInLayout = false;
-        this.mNextSelectedPosition = -1;
-        this.mNextSelectedRowId = Long.MIN_VALUE;
-        this.mSelectedPosition = -1;
-        this.mSelectedRowId = Long.MIN_VALUE;
-        this.mOldSelectedPosition = -1;
-        this.mOldSelectedRowId = Long.MIN_VALUE;
-        this.mBlockLayoutRequests = false;
-    }
     
     AdapterViewCompat(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
@@ -275,79 +237,12 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
     
     public abstract T getAdapter();
     
-    @ViewDebug$CapturedViewProperty
-    public int getCount() {
-        return this.mItemCount;
-    }
-    
-    public View getEmptyView() {
-        return this.mEmptyView;
-    }
-    
-    public int getFirstVisiblePosition() {
-        return this.mFirstPosition;
-    }
-    
-    public Object getItemAtPosition(final int n) {
-        final Adapter adapter = this.getAdapter();
-        if (adapter == null || n < 0) {
-            return null;
-        }
-        return adapter.getItem(n);
-    }
-    
     public long getItemIdAtPosition(final int n) {
         final Adapter adapter = this.getAdapter();
         if (adapter == null || n < 0) {
             return Long.MIN_VALUE;
         }
         return adapter.getItemId(n);
-    }
-    
-    public int getLastVisiblePosition() {
-        return this.mFirstPosition + this.getChildCount() - 1;
-    }
-    
-    public final AdapterViewCompat$OnItemClickListener getOnItemClickListener() {
-        return this.mOnItemClickListener;
-    }
-    
-    public final AdapterViewCompat$OnItemLongClickListener getOnItemLongClickListener() {
-        return this.mOnItemLongClickListener;
-    }
-    
-    public final AdapterViewCompat$OnItemSelectedListener getOnItemSelectedListener() {
-        return this.mOnItemSelectedListener;
-    }
-    
-    public int getPositionForView(View view) {
-        try {
-            while (true) {
-                final View view2 = (View)view.getParent();
-                if (view2.equals(this)) {
-                    break;
-                }
-                view = view2;
-            }
-        }
-        catch (ClassCastException ex) {
-            return -1;
-        }
-        for (int childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
-            if (this.getChildAt(i).equals(view)) {
-                return i + this.mFirstPosition;
-            }
-        }
-        return -1;
-    }
-    
-    public Object getSelectedItem() {
-        final Adapter adapter = this.getAdapter();
-        final int selectedItemPosition = this.getSelectedItemPosition();
-        if (adapter != null && adapter.getCount() > 0 && selectedItemPosition >= 0) {
-            return adapter.getItem(selectedItemPosition);
-        }
-        return null;
     }
     
     @ViewDebug$CapturedViewProperty
@@ -505,14 +400,6 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
         }
     }
     
-    public abstract void setAdapter(final T p0);
-    
-    public void setEmptyView(final View mEmptyView) {
-        this.mEmptyView = mEmptyView;
-        final Adapter adapter = this.getAdapter();
-        this.updateEmptyStatus(adapter == null || adapter.isEmpty());
-    }
-    
     public void setFocusable(final boolean mDesiredFocusableState) {
         final boolean b = true;
         final Adapter adapter = this.getAdapter();
@@ -597,21 +484,8 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
         this.mOnItemClickListener = mOnItemClickListener;
     }
     
-    public void setOnItemLongClickListener(final AdapterViewCompat$OnItemLongClickListener mOnItemLongClickListener) {
-        if (!this.isLongClickable()) {
-            this.setLongClickable(true);
-        }
-        this.mOnItemLongClickListener = mOnItemLongClickListener;
-    }
-    
-    public void setOnItemSelectedListener(final AdapterViewCompat$OnItemSelectedListener mOnItemSelectedListener) {
-        this.mOnItemSelectedListener = mOnItemSelectedListener;
-    }
-    
     void setSelectedPositionInt(final int mSelectedPosition) {
         this.mSelectedPosition = mSelectedPosition;
         this.mSelectedRowId = this.getItemIdAtPosition(mSelectedPosition);
     }
-    
-    public abstract void setSelection(final int p0);
 }

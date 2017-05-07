@@ -34,17 +34,6 @@ public class RequestBatch extends AbstractList<Request>
         this.requests = new ArrayList<Request>();
     }
     
-    public RequestBatch(final RequestBatch requestBatch) {
-        this.requests = new ArrayList<Request>();
-        this.timeoutInMilliseconds = 0;
-        this.id = Integer.valueOf(RequestBatch.idGenerator.incrementAndGet()).toString();
-        this.callbacks = new ArrayList<RequestBatch$Callback>();
-        this.requests = new ArrayList<Request>(requestBatch);
-        this.callbackHandler = requestBatch.callbackHandler;
-        this.timeoutInMilliseconds = requestBatch.timeoutInMilliseconds;
-        this.callbacks = new ArrayList<RequestBatch$Callback>(requestBatch.callbacks);
-    }
-    
     public RequestBatch(final Collection<Request> collection) {
         this.requests = new ArrayList<Request>();
         this.timeoutInMilliseconds = 0;
@@ -132,10 +121,6 @@ public class RequestBatch extends AbstractList<Request>
         return this.requests.remove(n);
     }
     
-    public void removeCallback(final RequestBatch$Callback requestBatch$Callback) {
-        this.callbacks.remove(requestBatch$Callback);
-    }
-    
     @Override
     public final Request set(final int n, final Request request) {
         return this.requests.set(n, request);
@@ -147,13 +132,6 @@ public class RequestBatch extends AbstractList<Request>
     
     final void setCallbackHandler(final Handler callbackHandler) {
         this.callbackHandler = callbackHandler;
-    }
-    
-    public void setTimeout(final int timeoutInMilliseconds) {
-        if (timeoutInMilliseconds < 0) {
-            throw new IllegalArgumentException("Argument timeoutInMilliseconds must be >= 0.");
-        }
-        this.timeoutInMilliseconds = timeoutInMilliseconds;
     }
     
     @Override

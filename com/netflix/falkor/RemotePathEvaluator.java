@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.net.URLEncoder;
 import java.lang.reflect.Method;
 import java.util.Iterator;
-import com.google.gson.JsonObject;
 import java.util.Map;
 import java.util.List;
+import com.google.gson.JsonObject;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import com.google.gson.GsonBuilder;
@@ -43,10 +43,10 @@ public class RemotePathEvaluator extends BasePathEvaluator
         Class<?> clazz;
         String string;
         Class<?> clazz2;
-        Type genericReturnType2;
-        Type type2 = null;
         Method method;
+        Type genericReturnType2;
         Class<?> returnType = null;
+        Type type2 = null;
         Class<?> clazz3;
         Class<?> clazz4;
         Type type3;
@@ -58,7 +58,7 @@ public class RemotePathEvaluator extends BasePathEvaluator
             }
             string = iterator.next().toString();
             while (true) {
-                Block_8_Outer:Block_6_Outer:
+            Block_6_Outer:
                 while (true) {
                     Label_0230: {
                         if (genericReturnType == null) {
@@ -80,13 +80,17 @@ public class RemotePathEvaluator extends BasePathEvaluator
                             Block_7:
                                 while (true) {
                                     while (true) {
-                                        while (true) {
-                                            type2 = ((ParameterizedType)genericReturnType2).getActualTypeArguments()[1];
-                                            break Label_0241;
-                                            genericReturnType2 = method.getGenericReturnType();
-                                            continue Block_8_Outer;
+                                        genericReturnType2 = method.getGenericReturnType();
+                                        Block_9: {
+                                            break Block_9;
+                                            Label_0193: {
+                                                clazz = JsonObject.class;
+                                            }
+                                            return clazz;
+                                            break Block_7;
                                         }
-                                        break Block_7;
+                                        type2 = ((ParameterizedType)genericReturnType2).getActualTypeArguments()[1];
+                                        break Label_0241;
                                         Label_0154: {
                                             continue Block_6_Outer;
                                         }
@@ -99,10 +103,6 @@ public class RemotePathEvaluator extends BasePathEvaluator
                                 type = returnType;
                                 clazz2 = null;
                                 break Label_0219;
-                                Label_0193: {
-                                    clazz = JsonObject.class;
-                                }
-                                return clazz;
                             }
                             catch (Exception ex) {
                                 return JsonObject.class;

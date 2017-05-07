@@ -4,23 +4,20 @@
 
 package android.support.v7.internal.widget;
 
-import android.util.Log;
-import android.widget.Adapter;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.os.Parcelable;
 import android.content.DialogInterface;
 import android.view.View$MeasureSpec;
+import android.graphics.drawable.Drawable;
 import android.widget.SpinnerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
-import android.graphics.drawable.Drawable;
 import android.view.ViewGroup$LayoutParams;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.support.v7.appcompat.R$styleable;
-import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.graphics.Rect;

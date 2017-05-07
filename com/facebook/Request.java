@@ -4,8 +4,10 @@
 
 package com.facebook;
 
-import com.facebook.model.GraphMultiResult;
+import android.text.TextUtils;
+import android.os.Handler;
 import android.util.Pair;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.OutputStream;
 import org.json.JSONArray;
@@ -13,37 +15,24 @@ import org.json.JSONObject;
 import com.facebook.model.GraphObjectList;
 import java.util.Map;
 import java.text.SimpleDateFormat;
-import android.os.Parcelable;
-import android.text.TextUtils;
-import java.util.ArrayList;
-import com.facebook.model.GraphUser;
-import com.facebook.model.GraphPlace;
-import com.facebook.model.OpenGraphObject$Factory;
-import com.facebook.model.OpenGraphObject;
-import com.facebook.model.OpenGraphAction;
-import com.facebook.internal.AttributionIdentifiers;
-import android.content.Context;
 import java.util.Date;
 import android.os.ParcelFileDescriptor;
-import java.util.regex.Matcher;
-import java.io.File;
 import android.graphics.Bitmap;
-import android.location.Location;
-import android.os.Handler;
+import java.util.regex.Matcher;
 import java.util.HashSet;
 import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Collection;
 import com.facebook.internal.Validate;
+import java.util.List;
 import java.util.Locale;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Iterator;
 import android.net.Uri$Builder;
 import android.util.Log;
 import com.facebook.internal.Utility;
 import com.facebook.internal.Logger;
-import java.util.List;
-import java.net.URL;
 import com.facebook.internal.ServerProtocol;
 import android.os.Bundle;
 import com.facebook.model.GraphObject;
@@ -51,42 +40,7 @@ import java.util.regex.Pattern;
 
 public class Request
 {
-    private static final String ACCEPT_LANGUAGE_HEADER = "Accept-Language";
-    private static final String ACCESS_TOKEN_PARAM = "access_token";
-    private static final String ATTACHED_FILES_PARAM = "attached_files";
-    private static final String ATTACHMENT_FILENAME_PREFIX = "file";
-    private static final String BATCH_APP_ID_PARAM = "batch_app_id";
-    private static final String BATCH_BODY_PARAM = "body";
-    private static final String BATCH_ENTRY_DEPENDS_ON_PARAM = "depends_on";
-    private static final String BATCH_ENTRY_NAME_PARAM = "name";
-    private static final String BATCH_ENTRY_OMIT_RESPONSE_ON_SUCCESS_PARAM = "omit_response_on_success";
-    private static final String BATCH_METHOD_PARAM = "method";
-    private static final String BATCH_PARAM = "batch";
-    private static final String BATCH_RELATIVE_URL_PARAM = "relative_url";
-    private static final String CONTENT_TYPE_HEADER = "Content-Type";
-    private static final String FORMAT_JSON = "json";
-    private static final String FORMAT_PARAM = "format";
-    private static final String ISO_8601_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ssZ";
-    public static final int MAXIMUM_BATCH_SIZE = 50;
-    private static final String ME = "me";
-    private static final String MIME_BOUNDARY = "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f";
-    private static final String MY_ACTION_FORMAT = "me/%s";
-    private static final String MY_FEED = "me/feed";
-    private static final String MY_FRIENDS = "me/friends";
-    private static final String MY_OBJECTS_FORMAT = "me/objects/%s";
-    private static final String MY_PHOTOS = "me/photos";
-    private static final String MY_STAGING_RESOURCES = "me/staging_resources";
-    private static final String MY_VIDEOS = "me/videos";
-    private static final String OBJECT_PARAM = "object";
-    private static final String PICTURE_PARAM = "picture";
-    private static final String SDK_ANDROID = "android";
-    private static final String SDK_PARAM = "sdk";
-    private static final String SEARCH = "search";
-    private static final String STAGING_PARAM = "file";
     public static final String TAG;
-    private static final String USER_AGENT_BASE = "FBAndroidSDK";
-    private static final String USER_AGENT_HEADER = "User-Agent";
-    private static final String VIDEOS_SUFFIX = "/videos";
     private static String defaultBatchApplicationId;
     private static volatile String userAgent;
     private static Pattern versionPattern;
@@ -113,14 +67,6 @@ public class Request
         this(null, null, null, null, null);
     }
     
-    public Request(final Session session, final String s) {
-        this(session, s, null, null, null);
-    }
-    
-    public Request(final Session session, final String s, final Bundle bundle, final HttpMethod httpMethod) {
-        this(session, s, bundle, httpMethod, null);
-    }
-    
     public Request(final Session session, final String s, final Bundle bundle, final HttpMethod httpMethod, final Request$Callback request$Callback) {
         this(session, s, bundle, httpMethod, request$Callback, null);
     }
@@ -142,15 +88,6 @@ public class Request
         if (this.version == null) {
             this.version = ServerProtocol.getAPIVersion();
         }
-    }
-    
-    Request(final Session session, final URL url) {
-        this.batchEntryOmitResultOnSuccess = true;
-        this.skipClientToken = false;
-        this.session = session;
-        this.overriddenURL = url.toString();
-        this.setHttpMethod(HttpMethod.GET);
-        this.parameters = new Bundle();
     }
     
     private void addCommonParameters() {
@@ -272,62 +209,6 @@ public class Request
         return fromHttpConnection;
     }
     
-    public static List<Response> executeConnectionAndWait(final HttpURLConnection httpURLConnection, final Collection<Request> collection) {
-        return executeConnectionAndWait(httpURLConnection, new RequestBatch(collection));
-    }
-    
-    public static RequestAsyncTask executeConnectionAsync(final Handler callbackHandler, final HttpURLConnection httpURLConnection, final RequestBatch requestBatch) {
-        Validate.notNull(httpURLConnection, "connection");
-        final RequestAsyncTask requestAsyncTask = new RequestAsyncTask(httpURLConnection, requestBatch);
-        requestBatch.setCallbackHandler(callbackHandler);
-        requestAsyncTask.executeOnSettingsExecutor();
-        return requestAsyncTask;
-    }
-    
-    public static RequestAsyncTask executeConnectionAsync(final HttpURLConnection httpURLConnection, final RequestBatch requestBatch) {
-        return executeConnectionAsync(null, httpURLConnection, requestBatch);
-    }
-    
-    @Deprecated
-    public static RequestAsyncTask executeGraphPathRequestAsync(final Session session, final String s, final Request$Callback request$Callback) {
-        return newGraphPathRequest(session, s, request$Callback).executeAsync();
-    }
-    
-    @Deprecated
-    public static RequestAsyncTask executeMeRequestAsync(final Session session, final Request$GraphUserCallback request$GraphUserCallback) {
-        return newMeRequest(session, request$GraphUserCallback).executeAsync();
-    }
-    
-    @Deprecated
-    public static RequestAsyncTask executeMyFriendsRequestAsync(final Session session, final Request$GraphUserListCallback request$GraphUserListCallback) {
-        return newMyFriendsRequest(session, request$GraphUserListCallback).executeAsync();
-    }
-    
-    @Deprecated
-    public static RequestAsyncTask executePlacesSearchRequestAsync(final Session session, final Location location, final int n, final int n2, final String s, final Request$GraphPlaceListCallback request$GraphPlaceListCallback) {
-        return newPlacesSearchRequest(session, location, n, n2, s, request$GraphPlaceListCallback).executeAsync();
-    }
-    
-    @Deprecated
-    public static RequestAsyncTask executePostRequestAsync(final Session session, final String s, final GraphObject graphObject, final Request$Callback request$Callback) {
-        return newPostRequest(session, s, graphObject, request$Callback).executeAsync();
-    }
-    
-    @Deprecated
-    public static RequestAsyncTask executeStatusUpdateRequestAsync(final Session session, final String s, final Request$Callback request$Callback) {
-        return newStatusUpdateRequest(session, s, request$Callback).executeAsync();
-    }
-    
-    @Deprecated
-    public static RequestAsyncTask executeUploadPhotoRequestAsync(final Session session, final Bitmap bitmap, final Request$Callback request$Callback) {
-        return newUploadPhotoRequest(session, bitmap, request$Callback).executeAsync();
-    }
-    
-    @Deprecated
-    public static RequestAsyncTask executeUploadPhotoRequestAsync(final Session session, final File file, final Request$Callback request$Callback) {
-        return newUploadPhotoRequest(session, file, request$Callback).executeAsync();
-    }
-    
     private static String getBatchAppId(final RequestBatch requestBatch) {
         if (!Utility.isNullOrEmpty(requestBatch.getBatchApplicationId())) {
             return requestBatch.getBatchApplicationId();
@@ -339,10 +220,6 @@ public class Request
                 return session.getApplicationId();
             }
         }
-        return Request.defaultBatchApplicationId;
-    }
-    
-    public static final String getDefaultBatchApplicationId() {
         return Request.defaultBatchApplicationId;
     }
     
@@ -396,58 +273,6 @@ public class Request
         return o instanceof String || o instanceof Boolean || o instanceof Number || o instanceof Date;
     }
     
-    public static Request newCustomAudienceThirdPartyIdRequest(final Session session, final Context context, final Request$Callback request$Callback) {
-        return newCustomAudienceThirdPartyIdRequest(session, context, null, request$Callback);
-    }
-    
-    public static Request newCustomAudienceThirdPartyIdRequest(Session activeSession, final Context context, String string, final Request$Callback request$Callback) {
-        if (activeSession == null) {
-            activeSession = Session.getActiveSession();
-        }
-        Session session = activeSession;
-        if (activeSession != null) {
-            session = activeSession;
-            if (!activeSession.isOpened()) {
-                session = null;
-            }
-        }
-        String s;
-        if ((s = string) == null) {
-            if (session != null) {
-                s = session.getApplicationId();
-            }
-            else {
-                s = Utility.getMetadataApplicationId(context);
-            }
-        }
-        if (s == null) {
-            throw new FacebookException("Facebook App ID cannot be determined");
-        }
-        string = s + "/custom_audience_third_party_id";
-        final AttributionIdentifiers attributionIdentifiers = AttributionIdentifiers.getAttributionIdentifiers(context);
-        final Bundle bundle = new Bundle();
-        if (session == null) {
-            String s2;
-            if (attributionIdentifiers.getAttributionId() != null) {
-                s2 = attributionIdentifiers.getAttributionId();
-            }
-            else {
-                s2 = attributionIdentifiers.getAndroidAdvertiserId();
-            }
-            if (attributionIdentifiers.getAttributionId() != null) {
-                bundle.putString("udid", s2);
-            }
-        }
-        if (Settings.getLimitEventAndDataUsage(context) || attributionIdentifiers.isTrackingLimited()) {
-            bundle.putString("limit_event_usage", "1");
-        }
-        return new Request(session, string, bundle, HttpMethod.GET, request$Callback);
-    }
-    
-    public static Request newDeleteObjectRequest(final Session session, final String s, final Request$Callback request$Callback) {
-        return new Request(session, s, null, HttpMethod.DELETE, request$Callback);
-    }
-    
     public static Request newGraphPathRequest(final Session session, final String s, final Request$Callback request$Callback) {
         return new Request(session, s, null, null, request$Callback);
     }
@@ -456,160 +281,10 @@ public class Request
         return new Request(session, "me", null, null, new Request$1(request$GraphUserCallback));
     }
     
-    public static Request newMyFriendsRequest(final Session session, final Request$GraphUserListCallback request$GraphUserListCallback) {
-        return new Request(session, "me/friends", null, null, new Request$2(request$GraphUserListCallback));
-    }
-    
-    public static Request newPlacesSearchRequest(final Session session, final Location location, final int n, final int n2, final String s, final Request$GraphPlaceListCallback request$GraphPlaceListCallback) {
-        if (location == null && Utility.isNullOrEmpty(s)) {
-            throw new FacebookException("Either location or searchText must be specified.");
-        }
-        final Bundle bundle = new Bundle(5);
-        bundle.putString("type", "place");
-        bundle.putInt("limit", n2);
-        if (location != null) {
-            bundle.putString("center", String.format(Locale.US, "%f,%f", location.getLatitude(), location.getLongitude()));
-            bundle.putInt("distance", n);
-        }
-        if (!Utility.isNullOrEmpty(s)) {
-            bundle.putString("q", s);
-        }
-        return new Request(session, "search", bundle, HttpMethod.GET, new Request$3(request$GraphPlaceListCallback));
-    }
-    
-    public static Request newPostOpenGraphActionRequest(final Session session, final OpenGraphAction openGraphAction, final Request$Callback request$Callback) {
-        if (openGraphAction == null) {
-            throw new FacebookException("openGraphAction cannot be null");
-        }
-        if (Utility.isNullOrEmpty(openGraphAction.getType())) {
-            throw new FacebookException("openGraphAction must have non-null 'type' property");
-        }
-        return newPostRequest(session, String.format("me/%s", openGraphAction.getType()), openGraphAction, request$Callback);
-    }
-    
-    public static Request newPostOpenGraphObjectRequest(final Session session, final OpenGraphObject openGraphObject, final Request$Callback request$Callback) {
-        if (openGraphObject == null) {
-            throw new FacebookException("openGraphObject cannot be null");
-        }
-        if (Utility.isNullOrEmpty(openGraphObject.getType())) {
-            throw new FacebookException("openGraphObject must have non-null 'type' property");
-        }
-        if (Utility.isNullOrEmpty(openGraphObject.getTitle())) {
-            throw new FacebookException("openGraphObject must have non-null 'title' property");
-        }
-        final String format = String.format("me/objects/%s", openGraphObject.getType());
-        final Bundle bundle = new Bundle();
-        bundle.putString("object", openGraphObject.getInnerJSONObject().toString());
-        return new Request(session, format, bundle, HttpMethod.POST, request$Callback);
-    }
-    
-    public static Request newPostOpenGraphObjectRequest(final Session session, final String s, final String s2, final String s3, final String s4, final String s5, final GraphObject data, final Request$Callback request$Callback) {
-        final OpenGraphObject forPost = OpenGraphObject$Factory.createForPost(OpenGraphObject.class, s, s2, s3, s4, s5);
-        if (data != null) {
-            forPost.setData(data);
-        }
-        return newPostOpenGraphObjectRequest(session, forPost, request$Callback);
-    }
-    
     public static Request newPostRequest(final Session session, final String s, final GraphObject graphObject, final Request$Callback request$Callback) {
         final Request request = new Request(session, s, null, HttpMethod.POST, request$Callback);
         request.setGraphObject(graphObject);
         return request;
-    }
-    
-    public static Request newStatusUpdateRequest(final Session session, final String s, final Request$Callback request$Callback) {
-        return newStatusUpdateRequest(session, s, null, (List<String>)null, request$Callback);
-    }
-    
-    public static Request newStatusUpdateRequest(final Session session, final String s, final GraphPlace graphPlace, final List<GraphUser> list, final Request$Callback request$Callback) {
-        ArrayList<String> list3;
-        if (list != null) {
-            final ArrayList<String> list2 = new ArrayList<String>(list.size());
-            final Iterator<GraphUser> iterator = list.iterator();
-            while (true) {
-                list3 = list2;
-                if (!iterator.hasNext()) {
-                    break;
-                }
-                list2.add(iterator.next().getId());
-            }
-        }
-        else {
-            list3 = null;
-        }
-        String id;
-        if (graphPlace == null) {
-            id = null;
-        }
-        else {
-            id = graphPlace.getId();
-        }
-        return newStatusUpdateRequest(session, s, id, list3, request$Callback);
-    }
-    
-    private static Request newStatusUpdateRequest(final Session session, final String s, final String s2, final List<String> list, final Request$Callback request$Callback) {
-        final Bundle bundle = new Bundle();
-        bundle.putString("message", s);
-        if (s2 != null) {
-            bundle.putString("place", s2);
-        }
-        if (list != null && list.size() > 0) {
-            bundle.putString("tags", TextUtils.join((CharSequence)",", (Iterable)list));
-        }
-        return new Request(session, "me/feed", bundle, HttpMethod.POST, request$Callback);
-    }
-    
-    public static Request newUpdateOpenGraphObjectRequest(final Session session, final OpenGraphObject openGraphObject, final Request$Callback request$Callback) {
-        if (openGraphObject == null) {
-            throw new FacebookException("openGraphObject cannot be null");
-        }
-        final String id = openGraphObject.getId();
-        if (id == null) {
-            throw new FacebookException("openGraphObject must have an id");
-        }
-        final Bundle bundle = new Bundle();
-        bundle.putString("object", openGraphObject.getInnerJSONObject().toString());
-        return new Request(session, id, bundle, HttpMethod.POST, request$Callback);
-    }
-    
-    public static Request newUpdateOpenGraphObjectRequest(final Session session, final String id, final String s, final String s2, final String s3, final String s4, final GraphObject data, final Request$Callback request$Callback) {
-        final OpenGraphObject forPost = OpenGraphObject$Factory.createForPost(OpenGraphObject.class, null, s, s2, s3, s4);
-        forPost.setId(id);
-        forPost.setData(data);
-        return newUpdateOpenGraphObjectRequest(session, forPost, request$Callback);
-    }
-    
-    public static Request newUploadPhotoRequest(final Session session, final Bitmap bitmap, final Request$Callback request$Callback) {
-        final Bundle bundle = new Bundle(1);
-        bundle.putParcelable("picture", (Parcelable)bitmap);
-        return new Request(session, "me/photos", bundle, HttpMethod.POST, request$Callback);
-    }
-    
-    public static Request newUploadPhotoRequest(final Session session, final File file, final Request$Callback request$Callback) {
-        final ParcelFileDescriptor open = ParcelFileDescriptor.open(file, 268435456);
-        final Bundle bundle = new Bundle(1);
-        bundle.putParcelable("picture", (Parcelable)open);
-        return new Request(session, "me/photos", bundle, HttpMethod.POST, request$Callback);
-    }
-    
-    public static Request newUploadStagingResourceWithImageRequest(final Session session, final Bitmap bitmap, final Request$Callback request$Callback) {
-        final Bundle bundle = new Bundle(1);
-        bundle.putParcelable("file", (Parcelable)bitmap);
-        return new Request(session, "me/staging_resources", bundle, HttpMethod.POST, request$Callback);
-    }
-    
-    public static Request newUploadStagingResourceWithImageRequest(final Session session, final File file, final Request$Callback request$Callback) {
-        final Request$ParcelFileDescriptorWithMimeType request$ParcelFileDescriptorWithMimeType = new Request$ParcelFileDescriptorWithMimeType(ParcelFileDescriptor.open(file, 268435456), "image/png");
-        final Bundle bundle = new Bundle(1);
-        bundle.putParcelable("file", (Parcelable)request$ParcelFileDescriptorWithMimeType);
-        return new Request(session, "me/staging_resources", bundle, HttpMethod.POST, request$Callback);
-    }
-    
-    public static Request newUploadVideoRequest(final Session session, final File file, final Request$Callback request$Callback) {
-        final ParcelFileDescriptor open = ParcelFileDescriptor.open(file, 268435456);
-        final Bundle bundle = new Bundle(1);
-        bundle.putParcelable(file.getName(), (Parcelable)open);
-        return new Request(session, "me/videos", bundle, HttpMethod.POST, request$Callback);
     }
     
     private static String parameterToString(final Object o) {
@@ -998,10 +673,6 @@ public class Request
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public static final void setDefaultBatchApplicationId(final String defaultBatchApplicationId) {
-        Request.defaultBatchApplicationId = defaultBatchApplicationId;
-    }
-    
     public static HttpURLConnection toHttpConnection(final RequestBatch p0) {
         // 
         // This method could not be decompiled.
@@ -1089,45 +760,8 @@ public class Request
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public static HttpURLConnection toHttpConnection(final Collection<Request> collection) {
-        Validate.notEmptyAndContainsNoNulls((Collection<Object>)collection, "requests");
-        return toHttpConnection(new RequestBatch(collection));
-    }
-    
-    public static HttpURLConnection toHttpConnection(final Request... array) {
-        return toHttpConnection(Arrays.asList(array));
-    }
-    
-    private static <T extends GraphObject> List<T> typedListFromResponse(final Response response, final Class<T> clazz) {
-        final GraphMultiResult graphMultiResult = response.getGraphObjectAs(GraphMultiResult.class);
-        if (graphMultiResult == null) {
-            return null;
-        }
-        final GraphObjectList<GraphObject> data = graphMultiResult.getData();
-        if (data == null) {
-            return null;
-        }
-        return data.castToListOf(clazz);
-    }
-    
     public final Response executeAndWait() {
         return executeAndWait(this);
-    }
-    
-    public final RequestAsyncTask executeAsync() {
-        return executeBatchAsync(this);
-    }
-    
-    public final String getBatchEntryDependsOn() {
-        return this.batchEntryDependsOn;
-    }
-    
-    public final String getBatchEntryName() {
-        return this.batchEntryName;
-    }
-    
-    public final boolean getBatchEntryOmitResultOnSuccess() {
-        return this.batchEntryOmitResultOnSuccess;
     }
     
     public final Request$Callback getCallback() {
@@ -1136,10 +770,6 @@ public class Request
     
     public final GraphObject getGraphObject() {
         return this.graphObject;
-    }
-    
-    public final String getGraphPath() {
-        return this.graphPath;
     }
     
     public final HttpMethod getHttpMethod() {
@@ -1183,32 +813,12 @@ public class Request
         return this.appendParametersToBaseUrl(format);
     }
     
-    public final String getVersion() {
-        return this.version;
-    }
-    
-    public final void setBatchEntryDependsOn(final String batchEntryDependsOn) {
-        this.batchEntryDependsOn = batchEntryDependsOn;
-    }
-    
-    public final void setBatchEntryName(final String batchEntryName) {
-        this.batchEntryName = batchEntryName;
-    }
-    
-    public final void setBatchEntryOmitResultOnSuccess(final boolean batchEntryOmitResultOnSuccess) {
-        this.batchEntryOmitResultOnSuccess = batchEntryOmitResultOnSuccess;
-    }
-    
     public final void setCallback(final Request$Callback callback) {
         this.callback = callback;
     }
     
     public final void setGraphObject(final GraphObject graphObject) {
         this.graphObject = graphObject;
-    }
-    
-    public final void setGraphPath(final String graphPath) {
-        this.graphPath = graphPath;
     }
     
     public final void setHttpMethod(HttpMethod get) {
@@ -1225,20 +835,12 @@ public class Request
         this.parameters = parameters;
     }
     
-    public final void setSession(final Session session) {
-        this.session = session;
-    }
-    
     public final void setSkipClientToken(final boolean skipClientToken) {
         this.skipClientToken = skipClientToken;
     }
     
     public final void setTag(final Object tag) {
         this.tag = tag;
-    }
-    
-    public final void setVersion(final String version) {
-        this.version = version;
     }
     
     @Override

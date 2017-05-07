@@ -13,19 +13,6 @@ import android.os.Bundle;
 
 public final class MediaRouteDescriptor
 {
-    private static final String KEY_CONNECTING = "connecting";
-    private static final String KEY_CONTROL_FILTERS = "controlFilters";
-    private static final String KEY_DESCRIPTION = "status";
-    private static final String KEY_ENABLED = "enabled";
-    private static final String KEY_EXTRAS = "extras";
-    private static final String KEY_ID = "id";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_PLAYBACK_STREAM = "playbackStream";
-    private static final String KEY_PLAYBACK_TYPE = "playbackType";
-    private static final String KEY_PRESENTATION_DISPLAY_ID = "presentationDisplayId";
-    private static final String KEY_VOLUME = "volume";
-    private static final String KEY_VOLUME_HANDLING = "volumeHandling";
-    private static final String KEY_VOLUME_MAX = "volumeMax";
     private final Bundle mBundle;
     private List<IntentFilter> mControlFilters;
     

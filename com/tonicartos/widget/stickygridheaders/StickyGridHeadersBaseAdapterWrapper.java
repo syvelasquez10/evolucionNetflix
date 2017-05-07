@@ -12,16 +12,6 @@ import android.widget.BaseAdapter;
 
 public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
 {
-    protected static final int ID_FILLER = -2;
-    protected static final int ID_HEADER = -1;
-    protected static final int ID_HEADER_FILLER = -3;
-    protected static final int POSITION_FILLER = -1;
-    protected static final int POSITION_HEADER = -2;
-    protected static final int POSITION_HEADER_FILLER = -3;
-    protected static final int VIEW_TYPE_FILLER = 0;
-    protected static final int VIEW_TYPE_HEADER = 1;
-    protected static final int VIEW_TYPE_HEADER_FILLER = 2;
-    private static final int sNumViewTypes = 3;
     private final Context mContext;
     private int mCount;
     private boolean mCounted;
@@ -170,10 +160,6 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
     
     public int getViewTypeCount() {
         return this.mDelegate.getViewTypeCount() + 3;
-    }
-    
-    public StickyGridHeadersBaseAdapter getWrappedAdapter() {
-        return this.mDelegate;
     }
     
     public boolean hasStableIds() {

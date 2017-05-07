@@ -108,7 +108,7 @@ public class d extends Fragment implements DialogInterface$OnCancelListener, Loa
     
     public void a(final int n, final GoogleApiClient googleApiClient, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
         n.b(googleApiClient, "GoogleApiClient instance cannot be null");
-        n.a(this.Jy.indexOfKey(n) < 0, (Object)("Already managing a GoogleApiClient with id " + n));
+        n.a(this.Jy.indexOfKey(n) < 0, "Already managing a GoogleApiClient with id " + n);
         this.Jy.put(n, (Object)new d$b(googleApiClient, googleApiClient$OnConnectionFailedListener, null));
         if (this.getActivity() != null) {
             this.getLoaderManager().initLoader(n, null, (LoaderManager$LoaderCallbacks<Object>)this);

@@ -13,11 +13,10 @@ import android.content.Context;
 import android.widget.AdapterView$OnItemClickListener;
 import android.widget.ListView;
 
-public final class ExpandedMenuView extends ListView implements aa, k, AdapterView$OnItemClickListener
+public final class ExpandedMenuView extends ListView implements k, z, AdapterView$OnItemClickListener
 {
     private static final int[] a;
     private i b;
-    private int c;
     
     static {
         a = new int[] { 16842964, 16843049 };
@@ -38,10 +37,6 @@ public final class ExpandedMenuView extends ListView implements aa, k, AdapterVi
             this.setDivider(obtainStyledAttributes.getDrawable(1));
         }
         obtainStyledAttributes.recycle();
-    }
-    
-    public int getWindowAnimations() {
-        return this.c;
     }
     
     public void initialize(final i b) {

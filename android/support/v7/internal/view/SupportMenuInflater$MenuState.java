@@ -31,14 +31,6 @@ import android.support.v4.view.ActionProvider;
 
 class SupportMenuInflater$MenuState
 {
-    private static final int defaultGroupId = 0;
-    private static final int defaultItemCategory = 0;
-    private static final int defaultItemCheckable = 0;
-    private static final boolean defaultItemChecked = false;
-    private static final boolean defaultItemEnabled = true;
-    private static final int defaultItemId = 0;
-    private static final int defaultItemOrder = 0;
-    private static final boolean defaultItemVisible = true;
     private int groupCategory;
     private int groupCheckable;
     private boolean groupEnabled;

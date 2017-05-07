@@ -16,9 +16,6 @@ public final class Cast
     static final Api$c<ij> CU;
     private static final Api$b<ij, Cast$CastOptions> CV;
     public static final Cast$CastApi CastApi;
-    public static final String EXTRA_APP_NO_LONGER_RUNNING = "com.google.android.gms.cast.EXTRA_APP_NO_LONGER_RUNNING";
-    public static final int MAX_MESSAGE_LENGTH = 65536;
-    public static final int MAX_NAMESPACE_LENGTH = 128;
     
     static {
         CU = new Api$c<ij>();

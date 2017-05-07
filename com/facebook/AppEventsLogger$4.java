@@ -4,11 +4,6 @@
 
 package com.facebook;
 
-import java.util.Currency;
-import java.math.BigDecimal;
-import android.content.Intent;
-import android.content.ComponentName;
-import bolts.AppLinks;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONArray;
@@ -18,8 +13,6 @@ import android.os.Bundle;
 import com.facebook.model.GraphObject;
 import com.facebook.internal.Logger;
 import java.util.ArrayList;
-import android.util.Log;
-import android.app.Activity;
 import java.util.List;
 import com.facebook.internal.Validate;
 import java.util.concurrent.ConcurrentHashMap;

@@ -4,10 +4,8 @@
 
 package android.support.v4.app;
 
-import android.os.Parcelable;
 import java.util.Iterator;
 import android.os.Build$VERSION;
-import android.os.Bundle;
 import java.util.ArrayList;
 import android.app.Notification;
 
@@ -19,40 +17,5 @@ class NotificationCompat$NotificationCompatImplKitKat extends NotificationCompat
         addActionsToBuilder(notificationCompatKitKat$Builder, notificationCompat$Builder.mActions);
         addStyleToBuilderJellybean(notificationCompatKitKat$Builder, notificationCompat$Builder.mStyle);
         return notificationCompatKitKat$Builder.build();
-    }
-    
-    @Override
-    public NotificationCompat$Action getAction(final Notification notification, final int n) {
-        return (NotificationCompat$Action)NotificationCompatKitKat.getAction(notification, n, NotificationCompat$Action.FACTORY, RemoteInput.FACTORY);
-    }
-    
-    @Override
-    public int getActionCount(final Notification notification) {
-        return NotificationCompatKitKat.getActionCount(notification);
-    }
-    
-    @Override
-    public Bundle getExtras(final Notification notification) {
-        return NotificationCompatKitKat.getExtras(notification);
-    }
-    
-    @Override
-    public String getGroup(final Notification notification) {
-        return NotificationCompatKitKat.getGroup(notification);
-    }
-    
-    @Override
-    public boolean getLocalOnly(final Notification notification) {
-        return NotificationCompatKitKat.getLocalOnly(notification);
-    }
-    
-    @Override
-    public String getSortKey(final Notification notification) {
-        return NotificationCompatKitKat.getSortKey(notification);
-    }
-    
-    @Override
-    public boolean isGroupSummary(final Notification notification) {
-        return NotificationCompatKitKat.isGroupSummary(notification);
     }
 }

@@ -9,11 +9,11 @@ import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import android.text.Html;
 import com.netflix.mediaclient.util.api.Api17Util;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.SocialNotificationsUtils;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
@@ -244,7 +244,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         else {
             n = 0;
         }
-        if (n != 0) {
+        if (n != 0 && StringUtils.isNotEmpty(billboard.getSocialBadge().getFullName())) {
             this.infoViewGroup.setVisibility(0);
             this.label.setVisibility(8);
             this.info.setVisibility(8);

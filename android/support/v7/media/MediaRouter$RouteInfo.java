@@ -5,10 +5,6 @@
 package android.support.v7.media;
 
 import java.util.Collection;
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import java.util.List;
 import android.view.Display;
 import android.os.Bundle;
@@ -17,13 +13,6 @@ import java.util.ArrayList;
 
 public final class MediaRouter$RouteInfo
 {
-    static final int CHANGE_GENERAL = 1;
-    static final int CHANGE_PRESENTATION_DISPLAY = 4;
-    static final int CHANGE_VOLUME = 2;
-    public static final int PLAYBACK_TYPE_LOCAL = 0;
-    public static final int PLAYBACK_TYPE_REMOTE = 1;
-    public static final int PLAYBACK_VOLUME_FIXED = 0;
-    public static final int PLAYBACK_VOLUME_VARIABLE = 1;
     private boolean mConnecting;
     private final ArrayList<IntentFilter> mControlFilters;
     private String mDescription;
@@ -50,11 +39,6 @@ public final class MediaRouter$RouteInfo
         this.mUniqueId = mUniqueId;
     }
     
-    public List<IntentFilter> getControlFilters() {
-        return this.mControlFilters;
-    }
-    
-    @Nullable
     public String getDescription() {
         return this.mDescription;
     }
@@ -63,12 +47,10 @@ public final class MediaRouter$RouteInfo
         return this.mDescriptorId;
     }
     
-    @Nullable
     public Bundle getExtras() {
         return this.mExtras;
     }
     
-    @NonNull
     public String getId() {
         return this.mUniqueId;
     }
@@ -83,19 +65,6 @@ public final class MediaRouter$RouteInfo
     
     public int getPlaybackType() {
         return this.mPlaybackType;
-    }
-    
-    @Nullable
-    public Display getPresentationDisplay() {
-        MediaRouter.checkCallingThread();
-        if (this.mPresentationDisplayId >= 0 && this.mPresentationDisplay == null) {
-            this.mPresentationDisplay = MediaRouter.sGlobal.getDisplay(this.mPresentationDisplayId);
-        }
-        return this.mPresentationDisplay;
-    }
-    
-    public MediaRouter$ProviderInfo getProvider() {
-        return this.mProvider;
     }
     
     MediaRouteProvider getProviderInstance() {
@@ -114,25 +83,12 @@ public final class MediaRouter$RouteInfo
         return this.mVolumeMax;
     }
     
-    public boolean isConnecting() {
-        return this.mConnecting;
-    }
-    
-    public boolean isDefault() {
-        MediaRouter.checkCallingThread();
-        return MediaRouter.sGlobal.getDefaultRoute() == this;
-    }
-    
-    public boolean isEnabled() {
-        return this.mEnabled;
-    }
-    
     public boolean isSelected() {
         MediaRouter.checkCallingThread();
         return MediaRouter.sGlobal.getSelectedRoute() == this;
     }
     
-    public boolean matchesSelector(@NonNull final MediaRouteSelector mediaRouteSelector) {
+    public boolean matchesSelector(final MediaRouteSelector mediaRouteSelector) {
         if (mediaRouteSelector == null) {
             throw new IllegalArgumentException("selector must not be null");
         }
@@ -157,52 +113,13 @@ public final class MediaRouter$RouteInfo
         MediaRouter.sGlobal.selectRoute(this);
     }
     
-    public void sendControlRequest(@NonNull final Intent intent, @Nullable final MediaRouter$ControlRequestCallback mediaRouter$ControlRequestCallback) {
-        if (intent == null) {
-            throw new IllegalArgumentException("intent must not be null");
-        }
-        MediaRouter.checkCallingThread();
-        MediaRouter.sGlobal.sendControlRequest(this, intent, mediaRouter$ControlRequestCallback);
-    }
-    
-    public boolean supportsControlAction(@NonNull final String s, @NonNull final String s2) {
-        if (s == null) {
-            throw new IllegalArgumentException("category must not be null");
-        }
-        if (s2 == null) {
-            throw new IllegalArgumentException("action must not be null");
-        }
-        MediaRouter.checkCallingThread();
-        for (int size = this.mControlFilters.size(), i = 0; i < size; ++i) {
-            final IntentFilter intentFilter = this.mControlFilters.get(i);
-            if (intentFilter.hasCategory(s) && intentFilter.hasAction(s2)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public boolean supportsControlCategory(@NonNull final String s) {
+    public boolean supportsControlCategory(final String s) {
         if (s == null) {
             throw new IllegalArgumentException("category must not be null");
         }
         MediaRouter.checkCallingThread();
         for (int size = this.mControlFilters.size(), i = 0; i < size; ++i) {
             if (this.mControlFilters.get(i).hasCategory(s)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public boolean supportsControlRequest(@NonNull final Intent intent) {
-        if (intent == null) {
-            throw new IllegalArgumentException("intent must not be null");
-        }
-        MediaRouter.checkCallingThread();
-        final ContentResolver contentResolver = MediaRouter.sGlobal.getContentResolver();
-        for (int size = this.mControlFilters.size(), i = 0; i < size; ++i) {
-            if (this.mControlFilters.get(i).match(contentResolver, intent, true, "MediaRouter") >= 0) {
                 return true;
             }
         }

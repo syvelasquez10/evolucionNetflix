@@ -4,7 +4,6 @@
 
 package android.support.v7.internal.view.menu;
 
-import android.support.v4.view.MenuItemCompat$OnActionExpandListener;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.MenuItem$OnActionExpandListener;
 import android.support.v7.view.CollapsibleActionView;
@@ -21,19 +20,18 @@ import android.view.MenuItem;
 
 public class o extends e<MenuItem> implements SupportMenuItem
 {
-    static final String b = "MenuItemWrapper";
-    private final boolean c;
-    private boolean d;
-    private Method e;
+    private final boolean b;
+    private boolean c;
+    private Method d;
     
     o(final MenuItem menuItem) {
         this(menuItem, true);
     }
     
-    o(final MenuItem menuItem, final boolean c) {
+    o(final MenuItem menuItem, final boolean b) {
         super(menuItem);
-        this.d = menuItem.isVisible();
-        this.c = c;
+        this.c = menuItem.isVisible();
+        this.b = b;
     }
     
     p a(final ActionProvider actionProvider) {
@@ -42,14 +40,22 @@ public class o extends e<MenuItem> implements SupportMenuItem
     
     public void a(final boolean b) {
         try {
-            if (this.e == null) {
-                this.e = ((MenuItem)this.a).getClass().getDeclaredMethod("setExclusiveCheckable", Boolean.TYPE);
+            if (this.d == null) {
+                this.d = ((MenuItem)this.a).getClass().getDeclaredMethod("setExclusiveCheckable", Boolean.TYPE);
             }
-            this.e.invoke(this.a, b);
+            this.d.invoke(this.a, b);
         }
         catch (Exception ex) {
             Log.w("MenuItemWrapper", "Error while calling setExclusiveCheckable", (Throwable)ex);
         }
+    }
+    
+    public ActionProvider b() {
+        final p p = (p)((MenuItem)this.a).getActionProvider();
+        if (p != null) {
+            return p.a;
+        }
+        return null;
     }
     
     final MenuItem b(final boolean visible) {
@@ -59,14 +65,14 @@ public class o extends e<MenuItem> implements SupportMenuItem
     final boolean c() {
         boolean b2;
         final boolean b = b2 = false;
-        if (this.d) {
-            final ActionProvider supportActionProvider = this.getSupportActionProvider();
+        if (this.c) {
+            final ActionProvider b3 = this.b();
             b2 = b;
-            if (supportActionProvider != null) {
+            if (b3 != null) {
                 b2 = b;
-                if (supportActionProvider.overridesItemVisibility()) {
+                if (b3.overridesItemVisibility()) {
                     b2 = b;
-                    if (!supportActionProvider.isVisible()) {
+                    if (!b3.isVisible()) {
                         this.b(false);
                         b2 = true;
                     }
@@ -76,7 +82,6 @@ public class o extends e<MenuItem> implements SupportMenuItem
         return b2;
     }
     
-    @Override
     public boolean collapseActionView() {
         return ((MenuItem)this.a).collapseActionView();
     }
@@ -136,15 +141,6 @@ public class o extends e<MenuItem> implements SupportMenuItem
         return this.a(((MenuItem)this.a).getSubMenu());
     }
     
-    @Override
-    public ActionProvider getSupportActionProvider() {
-        final p p = (p)((MenuItem)this.a).getActionProvider();
-        if (p != null) {
-            return p.a;
-        }
-        return null;
-    }
-    
     public CharSequence getTitle() {
         return ((MenuItem)this.a).getTitle();
     }
@@ -180,7 +176,7 @@ public class o extends e<MenuItem> implements SupportMenuItem
     
     public MenuItem setActionProvider(final android.view.ActionProvider actionProvider) {
         ((MenuItem)this.a).setActionProvider(actionProvider);
-        if (actionProvider != null && this.c) {
+        if (actionProvider != null && this.b) {
             this.c();
         }
         return (MenuItem)this;
@@ -255,7 +251,7 @@ public class o extends e<MenuItem> implements SupportMenuItem
         final MenuItem menuItem = (MenuItem)this.a;
         Object onMenuItemClickListener;
         if (menuItem$OnMenuItemClickListener != null) {
-            onMenuItemClickListener = new t(this, menuItem$OnMenuItemClickListener);
+            onMenuItemClickListener = new s(this, menuItem$OnMenuItemClickListener);
         }
         else {
             onMenuItemClickListener = null;
@@ -274,7 +270,6 @@ public class o extends e<MenuItem> implements SupportMenuItem
         ((MenuItem)this.a).setShowAsAction(showAsAction);
     }
     
-    @Override
     public MenuItem setShowAsActionFlags(final int showAsActionFlags) {
         ((MenuItem)this.a).setShowAsActionFlags(showAsActionFlags);
         return (MenuItem)this;
@@ -294,20 +289,6 @@ public class o extends e<MenuItem> implements SupportMenuItem
         return this;
     }
     
-    @Override
-    public SupportMenuItem setSupportOnActionExpandListener(final MenuItemCompat$OnActionExpandListener menuItemCompat$OnActionExpandListener) {
-        final MenuItem menuItem = (MenuItem)this.a;
-        Object onActionExpandListener;
-        if (menuItemCompat$OnActionExpandListener != null) {
-            onActionExpandListener = new s(this, menuItemCompat$OnActionExpandListener);
-        }
-        else {
-            onActionExpandListener = null;
-        }
-        menuItem.setOnActionExpandListener((MenuItem$OnActionExpandListener)onActionExpandListener);
-        return null;
-    }
-    
     public MenuItem setTitle(final int title) {
         ((MenuItem)this.a).setTitle(title);
         return (MenuItem)this;
@@ -323,13 +304,13 @@ public class o extends e<MenuItem> implements SupportMenuItem
         return (MenuItem)this;
     }
     
-    public MenuItem setVisible(final boolean d) {
-        if (this.c) {
-            this.d = d;
+    public MenuItem setVisible(final boolean c) {
+        if (this.b) {
+            this.c = c;
             if (this.c()) {
                 return (MenuItem)this;
             }
         }
-        return this.b(d);
+        return this.b(c);
     }
 }

@@ -4,9 +4,8 @@
 
 package com.facebook.widget;
 
-import com.facebook.internal.Utility;
-import com.facebook.FacebookException;
 import com.facebook.internal.Validate;
+import com.facebook.internal.Utility;
 import com.facebook.Session;
 import android.os.Bundle;
 import android.content.Context;
@@ -20,32 +19,6 @@ class WebDialog$BuilderBase<CONCRETE extends WebDialog$BuilderBase<?>>
     private Bundle parameters;
     private Session session;
     private int theme;
-    
-    protected WebDialog$BuilderBase(final Context context, final Session session, final String s, final Bundle bundle) {
-        this.theme = 16973840;
-        Validate.notNull(session, "session");
-        if (!session.isOpened()) {
-            throw new FacebookException("Attempted to use a Session that was not open.");
-        }
-        this.session = session;
-        this.finishInit(context, s, bundle);
-    }
-    
-    protected WebDialog$BuilderBase(final Context context, final String s) {
-        this.theme = 16973840;
-        final Session activeSession = Session.getActiveSession();
-        if (activeSession != null && activeSession.isOpened()) {
-            this.session = activeSession;
-        }
-        else {
-            final String metadataApplicationId = Utility.getMetadataApplicationId(context);
-            if (metadataApplicationId == null) {
-                throw new FacebookException("Attempted to create a builder without an open Active Session or a valid default Application ID.");
-            }
-            this.applicationId = metadataApplicationId;
-        }
-        this.finishInit(context, s, null);
-    }
     
     protected WebDialog$BuilderBase(final Context context, final String s, final String s2, final Bundle bundle) {
         this.theme = 16973840;
@@ -101,11 +74,6 @@ class WebDialog$BuilderBase<CONCRETE extends WebDialog$BuilderBase<?>>
     
     public CONCRETE setOnCompleteListener(final WebDialog$OnCompleteListener listener) {
         this.listener = listener;
-        return (CONCRETE)this;
-    }
-    
-    public CONCRETE setTheme(final int theme) {
-        this.theme = theme;
         return (CONCRETE)this;
     }
 }

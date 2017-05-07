@@ -5,9 +5,9 @@
 package android.support.v7.media;
 
 import android.media.MediaRouter$RouteInfo;
-import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
+import android.content.Context;
 import android.media.MediaRouter$RouteCategory;
 import android.media.MediaRouter$UserRouteInfo;
 import android.media.MediaRouter$Callback;
@@ -15,12 +15,6 @@ import android.media.MediaRouter;
 
 final class MediaRouterJellybean
 {
-    public static final int ALL_ROUTE_TYPES = 8388611;
-    public static final int ROUTE_TYPE_LIVE_AUDIO = 1;
-    public static final int ROUTE_TYPE_LIVE_VIDEO = 2;
-    public static final int ROUTE_TYPE_USER = 8388608;
-    private static final String TAG = "MediaRouterJellybean";
-    
     public static void addCallback(final Object o, final int n, final Object o2) {
         ((MediaRouter)o).addCallback(n, (MediaRouter$Callback)o2);
     }
@@ -43,16 +37,6 @@ final class MediaRouterJellybean
     
     public static Object createVolumeCallback(final MediaRouterJellybean$VolumeCallback mediaRouterJellybean$VolumeCallback) {
         return new MediaRouterJellybean$VolumeCallbackProxy(mediaRouterJellybean$VolumeCallback);
-    }
-    
-    public static List getCategories(final Object o) {
-        final MediaRouter mediaRouter = (MediaRouter)o;
-        final int categoryCount = mediaRouter.getCategoryCount();
-        final ArrayList list = new ArrayList<MediaRouter$RouteCategory>(categoryCount);
-        for (int i = 0; i < categoryCount; ++i) {
-            list.add(mediaRouter.getCategoryAt(i));
-        }
-        return list;
     }
     
     public static Object getMediaRouter(final Context context) {

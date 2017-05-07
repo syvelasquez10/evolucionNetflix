@@ -11,13 +11,11 @@ import android.support.v7.view.ActionMode;
 import android.view.MenuItem;
 import android.view.KeyEvent;
 import android.util.AttributeSet;
-import android.support.annotation.NonNull;
 import android.content.Context;
 import android.support.v4.app.TaskStackBuilder;
 import android.view.Menu;
 import android.os.Bundle;
 import android.content.res.Configuration;
-import android.support.annotation.Nullable;
 import android.app.Activity;
 import android.support.v4.app.NavUtils;
 import android.content.Intent;
@@ -26,10 +24,9 @@ import android.support.v4.app.ActionBarDrawerToggle$Delegate;
 import android.view.ViewGroup$LayoutParams;
 import android.view.View;
 import android.support.v4.app.TaskStackBuilder$SupportParentable;
-import android.support.v4.app.ActionBarDrawerToggle$DelegateProvider;
 import android.support.v4.app.FragmentActivity;
 
-public class ActionBarActivity extends FragmentActivity implements ActionBarDrawerToggle$DelegateProvider, TaskStackBuilder$SupportParentable, ActionBar$Callback, ActionBarDrawerToggle$TmpDelegateProvider
+public class ActionBarActivity extends FragmentActivity implements TaskStackBuilder$SupportParentable, ActionBarDrawerToggle$TmpDelegateProvider
 {
     private ActionBarActivityDelegate mDelegate;
     
@@ -44,7 +41,6 @@ public class ActionBarActivity extends FragmentActivity implements ActionBarDraw
         this.getDelegate().addContentView(view, viewGroup$LayoutParams);
     }
     
-    @Override
     public final ActionBarDrawerToggle$Delegate getDrawerToggleDelegate() {
         return this.getDelegate().getDrawerToggleDelegate();
     }
@@ -62,7 +58,6 @@ public class ActionBarActivity extends FragmentActivity implements ActionBarDraw
         return NavUtils.getParentActivityIntent(this);
     }
     
-    @Nullable
     @Override
     public android.support.v7.app.ActionBarDrawerToggle$Delegate getV7DrawerToggleDelegate() {
         return this.getDelegate().getV7DrawerToggleDelegate();
@@ -112,7 +107,7 @@ public class ActionBarActivity extends FragmentActivity implements ActionBarDraw
     }
     
     @Override
-    public View onCreateView(final String s, @NonNull final Context context, @NonNull final AttributeSet set) {
+    public View onCreateView(final String s, final Context context, final AttributeSet set) {
         final View onCreateView = super.onCreateView(s, context, set);
         if (onCreateView != null) {
             return onCreateView;
@@ -230,7 +225,7 @@ public class ActionBarActivity extends FragmentActivity implements ActionBarDraw
         this.getDelegate().setContentView(view, viewGroup$LayoutParams);
     }
     
-    public void setSupportActionBar(@Nullable final Toolbar supportActionBar) {
+    public void setSupportActionBar(final Toolbar supportActionBar) {
         this.getDelegate().setSupportActionBar(supportActionBar);
     }
     

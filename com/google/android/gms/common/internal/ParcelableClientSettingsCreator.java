@@ -13,8 +13,6 @@ import android.os.Parcelable$Creator;
 
 public class ParcelableClientSettingsCreator implements Parcelable$Creator<ClientSettings$ParcelableClientSettings>
 {
-    public static final int CONTENT_DESCRIPTION = 0;
-    
     static void a(final ClientSettings$ParcelableClientSettings clientSettings$ParcelableClientSettings, final Parcel parcel, int d) {
         d = b.D(parcel);
         b.a(parcel, 1, clientSettings$ParcelableClientSettings.getAccountName(), false);

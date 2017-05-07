@@ -6,16 +6,13 @@ package android.support.v7.internal.widget;
 
 import android.support.v7.internal.view.menu.i;
 import android.support.v7.appcompat.R$id;
-import android.support.v7.internal.view.menu.z;
+import android.support.v7.internal.view.menu.y;
 import android.view.Menu;
-import android.widget.SpinnerAdapter;
-import android.os.Parcelable;
-import android.util.SparseArray;
+import android.support.v7.widget.Toolbar$LayoutParams;
 import android.util.Log;
 import android.content.Context;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.Toolbar$LayoutParams;
 import android.view.ViewGroup$LayoutParams;
 import android.view.View$OnClickListener;
 import android.view.ViewGroup;
@@ -34,8 +31,6 @@ import android.support.v7.widget.ActionMenuPresenter;
 
 public class ToolbarWidgetWrapper implements DecorToolbar
 {
-    private static final int AFFECTS_LOGO_MASK = 3;
-    private static final String TAG = "ToolbarWidgetWrapper";
     private ActionMenuPresenter mActionMenuPresenter;
     private View mCustomView;
     private int mDefaultNavigationContentDescription;
@@ -47,7 +42,6 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     private boolean mMenuPrepared;
     private Drawable mNavIcon;
     private int mNavigationMode;
-    private SpinnerCompat mSpinner;
     private CharSequence mSubtitle;
     private View mTabView;
     private final TintManager mTintManager;
@@ -139,12 +133,6 @@ public class ToolbarWidgetWrapper implements DecorToolbar
         return n;
     }
     
-    private void ensureSpinner() {
-        if (this.mSpinner == null) {
-            (this.mSpinner = new SpinnerCompat(this.getContext(), null, R$attr.actionDropDownStyle)).setLayoutParams((ViewGroup$LayoutParams)new Toolbar$LayoutParams(-2, -2, 8388627));
-        }
-    }
-    
     private void setTitleInt(final CharSequence charSequence) {
         this.mTitle = charSequence;
         if ((this.mDisplayOpts & 0x8) != 0x0) {
@@ -210,11 +198,6 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     }
     
     @Override
-    public boolean canSplit() {
-        return false;
-    }
-    
-    @Override
     public void collapseActionView() {
         this.mToolbar.collapseActionView();
     }
@@ -230,29 +213,8 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     }
     
     @Override
-    public View getCustomView() {
-        return this.mCustomView;
-    }
-    
-    @Override
     public int getDisplayOptions() {
         return this.mDisplayOpts;
-    }
-    
-    @Override
-    public int getDropdownItemCount() {
-        if (this.mSpinner != null) {
-            return this.mSpinner.getCount();
-        }
-        return 0;
-    }
-    
-    @Override
-    public int getDropdownSelectedPosition() {
-        if (this.mSpinner != null) {
-            return this.mSpinner.getSelectedItemPosition();
-        }
-        return 0;
     }
     
     @Override
@@ -261,38 +223,13 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     }
     
     @Override
-    public CharSequence getSubtitle() {
-        return this.mToolbar.getSubtitle();
-    }
-    
-    @Override
-    public CharSequence getTitle() {
-        return this.mToolbar.getTitle();
-    }
-    
-    @Override
     public ViewGroup getViewGroup() {
         return this.mToolbar;
     }
     
     @Override
-    public boolean hasEmbeddedTabs() {
-        return this.mTabView != null;
-    }
-    
-    @Override
     public boolean hasExpandedActionView() {
         return this.mToolbar.hasExpandedActionView();
-    }
-    
-    @Override
-    public boolean hasIcon() {
-        return this.mIcon != null;
-    }
-    
-    @Override
-    public boolean hasLogo() {
-        return this.mLogo != null;
     }
     
     @Override
@@ -326,21 +263,6 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     }
     
     @Override
-    public boolean isTitleTruncated() {
-        return this.mToolbar.isTitleTruncated();
-    }
-    
-    @Override
-    public void restoreHierarchyState(final SparseArray<Parcelable> sparseArray) {
-        this.mToolbar.restoreHierarchyState((SparseArray)sparseArray);
-    }
-    
-    @Override
-    public void saveHierarchyState(final SparseArray<Parcelable> sparseArray) {
-        this.mToolbar.saveHierarchyState((SparseArray)sparseArray);
-    }
-    
-    @Override
     public void setCollapsible(final boolean collapsible) {
         this.mToolbar.setCollapsible(collapsible);
     }
@@ -355,7 +277,6 @@ public class ToolbarWidgetWrapper implements DecorToolbar
         }
     }
     
-    @Override
     public void setDefaultNavigationContentDescription(final int mDefaultNavigationContentDescription) {
         if (mDefaultNavigationContentDescription != this.mDefaultNavigationContentDescription) {
             this.mDefaultNavigationContentDescription = mDefaultNavigationContentDescription;
@@ -365,7 +286,6 @@ public class ToolbarWidgetWrapper implements DecorToolbar
         }
     }
     
-    @Override
     public void setDefaultNavigationIcon(final Drawable mDefaultNavigationIcon) {
         if (this.mDefaultNavigationIcon != mDefaultNavigationIcon) {
             this.mDefaultNavigationIcon = mDefaultNavigationIcon;
@@ -411,21 +331,6 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     }
     
     @Override
-    public void setDropdownParams(final SpinnerAdapter adapter, final AdapterViewCompat$OnItemSelectedListener onItemSelectedListener) {
-        this.ensureSpinner();
-        this.mSpinner.setAdapter(adapter);
-        this.mSpinner.setOnItemSelectedListener(onItemSelectedListener);
-    }
-    
-    @Override
-    public void setDropdownSelectedPosition(final int selection) {
-        if (this.mSpinner == null) {
-            throw new IllegalStateException("Can't set dropdown selected position without an adapter");
-        }
-        this.mSpinner.setSelection(selection);
-    }
-    
-    @Override
     public void setEmbeddedTabView(final ScrollingTabContainerView mTabView) {
         if (this.mTabView != null && this.mTabView.getParent() == this.mToolbar) {
             this.mToolbar.removeView(this.mTabView);
@@ -444,19 +349,6 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     public void setHomeButtonEnabled(final boolean b) {
     }
     
-    @Override
-    public void setIcon(final int n) {
-        Drawable drawable;
-        if (n != 0) {
-            drawable = this.mTintManager.getDrawable(n);
-        }
-        else {
-            drawable = null;
-        }
-        this.setIcon(drawable);
-    }
-    
-    @Override
     public void setIcon(final Drawable mIcon) {
         this.mIcon = mIcon;
         this.updateToolbarLogo();
@@ -474,14 +366,13 @@ public class ToolbarWidgetWrapper implements DecorToolbar
         this.setLogo(drawable);
     }
     
-    @Override
     public void setLogo(final Drawable mLogo) {
         this.mLogo = mLogo;
         this.updateToolbarLogo();
     }
     
     @Override
-    public void setMenu(final Menu menu, final z callback) {
+    public void setMenu(final Menu menu, final y callback) {
         if (this.mActionMenuPresenter == null) {
             (this.mActionMenuPresenter = new ActionMenuPresenter(this.mToolbar.getContext())).setId(R$id.action_menu_presenter);
         }
@@ -506,22 +397,9 @@ public class ToolbarWidgetWrapper implements DecorToolbar
         this.setNavigationContentDescription(string);
     }
     
-    @Override
     public void setNavigationContentDescription(final CharSequence mHomeDescription) {
         this.mHomeDescription = mHomeDescription;
         this.updateHomeAccessibility();
-    }
-    
-    @Override
-    public void setNavigationIcon(final int n) {
-        Drawable drawable;
-        if (n != 0) {
-            drawable = this.mTintManager.getDrawable(n);
-        }
-        else {
-            drawable = null;
-        }
-        this.setNavigationIcon(drawable);
     }
     
     @Override
@@ -530,68 +408,6 @@ public class ToolbarWidgetWrapper implements DecorToolbar
         this.updateNavigationIcon();
     }
     
-    @Override
-    public void setNavigationMode(final int mNavigationMode) {
-        final int mNavigationMode2 = this.mNavigationMode;
-        if (mNavigationMode != mNavigationMode2) {
-            switch (mNavigationMode2) {
-                case 1: {
-                    if (this.mSpinner != null && this.mSpinner.getParent() == this.mToolbar) {
-                        this.mToolbar.removeView((View)this.mSpinner);
-                        break;
-                    }
-                    break;
-                }
-                case 2: {
-                    if (this.mTabView != null && this.mTabView.getParent() == this.mToolbar) {
-                        this.mToolbar.removeView(this.mTabView);
-                        break;
-                    }
-                    break;
-                }
-            }
-            switch (this.mNavigationMode = mNavigationMode) {
-                default: {
-                    throw new IllegalArgumentException("Invalid navigation mode " + mNavigationMode);
-                }
-                case 1: {
-                    this.ensureSpinner();
-                    this.mToolbar.addView((View)this.mSpinner, 0);
-                }
-                case 0: {
-                    break;
-                }
-                case 2: {
-                    if (this.mTabView != null) {
-                        this.mToolbar.addView(this.mTabView, 0);
-                        final Toolbar$LayoutParams toolbar$LayoutParams = (Toolbar$LayoutParams)this.mTabView.getLayoutParams();
-                        toolbar$LayoutParams.width = -2;
-                        toolbar$LayoutParams.height = -2;
-                        toolbar$LayoutParams.gravity = 8388691;
-                        return;
-                    }
-                    break;
-                }
-            }
-        }
-    }
-    
-    @Override
-    public void setSplitToolbar(final boolean b) {
-        if (b) {
-            throw new UnsupportedOperationException("Cannot split an android.widget.Toolbar");
-        }
-    }
-    
-    @Override
-    public void setSplitView(final ViewGroup viewGroup) {
-    }
-    
-    @Override
-    public void setSplitWhenNarrow(final boolean b) {
-    }
-    
-    @Override
     public void setSubtitle(final CharSequence charSequence) {
         this.mSubtitle = charSequence;
         if ((this.mDisplayOpts & 0x8) != 0x0) {

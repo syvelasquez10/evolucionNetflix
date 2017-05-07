@@ -14,8 +14,6 @@ import java.io.InputStream;
 
 final class FileLruCache$StreamHeader
 {
-    private static final int HEADER_VERSION = 0;
-    
     static JSONObject readHeader(final InputStream inputStream) {
         final int n = 0;
         if (inputStream.read() != 0) {

@@ -24,11 +24,6 @@ class Request$ParcelFileDescriptorWithMimeType implements Parcelable
         this.fileDescriptor = parcel.readFileDescriptor();
     }
     
-    public Request$ParcelFileDescriptorWithMimeType(final ParcelFileDescriptor fileDescriptor, final String mimeType) {
-        this.mimeType = mimeType;
-        this.fileDescriptor = fileDescriptor;
-    }
-    
     public int describeContents() {
         return 1;
     }

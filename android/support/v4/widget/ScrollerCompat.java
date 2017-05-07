@@ -10,8 +10,6 @@ import android.content.Context;
 
 public class ScrollerCompat
 {
-    static final int CHASE_FRAME_TIME = 16;
-    private static final String TAG = "ScrollerCompat";
     ScrollerCompat$ScrollerCompatImpl mImpl;
     Object mScroller;
     
@@ -52,14 +50,6 @@ public class ScrollerCompat
         this.mImpl.fling(this.mScroller, n, n2, n3, n4, n5, n6, n7, n8);
     }
     
-    public void fling(final int n, final int n2, final int n3, final int n4, final int n5, final int n6, final int n7, final int n8, final int n9, final int n10) {
-        this.mImpl.fling(this.mScroller, n, n2, n3, n4, n5, n6, n7, n8, n9, n10);
-    }
-    
-    public float getCurrVelocity() {
-        return this.mImpl.getCurrVelocity(this.mScroller);
-    }
-    
     public int getCurrX() {
         return this.mImpl.getCurrX(this.mScroller);
     }
@@ -74,26 +64,6 @@ public class ScrollerCompat
     
     public int getFinalY() {
         return this.mImpl.getFinalY(this.mScroller);
-    }
-    
-    public boolean isFinished() {
-        return this.mImpl.isFinished(this.mScroller);
-    }
-    
-    public boolean isOverScrolled() {
-        return this.mImpl.isOverScrolled(this.mScroller);
-    }
-    
-    public void notifyHorizontalEdgeReached(final int n, final int n2, final int n3) {
-        this.mImpl.notifyHorizontalEdgeReached(this.mScroller, n, n2, n3);
-    }
-    
-    public void notifyVerticalEdgeReached(final int n, final int n2, final int n3) {
-        this.mImpl.notifyVerticalEdgeReached(this.mScroller, n, n2, n3);
-    }
-    
-    public void startScroll(final int n, final int n2, final int n3, final int n4) {
-        this.mImpl.startScroll(this.mScroller, n, n2, n3, n4);
     }
     
     public void startScroll(final int n, final int n2, final int n3, final int n4, final int n5) {

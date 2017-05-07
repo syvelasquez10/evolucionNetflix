@@ -18,9 +18,6 @@ import android.os.Handler;
 
 public class BaseImplementation$CallbackHandler<R extends Result> extends Handler
 {
-    public static final int CALLBACK_ON_COMPLETE = 1;
-    public static final int CALLBACK_ON_TIMEOUT = 2;
-    
     public BaseImplementation$CallbackHandler() {
         this(Looper.getMainLooper());
     }

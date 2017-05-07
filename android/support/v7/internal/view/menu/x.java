@@ -4,105 +4,21 @@
 
 package android.support.v7.internal.view.menu;
 
-import android.widget.ListAdapter;
-import android.util.AttributeSet;
-import android.os.Parcelable;
-import android.view.KeyEvent;
-import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.FrameLayout;
-import android.view.View$MeasureSpec;
-import android.content.res.Resources;
-import android.support.v7.appcompat.R$dimen;
-import android.support.v7.appcompat.R$attr;
-import android.support.v7.appcompat.R$layout;
-import android.view.ViewTreeObserver;
-import android.support.v7.widget.ListPopupWindow;
-import android.view.LayoutInflater;
 import android.content.Context;
-import android.widget.PopupWindow$OnDismissListener;
-import android.widget.AdapterView$OnItemClickListener;
-import android.view.ViewTreeObserver$OnGlobalLayoutListener;
-import android.view.View$OnKeyListener;
-import android.view.ViewGroup;
-import android.view.View;
-import java.util.ArrayList;
-import android.widget.BaseAdapter;
 
-class x extends BaseAdapter
+public interface x
 {
-    final /* synthetic */ w a;
-    private i b;
-    private int c;
+    boolean collapseItemActionView(final i p0, final m p1);
     
-    public x(final w a, final i b) {
-        this.a = a;
-        this.c = -1;
-        this.b = b;
-        this.a();
-    }
+    boolean expandItemActionView(final i p0, final m p1);
     
-    public m a(final int n) {
-        ArrayList<m> list;
-        if (this.a.mOverflowOnly) {
-            list = this.b.m();
-        }
-        else {
-            list = this.b.j();
-        }
-        int n2 = n;
-        if (this.c >= 0 && (n2 = n) >= this.c) {
-            n2 = n + 1;
-        }
-        return list.get(n2);
-    }
+    boolean flagActionItems();
     
-    void a() {
-        final m s = this.a.mMenu.s();
-        if (s != null) {
-            final ArrayList<m> m = this.a.mMenu.m();
-            for (int size = m.size(), i = 0; i < size; ++i) {
-                if (m.get(i) == s) {
-                    this.c = i;
-                    return;
-                }
-            }
-        }
-        this.c = -1;
-    }
+    void initForMenu(final Context p0, final i p1);
     
-    public int getCount() {
-        ArrayList<m> list;
-        if (this.a.mOverflowOnly) {
-            list = this.b.m();
-        }
-        else {
-            list = this.b.j();
-        }
-        if (this.c < 0) {
-            return list.size();
-        }
-        return list.size() - 1;
-    }
+    void onCloseMenu(final i p0, final boolean p1);
     
-    public long getItemId(final int n) {
-        return n;
-    }
+    boolean onSubMenuSelected(final ad p0);
     
-    public View getView(final int n, View inflate, final ViewGroup viewGroup) {
-        if (inflate == null) {
-            inflate = this.a.mInflater.inflate(w.ITEM_LAYOUT, viewGroup, false);
-        }
-        final ab ab = (ab)inflate;
-        if (this.a.mForceShowIcon) {
-            ((ListMenuItemView)inflate).c(true);
-        }
-        ab.a(this.a(n), 0);
-        return inflate;
-    }
-    
-    public void notifyDataSetChanged() {
-        this.a();
-        super.notifyDataSetChanged();
-    }
+    void updateMenuView(final boolean p0);
 }

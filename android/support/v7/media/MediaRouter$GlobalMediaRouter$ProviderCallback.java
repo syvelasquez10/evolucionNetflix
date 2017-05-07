@@ -4,11 +4,6 @@
 
 package android.support.v7.media;
 
-import android.os.Bundle;
-import android.content.Intent;
-import android.content.pm.PackageManager$NameNotFoundException;
-import android.view.Display;
-import android.content.ContentResolver;
 import java.util.List;
 import java.util.Collections;
 import android.util.Log;

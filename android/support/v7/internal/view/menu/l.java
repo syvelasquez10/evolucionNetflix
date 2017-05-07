@@ -20,12 +20,12 @@ import android.content.DialogInterface$OnKeyListener;
 import android.content.DialogInterface$OnDismissListener;
 import android.content.DialogInterface$OnClickListener;
 
-public class l implements DialogInterface$OnClickListener, DialogInterface$OnDismissListener, DialogInterface$OnKeyListener, z
+public class l implements DialogInterface$OnClickListener, DialogInterface$OnDismissListener, DialogInterface$OnKeyListener, y
 {
     g a;
     private i b;
     private AlertDialog c;
-    private z d;
+    private y d;
     
     public l(final i b) {
         this.b = b;
@@ -39,16 +39,16 @@ public class l implements DialogInterface$OnClickListener, DialogInterface$OnDis
     
     public void a(final IBinder token) {
         final i b = this.b;
-        final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(b.f());
-        (this.a = new g(R$layout.abc_list_menu_item_layout, R$style.Theme_AppCompat_CompactMenu)).setCallback(this);
+        final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(b.e());
+        (this.a = new g(R$layout.abc_list_menu_item_layout, R$style.Theme_AppCompat_CompactMenu)).a(this);
         this.b.a(this.a);
         alertDialog$Builder.setAdapter(this.a.a(), (DialogInterface$OnClickListener)this);
-        final View p = b.p();
-        if (p != null) {
-            alertDialog$Builder.setCustomTitle(p);
+        final View o = b.o();
+        if (o != null) {
+            alertDialog$Builder.setCustomTitle(o);
         }
         else {
-            alertDialog$Builder.setIcon(b.o()).setTitle(b.n());
+            alertDialog$Builder.setIcon(b.n()).setTitle(b.m());
         }
         alertDialog$Builder.setOnKeyListener((DialogInterface$OnKeyListener)this);
         (this.c = alertDialog$Builder.create()).setOnDismissListener((DialogInterface$OnDismissListener)this);
@@ -59,10 +59,6 @@ public class l implements DialogInterface$OnClickListener, DialogInterface$OnDis
         }
         attributes.flags |= 0x20000;
         this.c.show();
-    }
-    
-    public void a(final z d) {
-        this.d = d;
     }
     
     public void onClick(final DialogInterface dialogInterface, final int n) {
@@ -104,7 +100,7 @@ public class l implements DialogInterface$OnClickListener, DialogInterface$OnDis
                     if (decorView2 != null) {
                         final KeyEvent$DispatcherState keyDispatcherState2 = decorView2.getKeyDispatcherState();
                         if (keyDispatcherState2 != null && keyDispatcherState2.isTracking(keyEvent)) {
-                            this.b.b(true);
+                            this.b.a(true);
                             dialogInterface.dismiss();
                             return true;
                         }

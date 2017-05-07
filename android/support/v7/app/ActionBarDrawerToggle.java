@@ -31,10 +31,6 @@ public class ActionBarDrawerToggle implements DrawerLayout$DrawerListener
         this(activity, null, drawerLayout, (Drawable)null, n, n2);
     }
     
-    public ActionBarDrawerToggle(final Activity activity, final DrawerLayout drawerLayout, final Toolbar toolbar, final int n, final int n2) {
-        this(activity, toolbar, drawerLayout, (Drawable)null, n, n2);
-    }
-    
     ActionBarDrawerToggle(final Activity activity, final Toolbar toolbar, final DrawerLayout mDrawerLayout, final T t, final int mOpenDrawerContentDescRes, final int mCloseDrawerContentDescRes) {
         this.mDrawerIndicatorEnabled = true;
         if (toolbar != null) {
@@ -78,14 +74,6 @@ public class ActionBarDrawerToggle implements DrawerLayout$DrawerListener
     
     Drawable getThemeUpIndicator() {
         return this.mActivityImpl.getThemeUpIndicator();
-    }
-    
-    public View$OnClickListener getToolbarNavigationClickListener() {
-        return this.mToolbarNavigationClickListener;
-    }
-    
-    public boolean isDrawerIndicatorEnabled() {
-        return this.mDrawerIndicatorEnabled;
     }
     
     public void onConfigurationChanged(final Configuration configuration) {
@@ -134,52 +122,6 @@ public class ActionBarDrawerToggle implements DrawerLayout$DrawerListener
     
     void setActionBarUpIndicator(final Drawable drawable, final int n) {
         this.mActivityImpl.setActionBarUpIndicator(drawable, n);
-    }
-    
-    public void setDrawerIndicatorEnabled(final boolean mDrawerIndicatorEnabled) {
-        if (mDrawerIndicatorEnabled != this.mDrawerIndicatorEnabled) {
-            if (mDrawerIndicatorEnabled) {
-                final Drawable drawable = (Drawable)this.mSlider;
-                int n;
-                if (this.mDrawerLayout.isDrawerOpen(8388611)) {
-                    n = this.mCloseDrawerContentDescRes;
-                }
-                else {
-                    n = this.mOpenDrawerContentDescRes;
-                }
-                this.setActionBarUpIndicator(drawable, n);
-            }
-            else {
-                this.setActionBarUpIndicator(this.mHomeAsUpIndicator, 0);
-            }
-            this.mDrawerIndicatorEnabled = mDrawerIndicatorEnabled;
-        }
-    }
-    
-    public void setHomeAsUpIndicator(final int n) {
-        Drawable drawable = null;
-        if (n != 0) {
-            drawable = this.mDrawerLayout.getResources().getDrawable(n);
-        }
-        this.setHomeAsUpIndicator(drawable);
-    }
-    
-    public void setHomeAsUpIndicator(final Drawable mHomeAsUpIndicator) {
-        if (mHomeAsUpIndicator == null) {
-            this.mHomeAsUpIndicator = this.getThemeUpIndicator();
-            this.mHasCustomUpIndicator = false;
-        }
-        else {
-            this.mHomeAsUpIndicator = mHomeAsUpIndicator;
-            this.mHasCustomUpIndicator = true;
-        }
-        if (!this.mDrawerIndicatorEnabled) {
-            this.setActionBarUpIndicator(this.mHomeAsUpIndicator, 0);
-        }
-    }
-    
-    public void setToolbarNavigationClickListener(final View$OnClickListener mToolbarNavigationClickListener) {
-        this.mToolbarNavigationClickListener = mToolbarNavigationClickListener;
     }
     
     public void syncState() {

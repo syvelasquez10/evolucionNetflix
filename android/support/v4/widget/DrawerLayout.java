@@ -4,14 +4,11 @@
 
 package android.support.v4.widget;
 
-import android.graphics.drawable.ColorDrawable;
-import android.support.v4.content.ContextCompat;
 import android.os.Parcelable;
 import android.view.View$MeasureSpec;
 import android.support.v4.view.KeyEventCompat;
 import android.view.KeyEvent;
 import android.support.v4.view.MotionEventCompat;
-import android.support.annotation.Nullable;
 import android.view.ViewGroup$MarginLayoutParams;
 import android.support.v4.view.GravityCompat;
 import android.graphics.Canvas;
@@ -31,23 +28,9 @@ import android.view.ViewGroup;
 
 public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
 {
-    private static final boolean ALLOW_EDGE_LOCK = false;
     private static final boolean CAN_HIDE_DESCENDANTS;
-    private static final boolean CHILDREN_DISALLOW_INTERCEPT = true;
-    private static final int DEFAULT_SCRIM_COLOR = -1728053248;
     static final DrawerLayout$DrawerLayoutCompatImpl IMPL;
     private static final int[] LAYOUT_ATTRS;
-    public static final int LOCK_MODE_LOCKED_CLOSED = 1;
-    public static final int LOCK_MODE_LOCKED_OPEN = 2;
-    public static final int LOCK_MODE_UNLOCKED = 0;
-    private static final int MIN_DRAWER_MARGIN = 64;
-    private static final int MIN_FLING_VELOCITY = 400;
-    private static final int PEEK_DELAY = 160;
-    public static final int STATE_DRAGGING = 1;
-    public static final int STATE_IDLE = 0;
-    public static final int STATE_SETTLING = 2;
-    private static final String TAG = "DrawerLayout";
-    private static final float TOUCH_SLOP_SENSITIVITY = 1.0f;
     private final DrawerLayout$ChildAccessibilityDelegate mChildAccessibilityDelegate;
     private boolean mChildrenCanceledTouch;
     private boolean mDisallowInterceptRequested;
@@ -457,17 +440,6 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
         return (ViewGroup$LayoutParams)new DrawerLayout$LayoutParams(viewGroup$LayoutParams);
     }
     
-    public int getDrawerLockMode(int absoluteGravity) {
-        absoluteGravity = GravityCompat.getAbsoluteGravity(absoluteGravity, ViewCompat.getLayoutDirection((View)this));
-        if (absoluteGravity == 3) {
-            return this.mLockModeLeft;
-        }
-        if (absoluteGravity == 5) {
-            return this.mLockModeRight;
-        }
-        return 0;
-    }
-    
     public int getDrawerLockMode(final View view) {
         final int drawerViewAbsoluteGravity = this.getDrawerViewAbsoluteGravity(view);
         if (drawerViewAbsoluteGravity == 3) {
@@ -479,7 +451,6 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
         return 0;
     }
     
-    @Nullable
     public CharSequence getDrawerTitle(int absoluteGravity) {
         absoluteGravity = GravityCompat.getAbsoluteGravity(absoluteGravity, ViewCompat.getLayoutDirection((View)this));
         if (absoluteGravity == 3) {
@@ -529,17 +500,6 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
             throw new IllegalArgumentException("View " + view + " is not a drawer");
         }
         return ((DrawerLayout$LayoutParams)view.getLayoutParams()).onScreen > 0.0f;
-    }
-    
-    void moveDrawerToOffset(final View view, final float n) {
-        final float drawerViewOffset = this.getDrawerViewOffset(view);
-        final int width = view.getWidth();
-        int n2 = (int)(width * n) - (int)(drawerViewOffset * width);
-        if (!this.checkDrawerViewAbsoluteGravity(view, 3)) {
-            n2 = -n2;
-        }
-        view.offsetLeftAndRight(n2);
-        this.setDrawerViewOffset(view, n);
     }
     
     protected void onAttachedToWindow() {
@@ -971,69 +931,12 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
         }
     }
     
-    public void setDrawerLockMode(final int n, final View view) {
-        if (!this.isDrawerView(view)) {
-            throw new IllegalArgumentException("View " + view + " is not a " + "drawer with appropriate layout_gravity");
-        }
-        this.setDrawerLockMode(n, ((DrawerLayout$LayoutParams)view.getLayoutParams()).gravity);
-    }
-    
-    public void setDrawerShadow(final int n, final int n2) {
-        this.setDrawerShadow(this.getResources().getDrawable(n), n2);
-    }
-    
-    public void setDrawerShadow(final Drawable drawable, int absoluteGravity) {
-        absoluteGravity = GravityCompat.getAbsoluteGravity(absoluteGravity, ViewCompat.getLayoutDirection((View)this));
-        if ((absoluteGravity & 0x3) == 0x3) {
-            this.mShadowLeft = drawable;
-            this.invalidate();
-        }
-        if ((absoluteGravity & 0x5) == 0x5) {
-            this.mShadowRight = drawable;
-            this.invalidate();
-        }
-    }
-    
-    public void setDrawerTitle(int absoluteGravity, final CharSequence charSequence) {
-        absoluteGravity = GravityCompat.getAbsoluteGravity(absoluteGravity, ViewCompat.getLayoutDirection((View)this));
-        if (absoluteGravity == 3) {
-            this.mTitleLeft = charSequence;
-        }
-        else if (absoluteGravity == 5) {
-            this.mTitleRight = charSequence;
-        }
-    }
-    
     void setDrawerViewOffset(final View view, final float onScreen) {
         final DrawerLayout$LayoutParams drawerLayout$LayoutParams = (DrawerLayout$LayoutParams)view.getLayoutParams();
         if (onScreen == drawerLayout$LayoutParams.onScreen) {
             return;
         }
         this.dispatchOnDrawerSlide(view, drawerLayout$LayoutParams.onScreen = onScreen);
-    }
-    
-    public void setScrimColor(final int mScrimColor) {
-        this.mScrimColor = mScrimColor;
-        this.invalidate();
-    }
-    
-    public void setStatusBarBackground(final int n) {
-        Drawable drawable;
-        if (n != 0) {
-            drawable = ContextCompat.getDrawable(this.getContext(), n);
-        }
-        else {
-            drawable = null;
-        }
-        this.mStatusBarBackground = drawable;
-    }
-    
-    public void setStatusBarBackground(final Drawable mStatusBarBackground) {
-        this.mStatusBarBackground = mStatusBarBackground;
-    }
-    
-    public void setStatusBarBackgroundColor(final int n) {
-        this.mStatusBarBackground = (Drawable)new ColorDrawable(n);
     }
     
     void updateDrawerState(int mDrawerState, final int n, final View view) {

@@ -8,10 +8,6 @@ public final class Scope
 {
     private final String Jn;
     
-    public Scope(final String jn) {
-        this.Jn = jn;
-    }
-    
     public String gt() {
         return this.Jn;
     }

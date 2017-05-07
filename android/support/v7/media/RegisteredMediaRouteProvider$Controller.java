@@ -7,12 +7,12 @@ package android.support.v7.media;
 import android.os.Messenger;
 import android.os.IBinder;
 import java.util.List;
+import android.content.Intent;
 import android.content.Context;
 import android.util.Log;
 import java.util.ArrayList;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
-import android.content.Intent;
 
 final class RegisteredMediaRouteProvider$Controller extends MediaRouteProvider$RouteController
 {
@@ -52,11 +52,6 @@ final class RegisteredMediaRouteProvider$Controller extends MediaRouteProvider$R
             this.mConnection = null;
             this.mControllerId = 0;
         }
-    }
-    
-    @Override
-    public boolean onControlRequest(final Intent intent, final MediaRouter$ControlRequestCallback mediaRouter$ControlRequestCallback) {
-        return this.mConnection != null && this.mConnection.sendControlRequest(this.mControllerId, intent, mediaRouter$ControlRequestCallback);
     }
     
     @Override

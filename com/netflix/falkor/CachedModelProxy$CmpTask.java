@@ -4,6 +4,7 @@
 
 package com.netflix.falkor;
 
+import com.netflix.model.leafs.Video$Bookmark;
 import com.netflix.mediaclient.ui.Asset;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;

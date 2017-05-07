@@ -7,6 +7,7 @@ package com.facebook.model;
 import java.lang.reflect.Method;
 import com.facebook.internal.Utility;
 import java.lang.annotation.Annotation;
+import com.facebook.FacebookGraphObjectException;
 import java.util.Iterator;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -17,7 +18,6 @@ import java.util.HashSet;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.lang.reflect.ParameterizedType;
-import com.facebook.FacebookGraphObjectException;
 import org.json.JSONException;
 import com.facebook.internal.Validate;
 import org.json.JSONArray;
@@ -60,17 +60,6 @@ final class GraphObject$Factory$GraphObjectListImpl<T> extends AbstractList<T> i
             throw new UnsupportedOperationException("Only adding items at the end of the list is supported.");
         }
         this.put(n, t);
-    }
-    
-    @Override
-    public final <U extends GraphObject> GraphObjectList<U> castToListOf(final Class<U> clazz) {
-        if (!GraphObject.class.isAssignableFrom(this.itemType)) {
-            throw new FacebookGraphObjectException("Can't cast GraphObjectCollection of non-GraphObject type " + this.itemType);
-        }
-        if (clazz.isAssignableFrom(this.itemType)) {
-            return (GraphObjectList<U>)this;
-        }
-        return GraphObject$Factory.createList(this.state, clazz);
     }
     
     @Override

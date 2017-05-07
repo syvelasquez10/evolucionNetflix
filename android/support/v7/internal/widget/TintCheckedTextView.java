@@ -17,10 +17,6 @@ public class TintCheckedTextView extends CheckedTextView
         TINT_ATTRS = new int[] { 16843016 };
     }
     
-    public TintCheckedTextView(final Context context) {
-        this(context, null);
-    }
-    
     public TintCheckedTextView(final Context context, final AttributeSet set) {
         this(context, set, 16843720);
     }

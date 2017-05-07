@@ -14,8 +14,4 @@ public class GooglePlayServicesRepairableException extends UserRecoverableExcept
         super(s, intent);
         this.Dr = dr;
     }
-    
-    public int getConnectionStatusCode() {
-        return this.Dr;
-    }
 }

@@ -16,10 +16,6 @@ public class TintEditText extends EditText
         TINT_ATTRS = new int[] { 16842964 };
     }
     
-    public TintEditText(final Context context) {
-        this(context, null);
-    }
-    
     public TintEditText(final Context context, final AttributeSet set) {
         this(context, set, 16842862);
     }

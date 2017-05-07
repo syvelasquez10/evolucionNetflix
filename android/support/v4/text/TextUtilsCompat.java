@@ -4,8 +4,6 @@
 
 package android.support.v4.text;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import java.util.Locale;
 
 public class TextUtilsCompat
@@ -32,7 +30,7 @@ public class TextUtilsCompat
         }
     }
     
-    public static int getLayoutDirectionFromLocale(@Nullable final Locale locale) {
+    public static int getLayoutDirectionFromLocale(final Locale locale) {
         if (locale != null && !locale.equals(TextUtilsCompat.ROOT)) {
             final String script = ICUCompat.getScript(ICUCompat.addLikelySubtags(locale.toString()));
             if (script == null) {
@@ -43,40 +41,5 @@ public class TextUtilsCompat
             }
         }
         return 0;
-    }
-    
-    @NonNull
-    public static String htmlEncode(@NonNull final String s) {
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < s.length(); ++i) {
-            final char char1 = s.charAt(i);
-            switch (char1) {
-                default: {
-                    sb.append(char1);
-                    break;
-                }
-                case 60: {
-                    sb.append("&lt;");
-                    break;
-                }
-                case 62: {
-                    sb.append("&gt;");
-                    break;
-                }
-                case 38: {
-                    sb.append("&amp;");
-                    break;
-                }
-                case 39: {
-                    sb.append("&#39;");
-                    break;
-                }
-                case 34: {
-                    sb.append("&quot;");
-                    break;
-                }
-            }
-        }
-        return sb.toString();
     }
 }

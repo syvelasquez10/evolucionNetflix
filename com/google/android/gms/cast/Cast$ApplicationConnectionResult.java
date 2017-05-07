@@ -8,11 +8,4 @@ import com.google.android.gms.common.api.Result;
 
 public interface Cast$ApplicationConnectionResult extends Result
 {
-    ApplicationMetadata getApplicationMetadata();
-    
-    String getApplicationStatus();
-    
-    String getSessionId();
-    
-    boolean getWasLaunched();
 }

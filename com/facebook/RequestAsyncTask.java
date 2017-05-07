@@ -7,7 +7,6 @@ package com.facebook;
 import android.os.Handler;
 import android.util.Log;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 import java.util.concurrent.Executor;
 import java.net.HttpURLConnection;
 import java.lang.reflect.Method;
@@ -46,22 +45,6 @@ public class RequestAsyncTask extends AsyncTask<Void, Void, List<Response>>
         this.connection = connection;
     }
     
-    public RequestAsyncTask(final HttpURLConnection httpURLConnection, final Collection<Request> collection) {
-        this(httpURLConnection, new RequestBatch(collection));
-    }
-    
-    public RequestAsyncTask(final HttpURLConnection httpURLConnection, final Request... array) {
-        this(httpURLConnection, new RequestBatch(array));
-    }
-    
-    public RequestAsyncTask(final Collection<Request> collection) {
-        this(null, new RequestBatch(collection));
-    }
-    
-    public RequestAsyncTask(final Request... array) {
-        this(null, new RequestBatch(array));
-    }
-    
     protected List<Response> doInBackground(final Void... array) {
         try {
             if (this.connection == null) {
@@ -93,14 +76,6 @@ public class RequestAsyncTask extends AsyncTask<Void, Void, List<Response>>
                 return this;
             }
         }
-    }
-    
-    protected final Exception getException() {
-        return this.exception;
-    }
-    
-    protected final RequestBatch getRequests() {
-        return this.requests;
     }
     
     protected void onPostExecute(final List<Response> list) {

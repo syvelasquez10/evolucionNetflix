@@ -14,7 +14,6 @@ import android.hardware.display.DisplayManager;
 
 public final class MediaRouterJellybeanMr1$ActiveScanWorkaround implements Runnable
 {
-    private static final int WIFI_DISPLAY_SCAN_INTERVAL = 15000;
     private boolean mActivelyScanningWifiDisplays;
     private final DisplayManager mDisplayManager;
     private final Handler mHandler;

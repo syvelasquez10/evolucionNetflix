@@ -67,7 +67,7 @@ public abstract class BaseImplementation$a<R extends Result, A extends Api$a> ex
     
     @Override
     public final void m(final Status status) {
-        n.b(!status.isSuccess(), (Object)"Failed result must not be success");
+        n.b(!status.isSuccess(), "Failed result must not be success");
         this.b(this.c(status));
     }
 }

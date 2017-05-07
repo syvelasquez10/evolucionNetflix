@@ -19,7 +19,6 @@ import java.io.Serializable;
 
 final class $Gson$Types$WildcardTypeImpl implements Serializable, WildcardType
 {
-    private static final long serialVersionUID = 0L;
     private final Type lowerBound;
     private final Type upperBound;
     

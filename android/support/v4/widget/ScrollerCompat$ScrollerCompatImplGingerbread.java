@@ -30,16 +30,6 @@ class ScrollerCompat$ScrollerCompatImplGingerbread implements ScrollerCompat$Scr
     }
     
     @Override
-    public void fling(final Object o, final int n, final int n2, final int n3, final int n4, final int n5, final int n6, final int n7, final int n8, final int n9, final int n10) {
-        ScrollerCompatGingerbread.fling(o, n, n2, n3, n4, n5, n6, n7, n8, n9, n10);
-    }
-    
-    @Override
-    public float getCurrVelocity(final Object o) {
-        return 0.0f;
-    }
-    
-    @Override
     public int getCurrX(final Object o) {
         return ScrollerCompatGingerbread.getCurrX(o);
     }
@@ -57,31 +47,6 @@ class ScrollerCompat$ScrollerCompatImplGingerbread implements ScrollerCompat$Scr
     @Override
     public int getFinalY(final Object o) {
         return ScrollerCompatGingerbread.getFinalY(o);
-    }
-    
-    @Override
-    public boolean isFinished(final Object o) {
-        return ScrollerCompatGingerbread.isFinished(o);
-    }
-    
-    @Override
-    public boolean isOverScrolled(final Object o) {
-        return ScrollerCompatGingerbread.isOverScrolled(o);
-    }
-    
-    @Override
-    public void notifyHorizontalEdgeReached(final Object o, final int n, final int n2, final int n3) {
-        ScrollerCompatGingerbread.notifyHorizontalEdgeReached(o, n, n2, n3);
-    }
-    
-    @Override
-    public void notifyVerticalEdgeReached(final Object o, final int n, final int n2, final int n3) {
-        ScrollerCompatGingerbread.notifyVerticalEdgeReached(o, n, n2, n3);
-    }
-    
-    @Override
-    public void startScroll(final Object o, final int n, final int n2, final int n3, final int n4) {
-        ScrollerCompatGingerbread.startScroll(o, n, n2, n3, n4);
     }
     
     @Override

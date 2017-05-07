@@ -5,22 +5,18 @@
 package android.support.v7.internal.widget;
 
 import android.view.View$MeasureSpec;
+import android.support.v7.internal.view.ActionBarPolicy;
 import android.os.Build$VERSION;
 import android.content.res.Configuration;
-import android.support.v4.view.ViewPropertyAnimatorListener;
-import android.support.v4.view.ViewCompat;
 import android.widget.SpinnerAdapter;
 import android.widget.AbsListView$LayoutParams;
 import android.graphics.drawable.Drawable;
+import android.view.ViewGroup$LayoutParams;
 import android.support.v7.widget.LinearLayoutCompat$LayoutParams;
 import android.util.AttributeSet;
 import android.support.v7.appcompat.R$attr;
 import android.support.v7.app.ActionBar$Tab;
-import android.view.ViewGroup$LayoutParams;
-import android.support.v7.internal.view.ActionBarPolicy;
-import android.content.Context;
 import android.view.animation.DecelerateInterpolator;
-import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.view.animation.Interpolator;
 import android.widget.HorizontalScrollView;

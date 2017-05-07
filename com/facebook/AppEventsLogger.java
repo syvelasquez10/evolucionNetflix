@@ -4,11 +4,6 @@
 
 package com.facebook;
 
-import java.util.Currency;
-import java.math.BigDecimal;
-import android.content.Intent;
-import android.content.ComponentName;
-import bolts.AppLinks;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONArray;
@@ -19,8 +14,6 @@ import com.facebook.model.GraphObject;
 import com.facebook.internal.Logger;
 import java.util.ArrayList;
 import java.util.Set;
-import android.util.Log;
-import android.app.Activity;
 import java.util.List;
 import java.util.Iterator;
 import com.facebook.internal.Utility;
@@ -32,22 +25,12 @@ import android.content.Context;
 
 public class AppEventsLogger
 {
-    public static final String ACTION_APP_EVENTS_FLUSHED = "com.facebook.sdk.APP_EVENTS_FLUSHED";
-    public static final String APP_EVENTS_EXTRA_FLUSH_RESULT = "com.facebook.sdk.APP_EVENTS_FLUSH_RESULT";
-    public static final String APP_EVENTS_EXTRA_NUM_EVENTS_FLUSHED = "com.facebook.sdk.APP_EVENTS_NUM_EVENTS_FLUSHED";
-    private static final int APP_SUPPORTS_ATTRIBUTION_ID_RECHECK_PERIOD_IN_SECONDS = 86400;
-    private static final int FLUSH_APP_SESSION_INFO_IN_SECONDS = 30;
-    private static final int FLUSH_PERIOD_IN_SECONDS = 15;
-    private static final int NUM_LOG_EVENTS_TO_TRY_TO_FLUSH_AFTER = 100;
-    private static final String SOURCE_APPLICATION_HAS_BEEN_SET_BY_THIS_INTENT = "_fbSourceApplicationHasBeenSet";
     private static final String TAG;
     private static Context applicationContext;
     private static ScheduledThreadPoolExecutor backgroundExecutor;
     private static AppEventsLogger$FlushBehavior flushBehavior;
     private static String hashedDeviceAndAppId;
-    private static boolean isOpenedByApplink;
     private static boolean requestInFlight;
-    private static String sourceApplication;
     private static Map<AppEventsLogger$AccessTokenAppIdPair, AppEventsLogger$SessionEventsState> stateMap;
     private static Object staticLock;
     private final AppEventsLogger$AccessTokenAppIdPair accessTokenAppId;
@@ -72,7 +55,7 @@ public class AppEventsLogger
                 break Label_0100;
             }
             this.accessTokenAppId = new AppEventsLogger$AccessTokenAppIdPair(activeSession);
-            Label_0111_Outer:Block_8_Outer:
+        Block_8_Outer:
             while (true) {
                 session = (Session)AppEventsLogger.staticLock;
                 synchronized (session) {
@@ -85,13 +68,12 @@ public class AppEventsLogger
                     initializeTimersIfNeeded();
                     return;
                     while (true) {
-                        while (true) {
+                        session = (Session)Utility.getMetadataApplicationId(context);
+                        Label_0111: {
                             this.accessTokenAppId = new AppEventsLogger$AccessTokenAppIdPair(null, (String)session);
-                            s = (String)session;
-                            continue Label_0111_Outer;
-                            session = (Session)Utility.getMetadataApplicationId(context);
-                            continue Block_8_Outer;
                         }
+                        s = (String)session;
+                        continue Block_8_Outer;
                         continue;
                     }
                 }
@@ -112,29 +94,6 @@ public class AppEventsLogger
             n += events.size();
         }
         return n;
-    }
-    
-    public static void activateApp(final Context context) {
-        Settings.sdkInitialize(context);
-        activateApp(context, Utility.getMetadataApplicationId(context));
-    }
-    
-    public static void activateApp(final Context context, String sourceApplication) {
-        if (context == null || sourceApplication == null) {
-            throw new IllegalArgumentException("Both context and applicationId must be non-null");
-        }
-        if (context instanceof Activity) {
-            setSourceApplication((Activity)context);
-        }
-        else {
-            resetSourceApplication();
-            Log.d(AppEventsLogger.class.getName(), "To set source application the context of activateApp must be an instance of Activity");
-        }
-        Settings.publishInstallAsync(context, sourceApplication, null);
-        final AppEventsLogger appEventsLogger = new AppEventsLogger(context, sourceApplication, null);
-        final long currentTimeMillis = System.currentTimeMillis();
-        sourceApplication = getSourceApplication();
-        AppEventsLogger.backgroundExecutor.execute(new AppEventsLogger$1(appEventsLogger, currentTimeMillis, sourceApplication));
     }
     
     private static AppEventsLogger$FlushStatistics buildAndExecuteRequests(final AppEventsLogger$FlushReason appEventsLogger$FlushReason, final Set<AppEventsLogger$AccessTokenAppIdPair> set) {
@@ -184,24 +143,6 @@ public class AppEventsLogger
         return postRequest;
     }
     
-    public static void deactivateApp(final Context context) {
-        deactivateApp(context, Utility.getMetadataApplicationId(context));
-    }
-    
-    public static void deactivateApp(final Context context, final String s) {
-        if (context == null || s == null) {
-            throw new IllegalArgumentException("Both context and applicationId must be non-null");
-        }
-        resetSourceApplication();
-        AppEventsLogger.backgroundExecutor.execute(new AppEventsLogger$2(new AppEventsLogger(context, s, null), System.currentTimeMillis()));
-    }
-    
-    static void eagerFlush() {
-        if (getFlushBehavior() != AppEventsLogger$FlushBehavior.EXPLICIT_ONLY) {
-            flush(AppEventsLogger$FlushReason.EAGER_FLUSHING_EVENT);
-        }
-    }
-    
     private static void flush(final AppEventsLogger$FlushReason appEventsLogger$FlushReason) {
         Settings.getExecutor().execute(new AppEventsLogger$6(appEventsLogger$FlushReason));
     }
@@ -248,59 +189,59 @@ public class AppEventsLogger
         //    59: aload_1        
         //    60: monitorexit    
         //    61: aload_0        
-        //    62: ifnull          135
+        //    62: ifnull          138
         //    65: new             Landroid/content/Intent;
         //    68: dup            
-        //    69: ldc             "com.facebook.sdk.APP_EVENTS_FLUSHED"
-        //    71: invokespecial   android/content/Intent.<init>:(Ljava/lang/String;)V
-        //    74: astore_1       
-        //    75: aload_1        
-        //    76: ldc             "com.facebook.sdk.APP_EVENTS_NUM_EVENTS_FLUSHED"
-        //    78: aload_0        
-        //    79: getfield        com/facebook/AppEventsLogger$FlushStatistics.numEvents:I
-        //    82: invokevirtual   android/content/Intent.putExtra:(Ljava/lang/String;I)Landroid/content/Intent;
-        //    85: pop            
-        //    86: aload_1        
-        //    87: ldc             "com.facebook.sdk.APP_EVENTS_FLUSH_RESULT"
-        //    89: aload_0        
-        //    90: getfield        com/facebook/AppEventsLogger$FlushStatistics.result:Lcom/facebook/AppEventsLogger$FlushResult;
-        //    93: invokevirtual   android/content/Intent.putExtra:(Ljava/lang/String;Ljava/io/Serializable;)Landroid/content/Intent;
-        //    96: pop            
-        //    97: getstatic       com/facebook/AppEventsLogger.applicationContext:Landroid/content/Context;
-        //   100: invokestatic    android/support/v4/content/LocalBroadcastManager.getInstance:(Landroid/content/Context;)Landroid/support/v4/content/LocalBroadcastManager;
-        //   103: aload_1        
-        //   104: invokevirtual   android/support/v4/content/LocalBroadcastManager.sendBroadcast:(Landroid/content/Intent;)Z
-        //   107: pop            
-        //   108: return         
-        //   109: astore_0       
-        //   110: aload_1        
-        //   111: monitorexit    
-        //   112: aload_0        
-        //   113: athrow         
-        //   114: astore_0       
-        //   115: getstatic       com/facebook/AppEventsLogger.TAG:Ljava/lang/String;
-        //   118: ldc_w           "Caught unexpected exception while flushing: "
-        //   121: aload_0        
-        //   122: invokestatic    com/facebook/internal/Utility.logd:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
-        //   125: aload_1        
-        //   126: astore_0       
-        //   127: goto            49
-        //   130: astore_0       
-        //   131: aload_1        
-        //   132: monitorexit    
-        //   133: aload_0        
-        //   134: athrow         
-        //   135: return         
+        //    69: ldc_w           "com.facebook.sdk.APP_EVENTS_FLUSHED"
+        //    72: invokespecial   android/content/Intent.<init>:(Ljava/lang/String;)V
+        //    75: astore_1       
+        //    76: aload_1        
+        //    77: ldc_w           "com.facebook.sdk.APP_EVENTS_NUM_EVENTS_FLUSHED"
+        //    80: aload_0        
+        //    81: getfield        com/facebook/AppEventsLogger$FlushStatistics.numEvents:I
+        //    84: invokevirtual   android/content/Intent.putExtra:(Ljava/lang/String;I)Landroid/content/Intent;
+        //    87: pop            
+        //    88: aload_1        
+        //    89: ldc_w           "com.facebook.sdk.APP_EVENTS_FLUSH_RESULT"
+        //    92: aload_0        
+        //    93: getfield        com/facebook/AppEventsLogger$FlushStatistics.result:Lcom/facebook/AppEventsLogger$FlushResult;
+        //    96: invokevirtual   android/content/Intent.putExtra:(Ljava/lang/String;Ljava/io/Serializable;)Landroid/content/Intent;
+        //    99: pop            
+        //   100: getstatic       com/facebook/AppEventsLogger.applicationContext:Landroid/content/Context;
+        //   103: invokestatic    android/support/v4/content/LocalBroadcastManager.getInstance:(Landroid/content/Context;)Landroid/support/v4/content/LocalBroadcastManager;
+        //   106: aload_1        
+        //   107: invokevirtual   android/support/v4/content/LocalBroadcastManager.sendBroadcast:(Landroid/content/Intent;)Z
+        //   110: pop            
+        //   111: return         
+        //   112: astore_0       
+        //   113: aload_1        
+        //   114: monitorexit    
+        //   115: aload_0        
+        //   116: athrow         
+        //   117: astore_0       
+        //   118: getstatic       com/facebook/AppEventsLogger.TAG:Ljava/lang/String;
+        //   121: ldc_w           "Caught unexpected exception while flushing: "
+        //   124: aload_0        
+        //   125: invokestatic    com/facebook/internal/Utility.logd:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   128: aload_1        
+        //   129: astore_0       
+        //   130: goto            49
+        //   133: astore_0       
+        //   134: aload_1        
+        //   135: monitorexit    
+        //   136: aload_0        
+        //   137: athrow         
+        //   138: return         
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  6      14     109    114    Any
-        //  15     37     109    114    Any
-        //  43     49     114    130    Ljava/lang/Exception;
-        //  55     61     130    135    Any
-        //  110    112    109    114    Any
-        //  131    133    130    135    Any
+        //  6      14     112    117    Any
+        //  15     37     112    117    Any
+        //  43     49     117    133    Ljava/lang/Exception;
+        //  55     61     133    138    Any
+        //  113    115    112    117    Any
+        //  134    136    133    138    Any
         // 
         // The error that occurred was:
         // 
@@ -352,11 +293,6 @@ public class AppEventsLogger
         }
     }
     
-    @Deprecated
-    public static boolean getLimitEventUsage(final Context context) {
-        return Settings.getLimitEventAndDataUsage(context);
-    }
-    
     private static AppEventsLogger$SessionEventsState getSessionEventsState(final Context context, final AppEventsLogger$AccessTokenAppIdPair appEventsLogger$AccessTokenAppIdPair) {
         final AppEventsLogger$SessionEventsState appEventsLogger$SessionEventsState = AppEventsLogger.stateMap.get(appEventsLogger$AccessTokenAppIdPair);
         AttributionIdentifiers attributionIdentifiers = null;
@@ -377,18 +313,6 @@ public class AppEventsLogger
         synchronized (AppEventsLogger.staticLock) {
             return AppEventsLogger.stateMap.get(appEventsLogger$AccessTokenAppIdPair);
         }
-    }
-    
-    static String getSourceApplication() {
-        String s = "Unclassified";
-        if (AppEventsLogger.isOpenedByApplink) {
-            s = "Applink";
-        }
-        String string = s;
-        if (AppEventsLogger.sourceApplication != null) {
-            string = s + "(" + AppEventsLogger.sourceApplication + ")";
-        }
-        return string;
     }
     
     private static void handleResponse(final AppEventsLogger$AccessTokenAppIdPair appEventsLogger$AccessTokenAppIdPair, final Request request, Response result, final AppEventsLogger$SessionEventsState appEventsLogger$SessionEventsState, final AppEventsLogger$FlushStatistics appEventsLogger$FlushStatistics) {
@@ -475,10 +399,6 @@ public class AppEventsLogger
         AppEventsLogger$PersistedAppSessionInfo.onResume(AppEventsLogger.applicationContext, this.accessTokenAppId, this, n, s);
     }
     
-    private void logAppSessionSuspendEvent(final long n) {
-        AppEventsLogger$PersistedAppSessionInfo.onSuspend(AppEventsLogger.applicationContext, this.accessTokenAppId, this, n);
-    }
-    
     private static void logEvent(final Context context, final AppEventsLogger$AppEvent appEventsLogger$AppEvent, final AppEventsLogger$AccessTokenAppIdPair appEventsLogger$AccessTokenAppIdPair) {
         Settings.getExecutor().execute(new AppEventsLogger$5(context, appEventsLogger$AccessTokenAppIdPair, appEventsLogger$AppEvent));
     }
@@ -491,95 +411,12 @@ public class AppEventsLogger
         return new AppEventsLogger(context, null, null);
     }
     
-    public static AppEventsLogger newLogger(final Context context, final Session session) {
-        return new AppEventsLogger(context, null, session);
-    }
-    
     public static AppEventsLogger newLogger(final Context context, final String s) {
         return new AppEventsLogger(context, s, null);
     }
     
-    public static AppEventsLogger newLogger(final Context context, final String s, final Session session) {
-        return new AppEventsLogger(context, s, session);
-    }
-    
-    private static void notifyDeveloperError(final String s) {
-        Logger.log(LoggingBehavior.DEVELOPER_ERRORS, "AppEvents", s);
-    }
-    
-    public static void onContextStop() {
-        AppEventsLogger$PersistedEvents.persistEvents(AppEventsLogger.applicationContext, AppEventsLogger.stateMap);
-    }
-    
-    static void resetSourceApplication() {
-        AppEventsLogger.sourceApplication = null;
-        AppEventsLogger.isOpenedByApplink = false;
-    }
-    
-    public static void setFlushBehavior(final AppEventsLogger$FlushBehavior flushBehavior) {
-        synchronized (AppEventsLogger.staticLock) {
-            AppEventsLogger.flushBehavior = flushBehavior;
-        }
-    }
-    
-    @Deprecated
-    public static void setLimitEventUsage(final Context context, final boolean b) {
-        Settings.setLimitEventAndDataUsage(context, b);
-    }
-    
-    private static void setSourceApplication(final Activity activity) {
-        final ComponentName callingActivity = activity.getCallingActivity();
-        if (callingActivity != null) {
-            final String packageName = callingActivity.getPackageName();
-            if (packageName.equals(activity.getPackageName())) {
-                resetSourceApplication();
-                return;
-            }
-            AppEventsLogger.sourceApplication = packageName;
-        }
-        final Intent intent = activity.getIntent();
-        if (intent == null || intent.getBooleanExtra("_fbSourceApplicationHasBeenSet", false)) {
-            resetSourceApplication();
-            return;
-        }
-        final Bundle appLinkData = AppLinks.getAppLinkData(intent);
-        if (appLinkData == null) {
-            resetSourceApplication();
-            return;
-        }
-        AppEventsLogger.isOpenedByApplink = true;
-        final Bundle bundle = appLinkData.getBundle("referer_app_link");
-        if (bundle == null) {
-            AppEventsLogger.sourceApplication = null;
-            return;
-        }
-        AppEventsLogger.sourceApplication = bundle.getString("package");
-        intent.putExtra("_fbSourceApplicationHasBeenSet", true);
-    }
-    
-    static void setSourceApplication(final String sourceApplication, final boolean isOpenedByApplink) {
-        AppEventsLogger.sourceApplication = sourceApplication;
-        AppEventsLogger.isOpenedByApplink = isOpenedByApplink;
-    }
-    
-    public void flush() {
-        flush(AppEventsLogger$FlushReason.EXPLICIT);
-    }
-    
     public String getApplicationId() {
         return this.accessTokenAppId.getApplicationId();
-    }
-    
-    boolean isValidForSession(final Session session) {
-        return this.accessTokenAppId.equals(new AppEventsLogger$AccessTokenAppIdPair(session));
-    }
-    
-    public void logEvent(final String s) {
-        this.logEvent(s, null);
-    }
-    
-    public void logEvent(final String s, final double n) {
-        this.logEvent(s, n, null);
     }
     
     public void logEvent(final String s, final double n, final Bundle bundle) {
@@ -588,28 +425,6 @@ public class AppEventsLogger
     
     public void logEvent(final String s, final Bundle bundle) {
         this.logEvent(s, null, bundle, false);
-    }
-    
-    public void logPurchase(final BigDecimal bigDecimal, final Currency currency) {
-        this.logPurchase(bigDecimal, currency, null);
-    }
-    
-    public void logPurchase(final BigDecimal bigDecimal, final Currency currency, final Bundle bundle) {
-        if (bigDecimal == null) {
-            notifyDeveloperError("purchaseAmount cannot be null");
-            return;
-        }
-        if (currency == null) {
-            notifyDeveloperError("currency cannot be null");
-            return;
-        }
-        Bundle bundle2;
-        if ((bundle2 = bundle) == null) {
-            bundle2 = new Bundle();
-        }
-        bundle2.putString("fb_currency", currency.getCurrencyCode());
-        this.logEvent("fb_mobile_purchase", bigDecimal.doubleValue(), bundle2);
-        eagerFlush();
     }
     
     public void logSdkEvent(final String s, final Double n, final Bundle bundle) {

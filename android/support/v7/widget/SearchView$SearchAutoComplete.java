@@ -5,42 +5,14 @@
 package android.support.v7.widget;
 
 import android.view.View$MeasureSpec;
-import android.widget.ListAdapter;
-import android.content.ActivityNotFoundException;
-import android.support.v4.view.KeyEventCompat;
-import android.text.Editable;
 import android.graphics.drawable.Drawable;
-import android.text.style.ImageSpan;
-import android.text.SpannableStringBuilder;
-import android.content.ComponentName;
-import android.os.Parcelable;
-import android.app.PendingIntent;
-import android.util.Log;
-import android.database.Cursor;
-import android.net.Uri;
-import android.content.res.Resources;
+import android.text.Editable;
+import android.text.TextUtils;
 import android.support.v7.appcompat.R$dimen;
-import android.support.v7.internal.widget.ViewUtils;
-import android.annotation.TargetApi;
-import android.view.View$OnLayoutChangeListener;
-import android.view.ViewTreeObserver$OnGlobalLayoutListener;
-import android.support.v7.appcompat.R$id;
-import android.view.ViewGroup;
-import android.view.LayoutInflater;
-import android.support.v7.appcompat.R$styleable;
-import android.support.v7.appcompat.R$attr;
-import android.os.Build$VERSION;
 import android.content.Intent;
-import android.text.TextWatcher;
-import android.view.View$OnKeyListener;
-import android.support.v4.widget.CursorAdapter;
+import android.net.Uri;
+import android.os.Build$VERSION;
 import android.app.SearchableInfo;
-import android.graphics.drawable.Drawable$ConstantState;
-import java.util.WeakHashMap;
-import android.view.View$OnFocusChangeListener;
-import android.widget.AdapterView$OnItemSelectedListener;
-import android.widget.AdapterView$OnItemClickListener;
-import android.widget.TextView$OnEditorActionListener;
 import android.view.View$OnClickListener;
 import android.widget.ImageView;
 import android.os.Bundle;
@@ -50,7 +22,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.KeyEvent$DispatcherState;
 import android.view.KeyEvent;
 import android.graphics.Rect;
-import android.text.TextUtils;
 import android.support.v7.internal.widget.TintTypedArray;
 import android.util.AttributeSet;
 import android.content.Context;
@@ -82,10 +53,6 @@ public class SearchView$SearchAutoComplete extends AutoCompleteTextView
         }
         obtainStyledAttributes.recycle();
         this.mTintManager = obtainStyledAttributes.getTintManager();
-    }
-    
-    private boolean isEmpty() {
-        return TextUtils.getTrimmedLength((CharSequence)this.getText()) == 0;
     }
     
     public boolean enoughToFilter() {
@@ -139,10 +106,6 @@ public class SearchView$SearchAutoComplete extends AutoCompleteTextView
     
     public void setDropDownBackgroundResource(final int n) {
         this.setDropDownBackgroundDrawable(this.mTintManager.getDrawable(n));
-    }
-    
-    void setSearchView(final SearchView mSearchView) {
-        this.mSearchView = mSearchView;
     }
     
     public void setThreshold(final int n) {

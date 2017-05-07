@@ -8,17 +8,12 @@ import android.view.ViewGroup$LayoutParams;
 import android.content.res.TypedArray;
 import android.support.v7.appcompat.R$styleable;
 import android.util.AttributeSet;
-import android.support.annotation.NonNull;
 import android.content.Context;
 import android.view.ViewGroup$MarginLayoutParams;
 
 public class ActionBar$LayoutParams extends ViewGroup$MarginLayoutParams
 {
     public int gravity;
-    
-    public ActionBar$LayoutParams(final int n) {
-        this(-2, -1, n);
-    }
     
     public ActionBar$LayoutParams(final int n, final int n2) {
         super(n, n2);
@@ -32,7 +27,7 @@ public class ActionBar$LayoutParams extends ViewGroup$MarginLayoutParams
         this.gravity = gravity;
     }
     
-    public ActionBar$LayoutParams(@NonNull final Context context, final AttributeSet set) {
+    public ActionBar$LayoutParams(final Context context, final AttributeSet set) {
         super(context, set);
         this.gravity = 0;
         final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.ActionBarLayout);

@@ -16,7 +16,7 @@ public final class d$e extends j$a
     }
     
     public void b(final int n, final IBinder binder, final Bundle bundle) {
-        n.b("onPostInitComplete can be called only once per call to getServiceFromBroker", (Object)this.LA);
+        n.b("onPostInitComplete can be called only once per call to getServiceFromBroker", this.LA);
         this.LA.a(n, binder, bundle);
         this.LA = null;
     }

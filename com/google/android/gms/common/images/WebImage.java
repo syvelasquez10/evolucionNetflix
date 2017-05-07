@@ -6,8 +6,6 @@ package com.google.android.gms.common.images;
 
 import android.os.Parcel;
 import com.google.android.gms.common.internal.m;
-import org.json.JSONException;
-import org.json.JSONObject;
 import android.net.Uri;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
@@ -29,51 +27,6 @@ public final class WebImage implements SafeParcelable
         this.KJ = kj;
         this.lf = lf;
         this.lg = lg;
-    }
-    
-    public WebImage(final Uri uri) {
-        this(uri, 0, 0);
-    }
-    
-    public WebImage(final Uri uri, final int n, final int n2) {
-        this(1, uri, n, n2);
-        if (uri == null) {
-            throw new IllegalArgumentException("url cannot be null");
-        }
-        if (n < 0 || n2 < 0) {
-            throw new IllegalArgumentException("width and height must not be negative");
-        }
-    }
-    
-    public WebImage(final JSONObject jsonObject) {
-        this(d(jsonObject), jsonObject.optInt("width", 0), jsonObject.optInt("height", 0));
-    }
-    
-    private static Uri d(final JSONObject jsonObject) {
-        Uri parse = null;
-        if (!jsonObject.has("url")) {
-            return parse;
-        }
-        try {
-            parse = Uri.parse(jsonObject.getString("url"));
-            return parse;
-        }
-        catch (JSONException ex) {
-            return null;
-        }
-    }
-    
-    public JSONObject bL() {
-        final JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("url", (Object)this.KJ.toString());
-            jsonObject.put("width", this.lf);
-            jsonObject.put("height", this.lg);
-            return jsonObject;
-        }
-        catch (JSONException ex) {
-            return jsonObject;
-        }
     }
     
     public int describeContents() {

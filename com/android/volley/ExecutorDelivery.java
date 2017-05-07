@@ -15,10 +15,6 @@ public class ExecutorDelivery implements ResponseDelivery
         this.mResponsePoster = new ExecutorDelivery$1(this, handler);
     }
     
-    public ExecutorDelivery(final Executor mResponsePoster) {
-        this.mResponsePoster = mResponsePoster;
-    }
-    
     @Override
     public void postError(final Request<?> request, final VolleyError volleyError) {
         request.addMarker("post-error");

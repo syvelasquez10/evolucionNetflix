@@ -6,17 +6,13 @@ package se.emilsjolander.stickylistheaders;
 
 import android.widget.AbsListView$RecyclerListener;
 import android.view.View$OnTouchListener;
-import android.widget.AdapterView$OnItemLongClickListener;
-import android.widget.AdapterView$OnItemClickListener;
 import android.view.View$OnCreateContextMenuListener;
-import android.widget.AbsListView$MultiChoiceModeListener;
 import android.widget.SectionIndexer;
 import android.database.DataSetObserver;
 import android.widget.ListAdapter;
 import android.view.View$BaseSavedState;
 import android.os.Parcelable;
 import android.widget.ListView;
-import android.util.SparseBooleanArray;
 import android.annotation.TargetApi;
 import android.view.View$OnClickListener;
 import android.annotation.SuppressLint;

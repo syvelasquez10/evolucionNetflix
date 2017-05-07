@@ -9,15 +9,6 @@ import android.os.Build$VERSION;
 
 public class MotionEventCompat
 {
-    public static final int ACTION_HOVER_ENTER = 9;
-    public static final int ACTION_HOVER_EXIT = 10;
-    public static final int ACTION_HOVER_MOVE = 7;
-    public static final int ACTION_MASK = 255;
-    public static final int ACTION_POINTER_DOWN = 5;
-    public static final int ACTION_POINTER_INDEX_MASK = 65280;
-    public static final int ACTION_POINTER_INDEX_SHIFT = 8;
-    public static final int ACTION_POINTER_UP = 6;
-    public static final int ACTION_SCROLL = 8;
     static final MotionEventCompat$MotionEventVersionImpl IMPL;
     
     static {

@@ -4,7 +4,6 @@
 
 package com.google.android.gms.cast;
 
-import android.app.PendingIntent;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.internal.ij;
 import com.google.android.gms.common.api.BaseImplementation$a;
@@ -18,9 +17,5 @@ public abstract class Cast$a<R extends Result> extends BaseImplementation$a<R, i
     
     public void V(final int n) {
         this.b(this.c(new Status(n)));
-    }
-    
-    public void e(final int n, final String s) {
-        this.b(this.c(new Status(n, s, null)));
     }
 }

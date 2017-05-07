@@ -26,8 +26,6 @@ import android.graphics.drawable.Drawable;
 
 public class RoundedDrawable extends Drawable
 {
-    public static final int DEFAULT_BORDER_COLOR = -16777216;
-    public static final String TAG = "RoundedDrawable";
     private final int mBitmapHeight;
     private final Paint mBitmapPaint;
     private final RectF mBitmapRect;
@@ -230,22 +228,6 @@ public class RoundedDrawable extends Drawable
         }
     }
     
-    public int getBorderColor() {
-        return this.mBorderColor.getDefaultColor();
-    }
-    
-    public ColorStateList getBorderColors() {
-        return this.mBorderColor;
-    }
-    
-    public float getBorderWidth() {
-        return this.mBorderWidth;
-    }
-    
-    public float getCornerRadius() {
-        return this.mCornerRadius;
-    }
-    
     public int getIntrinsicHeight() {
         return this.mBitmapHeight;
     }
@@ -256,14 +238,6 @@ public class RoundedDrawable extends Drawable
     
     public int getOpacity() {
         return -3;
-    }
-    
-    public ImageView$ScaleType getScaleType() {
-        return this.mScaleType;
-    }
-    
-    public boolean isOval() {
-        return this.mOval;
     }
     
     public boolean isStateful() {
@@ -288,10 +262,6 @@ public class RoundedDrawable extends Drawable
     public void setAlpha(final int alpha) {
         this.mBitmapPaint.setAlpha(alpha);
         this.invalidateSelf();
-    }
-    
-    public RoundedDrawable setBorderColor(final int n) {
-        return this.setBorderColors(ColorStateList.valueOf(n));
     }
     
     public RoundedDrawable setBorderColors(ColorStateList value) {
@@ -344,9 +314,5 @@ public class RoundedDrawable extends Drawable
             this.updateShaderMatrix();
         }
         return this;
-    }
-    
-    public Bitmap toBitmap() {
-        return drawableToBitmap(this);
     }
 }

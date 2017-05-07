@@ -23,7 +23,6 @@ import java.lang.ref.WeakReference;
 
 public class ToolTipPopup
 {
-    public static final long DEFAULT_POPUP_DISPLAY_TIME = 6000L;
     private final WeakReference<View> mAnchorViewRef;
     private final Context mContext;
     private long mNuxDisplayTime;

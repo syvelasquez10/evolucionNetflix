@@ -12,25 +12,12 @@ import android.support.v7.app.ActionBar$LayoutParams;
 
 public class Toolbar$LayoutParams extends ActionBar$LayoutParams
 {
-    static final int CUSTOM = 0;
-    static final int EXPANDED = 2;
-    static final int SYSTEM = 1;
     int mViewType;
-    
-    public Toolbar$LayoutParams(final int n) {
-        this(-2, -1, n);
-    }
     
     public Toolbar$LayoutParams(final int n, final int n2) {
         super(n, n2);
         this.mViewType = 0;
         this.gravity = 8388627;
-    }
-    
-    public Toolbar$LayoutParams(final int n, final int n2, final int gravity) {
-        super(n, n2);
-        this.mViewType = 0;
-        this.gravity = gravity;
     }
     
     public Toolbar$LayoutParams(final Context context, final AttributeSet set) {

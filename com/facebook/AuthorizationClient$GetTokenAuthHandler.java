@@ -23,7 +23,6 @@ import android.os.Bundle;
 
 class AuthorizationClient$GetTokenAuthHandler extends AuthorizationClient$AuthHandler
 {
-    private static final long serialVersionUID = 1L;
     private transient GetTokenClient getTokenClient;
     final /* synthetic */ AuthorizationClient this$0;
     

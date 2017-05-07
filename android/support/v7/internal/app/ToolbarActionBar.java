@@ -6,23 +6,16 @@ package android.support.v7.internal.app;
 
 import android.support.v7.view.ActionMode;
 import android.support.v7.view.ActionMode$Callback;
-import android.support.v7.internal.widget.AdapterViewCompat$OnItemSelectedListener;
-import android.support.v7.app.ActionBar$OnNavigationListener;
-import android.widget.SpinnerAdapter;
-import android.support.v7.internal.view.menu.y;
+import android.support.v7.internal.view.menu.x;
 import android.view.ViewGroup$LayoutParams;
 import android.support.v7.app.ActionBar$LayoutParams;
-import android.view.LayoutInflater;
-import android.support.annotation.Nullable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.internal.view.menu.i;
-import android.view.KeyEvent;
 import android.content.res.Configuration;
-import android.content.Context;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.app.ActionBar$Tab;
+import android.content.Context;
 import android.support.v7.internal.view.menu.j;
-import android.support.v7.internal.view.menu.z;
+import android.support.v7.internal.view.menu.y;
 import android.view.ViewGroup;
 import android.view.View;
 import android.view.Menu;
@@ -65,7 +58,7 @@ public class ToolbarActionBar extends ActionBar
     
     private View getListMenuView(final Menu menu) {
         if (menu != null && this.mListMenuPresenter != null && this.mListMenuPresenter.a().getCount() > 0) {
-            return (View)this.mListMenuPresenter.getMenuView(this.mToolbar);
+            return (View)this.mListMenuPresenter.a(this.mToolbar);
         }
         return null;
     }
@@ -76,31 +69,6 @@ public class ToolbarActionBar extends ActionBar
             this.mMenuCallbackSet = true;
         }
         return this.mToolbar.getMenu();
-    }
-    
-    @Override
-    public void addOnMenuVisibilityListener(final ActionBar$OnMenuVisibilityListener actionBar$OnMenuVisibilityListener) {
-        this.mMenuVisibilityListeners.add(actionBar$OnMenuVisibilityListener);
-    }
-    
-    @Override
-    public void addTab(final ActionBar$Tab actionBar$Tab) {
-        throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
-    }
-    
-    @Override
-    public void addTab(final ActionBar$Tab actionBar$Tab, final int n) {
-        throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
-    }
-    
-    @Override
-    public void addTab(final ActionBar$Tab actionBar$Tab, final int n, final boolean b) {
-        throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
-    }
-    
-    @Override
-    public void addTab(final ActionBar$Tab actionBar$Tab, final boolean b) {
-        throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
     }
     
     @Override
@@ -123,68 +91,13 @@ public class ToolbarActionBar extends ActionBar
     }
     
     @Override
-    public View getCustomView() {
-        return this.mDecorToolbar.getCustomView();
-    }
-    
-    @Override
     public int getDisplayOptions() {
         return this.mDecorToolbar.getDisplayOptions();
     }
     
     @Override
-    public float getElevation() {
-        return ViewCompat.getElevation((View)this.mToolbar);
-    }
-    
-    @Override
-    public int getHeight() {
-        return this.mToolbar.getHeight();
-    }
-    
-    @Override
-    public int getNavigationItemCount() {
-        return 0;
-    }
-    
-    @Override
-    public int getNavigationMode() {
-        return 0;
-    }
-    
-    @Override
-    public int getSelectedNavigationIndex() {
-        return -1;
-    }
-    
-    @Override
-    public ActionBar$Tab getSelectedTab() {
-        throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
-    }
-    
-    @Override
-    public CharSequence getSubtitle() {
-        return this.mToolbar.getSubtitle();
-    }
-    
-    @Override
-    public ActionBar$Tab getTabAt(final int n) {
-        throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
-    }
-    
-    @Override
-    public int getTabCount() {
-        return 0;
-    }
-    
-    @Override
     public Context getThemedContext() {
         return this.mToolbar.getContext();
-    }
-    
-    @Override
-    public CharSequence getTitle() {
-        return this.mToolbar.getTitle();
     }
     
     public WindowCallback getWrappedWindowCallback() {
@@ -209,31 +122,8 @@ public class ToolbarActionBar extends ActionBar
     }
     
     @Override
-    public boolean isTitleTruncated() {
-        return super.isTitleTruncated();
-    }
-    
-    @Override
-    public ActionBar$Tab newTab() {
-        throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
-    }
-    
-    @Override
     public void onConfigurationChanged(final Configuration configuration) {
         super.onConfigurationChanged(configuration);
-    }
-    
-    @Override
-    public boolean onMenuKeyEvent(final KeyEvent keyEvent) {
-        if (keyEvent.getAction() == 1) {
-            this.openOptionsMenu();
-        }
-        return true;
-    }
-    
-    @Override
-    public boolean openOptionsMenu() {
-        return this.mToolbar.showOverflowMenu();
     }
     
     void populateOptionsMenu() {
@@ -245,7 +135,7 @@ public class ToolbarActionBar extends ActionBar
             i i = (i)menu;
             while (true) {
                 if (i != null) {
-                    i.h();
+                    i.g();
                 }
                 try {
                     menu.clear();
@@ -258,7 +148,7 @@ public class ToolbarActionBar extends ActionBar
                 }
                 finally {
                     if (i != null) {
-                        i.i();
+                        i.h();
                     }
                 }
                 break;
@@ -267,43 +157,8 @@ public class ToolbarActionBar extends ActionBar
     }
     
     @Override
-    public void removeAllTabs() {
-        throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
-    }
-    
-    @Override
-    public void removeOnMenuVisibilityListener(final ActionBar$OnMenuVisibilityListener actionBar$OnMenuVisibilityListener) {
-        this.mMenuVisibilityListeners.remove(actionBar$OnMenuVisibilityListener);
-    }
-    
-    @Override
-    public void removeTab(final ActionBar$Tab actionBar$Tab) {
-        throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
-    }
-    
-    @Override
-    public void removeTabAt(final int n) {
-        throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
-    }
-    
-    @Override
-    public void selectTab(final ActionBar$Tab actionBar$Tab) {
-        throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
-    }
-    
-    @Override
-    public void setBackgroundDrawable(@Nullable final Drawable backgroundDrawable) {
+    public void setBackgroundDrawable(final Drawable backgroundDrawable) {
         this.mToolbar.setBackgroundDrawable(backgroundDrawable);
-    }
-    
-    @Override
-    public void setCustomView(final int n) {
-        this.setCustomView(LayoutInflater.from(this.mToolbar.getContext()).inflate(n, (ViewGroup)this.mToolbar, false));
-    }
-    
-    @Override
-    public void setCustomView(final View view) {
-        this.setCustomView(view, new ActionBar$LayoutParams(-2, -2));
     }
     
     @Override
@@ -328,12 +183,6 @@ public class ToolbarActionBar extends ActionBar
         this.setDisplayOptions(n, 4);
     }
     
-    @Override
-    public void setDisplayOptions(final int n) {
-        this.setDisplayOptions(n, -1);
-    }
-    
-    @Override
     public void setDisplayOptions(final int n, final int n2) {
         this.mDecorToolbar.setDisplayOptions((this.mDecorToolbar.getDisplayOptions() & ~n2) | (n & n2));
     }
@@ -397,16 +246,6 @@ public class ToolbarActionBar extends ActionBar
     }
     
     @Override
-    public void setHomeActionContentDescription(final CharSequence navigationContentDescription) {
-        this.mDecorToolbar.setNavigationContentDescription(navigationContentDescription);
-    }
-    
-    @Override
-    public void setHomeAsUpIndicator(final int navigationIcon) {
-        this.mToolbar.setNavigationIcon(navigationIcon);
-    }
-    
-    @Override
     public void setHomeAsUpIndicator(final Drawable navigationIcon) {
         this.mToolbar.setNavigationIcon(navigationIcon);
     }
@@ -415,34 +254,19 @@ public class ToolbarActionBar extends ActionBar
     public void setHomeButtonEnabled(final boolean b) {
     }
     
-    @Override
-    public void setIcon(final int icon) {
-        this.mDecorToolbar.setIcon(icon);
-    }
-    
-    @Override
-    public void setIcon(final Drawable icon) {
-        this.mDecorToolbar.setIcon(icon);
-    }
-    
     public void setListMenuPresenter(final g mListMenuPresenter) {
         final Menu menu = this.getMenu();
         if (menu instanceof i) {
             final i i = (i)menu;
             if (this.mListMenuPresenter != null) {
-                this.mListMenuPresenter.setCallback(null);
+                this.mListMenuPresenter.a((y)null);
                 i.b(this.mListMenuPresenter);
             }
             if ((this.mListMenuPresenter = mListMenuPresenter) != null) {
-                mListMenuPresenter.setCallback(new ToolbarActionBar$PanelMenuPresenterCallback(this, null));
+                mListMenuPresenter.a(new ToolbarActionBar$PanelMenuPresenterCallback(this, null));
                 i.a(mListMenuPresenter);
             }
         }
-    }
-    
-    @Override
-    public void setListNavigationCallbacks(final SpinnerAdapter spinnerAdapter, final ActionBar$OnNavigationListener actionBar$OnNavigationListener) {
-        this.mDecorToolbar.setDropdownParams(spinnerAdapter, new NavItemSelectedListener(actionBar$OnNavigationListener));
     }
     
     @Override
@@ -451,71 +275,7 @@ public class ToolbarActionBar extends ActionBar
     }
     
     @Override
-    public void setLogo(final Drawable logo) {
-        this.mDecorToolbar.setLogo(logo);
-    }
-    
-    @Override
-    public void setNavigationMode(final int navigationMode) {
-        if (navigationMode == 2) {
-            throw new IllegalArgumentException("Tabs not supported in this configuration");
-        }
-        this.mDecorToolbar.setNavigationMode(navigationMode);
-    }
-    
-    @Override
-    public void setSelectedNavigationItem(final int dropdownSelectedPosition) {
-        switch (this.mDecorToolbar.getNavigationMode()) {
-            default: {
-                throw new IllegalStateException("setSelectedNavigationIndex not valid for current navigation mode");
-            }
-            case 1: {
-                this.mDecorToolbar.setDropdownSelectedPosition(dropdownSelectedPosition);
-            }
-        }
-    }
-    
-    @Override
     public void setShowHideAnimationEnabled(final boolean b) {
-    }
-    
-    @Override
-    public void setSplitBackgroundDrawable(final Drawable drawable) {
-    }
-    
-    @Override
-    public void setStackedBackgroundDrawable(final Drawable drawable) {
-    }
-    
-    @Override
-    public void setSubtitle(final int n) {
-        final DecorToolbar mDecorToolbar = this.mDecorToolbar;
-        CharSequence text;
-        if (n != 0) {
-            text = this.mDecorToolbar.getContext().getText(n);
-        }
-        else {
-            text = null;
-        }
-        mDecorToolbar.setSubtitle(text);
-    }
-    
-    @Override
-    public void setSubtitle(final CharSequence subtitle) {
-        this.mDecorToolbar.setSubtitle(subtitle);
-    }
-    
-    @Override
-    public void setTitle(final int n) {
-        final DecorToolbar mDecorToolbar = this.mDecorToolbar;
-        CharSequence text;
-        if (n != 0) {
-            text = this.mDecorToolbar.getContext().getText(n);
-        }
-        else {
-            text = null;
-        }
-        mDecorToolbar.setTitle(text);
     }
     
     @Override

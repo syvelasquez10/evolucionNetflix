@@ -32,14 +32,6 @@ class RequestProgress
         this.maxProgress += n;
     }
     
-    long getMaxProgress() {
-        return this.maxProgress;
-    }
-    
-    long getProgress() {
-        return this.progress;
-    }
-    
     void reportProgress() {
         if (this.progress > this.lastReportedProgress) {
             final Request$Callback callback = this.request.getCallback();

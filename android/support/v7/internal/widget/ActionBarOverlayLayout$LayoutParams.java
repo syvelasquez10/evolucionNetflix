@@ -22,8 +22,4 @@ public class ActionBarOverlayLayout$LayoutParams extends ViewGroup$MarginLayoutP
     public ActionBarOverlayLayout$LayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
         super(viewGroup$LayoutParams);
     }
-    
-    public ActionBarOverlayLayout$LayoutParams(final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams) {
-        super(viewGroup$MarginLayoutParams);
-    }
 }

@@ -6,8 +6,6 @@ package com.facebook.internal;
 
 class NativeProtocol$WakizashiAppInfo extends NativeProtocol$NativeAppInfo
 {
-    static final String WAKIZASHI_PACKAGE = "com.facebook.wakizashi";
-    
     private NativeProtocol$WakizashiAppInfo() {
         super(null);
     }

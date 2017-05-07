@@ -32,19 +32,6 @@ import android.app.Dialog;
 
 public class WebDialog extends Dialog
 {
-    private static final int API_EC_DIALOG_CANCEL = 4201;
-    private static final int BACKGROUND_GRAY = -872415232;
-    static final String CANCEL_URI = "fbconnect://cancel";
-    public static final int DEFAULT_THEME = 16973840;
-    static final boolean DISABLE_SSL_CHECK_FOR_TESTING = false;
-    private static final String DISPLAY_TOUCH = "touch";
-    private static final String LOG_TAG = "FacebookSDK.WebDialog";
-    private static final int MAX_PADDING_SCREEN_HEIGHT = 1280;
-    private static final int MAX_PADDING_SCREEN_WIDTH = 800;
-    private static final double MIN_SCALE_FACTOR = 0.5;
-    private static final int NO_PADDING_SCREEN_HEIGHT = 800;
-    private static final int NO_PADDING_SCREEN_WIDTH = 480;
-    static final String REDIRECT_URI = "fbconnect://success";
     private FrameLayout contentFrameLayout;
     private ImageView crossImageView;
     private String expectedRedirectUrl;
@@ -55,19 +42,6 @@ public class WebDialog extends Dialog
     private ProgressDialog spinner;
     private String url;
     private WebView webView;
-    
-    public WebDialog(final Context context, final String s) {
-        this(context, s, 16973840);
-    }
-    
-    public WebDialog(final Context context, final String url, final int n) {
-        super(context, n);
-        this.expectedRedirectUrl = "fbconnect://success";
-        this.listenerCalled = false;
-        this.isDetached = false;
-        this.isDismissed = false;
-        this.url = url;
-    }
     
     public WebDialog(final Context context, final String s, final Bundle bundle, final int n, final WebDialog$OnCompleteListener onCompleteListener) {
         super(context, n);
@@ -160,18 +134,6 @@ public class WebDialog extends Dialog
         }
     }
     
-    public WebDialog$OnCompleteListener getOnCompleteListener() {
-        return this.onCompleteListener;
-    }
-    
-    protected WebView getWebView() {
-        return this.webView;
-    }
-    
-    protected boolean isListenerCalled() {
-        return this.listenerCalled;
-    }
-    
     public void onAttachedToWindow() {
         this.isDetached = false;
         super.onAttachedToWindow();
@@ -230,10 +192,6 @@ public class WebDialog extends Dialog
             this.onCompleteListener.onComplete(bundle, null);
             this.dismiss();
         }
-    }
-    
-    protected void setExpectedRedirectUrl(final String expectedRedirectUrl) {
-        this.expectedRedirectUrl = expectedRedirectUrl;
     }
     
     public void setOnCompleteListener(final WebDialog$OnCompleteListener onCompleteListener) {

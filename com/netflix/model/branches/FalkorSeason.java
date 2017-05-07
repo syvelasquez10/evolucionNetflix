@@ -154,6 +154,6 @@ public class FalkorSeason extends BaseFalkorObject implements BasicVideo, Season
     
     @Override
     public String toString() {
-        return this.getTitle();
+        return "FalkorSeason [getKeys()=" + this.getKeys() + ", getId()=" + this.getId() + ", getTitle()=" + this.getTitle() + ", getType()=" + this.getType() + ", getNumOfEpisodes()=" + this.getNumOfEpisodes() + ", getCurrentEpisodeNumber()=" + this.getCurrentEpisodeNumber() + ", getSeasonNumber()=" + this.getSeasonNumber() + ", getYear()=" + this.getYear() + "]";
     }
 }

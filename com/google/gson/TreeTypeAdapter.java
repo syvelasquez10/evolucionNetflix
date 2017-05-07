@@ -42,10 +42,6 @@ final class TreeTypeAdapter<T> extends TypeAdapter<T>
         return new TreeTypeAdapter$SingleTypeFactory(o, typeToken, typeToken.getType() == typeToken.getRawType(), null, null);
     }
     
-    public static TypeAdapterFactory newTypeHierarchyFactory(final Class<?> clazz, final Object o) {
-        return new TreeTypeAdapter$SingleTypeFactory(o, null, false, clazz, null);
-    }
-    
     @Override
     public T read(final JsonReader jsonReader) {
         if (this.deserializer == null) {

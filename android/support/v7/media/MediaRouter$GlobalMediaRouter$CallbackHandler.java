@@ -4,11 +4,6 @@
 
 package android.support.v7.media;
 
-import android.os.Bundle;
-import android.content.Intent;
-import android.content.pm.PackageManager$NameNotFoundException;
-import android.view.Display;
-import android.content.ContentResolver;
 import java.util.List;
 import java.util.Collections;
 import android.util.Log;
@@ -26,19 +21,6 @@ import android.os.Handler;
 
 final class MediaRouter$GlobalMediaRouter$CallbackHandler extends Handler
 {
-    public static final int MSG_PROVIDER_ADDED = 513;
-    public static final int MSG_PROVIDER_CHANGED = 515;
-    public static final int MSG_PROVIDER_REMOVED = 514;
-    public static final int MSG_ROUTE_ADDED = 257;
-    public static final int MSG_ROUTE_CHANGED = 259;
-    public static final int MSG_ROUTE_PRESENTATION_DISPLAY_CHANGED = 261;
-    public static final int MSG_ROUTE_REMOVED = 258;
-    public static final int MSG_ROUTE_SELECTED = 262;
-    public static final int MSG_ROUTE_UNSELECTED = 263;
-    public static final int MSG_ROUTE_VOLUME_CHANGED = 260;
-    private static final int MSG_TYPE_MASK = 65280;
-    private static final int MSG_TYPE_PROVIDER = 512;
-    private static final int MSG_TYPE_ROUTE = 256;
     private final ArrayList<MediaRouter$CallbackRecord> mTempCallbackRecords;
     final /* synthetic */ MediaRouter$GlobalMediaRouter this$0;
     

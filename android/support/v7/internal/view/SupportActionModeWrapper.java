@@ -4,7 +4,7 @@
 
 package android.support.v7.internal.view;
 
-import android.support.v7.internal.view.menu.ac;
+import android.support.v7.internal.view.menu.ab;
 import android.view.Menu;
 import android.view.View;
 import android.content.Context;
@@ -32,7 +32,7 @@ public class SupportActionModeWrapper extends ActionMode
     }
     
     public Menu getMenu() {
-        return ac.a(this.mWrappedObject.getMenu());
+        return ab.a(this.mWrappedObject.getMenu());
     }
     
     public MenuInflater getMenuInflater() {

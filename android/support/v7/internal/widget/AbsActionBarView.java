@@ -27,7 +27,6 @@ import android.view.ViewGroup;
 
 abstract class AbsActionBarView extends ViewGroup
 {
-    private static final int FADE_DURATION = 200;
     private static final Interpolator sAlphaInterpolator;
     protected ActionMenuPresenter mActionMenuPresenter;
     protected int mContentHeight;
@@ -35,7 +34,6 @@ abstract class AbsActionBarView extends ViewGroup
     protected final Context mPopupContext;
     protected boolean mSplitActionBar;
     protected ViewGroup mSplitView;
-    protected boolean mSplitWhenNarrow;
     protected final AbsActionBarView$VisibilityAnimListener mVisAnimListener;
     protected ViewPropertyAnimatorCompat mVisibilityAnim;
     
@@ -113,43 +111,6 @@ abstract class AbsActionBarView extends ViewGroup
         }
     }
     
-    public boolean canShowOverflowMenu() {
-        return this.isOverflowReserved() && this.getVisibility() == 0;
-    }
-    
-    public void dismissPopupMenus() {
-        if (this.mActionMenuPresenter != null) {
-            this.mActionMenuPresenter.dismissPopupMenus();
-        }
-    }
-    
-    public int getAnimatedVisibility() {
-        if (this.mVisibilityAnim != null) {
-            return this.mVisAnimListener.mFinalVisibility;
-        }
-        return this.getVisibility();
-    }
-    
-    public int getContentHeight() {
-        return this.mContentHeight;
-    }
-    
-    public boolean hideOverflowMenu() {
-        return this.mActionMenuPresenter != null && this.mActionMenuPresenter.hideOverflowMenu();
-    }
-    
-    public boolean isOverflowMenuShowPending() {
-        return this.mActionMenuPresenter != null && this.mActionMenuPresenter.isOverflowMenuShowPending();
-    }
-    
-    public boolean isOverflowMenuShowing() {
-        return this.mActionMenuPresenter != null && this.mActionMenuPresenter.isOverflowMenuShowing();
-    }
-    
-    public boolean isOverflowReserved() {
-        return this.mActionMenuPresenter != null && this.mActionMenuPresenter.isOverflowReserved();
-    }
-    
     protected int measureChildView(final View view, final int n, final int n2, final int n3) {
         view.measure(View$MeasureSpec.makeMeasureSpec(n, Integer.MIN_VALUE), n2);
         return Math.max(0, n - view.getMeasuredWidth() - n3);
@@ -184,25 +145,9 @@ abstract class AbsActionBarView extends ViewGroup
         return n;
     }
     
-    public void postShowOverflowMenu() {
-        this.post((Runnable)new AbsActionBarView$1(this));
-    }
-    
     public void setContentHeight(final int mContentHeight) {
         this.mContentHeight = mContentHeight;
         this.requestLayout();
-    }
-    
-    public void setSplitToolbar(final boolean mSplitActionBar) {
-        this.mSplitActionBar = mSplitActionBar;
-    }
-    
-    public void setSplitView(final ViewGroup mSplitView) {
-        this.mSplitView = mSplitView;
-    }
-    
-    public void setSplitWhenNarrow(final boolean mSplitWhenNarrow) {
-        this.mSplitWhenNarrow = mSplitWhenNarrow;
     }
     
     public boolean showOverflowMenu() {

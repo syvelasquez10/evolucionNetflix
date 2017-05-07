@@ -8,10 +8,6 @@ import android.util.Log;
 
 public class DefaultRetryPolicy implements RetryPolicy
 {
-    public static final float DEFAULT_BACKOFF_MULT = 1.0f;
-    public static final int DEFAULT_MAX_RETRIES = 1;
-    public static final int DEFAULT_TIMEOUT_MS = 2500;
-    private static final String TAG = "DefaultRetryPolicy";
     private final float mBackoffMultiplier;
     private int mCurrentRetryCount;
     private int mCurrentTimeoutMs;

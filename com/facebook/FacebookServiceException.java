@@ -6,7 +6,6 @@ package com.facebook;
 
 public class FacebookServiceException extends FacebookException
 {
-    private static final long serialVersionUID = 1L;
     private final FacebookRequestError error;
     
     public FacebookServiceException(final FacebookRequestError error, final String s) {

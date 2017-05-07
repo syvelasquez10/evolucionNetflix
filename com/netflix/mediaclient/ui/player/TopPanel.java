@@ -138,11 +138,9 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initSound(final Menu menu, final SeekBar$OnSeekBarChangeListener seekBar$OnSeekBarChangeListener) {
-        if (this.context.isTablet()) {
-            (this.mSound = menu.add(2131493174)).setIcon(2130837708);
-            this.mSound.setShowAsAction(2);
-            this.mSound.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$2(this));
-        }
+        (this.mSound = menu.add(2131493174)).setIcon(2130837708);
+        this.mSound.setShowAsAction(2);
+        this.mSound.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$2(this));
     }
     
     private boolean isMdxTargetSelectionVisible() {

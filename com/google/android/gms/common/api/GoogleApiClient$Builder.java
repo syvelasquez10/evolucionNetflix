@@ -4,7 +4,6 @@
 
 package com.google.android.gms.common.api;
 
-import android.os.Handler;
 import java.util.Collection;
 import com.google.android.gms.common.internal.ClientSettings;
 import java.util.List;
@@ -45,14 +44,6 @@ public final class GoogleApiClient$Builder
         this.IH = mContext.getPackageName();
     }
     
-    public GoogleApiClient$Builder(final Context context, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
-        this(context);
-        n.b(googleApiClient$ConnectionCallbacks, "Must provide a connected listener");
-        this.IM.add(googleApiClient$ConnectionCallbacks);
-        n.b(googleApiClient$OnConnectionFailedListener, "Must provide a connection failed listener");
-        this.IN.add(googleApiClient$OnConnectionFailedListener);
-    }
-    
     private GoogleApiClient gm() {
         final d a = d.a(this.IJ);
         GoogleApiClient ak;
@@ -61,15 +52,6 @@ public final class GoogleApiClient$Builder
         }
         a.a(this.IK, ak, this.IL);
         return ak;
-    }
-    
-    public GoogleApiClient$Builder addApi(final Api<? extends Api$ApiOptions$NotRequiredOptions> api) {
-        this.II.put(api, null);
-        final List<Scope> ge = api.ge();
-        for (int size = ge.size(), i = 0; i < size; ++i) {
-            this.IE.add(ge.get(i).gt());
-        }
-        return this;
     }
     
     public <O extends Api$ApiOptions$HasOptions> GoogleApiClient$Builder addApi(final Api<O> api, final O o) {
@@ -92,53 +74,15 @@ public final class GoogleApiClient$Builder
         return this;
     }
     
-    public GoogleApiClient$Builder addScope(final Scope scope) {
-        this.IE.add(scope.gt());
-        return this;
-    }
-    
     public GoogleApiClient build() {
-        n.b(!this.II.isEmpty(), (Object)"must call addApi() to add at least one API");
+        n.b(!this.II.isEmpty(), "must call addApi() to add at least one API");
         if (this.IK >= 0) {
             return this.gm();
         }
         return new b(this.mContext, this.IB, this.gl(), this.II, this.IM, this.IN, -1);
     }
     
-    public GoogleApiClient$Builder enableAutoManage(final FragmentActivity fragmentActivity, final int ik, final GoogleApiClient$OnConnectionFailedListener il) {
-        n.b(ik >= 0, (Object)"clientId must be non-negative");
-        this.IK = ik;
-        this.IJ = n.b(fragmentActivity, "Null activity is not permitted.");
-        this.IL = il;
-        return this;
-    }
-    
     public ClientSettings gl() {
         return new ClientSettings(this.Dd, this.IE, this.IF, this.IG, this.IH);
-    }
-    
-    public GoogleApiClient$Builder setAccountName(final String dd) {
-        this.Dd = dd;
-        return this;
-    }
-    
-    public GoogleApiClient$Builder setGravityForPopups(final int if1) {
-        this.IF = if1;
-        return this;
-    }
-    
-    public GoogleApiClient$Builder setHandler(final Handler handler) {
-        n.b(handler, "Handler must not be null");
-        this.IB = handler.getLooper();
-        return this;
-    }
-    
-    public GoogleApiClient$Builder setViewForPopups(final View ig) {
-        this.IG = ig;
-        return this;
-    }
-    
-    public GoogleApiClient$Builder useDefaultAccount() {
-        return this.setAccountName("<<default account>>");
     }
 }

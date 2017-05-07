@@ -28,21 +28,19 @@ import android.view.View$OnClickListener;
 import android.support.v7.widget.ActionMenuView$ActionMenuChildView;
 import android.support.v7.internal.widget.CompatTextView;
 
-public class ActionMenuItemView extends CompatTextView implements ab, ActionMenuView$ActionMenuChildView, View$OnClickListener, View$OnLongClickListener
+public class ActionMenuItemView extends CompatTextView implements aa, ActionMenuView$ActionMenuChildView, View$OnClickListener, View$OnLongClickListener
 {
-    private static final String a = "ActionMenuItemView";
-    private static final int l = 32;
-    private m b;
-    private CharSequence c;
-    private Drawable d;
-    private k e;
-    private ListPopupWindow$ForwardingListener f;
-    private c g;
+    private m a;
+    private CharSequence b;
+    private Drawable c;
+    private k d;
+    private ListPopupWindow$ForwardingListener e;
+    private c f;
+    private boolean g;
     private boolean h;
-    private boolean i;
+    private int i;
     private int j;
     private int k;
-    private int m;
     
     public ActionMenuItemView(final Context context) {
         this(context, null);
@@ -55,120 +53,106 @@ public class ActionMenuItemView extends CompatTextView implements ab, ActionMenu
     public ActionMenuItemView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
         final Resources resources = context.getResources();
-        this.h = resources.getBoolean(R$bool.abc_config_allowActionMenuItemTextWithIcon);
+        this.g = resources.getBoolean(R$bool.abc_config_allowActionMenuItemTextWithIcon);
         final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.ActionMenuItemView, n, 0);
-        this.j = obtainStyledAttributes.getDimensionPixelSize(R$styleable.ActionMenuItemView_android_minWidth, 0);
+        this.i = obtainStyledAttributes.getDimensionPixelSize(R$styleable.ActionMenuItemView_android_minWidth, 0);
         obtainStyledAttributes.recycle();
-        this.m = (int)(resources.getDisplayMetrics().density * 32.0f + 0.5f);
+        this.k = (int)(resources.getDisplayMetrics().density * 32.0f + 0.5f);
         this.setOnClickListener((View$OnClickListener)this);
         this.setOnLongClickListener((View$OnLongClickListener)this);
         this.setTransformationMethod((TransformationMethod)new AllCapsTransformationMethod(context));
-        this.k = -1;
+        this.j = -1;
     }
     
-    private void e() {
+    private void d() {
         final boolean b = false;
-        final boolean b2 = !TextUtils.isEmpty(this.c) && true;
+        final boolean b2 = !TextUtils.isEmpty(this.b) && true;
         boolean b3 = false;
         Label_0051: {
-            if (this.d != null) {
+            if (this.c != null) {
                 b3 = b;
-                if (!this.b.m()) {
+                if (!this.a.k()) {
                     break Label_0051;
                 }
-                if (!this.h) {
+                if (!this.g) {
                     b3 = b;
-                    if (!this.i) {
+                    if (!this.h) {
                         break Label_0051;
                     }
                 }
             }
             b3 = true;
         }
-        CharSequence c;
+        CharSequence b4;
         if (b2 & b3) {
-            c = this.c;
+            b4 = this.b;
         }
         else {
-            c = null;
+            b4 = null;
         }
-        this.setText(c);
+        this.setText(b4);
     }
     
     @Override
     public m a() {
-        return this.b;
+        return this.a;
     }
     
-    @Override
-    public void a(final Drawable d) {
-        this.d = d;
-        if (d != null) {
-            final int intrinsicWidth = d.getIntrinsicWidth();
+    public void a(final Drawable c) {
+        this.c = c;
+        if (c != null) {
+            final int intrinsicWidth = c.getIntrinsicWidth();
             int intrinsicHeight;
-            final int n = intrinsicHeight = d.getIntrinsicHeight();
-            int m;
-            if ((m = intrinsicWidth) > this.m) {
-                final float n2 = this.m / intrinsicWidth;
-                m = this.m;
+            final int n = intrinsicHeight = c.getIntrinsicHeight();
+            int k;
+            if ((k = intrinsicWidth) > this.k) {
+                final float n2 = this.k / intrinsicWidth;
+                k = this.k;
                 intrinsicHeight = (int)(n * n2);
             }
             int i = intrinsicHeight;
-            int n3 = m;
-            if (intrinsicHeight > this.m) {
-                final float n4 = this.m / intrinsicHeight;
-                i = this.m;
-                n3 = (int)(m * n4);
+            int n3 = k;
+            if (intrinsicHeight > this.k) {
+                final float n4 = this.k / intrinsicHeight;
+                i = this.k;
+                n3 = (int)(k * n4);
             }
-            d.setBounds(0, 0, n3, i);
+            c.setBounds(0, 0, n3, i);
         }
-        this.setCompoundDrawables(d, (Drawable)null, (Drawable)null, (Drawable)null);
-        this.e();
+        this.setCompoundDrawables(c, (Drawable)null, (Drawable)null, (Drawable)null);
+        this.d();
     }
     
-    public void a(final c g) {
-        this.g = g;
+    public void a(final c f) {
+        this.f = f;
     }
     
-    public void a(final k e) {
-        this.e = e;
+    public void a(final k d) {
+        this.d = d;
     }
     
     @Override
-    public void a(final m b, int visibility) {
-        this.b = b;
-        this.a(b.getIcon());
-        this.a(b.a(this));
-        this.setId(b.getItemId());
-        if (b.isVisible()) {
+    public void a(final m a, int visibility) {
+        this.a = a;
+        this.a(a.getIcon());
+        this.a(a.a(this));
+        this.setId(a.getItemId());
+        if (a.isVisible()) {
             visibility = 0;
         }
         else {
             visibility = 8;
         }
         this.setVisibility(visibility);
-        this.setEnabled(b.isEnabled());
-        if (b.hasSubMenu() && this.f == null) {
-            this.f = new b(this);
+        this.setEnabled(a.isEnabled());
+        if (a.hasSubMenu() && this.e == null) {
+            this.e = new b(this);
         }
     }
     
-    @Override
-    public void a(final CharSequence c) {
-        this.setContentDescription(this.c = c);
-        this.e();
-    }
-    
-    @Override
-    public void a(final boolean b) {
-    }
-    
-    @Override
-    public void a(final boolean b, final char c) {
-    }
-    
-    @Override
-    public void b(final boolean b) {
+    public void a(final CharSequence b) {
+        this.setContentDescription(this.b = b);
+        this.d();
     }
     
     @Override
@@ -176,22 +160,8 @@ public class ActionMenuItemView extends CompatTextView implements ab, ActionMenu
         return true;
     }
     
-    public void c(final boolean i) {
-        if (this.i != i) {
-            this.i = i;
-            if (this.b != null) {
-                this.b.h();
-            }
-        }
-    }
-    
     public boolean c() {
         return !TextUtils.isEmpty(this.getText());
-    }
-    
-    @Override
-    public boolean d() {
-        return true;
     }
     
     @Override
@@ -201,12 +171,12 @@ public class ActionMenuItemView extends CompatTextView implements ab, ActionMenu
     
     @Override
     public boolean needsDividerBefore() {
-        return this.c() && this.b.getIcon() == null;
+        return this.c() && this.a.getIcon() == null;
     }
     
     public void onClick(final View view) {
-        if (this.e != null) {
-            this.e.invokeItem(this.b);
+        if (this.d != null) {
+            this.d.invokeItem(this.a);
         }
     }
     
@@ -214,8 +184,8 @@ public class ActionMenuItemView extends CompatTextView implements ab, ActionMenu
         if (Build$VERSION.SDK_INT >= 8) {
             super.onConfigurationChanged(configuration);
         }
-        this.h = this.getContext().getResources().getBoolean(R$bool.abc_config_allowActionMenuItemTextWithIcon);
-        this.e();
+        this.g = this.getContext().getResources().getBoolean(R$bool.abc_config_allowActionMenuItemTextWithIcon);
+        this.d();
     }
     
     public boolean onLongClick(final View view) {
@@ -235,7 +205,7 @@ public class ActionMenuItemView extends CompatTextView implements ab, ActionMenu
         if (ViewCompat.getLayoutDirection(view) == 0) {
             n3 = context.getResources().getDisplayMetrics().widthPixels - n3;
         }
-        final Toast text = Toast.makeText(context, this.b.getTitle(), 0);
+        final Toast text = Toast.makeText(context, this.a.getTitle(), 0);
         if (n + n2 < rect.height()) {
             text.setGravity(8388661, n3, height);
         }
@@ -248,32 +218,32 @@ public class ActionMenuItemView extends CompatTextView implements ab, ActionMenu
     
     protected void onMeasure(int n, final int n2) {
         final boolean c = this.c();
-        if (c && this.k >= 0) {
-            super.setPadding(this.k, this.getPaddingTop(), this.getPaddingRight(), this.getPaddingBottom());
+        if (c && this.j >= 0) {
+            super.setPadding(this.j, this.getPaddingTop(), this.getPaddingRight(), this.getPaddingBottom());
         }
         super.onMeasure(n, n2);
         final int mode = View$MeasureSpec.getMode(n);
         n = View$MeasureSpec.getSize(n);
         final int measuredWidth = this.getMeasuredWidth();
         if (mode == Integer.MIN_VALUE) {
-            n = Math.min(n, this.j);
+            n = Math.min(n, this.i);
         }
         else {
-            n = this.j;
+            n = this.i;
         }
-        if (mode != 1073741824 && this.j > 0 && measuredWidth < n) {
+        if (mode != 1073741824 && this.i > 0 && measuredWidth < n) {
             super.onMeasure(View$MeasureSpec.makeMeasureSpec(n, 1073741824), n2);
         }
-        if (!c && this.d != null) {
-            super.setPadding((this.getMeasuredWidth() - this.d.getBounds().width()) / 2, this.getPaddingTop(), this.getPaddingRight(), this.getPaddingBottom());
+        if (!c && this.c != null) {
+            super.setPadding((this.getMeasuredWidth() - this.c.getBounds().width()) / 2, this.getPaddingTop(), this.getPaddingRight(), this.getPaddingBottom());
         }
     }
     
     public boolean onTouchEvent(final MotionEvent motionEvent) {
-        return (this.b.hasSubMenu() && this.f != null && this.f.onTouch((View)this, motionEvent)) || super.onTouchEvent(motionEvent);
+        return (this.a.hasSubMenu() && this.e != null && this.e.onTouch((View)this, motionEvent)) || super.onTouchEvent(motionEvent);
     }
     
-    public void setPadding(final int k, final int n, final int n2, final int n3) {
-        super.setPadding(this.k = k, n, n2, n3);
+    public void setPadding(final int j, final int n, final int n2, final int n3) {
+        super.setPadding(this.j = j, n, n2, n3);
     }
 }

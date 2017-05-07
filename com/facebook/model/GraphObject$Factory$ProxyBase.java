@@ -11,8 +11,6 @@ import java.lang.reflect.InvocationHandler;
 
 abstract class GraphObject$Factory$ProxyBase<STATE> implements InvocationHandler
 {
-    private static final String EQUALS_METHOD = "equals";
-    private static final String TOSTRING_METHOD = "toString";
     protected final STATE state;
     
     protected GraphObject$Factory$ProxyBase(final STATE state) {

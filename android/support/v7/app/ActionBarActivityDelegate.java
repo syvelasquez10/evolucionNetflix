@@ -13,13 +13,9 @@ import android.content.res.TypedArray;
 import android.support.v7.appcompat.R$styleable;
 import android.os.Bundle;
 import android.content.res.Configuration;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager$NameNotFoundException;
-import android.util.Log;
 import android.support.v7.internal.view.SupportMenuInflater;
 import android.support.v4.app.ActionBarDrawerToggle$Delegate;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.ViewGroup$LayoutParams;
 import android.view.View;
@@ -29,8 +25,6 @@ import android.support.v7.internal.app.WindowCallback;
 
 abstract class ActionBarActivityDelegate
 {
-    static final String METADATA_UI_OPTIONS = "android.support.UI_OPTIONS";
-    private static final String TAG = "ActionBarActivityDelegate";
     private ActionBar mActionBar;
     final ActionBarActivity mActivity;
     final WindowCallback mDefaultWindowCallback;
@@ -59,7 +53,7 @@ abstract class ActionBarActivityDelegate
     
     abstract ActionBar createSupportActionBar();
     
-    abstract View createView(final String p0, @NonNull final AttributeSet p1);
+    abstract View createView(final String p0, final AttributeSet p1);
     
     final void destroy() {
         this.mIsDestroyed = true;
@@ -96,21 +90,6 @@ abstract class ActionBarActivityDelegate
             this.mActionBar = this.createSupportActionBar();
         }
         return this.mActionBar;
-    }
-    
-    final String getUiOptionsFromMetadata() {
-        String string = null;
-        try {
-            final ActivityInfo activityInfo = this.mActivity.getPackageManager().getActivityInfo(this.mActivity.getComponentName(), 128);
-            if (activityInfo.metaData != null) {
-                string = activityInfo.metaData.getString("android.support.UI_OPTIONS");
-            }
-            return string;
-        }
-        catch (PackageManager$NameNotFoundException ex) {
-            Log.e("ActionBarActivityDelegate", "getUiOptionsFromMetadata: Activity '" + this.mActivity.getClass().getSimpleName() + "' not in manifest");
-            return null;
-        }
     }
     
     final android.support.v7.app.ActionBarDrawerToggle$Delegate getV7DrawerToggleDelegate() {

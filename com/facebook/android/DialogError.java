@@ -6,7 +6,6 @@ package com.facebook.android;
 
 public class DialogError extends Throwable
 {
-    private static final long serialVersionUID = 1L;
     private int mErrorCode;
     private String mFailingUrl;
     
@@ -14,15 +13,5 @@ public class DialogError extends Throwable
         super(s);
         this.mErrorCode = mErrorCode;
         this.mFailingUrl = mFailingUrl;
-    }
-    
-    @Deprecated
-    public int getErrorCode() {
-        return this.mErrorCode;
-    }
-    
-    @Deprecated
-    public String getFailingUrl() {
-        return this.mFailingUrl;
     }
 }

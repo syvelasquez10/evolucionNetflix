@@ -4,10 +4,7 @@
 
 package android.support.v7.internal.view;
 
-import android.support.v7.internal.view.menu.w;
 import android.view.MenuItem;
-import android.support.v7.internal.view.menu.ae;
-import android.view.MenuInflater;
 import android.view.Menu;
 import android.support.v7.internal.view.menu.i;
 import android.view.View;
@@ -60,11 +57,6 @@ public class StandaloneActionMode extends ActionMode implements j
     }
     
     @Override
-    public MenuInflater getMenuInflater() {
-        return new MenuInflater(this.mContext);
-    }
-    
-    @Override
     public CharSequence getSubtitle() {
         return this.mContextView.getSubtitle();
     }
@@ -85,17 +77,6 @@ public class StandaloneActionMode extends ActionMode implements j
     }
     
     @Override
-    public boolean isUiFocusable() {
-        return this.mFocusable;
-    }
-    
-    public void onCloseMenu(final i i, final boolean b) {
-    }
-    
-    public void onCloseSubMenu(final ae ae) {
-    }
-    
-    @Override
     public boolean onMenuItemSelected(final i i, final MenuItem menuItem) {
         return this.mCallback.onActionItemClicked(this, menuItem);
     }
@@ -104,14 +85,6 @@ public class StandaloneActionMode extends ActionMode implements j
     public void onMenuModeChange(final i i) {
         this.invalidate();
         this.mContextView.showOverflowMenu();
-    }
-    
-    public boolean onSubMenuSelected(final ae ae) {
-        if (!ae.hasVisibleItems()) {
-            return true;
-        }
-        new w(this.mContext, ae).show();
-        return true;
     }
     
     @Override

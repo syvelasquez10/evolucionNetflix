@@ -58,10 +58,10 @@ class FalkorAgent$6 extends SimpleBrowseAgentCallback
     @Override
     public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
         if (list != null && status.getStatusCode() == StatusCode.OK) {
-            final SocialNotificationSummary access$500 = this.this$0.getFirstUnreadNotification(list);
-            this.this$0.notifyOthersOfUnreadNotifications(access$500 != null);
-            if (this.val$sendNotificationToStatusbar && this.this$0.shouldBeNotificationSentToStatusBar(access$500)) {
-                SocialNotificationsStaticFactory.getNotificationByType(access$500.getType()).sendNotificationToStatusbar(access$500, list.getSocialNotificationsListSummary(), this.this$0.getService().getImageLoader(), this.val$msg, this.this$0.getContext());
+            final SocialNotificationSummary access$600 = this.this$0.getFirstUnreadNotification(list);
+            this.this$0.notifyOthersOfUnreadNotifications(access$600 != null);
+            if (this.val$sendNotificationToStatusbar && this.this$0.shouldBeNotificationSentToStatusBar(access$600)) {
+                SocialNotificationsStaticFactory.getNotificationByType(access$600.getType()).sendNotificationToStatusbar(access$600, list.getSocialNotificationsListSummary(), this.this$0.getService().getImageLoader(), this.val$msg, this.this$0.getContext());
             }
         }
     }

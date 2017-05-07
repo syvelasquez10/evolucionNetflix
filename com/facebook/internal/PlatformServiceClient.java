@@ -70,10 +70,6 @@ public abstract class PlatformServiceClient implements ServiceConnection
         this.running = false;
     }
     
-    protected Context getContext() {
-        return this.context;
-    }
-    
     protected void handleMessage(final Message message) {
         if (message.what == this.replyMessage) {
             final Bundle data = message.getData();

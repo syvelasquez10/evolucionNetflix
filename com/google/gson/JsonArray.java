@@ -5,9 +5,6 @@
 package com.google.gson;
 
 import java.util.Iterator;
-import java.math.BigInteger;
-import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,10 +24,6 @@ public final class JsonArray extends JsonElement implements Iterable<JsonElement
         this.elements.add(instance);
     }
     
-    public void addAll(final JsonArray jsonArray) {
-        this.elements.addAll(jsonArray.elements);
-    }
-    
     @Override
     public boolean equals(final Object o) {
         return o == this || (o instanceof JsonArray && ((JsonArray)o).elements.equals(this.elements));
@@ -41,41 +34,9 @@ public final class JsonArray extends JsonElement implements Iterable<JsonElement
     }
     
     @Override
-    public BigDecimal getAsBigDecimal() {
-        if (this.elements.size() == 1) {
-            return this.elements.get(0).getAsBigDecimal();
-        }
-        throw new IllegalStateException();
-    }
-    
-    @Override
-    public BigInteger getAsBigInteger() {
-        if (this.elements.size() == 1) {
-            return this.elements.get(0).getAsBigInteger();
-        }
-        throw new IllegalStateException();
-    }
-    
-    @Override
     public boolean getAsBoolean() {
         if (this.elements.size() == 1) {
             return this.elements.get(0).getAsBoolean();
-        }
-        throw new IllegalStateException();
-    }
-    
-    @Override
-    public byte getAsByte() {
-        if (this.elements.size() == 1) {
-            return this.elements.get(0).getAsByte();
-        }
-        throw new IllegalStateException();
-    }
-    
-    @Override
-    public char getAsCharacter() {
-        if (this.elements.size() == 1) {
-            return this.elements.get(0).getAsCharacter();
         }
         throw new IllegalStateException();
     }
@@ -116,14 +77,6 @@ public final class JsonArray extends JsonElement implements Iterable<JsonElement
     public Number getAsNumber() {
         if (this.elements.size() == 1) {
             return this.elements.get(0).getAsNumber();
-        }
-        throw new IllegalStateException();
-    }
-    
-    @Override
-    public short getAsShort() {
-        if (this.elements.size() == 1) {
-            return this.elements.get(0).getAsShort();
         }
         throw new IllegalStateException();
     }

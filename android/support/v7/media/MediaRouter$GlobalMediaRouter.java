@@ -6,16 +6,10 @@ package android.support.v7.media;
 
 import android.os.Looper;
 import java.util.Collection;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.view.Display;
+import android.os.Bundle;
 import android.content.IntentFilter;
 import android.content.ComponentName;
-import android.content.res.Resources;
-import android.os.Bundle;
-import android.content.Intent;
-import android.content.pm.PackageManager$NameNotFoundException;
-import android.view.Display;
-import android.content.ContentResolver;
 import java.util.List;
 import java.util.Collections;
 import android.util.Log;
@@ -90,15 +84,6 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
     private int findProviderInfo(final MediaRouteProvider mediaRouteProvider) {
         for (int size = this.mProviders.size(), i = 0; i < size; ++i) {
             if (this.mProviders.get(i).mProviderInstance == mediaRouteProvider) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    
-    private int findRemoteControlClientRecord(final Object o) {
-        for (int size = this.mRemoteControlClients.size(), i = 0; i < size; ++i) {
-            if (this.mRemoteControlClients.get(i).getRemoteControlClient() == o) {
                 return i;
             }
         }
@@ -326,43 +311,6 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
         }
     }
     
-    public void addRemoteControlClient(final Object o) {
-        if (this.findRemoteControlClientRecord(o) < 0) {
-            this.mRemoteControlClients.add(new MediaRouter$GlobalMediaRouter$RemoteControlClientRecord(this, o));
-        }
-    }
-    
-    public ContentResolver getContentResolver() {
-        return this.mApplicationContext.getContentResolver();
-    }
-    
-    public MediaRouter$RouteInfo getDefaultRoute() {
-        if (this.mDefaultRoute == null) {
-            throw new IllegalStateException("There is no default route.  The media router has not yet been fully initialized.");
-        }
-        return this.mDefaultRoute;
-    }
-    
-    public Display getDisplay(final int n) {
-        return this.mDisplayManager.getDisplay(n);
-    }
-    
-    public Context getProviderContext(final String s) {
-        if (s.equals("android")) {
-            return this.mApplicationContext;
-        }
-        try {
-            return this.mApplicationContext.createPackageContext(s, 4);
-        }
-        catch (PackageManager$NameNotFoundException ex) {
-            return null;
-        }
-    }
-    
-    public List<MediaRouter$ProviderInfo> getProviders() {
-        return this.mProviders;
-    }
-    
     public MediaRouter getRouter(final Context context) {
         int size = this.mRouters.size();
         while (true) {
@@ -385,10 +333,6 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
         }
     }
     
-    public List<MediaRouter$RouteInfo> getRoutes() {
-        return this.mRoutes;
-    }
-    
     public MediaRouter$RouteInfo getSelectedRoute() {
         if (this.mSelectedRoute == null) {
             throw new IllegalStateException("There is no currently selected route.  The media router has not yet been fully initialized.");
@@ -409,22 +353,6 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
         return null;
     }
     
-    public boolean isRouteAvailable(final MediaRouteSelector mediaRouteSelector, final int n) {
-        if (mediaRouteSelector.isEmpty()) {
-            return false;
-        }
-        if ((n & 0x2) == 0x0 && this.mLowRam) {
-            return true;
-        }
-        for (int size = this.mRoutes.size(), i = 0; i < size; ++i) {
-            final MediaRouter$RouteInfo mediaRouter$RouteInfo = this.mRoutes.get(i);
-            if (((n & 0x1) == 0x0 || !mediaRouter$RouteInfo.isDefault()) && mediaRouter$RouteInfo.matchesSelector(mediaRouteSelector)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
     @Override
     public void removeProvider(final MediaRouteProvider mediaRouteProvider) {
         final int providerInfo = this.findProviderInfo(mediaRouteProvider);
@@ -438,13 +366,6 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
             }
             this.mCallbackHandler.post(514, mediaRouter$ProviderInfo);
             this.mProviders.remove(providerInfo);
-        }
-    }
-    
-    public void removeRemoteControlClient(final Object o) {
-        final int remoteControlClientRecord = this.findRemoteControlClientRecord(o);
-        if (remoteControlClientRecord >= 0) {
-            this.mRemoteControlClients.remove(remoteControlClientRecord).disconnect();
         }
     }
     
@@ -470,24 +391,6 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
             return;
         }
         this.setSelectedRouteInternal(selectedRouteInternal);
-    }
-    
-    public void sendControlRequest(final MediaRouter$RouteInfo mediaRouter$RouteInfo, final Intent intent, final MediaRouter$ControlRequestCallback mediaRouter$ControlRequestCallback) {
-        if ((mediaRouter$RouteInfo != this.mSelectedRoute || this.mSelectedRouteController == null || !this.mSelectedRouteController.onControlRequest(intent, mediaRouter$ControlRequestCallback)) && mediaRouter$ControlRequestCallback != null) {
-            mediaRouter$ControlRequestCallback.onError(null, null);
-        }
-    }
-    
-    public void setMediaSession(final Object o) {
-        if (this.mMediaSession != null) {
-            this.mMediaSession.clearVolumeHandling();
-        }
-        if (o == null) {
-            this.mMediaSession = null;
-            return;
-        }
-        this.mMediaSession = new MediaRouter$GlobalMediaRouter$MediaSessionRecord(this, o);
-        this.updatePlaybackInfoFromSelectedRoute();
     }
     
     public void start() {

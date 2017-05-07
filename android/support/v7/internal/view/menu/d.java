@@ -11,16 +11,16 @@ import android.view.View;
 import android.view.LayoutInflater;
 import android.content.Context;
 
-public abstract class d implements y
+public abstract class d implements x
 {
-    private z mCallback;
+    private y mCallback;
     protected Context mContext;
     private int mId;
     protected LayoutInflater mInflater;
     private int mItemLayoutRes;
     protected i mMenu;
     private int mMenuLayoutRes;
-    protected aa mMenuView;
+    protected z mMenuView;
     protected Context mSystemContext;
     protected LayoutInflater mSystemInflater;
     
@@ -39,15 +39,15 @@ public abstract class d implements y
         ((ViewGroup)this.mMenuView).addView(view, n);
     }
     
-    public abstract void bindItemView(final m p0, final ab p1);
+    public abstract void bindItemView(final m p0, final aa p1);
     
     @Override
     public boolean collapseItemActionView(final i i, final m m) {
         return false;
     }
     
-    public ab createItemView(final ViewGroup viewGroup) {
-        return (ab)this.mSystemInflater.inflate(this.mItemLayoutRes, viewGroup, false);
+    public aa createItemView(final ViewGroup viewGroup) {
+        return (aa)this.mSystemInflater.inflate(this.mItemLayoutRes, viewGroup, false);
     }
     
     @Override
@@ -65,19 +65,14 @@ public abstract class d implements y
         return false;
     }
     
-    public z getCallback() {
+    public y getCallback() {
         return this.mCallback;
     }
     
-    @Override
-    public int getId() {
-        return this.mId;
-    }
-    
     public View getItemView(final m m, final View view, final ViewGroup viewGroup) {
-        ab itemView;
-        if (view instanceof ab) {
-            itemView = (ab)view;
+        aa itemView;
+        if (view instanceof aa) {
+            itemView = (aa)view;
         }
         else {
             itemView = this.createItemView(viewGroup);
@@ -86,10 +81,9 @@ public abstract class d implements y
         return (View)itemView;
     }
     
-    @Override
-    public aa getMenuView(final ViewGroup viewGroup) {
+    public z getMenuView(final ViewGroup viewGroup) {
         if (this.mMenuView == null) {
-            (this.mMenuView = (aa)this.mSystemInflater.inflate(this.mMenuLayoutRes, viewGroup, false)).initialize(this.mMenu);
+            (this.mMenuView = (z)this.mSystemInflater.inflate(this.mMenuLayoutRes, viewGroup, false)).initialize(this.mMenu);
             this.updateMenuView(true);
         }
         return this.mMenuView;
@@ -110,12 +104,11 @@ public abstract class d implements y
     }
     
     @Override
-    public boolean onSubMenuSelected(final ae ae) {
-        return this.mCallback != null && this.mCallback.onOpenSubMenu(ae);
+    public boolean onSubMenuSelected(final ad ad) {
+        return this.mCallback != null && this.mCallback.onOpenSubMenu(ad);
     }
     
-    @Override
-    public void setCallback(final z mCallback) {
+    public void setCallback(final y mCallback) {
         this.mCallback = mCallback;
     }
     
@@ -131,24 +124,24 @@ public abstract class d implements y
     public void updateMenuView(final boolean b) {
         final ViewGroup viewGroup = (ViewGroup)this.mMenuView;
         if (viewGroup != null) {
-            int i;
+            int j;
             if (this.mMenu != null) {
-                this.mMenu.k();
-                final ArrayList<m> j = this.mMenu.j();
-                final int size = j.size();
+                this.mMenu.j();
+                final ArrayList<m> i = this.mMenu.i();
+                final int size = i.size();
                 int n = 0;
                 int n2 = 0;
                 while (true) {
-                    i = n2;
+                    j = n2;
                     if (n >= size) {
                         break;
                     }
-                    final m m = j.get(n);
+                    final m m = i.get(n);
                     if (this.shouldIncludeItem(n2, m)) {
                         final View child = viewGroup.getChildAt(n2);
                         m a;
-                        if (child instanceof ab) {
-                            a = ((ab)child).a();
+                        if (child instanceof aa) {
+                            a = ((aa)child).a();
                         }
                         else {
                             a = null;
@@ -167,11 +160,11 @@ public abstract class d implements y
                 }
             }
             else {
-                i = 0;
+                j = 0;
             }
-            while (i < viewGroup.getChildCount()) {
-                if (!this.filterLeftoverView(viewGroup, i)) {
-                    ++i;
+            while (j < viewGroup.getChildCount()) {
+                if (!this.filterLeftoverView(viewGroup, j)) {
+                    ++j;
                 }
             }
         }

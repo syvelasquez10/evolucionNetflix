@@ -6,8 +6,6 @@ package com.facebook;
 
 public class FacebookException extends RuntimeException
 {
-    static final long serialVersionUID = 1L;
-    
     public FacebookException() {
     }
     

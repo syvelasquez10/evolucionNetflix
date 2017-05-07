@@ -10,13 +10,8 @@ import java.io.Serializable;
 
 class FacebookTimeSpentData implements Serializable
 {
-    private static final long APP_ACTIVATE_SUPPRESSION_PERIOD_IN_MILLISECONDS = 300000L;
-    private static final long FIRST_TIME_LOAD_RESUME_TIME = -1L;
     private static final long[] INACTIVE_SECONDS_QUANTA;
-    private static final long INTERRUPTION_THRESHOLD_MILLISECONDS = 1000L;
-    private static final long NUM_MILLISECONDS_IDLE_TO_BE_NEW_SESSION = 60000L;
     private static final String TAG;
-    private static final long serialVersionUID = 1L;
     private String firstOpenSourceApplication;
     private int interruptionCount;
     private boolean isAppActive;
@@ -33,23 +28,6 @@ class FacebookTimeSpentData implements Serializable
     
     FacebookTimeSpentData() {
         this.resetSession();
-    }
-    
-    private FacebookTimeSpentData(final long lastResumeTime, final long lastSuspendTime, final long millisecondsSpentInSession, final int interruptionCount) {
-        this.resetSession();
-        this.lastResumeTime = lastResumeTime;
-        this.lastSuspendTime = lastSuspendTime;
-        this.millisecondsSpentInSession = millisecondsSpentInSession;
-        this.interruptionCount = interruptionCount;
-    }
-    
-    private FacebookTimeSpentData(final long lastResumeTime, final long lastSuspendTime, final long millisecondsSpentInSession, final int interruptionCount, final String firstOpenSourceApplication) {
-        this.resetSession();
-        this.lastResumeTime = lastResumeTime;
-        this.lastSuspendTime = lastSuspendTime;
-        this.millisecondsSpentInSession = millisecondsSpentInSession;
-        this.interruptionCount = interruptionCount;
-        this.firstOpenSourceApplication = firstOpenSourceApplication;
     }
     
     private static int getQuantaIndex(final long n) {
@@ -83,10 +61,6 @@ class FacebookTimeSpentData implements Serializable
     
     private boolean wasSuspendedEver() {
         return this.lastSuspendTime != -1L;
-    }
-    
-    private Object writeReplace() {
-        return new FacebookTimeSpentData$SerializationProxyV2(this.lastResumeTime, this.lastSuspendTime, this.millisecondsSpentInSession, this.interruptionCount, this.firstOpenSourceApplication);
     }
     
     void onResume(final AppEventsLogger appEventsLogger, final long n, final String firstOpenSourceApplication) {
@@ -123,23 +97,5 @@ class FacebookTimeSpentData implements Serializable
         }
         this.lastResumeTime = n;
         this.isAppActive = true;
-    }
-    
-    void onSuspend(final AppEventsLogger appEventsLogger, final long lastSuspendTime) {
-        long n = 0L;
-        if (!this.isAppActive) {
-            Logger.log(LoggingBehavior.APP_EVENTS, FacebookTimeSpentData.TAG, "Suspend for inactive app");
-            return;
-        }
-        final long n2 = lastSuspendTime - this.lastResumeTime;
-        if (n2 < 0L) {
-            Logger.log(LoggingBehavior.APP_EVENTS, FacebookTimeSpentData.TAG, "Clock skew detected");
-        }
-        else {
-            n = n2;
-        }
-        this.millisecondsSpentInSession += n;
-        this.lastSuspendTime = lastSuspendTime;
-        this.isAppActive = false;
     }
 }

@@ -10,6 +10,7 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
 
 public class FriendProfile implements JsonPopulator
@@ -99,7 +100,17 @@ public class FriendProfile implements JsonPopulator
     }
     
     public String getFullName() {
-        return (this.getFirstName() + " " + this.getLastName()).trim();
+        if (StringUtils.isNotEmpty(this.getFirstName()) || StringUtils.isNotEmpty(this.getLastName())) {
+            final StringBuilder sb = new StringBuilder();
+            if (StringUtils.isNotEmpty(this.getFirstName())) {
+                sb.append(this.getFirstName()).append(" ");
+            }
+            if (StringUtils.isNotEmpty(this.getLastName())) {
+                sb.append(this.getLastName());
+            }
+            return sb.toString().trim();
+        }
+        return null;
     }
     
     public String getId() {

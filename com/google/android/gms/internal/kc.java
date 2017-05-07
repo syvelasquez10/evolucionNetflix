@@ -16,32 +16,11 @@ public final class kc
         return aR(11);
     }
     
-    public static boolean hC() {
-        return aR(12);
-    }
-    
     public static boolean hD() {
         return aR(13);
     }
     
     public static boolean hE() {
         return aR(14);
-    }
-    
-    public static boolean hF() {
-        return aR(16);
-    }
-    
-    public static boolean hG() {
-        return aR(17);
-    }
-    
-    @Deprecated
-    public static boolean hH() {
-        return hI();
-    }
-    
-    public static boolean hI() {
-        return aR(19);
     }
 }

@@ -4,14 +4,8 @@
 
 package com.facebook.widget;
 
-import java.util.Arrays;
 import android.graphics.Canvas;
-import android.app.Activity;
-import android.content.Intent;
 import com.facebook.FacebookException;
-import java.util.List;
-import com.facebook.SessionLoginBehavior;
-import com.facebook.SessionDefaultAudience;
 import android.content.res.TypedArray;
 import com.facebook.android.R$styleable;
 import com.facebook.Session$StatusCallback;

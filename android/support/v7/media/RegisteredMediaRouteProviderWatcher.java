@@ -110,15 +110,4 @@ final class RegisteredMediaRouteProviderWatcher
             this.mHandler.post(this.mScanPackagesRunnable);
         }
     }
-    
-    public void stop() {
-        if (this.mRunning) {
-            this.mRunning = false;
-            this.mContext.unregisterReceiver(this.mScanPackagesReceiver);
-            this.mHandler.removeCallbacks(this.mScanPackagesRunnable);
-            for (int i = this.mProviders.size() - 1; i >= 0; --i) {
-                this.mProviders.get(i).stop();
-            }
-        }
-    }
 }

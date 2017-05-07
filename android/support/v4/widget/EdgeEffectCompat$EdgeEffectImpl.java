@@ -17,8 +17,6 @@ interface EdgeEffectCompat$EdgeEffectImpl
     
     Object newEdgeEffect(final Context p0);
     
-    boolean onAbsorb(final Object p0, final int p1);
-    
     boolean onPull(final Object p0, final float p1);
     
     boolean onRelease(final Object p0);

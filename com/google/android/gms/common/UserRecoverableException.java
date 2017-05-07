@@ -14,8 +14,4 @@ public class UserRecoverableException extends Exception
         super(s);
         this.mIntent = mIntent;
     }
-    
-    public Intent getIntent() {
-        return new Intent(this.mIntent);
-    }
 }

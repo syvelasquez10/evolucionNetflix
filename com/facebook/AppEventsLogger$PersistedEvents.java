@@ -15,7 +15,6 @@ import android.content.Context;
 
 class AppEventsLogger$PersistedEvents
 {
-    static final String PERSISTED_EVENTS_FILENAME = "AppEventsLogger.persistedevents";
     private static Object staticLock;
     private Context context;
     private HashMap<AppEventsLogger$AccessTokenAppIdPair, List<AppEventsLogger$AppEvent>> persistedEvents;

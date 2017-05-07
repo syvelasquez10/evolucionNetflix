@@ -4,16 +4,10 @@
 
 package com.facebook.android;
 
-import android.content.ServiceConnection;
-import android.content.pm.ResolveInfo;
 import android.content.Intent;
-import android.content.pm.Signature;
-import android.content.pm.PackageManager$NameNotFoundException;
 import java.util.Collections;
 import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookOperationCanceledException;
-import com.facebook.Settings;
-import android.content.ContentResolver;
 import java.util.Arrays;
 import com.facebook.Session$StatusCallback;
 import com.facebook.Session$OpenRequest;

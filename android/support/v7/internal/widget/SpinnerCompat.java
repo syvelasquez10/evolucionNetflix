@@ -4,24 +4,21 @@
 
 package android.support.v7.internal.widget;
 
-import android.util.Log;
-import android.widget.Adapter;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.os.Parcelable;
 import android.content.DialogInterface;
 import android.view.View$MeasureSpec;
+import android.graphics.drawable.Drawable;
 import android.widget.SpinnerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
-import android.graphics.drawable.Drawable;
 import android.view.ViewGroup$LayoutParams;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.view.View;
 import android.support.v7.appcompat.R$styleable;
-import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.graphics.Rect;
@@ -30,11 +27,6 @@ import android.content.DialogInterface$OnClickListener;
 
 class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickListener
 {
-    private static final int MAX_ITEMS_MEASURED = 15;
-    public static final int MODE_DIALOG = 0;
-    public static final int MODE_DROPDOWN = 1;
-    private static final int MODE_THEME = -1;
-    private static final String TAG = "Spinner";
     private boolean mDisableChildrenWhenDisabled;
     int mDropDownWidth;
     private ListPopupWindow$ForwardingListener mForwardingListener;
@@ -43,18 +35,6 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
     private SpinnerCompat$DropDownAdapter mTempAdapter;
     private Rect mTempRect;
     private final TintManager mTintManager;
-    
-    SpinnerCompat(final Context context) {
-        this(context, null);
-    }
-    
-    SpinnerCompat(final Context context, final int n) {
-        this(context, null, R$attr.spinnerStyle, n);
-    }
-    
-    SpinnerCompat(final Context context, final AttributeSet set) {
-        this(context, set, R$attr.spinnerStyle);
-    }
     
     SpinnerCompat(final Context context, final AttributeSet set, final int n) {
         this(context, set, n, -1);
@@ -152,27 +132,6 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
         return n2;
     }
     
-    public int getDropDownHorizontalOffset() {
-        return this.mPopup.getHorizontalOffset();
-    }
-    
-    public int getDropDownVerticalOffset() {
-        return this.mPopup.getVerticalOffset();
-    }
-    
-    public int getDropDownWidth() {
-        return this.mDropDownWidth;
-    }
-    
-    public Drawable getPopupBackground() {
-        return this.mPopup.getBackground();
-    }
-    
-    public CharSequence getPrompt() {
-        return this.mPopup.getHintText();
-    }
-    
-    @Override
     void layout(int left, final boolean b) {
         left = this.mSpinnerPadding.left;
         final int n = this.getRight() - this.getLeft() - this.mSpinnerPadding.left - this.mSpinnerPadding.right;
@@ -321,22 +280,6 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
         this.mTempAdapter = new SpinnerCompat$DropDownAdapter(adapter);
     }
     
-    public void setDropDownHorizontalOffset(final int horizontalOffset) {
-        this.mPopup.setHorizontalOffset(horizontalOffset);
-    }
-    
-    public void setDropDownVerticalOffset(final int verticalOffset) {
-        this.mPopup.setVerticalOffset(verticalOffset);
-    }
-    
-    public void setDropDownWidth(final int mDropDownWidth) {
-        if (!(this.mPopup instanceof SpinnerCompat$DropdownPopup)) {
-            Log.e("Spinner", "Cannot set dropdown width for MODE_DIALOG, ignoring");
-            return;
-        }
-        this.mDropDownWidth = mDropDownWidth;
-    }
-    
     public void setEnabled(final boolean b) {
         super.setEnabled(b);
         if (this.mDisableChildrenWhenDisabled) {
@@ -346,42 +289,11 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
         }
     }
     
-    public void setGravity(final int n) {
-        if (this.mGravity != n) {
-            int mGravity = n;
-            if ((n & 0x7) == 0x0) {
-                mGravity = (n | 0x800003);
-            }
-            this.mGravity = mGravity;
-            this.requestLayout();
-        }
-    }
-    
     public void setOnItemClickListener(final AdapterViewCompat$OnItemClickListener adapterViewCompat$OnItemClickListener) {
         throw new RuntimeException("setOnItemClickListener cannot be used with a spinner.");
     }
     
     void setOnItemClickListenerInt(final AdapterViewCompat$OnItemClickListener onItemClickListener) {
         super.setOnItemClickListener(onItemClickListener);
-    }
-    
-    public void setPopupBackgroundDrawable(final Drawable backgroundDrawable) {
-        if (!(this.mPopup instanceof SpinnerCompat$DropdownPopup)) {
-            Log.e("Spinner", "setPopupBackgroundDrawable: incompatible spinner mode; ignoring...");
-            return;
-        }
-        ((SpinnerCompat$DropdownPopup)this.mPopup).setBackgroundDrawable(backgroundDrawable);
-    }
-    
-    public void setPopupBackgroundResource(final int n) {
-        this.setPopupBackgroundDrawable(this.mTintManager.getDrawable(n));
-    }
-    
-    public void setPrompt(final CharSequence promptText) {
-        this.mPopup.setPromptText(promptText);
-    }
-    
-    public void setPromptId(final int n) {
-        this.setPrompt(this.getContext().getText(n));
     }
 }

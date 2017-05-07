@@ -19,7 +19,6 @@ import java.io.Serializable;
 
 final class $Gson$Types$ParameterizedTypeImpl implements Serializable, ParameterizedType
 {
-    private static final long serialVersionUID = 0L;
     private final Type ownerType;
     private final Type rawType;
     private final Type[] typeArguments;

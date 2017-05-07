@@ -4,8 +4,6 @@
 
 package com.google.gson.internal;
 
-import java.util.Collection;
-import java.util.ArrayList;
 import com.google.gson.FieldAttributes;
 import com.google.gson.annotations.Expose;
 import java.lang.reflect.Field;
@@ -23,7 +21,6 @@ import com.google.gson.TypeAdapterFactory;
 public final class Excluder implements TypeAdapterFactory, Cloneable
 {
     public static final Excluder DEFAULT;
-    private static final double IGNORE_VERSIONS = -1.0;
     private List<ExclusionStrategy> deserializationStrategies;
     private int modifiers;
     private boolean requireExpose;
@@ -162,12 +159,6 @@ public final class Excluder implements TypeAdapterFactory, Cloneable
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public Excluder disableInnerClassSerialization() {
-        final Excluder clone = this.clone();
-        clone.serializeInnerClasses = false;
-        return clone;
-    }
-    
     public boolean excludeClass(final Class<?> clazz, final boolean b) {
         if (this.version != -1.0 && !this.isValidVersion(clazz.getAnnotation(Since.class), clazz.getAnnotation(Until.class))) {
             return true;
@@ -243,39 +234,5 @@ public final class Excluder implements TypeAdapterFactory, Cloneable
             }
         }
         return false;
-    }
-    
-    public Excluder excludeFieldsWithoutExposeAnnotation() {
-        final Excluder clone = this.clone();
-        clone.requireExpose = true;
-        return clone;
-    }
-    
-    public Excluder withExclusionStrategy(final ExclusionStrategy exclusionStrategy, final boolean b, final boolean b2) {
-        final Excluder clone = this.clone();
-        if (b) {
-            (clone.serializationStrategies = new ArrayList<ExclusionStrategy>(this.serializationStrategies)).add(exclusionStrategy);
-        }
-        if (b2) {
-            (clone.deserializationStrategies = new ArrayList<ExclusionStrategy>(this.deserializationStrategies)).add(exclusionStrategy);
-        }
-        return clone;
-    }
-    
-    public Excluder withModifiers(final int... array) {
-        int i = 0;
-        final Excluder clone = this.clone();
-        clone.modifiers = 0;
-        while (i < array.length) {
-            clone.modifiers |= array[i];
-            ++i;
-        }
-        return clone;
-    }
-    
-    public Excluder withVersion(final double version) {
-        final Excluder clone = this.clone();
-        clone.version = version;
-        return clone;
     }
 }

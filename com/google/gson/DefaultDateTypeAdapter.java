@@ -23,10 +23,6 @@ final class DefaultDateTypeAdapter implements JsonDeserializer<Date>, JsonSerial
         this(DateFormat.getDateTimeInstance(2, 2, Locale.US), DateFormat.getDateTimeInstance(2, 2));
     }
     
-    DefaultDateTypeAdapter(final int n) {
-        this(DateFormat.getDateInstance(n, Locale.US), DateFormat.getDateInstance(n));
-    }
-    
     public DefaultDateTypeAdapter(final int n, final int n2) {
         this(DateFormat.getDateTimeInstance(n, n2, Locale.US), DateFormat.getDateTimeInstance(n, n2));
     }

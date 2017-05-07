@@ -33,11 +33,6 @@ public class SupportMenuInflater extends MenuInflater
 {
     private static final Class<?>[] ACTION_PROVIDER_CONSTRUCTOR_SIGNATURE;
     private static final Class<?>[] ACTION_VIEW_CONSTRUCTOR_SIGNATURE;
-    private static final String LOG_TAG = "SupportMenuInflater";
-    private static final int NO_ID = 0;
-    private static final String XML_GROUP = "group";
-    private static final String XML_ITEM = "item";
-    private static final String XML_MENU = "menu";
     private final Object[] mActionProviderConstructorArguments;
     private final Object[] mActionViewConstructorArguments;
     private Context mContext;

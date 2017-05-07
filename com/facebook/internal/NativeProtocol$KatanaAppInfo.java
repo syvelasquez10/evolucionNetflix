@@ -6,8 +6,6 @@ package com.facebook.internal;
 
 class NativeProtocol$KatanaAppInfo extends NativeProtocol$NativeAppInfo
 {
-    static final String KATANA_PACKAGE = "com.facebook.katana";
-    
     private NativeProtocol$KatanaAppInfo() {
         super(null);
     }

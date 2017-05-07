@@ -14,8 +14,4 @@ class f<T>
         }
         this.a = a;
     }
-    
-    public T b() {
-        return this.a;
-    }
 }

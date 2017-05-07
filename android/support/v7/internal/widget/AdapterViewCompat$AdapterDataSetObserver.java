@@ -29,10 +29,6 @@ class AdapterViewCompat$AdapterDataSetObserver extends DataSetObserver
         this.mInstanceState = null;
     }
     
-    public void clearSavedState() {
-        this.mInstanceState = null;
-    }
-    
     public void onChanged() {
         this.this$0.mDataChanged = true;
         this.this$0.mOldItemCount = this.this$0.mItemCount;

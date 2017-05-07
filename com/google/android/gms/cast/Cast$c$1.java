@@ -17,27 +17,7 @@ class Cast$c$1 implements Cast$ApplicationConnectionResult
     }
     
     @Override
-    public ApplicationMetadata getApplicationMetadata() {
-        return null;
-    }
-    
-    @Override
-    public String getApplicationStatus() {
-        return null;
-    }
-    
-    @Override
-    public String getSessionId() {
-        return null;
-    }
-    
-    @Override
     public Status getStatus() {
         return this.CW;
-    }
-    
-    @Override
-    public boolean getWasLaunched() {
-        return false;
     }
 }

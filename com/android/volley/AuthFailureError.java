@@ -13,20 +13,8 @@ public class AuthFailureError extends VolleyError
     public AuthFailureError() {
     }
     
-    public AuthFailureError(final Intent mResolutionIntent) {
-        this.mResolutionIntent = mResolutionIntent;
-    }
-    
     public AuthFailureError(final NetworkResponse networkResponse) {
         super(networkResponse);
-    }
-    
-    public AuthFailureError(final String s) {
-        super(s);
-    }
-    
-    public AuthFailureError(final String s, final Exception ex) {
-        super(s, ex);
     }
     
     @Override
@@ -35,9 +23,5 @@ public class AuthFailureError extends VolleyError
             return "User needs to (re)enter credentials.";
         }
         return super.getMessage();
-    }
-    
-    public Intent getResolutionIntent() {
-        return this.mResolutionIntent;
     }
 }

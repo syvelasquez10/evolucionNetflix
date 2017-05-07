@@ -42,10 +42,6 @@ public class SeasonsSpinner extends Spinner
         super(context, set, n, n2, n3);
     }
     
-    public int getSeasonIndexBySeasonNumber(final int n) {
-        return this.spinnerAdapter.getSeasonIndexBySeasonNumber(n);
-    }
-    
     public int getSeasonNumberForPosition(final int n) {
         return this.spinnerAdapter.getSeasonNumberForPosition(n);
     }
@@ -70,6 +66,10 @@ public class SeasonsSpinner extends Spinner
     public void setSelectionWithoutCallback(final int selection) {
         Log.v("SeasonsSpinner", "Setting selection (no callback) to position: " + selection);
         super.setSelection(selection);
+    }
+    
+    public int tryGetSeasonIndexBySeasonNumber(final int n) {
+        return this.spinnerAdapter.tryGetSeasonIndexBySeasonNumber(n);
     }
     
     public void updateSeasonData(final List<SeasonDetails> list) {

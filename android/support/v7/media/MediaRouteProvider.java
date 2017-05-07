@@ -5,15 +5,11 @@
 package android.support.v7.media;
 
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.content.ComponentName;
-import android.support.annotation.NonNull;
 import android.content.Context;
 
 public abstract class MediaRouteProvider
 {
-    private static final int MSG_DELIVER_DESCRIPTOR_CHANGED = 1;
-    private static final int MSG_DELIVER_DISCOVERY_REQUEST_CHANGED = 2;
     private MediaRouteProvider$Callback mCallback;
     private final Context mContext;
     private MediaRouteProviderDescriptor mDescriptor;
@@ -22,10 +18,6 @@ public abstract class MediaRouteProvider
     private final MediaRouteProvider$ProviderMetadata mMetadata;
     private boolean mPendingDescriptorChange;
     private boolean mPendingDiscoveryRequestChange;
-    
-    public MediaRouteProvider(@NonNull final Context context) {
-        this(context, null);
-    }
     
     MediaRouteProvider(final Context mContext, final MediaRouteProvider$ProviderMetadata mMetadata) {
         this.mHandler = new MediaRouteProvider$ProviderHandler(this, null);
@@ -56,12 +48,10 @@ public abstract class MediaRouteProvider
         return this.mContext;
     }
     
-    @Nullable
     public final MediaRouteProviderDescriptor getDescriptor() {
         return this.mDescriptor;
     }
     
-    @Nullable
     public final MediaRouteDiscoveryRequest getDiscoveryRequest() {
         return this.mDiscoveryRequest;
     }
@@ -74,20 +64,19 @@ public abstract class MediaRouteProvider
         return this.mMetadata;
     }
     
-    @Nullable
     public MediaRouteProvider$RouteController onCreateRouteController(final String s) {
         return null;
     }
     
-    public void onDiscoveryRequestChanged(@Nullable final MediaRouteDiscoveryRequest mediaRouteDiscoveryRequest) {
+    public void onDiscoveryRequestChanged(final MediaRouteDiscoveryRequest mediaRouteDiscoveryRequest) {
     }
     
-    public final void setCallback(@Nullable final MediaRouteProvider$Callback mCallback) {
+    public final void setCallback(final MediaRouteProvider$Callback mCallback) {
         MediaRouter.checkCallingThread();
         this.mCallback = mCallback;
     }
     
-    public final void setDescriptor(@Nullable final MediaRouteProviderDescriptor mDescriptor) {
+    public final void setDescriptor(final MediaRouteProviderDescriptor mDescriptor) {
         MediaRouter.checkCallingThread();
         if (this.mDescriptor != mDescriptor) {
             this.mDescriptor = mDescriptor;

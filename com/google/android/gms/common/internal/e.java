@@ -117,20 +117,6 @@ public final class e
         }
     }
     
-    public boolean isConnectionCallbacksRegistered(final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks) {
-        n.i(googleApiClient$ConnectionCallbacks);
-        synchronized (this.LF) {
-            return this.LF.contains(googleApiClient$ConnectionCallbacks);
-        }
-    }
-    
-    public boolean isConnectionFailedListenerRegistered(final GooglePlayServicesClient$OnConnectionFailedListener googlePlayServicesClient$OnConnectionFailedListener) {
-        n.i(googlePlayServicesClient$OnConnectionFailedListener);
-        synchronized (this.LI) {
-            return this.LI.contains(googlePlayServicesClient$OnConnectionFailedListener);
-        }
-    }
-    
     public void registerConnectionCallbacks(final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks) {
         n.i(googleApiClient$ConnectionCallbacks);
         synchronized (this.LF) {

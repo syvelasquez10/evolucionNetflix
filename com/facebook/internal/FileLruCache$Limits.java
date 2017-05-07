@@ -4,8 +4,6 @@
 
 package com.facebook.internal;
 
-import java.security.InvalidParameterException;
-
 public final class FileLruCache$Limits
 {
     private int byteCount;
@@ -22,19 +20,5 @@ public final class FileLruCache$Limits
     
     int getFileCount() {
         return this.fileCount;
-    }
-    
-    void setByteCount(final int byteCount) {
-        if (byteCount < 0) {
-            throw new InvalidParameterException("Cache byte-count limit must be >= 0");
-        }
-        this.byteCount = byteCount;
-    }
-    
-    void setFileCount(final int fileCount) {
-        if (fileCount < 0) {
-            throw new InvalidParameterException("Cache file count limit must be >= 0");
-        }
-        this.fileCount = fileCount;
     }
 }

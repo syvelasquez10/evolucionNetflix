@@ -14,11 +14,6 @@ import android.app.Activity;
 
 public class LoginActivity extends Activity
 {
-    private static final String EXTRA_REQUEST = "request";
-    private static final String NULL_CALLING_PKG_ERROR_MSG = "Cannot call LoginActivity with a null calling package. This can occur if the launchMode of the caller is singleInstance.";
-    static final String RESULT_KEY = "com.facebook.LoginActivity:Result";
-    private static final String SAVED_AUTH_CLIENT = "authorizationClient";
-    private static final String SAVED_CALLING_PKG_KEY = "callingPackage";
     private static final String TAG;
     private AuthorizationClient authorizationClient;
     private String callingPackage;

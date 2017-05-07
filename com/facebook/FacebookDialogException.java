@@ -6,7 +6,6 @@ package com.facebook;
 
 public class FacebookDialogException extends FacebookException
 {
-    static final long serialVersionUID = 1L;
     private int errorCode;
     private String failingUrl;
     
@@ -14,13 +13,5 @@ public class FacebookDialogException extends FacebookException
         super(s);
         this.errorCode = errorCode;
         this.failingUrl = failingUrl;
-    }
-    
-    public int getErrorCode() {
-        return this.errorCode;
-    }
-    
-    public String getFailingUrl() {
-        return this.failingUrl;
     }
 }

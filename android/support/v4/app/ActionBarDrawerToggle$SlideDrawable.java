@@ -4,18 +4,12 @@
 
 package android.support.v4.app;
 
-import android.view.MenuItem;
 import android.view.View;
-import android.content.res.Configuration;
-import android.support.v4.content.ContextCompat;
-import android.content.Context;
-import android.support.v4.widget.DrawerLayout;
+import android.os.Build$VERSION;
 import android.app.Activity;
 import android.support.v4.widget.DrawerLayout$DrawerListener;
 import android.support.v4.view.ViewCompat;
 import android.graphics.Canvas;
-import android.os.Build$VERSION;
-import android.graphics.drawable.Drawable;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable$Callback;
 import android.graphics.drawable.InsetDrawable;
@@ -27,17 +21,6 @@ class ActionBarDrawerToggle$SlideDrawable extends InsetDrawable implements Drawa
     private float mPosition;
     private final Rect mTmpRect;
     final /* synthetic */ ActionBarDrawerToggle this$0;
-    
-    private ActionBarDrawerToggle$SlideDrawable(final ActionBarDrawerToggle this$0, final Drawable drawable) {
-        boolean mHasMirroring = false;
-        this.this$0 = this$0;
-        super(drawable, 0);
-        if (Build$VERSION.SDK_INT > 18) {
-            mHasMirroring = true;
-        }
-        this.mHasMirroring = mHasMirroring;
-        this.mTmpRect = new Rect();
-    }
     
     public void draw(final Canvas canvas) {
         int n = 1;
@@ -65,11 +48,6 @@ class ActionBarDrawerToggle$SlideDrawable extends InsetDrawable implements Drawa
     
     public float getPosition() {
         return this.mPosition;
-    }
-    
-    public void setOffset(final float mOffset) {
-        this.mOffset = mOffset;
-        this.invalidateSelf();
     }
     
     public void setPosition(final float mPosition) {

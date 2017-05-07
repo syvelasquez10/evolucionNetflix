@@ -4,7 +4,6 @@
 
 package android.support.v7.internal.view.menu;
 
-import android.support.v4.view.MenuItemCompat$OnActionExpandListener;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.MenuItem$OnActionExpandListener;
 import android.support.v7.view.CollapsibleActionView;
@@ -32,7 +31,7 @@ class q implements ActionProvider$VisibilityListener
     
     @Override
     public void onActionProviderVisibilityChanged(final boolean b) {
-        if (this.b.a.overridesItemVisibility() && this.b.b.d) {
+        if (this.b.a.overridesItemVisibility() && this.b.b.c) {
             this.b.b.b(b);
         }
     }

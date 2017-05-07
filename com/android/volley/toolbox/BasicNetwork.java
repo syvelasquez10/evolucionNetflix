@@ -5,7 +5,6 @@
 package com.android.volley.toolbox;
 
 import com.android.volley.NetworkResponse;
-import android.os.SystemClock;
 import org.apache.http.HttpResponse;
 import java.io.Serializable;
 import org.apache.http.StatusLine;
@@ -315,10 +314,6 @@ public class BasicNetwork implements Network
         //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
         // 
         throw new IllegalStateException("An error occurred while decompiling this method.");
-    }
-    
-    protected void logError(final String s, final String s2, final long n) {
-        VolleyLog.v("HTTP ERROR(%s) %d ms to fetch %s", s, SystemClock.elapsedRealtime() - n, s2);
     }
     
     @Override

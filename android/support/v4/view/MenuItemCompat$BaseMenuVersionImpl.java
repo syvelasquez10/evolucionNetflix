@@ -10,11 +10,6 @@ import android.view.MenuItem;
 class MenuItemCompat$BaseMenuVersionImpl implements MenuItemCompat$MenuVersionImpl
 {
     @Override
-    public boolean collapseActionView(final MenuItem menuItem) {
-        return false;
-    }
-    
-    @Override
     public boolean expandActionView(final MenuItem menuItem) {
         return false;
     }
@@ -36,11 +31,6 @@ class MenuItemCompat$BaseMenuVersionImpl implements MenuItemCompat$MenuVersionIm
     
     @Override
     public MenuItem setActionView(final MenuItem menuItem, final View view) {
-        return menuItem;
-    }
-    
-    @Override
-    public MenuItem setOnActionExpandListener(final MenuItem menuItem, final MenuItemCompat$OnActionExpandListener menuItemCompat$OnActionExpandListener) {
         return menuItem;
     }
     

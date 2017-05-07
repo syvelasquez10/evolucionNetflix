@@ -12,7 +12,6 @@ import java.util.List;
 class VolleyLog$MarkerLog
 {
     public static final boolean ENABLED;
-    private static final long MIN_DURATION_FOR_LOGGING_MS = 0L;
     private boolean mFinished;
     private final List<VolleyLog$MarkerLog$Marker> mMarkers;
     

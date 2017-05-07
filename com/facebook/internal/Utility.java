@@ -5,18 +5,19 @@
 package com.facebook.internal;
 
 import java.util.Collections;
+import java.util.Arrays;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager$NameNotFoundException;
 import java.io.InputStream;
-import android.os.Parcelable;
+import java.util.HashMap;
 import android.util.Log;
 import java.util.HashSet;
 import java.util.Collection;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
 import com.facebook.FacebookException;
+import org.json.JSONArray;
 import org.json.JSONTokener;
 import java.lang.reflect.Method;
 import com.facebook.Settings;
@@ -27,10 +28,6 @@ import com.facebook.Request;
 import android.text.TextUtils;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
-import java.io.File;
-import org.json.JSONArray;
-import org.json.JSONException;
-import java.util.HashMap;
 import java.io.IOException;
 import java.io.Closeable;
 import android.webkit.CookieManager;
@@ -40,8 +37,8 @@ import java.util.Iterator;
 import android.net.Uri$Builder;
 import android.net.Uri;
 import android.os.Bundle;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONObject;
 import java.util.concurrent.ConcurrentHashMap;
 import com.facebook.model.GraphObject;
@@ -50,26 +47,7 @@ import java.util.Map;
 
 public final class Utility
 {
-    private static final String APPLICATION_FIELDS = "fields";
-    private static final String APP_SETTINGS_PREFS_KEY_FORMAT = "com.facebook.internal.APP_SETTINGS.%s";
-    private static final String APP_SETTINGS_PREFS_STORE = "com.facebook.internal.preferences.APP_SETTINGS";
-    private static final String APP_SETTING_DIALOG_CONFIGS = "android_dialog_configs";
     private static final String[] APP_SETTING_FIELDS;
-    private static final String APP_SETTING_NUX_CONTENT = "gdpv4_nux_content";
-    private static final String APP_SETTING_NUX_ENABLED = "gdpv4_nux_enabled";
-    private static final String APP_SETTING_SUPPORTS_ATTRIBUTION = "supports_attribution";
-    private static final String APP_SETTING_SUPPORTS_IMPLICIT_SDK_LOGGING = "supports_implicit_sdk_logging";
-    public static final int DEFAULT_STREAM_BUFFER_SIZE = 8192;
-    private static final String DIALOG_CONFIG_DIALOG_NAME_FEATURE_NAME_SEPARATOR = "\\|";
-    private static final String DIALOG_CONFIG_NAME_KEY = "name";
-    private static final String DIALOG_CONFIG_URL_KEY = "url";
-    private static final String DIALOG_CONFIG_VERSIONS_KEY = "versions";
-    private static final String EXTRA_APP_EVENTS_INFO_FORMAT_VERSION = "a1";
-    private static final String HASH_ALGORITHM_MD5 = "MD5";
-    private static final String HASH_ALGORITHM_SHA1 = "SHA-1";
-    static final String LOG_TAG = "FacebookSDK";
-    private static final String URL_SCHEME = "https";
-    private static final String UTF8 = "UTF-8";
     private static Map<String, Utility$FetchedAppSettings> fetchedAppSettings;
     private static AsyncTask<Void, Void, GraphObject> initialAppSettingsLoadTask;
     
@@ -83,14 +61,6 @@ public final class Utility
             return t2 == null;
         }
         return t.equals(t2);
-    }
-    
-    public static <T> ArrayList<T> arrayList(final T... array) {
-        final ArrayList<T> list = new ArrayList<T>(array.length);
-        for (int length = array.length, i = 0; i < length; ++i) {
-            list.add(array[i]);
-        }
-        return list;
     }
     
     public static <T> List<T> asListNoNulls(final T... array) {
@@ -158,55 +128,6 @@ public final class Utility
         catch (IOException ex) {}
     }
     
-    public static String coerceValueIfNullOrEmpty(final String s, final String s2) {
-        if (isNullOrEmpty(s)) {
-            return s2;
-        }
-        return s;
-    }
-    
-    static Map<String, Object> convertJSONObjectToHashMap(final JSONObject jsonObject) {
-        final HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        final JSONArray names = jsonObject.names();
-        int n = 0;
-    Label_0067_Outer:
-        while (true) {
-            if (n >= names.length()) {
-                return hashMap;
-            }
-            while (true) {
-                try {
-                    final String string = names.getString(n);
-                    Object o2;
-                    final Object o = o2 = jsonObject.get(string);
-                    if (o instanceof JSONObject) {
-                        o2 = convertJSONObjectToHashMap((JSONObject)o);
-                    }
-                    hashMap.put(string, o2);
-                    ++n;
-                    continue Label_0067_Outer;
-                }
-                catch (JSONException ex) {
-                    continue;
-                }
-                break;
-            }
-        }
-    }
-    
-    public static void deleteDirectory(final File file) {
-        if (!file.exists()) {
-            return;
-        }
-        if (file.isDirectory()) {
-            final File[] listFiles = file.listFiles();
-            for (int length = listFiles.length, i = 0; i < length; ++i) {
-                deleteDirectory(listFiles[i]);
-            }
-        }
-        file.delete();
-    }
-    
     public static void disconnectQuietly(final URLConnection urlConnection) {
         if (urlConnection instanceof HttpURLConnection) {
             ((HttpURLConnection)urlConnection).disconnect();
@@ -230,20 +151,6 @@ public final class Utility
         graphPathRequest.setSkipClientToken(true);
         graphPathRequest.setParameters(parameters);
         return graphPathRequest.executeAndWait().getGraphObject();
-    }
-    
-    public static Utility$DialogFeatureConfig getDialogFeatureConfig(final String s, final String s2, final String s3) {
-        if (isNullOrEmpty(s2) || isNullOrEmpty(s3)) {
-            return null;
-        }
-        final Utility$FetchedAppSettings utility$FetchedAppSettings = Utility.fetchedAppSettings.get(s);
-        if (utility$FetchedAppSettings != null) {
-            final Map<String, Utility$DialogFeatureConfig> map = utility$FetchedAppSettings.getDialogConfigurations().get(s2);
-            if (map != null) {
-                return map.get(s3);
-            }
-        }
-        return null;
     }
     
     public static String getHashedDeviceAndAppID(final Context context, final String s) {
@@ -319,102 +226,6 @@ public final class Utility
         }
     }
     
-    public static int[] intersectRanges(final int[] array, final int[] array2) {
-        int n = 0;
-        if (array == null) {
-            return array2;
-        }
-        if (array2 == null) {
-            return array;
-        }
-        final int[] array3 = new int[array.length + array2.length];
-        int n2 = 0;
-        int n3 = 0;
-        int n4;
-        while (true) {
-            n4 = n3;
-            if (n2 >= array.length) {
-                break;
-            }
-            n4 = n3;
-            if (n >= array2.length) {
-                break;
-            }
-            int n5 = array[n2];
-            final int n6 = array2[n];
-            int n7;
-            if (n2 < array.length - 1) {
-                n7 = array[n2 + 1];
-            }
-            else {
-                n7 = Integer.MAX_VALUE;
-            }
-            int n8;
-            if (n < array2.length - 1) {
-                n8 = array2[n + 1];
-            }
-            else {
-                n8 = Integer.MAX_VALUE;
-            }
-            int n9;
-            int n10;
-            if (n5 < n6) {
-                if (n7 > n6) {
-                    if (n7 > n8) {
-                        n9 = n + 2;
-                        n5 = n6;
-                        n7 = n8;
-                        n10 = n2;
-                    }
-                    else {
-                        n10 = n2 + 2;
-                        n9 = n;
-                        n5 = n6;
-                    }
-                }
-                else {
-                    n10 = n2 + 2;
-                    n7 = Integer.MAX_VALUE;
-                    n5 = Integer.MIN_VALUE;
-                    n9 = n;
-                }
-            }
-            else if (n8 > n5) {
-                if (n8 > n7) {
-                    n10 = n2 + 2;
-                    n9 = n;
-                }
-                else {
-                    n9 = n + 2;
-                    n10 = n2;
-                    n7 = n8;
-                }
-            }
-            else {
-                n9 = n + 2;
-                n7 = Integer.MAX_VALUE;
-                n5 = Integer.MIN_VALUE;
-                n10 = n2;
-            }
-            n = n9;
-            n2 = n10;
-            if (n5 == Integer.MIN_VALUE) {
-                continue;
-            }
-            final int n11 = n3 + 1;
-            array3[n3] = n5;
-            if (n7 == Integer.MAX_VALUE) {
-                n4 = n11;
-                break;
-            }
-            n3 = n11 + 1;
-            array3[n11] = n7;
-            n = n9;
-            n2 = n10;
-        }
-        return Arrays.copyOf(array3, n4);
-    }
-    
     public static Object invokeMethodQuietly(Object invoke, final Method method, final Object... array) {
         try {
             invoke = method.invoke(invoke, array);
@@ -452,31 +263,6 @@ public final class Utility
             }
         }
         return true;
-    }
-    
-    public static void loadAppSettingsAsync(final Context context, final String s) {
-        final JSONObject jsonObject = null;
-        if (!isNullOrEmpty(s) && !Utility.fetchedAppSettings.containsKey(s) && Utility.initialAppSettingsLoadTask == null) {
-            final String format = String.format("com.facebook.internal.APP_SETTINGS.%s", s);
-            (Utility.initialAppSettingsLoadTask = new Utility$1(s, context, format)).execute((Object[])null);
-            final String string = context.getSharedPreferences("com.facebook.internal.preferences.APP_SETTINGS", 0).getString(format, (String)null);
-            if (!isNullOrEmpty(string)) {
-                while (true) {
-                    try {
-                        final JSONObject jsonObject2 = new JSONObject(string);
-                        if (jsonObject2 != null) {
-                            parseAppSettingsFromJSON(s, jsonObject2);
-                        }
-                    }
-                    catch (JSONException ex) {
-                        logd("FacebookSDK", (Exception)ex);
-                        final JSONObject jsonObject2 = jsonObject;
-                        continue;
-                    }
-                    break;
-                }
-            }
-        }
     }
     
     public static void logd(final String s, final Exception ex) {
@@ -541,7 +327,7 @@ public final class Utility
         //     7: astore_3       
         //     8: aload_0        
         //     9: invokestatic    com/facebook/internal/Utility.isNullOrEmpty:(Ljava/lang/String;)Z
-        //    12: ifne            113
+        //    12: ifne            117
         //    15: aload_0        
         //    16: ldc_w           "&"
         //    19: invokevirtual   java/lang/String.split:(Ljava/lang/String;)[Ljava/lang/String;
@@ -553,7 +339,7 @@ public final class Utility
         //    27: istore_1       
         //    28: iload_1        
         //    29: iload_2        
-        //    30: if_icmpge       113
+        //    30: if_icmpge       117
         //    33: aload_0        
         //    34: iload_1        
         //    35: aaload         
@@ -563,51 +349,51 @@ public final class Utility
         //    43: aload           4
         //    45: arraylength    
         //    46: iconst_2       
-        //    47: if_icmpne       75
+        //    47: if_icmpne       77
         //    50: aload_3        
         //    51: aload           4
         //    53: iconst_0       
         //    54: aaload         
-        //    55: ldc             "UTF-8"
-        //    57: invokestatic    java/net/URLDecoder.decode:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-        //    60: aload           4
-        //    62: iconst_1       
-        //    63: aaload         
-        //    64: ldc             "UTF-8"
-        //    66: invokestatic    java/net/URLDecoder.decode:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-        //    69: invokevirtual   android/os/Bundle.putString:(Ljava/lang/String;Ljava/lang/String;)V
-        //    72: goto            115
-        //    75: aload           4
-        //    77: arraylength    
-        //    78: iconst_1       
-        //    79: if_icmpne       115
-        //    82: aload_3        
-        //    83: aload           4
-        //    85: iconst_0       
-        //    86: aaload         
-        //    87: ldc             "UTF-8"
-        //    89: invokestatic    java/net/URLDecoder.decode:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-        //    92: ldc_w           ""
-        //    95: invokevirtual   android/os/Bundle.putString:(Ljava/lang/String;Ljava/lang/String;)V
-        //    98: goto            115
-        //   101: astore          4
-        //   103: ldc             "FacebookSDK"
-        //   105: aload           4
-        //   107: invokestatic    com/facebook/internal/Utility.logd:(Ljava/lang/String;Ljava/lang/Exception;)V
-        //   110: goto            115
-        //   113: aload_3        
-        //   114: areturn        
-        //   115: iload_1        
-        //   116: iconst_1       
-        //   117: iadd           
-        //   118: istore_1       
-        //   119: goto            28
+        //    55: ldc_w           "UTF-8"
+        //    58: invokestatic    java/net/URLDecoder.decode:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+        //    61: aload           4
+        //    63: iconst_1       
+        //    64: aaload         
+        //    65: ldc_w           "UTF-8"
+        //    68: invokestatic    java/net/URLDecoder.decode:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+        //    71: invokevirtual   android/os/Bundle.putString:(Ljava/lang/String;Ljava/lang/String;)V
+        //    74: goto            119
+        //    77: aload           4
+        //    79: arraylength    
+        //    80: iconst_1       
+        //    81: if_icmpne       119
+        //    84: aload_3        
+        //    85: aload           4
+        //    87: iconst_0       
+        //    88: aaload         
+        //    89: ldc_w           "UTF-8"
+        //    92: invokestatic    java/net/URLDecoder.decode:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+        //    95: ldc_w           ""
+        //    98: invokevirtual   android/os/Bundle.putString:(Ljava/lang/String;Ljava/lang/String;)V
+        //   101: goto            119
+        //   104: astore          4
+        //   106: ldc_w           "FacebookSDK"
+        //   109: aload           4
+        //   111: invokestatic    com/facebook/internal/Utility.logd:(Ljava/lang/String;Ljava/lang/Exception;)V
+        //   114: goto            119
+        //   117: aload_3        
+        //   118: areturn        
+        //   119: iload_1        
+        //   120: iconst_1       
+        //   121: iadd           
+        //   122: istore_1       
+        //   123: goto            28
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                                  
         //  -----  -----  -----  -----  --------------------------------------
-        //  43     72     101    113    Ljava/io/UnsupportedEncodingException;
-        //  75     98     101    113    Ljava/io/UnsupportedEncodingException;
+        //  43     74     104    117    Ljava/io/UnsupportedEncodingException;
+        //  77     101    104    117    Ljava/io/UnsupportedEncodingException;
         // 
         // The error that occurred was:
         // 
@@ -633,22 +419,6 @@ public final class Utility
         //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
         // 
         throw new IllegalStateException("An error occurred while decompiling this method.");
-    }
-    
-    public static void putObjectInBundle(final Bundle bundle, final String s, final Object o) {
-        if (o instanceof String) {
-            bundle.putString(s, (String)o);
-            return;
-        }
-        if (o instanceof Parcelable) {
-            bundle.putParcelable(s, (Parcelable)o);
-            return;
-        }
-        if (o instanceof byte[]) {
-            bundle.putByteArray(s, (byte[])o);
-            return;
-        }
-        throw new FacebookException("attempted to add unsupported type to Bundle");
     }
     
     public static Utility$FetchedAppSettings queryAppSettings(final String s, final boolean b) {
@@ -769,30 +539,6 @@ public final class Utility
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public static boolean safeGetBooleanFromResponse(final GraphObject graphObject, final String s) {
-        Object o = false;
-        if (graphObject != null) {
-            o = graphObject.getProperty(s);
-        }
-        Object value = o;
-        if (!(o instanceof Boolean)) {
-            value = false;
-        }
-        return (boolean)value;
-    }
-    
-    public static String safeGetStringFromResponse(final GraphObject graphObject, final String s) {
-        Object property = "";
-        if (graphObject != null) {
-            property = graphObject.getProperty(s);
-        }
-        Object o = property;
-        if (!(property instanceof String)) {
-            o = "";
-        }
-        return (String)o;
-    }
-    
     public static void setAppEventAttributionParameters(final GraphObject graphObject, final AttributionIdentifiers attributionIdentifiers, final String s, final boolean b) {
         final boolean b2 = true;
         if (attributionIdentifiers != null && attributionIdentifiers.getAttributionId() != null) {
@@ -841,34 +587,6 @@ public final class Utility
     
     static String sha1hash(final byte[] array) {
         return hashWithAlgorithm("SHA-1", array);
-    }
-    
-    public static boolean stringsEqualOrEmpty(final String s, final String s2) {
-        final boolean empty = TextUtils.isEmpty((CharSequence)s);
-        final boolean empty2 = TextUtils.isEmpty((CharSequence)s2);
-        return (empty && empty2) || (!empty && !empty2 && s.equals(s2));
-    }
-    
-    public static JSONArray tryGetJSONArrayFromResponse(final GraphObject graphObject, final String s) {
-        if (graphObject == null) {
-            return null;
-        }
-        final Object property = graphObject.getProperty(s);
-        if (!(property instanceof JSONArray)) {
-            return null;
-        }
-        return (JSONArray)property;
-    }
-    
-    public static JSONObject tryGetJSONObjectFromResponse(final GraphObject graphObject, final String s) {
-        if (graphObject == null) {
-            return null;
-        }
-        final Object property = graphObject.getProperty(s);
-        if (!(property instanceof JSONObject)) {
-            return null;
-        }
-        return (JSONObject)property;
     }
     
     public static <T> Collection<T> unmodifiableCollection(final T... array) {

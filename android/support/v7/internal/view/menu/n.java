@@ -15,13 +15,13 @@ import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.view.LayoutInflater;
-import android.view.MenuItem$OnMenuItemClickListener;
-import android.graphics.drawable.Drawable;
-import android.content.Intent;
 import android.view.ContextMenu$ContextMenuInfo;
 import android.support.v4.view.MenuItemCompat$OnActionExpandListener;
 import android.support.v4.view.ActionProvider;
 import android.view.View;
+import android.view.MenuItem$OnMenuItemClickListener;
+import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.support.v4.internal.view.SupportMenuItem;
 import android.support.v4.view.ActionProvider$VisibilityListener;
 
@@ -35,6 +35,6 @@ class n implements ActionProvider$VisibilityListener
     
     @Override
     public void onActionProviderVisibilityChanged(final boolean b) {
-        this.a.o.a(this.a);
+        this.a.l.a(this.a);
     }
 }

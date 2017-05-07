@@ -4,7 +4,6 @@
 
 package com.google.gson;
 
-import com.google.gson.internal.bind.JsonTreeWriter;
 import com.google.gson.internal.Streams;
 import java.io.StringWriter;
 import java.util.Iterator;

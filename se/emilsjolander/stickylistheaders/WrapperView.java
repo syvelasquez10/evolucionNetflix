@@ -36,10 +36,6 @@ public class WrapperView extends ViewGroup
         }
     }
     
-    public View getHeader() {
-        return this.mHeader;
-    }
-    
     public View getItem() {
         return this.mItem;
     }

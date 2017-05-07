@@ -17,10 +17,6 @@ public class TintCheckBox extends CheckBox
         TINT_ATTRS = new int[] { 16843015 };
     }
     
-    public TintCheckBox(final Context context) {
-        this(context, null);
-    }
-    
     public TintCheckBox(final Context context, final AttributeSet set) {
         this(context, set, 16842860);
     }

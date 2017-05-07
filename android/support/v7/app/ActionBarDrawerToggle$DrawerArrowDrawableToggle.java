@@ -18,11 +18,6 @@ class ActionBarDrawerToggle$DrawerArrowDrawableToggle extends DrawerArrowDrawabl
     }
     
     @Override
-    public float getPosition() {
-        return super.getProgress();
-    }
-    
-    @Override
     boolean isLayoutRtl() {
         return ViewCompat.getLayoutDirection(this.mActivity.getWindow().getDecorView()) == 1;
     }

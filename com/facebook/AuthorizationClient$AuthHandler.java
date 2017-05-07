@@ -11,7 +11,6 @@ import java.io.Serializable;
 
 abstract class AuthorizationClient$AuthHandler implements Serializable
 {
-    private static final long serialVersionUID = 1L;
     Map<String, String> methodLoggingExtras;
     final /* synthetic */ AuthorizationClient this$0;
     

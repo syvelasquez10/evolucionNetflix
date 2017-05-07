@@ -30,11 +30,6 @@ class EdgeEffectCompat$EdgeEffectIcsImpl implements EdgeEffectCompat$EdgeEffectI
     }
     
     @Override
-    public boolean onAbsorb(final Object o, final int n) {
-        return EdgeEffectCompatIcs.onAbsorb(o, n);
-    }
-    
-    @Override
     public boolean onPull(final Object o, final float n) {
         return EdgeEffectCompatIcs.onPull(o, n);
     }

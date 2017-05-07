@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.content.res.Configuration;
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 import java.io.PrintWriter;
@@ -33,12 +32,6 @@ import android.content.ComponentCallbacks;
 
 public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuListener
 {
-    static final int ACTIVITY_CREATED = 2;
-    static final int CREATED = 1;
-    static final int INITIALIZING = 0;
-    static final int RESUMED = 5;
-    static final int STARTED = 4;
-    static final int STOPPED = 3;
     static final Object USE_DEFAULT_TRANSITION;
     private static final SimpleArrayMap<String, Class<?>> sClassMap;
     FragmentActivity mActivity;
@@ -283,16 +276,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         return super.equals(o);
     }
     
-    Fragment findFragmentByWho(final String s) {
-        if (s.equals(this.mWho)) {
-            return this;
-        }
-        if (this.mChildFragmentManager != null) {
-            return this.mChildFragmentManager.findFragmentByWho(s);
-        }
-        return null;
-    }
-    
     public final FragmentActivity getActivity() {
         return this.mActivity;
     }
@@ -303,10 +286,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     
     public boolean getAllowReturnTransitionOverlap() {
         return this.mAllowReturnTransitionOverlap == null || this.mAllowReturnTransitionOverlap;
-    }
-    
-    public final Bundle getArguments() {
-        return this.mArguments;
     }
     
     public final FragmentManager getChildFragmentManager() {
@@ -340,10 +319,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         return this.mFragmentManager;
     }
     
-    public final int getId() {
-        return this.mFragmentId;
-    }
-    
     public LayoutInflater getLayoutInflater(final Bundle bundle) {
         final LayoutInflater cloneInContext = this.mActivity.getLayoutInflater().cloneInContext((Context)this.mActivity);
         this.getChildFragmentManager();
@@ -362,10 +337,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         return this.mLoaderManager = this.mActivity.getLoaderManager(this.mWho, this.mLoadersStarted, true);
     }
     
-    public final Fragment getParentFragment() {
-        return this.mParentFragment;
-    }
-    
     public Object getReenterTransition() {
         if (this.mReenterTransition == Fragment.USE_DEFAULT_TRANSITION) {
             return this.getExitTransition();
@@ -378,10 +349,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
             throw new IllegalStateException("Fragment " + this + " not attached to Activity");
         }
         return this.mActivity.getResources();
-    }
-    
-    public final boolean getRetainInstance() {
-        return this.mRetainInstance;
     }
     
     public Object getReturnTransition() {
@@ -402,41 +369,8 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         return this.mSharedElementReturnTransition;
     }
     
-    public final String getString(final int n) {
-        return this.getResources().getString(n);
-    }
-    
-    public final String getString(final int n, final Object... array) {
-        return this.getResources().getString(n, array);
-    }
-    
-    public final String getTag() {
-        return this.mTag;
-    }
-    
-    public final Fragment getTargetFragment() {
-        return this.mTarget;
-    }
-    
-    public final int getTargetRequestCode() {
-        return this.mTargetRequestCode;
-    }
-    
-    public final CharSequence getText(final int n) {
-        return this.getResources().getText(n);
-    }
-    
-    public boolean getUserVisibleHint() {
-        return this.mUserVisibleHint;
-    }
-    
-    @Nullable
     public View getView() {
         return this.mView;
-    }
-    
-    public final boolean hasOptionsMenu() {
-        return this.mHasMenu;
     }
     
     @Override
@@ -476,10 +410,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         return this.mActivity != null && this.mAdded;
     }
     
-    public final boolean isDetached() {
-        return this.mDetached;
-    }
-    
     public final boolean isHidden() {
         return this.mHidden;
     }
@@ -488,27 +418,11 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         return this.mBackStackNesting > 0;
     }
     
-    public final boolean isInLayout() {
-        return this.mInLayout;
-    }
-    
-    public final boolean isMenuVisible() {
-        return this.mMenuVisible;
-    }
-    
     public final boolean isRemoving() {
         return this.mRemoving;
     }
     
-    public final boolean isResumed() {
-        return this.mResumed;
-    }
-    
-    public final boolean isVisible() {
-        return this.isAdded() && !this.isHidden() && this.mView != null && this.mView.getWindowToken() != null && this.mView.getVisibility() == 0;
-    }
-    
-    public void onActivityCreated(@Nullable final Bundle bundle) {
+    public void onActivityCreated(final Bundle bundle) {
         this.mCalled = true;
     }
     
@@ -542,7 +456,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater menuInflater) {
     }
     
-    public View onCreateView(final LayoutInflater layoutInflater, @Nullable final ViewGroup viewGroup, @Nullable final Bundle bundle) {
+    public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         return null;
     }
     
@@ -618,10 +532,10 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         this.mCalled = true;
     }
     
-    public void onViewCreated(final View view, @Nullable final Bundle bundle) {
+    public void onViewCreated(final View view, final Bundle bundle) {
     }
     
-    public void onViewStateRestored(@Nullable final Bundle bundle) {
+    public void onViewStateRestored(final Bundle bundle) {
         this.mCalled = true;
     }
     
@@ -851,10 +765,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         }
     }
     
-    public void registerForContextMenu(final View view) {
-        view.setOnCreateContextMenuListener((View$OnCreateContextMenuListener)this);
-    }
-    
     final void restoreViewState(final Bundle bundle) {
         if (this.mSavedViewState != null) {
             this.mInnerView.restoreHierarchyState((SparseArray)this.mSavedViewState);
@@ -867,46 +777,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         }
     }
     
-    public void setAllowEnterTransitionOverlap(final boolean b) {
-        this.mAllowEnterTransitionOverlap = b;
-    }
-    
-    public void setAllowReturnTransitionOverlap(final boolean b) {
-        this.mAllowReturnTransitionOverlap = b;
-    }
-    
-    public void setArguments(final Bundle mArguments) {
-        if (this.mIndex >= 0) {
-            throw new IllegalStateException("Fragment already active");
-        }
-        this.mArguments = mArguments;
-    }
-    
-    public void setEnterSharedElementCallback(final SharedElementCallback mEnterTransitionCallback) {
-        this.mEnterTransitionCallback = mEnterTransitionCallback;
-    }
-    
-    public void setEnterTransition(final Object mEnterTransition) {
-        this.mEnterTransition = mEnterTransition;
-    }
-    
-    public void setExitSharedElementCallback(final SharedElementCallback mExitTransitionCallback) {
-        this.mExitTransitionCallback = mExitTransitionCallback;
-    }
-    
-    public void setExitTransition(final Object mExitTransition) {
-        this.mExitTransition = mExitTransition;
-    }
-    
-    public void setHasOptionsMenu(final boolean mHasMenu) {
-        if (this.mHasMenu != mHasMenu) {
-            this.mHasMenu = mHasMenu;
-            if (this.isAdded() && !this.isHidden()) {
-                this.mActivity.supportInvalidateOptionsMenu();
-            }
-        }
-    }
-    
     final void setIndex(final int mIndex, final Fragment fragment) {
         this.mIndex = mIndex;
         if (fragment != null) {
@@ -914,71 +784,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
             return;
         }
         this.mWho = "android:fragment:" + this.mIndex;
-    }
-    
-    public void setInitialSavedState(final Fragment$SavedState fragment$SavedState) {
-        if (this.mIndex >= 0) {
-            throw new IllegalStateException("Fragment already active");
-        }
-        Bundle mState;
-        if (fragment$SavedState != null && fragment$SavedState.mState != null) {
-            mState = fragment$SavedState.mState;
-        }
-        else {
-            mState = null;
-        }
-        this.mSavedFragmentState = mState;
-    }
-    
-    public void setMenuVisibility(final boolean mMenuVisible) {
-        if (this.mMenuVisible != mMenuVisible) {
-            this.mMenuVisible = mMenuVisible;
-            if (this.mHasMenu && this.isAdded() && !this.isHidden()) {
-                this.mActivity.supportInvalidateOptionsMenu();
-            }
-        }
-    }
-    
-    public void setReenterTransition(final Object mReenterTransition) {
-        this.mReenterTransition = mReenterTransition;
-    }
-    
-    public void setRetainInstance(final boolean mRetainInstance) {
-        if (mRetainInstance && this.mParentFragment != null) {
-            throw new IllegalStateException("Can't retain fragements that are nested in other fragments");
-        }
-        this.mRetainInstance = mRetainInstance;
-    }
-    
-    public void setReturnTransition(final Object mReturnTransition) {
-        this.mReturnTransition = mReturnTransition;
-    }
-    
-    public void setSharedElementEnterTransition(final Object mSharedElementEnterTransition) {
-        this.mSharedElementEnterTransition = mSharedElementEnterTransition;
-    }
-    
-    public void setSharedElementReturnTransition(final Object mSharedElementReturnTransition) {
-        this.mSharedElementReturnTransition = mSharedElementReturnTransition;
-    }
-    
-    public void setTargetFragment(final Fragment mTarget, final int mTargetRequestCode) {
-        this.mTarget = mTarget;
-        this.mTargetRequestCode = mTargetRequestCode;
-    }
-    
-    public void setUserVisibleHint(final boolean mUserVisibleHint) {
-        if (!this.mUserVisibleHint && mUserVisibleHint && this.mState < 4) {
-            this.mFragmentManager.performPendingDeferredStart(this);
-        }
-        this.mDeferStart = !(this.mUserVisibleHint = mUserVisibleHint);
-    }
-    
-    public void startActivity(final Intent intent) {
-        if (this.mActivity == null) {
-            throw new IllegalStateException("Fragment " + this + " not attached to Activity");
-        }
-        this.mActivity.startActivityFromFragment(this, intent, -1);
     }
     
     public void startActivityForResult(final Intent intent, final int n) {
@@ -1006,9 +811,5 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         }
         sb.append('}');
         return sb.toString();
-    }
-    
-    public void unregisterForContextMenu(final View view) {
-        view.setOnCreateContextMenuListener((View$OnCreateContextMenuListener)null);
     }
 }

@@ -26,11 +26,6 @@ class EdgeEffectCompatIcs
         return new EdgeEffect(context);
     }
     
-    public static boolean onAbsorb(final Object o, final int n) {
-        ((EdgeEffect)o).onAbsorb(n);
-        return true;
-    }
-    
     public static boolean onPull(final Object o, final float n) {
         ((EdgeEffect)o).onPull(n);
         return true;

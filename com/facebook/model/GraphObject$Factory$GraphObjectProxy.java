@@ -24,26 +24,6 @@ import org.json.JSONObject;
 
 final class GraphObject$Factory$GraphObjectProxy extends GraphObject$Factory$ProxyBase<JSONObject>
 {
-    private static final String CASTTOMAP_METHOD = "asMap";
-    private static final String CAST_METHOD = "cast";
-    private static final String CLEAR_METHOD = "clear";
-    private static final String CONTAINSKEY_METHOD = "containsKey";
-    private static final String CONTAINSVALUE_METHOD = "containsValue";
-    private static final String ENTRYSET_METHOD = "entrySet";
-    private static final String GETINNERJSONOBJECT_METHOD = "getInnerJSONObject";
-    private static final String GETPROPERTYASLIST_METHOD = "getPropertyAsList";
-    private static final String GETPROPERTYAS_METHOD = "getPropertyAs";
-    private static final String GETPROPERTY_METHOD = "getProperty";
-    private static final String GET_METHOD = "get";
-    private static final String ISEMPTY_METHOD = "isEmpty";
-    private static final String KEYSET_METHOD = "keySet";
-    private static final String PUTALL_METHOD = "putAll";
-    private static final String PUT_METHOD = "put";
-    private static final String REMOVEPROPERTY_METHOD = "removeProperty";
-    private static final String REMOVE_METHOD = "remove";
-    private static final String SETPROPERTY_METHOD = "setProperty";
-    private static final String SIZE_METHOD = "size";
-    private static final String VALUES_METHOD = "values";
     private final Class<?> graphObjectClass;
     
     public GraphObject$Factory$GraphObjectProxy(final JSONObject jsonObject, final Class<?> graphObjectClass) {

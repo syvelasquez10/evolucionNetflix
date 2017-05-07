@@ -6,7 +6,6 @@ package com.google.gson;
 
 import com.google.gson.internal.$Gson$Preconditions;
 import com.google.gson.internal.LazilyParsedNumber;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public final class JsonPrimitive extends JsonElement
@@ -19,10 +18,6 @@ public final class JsonPrimitive extends JsonElement
     }
     
     public JsonPrimitive(final Boolean value) {
-        this.setValue(value);
-    }
-    
-    public JsonPrimitive(final Character value) {
         this.setValue(value);
     }
     
@@ -101,22 +96,6 @@ public final class JsonPrimitive extends JsonElement
     }
     
     @Override
-    public BigDecimal getAsBigDecimal() {
-        if (this.value instanceof BigDecimal) {
-            return (BigDecimal)this.value;
-        }
-        return new BigDecimal(this.value.toString());
-    }
-    
-    @Override
-    public BigInteger getAsBigInteger() {
-        if (this.value instanceof BigInteger) {
-            return (BigInteger)this.value;
-        }
-        return new BigInteger(this.value.toString());
-    }
-    
-    @Override
     public boolean getAsBoolean() {
         if (this.isBoolean()) {
             return this.getAsBooleanWrapper();
@@ -127,19 +106,6 @@ public final class JsonPrimitive extends JsonElement
     @Override
     Boolean getAsBooleanWrapper() {
         return (Boolean)this.value;
-    }
-    
-    @Override
-    public byte getAsByte() {
-        if (this.isNumber()) {
-            return this.getAsNumber().byteValue();
-        }
-        return Byte.parseByte(this.getAsString());
-    }
-    
-    @Override
-    public char getAsCharacter() {
-        return this.getAsString().charAt(0);
     }
     
     @Override
@@ -180,14 +146,6 @@ public final class JsonPrimitive extends JsonElement
             return new LazilyParsedNumber((String)this.value);
         }
         return (Number)this.value;
-    }
-    
-    @Override
-    public short getAsShort() {
-        if (this.isNumber()) {
-            return this.getAsNumber().shortValue();
-        }
-        return Short.parseShort(this.getAsString());
     }
     
     @Override

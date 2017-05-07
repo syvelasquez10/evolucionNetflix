@@ -25,19 +25,18 @@ import android.support.v7.internal.widget.TintCheckBox;
 import android.support.v7.internal.widget.TintSpinner;
 import android.support.v7.internal.widget.TintEditText;
 import android.os.Build$VERSION;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.support.v7.internal.app.WindowDecorActionBar;
 import android.view.ViewGroup$LayoutParams;
 import android.support.v7.appcompat.R$color;
 import android.support.v7.internal.widget.ViewUtils;
 import android.view.ViewGroup$MarginLayoutParams;
-import android.view.KeyCharacterMap;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.view.ViewConfiguration;
+import android.view.KeyCharacterMap;
 import android.support.v4.view.ViewCompat;
 import android.content.res.Resources$Theme;
-import android.support.v7.internal.view.menu.z;
+import android.support.v7.internal.view.menu.y;
 import android.support.v7.appcompat.R$id;
 import android.support.v7.internal.widget.ProgressBarCompat;
 import android.support.v7.appcompat.R$layout;
@@ -66,7 +65,6 @@ import android.support.v7.internal.view.menu.j;
 
 class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements j
 {
-    private static final String TAG = "ActionBarActivityDelegateBase";
     private ActionBarActivityDelegateBase$ActionMenuPresenterCallback mActionMenuPresenterCallback;
     ActionMode mActionMode;
     PopupWindow mActionModePopup;
@@ -269,11 +267,11 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
         final ActionBarActivityDelegateBase$PanelFeatureState panelState = this.getPanelState(n, true);
         if (panelState.menu != null) {
             final Bundle frozenActionViewState = new Bundle();
-            panelState.menu.c(frozenActionViewState);
+            panelState.menu.a(frozenActionViewState);
             if (frozenActionViewState.size() > 0) {
                 panelState.frozenActionViewState = frozenActionViewState;
             }
-            panelState.menu.h();
+            panelState.menu.g();
             panelState.menu.clear();
         }
         panelState.refreshMenuContent = true;
@@ -436,14 +434,6 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
         }
     }
     
-    private void openPanel(final int n, final KeyEvent keyEvent) {
-        if (n == 0 && this.mDecorContentParent != null && this.mDecorContentParent.canShowOverflowMenu() && !ViewConfigurationCompat.hasPermanentMenuKey(ViewConfiguration.get((Context)this.mActivity))) {
-            this.mDecorContentParent.showOverflowMenu();
-            return;
-        }
-        this.openPanel(this.getPanelState(n, true), keyEvent);
-    }
-    
     private void openPanel(final ActionBarActivityDelegateBase$PanelFeatureState actionBarActivityDelegateBase$PanelFeatureState, final KeyEvent keyEvent) {
         if (!actionBarActivityDelegateBase$PanelFeatureState.isOpen && !this.isDestroyed()) {
             if (actionBarActivityDelegateBase$PanelFeatureState.featureId == 0) {
@@ -511,7 +501,7 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
                     }
                     this.mDecorContentParent.setMenu((Menu)mPreparedPanel.menu, this.mActionMenuPresenterCallback);
                 }
-                mPreparedPanel.menu.h();
+                mPreparedPanel.menu.g();
                 if (!this.getWindowCallback().onCreatePanelMenu(mPreparedPanel.featureId, (Menu)mPreparedPanel.menu)) {
                     mPreparedPanel.setMenu(null);
                     if (b && this.mDecorContentParent != null) {
@@ -524,16 +514,16 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
                     mPreparedPanel.refreshMenuContent = false;
                 }
             }
-            mPreparedPanel.menu.h();
+            mPreparedPanel.menu.g();
             if (mPreparedPanel.frozenActionViewState != null) {
-                mPreparedPanel.menu.d(mPreparedPanel.frozenActionViewState);
+                mPreparedPanel.menu.b(mPreparedPanel.frozenActionViewState);
                 mPreparedPanel.frozenActionViewState = null;
             }
             if (!this.getWindowCallback().onPreparePanel(0, null, (Menu)mPreparedPanel.menu)) {
                 if (b && this.mDecorContentParent != null) {
                     this.mDecorContentParent.setMenu(null, this.mActionMenuPresenterCallback);
                 }
-                mPreparedPanel.menu.i();
+                mPreparedPanel.menu.h();
                 return false;
             }
             int deviceId;
@@ -545,7 +535,7 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
             }
             mPreparedPanel.qwertyMode = (KeyCharacterMap.load(deviceId).getKeyboardType() != 1);
             mPreparedPanel.menu.setQwertyMode(mPreparedPanel.qwertyMode);
-            mPreparedPanel.menu.i();
+            mPreparedPanel.menu.h();
             mPreparedPanel.isPrepared = true;
             mPreparedPanel.isHandled = false;
             this.mPreparedPanel = mPreparedPanel;
@@ -739,7 +729,7 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
     }
     
     @Override
-    View createView(final String s, @NonNull final AttributeSet set) {
+    View createView(final String s, final AttributeSet set) {
         if (Build$VERSION.SDK_INT < 21) {
             switch (s) {
                 case "EditText": {
@@ -926,7 +916,7 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
     public boolean onMenuItemSelected(final i i, final MenuItem menuItem) {
         final WindowCallback windowCallback = this.getWindowCallback();
         if (windowCallback != null && !this.isDestroyed()) {
-            final ActionBarActivityDelegateBase$PanelFeatureState menuPanel = this.findMenuPanel((Menu)i.q());
+            final ActionBarActivityDelegateBase$PanelFeatureState menuPanel = this.findMenuPanel((Menu)i.p());
             if (menuPanel != null) {
                 return windowCallback.onMenuItemSelected(menuPanel.featureId, menuItem);
             }

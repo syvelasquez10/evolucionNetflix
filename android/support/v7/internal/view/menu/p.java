@@ -4,7 +4,6 @@
 
 package android.support.v7.internal.view.menu;
 
-import android.support.v4.view.MenuItemCompat$OnActionExpandListener;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.MenuItem$OnActionExpandListener;
 import android.support.v7.view.CollapsibleActionView;
@@ -29,7 +28,7 @@ class p extends ActionProvider
         this.b = b;
         super(a.getContext());
         this.a = a;
-        if (b.c) {
+        if (b.b) {
             this.a.setVisibilityListener(new q(this, b));
         }
     }
@@ -39,7 +38,7 @@ class p extends ActionProvider
     }
     
     public View onCreateActionView() {
-        if (this.b.c) {
+        if (this.b.b) {
             this.b.c();
         }
         return this.a.onCreateActionView();

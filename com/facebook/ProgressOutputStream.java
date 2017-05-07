@@ -66,14 +66,6 @@ class ProgressOutputStream extends FilterOutputStream implements RequestOutputSt
         this.reportBatchProgress();
     }
     
-    long getBatchProgress() {
-        return this.batchProgress;
-    }
-    
-    long getMaxProgress() {
-        return this.maxProgress;
-    }
-    
     @Override
     public void setCurrentRequest(final Request request) {
         RequestProgress currentRequestProgress;

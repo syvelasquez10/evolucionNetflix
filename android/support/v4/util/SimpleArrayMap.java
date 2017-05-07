@@ -8,10 +8,6 @@ import java.util.Map;
 
 public class SimpleArrayMap<K, V>
 {
-    private static final int BASE_SIZE = 4;
-    private static final int CACHE_SIZE = 10;
-    private static final boolean DEBUG = false;
-    private static final String TAG = "ArrayMap";
     static Object[] mBaseCache;
     static int mBaseCacheSize;
     static Object[] mTwiceBaseCache;
@@ -24,24 +20,6 @@ public class SimpleArrayMap<K, V>
         this.mHashes = ContainerHelpers.EMPTY_INTS;
         this.mArray = ContainerHelpers.EMPTY_OBJECTS;
         this.mSize = 0;
-    }
-    
-    public SimpleArrayMap(final int n) {
-        if (n == 0) {
-            this.mHashes = ContainerHelpers.EMPTY_INTS;
-            this.mArray = ContainerHelpers.EMPTY_OBJECTS;
-        }
-        else {
-            this.allocArrays(n);
-        }
-        this.mSize = 0;
-    }
-    
-    public SimpleArrayMap(final SimpleArrayMap simpleArrayMap) {
-        this();
-        if (simpleArrayMap != null) {
-            this.putAll(simpleArrayMap);
-        }
     }
     
     private void allocArrays(final int n) {
@@ -392,25 +370,6 @@ public class SimpleArrayMap<K, V>
         this.mArray[(n4 << 1) + 1] = v;
         ++this.mSize;
         return null;
-    }
-    
-    public void putAll(final SimpleArrayMap<? extends K, ? extends V> simpleArrayMap) {
-        int i = 0;
-        final int mSize = simpleArrayMap.mSize;
-        this.ensureCapacity(this.mSize + mSize);
-        if (this.mSize == 0) {
-            if (mSize > 0) {
-                System.arraycopy(simpleArrayMap.mHashes, 0, this.mHashes, 0, mSize);
-                System.arraycopy(simpleArrayMap.mArray, 0, this.mArray, 0, mSize << 1);
-                this.mSize = mSize;
-            }
-        }
-        else {
-            while (i < mSize) {
-                this.put(simpleArrayMap.keyAt(i), simpleArrayMap.valueAt(i));
-                ++i;
-            }
-        }
     }
     
     public V remove(final Object o) {

@@ -6,11 +6,11 @@ package android.support.v7.media;
 
 import android.os.IBinder;
 import java.util.List;
+import android.content.Intent;
 import android.content.Context;
 import java.util.ArrayList;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
-import android.content.Intent;
 import android.os.DeadObjectException;
 import android.os.RemoteException;
 import android.util.Log;
@@ -169,17 +169,6 @@ final class RegisteredMediaRouteProvider$Connection implements IBinder$DeathReci
     
     public void selectRoute(final int n) {
         this.sendRequest(5, this.mNextRequestId++, n, null, null);
-    }
-    
-    public boolean sendControlRequest(final int n, final Intent intent, final MediaRouter$ControlRequestCallback mediaRouter$ControlRequestCallback) {
-        final int n2 = this.mNextRequestId++;
-        if (this.sendRequest(9, n2, n, intent, null)) {
-            if (mediaRouter$ControlRequestCallback != null) {
-                this.mPendingCallbacks.put(n2, (Object)mediaRouter$ControlRequestCallback);
-            }
-            return true;
-        }
-        return false;
     }
     
     public void setDiscoveryRequest(final MediaRouteDiscoveryRequest mediaRouteDiscoveryRequest) {

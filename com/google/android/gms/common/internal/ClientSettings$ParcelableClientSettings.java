@@ -44,13 +44,6 @@ public final class ClientSettings$ParcelableClientSettings implements SafeParcel
         return this.Dd;
     }
     
-    public String getAccountNameOrDefault() {
-        if (this.Dd != null) {
-            return this.Dd;
-        }
-        return "<<default account>>";
-    }
-    
     public int getGravityForPopups() {
         return this.IF;
     }

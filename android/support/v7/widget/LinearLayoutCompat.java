@@ -23,17 +23,6 @@ import android.view.ViewGroup;
 
 public class LinearLayoutCompat extends ViewGroup
 {
-    public static final int HORIZONTAL = 0;
-    private static final int INDEX_BOTTOM = 2;
-    private static final int INDEX_CENTER_VERTICAL = 0;
-    private static final int INDEX_FILL = 3;
-    private static final int INDEX_TOP = 1;
-    public static final int SHOW_DIVIDER_BEGINNING = 1;
-    public static final int SHOW_DIVIDER_END = 4;
-    public static final int SHOW_DIVIDER_MIDDLE = 2;
-    public static final int SHOW_DIVIDER_NONE = 0;
-    public static final int VERTICAL = 1;
-    private static final int VERTICAL_GRAVITY_COUNT = 4;
     private boolean mBaselineAligned;
     private int mBaselineAlignedChildIndex;
     private int mBaselineChildTop;
@@ -253,20 +242,8 @@ public class LinearLayoutCompat extends ViewGroup
         return baseline;
     }
     
-    public int getBaselineAlignedChildIndex() {
-        return this.mBaselineAlignedChildIndex;
-    }
-    
     int getChildrenSkipCount(final View view, final int n) {
         return 0;
-    }
-    
-    public Drawable getDividerDrawable() {
-        return this.mDivider;
-    }
-    
-    public int getDividerPadding() {
-        return this.mDividerPadding;
     }
     
     public int getDividerWidth() {
@@ -281,24 +258,12 @@ public class LinearLayoutCompat extends ViewGroup
         return 0;
     }
     
-    public int getOrientation() {
-        return this.mOrientation;
-    }
-    
-    public int getShowDividers() {
-        return this.mShowDividers;
-    }
-    
     View getVirtualChildAt(final int n) {
         return this.getChildAt(n);
     }
     
     int getVirtualChildCount() {
         return this.getChildCount();
-    }
-    
-    public float getWeightSum() {
-        return this.mWeightSum;
     }
     
     protected boolean hasDividerBeforeChildAt(int i) {
@@ -324,14 +289,6 @@ public class LinearLayoutCompat extends ViewGroup
             return false;
         }
         return true;
-    }
-    
-    public boolean isBaselineAligned() {
-        return this.mBaselineAligned;
-    }
-    
-    public boolean isMeasureWithLargestChildEnabled() {
-        return this.mUseLargestChild;
     }
     
     void layoutHorizontal(int n, int i, int n2, int n3) {
@@ -1228,13 +1185,6 @@ public class LinearLayoutCompat extends ViewGroup
         this.mBaselineAligned = mBaselineAligned;
     }
     
-    public void setBaselineAlignedChildIndex(final int mBaselineAlignedChildIndex) {
-        if (mBaselineAlignedChildIndex < 0 || mBaselineAlignedChildIndex >= this.getChildCount()) {
-            throw new IllegalArgumentException("base aligned child index out of range (0, " + this.getChildCount() + ")");
-        }
-        this.mBaselineAlignedChildIndex = mBaselineAlignedChildIndex;
-    }
-    
     public void setDividerDrawable(final Drawable mDivider) {
         boolean willNotDraw = false;
         if (mDivider == this.mDivider) {
@@ -1255,10 +1205,6 @@ public class LinearLayoutCompat extends ViewGroup
         this.requestLayout();
     }
     
-    public void setDividerPadding(final int mDividerPadding) {
-        this.mDividerPadding = mDividerPadding;
-    }
-    
     public void setGravity(int n) {
         if (this.mGravity != n) {
             if ((0x800007 & n) == 0x0) {
@@ -1273,42 +1219,11 @@ public class LinearLayoutCompat extends ViewGroup
         }
     }
     
-    public void setHorizontalGravity(int n) {
-        n &= 0x800007;
-        if ((this.mGravity & 0x800007) != n) {
-            this.mGravity = (n | (this.mGravity & 0xFF7FFFF8));
-            this.requestLayout();
-        }
-    }
-    
-    public void setMeasureWithLargestChildEnabled(final boolean mUseLargestChild) {
-        this.mUseLargestChild = mUseLargestChild;
-    }
-    
     public void setOrientation(final int mOrientation) {
         if (this.mOrientation != mOrientation) {
             this.mOrientation = mOrientation;
             this.requestLayout();
         }
-    }
-    
-    public void setShowDividers(final int mShowDividers) {
-        if (mShowDividers != this.mShowDividers) {
-            this.requestLayout();
-        }
-        this.mShowDividers = mShowDividers;
-    }
-    
-    public void setVerticalGravity(int n) {
-        n &= 0x70;
-        if ((this.mGravity & 0x70) != n) {
-            this.mGravity = (n | (this.mGravity & 0xFFFFFF8F));
-            this.requestLayout();
-        }
-    }
-    
-    public void setWeightSum(final float n) {
-        this.mWeightSum = Math.max(0.0f, n);
     }
     
     public boolean shouldDelayChildPressedState() {

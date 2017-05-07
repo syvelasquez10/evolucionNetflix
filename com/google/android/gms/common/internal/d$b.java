@@ -4,13 +4,12 @@
 
 package com.google.android.gms.common.internal;
 
+import com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 import android.os.IBinder;
-import com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener;
-import com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import android.os.Handler;

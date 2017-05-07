@@ -31,14 +31,14 @@ class DetailsPageParallaxScrollListener$2 implements Runnable
     
     @Override
     public void run() {
-        final int seasonIndexBySeasonNumber = this.this$0.seasonsSpinner.getSeasonIndexBySeasonNumber(this.val$seasonNumber);
-        if (seasonIndexBySeasonNumber < 0) {
+        final int tryGetSeasonIndexBySeasonNumber = this.this$0.seasonsSpinner.tryGetSeasonIndexBySeasonNumber(this.val$seasonNumber);
+        if (tryGetSeasonIndexBySeasonNumber < 0) {
             Log.v("detailsScroller", "No valid season index found");
             return;
         }
         if (Log.isLoggable("detailsScroller", 2)) {
-            Log.v("detailsScroller", "Setting current season to: " + seasonIndexBySeasonNumber);
+            Log.v("detailsScroller", "Setting current season to: " + tryGetSeasonIndexBySeasonNumber);
         }
-        this.this$0.seasonsSpinner.setSelection(seasonIndexBySeasonNumber, true);
+        this.this$0.seasonsSpinner.setSelection(tryGetSeasonIndexBySeasonNumber, true);
     }
 }

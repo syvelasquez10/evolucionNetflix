@@ -4,9 +4,6 @@
 
 package com.facebook;
 
-import java.util.Arrays;
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
 import android.support.v4.app.Fragment;
 import java.util.HashMap;
 import java.util.UUID;
@@ -18,7 +15,6 @@ import java.io.Serializable;
 
 public class Session$AuthorizationRequest implements Serializable
 {
-    private static final long serialVersionUID = 1L;
     private String applicationId;
     private final String authId;
     private SessionDefaultAudience defaultAudience;
@@ -53,32 +49,6 @@ public class Session$AuthorizationRequest implements Serializable
         this.startActivityDelegate = new Session$AuthorizationRequest$2(this, fragment);
     }
     
-    private Session$AuthorizationRequest(final SessionLoginBehavior loginBehavior, final int requestCode, final List<String> permissions, final String s, final boolean isLegacy, final String applicationId, final String validateSameFbidAsToken) {
-        this.loginBehavior = SessionLoginBehavior.SSO_WITH_FALLBACK;
-        this.requestCode = 64206;
-        this.isLegacy = false;
-        this.permissions = Collections.emptyList();
-        this.defaultAudience = SessionDefaultAudience.FRIENDS;
-        this.authId = UUID.randomUUID().toString();
-        this.loggingExtras = new HashMap<String, String>();
-        this.startActivityDelegate = new Session$AuthorizationRequest$3(this);
-        this.loginBehavior = loginBehavior;
-        this.requestCode = requestCode;
-        this.permissions = permissions;
-        this.defaultAudience = SessionDefaultAudience.valueOf(s);
-        this.isLegacy = isLegacy;
-        this.applicationId = applicationId;
-        this.validateSameFbidAsToken = validateSameFbidAsToken;
-    }
-    
-    private void readObject(final ObjectInputStream objectInputStream) {
-        throw new InvalidObjectException("Cannot readObject, serialization proxy required");
-    }
-    
-    String getApplicationId() {
-        return this.applicationId;
-    }
-    
     String getAuthId() {
         return this.authId;
     }
@@ -89,10 +59,6 @@ public class Session$AuthorizationRequest implements Serializable
     
     Session$StatusCallback getCallback() {
         return this.statusCallback;
-    }
-    
-    SessionDefaultAudience getDefaultAudience() {
-        return this.defaultAudience;
     }
     
     SessionLoginBehavior getLoginBehavior() {
@@ -109,14 +75,6 @@ public class Session$AuthorizationRequest implements Serializable
     
     Session$StartActivityDelegate getStartActivityDelegate() {
         return this.startActivityDelegate;
-    }
-    
-    String getValidateSameFbidAsToken() {
-        return this.validateSameFbidAsToken;
-    }
-    
-    boolean isLegacy() {
-        return this.isLegacy;
     }
     
     void setApplicationId(final String applicationId) {
@@ -153,22 +111,10 @@ public class Session$AuthorizationRequest implements Serializable
         return this;
     }
     
-    Session$AuthorizationRequest setPermissions(final String... array) {
-        return this.setPermissions(Arrays.asList(array));
-    }
-    
     Session$AuthorizationRequest setRequestCode(final int requestCode) {
         if (requestCode >= 0) {
             this.requestCode = requestCode;
         }
         return this;
-    }
-    
-    void setValidateSameFbidAsToken(final String validateSameFbidAsToken) {
-        this.validateSameFbidAsToken = validateSameFbidAsToken;
-    }
-    
-    Object writeReplace() {
-        return new Session$AuthorizationRequest$AuthRequestSerializationProxyV1(this.loginBehavior, this.requestCode, this.permissions, this.defaultAudience.name(), this.isLegacy, this.applicationId, this.validateSameFbidAsToken, null);
     }
 }

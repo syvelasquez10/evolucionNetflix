@@ -4,7 +4,6 @@
 
 package com.google.gson;
 
-import com.google.gson.internal.bind.JsonTreeWriter;
 import com.google.gson.internal.Streams;
 import java.io.StringWriter;
 import java.util.Iterator;
@@ -43,8 +42,6 @@ import java.util.Map;
 
 public final class Gson
 {
-    static final boolean DEFAULT_JSON_NON_EXECUTABLE = false;
-    private static final String JSON_NON_EXECUTABLE_PREFIX = ")]}'\n";
     private final ThreadLocal<Map<TypeToken<?>, Gson$FutureTypeAdapter<?>>> calls;
     private final ConstructorConstructor constructorConstructor;
     final JsonDeserializationContext deserializationContext;
@@ -197,13 +194,6 @@ public final class Gson
         }
     }
     
-    public <T> T fromJson(final Reader reader, final Class<T> clazz) {
-        final JsonReader jsonReader = new JsonReader(reader);
-        final Object fromJson = this.fromJson(jsonReader, clazz);
-        assertFullConsumption(fromJson, jsonReader);
-        return Primitives.wrap(clazz).cast(fromJson);
-    }
-    
     public <T> T fromJson(final Reader reader, final Type type) {
         final JsonReader jsonReader = new JsonReader(reader);
         final Object fromJson = this.fromJson(jsonReader, type);
@@ -325,14 +315,6 @@ public final class Gson
         }
     }
     
-    public void toJson(final Object o, final Appendable appendable) {
-        if (o != null) {
-            this.toJson(o, o.getClass(), appendable);
-            return;
-        }
-        this.toJson(JsonNull.INSTANCE, appendable);
-    }
-    
     public void toJson(final Object o, final Type type, final JsonWriter jsonWriter) {
         final TypeAdapter<?> adapter = this.getAdapter(TypeToken.get(type));
         final boolean lenient = jsonWriter.isLenient();
@@ -361,19 +343,6 @@ public final class Gson
         catch (IOException ex) {
             throw new JsonIOException(ex);
         }
-    }
-    
-    public JsonElement toJsonTree(final Object o) {
-        if (o == null) {
-            return JsonNull.INSTANCE;
-        }
-        return this.toJsonTree(o, o.getClass());
-    }
-    
-    public JsonElement toJsonTree(final Object o, final Type type) {
-        final JsonTreeWriter jsonTreeWriter = new JsonTreeWriter();
-        this.toJson(o, type, jsonTreeWriter);
-        return jsonTreeWriter.get();
     }
     
     @Override

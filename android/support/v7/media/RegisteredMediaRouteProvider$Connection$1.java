@@ -4,7 +4,6 @@
 
 package android.support.v7.media;
 
-import android.content.Intent;
 import android.os.DeadObjectException;
 import android.os.RemoteException;
 import android.util.Log;

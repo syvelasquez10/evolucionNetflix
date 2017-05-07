@@ -6,7 +6,9 @@ package android.support.v7.internal.view.menu;
 
 public interface aa
 {
-    int getWindowAnimations();
+    m a();
     
-    void initialize(final i p0);
+    void a(final m p0, final int p1);
+    
+    boolean b();
 }

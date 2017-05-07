@@ -28,11 +28,6 @@ public class ActionMenuView$LayoutParams extends LinearLayoutCompat$LayoutParams
         this.isOverflowButton = false;
     }
     
-    ActionMenuView$LayoutParams(final int n, final int n2, final boolean isOverflowButton) {
-        super(n, n2);
-        this.isOverflowButton = isOverflowButton;
-    }
-    
     public ActionMenuView$LayoutParams(final Context context, final AttributeSet set) {
         super(context, set);
     }

@@ -6,8 +6,7 @@ package android.support.v7.widget;
 
 import android.support.v4.view.ActionProvider;
 import android.support.v7.internal.transition.ActionBarTransition;
-import android.support.v7.internal.view.menu.ae;
-import android.os.Parcelable;
+import android.support.v7.internal.view.menu.ad;
 import android.support.v7.appcompat.R$integer;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -19,10 +18,10 @@ import android.support.v7.internal.view.menu.c;
 import android.support.v7.internal.view.menu.k;
 import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.support.v7.internal.view.menu.m;
-import android.support.v7.internal.view.menu.ab;
+import android.support.v7.internal.view.menu.aa;
 import android.view.ViewGroup;
 import android.view.MenuItem;
-import android.support.v7.internal.view.menu.aa;
+import android.support.v7.internal.view.menu.z;
 import android.support.v7.internal.view.menu.i;
 import android.support.v7.appcompat.R$layout;
 import android.content.Context;
@@ -33,7 +32,6 @@ import android.support.v7.internal.view.menu.d;
 
 public class ActionMenuPresenter extends d implements ActionProvider$SubUiVisibilityListener
 {
-    private static final String TAG = "ActionMenuPresenter";
     private final SparseBooleanArray mActionButtonGroups;
     private ActionMenuPresenter$ActionButtonSubmenu mActionButtonPopup;
     private int mActionItemWidthLimit;
@@ -65,9 +63,9 @@ public class ActionMenuPresenter extends d implements ActionProvider$SubUiVisibi
         if (viewGroup != null) {
             for (int childCount = viewGroup.getChildCount(), i = 0; i < childCount; ++i) {
                 final View child = viewGroup.getChildAt(i);
-                if (child instanceof ab) {
+                if (child instanceof aa) {
                     final View view = child;
-                    if (((ab)child).a() == menuItem) {
+                    if (((aa)child).a() == menuItem) {
                         return view;
                     }
                 }
@@ -78,10 +76,10 @@ public class ActionMenuPresenter extends d implements ActionProvider$SubUiVisibi
     }
     
     @Override
-    public void bindItemView(final m m, final ab ab) {
-        ab.a(m, 0);
+    public void bindItemView(final m m, final aa aa) {
+        aa.a(m, 0);
         final ActionMenuView actionMenuView = (ActionMenuView)this.mMenuView;
-        final ActionMenuItemView actionMenuItemView = (ActionMenuItemView)ab;
+        final ActionMenuItemView actionMenuItemView = (ActionMenuItemView)aa;
         actionMenuItemView.a(actionMenuView);
         if (this.mPopupCallback == null) {
             this.mPopupCallback = new ActionMenuPresenter$ActionMenuPopupCallback(this, null);
@@ -99,8 +97,8 @@ public class ActionMenuPresenter extends d implements ActionProvider$SubUiVisibi
     
     @Override
     public boolean flagActionItems() {
-        final ArrayList<m> j = this.mMenu.j();
-        final int size = j.size();
+        final ArrayList<m> i = this.mMenu.i();
+        final int size = i.size();
         int mMaxItems = this.mMaxItems;
         final int mActionItemWidthLimit = this.mActionItemWidthLimit;
         final int measureSpec = View$MeasureSpec.makeMeasureSpec(0, 0);
@@ -108,12 +106,12 @@ public class ActionMenuPresenter extends d implements ActionProvider$SubUiVisibi
         int n = 0;
         int n2 = 0;
         boolean b = false;
-        for (int i = 0; i < size; ++i) {
-            final m m = j.get(i);
-            if (m.l()) {
+        for (int j = 0; j < size; ++j) {
+            final m m = i.get(j);
+            if (m.j()) {
                 ++n;
             }
-            else if (m.k()) {
+            else if (m.i()) {
                 ++n2;
             }
             else {
@@ -146,11 +144,11 @@ public class ActionMenuPresenter extends d implements ActionProvider$SubUiVisibi
         int n9 = mActionItemWidthLimit;
         int n10 = b2 ? 1 : 0;
         while (k < size) {
-            final m l = j.get(k);
+            final m l = i.get(k);
             int n11;
             int n13;
             int n14;
-            if (l.l()) {
+            if (l.j()) {
                 final View itemView = this.getItemView(l, this.mScrapActionButtonView, viewGroup);
                 if (this.mScrapActionButtonView == null) {
                     this.mScrapActionButtonView = itemView;
@@ -175,7 +173,7 @@ public class ActionMenuPresenter extends d implements ActionProvider$SubUiVisibi
                 n13 = n8;
                 n14 = n12;
             }
-            else if (l.k()) {
+            else if (l.i()) {
                 final int groupId2 = l.getGroupId();
                 final boolean value = mActionButtonGroups.get(groupId2);
                 boolean b3 = (n8 > 0 || value) && n9 > 0 && (!this.mStrictWidthLimit || n7 > 0);
@@ -229,11 +227,11 @@ public class ActionMenuPresenter extends d implements ActionProvider$SubUiVisibi
                     mActionButtonGroups.put(groupId2, false);
                     int n23;
                     for (int n22 = 0; n22 < k; ++n22, n8 = n23) {
-                        final m m2 = j.get(n22);
+                        final m m2 = i.get(n22);
                         n23 = n8;
                         if (m2.getGroupId() == groupId2) {
                             n23 = n8;
-                            if (m2.j()) {
+                            if (m2.h()) {
                                 n23 = n8 + 1;
                             }
                             m2.d(false);
@@ -272,7 +270,7 @@ public class ActionMenuPresenter extends d implements ActionProvider$SubUiVisibi
     @Override
     public View getItemView(final m m, final View view, final ViewGroup viewGroup) {
         View view2 = m.getActionView();
-        if (view2 == null || m.n()) {
+        if (view2 == null || m.m()) {
             view2 = super.getItemView(m, view, viewGroup);
         }
         int visibility;
@@ -292,8 +290,8 @@ public class ActionMenuPresenter extends d implements ActionProvider$SubUiVisibi
     }
     
     @Override
-    public aa getMenuView(final ViewGroup viewGroup) {
-        final aa menuView = super.getMenuView(viewGroup);
+    public z getMenuView(final ViewGroup viewGroup) {
+        final z menuView = super.getMenuView(viewGroup);
         ((ActionMenuView)menuView).setPresenter(this);
         return menuView;
     }
@@ -359,10 +357,6 @@ public class ActionMenuPresenter extends d implements ActionProvider$SubUiVisibi
         return this.mOverflowPopup != null && this.mOverflowPopup.isShowing();
     }
     
-    public boolean isOverflowReserved() {
-        return this.mReserveOverflow;
-    }
-    
     @Override
     public void onCloseMenu(final i i, final boolean b) {
         this.dismissPopupMenus();
@@ -374,56 +368,29 @@ public class ActionMenuPresenter extends d implements ActionProvider$SubUiVisibi
             this.mMaxItems = this.mContext.getResources().getInteger(R$integer.abc_max_action_buttons);
         }
         if (this.mMenu != null) {
-            this.mMenu.c(true);
+            this.mMenu.b(true);
         }
     }
     
     @Override
-    public void onRestoreInstanceState(final Parcelable parcelable) {
-        final ActionMenuPresenter$SavedState actionMenuPresenter$SavedState = (ActionMenuPresenter$SavedState)parcelable;
-        if (actionMenuPresenter$SavedState.openSubMenuId > 0) {
-            final MenuItem item = this.mMenu.findItem(actionMenuPresenter$SavedState.openSubMenuId);
-            if (item != null) {
-                this.onSubMenuSelected((ae)item.getSubMenu());
-            }
-        }
-    }
-    
-    @Override
-    public Parcelable onSaveInstanceState() {
-        final ActionMenuPresenter$SavedState actionMenuPresenter$SavedState = new ActionMenuPresenter$SavedState();
-        actionMenuPresenter$SavedState.openSubMenuId = this.mOpenSubMenuId;
-        return (Parcelable)actionMenuPresenter$SavedState;
-    }
-    
-    @Override
-    public boolean onSubMenuSelected(final ae ae) {
-        if (!ae.hasVisibleItems()) {
+    public boolean onSubMenuSelected(final ad ad) {
+        if (!ad.hasVisibleItems()) {
             return false;
         }
-        ae ae2;
-        for (ae2 = ae; ae2.t() != this.mMenu; ae2 = (ae)ae2.t()) {}
+        ad ad2;
+        for (ad2 = ad; ad2.s() != this.mMenu; ad2 = (ad)ad2.s()) {}
         View anchorView;
-        if ((anchorView = this.findViewForItem(ae2.getItem())) == null) {
+        if ((anchorView = this.findViewForItem(ad2.getItem())) == null) {
             if (this.mOverflowButton == null) {
                 return false;
             }
             anchorView = this.mOverflowButton;
         }
-        this.mOpenSubMenuId = ae.getItem().getItemId();
-        (this.mActionButtonPopup = new ActionMenuPresenter$ActionButtonSubmenu(this, this.mContext, ae)).setAnchorView(anchorView);
+        this.mOpenSubMenuId = ad.getItem().getItemId();
+        (this.mActionButtonPopup = new ActionMenuPresenter$ActionButtonSubmenu(this, this.mContext, ad)).setAnchorView(anchorView);
         this.mActionButtonPopup.show();
-        super.onSubMenuSelected(ae);
+        super.onSubMenuSelected(ad);
         return true;
-    }
-    
-    @Override
-    public void onSubUiVisibilityChanged(final boolean b) {
-        if (b) {
-            super.onSubMenuSelected(null);
-            return;
-        }
-        this.mMenu.b(false);
     }
     
     public void setExpandedActionViewsExclusive(final boolean mExpandedActionViewsExclusive) {
@@ -452,11 +419,11 @@ public class ActionMenuPresenter extends d implements ActionProvider$SubUiVisibi
     
     @Override
     public boolean shouldIncludeItem(final int n, final m m) {
-        return m.j();
+        return m.h();
     }
     
     public boolean showOverflowMenu() {
-        if (this.mReserveOverflow && !this.isOverflowMenuShowing() && this.mMenu != null && this.mMenuView != null && this.mPostedOpenRunnable == null && !this.mMenu.m().isEmpty()) {
+        if (this.mReserveOverflow && !this.isOverflowMenuShowing() && this.mMenu != null && this.mMenuView != null && this.mPostedOpenRunnable == null && !this.mMenu.l().isEmpty()) {
             this.mPostedOpenRunnable = new ActionMenuPresenter$OpenOverflowRunnable(this, new ActionMenuPresenter$OverflowPopup(this, this.mContext, this.mMenu, this.mOverflowButton, true));
             ((View)this.mMenuView).post((Runnable)this.mPostedOpenRunnable);
             super.onSubMenuSelected(null);
@@ -476,28 +443,28 @@ public class ActionMenuPresenter extends d implements ActionProvider$SubUiVisibi
         super.updateMenuView(b);
         ((View)this.mMenuView).requestLayout();
         if (this.mMenu != null) {
-            final ArrayList<m> l = this.mMenu.l();
-            for (int size = l.size(), i = 0; i < size; ++i) {
-                final ActionProvider supportActionProvider = l.get(i).getSupportActionProvider();
-                if (supportActionProvider != null) {
-                    supportActionProvider.setSubUiVisibilityListener(this);
+            final ArrayList<m> k = this.mMenu.k();
+            for (int size = k.size(), i = 0; i < size; ++i) {
+                final ActionProvider l = k.get(i).l();
+                if (l != null) {
+                    l.setSubUiVisibilityListener(this);
                 }
             }
         }
-        ArrayList<m> m;
+        ArrayList<m> j;
         if (this.mMenu != null) {
-            m = this.mMenu.m();
+            j = this.mMenu.l();
         }
         else {
-            m = null;
+            j = null;
         }
         int n = b3 ? 1 : 0;
         if (this.mReserveOverflow) {
             n = (b3 ? 1 : 0);
-            if (m != null) {
-                final int size2 = m.size();
+            if (j != null) {
+                final int size2 = j.size();
                 if (size2 == 1) {
-                    if (!m.get(0).isActionViewExpanded()) {
+                    if (!j.get(0).isActionViewExpanded()) {
                         n = 1;
                     }
                     else {

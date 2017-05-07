@@ -6,7 +6,6 @@ package android.support.v7.internal.widget;
 
 public class RtlSpacingHelper
 {
-    public static final int UNDEFINED = Integer.MIN_VALUE;
     private int mEnd;
     private int mExplicitLeft;
     private int mExplicitRight;

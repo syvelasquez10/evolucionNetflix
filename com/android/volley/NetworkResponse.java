@@ -4,7 +4,6 @@
 
 package com.android.volley;
 
-import java.util.Collections;
 import java.util.Map;
 
 public class NetworkResponse
@@ -19,10 +18,6 @@ public class NetworkResponse
         this.data = data;
         this.headers = headers;
         this.notModified = notModified;
-    }
-    
-    public NetworkResponse(final byte[] array) {
-        this(200, array, Collections.emptyMap(), false);
     }
     
     public NetworkResponse(final byte[] array, final Map<String, String> map) {

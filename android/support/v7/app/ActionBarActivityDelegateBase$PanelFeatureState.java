@@ -9,9 +9,8 @@ import android.view.ContextThemeWrapper;
 import android.support.v7.appcompat.R$style;
 import android.support.v7.appcompat.R$attr;
 import android.util.TypedValue;
-import android.os.Parcelable;
+import android.support.v7.internal.view.menu.x;
 import android.support.v7.appcompat.R$layout;
-import android.support.v7.internal.view.menu.aa;
 import android.support.v7.internal.view.menu.z;
 import android.support.v7.internal.view.menu.y;
 import android.view.View;
@@ -26,7 +25,6 @@ final class ActionBarActivityDelegateBase$PanelFeatureState
     ViewGroup decorView;
     int featureId;
     Bundle frozenActionViewState;
-    Bundle frozenMenuState;
     boolean isHandled;
     boolean isOpen;
     boolean isPrepared;
@@ -37,60 +35,25 @@ final class ActionBarActivityDelegateBase$PanelFeatureState
     boolean refreshDecorView;
     boolean refreshMenuContent;
     View shownPanelView;
-    boolean wasLastOpen;
     
     ActionBarActivityDelegateBase$PanelFeatureState(final int featureId) {
         this.featureId = featureId;
         this.refreshDecorView = false;
     }
     
-    void applyFrozenState() {
-        if (this.menu != null && this.frozenMenuState != null) {
-            this.menu.b(this.frozenMenuState);
-            this.frozenMenuState = null;
-        }
-    }
-    
-    public void clearMenuPresenters() {
-        if (this.menu != null) {
-            this.menu.b(this.listMenuPresenter);
-        }
-        this.listMenuPresenter = null;
-    }
-    
-    aa getListMenuView(final z callback) {
+    z getListMenuView(final y y) {
         if (this.menu == null) {
             return null;
         }
         if (this.listMenuPresenter == null) {
-            (this.listMenuPresenter = new g(this.listPresenterContext, R$layout.abc_list_menu_item_layout)).setCallback(callback);
+            (this.listMenuPresenter = new g(this.listPresenterContext, R$layout.abc_list_menu_item_layout)).a(y);
             this.menu.a(this.listMenuPresenter);
         }
-        return this.listMenuPresenter.getMenuView(this.decorView);
+        return this.listMenuPresenter.a(this.decorView);
     }
     
     public boolean hasPanelItems() {
         return this.shownPanelView != null && this.listMenuPresenter.a().getCount() > 0;
-    }
-    
-    void onRestoreInstanceState(final Parcelable parcelable) {
-        final ActionBarActivityDelegateBase$PanelFeatureState$SavedState actionBarActivityDelegateBase$PanelFeatureState$SavedState = (ActionBarActivityDelegateBase$PanelFeatureState$SavedState)parcelable;
-        this.featureId = actionBarActivityDelegateBase$PanelFeatureState$SavedState.featureId;
-        this.wasLastOpen = actionBarActivityDelegateBase$PanelFeatureState$SavedState.isOpen;
-        this.frozenMenuState = actionBarActivityDelegateBase$PanelFeatureState$SavedState.menuState;
-        this.shownPanelView = null;
-        this.decorView = null;
-    }
-    
-    Parcelable onSaveInstanceState() {
-        final ActionBarActivityDelegateBase$PanelFeatureState$SavedState actionBarActivityDelegateBase$PanelFeatureState$SavedState = new ActionBarActivityDelegateBase$PanelFeatureState$SavedState(null);
-        actionBarActivityDelegateBase$PanelFeatureState$SavedState.featureId = this.featureId;
-        actionBarActivityDelegateBase$PanelFeatureState$SavedState.isOpen = this.isOpen;
-        if (this.menu != null) {
-            actionBarActivityDelegateBase$PanelFeatureState$SavedState.menuState = new Bundle();
-            this.menu.a(actionBarActivityDelegateBase$PanelFeatureState$SavedState.menuState);
-        }
-        return (Parcelable)actionBarActivityDelegateBase$PanelFeatureState$SavedState;
     }
     
     void setMenu(final i menu) {

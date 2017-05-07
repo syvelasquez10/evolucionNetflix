@@ -55,16 +55,6 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         return n;
     }
     
-    public int getSeasonIndexBySeasonNumber(final int n) {
-        for (int i = 0; i < this.getCount(); ++i) {
-            if (n == this.getItem(i).getSeasonNumber()) {
-                Log.v("SeasonsSpinnerAdapter", "Found season index: " + i);
-                return i;
-            }
-        }
-        return -1;
-    }
-    
     public int getSeasonNumberForPosition(final int n) {
         return this.getItem(n).getSeasonNumber();
     }
@@ -85,6 +75,23 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         }
         textView.setBackgroundResource(itemBgDrawableId);
         return (View)textView;
+    }
+    
+    public int tryGetSeasonIndexBySeasonNumber(int n) {
+        final int n2 = 0;
+        for (int i = 0; i < this.getCount(); ++i) {
+            if (n == this.getItem(i).getSeasonNumber()) {
+                Log.v("SeasonsSpinnerAdapter", "Found season index: " + i);
+                return i;
+            }
+        }
+        if (this.getCount() > 0) {
+            n = n2;
+        }
+        else {
+            n = -1;
+        }
+        return n;
     }
     
     public void updateSeasonData(final List<SeasonDetails> list) {

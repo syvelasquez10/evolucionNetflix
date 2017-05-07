@@ -5,11 +5,9 @@
 package android.support.v7.internal.widget;
 
 import android.support.v7.internal.app.WindowCallback;
-import android.support.v7.internal.view.menu.z;
+import android.support.v7.internal.view.menu.y;
 import android.view.Menu;
 import android.support.v7.internal.VersionUtils;
-import android.os.Parcelable;
-import android.util.SparseArray;
 import android.support.v7.appcompat.R$id;
 import android.os.Build$VERSION;
 import android.content.res.Configuration;
@@ -32,7 +30,6 @@ import android.view.ViewGroup;
 public class ActionBarOverlayLayout extends ViewGroup implements DecorContentParent
 {
     static final int[] ATTRS;
-    private static final String TAG = "ActionBarOverlayLayout";
     private final int ACTION_BAR_ANIMATE_DELAY;
     private ActionBarContainer mActionBarBottom;
     private int mActionBarHeight;
@@ -263,21 +260,6 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         return 0;
     }
     
-    public CharSequence getTitle() {
-        this.pullChildren();
-        return this.mDecorToolbar.getTitle();
-    }
-    
-    public boolean hasIcon() {
-        this.pullChildren();
-        return this.mDecorToolbar.hasIcon();
-    }
-    
-    public boolean hasLogo() {
-        this.pullChildren();
-        return this.mDecorToolbar.hasLogo();
-    }
-    
     public boolean hideOverflowMenu() {
         this.pullChildren();
         return this.mDecorToolbar.hideOverflowMenu();
@@ -297,10 +279,6 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
                 this.setOverlayMode(true);
             }
         }
-    }
-    
-    public boolean isHideOnContentScrollEnabled() {
-        return this.mHideOnContentScroll;
     }
     
     public boolean isInOverlayMode() {
@@ -537,16 +515,6 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         }
     }
     
-    public void restoreToolbarHierarchyState(final SparseArray<Parcelable> sparseArray) {
-        this.pullChildren();
-        this.mDecorToolbar.restoreHierarchyState(sparseArray);
-    }
-    
-    public void saveToolbarHierarchyState(final SparseArray<Parcelable> sparseArray) {
-        this.pullChildren();
-        this.mDecorToolbar.saveHierarchyState(sparseArray);
-    }
-    
     public void setActionBarHideOffset(int max) {
         this.haltActionBarHideOffsetAnimations();
         final int height = this.mActionBarTop.getHeight();
@@ -583,24 +551,9 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         }
     }
     
-    public void setIcon(final int icon) {
+    public void setMenu(final Menu menu, final y y) {
         this.pullChildren();
-        this.mDecorToolbar.setIcon(icon);
-    }
-    
-    public void setIcon(final Drawable icon) {
-        this.pullChildren();
-        this.mDecorToolbar.setIcon(icon);
-    }
-    
-    public void setLogo(final int logo) {
-        this.pullChildren();
-        this.mDecorToolbar.setLogo(logo);
-    }
-    
-    public void setMenu(final Menu menu, final z z) {
-        this.pullChildren();
-        this.mDecorToolbar.setMenu(menu, z);
+        this.mDecorToolbar.setMenu(menu, y);
     }
     
     public void setMenuPrepared() {
@@ -614,9 +567,6 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
     }
     
     public void setShowingForActionMode(final boolean b) {
-    }
-    
-    public void setUiOptions(final int n) {
     }
     
     public void setWindowCallback(final WindowCallback windowCallback) {

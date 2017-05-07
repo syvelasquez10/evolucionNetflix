@@ -36,16 +36,8 @@ public final class JsonObject extends JsonElement
         this.add(s, this.createJsonElement(b));
     }
     
-    public void addProperty(final String s, final Character c) {
-        this.add(s, this.createJsonElement(c));
-    }
-    
     public void addProperty(final String s, final Number n) {
         this.add(s, this.createJsonElement(n));
-    }
-    
-    public void addProperty(final String s, final String s2) {
-        this.add(s, this.createJsonElement(s2));
     }
     
     public Set<Map.Entry<String, JsonElement>> entrySet() {
@@ -87,9 +79,5 @@ public final class JsonObject extends JsonElement
     @Override
     public int hashCode() {
         return this.members.hashCode();
-    }
-    
-    public JsonElement remove(final String s) {
-        return this.members.remove(s);
     }
 }

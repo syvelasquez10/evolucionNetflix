@@ -4,18 +4,9 @@
 
 package com.facebook;
 
-import android.content.ActivityNotFoundException;
-import java.io.OutputStream;
-import java.io.ObjectOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import android.util.Log;
-import java.io.InputStream;
-import java.io.ByteArrayInputStream;
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
+import android.content.ActivityNotFoundException;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.app.Fragment;
 import android.app.Activity;
 import java.util.Collection;
 import com.facebook.internal.SessionAuthorizationType;

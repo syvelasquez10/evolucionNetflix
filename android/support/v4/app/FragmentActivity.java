@@ -7,7 +7,6 @@ package android.support.v4.app;
 import android.view.MenuItem;
 import android.view.KeyEvent;
 import android.util.AttributeSet;
-import android.support.annotation.NonNull;
 import android.content.Context;
 import android.view.Menu;
 import java.util.ArrayList;
@@ -106,15 +105,14 @@ public class FragmentActivity extends Activity
                 Label_0604_Outer:
                     while (true) {
                         Label_0261: {
-                            Label_0592_Outer:Label_0598_Outer:
+                            Label_0574_Outer:Label_0580_Outer:Label_0598_Outer:
                             while (true) {
                                 Label_0244: {
+                                    Label_0586_Outer:Label_0592_Outer:
                                     while (true) {
                                         Label_0220: {
-                                        Label_0586_Outer:
                                             while (true) {
                                                 Label_0203: {
-                                                Label_0580_Outer:
                                                     while (true) {
                                                         Label_0186: {
                                                             while (true) {
@@ -153,32 +151,32 @@ public class FragmentActivity extends Activity
                                                                                                                             c3 = '.';
                                                                                                                             break Label_0261;
                                                                                                                             c4 = '.';
-                                                                                                                            break Label_0220;
+                                                                                                                            break Label_0169;
+                                                                                                                            c5 = '.';
+                                                                                                                            break Label_0135;
+                                                                                                                            c6 = '.';
+                                                                                                                            break Label_0186;
+                                                                                                                            c7 = '.';
+                                                                                                                            break Label_0244;
+                                                                                                                            c8 = '.';
+                                                                                                                            break Label_0203;
                                                                                                                             resourcePackageName = "app";
                                                                                                                             continue Label_0509_Outer;
-                                                                                                                            sb.append('V');
-                                                                                                                            break;
-                                                                                                                            c5 = '.';
-                                                                                                                            break Label_0169;
+                                                                                                                            c9 = '.';
+                                                                                                                            break Label_0118;
+                                                                                                                            c10 = 'D';
+                                                                                                                            break Label_0152;
                                                                                                                             sb.append('I');
                                                                                                                             break;
-                                                                                                                            c6 = '.';
-                                                                                                                            break Label_0135;
-                                                                                                                            c7 = '.';
-                                                                                                                            break Label_0203;
-                                                                                                                            c8 = '.';
-                                                                                                                            break Label_0244;
+                                                                                                                            sb.append('V');
+                                                                                                                            break;
                                                                                                                             resourcePackageName = "android";
                                                                                                                             continue Label_0509_Outer;
                                                                                                                         }
                                                                                                                         sb.append('G');
                                                                                                                         break;
-                                                                                                                        c9 = 'D';
-                                                                                                                        break Label_0152;
-                                                                                                                        c10 = '.';
-                                                                                                                        break Label_0118;
                                                                                                                         c11 = '.';
-                                                                                                                        break Label_0186;
+                                                                                                                        break Label_0220;
                                                                                                                     }
                                                                                                                     catch (Resources$NotFoundException ex) {
                                                                                                                         continue Label_0604_Outer;
@@ -187,10 +185,10 @@ public class FragmentActivity extends Activity
                                                                                                                 break;
                                                                                                             }
                                                                                                             case 4: {
-                                                                                                                continue Label_0562_Outer;
+                                                                                                                continue Label_0616_Outer;
                                                                                                             }
                                                                                                             case 8: {
-                                                                                                                continue Label_0568_Outer;
+                                                                                                                continue Label_0592_Outer;
                                                                                                             }
                                                                                                         }
                                                                                                         break;
@@ -198,72 +196,72 @@ public class FragmentActivity extends Activity
                                                                                                     break;
                                                                                                 }
                                                                                                 if (!view.isFocusable()) {
-                                                                                                    continue Label_0580_Outer;
+                                                                                                    continue Label_0568_Outer;
                                                                                                 }
                                                                                                 break;
                                                                                             }
-                                                                                            c10 = 'F';
+                                                                                            c9 = 'F';
                                                                                         }
-                                                                                        sb.append(c10);
+                                                                                        sb.append(c9);
                                                                                         if (!view.isEnabled()) {
-                                                                                            continue Label_0586_Outer;
+                                                                                            continue Label_0580_Outer;
                                                                                         }
                                                                                         break;
                                                                                     }
-                                                                                    c6 = 'E';
+                                                                                    c5 = 'E';
                                                                                 }
-                                                                                sb.append(c6);
+                                                                                sb.append(c5);
                                                                                 if (!view.willNotDraw()) {
-                                                                                    continue Label_0580_Outer;
+                                                                                    continue Label_0616_Outer;
                                                                                 }
                                                                                 break;
                                                                             }
-                                                                            c9 = '.';
+                                                                            c10 = '.';
                                                                         }
-                                                                        sb.append(c9);
+                                                                        sb.append(c10);
                                                                         if (!view.isHorizontalScrollBarEnabled()) {
                                                                             continue Label_0562_Outer;
                                                                         }
                                                                         break;
                                                                     }
-                                                                    c5 = 'H';
+                                                                    c4 = 'H';
                                                                 }
-                                                                sb.append(c5);
+                                                                sb.append(c4);
                                                                 if (!view.isVerticalScrollBarEnabled()) {
-                                                                    continue;
+                                                                    continue Label_0598_Outer;
                                                                 }
                                                                 break;
                                                             }
-                                                            c11 = 'V';
+                                                            c6 = 'V';
                                                         }
-                                                        sb.append(c11);
+                                                        sb.append(c6);
                                                         if (!view.isClickable()) {
-                                                            continue Label_0598_Outer;
+                                                            continue Label_0610_Outer;
                                                         }
                                                         break;
                                                     }
-                                                    c7 = 'C';
+                                                    c8 = 'C';
                                                 }
-                                                sb.append(c7);
+                                                sb.append(c8);
                                                 if (!view.isLongClickable()) {
-                                                    continue Label_0610_Outer;
+                                                    continue;
                                                 }
                                                 break;
                                             }
-                                            c4 = 'L';
+                                            c11 = 'L';
                                         }
-                                        sb.append(c4);
+                                        sb.append(c11);
                                         sb.append(' ');
                                         if (!view.isFocused()) {
-                                            continue Label_0616_Outer;
+                                            continue Label_0586_Outer;
                                         }
                                         break;
                                     }
-                                    c8 = c;
+                                    c7 = c;
                                 }
-                                sb.append(c8);
+                                sb.append(c7);
                                 if (!view.isSelected()) {
-                                    continue Label_0592_Outer;
+                                    continue Label_0574_Outer;
                                 }
                                 break;
                             }
@@ -469,7 +467,7 @@ public class FragmentActivity extends Activity
         return super.onCreatePanelMenu(n, menu);
     }
     
-    public View onCreateView(final String s, @NonNull final Context context, @NonNull final AttributeSet set) {
+    public View onCreateView(final String s, final Context context, final AttributeSet set) {
         View view;
         if (!"fragment".equals(s)) {
             view = super.onCreateView(s, context, set);

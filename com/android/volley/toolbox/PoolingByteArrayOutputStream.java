@@ -8,12 +8,7 @@ import java.io.ByteArrayOutputStream;
 
 public class PoolingByteArrayOutputStream extends ByteArrayOutputStream
 {
-    private static final int DEFAULT_SIZE = 256;
     private final ByteArrayPool mPool;
-    
-    public PoolingByteArrayOutputStream(final ByteArrayPool byteArrayPool) {
-        this(byteArrayPool, 256);
-    }
     
     public PoolingByteArrayOutputStream(final ByteArrayPool mPool, final int n) {
         this.mPool = mPool;

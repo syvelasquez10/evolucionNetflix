@@ -28,23 +28,7 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
     int mSelectionRightPadding;
     int mSelectionTopPadding;
     final Rect mSpinnerPadding;
-    private Rect mTouchFrame;
     int mWidthMeasureSpec;
-    
-    AbsSpinnerCompat(final Context context) {
-        super(context);
-        this.mSelectionLeftPadding = 0;
-        this.mSelectionTopPadding = 0;
-        this.mSelectionRightPadding = 0;
-        this.mSelectionBottomPadding = 0;
-        this.mSpinnerPadding = new Rect();
-        this.mRecycler = new AbsSpinnerCompat$RecycleBin(this);
-        this.initAbsSpinner();
-    }
-    
-    AbsSpinnerCompat(final Context context, final AttributeSet set) {
-        this(context, set, 0);
-    }
     
     AbsSpinnerCompat(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
@@ -80,19 +64,12 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
     }
     
     @Override
-    public int getCount() {
-        return this.mItemCount;
-    }
-    
-    @Override
     public View getSelectedView() {
         if (this.mItemCount > 0 && this.mSelectedPosition >= 0) {
             return this.getChildAt(this.mSelectedPosition - this.mFirstPosition);
         }
         return null;
     }
-    
-    abstract void layout(final int p0, final boolean p1);
     
     protected void onMeasure(final int mWidthMeasureSpec, final int mHeightMeasureSpec) {
         final int mode = View$MeasureSpec.getMode(mWidthMeasureSpec);
@@ -204,24 +181,6 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
         return (Parcelable)absSpinnerCompat$SavedState;
     }
     
-    public int pointToPosition(final int n, final int n2) {
-        Rect rect;
-        if ((rect = this.mTouchFrame) == null) {
-            this.mTouchFrame = new Rect();
-            rect = this.mTouchFrame;
-        }
-        for (int i = this.getChildCount() - 1; i >= 0; --i) {
-            final View child = this.getChildAt(i);
-            if (child.getVisibility() == 0) {
-                child.getHitRect(rect);
-                if (rect.contains(n, n2)) {
-                    return this.mFirstPosition + i;
-                }
-            }
-        }
-        return -1;
-    }
-    
     void recycleAllViews() {
         final int childCount = this.getChildCount();
         final AbsSpinnerCompat$RecycleBin mRecycler = this.mRecycler;
@@ -248,7 +207,6 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
         this.invalidate();
     }
     
-    @Override
     public void setAdapter(final SpinnerAdapter mAdapter) {
         int n = -1;
         if (this.mAdapter != null) {
@@ -281,24 +239,9 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
         this.requestLayout();
     }
     
-    @Override
     public void setSelection(final int nextSelectedPositionInt) {
         this.setNextSelectedPositionInt(nextSelectedPositionInt);
         this.requestLayout();
         this.invalidate();
-    }
-    
-    public void setSelection(final int n, final boolean b) {
-        this.setSelectionInt(n, b && this.mFirstPosition <= n && n <= this.mFirstPosition + this.getChildCount() - 1);
-    }
-    
-    void setSelectionInt(final int nextSelectedPositionInt, final boolean b) {
-        if (nextSelectedPositionInt != this.mOldSelectedPosition) {
-            this.mBlockLayoutRequests = true;
-            final int mSelectedPosition = this.mSelectedPosition;
-            this.setNextSelectedPositionInt(nextSelectedPositionInt);
-            this.layout(nextSelectedPositionInt - mSelectedPosition, b);
-            this.mBlockLayoutRequests = false;
-        }
     }
 }

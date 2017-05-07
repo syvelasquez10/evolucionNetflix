@@ -84,15 +84,7 @@ public class Utility$DialogFeatureConfig
         return this.dialogName;
     }
     
-    public Uri getFallbackUrl() {
-        return this.fallbackUrl;
-    }
-    
     public String getFeatureName() {
         return this.featureName;
-    }
-    
-    public int[] getVersionSpec() {
-        return this.featureVersionSpec;
     }
 }

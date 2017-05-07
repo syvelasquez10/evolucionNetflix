@@ -13,13 +13,6 @@ import com.google.gson.TypeAdapter;
 
 final class TypeAdapters$23 extends TypeAdapter<Calendar>
 {
-    private static final String DAY_OF_MONTH = "dayOfMonth";
-    private static final String HOUR_OF_DAY = "hourOfDay";
-    private static final String MINUTE = "minute";
-    private static final String MONTH = "month";
-    private static final String SECOND = "second";
-    private static final String YEAR = "year";
-    
     @Override
     public Calendar read(final JsonReader jsonReader) {
         int n = 0;

@@ -4,12 +4,12 @@
 
 package android.support.v4.app;
 
+import android.os.Build$VERSION;
 import java.io.FileDescriptor;
 import java.io.Writer;
 import java.io.PrintWriter;
 import android.support.v4.util.LogWriter;
 import android.util.Log;
-import android.os.Build$VERSION;
 import android.support.v4.util.SimpleArrayMap;
 import android.view.ViewGroup;
 import java.util.Map;

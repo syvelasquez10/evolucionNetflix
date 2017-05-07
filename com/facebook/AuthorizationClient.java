@@ -19,32 +19,6 @@ import java.io.Serializable;
 
 class AuthorizationClient implements Serializable
 {
-    static final String EVENT_EXTRAS_DEFAULT_AUDIENCE = "default_audience";
-    static final String EVENT_EXTRAS_IS_LEGACY = "is_legacy";
-    static final String EVENT_EXTRAS_LOGIN_BEHAVIOR = "login_behavior";
-    static final String EVENT_EXTRAS_MISSING_INTERNET_PERMISSION = "no_internet_permission";
-    static final String EVENT_EXTRAS_NEW_PERMISSIONS = "new_permissions";
-    static final String EVENT_EXTRAS_NOT_TRIED = "not_tried";
-    static final String EVENT_EXTRAS_PERMISSIONS = "permissions";
-    static final String EVENT_EXTRAS_REQUEST_CODE = "request_code";
-    static final String EVENT_EXTRAS_TRY_LEGACY = "try_legacy";
-    static final String EVENT_EXTRAS_TRY_LOGIN_ACTIVITY = "try_login_activity";
-    static final String EVENT_NAME_LOGIN_COMPLETE = "fb_mobile_login_complete";
-    private static final String EVENT_NAME_LOGIN_METHOD_COMPLETE = "fb_mobile_login_method_complete";
-    private static final String EVENT_NAME_LOGIN_METHOD_START = "fb_mobile_login_method_start";
-    static final String EVENT_NAME_LOGIN_START = "fb_mobile_login_start";
-    static final String EVENT_PARAM_AUTH_LOGGER_ID = "0_auth_logger_id";
-    static final String EVENT_PARAM_ERROR_CODE = "4_error_code";
-    static final String EVENT_PARAM_ERROR_MESSAGE = "5_error_message";
-    static final String EVENT_PARAM_EXTRAS = "6_extras";
-    static final String EVENT_PARAM_LOGIN_RESULT = "2_result";
-    static final String EVENT_PARAM_METHOD = "3_method";
-    private static final String EVENT_PARAM_METHOD_RESULT_SKIPPED = "skipped";
-    static final String EVENT_PARAM_TIMESTAMP = "1_timestamp_ms";
-    private static final String TAG = "Facebook-AuthorizationClient";
-    private static final String WEB_VIEW_AUTH_HANDLER_STORE = "com.facebook.AuthorizationClient.WebViewAuthHandler.TOKEN_STORE_KEY";
-    private static final String WEB_VIEW_AUTH_HANDLER_TOKEN_KEY = "TOKEN";
-    private static final long serialVersionUID = 1L;
     private transient AppEventsLogger appEventsLogger;
     transient AuthorizationClient$BackgroundProcessingListener backgroundProcessingListener;
     transient boolean checkedInternetPermission;
@@ -287,16 +261,8 @@ class AuthorizationClient implements Serializable
         return requestBatch;
     }
     
-    AuthorizationClient$BackgroundProcessingListener getBackgroundProcessingListener() {
-        return this.backgroundProcessingListener;
-    }
-    
     boolean getInProgress() {
         return this.pendingRequest != null && this.currentHandler != null;
-    }
-    
-    AuthorizationClient$OnCompletedListener getOnCompletedListener() {
-        return this.onCompletedListener;
     }
     
     AuthorizationClient$StartActivityDelegate getStartActivityDelegate() {

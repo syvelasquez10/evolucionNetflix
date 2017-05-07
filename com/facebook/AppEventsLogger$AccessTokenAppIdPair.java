@@ -9,7 +9,6 @@ import java.io.Serializable;
 
 class AppEventsLogger$AccessTokenAppIdPair implements Serializable
 {
-    private static final long serialVersionUID = 1L;
     private final String accessToken;
     private final String applicationId;
     
@@ -24,10 +23,6 @@ class AppEventsLogger$AccessTokenAppIdPair implements Serializable
         }
         this.accessToken = accessToken;
         this.applicationId = applicationId;
-    }
-    
-    private Object writeReplace() {
-        return new AppEventsLogger$AccessTokenAppIdPair$SerializationProxyV1(this.accessToken, this.applicationId, null);
     }
     
     @Override

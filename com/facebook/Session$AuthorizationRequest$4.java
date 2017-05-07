@@ -4,9 +4,6 @@
 
 package com.facebook;
 
-import java.util.Arrays;
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
 import android.support.v4.app.Fragment;
 import java.util.HashMap;
 import java.util.UUID;

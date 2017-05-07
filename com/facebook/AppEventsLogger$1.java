@@ -4,11 +4,6 @@
 
 package com.facebook;
 
-import java.util.Currency;
-import java.math.BigDecimal;
-import android.content.Intent;
-import android.content.ComponentName;
-import bolts.AppLinks;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONArray;
@@ -19,8 +14,6 @@ import com.facebook.model.GraphObject;
 import com.facebook.internal.Logger;
 import java.util.ArrayList;
 import java.util.Set;
-import android.util.Log;
-import android.app.Activity;
 import java.util.List;
 import java.util.Iterator;
 import com.facebook.internal.Utility;
@@ -35,12 +28,6 @@ final class AppEventsLogger$1 implements Runnable
     final /* synthetic */ long val$eventTime;
     final /* synthetic */ AppEventsLogger val$logger;
     final /* synthetic */ String val$sourceApplicationInfo;
-    
-    AppEventsLogger$1(final AppEventsLogger val$logger, final long val$eventTime, final String val$sourceApplicationInfo) {
-        this.val$logger = val$logger;
-        this.val$eventTime = val$eventTime;
-        this.val$sourceApplicationInfo = val$sourceApplicationInfo;
-    }
     
     @Override
     public void run() {

@@ -7,7 +7,6 @@ package android.support.v7.media;
 import java.util.Arrays;
 import android.content.IntentFilter;
 import java.util.Collection;
-import android.support.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.os.Bundle;
 public final class MediaRouteSelector
 {
     public static final MediaRouteSelector EMPTY;
-    private static final String KEY_CONTROL_CATEGORIES = "controlCategories";
     private final Bundle mBundle;
     private List<String> mControlCategories;
     
@@ -37,7 +35,7 @@ public final class MediaRouteSelector
         }
     }
     
-    public static MediaRouteSelector fromBundle(@Nullable final Bundle bundle) {
+    public static MediaRouteSelector fromBundle(final Bundle bundle) {
         if (bundle != null) {
             return new MediaRouteSelector(bundle, null);
         }
@@ -71,18 +69,6 @@ public final class MediaRouteSelector
     public List<String> getControlCategories() {
         this.ensureControlCategories();
         return this.mControlCategories;
-    }
-    
-    public boolean hasControlCategory(final String s) {
-        if (s != null) {
-            this.ensureControlCategories();
-            for (int size = this.mControlCategories.size(), i = 0; i < size; ++i) {
-                if (this.mControlCategories.get(i).equals(s)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
     
     @Override

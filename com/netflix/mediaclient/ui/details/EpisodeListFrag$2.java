@@ -63,7 +63,7 @@ class EpisodeListFrag$2 implements Runnable
     public void run() {
         int selection;
         if ((selection = this.this$0.currSeasonIndex) == -1) {
-            selection = this.this$0.spinner.getSeasonIndexBySeasonNumber(this.this$0.showDetails.getCurrentSeasonNumber());
+            selection = this.this$0.spinner.tryGetSeasonIndexBySeasonNumber(this.this$0.showDetails.getCurrentSeasonNumber());
         }
         if (selection < 0) {
             Log.v("EpisodeListFrag", "No valid season index found");

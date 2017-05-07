@@ -19,14 +19,6 @@ public class SessionTracker
     private final BroadcastReceiver receiver;
     private Session session;
     
-    public SessionTracker(final Context context, final Session$StatusCallback session$StatusCallback) {
-        this(context, session$StatusCallback, null);
-    }
-    
-    SessionTracker(final Context context, final Session$StatusCallback session$StatusCallback, final Session session) {
-        this(context, session$StatusCallback, session, true);
-    }
-    
     public SessionTracker(final Context context, final Session$StatusCallback session$StatusCallback, final Session session, final boolean b) {
         this.isTracking = false;
         this.callback = new SessionTracker$CallbackWrapper(this, session$StatusCallback);
@@ -62,10 +54,6 @@ public class SessionTracker
     
     public boolean isTracking() {
         return this.isTracking;
-    }
-    
-    public boolean isTrackingActiveSession() {
-        return this.session == null;
     }
     
     public void setSession(final Session session) {

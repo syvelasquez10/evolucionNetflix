@@ -5,14 +5,11 @@
 package android.support.v7.internal.view.menu;
 
 import android.os.IBinder;
-import android.os.Parcelable;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.view.ContextThemeWrapper;
-import android.support.v7.appcompat.R$layout;
-import android.util.SparseArray;
-import android.os.Bundle;
 import android.widget.ListAdapter;
+import android.support.v7.appcompat.R$layout;
 import android.view.LayoutInflater;
 import android.content.Context;
 import android.widget.AdapterView$OnItemClickListener;
@@ -33,20 +30,20 @@ class h extends BaseAdapter
     }
     
     public m a(int n) {
-        final ArrayList<m> m = this.a.c.m();
-        final int n2 = n += this.a.j;
+        final ArrayList<m> l = this.a.c.l();
+        final int n2 = n += this.a.h;
         if (this.b >= 0 && (n = n2) >= this.b) {
             n = n2 + 1;
         }
-        return m.get(n);
+        return l.get(n);
     }
     
     void a() {
-        final m s = this.a.c.s();
-        if (s != null) {
-            final ArrayList<m> m = this.a.c.m();
-            for (int size = m.size(), i = 0; i < size; ++i) {
-                if (m.get(i) == s) {
+        final m r = this.a.c.r();
+        if (r != null) {
+            final ArrayList<m> l = this.a.c.l();
+            for (int size = l.size(), i = 0; i < size; ++i) {
+                if (l.get(i) == r) {
                     this.b = i;
                     return;
                 }
@@ -56,7 +53,7 @@ class h extends BaseAdapter
     }
     
     public int getCount() {
-        final int n = this.a.c.m().size() - this.a.j;
+        final int n = this.a.c.l().size() - this.a.h;
         if (this.b < 0) {
             return n;
         }
@@ -71,7 +68,7 @@ class h extends BaseAdapter
         if (inflate == null) {
             inflate = this.a.b.inflate(this.a.f, viewGroup, false);
         }
-        ((ab)inflate).a(this.a(n), 0);
+        ((aa)inflate).a(this.a(n), 0);
         return inflate;
     }
     

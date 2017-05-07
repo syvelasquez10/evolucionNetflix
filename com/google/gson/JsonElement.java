@@ -9,32 +9,14 @@ import com.google.gson.internal.Streams;
 import java.io.Writer;
 import com.google.gson.stream.JsonWriter;
 import java.io.StringWriter;
-import java.math.BigInteger;
-import java.math.BigDecimal;
 
 public abstract class JsonElement
 {
-    public BigDecimal getAsBigDecimal() {
-        throw new UnsupportedOperationException(this.getClass().getSimpleName());
-    }
-    
-    public BigInteger getAsBigInteger() {
-        throw new UnsupportedOperationException(this.getClass().getSimpleName());
-    }
-    
     public boolean getAsBoolean() {
         throw new UnsupportedOperationException(this.getClass().getSimpleName());
     }
     
     Boolean getAsBooleanWrapper() {
-        throw new UnsupportedOperationException(this.getClass().getSimpleName());
-    }
-    
-    public byte getAsByte() {
-        throw new UnsupportedOperationException(this.getClass().getSimpleName());
-    }
-    
-    public char getAsCharacter() {
         throw new UnsupportedOperationException(this.getClass().getSimpleName());
     }
     
@@ -57,13 +39,6 @@ public abstract class JsonElement
         throw new IllegalStateException("This is not a JSON Array.");
     }
     
-    public JsonNull getAsJsonNull() {
-        if (this.isJsonNull()) {
-            return (JsonNull)this;
-        }
-        throw new IllegalStateException("This is not a JSON Null.");
-    }
-    
     public JsonObject getAsJsonObject() {
         if (this.isJsonObject()) {
             return (JsonObject)this;
@@ -83,10 +58,6 @@ public abstract class JsonElement
     }
     
     public Number getAsNumber() {
-        throw new UnsupportedOperationException(this.getClass().getSimpleName());
-    }
-    
-    public short getAsShort() {
         throw new UnsupportedOperationException(this.getClass().getSimpleName());
     }
     

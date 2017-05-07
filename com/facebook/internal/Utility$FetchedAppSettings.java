@@ -22,10 +22,6 @@ public class Utility$FetchedAppSettings
         this.dialogConfigMap = dialogConfigMap;
     }
     
-    public Map<String, Map<String, Utility$DialogFeatureConfig>> getDialogConfigurations() {
-        return this.dialogConfigMap;
-    }
-    
     public String getNuxContent() {
         return this.nuxContent;
     }

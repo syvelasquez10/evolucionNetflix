@@ -39,18 +39,6 @@ public final class Primitives
         return Primitives.PRIMITIVE_TO_WRAPPER_TYPE.containsKey(type);
     }
     
-    public static boolean isWrapperType(final Type type) {
-        return Primitives.WRAPPER_TO_PRIMITIVE_TYPE.containsKey($Gson$Preconditions.checkNotNull(type));
-    }
-    
-    public static <T> Class<T> unwrap(final Class<T> clazz) {
-        final Class<?> clazz2 = Primitives.WRAPPER_TO_PRIMITIVE_TYPE.get($Gson$Preconditions.checkNotNull(clazz));
-        if (clazz2 == null) {
-            return clazz;
-        }
-        return (Class<T>)clazz2;
-    }
-    
     public static <T> Class<T> wrap(final Class<T> clazz) {
         final Class<?> clazz2 = Primitives.PRIMITIVE_TO_WRAPPER_TYPE.get($Gson$Preconditions.checkNotNull(clazz));
         if (clazz2 == null) {

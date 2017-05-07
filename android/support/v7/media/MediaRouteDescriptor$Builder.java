@@ -84,11 +84,6 @@ public final class MediaRouteDescriptor$Builder
         return this;
     }
     
-    public MediaRouteDescriptor$Builder setExtras(final Bundle bundle) {
-        this.mBundle.putBundle("extras", bundle);
-        return this;
-    }
-    
     public MediaRouteDescriptor$Builder setId(final String s) {
         this.mBundle.putString("id", s);
         return this;

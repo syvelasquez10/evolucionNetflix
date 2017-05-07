@@ -4,7 +4,6 @@
 
 package android.support.v4.app;
 
-import android.support.annotation.NonNull;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
@@ -17,16 +16,6 @@ import android.content.DialogInterface$OnCancelListener;
 
 public class DialogFragment extends Fragment implements DialogInterface$OnCancelListener, DialogInterface$OnDismissListener
 {
-    private static final String SAVED_BACK_STACK_ID = "android:backStackId";
-    private static final String SAVED_CANCELABLE = "android:cancelable";
-    private static final String SAVED_DIALOG_STATE_TAG = "android:savedDialogState";
-    private static final String SAVED_SHOWS_DIALOG = "android:showsDialog";
-    private static final String SAVED_STYLE = "android:style";
-    private static final String SAVED_THEME = "android:theme";
-    public static final int STYLE_NORMAL = 0;
-    public static final int STYLE_NO_FRAME = 2;
-    public static final int STYLE_NO_INPUT = 3;
-    public static final int STYLE_NO_TITLE = 1;
     int mBackStackId;
     boolean mCancelable;
     Dialog mDialog;
@@ -43,14 +32,6 @@ public class DialogFragment extends Fragment implements DialogInterface$OnCancel
         this.mCancelable = true;
         this.mShowsDialog = true;
         this.mBackStackId = -1;
-    }
-    
-    public void dismiss() {
-        this.dismissInternal(false);
-    }
-    
-    public void dismissAllowingStateLoss() {
-        this.dismissInternal(true);
     }
     
     void dismissInternal(final boolean b) {
@@ -78,10 +59,6 @@ public class DialogFragment extends Fragment implements DialogInterface$OnCancel
         beginTransaction.commit();
     }
     
-    public Dialog getDialog() {
-        return this.mDialog;
-    }
-    
     @Override
     public LayoutInflater getLayoutInflater(final Bundle bundle) {
         if (!this.mShowsDialog) {
@@ -104,16 +81,8 @@ public class DialogFragment extends Fragment implements DialogInterface$OnCancel
         return (LayoutInflater)this.mActivity.getSystemService("layout_inflater");
     }
     
-    public boolean getShowsDialog() {
-        return this.mShowsDialog;
-    }
-    
     public int getTheme() {
         return this.mTheme;
-    }
-    
-    public boolean isCancelable() {
-        return this.mCancelable;
     }
     
     @Override
@@ -164,7 +133,6 @@ public class DialogFragment extends Fragment implements DialogInterface$OnCancel
         }
     }
     
-    @NonNull
     public Dialog onCreateDialog(final Bundle bundle) {
         return new Dialog((Context)this.getActivity(), this.getTheme());
     }
@@ -236,33 +204,8 @@ public class DialogFragment extends Fragment implements DialogInterface$OnCancel
         }
     }
     
-    public void setCancelable(final boolean b) {
-        this.mCancelable = b;
-        if (this.mDialog != null) {
-            this.mDialog.setCancelable(b);
-        }
-    }
-    
     public void setShowsDialog(final boolean mShowsDialog) {
         this.mShowsDialog = mShowsDialog;
-    }
-    
-    public void setStyle(final int mStyle, final int mTheme) {
-        this.mStyle = mStyle;
-        if (this.mStyle == 2 || this.mStyle == 3) {
-            this.mTheme = 16973913;
-        }
-        if (mTheme != 0) {
-            this.mTheme = mTheme;
-        }
-    }
-    
-    public int show(final FragmentTransaction fragmentTransaction, final String s) {
-        this.mDismissed = false;
-        this.mShownByMe = true;
-        fragmentTransaction.add(this, s);
-        this.mViewDestroyed = false;
-        return this.mBackStackId = fragmentTransaction.commit();
     }
     
     public void show(final FragmentManager fragmentManager, final String s) {

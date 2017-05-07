@@ -55,12 +55,4 @@ public class VolleyLog
             Log.v(VolleyLog.TAG, buildMessage(s, array));
         }
     }
-    
-    public static void wtf(final String s, final Object... array) {
-        Log.wtf(VolleyLog.TAG, buildMessage(s, array));
-    }
-    
-    public static void wtf(final Throwable t, final String s, final Object... array) {
-        Log.wtf(VolleyLog.TAG, buildMessage(s, array), t);
-    }
 }

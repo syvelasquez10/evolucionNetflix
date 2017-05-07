@@ -4,9 +4,7 @@
 
 package android.support.v7.media;
 
-import android.support.annotation.Nullable;
 import android.content.ComponentName;
-import android.support.annotation.NonNull;
 import android.content.Context;
 import android.os.Message;
 import android.os.Handler;

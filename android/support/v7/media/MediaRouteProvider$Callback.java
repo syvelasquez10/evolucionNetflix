@@ -4,11 +4,8 @@
 
 package android.support.v7.media;
 
-import android.support.annotation.Nullable;
-import android.support.annotation.NonNull;
-
 public abstract class MediaRouteProvider$Callback
 {
-    public void onDescriptorChanged(@NonNull final MediaRouteProvider mediaRouteProvider, @Nullable final MediaRouteProviderDescriptor mediaRouteProviderDescriptor) {
+    public void onDescriptorChanged(final MediaRouteProvider mediaRouteProvider, final MediaRouteProviderDescriptor mediaRouteProviderDescriptor) {
     }
 }

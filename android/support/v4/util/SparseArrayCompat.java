@@ -58,29 +58,6 @@ public class SparseArrayCompat<E> implements Cloneable
         this.mSize = mSize2;
     }
     
-    public void append(final int n, final E e) {
-        if (this.mSize != 0 && n <= this.mKeys[this.mSize - 1]) {
-            this.put(n, e);
-            return;
-        }
-        if (this.mGarbage && this.mSize >= this.mKeys.length) {
-            this.gc();
-        }
-        final int mSize = this.mSize;
-        if (mSize >= this.mKeys.length) {
-            final int idealIntArraySize = ContainerHelpers.idealIntArraySize(mSize + 1);
-            final int[] mKeys = new int[idealIntArraySize];
-            final Object[] mValues = new Object[idealIntArraySize];
-            System.arraycopy(this.mKeys, 0, mKeys, 0, this.mKeys.length);
-            System.arraycopy(this.mValues, 0, mValues, 0, this.mValues.length);
-            this.mKeys = mKeys;
-            this.mValues = mValues;
-        }
-        this.mKeys[mSize] = n;
-        this.mValues[mSize] = e;
-        this.mSize = mSize + 1;
-    }
-    
     public void clear() {
         final int mSize = this.mSize;
         final Object[] mValues = this.mValues;
@@ -159,18 +136,6 @@ public class SparseArrayCompat<E> implements Cloneable
         return ContainerHelpers.binarySearch(this.mKeys, this.mSize, n);
     }
     
-    public int indexOfValue(final E e) {
-        if (this.mGarbage) {
-            this.gc();
-        }
-        for (int i = 0; i < this.mSize; ++i) {
-            if (this.mValues[i] == e) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    
     public int keyAt(final int n) {
         if (this.mGarbage) {
             this.gc();
@@ -225,19 +190,6 @@ public class SparseArrayCompat<E> implements Cloneable
             this.mValues[n] = SparseArrayCompat.DELETED;
             this.mGarbage = true;
         }
-    }
-    
-    public void removeAtRange(int i, int min) {
-        for (min = Math.min(this.mSize, i + min); i < min; ++i) {
-            this.removeAt(i);
-        }
-    }
-    
-    public void setValueAt(final int n, final E e) {
-        if (this.mGarbage) {
-            this.gc();
-        }
-        this.mValues[n] = e;
     }
     
     public int size() {

@@ -7,9 +7,9 @@ package android.support.v7.internal.widget;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ViewGroup$LayoutParams;
 import android.view.View;
+import android.widget.ListAdapter;
 import android.view.View$MeasureSpec;
 import android.view.ViewGroup;
-import android.widget.ListAdapter;
 import android.graphics.drawable.Drawable;
 import android.graphics.Canvas;
 import android.widget.AbsListView;
@@ -21,8 +21,6 @@ import android.widget.ListView;
 
 public class ListViewCompat extends ListView
 {
-    public static final int INVALID_POSITION = -1;
-    public static final int NO_POSITION = -1;
     private static final int[] STATE_SET_NOTHING;
     private Field mIsChildViewEnabled;
     int mSelectionBottomPadding;
@@ -34,14 +32,6 @@ public class ListViewCompat extends ListView
     
     static {
         STATE_SET_NOTHING = new int[] { 0 };
-    }
-    
-    public ListViewCompat(final Context context) {
-        this(context, null);
-    }
-    
-    public ListViewCompat(final Context context, final AttributeSet set) {
-        this(context, set, 0);
     }
     
     public ListViewCompat(final Context context, final AttributeSet set, final int n) {
@@ -76,54 +66,6 @@ public class ListViewCompat extends ListView
         super.drawableStateChanged();
         this.mSelector.setEnabled(true);
         this.updateSelectorStateCompat();
-    }
-    
-    public int lookForSelectablePosition(int n, final boolean b) {
-        final ListAdapter adapter = this.getAdapter();
-        int n2;
-        if (adapter == null || this.isInTouchMode()) {
-            n2 = -1;
-        }
-        else {
-            final int count = adapter.getCount();
-            if (!this.getAdapter().areAllItemsEnabled()) {
-                if (b) {
-                    int max = Math.max(0, n);
-                    while (true) {
-                        n = max;
-                        if (max >= count) {
-                            break;
-                        }
-                        n = max;
-                        if (adapter.isEnabled(max)) {
-                            break;
-                        }
-                        ++max;
-                    }
-                }
-                else {
-                    int min = Math.min(n, count - 1);
-                    while (true) {
-                        n = min;
-                        if (min < 0) {
-                            break;
-                        }
-                        n = min;
-                        if (adapter.isEnabled(min)) {
-                            break;
-                        }
-                        --min;
-                    }
-                }
-                if (n < 0 || (n2 = n) >= count) {
-                    return -1;
-                }
-            }
-            else if (n < 0 || (n2 = n) >= count) {
-                return -1;
-            }
-        }
-        return n2;
     }
     
     public int measureHeightOfChildrenCompat(int n, int listPaddingTop, int dividerHeight, final int n2, final int n3) {

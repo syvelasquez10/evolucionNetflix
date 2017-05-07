@@ -29,11 +29,6 @@ class EdgeEffectCompat$BaseEdgeEffectImpl implements EdgeEffectCompat$EdgeEffect
     }
     
     @Override
-    public boolean onAbsorb(final Object o, final int n) {
-        return false;
-    }
-    
-    @Override
     public boolean onPull(final Object o, final float n) {
         return false;
     }

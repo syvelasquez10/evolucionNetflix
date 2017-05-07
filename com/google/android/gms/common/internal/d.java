@@ -4,13 +4,12 @@
 
 package com.google.android.gms.common.internal;
 
+import com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 import android.os.IBinder;
-import com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener;
-import com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import android.os.Handler;
@@ -50,10 +49,6 @@ public abstract class d<T extends IInterface> implements Api$a, e$b
         this.Ds = ds;
         this.registerConnectionCallbacks(n.i(googleApiClient$ConnectionCallbacks));
         this.registerConnectionFailedListener(n.i(googleApiClient$OnConnectionFailedListener));
-    }
-    
-    protected d(final Context context, final GooglePlayServicesClient$ConnectionCallbacks googlePlayServicesClient$ConnectionCallbacks, final GooglePlayServicesClient$OnConnectionFailedListener googlePlayServicesClient$OnConnectionFailedListener, final String... array) {
-        this(context, context.getMainLooper(), new d$c(googlePlayServicesClient$ConnectionCallbacks), new d$g(googlePlayServicesClient$OnConnectionFailedListener), array);
     }
     
     private void az(final int lu) {
@@ -148,15 +143,6 @@ public abstract class d<T extends IInterface> implements Api$a, e$b
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    @Deprecated
-    public final void a(final d$b<?> d$b) {
-        synchronized (this.Ls) {
-            this.Ls.add(d$b);
-            // monitorexit(this.Ls)
-            this.mHandler.sendMessage(this.mHandler.obtainMessage(2, (Object)d$b));
-        }
-    }
-    
     protected abstract void a(final k p0, final d$e p1);
     
     public void aA(final int n) {
@@ -218,10 +204,6 @@ public abstract class d<T extends IInterface> implements Api$a, e$b
         return null;
     }
     
-    public final String[] gR() {
-        return this.Ds;
-    }
-    
     public final T gS() {
         this.dK();
         return this.Lr;
@@ -254,16 +236,6 @@ public abstract class d<T extends IInterface> implements Api$a, e$b
         return this.Lu == 2;
     }
     
-    @Deprecated
-    public boolean isConnectionCallbacksRegistered(final GooglePlayServicesClient$ConnectionCallbacks googlePlayServicesClient$ConnectionCallbacks) {
-        return this.IQ.isConnectionCallbacksRegistered(new d$c(googlePlayServicesClient$ConnectionCallbacks));
-    }
-    
-    @Deprecated
-    public boolean isConnectionFailedListenerRegistered(final GooglePlayServicesClient$OnConnectionFailedListener googlePlayServicesClient$OnConnectionFailedListener) {
-        return this.IQ.isConnectionFailedListenerRegistered(googlePlayServicesClient$OnConnectionFailedListener);
-    }
-    
     protected abstract T j(final IBinder p0);
     
     protected void onConnected() {
@@ -272,31 +244,11 @@ public abstract class d<T extends IInterface> implements Api$a, e$b
     protected void onDisconnected() {
     }
     
-    @Deprecated
-    public void registerConnectionCallbacks(final GooglePlayServicesClient$ConnectionCallbacks googlePlayServicesClient$ConnectionCallbacks) {
-        this.IQ.registerConnectionCallbacks(new d$c(googlePlayServicesClient$ConnectionCallbacks));
-    }
-    
     public void registerConnectionCallbacks(final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks) {
         this.IQ.registerConnectionCallbacks(googleApiClient$ConnectionCallbacks);
     }
     
-    @Deprecated
-    public void registerConnectionFailedListener(final GooglePlayServicesClient$OnConnectionFailedListener googlePlayServicesClient$OnConnectionFailedListener) {
-        this.IQ.registerConnectionFailedListener(googlePlayServicesClient$OnConnectionFailedListener);
-    }
-    
     public void registerConnectionFailedListener(final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
         this.IQ.registerConnectionFailedListener(googleApiClient$OnConnectionFailedListener);
-    }
-    
-    @Deprecated
-    public void unregisterConnectionCallbacks(final GooglePlayServicesClient$ConnectionCallbacks googlePlayServicesClient$ConnectionCallbacks) {
-        this.IQ.unregisterConnectionCallbacks(new d$c(googlePlayServicesClient$ConnectionCallbacks));
-    }
-    
-    @Deprecated
-    public void unregisterConnectionFailedListener(final GooglePlayServicesClient$OnConnectionFailedListener googlePlayServicesClient$OnConnectionFailedListener) {
-        this.IQ.unregisterConnectionFailedListener(googlePlayServicesClient$OnConnectionFailedListener);
     }
 }

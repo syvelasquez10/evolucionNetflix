@@ -28,7 +28,6 @@ import javax.net.ssl.SSLSocketFactory;
 
 public class HurlStack implements HttpStack
 {
-    private static final String HEADER_CONTENT_TYPE = "Content-Type";
     private final SSLSocketFactory mSslSocketFactory;
     private final HurlStack$UrlRewriter mUrlRewriter;
     

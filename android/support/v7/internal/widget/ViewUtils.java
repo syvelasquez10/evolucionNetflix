@@ -14,7 +14,6 @@ import java.lang.reflect.Method;
 
 public class ViewUtils
 {
-    private static final String TAG = "ViewUtils";
     private static Method sComputeFitSystemWindowsMethod;
     
     static {

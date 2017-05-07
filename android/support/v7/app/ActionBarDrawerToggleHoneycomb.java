@@ -13,7 +13,6 @@ import android.app.Activity;
 
 class ActionBarDrawerToggleHoneycomb
 {
-    private static final String TAG = "ActionBarDrawerToggleHoneycomb";
     private static final int[] THEME_ATTRS;
     
     static {

@@ -19,7 +19,6 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 public class RequestQueue
 {
-    private static final int DEFAULT_NETWORK_THREAD_POOL_SIZE = 4;
     private final Cache mCache;
     private CacheDispatcher mCacheDispatcher;
     private final PriorityBlockingQueue<Request> mCacheQueue;
@@ -30,10 +29,6 @@ public class RequestQueue
     private final PriorityBlockingQueue<Request> mNetworkQueue;
     private AtomicInteger mSequenceGenerator;
     private final Map<String, Queue<Request>> mWaitingRequests;
-    
-    public RequestQueue(final Cache cache, final Network network) {
-        this(cache, network, 4);
-    }
     
     public RequestQueue(final Cache cache, final Network network, final int n) {
         this(cache, network, n, new ExecutorDelivery(new Handler(Looper.getMainLooper())));
@@ -211,10 +206,6 @@ public class RequestQueue
         //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
         // 
         throw new IllegalStateException("An error occurred while decompiling this method.");
-    }
-    
-    public Cache getCache() {
-        return this.mCache;
     }
     
     public int getSequenceNumber() {

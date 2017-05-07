@@ -37,23 +37,25 @@ public final class Video$Bookmark implements JsonPopulator
         if (Falkor.ENABLE_VERBOSE_LOGGING) {
             Log.v("Bookmark", "Populating with: " + asJsonObject);
         }
+        final int bookmarkPosition = this.bookmarkPosition;
+        final long lastModified = this.lastModified;
         for (final Map.Entry<String, JsonElement> entry : asJsonObject.entrySet()) {
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0122: {
+            Label_0134: {
                 switch (s.hashCode()) {
                     case -1829827457: {
                         if (s.equals("bookmarkPosition")) {
                             n = 0;
-                            break Label_0122;
+                            break Label_0134;
                         }
                         break;
                     }
                     case 1959003007: {
                         if (s.equals("lastModified")) {
                             n = 1;
-                            break Label_0122;
+                            break Label_0134;
                         }
                         break;
                     }
@@ -73,6 +75,11 @@ public final class Video$Bookmark implements JsonPopulator
                     continue;
                 }
             }
+        }
+        if (lastModified > this.lastModified) {
+            Log.d("Bookmark", String.format("restoring bookmark and time (%d - %d) to older values (%d - %d)", this.bookmarkPosition, this.lastModified, bookmarkPosition, lastModified));
+            this.bookmarkPosition = bookmarkPosition;
+            this.lastModified = lastModified;
         }
     }
     

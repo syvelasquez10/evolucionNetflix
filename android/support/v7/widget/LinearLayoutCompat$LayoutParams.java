@@ -22,12 +22,6 @@ public class LinearLayoutCompat$LayoutParams extends ViewGroup$MarginLayoutParam
         this.weight = 0.0f;
     }
     
-    public LinearLayoutCompat$LayoutParams(final int n, final int n2, final float weight) {
-        super(n, n2);
-        this.gravity = -1;
-        this.weight = weight;
-    }
-    
     public LinearLayoutCompat$LayoutParams(final Context context, final AttributeSet set) {
         super(context, set);
         this.gravity = -1;
@@ -37,20 +31,8 @@ public class LinearLayoutCompat$LayoutParams extends ViewGroup$MarginLayoutParam
         obtainStyledAttributes.recycle();
     }
     
-    public LinearLayoutCompat$LayoutParams(final LinearLayoutCompat$LayoutParams linearLayoutCompat$LayoutParams) {
-        super((ViewGroup$MarginLayoutParams)linearLayoutCompat$LayoutParams);
-        this.gravity = -1;
-        this.weight = linearLayoutCompat$LayoutParams.weight;
-        this.gravity = linearLayoutCompat$LayoutParams.gravity;
-    }
-    
     public LinearLayoutCompat$LayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
         super(viewGroup$LayoutParams);
-        this.gravity = -1;
-    }
-    
-    public LinearLayoutCompat$LayoutParams(final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams) {
-        super(viewGroup$MarginLayoutParams);
         this.gravity = -1;
     }
 }

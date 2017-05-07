@@ -5,27 +5,18 @@
 package android.support.v7.media;
 
 import java.util.Collection;
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import java.util.List;
 import android.view.Display;
 import android.os.Bundle;
 import android.content.IntentFilter;
-import java.util.List;
-import android.content.Context;
-import android.util.Log;
 import android.content.ComponentName;
 import java.util.ArrayList;
-import android.content.res.Resources;
 
 public final class MediaRouter$ProviderInfo
 {
     private MediaRouteProviderDescriptor mDescriptor;
     private final MediaRouteProvider$ProviderMetadata mMetadata;
     private final MediaRouteProvider mProviderInstance;
-    private Resources mResources;
-    private boolean mResourcesNotAvailable;
     private final ArrayList<MediaRouter$RouteInfo> mRoutes;
     
     MediaRouter$ProviderInfo(final MediaRouteProvider mProviderInstance) {
@@ -54,26 +45,6 @@ public final class MediaRouter$ProviderInfo
     public MediaRouteProvider getProviderInstance() {
         MediaRouter.checkCallingThread();
         return this.mProviderInstance;
-    }
-    
-    Resources getResources() {
-        if (this.mResources == null && !this.mResourcesNotAvailable) {
-            final String packageName = this.getPackageName();
-            final Context providerContext = MediaRouter.sGlobal.getProviderContext(packageName);
-            if (providerContext != null) {
-                this.mResources = providerContext.getResources();
-            }
-            else {
-                Log.w("MediaRouter", "Unable to obtain resources for route provider package: " + packageName);
-                this.mResourcesNotAvailable = true;
-            }
-        }
-        return this.mResources;
-    }
-    
-    public List<MediaRouter$RouteInfo> getRoutes() {
-        MediaRouter.checkCallingThread();
-        return this.mRoutes;
     }
     
     @Override

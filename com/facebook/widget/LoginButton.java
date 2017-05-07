@@ -4,18 +4,13 @@
 
 package com.facebook.widget;
 
-import android.util.Log;
-import java.util.Collection;
 import java.util.Collections;
-import com.facebook.internal.SessionAuthorizationType;
-import java.util.Arrays;
-import android.graphics.Canvas;
-import android.app.Activity;
-import android.content.Intent;
-import com.facebook.FacebookException;
 import java.util.List;
 import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionDefaultAudience;
+import com.facebook.internal.SessionAuthorizationType;
+import android.graphics.Canvas;
+import com.facebook.FacebookException;
 import android.content.res.TypedArray;
 import com.facebook.android.R$styleable;
 import com.facebook.Session$StatusCallback;
@@ -215,47 +210,11 @@ public class LoginButton extends Button
         }
     }
     
-    public void clearPermissions() {
-        this.properties.clearPermissions();
-    }
-    
     public void dismissToolTip() {
         if (this.nuxPopup != null) {
             this.nuxPopup.dismiss();
             this.nuxPopup = null;
         }
-    }
-    
-    public SessionDefaultAudience getDefaultAudience() {
-        return this.properties.getDefaultAudience();
-    }
-    
-    public SessionLoginBehavior getLoginBehavior() {
-        return this.properties.getLoginBehavior();
-    }
-    
-    public LoginButton$OnErrorListener getOnErrorListener() {
-        return this.properties.getOnErrorListener();
-    }
-    
-    List<String> getPermissions() {
-        return this.properties.getPermissions();
-    }
-    
-    public Session$StatusCallback getSessionStatusCallback() {
-        return this.properties.getSessionStatusCallback();
-    }
-    
-    public long getToolTipDisplayTime() {
-        return this.nuxDisplayTime;
-    }
-    
-    public LoginButton$ToolTipMode getToolTipMode() {
-        return this.nuxMode;
-    }
-    
-    public LoginButton$UserInfoChangedCallback getUserInfoChangedCallback() {
-        return this.userInfoChangedCallback;
     }
     
     void handleError(final Exception ex) {
@@ -266,11 +225,6 @@ public class LoginButton extends Button
             }
             this.properties.onErrorListener.onError((FacebookException)ex);
         }
-    }
-    
-    public boolean onActivityResult(final int n, final int n2, final Intent intent) {
-        final Session session = this.sessionTracker.getSession();
-        return session != null && session.onActivityResult((Activity)this.getContext(), n, n2, intent);
     }
     
     protected void onAttachedToWindow() {
@@ -310,77 +264,7 @@ public class LoginButton extends Button
         }
     }
     
-    public void setApplicationId(final String applicationId) {
-        this.applicationId = applicationId;
-    }
-    
-    public void setDefaultAudience(final SessionDefaultAudience defaultAudience) {
-        this.properties.setDefaultAudience(defaultAudience);
-    }
-    
-    public void setFragment(final Fragment parentFragment) {
-        this.parentFragment = parentFragment;
-    }
-    
-    public void setLoginBehavior(final SessionLoginBehavior loginBehavior) {
-        this.properties.setLoginBehavior(loginBehavior);
-    }
-    
-    void setLoginLogoutEventName(final String loginLogoutEventName) {
-        this.loginLogoutEventName = loginLogoutEventName;
-    }
-    
     public void setOnClickListener(final View$OnClickListener listenerCallback) {
         this.listenerCallback = listenerCallback;
-    }
-    
-    public void setOnErrorListener(final LoginButton$OnErrorListener onErrorListener) {
-        this.properties.setOnErrorListener(onErrorListener);
-    }
-    
-    void setProperties(final LoginButton$LoginButtonProperties properties) {
-        this.properties = properties;
-    }
-    
-    public void setPublishPermissions(final List<String> list) {
-        this.properties.setPublishPermissions(list, this.sessionTracker.getSession());
-    }
-    
-    public void setPublishPermissions(final String... array) {
-        this.properties.setPublishPermissions(Arrays.asList(array), this.sessionTracker.getSession());
-    }
-    
-    public void setReadPermissions(final List<String> list) {
-        this.properties.setReadPermissions(list, this.sessionTracker.getSession());
-    }
-    
-    public void setReadPermissions(final String... array) {
-        this.properties.setReadPermissions(Arrays.asList(array), this.sessionTracker.getSession());
-    }
-    
-    public void setSession(final Session session) {
-        this.sessionTracker.setSession(session);
-        this.fetchUserInfo();
-        this.setButtonText();
-    }
-    
-    public void setSessionStatusCallback(final Session$StatusCallback sessionStatusCallback) {
-        this.properties.setSessionStatusCallback(sessionStatusCallback);
-    }
-    
-    public void setToolTipDisplayTime(final long nuxDisplayTime) {
-        this.nuxDisplayTime = nuxDisplayTime;
-    }
-    
-    public void setToolTipMode(final LoginButton$ToolTipMode nuxMode) {
-        this.nuxMode = nuxMode;
-    }
-    
-    public void setToolTipStyle(final ToolTipPopup$Style nuxStyle) {
-        this.nuxStyle = nuxStyle;
-    }
-    
-    public void setUserInfoChangedCallback(final LoginButton$UserInfoChangedCallback userInfoChangedCallback) {
-        this.userInfoChangedCallback = userInfoChangedCallback;
     }
 }

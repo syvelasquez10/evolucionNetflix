@@ -8,7 +8,7 @@ import android.view.View$MeasureSpec;
 import android.os.Build$VERSION;
 import android.view.accessibility.AccessibilityEvent;
 import android.support.v7.widget.ActionMenuView;
-import android.support.v7.internal.view.menu.y;
+import android.support.v7.internal.view.menu.x;
 import android.support.v7.widget.ActionMenuPresenter;
 import android.support.v7.internal.view.menu.i;
 import android.view.View$OnClickListener;
@@ -37,10 +37,6 @@ import android.support.v4.view.ViewPropertyAnimatorListener;
 
 public class ActionBarContextView extends AbsActionBarView implements ViewPropertyAnimatorListener
 {
-    private static final int ANIMATE_IDLE = 0;
-    private static final int ANIMATE_IN = 1;
-    private static final int ANIMATE_OUT = 2;
-    private static final String TAG = "ActionBarContextView";
     private boolean mAnimateInOnLayout;
     private int mAnimationMode;
     private View mClose;
@@ -201,11 +197,6 @@ public class ActionBarContextView extends AbsActionBarView implements ViewProper
         return this.mTitle;
     }
     
-    @Override
-    public boolean hideOverflowMenu() {
-        return this.mActionMenuPresenter != null && this.mActionMenuPresenter.hideOverflowMenu();
-    }
-    
     public void initForMode(final ActionMode actionMode) {
         if (this.mClose == null) {
             this.addView(this.mClose = LayoutInflater.from(this.getContext()).inflate(this.mCloseItemLayout, (ViewGroup)this, false));
@@ -235,11 +226,6 @@ public class ActionBarContextView extends AbsActionBarView implements ViewProper
             this.mSplitView.addView((View)this.mMenuView, viewGroup$LayoutParams);
         }
         this.mAnimateInOnLayout = true;
-    }
-    
-    @Override
-    public boolean isOverflowMenuShowing() {
-        return this.mActionMenuPresenter != null && this.mActionMenuPresenter.isOverflowMenuShowing();
     }
     
     public boolean isTitleOptional() {
@@ -485,36 +471,6 @@ public class ActionBarContextView extends AbsActionBarView implements ViewProper
             this.addView(mCustomView);
         }
         this.requestLayout();
-    }
-    
-    @Override
-    public void setSplitToolbar(final boolean splitToolbar) {
-        if (this.mSplitActionBar != splitToolbar) {
-            if (this.mActionMenuPresenter != null) {
-                final ViewGroup$LayoutParams viewGroup$LayoutParams = new ViewGroup$LayoutParams(-2, -1);
-                if (!splitToolbar) {
-                    (this.mMenuView = (ActionMenuView)this.mActionMenuPresenter.getMenuView(this)).setBackgroundDrawable((Drawable)null);
-                    final ViewGroup viewGroup = (ViewGroup)this.mMenuView.getParent();
-                    if (viewGroup != null) {
-                        viewGroup.removeView((View)this.mMenuView);
-                    }
-                    this.addView((View)this.mMenuView, viewGroup$LayoutParams);
-                }
-                else {
-                    this.mActionMenuPresenter.setWidthLimit(this.getContext().getResources().getDisplayMetrics().widthPixels, true);
-                    this.mActionMenuPresenter.setItemLimit(Integer.MAX_VALUE);
-                    viewGroup$LayoutParams.width = -1;
-                    viewGroup$LayoutParams.height = this.mContentHeight;
-                    (this.mMenuView = (ActionMenuView)this.mActionMenuPresenter.getMenuView(this)).setBackgroundDrawable(this.mSplitBackground);
-                    final ViewGroup viewGroup2 = (ViewGroup)this.mMenuView.getParent();
-                    if (viewGroup2 != null) {
-                        viewGroup2.removeView((View)this.mMenuView);
-                    }
-                    this.mSplitView.addView((View)this.mMenuView, viewGroup$LayoutParams);
-                }
-            }
-            super.setSplitToolbar(splitToolbar);
-        }
     }
     
     public void setSubtitle(final CharSequence mSubtitle) {

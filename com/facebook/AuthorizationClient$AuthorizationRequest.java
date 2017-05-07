@@ -9,7 +9,6 @@ import java.io.Serializable;
 
 class AuthorizationClient$AuthorizationRequest implements Serializable
 {
-    private static final long serialVersionUID = 1L;
     private final String applicationId;
     private final String authId;
     private final SessionDefaultAudience defaultAudience;
@@ -79,15 +78,7 @@ class AuthorizationClient$AuthorizationRequest implements Serializable
         return this.previousAccessToken != null && !this.isLegacy;
     }
     
-    void setIsLegacy(final boolean isLegacy) {
-        this.isLegacy = isLegacy;
-    }
-    
     void setPermissions(final List<String> permissions) {
         this.permissions = permissions;
-    }
-    
-    void setRerequest(final boolean isRerequest) {
-        this.isRerequest = isRerequest;
     }
 }

@@ -34,10 +34,6 @@ public class Loader<D>
         this.onAbandon();
     }
     
-    public void commitContentChanged() {
-        this.mProcessingChange = false;
-    }
-    
     public String dataToString(final D n) {
         final StringBuilder sb = new StringBuilder(64);
         DebugUtils.buildShortClassTag(n, sb);
@@ -75,14 +71,6 @@ public class Loader<D>
         }
     }
     
-    public void forceLoad() {
-        this.onForceLoad();
-    }
-    
-    public Context getContext() {
-        return this.mContext;
-    }
-    
     public int getId() {
         return this.mId;
     }
@@ -91,26 +79,11 @@ public class Loader<D>
         return this.mAbandoned;
     }
     
-    public boolean isReset() {
-        return this.mReset;
-    }
-    
     public boolean isStarted() {
         return this.mStarted;
     }
     
     protected void onAbandon() {
-    }
-    
-    public void onContentChanged() {
-        if (this.mStarted) {
-            this.forceLoad();
-            return;
-        }
-        this.mContentChanged = true;
-    }
-    
-    protected void onForceLoad() {
     }
     
     protected void onReset() {
@@ -139,12 +112,6 @@ public class Loader<D>
         this.mProcessingChange = false;
     }
     
-    public void rollbackContentChanged() {
-        if (this.mProcessingChange) {
-            this.mContentChanged = true;
-        }
-    }
-    
     public final void startLoading() {
         this.mStarted = true;
         this.mReset = false;
@@ -155,13 +122,6 @@ public class Loader<D>
     public void stopLoading() {
         this.mStarted = false;
         this.onStopLoading();
-    }
-    
-    public boolean takeContentChanged() {
-        final boolean mContentChanged = this.mContentChanged;
-        this.mContentChanged = false;
-        this.mProcessingChange |= mContentChanged;
-        return mContentChanged;
     }
     
     @Override

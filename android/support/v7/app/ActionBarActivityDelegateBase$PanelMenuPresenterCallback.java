@@ -25,16 +25,15 @@ import android.support.v7.internal.widget.TintCheckBox;
 import android.support.v7.internal.widget.TintSpinner;
 import android.support.v7.internal.widget.TintEditText;
 import android.os.Build$VERSION;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.support.v7.internal.app.WindowDecorActionBar;
 import android.view.ViewGroup$LayoutParams;
 import android.support.v7.appcompat.R$color;
 import android.support.v7.internal.widget.ViewUtils;
 import android.view.ViewGroup$MarginLayoutParams;
-import android.view.KeyCharacterMap;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.view.ViewConfiguration;
+import android.view.KeyCharacterMap;
 import android.support.v4.view.ViewCompat;
 import android.content.res.Resources$Theme;
 import android.support.v7.appcompat.R$id;
@@ -62,9 +61,9 @@ import android.support.v7.internal.view.menu.j;
 import android.support.v7.internal.app.WindowCallback;
 import android.view.Menu;
 import android.support.v7.internal.view.menu.i;
-import android.support.v7.internal.view.menu.z;
+import android.support.v7.internal.view.menu.y;
 
-final class ActionBarActivityDelegateBase$PanelMenuPresenterCallback implements z
+final class ActionBarActivityDelegateBase$PanelMenuPresenterCallback implements y
 {
     final /* synthetic */ ActionBarActivityDelegateBase this$0;
     
@@ -74,9 +73,9 @@ final class ActionBarActivityDelegateBase$PanelMenuPresenterCallback implements 
     
     @Override
     public void onCloseMenu(i i, final boolean b) {
-        final Object q = i.q();
+        final Object p2 = i.p();
         boolean b2;
-        if (q != i) {
+        if (p2 != i) {
             b2 = true;
         }
         else {
@@ -84,7 +83,7 @@ final class ActionBarActivityDelegateBase$PanelMenuPresenterCallback implements 
         }
         final ActionBarActivityDelegateBase this$0 = this.this$0;
         if (b2) {
-            i = (i)q;
+            i = (i)p2;
         }
         final ActionBarActivityDelegateBase$PanelFeatureState access$600 = this$0.findMenuPanel((Menu)i);
         if (access$600 != null) {
@@ -93,7 +92,7 @@ final class ActionBarActivityDelegateBase$PanelMenuPresenterCallback implements 
                 this.this$0.closePanel(access$600, b);
                 return;
             }
-            this.this$0.callOnPanelClosed(access$600.featureId, access$600, (Menu)q);
+            this.this$0.callOnPanelClosed(access$600.featureId, access$600, (Menu)p2);
             this.this$0.closePanel(access$600, true);
         }
     }

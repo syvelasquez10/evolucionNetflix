@@ -17,7 +17,6 @@ import android.content.ServiceConnection;
 final class RegisteredMediaRouteProvider extends MediaRouteProvider implements ServiceConnection
 {
     private static final boolean DEBUG;
-    private static final String TAG = "MediaRouteProviderProxy";
     private RegisteredMediaRouteProvider$Connection mActiveConnection;
     private boolean mBound;
     private final ComponentName mComponentName;

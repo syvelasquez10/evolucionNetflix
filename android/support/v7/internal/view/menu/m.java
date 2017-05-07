@@ -16,105 +16,91 @@ import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.view.LayoutInflater;
-import android.view.MenuItem$OnMenuItemClickListener;
-import android.graphics.drawable.Drawable;
-import android.content.Intent;
 import android.view.ContextMenu$ContextMenuInfo;
 import android.support.v4.view.MenuItemCompat$OnActionExpandListener;
 import android.support.v4.view.ActionProvider;
 import android.view.View;
+import android.view.MenuItem$OnMenuItemClickListener;
+import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.support.v4.internal.view.SupportMenuItem;
 
 public final class m implements SupportMenuItem
 {
-    private static String F;
-    private static String G;
-    private static String H;
-    private static String I;
-    static final int a = 0;
-    private static final String b = "MenuItemImpl";
-    private static final int c = 3;
-    private static final int t = 1;
-    private static final int u = 2;
-    private static final int v = 4;
-    private static final int w = 8;
-    private static final int x = 16;
-    private static final int y = 32;
-    private View A;
-    private ActionProvider B;
-    private MenuItemCompat$OnActionExpandListener C;
-    private boolean D;
-    private ContextMenu$ContextMenuInfo E;
+    private static String w;
+    private static String x;
+    private static String y;
+    private static String z;
+    private final int a;
+    private final int b;
+    private final int c;
     private final int d;
-    private final int e;
-    private final int f;
-    private final int g;
-    private CharSequence h;
-    private CharSequence i;
-    private Intent j;
-    private char k;
-    private char l;
-    private Drawable m;
-    private int n;
-    private i o;
-    private ae p;
-    private Runnable q;
-    private MenuItem$OnMenuItemClickListener r;
-    private int s;
-    private int z;
+    private CharSequence e;
+    private CharSequence f;
+    private Intent g;
+    private char h;
+    private char i;
+    private Drawable j;
+    private int k;
+    private i l;
+    private ad m;
+    private Runnable n;
+    private MenuItem$OnMenuItemClickListener o;
+    private int p;
+    private int q;
+    private View r;
+    private ActionProvider s;
+    private MenuItemCompat$OnActionExpandListener t;
+    private boolean u;
+    private ContextMenu$ContextMenuInfo v;
     
-    m(final i o, final int e, final int d, final int f, final int g, final CharSequence h, final int z) {
-        this.n = 0;
-        this.s = 16;
-        this.z = 0;
-        this.D = false;
-        this.o = o;
+    m(final i l, final int b, final int a, final int c, final int d, final CharSequence e, final int q) {
+        this.k = 0;
+        this.p = 16;
+        this.q = 0;
+        this.u = false;
+        this.l = l;
+        this.a = a;
+        this.b = b;
+        this.c = c;
         this.d = d;
         this.e = e;
-        this.f = f;
-        this.g = g;
-        this.h = h;
-        this.z = z;
+        this.q = q;
     }
     
     public SupportMenuItem a(final int n) {
-        final Context f = this.o.f();
-        this.a(LayoutInflater.from(f).inflate(n, (ViewGroup)new LinearLayout(f), false));
+        final Context e = this.l.e();
+        this.a(LayoutInflater.from(e).inflate(n, (ViewGroup)new LinearLayout(e), false));
         return this;
     }
     
-    public SupportMenuItem a(final View a) {
-        this.A = a;
-        this.B = null;
-        if (a != null && a.getId() == -1 && this.d > 0) {
-            a.setId(this.d);
+    public SupportMenuItem a(final View r) {
+        this.r = r;
+        this.s = null;
+        if (r != null && r.getId() == -1 && this.a > 0) {
+            r.setId(this.a);
         }
-        this.o.b(this);
+        this.l.b(this);
         return this;
     }
     
-    public MenuItem a(final Runnable q) {
-        this.q = q;
-        return (MenuItem)this;
-    }
-    
-    CharSequence a(final ab ab) {
-        if (ab != null && ab.b()) {
+    CharSequence a(final aa aa) {
+        if (aa != null && aa.b()) {
             return this.getTitleCondensed();
         }
         return this.getTitle();
     }
     
-    void a(final ae p) {
-        (this.p = p).setHeaderTitle(this.getTitle());
+    void a(final ad m) {
+        (this.m = m).setHeaderTitle(this.getTitle());
     }
     
-    void a(final ContextMenu$ContextMenuInfo e) {
-        this.E = e;
+    void a(final ContextMenu$ContextMenuInfo v) {
+        this.v = v;
     }
     
     public void a(final boolean b) {
-        final int s = this.s;
+        final int p = this.p;
         int n;
         if (b) {
             n = 4;
@@ -122,25 +108,25 @@ public final class m implements SupportMenuItem
         else {
             n = 0;
         }
-        this.s = (n | (s & 0xFFFFFFFB));
+        this.p = (n | (p & 0xFFFFFFFB));
     }
     
     public boolean a() {
-        if ((this.r == null || !this.r.onMenuItemClick((MenuItem)this)) && !this.o.a(this.o.q(), (MenuItem)this)) {
-            if (this.q != null) {
-                this.q.run();
+        if ((this.o == null || !this.o.onMenuItemClick((MenuItem)this)) && !this.l.a(this.l.p(), (MenuItem)this)) {
+            if (this.n != null) {
+                this.n.run();
                 return true;
             }
-            if (this.j != null) {
+            if (this.g != null) {
                 try {
-                    this.o.f().startActivity(this.j);
+                    this.l.e().startActivity(this.g);
                     return true;
                 }
                 catch (ActivityNotFoundException ex) {
                     Log.e("MenuItemImpl", "Can't find activity to handle intent; ignoring", (Throwable)ex);
                 }
             }
-            if (this.B == null || !this.B.onPerformDefaultAction()) {
+            if (this.s == null || !this.s.onPerformDefaultAction()) {
                 return false;
             }
         }
@@ -148,7 +134,7 @@ public final class m implements SupportMenuItem
     }
     
     public int b() {
-        return this.g;
+        return this.d;
     }
     
     public SupportMenuItem b(final int showAsAction) {
@@ -157,8 +143,8 @@ public final class m implements SupportMenuItem
     }
     
     void b(final boolean b) {
-        final int s = this.s;
-        final int s2 = this.s;
+        final int p = this.p;
+        final int p2 = this.p;
         int n;
         if (b) {
             n = 2;
@@ -166,20 +152,23 @@ public final class m implements SupportMenuItem
         else {
             n = 0;
         }
-        this.s = (n | (s2 & 0xFFFFFFFD));
-        if (s != this.s) {
-            this.o.c(false);
+        this.p = (n | (p2 & 0xFFFFFFFD));
+        if (p != this.p) {
+            this.l.b(false);
         }
     }
     
-    Runnable c() {
-        return this.q;
+    char c() {
+        if (this.l.b()) {
+            return this.i;
+        }
+        return this.h;
     }
     
     boolean c(final boolean b) {
         final boolean b2 = false;
-        final int s = this.s;
-        final int s2 = this.s;
+        final int p = this.p;
+        final int p2 = this.p;
         int n;
         if (b) {
             n = 0;
@@ -187,85 +176,81 @@ public final class m implements SupportMenuItem
         else {
             n = 8;
         }
-        this.s = (n | (s2 & 0xFFFFFFF7));
+        this.p = (n | (p2 & 0xFFFFFFF7));
         boolean b3 = b2;
-        if (s != this.s) {
+        if (p != this.p) {
             b3 = true;
         }
         return b3;
     }
     
-    @Override
     public boolean collapseActionView() {
-        if ((this.z & 0x8) != 0x0) {
-            if (this.A == null) {
+        if ((this.q & 0x8) != 0x0) {
+            if (this.r == null) {
                 return true;
             }
-            if (this.C == null || this.C.onMenuItemActionCollapse((MenuItem)this)) {
-                return this.o.d(this);
+            if (this.t == null || this.t.onMenuItemActionCollapse((MenuItem)this)) {
+                return this.l.d(this);
             }
         }
         return false;
     }
     
-    char d() {
-        if (this.o.c()) {
-            return this.l;
-        }
-        return this.k;
-    }
-    
-    public void d(final boolean b) {
-        if (b) {
-            this.s |= 0x20;
-            return;
-        }
-        this.s &= 0xFFFFFFDF;
-    }
-    
-    String e() {
-        final char d = this.d();
-        if (d == '\0') {
+    String d() {
+        final char c = this.c();
+        if (c == '\0') {
             return "";
         }
-        final StringBuilder sb = new StringBuilder(android.support.v7.internal.view.menu.m.F);
-        switch (d) {
+        final StringBuilder sb = new StringBuilder(android.support.v7.internal.view.menu.m.w);
+        switch (c) {
             default: {
-                sb.append(d);
+                sb.append(c);
                 break;
             }
             case 10: {
-                sb.append(android.support.v7.internal.view.menu.m.G);
+                sb.append(android.support.v7.internal.view.menu.m.x);
                 break;
             }
             case 8: {
-                sb.append(android.support.v7.internal.view.menu.m.H);
+                sb.append(android.support.v7.internal.view.menu.m.y);
                 break;
             }
             case 32: {
-                sb.append(android.support.v7.internal.view.menu.m.I);
+                sb.append(android.support.v7.internal.view.menu.m.z);
                 break;
             }
         }
         return sb.toString();
     }
     
-    public void e(final boolean d) {
-        this.D = d;
-        this.o.c(false);
+    public void d(final boolean b) {
+        if (b) {
+            this.p |= 0x20;
+            return;
+        }
+        this.p &= 0xFFFFFFDF;
+    }
+    
+    public void e(final boolean u) {
+        this.u = u;
+        this.l.b(false);
+    }
+    
+    boolean e() {
+        return this.l.c() && this.c() != '\0';
     }
     
     @Override
     public boolean expandActionView() {
-        return this.n() && (this.C == null || this.C.onMenuItemActionExpand((MenuItem)this)) && this.o.c(this);
+        return this.m() && (this.t == null || this.t.onMenuItemActionExpand((MenuItem)this)) && this.l.c(this);
     }
     
-    boolean f() {
-        return this.o.d() && this.d() != '\0';
+    public boolean f() {
+        return (this.p & 0x4) != 0x0;
     }
     
     public boolean g() {
-        return (this.s & 0x4) != 0x0;
+        return this.l.q();
     }
     
     public android.view.ActionProvider getActionProvider() {
@@ -274,142 +259,133 @@ public final class m implements SupportMenuItem
     
     @Override
     public View getActionView() {
-        if (this.A != null) {
-            return this.A;
+        if (this.r != null) {
+            return this.r;
         }
-        if (this.B != null) {
-            return this.A = this.B.onCreateActionView((MenuItem)this);
+        if (this.s != null) {
+            return this.r = this.s.onCreateActionView((MenuItem)this);
         }
         return null;
     }
     
     public char getAlphabeticShortcut() {
-        return this.l;
+        return this.i;
     }
     
     public int getGroupId() {
-        return this.e;
+        return this.b;
     }
     
     public Drawable getIcon() {
-        if (this.m != null) {
-            return this.m;
+        if (this.j != null) {
+            return this.j;
         }
-        if (this.n != 0) {
-            final Drawable drawable = TintManager.getDrawable(this.o.f(), this.n);
-            this.n = 0;
-            return this.m = drawable;
+        if (this.k != 0) {
+            final Drawable drawable = TintManager.getDrawable(this.l.e(), this.k);
+            this.k = 0;
+            return this.j = drawable;
         }
         return null;
     }
     
     public Intent getIntent() {
-        return this.j;
+        return this.g;
     }
     
     @ViewDebug$CapturedViewProperty
     public int getItemId() {
-        return this.d;
+        return this.a;
     }
     
     public ContextMenu$ContextMenuInfo getMenuInfo() {
-        return this.E;
+        return this.v;
     }
     
     public char getNumericShortcut() {
-        return this.k;
+        return this.h;
     }
     
     public int getOrder() {
-        return this.f;
+        return this.c;
     }
     
     public SubMenu getSubMenu() {
-        return (SubMenu)this.p;
-    }
-    
-    @Override
-    public ActionProvider getSupportActionProvider() {
-        return this.B;
+        return (SubMenu)this.m;
     }
     
     @ViewDebug$CapturedViewProperty
     public CharSequence getTitle() {
-        return this.h;
+        return this.e;
     }
     
     public CharSequence getTitleCondensed() {
-        if (this.i != null) {
-            return this.i;
+        if (this.f != null) {
+            return this.f;
         }
-        return this.h;
+        return this.e;
     }
     
-    public void h() {
-        this.o.b(this);
+    public boolean h() {
+        return (this.p & 0x20) == 0x20;
     }
     
     public boolean hasSubMenu() {
-        return this.p != null;
+        return this.m != null;
     }
     
     public boolean i() {
-        return this.o.r();
+        return (this.q & 0x1) == 0x1;
     }
     
     @Override
     public boolean isActionViewExpanded() {
-        return this.D;
+        return this.u;
     }
     
     public boolean isCheckable() {
-        return (this.s & 0x1) == 0x1;
+        return (this.p & 0x1) == 0x1;
     }
     
     public boolean isChecked() {
-        return (this.s & 0x2) == 0x2;
+        return (this.p & 0x2) == 0x2;
     }
     
     public boolean isEnabled() {
-        return (this.s & 0x10) != 0x0;
+        return (this.p & 0x10) != 0x0;
     }
     
     public boolean isVisible() {
-        if (this.B != null && this.B.overridesItemVisibility()) {
-            if ((this.s & 0x8) != 0x0 || !this.B.isVisible()) {
+        if (this.s != null && this.s.overridesItemVisibility()) {
+            if ((this.p & 0x8) != 0x0 || !this.s.isVisible()) {
                 return false;
             }
         }
-        else if ((this.s & 0x8) != 0x0) {
+        else if ((this.p & 0x8) != 0x0) {
             return false;
         }
         return true;
     }
     
     public boolean j() {
-        return (this.s & 0x20) == 0x20;
+        return (this.q & 0x2) == 0x2;
     }
     
     public boolean k() {
-        return (this.z & 0x1) == 0x1;
+        return (this.q & 0x4) == 0x4;
     }
     
-    public boolean l() {
-        return (this.z & 0x2) == 0x2;
+    public ActionProvider l() {
+        return this.s;
     }
     
     public boolean m() {
-        return (this.z & 0x4) == 0x4;
-    }
-    
-    public boolean n() {
         boolean b = false;
-        if ((this.z & 0x8) != 0x0) {
-            if (this.A == null && this.B != null) {
-                this.A = this.B.onCreateActionView((MenuItem)this);
+        if ((this.q & 0x8) != 0x0) {
+            if (this.r == null && this.s != null) {
+                this.r = this.s.onCreateActionView((MenuItem)this);
             }
             b = b;
-            if (this.A != null) {
+            if (this.r != null) {
                 b = true;
             }
         }
@@ -421,17 +397,17 @@ public final class m implements SupportMenuItem
     }
     
     public MenuItem setAlphabeticShortcut(final char c) {
-        if (this.l == c) {
+        if (this.i == c) {
             return (MenuItem)this;
         }
-        this.l = Character.toLowerCase(c);
-        this.o.c(false);
+        this.i = Character.toLowerCase(c);
+        this.l.b(false);
         return (MenuItem)this;
     }
     
     public MenuItem setCheckable(final boolean b) {
-        final int s = this.s;
-        final int s2 = this.s;
+        final int p = this.p;
+        final int p2 = this.p;
         boolean b2;
         if (b) {
             b2 = true;
@@ -439,16 +415,16 @@ public final class m implements SupportMenuItem
         else {
             b2 = false;
         }
-        this.s = ((b2 ? 1 : 0) | (s2 & 0xFFFFFFFE));
-        if (s != this.s) {
-            this.o.c(false);
+        this.p = ((b2 ? 1 : 0) | (p2 & 0xFFFFFFFE));
+        if (p != this.p) {
+            this.l.b(false);
         }
         return (MenuItem)this;
     }
     
     public MenuItem setChecked(final boolean b) {
-        if ((this.s & 0x4) != 0x0) {
-            this.o.a((MenuItem)this);
+        if ((this.p & 0x4) != 0x0) {
+            this.l.a((MenuItem)this);
             return (MenuItem)this;
         }
         this.b(b);
@@ -457,40 +433,40 @@ public final class m implements SupportMenuItem
     
     public MenuItem setEnabled(final boolean b) {
         if (b) {
-            this.s |= 0x10;
+            this.p |= 0x10;
         }
         else {
-            this.s &= 0xFFFFFFEF;
+            this.p &= 0xFFFFFFEF;
         }
-        this.o.c(false);
+        this.l.b(false);
         return (MenuItem)this;
     }
     
-    public MenuItem setIcon(final int n) {
-        this.m = null;
-        this.n = n;
-        this.o.c(false);
+    public MenuItem setIcon(final int k) {
+        this.j = null;
+        this.k = k;
+        this.l.b(false);
         return (MenuItem)this;
     }
     
-    public MenuItem setIcon(final Drawable m) {
-        this.n = 0;
-        this.m = m;
-        this.o.c(false);
-        return (MenuItem)this;
-    }
-    
-    public MenuItem setIntent(final Intent j) {
+    public MenuItem setIcon(final Drawable j) {
+        this.k = 0;
         this.j = j;
+        this.l.b(false);
         return (MenuItem)this;
     }
     
-    public MenuItem setNumericShortcut(final char k) {
-        if (this.k == k) {
+    public MenuItem setIntent(final Intent g) {
+        this.g = g;
+        return (MenuItem)this;
+    }
+    
+    public MenuItem setNumericShortcut(final char h) {
+        if (this.h == h) {
             return (MenuItem)this;
         }
-        this.k = k;
-        this.o.c(false);
+        this.h = h;
+        this.l.b(false);
         return (MenuItem)this;
     }
     
@@ -498,84 +474,78 @@ public final class m implements SupportMenuItem
         throw new UnsupportedOperationException("This is not supported, use MenuItemCompat.setOnActionExpandListener()");
     }
     
-    public MenuItem setOnMenuItemClickListener(final MenuItem$OnMenuItemClickListener r) {
-        this.r = r;
+    public MenuItem setOnMenuItemClickListener(final MenuItem$OnMenuItemClickListener o) {
+        this.o = o;
         return (MenuItem)this;
     }
     
-    public MenuItem setShortcut(final char k, final char c) {
-        this.k = k;
-        this.l = Character.toLowerCase(c);
-        this.o.c(false);
+    public MenuItem setShortcut(final char h, final char c) {
+        this.h = h;
+        this.i = Character.toLowerCase(c);
+        this.l.b(false);
         return (MenuItem)this;
     }
     
     @Override
-    public void setShowAsAction(final int z) {
-        switch (z & 0x3) {
+    public void setShowAsAction(final int q) {
+        switch (q & 0x3) {
             default: {
                 throw new IllegalArgumentException("SHOW_AS_ACTION_ALWAYS, SHOW_AS_ACTION_IF_ROOM, and SHOW_AS_ACTION_NEVER are mutually exclusive.");
             }
             case 0:
             case 1:
             case 2: {
-                this.z = z;
-                this.o.b(this);
+                this.q = q;
+                this.l.b(this);
             }
         }
     }
     
     @Override
-    public SupportMenuItem setSupportActionProvider(final ActionProvider b) {
-        if (this.B != null) {
-            this.B.setVisibilityListener(null);
+    public SupportMenuItem setSupportActionProvider(final ActionProvider s) {
+        if (this.s != null) {
+            this.s.setVisibilityListener(null);
         }
-        this.A = null;
-        this.B = b;
-        this.o.c(true);
-        if (this.B != null) {
-            this.B.setVisibilityListener(new n(this));
+        this.r = null;
+        this.s = s;
+        this.l.b(true);
+        if (this.s != null) {
+            this.s.setVisibilityListener(new n(this));
         }
-        return this;
-    }
-    
-    @Override
-    public SupportMenuItem setSupportOnActionExpandListener(final MenuItemCompat$OnActionExpandListener c) {
-        this.C = c;
         return this;
     }
     
     public MenuItem setTitle(final int n) {
-        return this.setTitle(this.o.f().getString(n));
+        return this.setTitle(this.l.e().getString(n));
     }
     
     public MenuItem setTitle(final CharSequence charSequence) {
-        this.h = charSequence;
-        this.o.c(false);
-        if (this.p != null) {
-            this.p.setHeaderTitle(charSequence);
+        this.e = charSequence;
+        this.l.b(false);
+        if (this.m != null) {
+            this.m.setHeaderTitle(charSequence);
         }
         return (MenuItem)this;
     }
     
-    public MenuItem setTitleCondensed(CharSequence h) {
-        this.i = h;
-        if (h == null) {
-            h = this.h;
+    public MenuItem setTitleCondensed(CharSequence e) {
+        this.f = e;
+        if (e == null) {
+            e = this.e;
         }
-        this.o.c(false);
+        this.l.b(false);
         return (MenuItem)this;
     }
     
     public MenuItem setVisible(final boolean b) {
         if (this.c(b)) {
-            this.o.a(this);
+            this.l.a(this);
         }
         return (MenuItem)this;
     }
     
     @Override
     public String toString() {
-        return this.h.toString();
+        return this.e.toString();
     }
 }

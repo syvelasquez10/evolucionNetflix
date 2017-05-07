@@ -19,8 +19,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public final class FileLruCache
 {
-    private static final String HEADER_CACHEKEY_KEY = "key";
-    private static final String HEADER_CACHE_CONTENT_TAG_KEY = "tag";
     static final String TAG;
     private static final AtomicLong bufferIndex;
     private final File directory;
@@ -411,74 +409,74 @@ public final class FileLruCache
         //   111: pop            
         //   112: aload_2        
         //   113: invokestatic    com/facebook/internal/Utility.isNullOrEmpty:(Ljava/lang/String;)Z
-        //   116: ifne            128
+        //   116: ifne            129
         //   119: aload           4
-        //   121: ldc             "tag"
-        //   123: aload_2        
-        //   124: invokevirtual   org/json/JSONObject.put:(Ljava/lang/String;Ljava/lang/Object;)Lorg/json/JSONObject;
-        //   127: pop            
-        //   128: aload_3        
-        //   129: aload           4
-        //   131: invokestatic    com/facebook/internal/FileLruCache$StreamHeader.writeHeader:(Ljava/io/OutputStream;Lorg/json/JSONObject;)V
-        //   134: aload_3        
-        //   135: areturn        
-        //   136: astore_1       
-        //   137: getstatic       com/facebook/LoggingBehavior.CACHE:Lcom/facebook/LoggingBehavior;
-        //   140: iconst_5       
-        //   141: getstatic       com/facebook/internal/FileLruCache.TAG:Ljava/lang/String;
-        //   144: new             Ljava/lang/StringBuilder;
-        //   147: dup            
-        //   148: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   151: ldc_w           "Error creating buffer output stream: "
-        //   154: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   157: aload_1        
-        //   158: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
-        //   161: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   164: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;ILjava/lang/String;Ljava/lang/String;)V
-        //   167: new             Ljava/io/IOException;
-        //   170: dup            
-        //   171: aload_1        
-        //   172: invokevirtual   java/io/FileNotFoundException.getMessage:()Ljava/lang/String;
-        //   175: invokespecial   java/io/IOException.<init>:(Ljava/lang/String;)V
-        //   178: athrow         
-        //   179: astore_1       
-        //   180: getstatic       com/facebook/LoggingBehavior.CACHE:Lcom/facebook/LoggingBehavior;
-        //   183: iconst_5       
-        //   184: getstatic       com/facebook/internal/FileLruCache.TAG:Ljava/lang/String;
-        //   187: new             Ljava/lang/StringBuilder;
-        //   190: dup            
-        //   191: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   194: ldc_w           "Error creating JSON header for cache file: "
-        //   197: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   200: aload_1        
-        //   201: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
-        //   204: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   207: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;ILjava/lang/String;Ljava/lang/String;)V
-        //   210: new             Ljava/io/IOException;
-        //   213: dup            
-        //   214: aload_1        
-        //   215: invokevirtual   org/json/JSONException.getMessage:()Ljava/lang/String;
-        //   218: invokespecial   java/io/IOException.<init>:(Ljava/lang/String;)V
-        //   221: athrow         
-        //   222: astore_1       
-        //   223: aload_3        
-        //   224: invokevirtual   java/io/BufferedOutputStream.close:()V
-        //   227: aload_1        
-        //   228: athrow         
+        //   121: ldc_w           "tag"
+        //   124: aload_2        
+        //   125: invokevirtual   org/json/JSONObject.put:(Ljava/lang/String;Ljava/lang/Object;)Lorg/json/JSONObject;
+        //   128: pop            
+        //   129: aload_3        
+        //   130: aload           4
+        //   132: invokestatic    com/facebook/internal/FileLruCache$StreamHeader.writeHeader:(Ljava/io/OutputStream;Lorg/json/JSONObject;)V
+        //   135: aload_3        
+        //   136: areturn        
+        //   137: astore_1       
+        //   138: getstatic       com/facebook/LoggingBehavior.CACHE:Lcom/facebook/LoggingBehavior;
+        //   141: iconst_5       
+        //   142: getstatic       com/facebook/internal/FileLruCache.TAG:Ljava/lang/String;
+        //   145: new             Ljava/lang/StringBuilder;
+        //   148: dup            
+        //   149: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   152: ldc_w           "Error creating buffer output stream: "
+        //   155: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   158: aload_1        
+        //   159: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //   162: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   165: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;ILjava/lang/String;Ljava/lang/String;)V
+        //   168: new             Ljava/io/IOException;
+        //   171: dup            
+        //   172: aload_1        
+        //   173: invokevirtual   java/io/FileNotFoundException.getMessage:()Ljava/lang/String;
+        //   176: invokespecial   java/io/IOException.<init>:(Ljava/lang/String;)V
+        //   179: athrow         
+        //   180: astore_1       
+        //   181: getstatic       com/facebook/LoggingBehavior.CACHE:Lcom/facebook/LoggingBehavior;
+        //   184: iconst_5       
+        //   185: getstatic       com/facebook/internal/FileLruCache.TAG:Ljava/lang/String;
+        //   188: new             Ljava/lang/StringBuilder;
+        //   191: dup            
+        //   192: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   195: ldc_w           "Error creating JSON header for cache file: "
+        //   198: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   201: aload_1        
+        //   202: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //   205: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   208: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;ILjava/lang/String;Ljava/lang/String;)V
+        //   211: new             Ljava/io/IOException;
+        //   214: dup            
+        //   215: aload_1        
+        //   216: invokevirtual   org/json/JSONException.getMessage:()Ljava/lang/String;
+        //   219: invokespecial   java/io/IOException.<init>:(Ljava/lang/String;)V
+        //   222: athrow         
+        //   223: astore_1       
+        //   224: aload_3        
+        //   225: invokevirtual   java/io/BufferedOutputStream.close:()V
+        //   228: aload_1        
+        //   229: athrow         
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                           
         //  -----  -----  -----  -----  -------------------------------
-        //  51     61     136    179    Ljava/io/FileNotFoundException;
-        //  94     128    179    222    Lorg/json/JSONException;
-        //  94     128    222    229    Any
-        //  128    134    179    222    Lorg/json/JSONException;
-        //  128    134    222    229    Any
-        //  180    222    222    229    Any
+        //  51     61     137    180    Ljava/io/FileNotFoundException;
+        //  94     129    180    223    Lorg/json/JSONException;
+        //  94     129    223    230    Any
+        //  129    135    180    223    Lorg/json/JSONException;
+        //  129    135    223    230    Any
+        //  181    223    223    230    Any
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0128:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0129:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -499,41 +497,6 @@ public final class FileLruCache
         //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
         // 
         throw new IllegalStateException("An error occurred while decompiling this method.");
-    }
-    
-    long sizeInBytesForTest() {
-        Object o = this.lock;
-        long length;
-        synchronized (o) {
-            while (true) {
-                if (!this.isTrimPending) {
-                    if (!this.isTrimInProgress) {
-                        break;
-                    }
-                }
-                try {
-                    this.lock.wait();
-                }
-                catch (InterruptedException ex) {}
-            }
-            // monitorexit(o)
-            o = this.directory.listFiles();
-            long n = length = 0L;
-            if (o != null) {
-                final int length2 = o.length;
-                int n2 = 0;
-                while (true) {
-                    length = n;
-                    if (n2 >= length2) {
-                        break;
-                    }
-                    length = o[n2].length();
-                    ++n2;
-                    n += length;
-                }
-            }
-        }
-        return length;
     }
     
     @Override

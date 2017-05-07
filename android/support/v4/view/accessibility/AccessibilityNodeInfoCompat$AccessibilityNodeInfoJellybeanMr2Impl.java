@@ -10,9 +10,4 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoJellybeanMr2Impl extends 
     public String getViewIdResourceName(final Object o) {
         return AccessibilityNodeInfoCompatJellybeanMr2.getViewIdResourceName(o);
     }
-    
-    @Override
-    public void setViewIdResourceName(final Object o, final String s) {
-        AccessibilityNodeInfoCompatJellybeanMr2.setViewIdResourceName(o, s);
-    }
 }

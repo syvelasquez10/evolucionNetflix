@@ -19,35 +19,11 @@ public class MarginLayoutParamsCompat
         IMPL = new MarginLayoutParamsCompat$MarginLayoutParamsCompatImplBase();
     }
     
-    public static int getLayoutDirection(final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams) {
-        return MarginLayoutParamsCompat.IMPL.getLayoutDirection(viewGroup$MarginLayoutParams);
-    }
-    
     public static int getMarginEnd(final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams) {
         return MarginLayoutParamsCompat.IMPL.getMarginEnd(viewGroup$MarginLayoutParams);
     }
     
     public static int getMarginStart(final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams) {
         return MarginLayoutParamsCompat.IMPL.getMarginStart(viewGroup$MarginLayoutParams);
-    }
-    
-    public static boolean isMarginRelative(final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams) {
-        return MarginLayoutParamsCompat.IMPL.isMarginRelative(viewGroup$MarginLayoutParams);
-    }
-    
-    public static void resolveLayoutDirection(final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams, final int n) {
-        MarginLayoutParamsCompat.IMPL.resolveLayoutDirection(viewGroup$MarginLayoutParams, n);
-    }
-    
-    public static void setLayoutDirection(final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams, final int n) {
-        MarginLayoutParamsCompat.IMPL.setLayoutDirection(viewGroup$MarginLayoutParams, n);
-    }
-    
-    public static void setMarginEnd(final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams, final int n) {
-        MarginLayoutParamsCompat.IMPL.setMarginEnd(viewGroup$MarginLayoutParams, n);
-    }
-    
-    public static void setMarginStart(final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams, final int n) {
-        MarginLayoutParamsCompat.IMPL.setMarginStart(viewGroup$MarginLayoutParams, n);
     }
 }

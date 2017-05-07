@@ -20,7 +20,6 @@ import java.io.FilenameFilter;
 
 class FileLruCache$BufferFile
 {
-    private static final String FILE_NAME_PREFIX = "buffer";
     private static final FilenameFilter filterExcludeBufferFiles;
     private static final FilenameFilter filterExcludeNonBufferFiles;
     

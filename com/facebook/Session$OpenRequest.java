@@ -10,8 +10,6 @@ import android.app.Activity;
 
 public final class Session$OpenRequest extends Session$AuthorizationRequest
 {
-    private static final long serialVersionUID = 1L;
-    
     public Session$OpenRequest(final Activity activity) {
         super(activity);
     }
@@ -36,11 +34,6 @@ public final class Session$OpenRequest extends Session$AuthorizationRequest
     }
     
     public final Session$OpenRequest setPermissions(final List<String> permissions) {
-        super.setPermissions(permissions);
-        return this;
-    }
-    
-    public final Session$OpenRequest setPermissions(final String... permissions) {
         super.setPermissions(permissions);
         return this;
     }

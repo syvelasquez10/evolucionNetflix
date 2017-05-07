@@ -130,10 +130,6 @@ abstract class DrawerArrowDrawable extends Drawable
         return -3;
     }
     
-    public float getProgress() {
-        return this.mProgress;
-    }
-    
     public boolean isAutoMirrored() {
         return true;
     }

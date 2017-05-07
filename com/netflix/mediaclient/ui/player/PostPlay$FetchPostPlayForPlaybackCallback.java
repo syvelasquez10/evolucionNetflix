@@ -20,7 +20,7 @@ class PostPlay$FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
     
     @Override
     public void onPostPlayVideosFetched(final PostPlayVideosProvider postPlayVideosProvider, final Status status) {
-        boolean mPostPlayDataExist = false;
+        final boolean b = false;
         super.onPostPlayVideosFetched(postPlayVideosProvider, status);
         if (Log.isLoggable("nf_postplay", 2)) {
             Log.v("nf_postplay", "postPlayVideosProvider: " + postPlayVideosProvider);
@@ -38,8 +38,12 @@ class PostPlay$FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
         }
         this.this$0.mPostPlayVideos = postPlayVideosProvider.getPostPlayVideos();
         final PostPlay this$0 = this.this$0;
-        if (this.this$0.mPostPlayVideos.size() > 0) {
-            mPostPlayDataExist = true;
+        boolean mPostPlayDataExist = b;
+        if (this.this$0.mPostPlayVideos != null) {
+            mPostPlayDataExist = b;
+            if (this.this$0.mPostPlayVideos.size() > 0) {
+                mPostPlayDataExist = true;
+            }
         }
         this$0.mPostPlayDataExist = mPostPlayDataExist;
         this.this$0.mPostPlayContexts = postPlayVideosProvider.getPostPlayContexts();

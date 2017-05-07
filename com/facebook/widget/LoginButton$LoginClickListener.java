@@ -4,15 +4,11 @@
 
 package com.facebook.widget;
 
-import android.util.Log;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Arrays;
-import android.graphics.Canvas;
-import android.content.Intent;
-import com.facebook.FacebookException;
 import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionDefaultAudience;
+import android.graphics.Canvas;
+import com.facebook.FacebookException;
 import android.content.res.TypedArray;
 import com.facebook.android.R$styleable;
 import com.facebook.Session$StatusCallback;

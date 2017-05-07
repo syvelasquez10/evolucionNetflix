@@ -16,7 +16,6 @@ import java.io.Serializable;
 
 class AppEventsLogger$AppEvent implements Serializable
 {
-    private static final long serialVersionUID = 1L;
     private static final HashSet<String> validatedIdentifiers;
     private boolean isImplicit;
     private JSONObject jsonObject;
@@ -71,11 +70,6 @@ class AppEventsLogger$AppEvent implements Serializable
             return;
         }
         goto Label_0242;
-    }
-    
-    private AppEventsLogger$AppEvent(final String s, final boolean isImplicit) {
-        this.jsonObject = new JSONObject(s);
-        this.isImplicit = isImplicit;
     }
     
     private void validateIdentifier(final String p0) {
@@ -199,20 +193,12 @@ class AppEventsLogger$AppEvent implements Serializable
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    private Object writeReplace() {
-        return new AppEventsLogger$AppEvent$SerializationProxyV1(this.jsonObject.toString(), this.isImplicit, null);
-    }
-    
     public boolean getIsImplicit() {
         return this.isImplicit;
     }
     
     public JSONObject getJSONObject() {
         return this.jsonObject;
-    }
-    
-    public String getName() {
-        return this.name;
     }
     
     @Override

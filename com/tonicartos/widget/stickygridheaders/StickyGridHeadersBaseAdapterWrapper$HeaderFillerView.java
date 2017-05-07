@@ -11,7 +11,6 @@ import android.view.View$MeasureSpec;
 import android.view.View;
 import android.widget.FrameLayout$LayoutParams;
 import android.view.ViewGroup$LayoutParams;
-import android.util.AttributeSet;
 import android.content.Context;
 import android.widget.FrameLayout;
 
@@ -23,16 +22,6 @@ public class StickyGridHeadersBaseAdapterWrapper$HeaderFillerView extends FrameL
     public StickyGridHeadersBaseAdapterWrapper$HeaderFillerView(final StickyGridHeadersBaseAdapterWrapper this$0, final Context context) {
         this.this$0 = this$0;
         super(context);
-    }
-    
-    public StickyGridHeadersBaseAdapterWrapper$HeaderFillerView(final StickyGridHeadersBaseAdapterWrapper this$0, final Context context, final AttributeSet set) {
-        this.this$0 = this$0;
-        super(context, set);
-    }
-    
-    public StickyGridHeadersBaseAdapterWrapper$HeaderFillerView(final StickyGridHeadersBaseAdapterWrapper this$0, final Context context, final AttributeSet set, final int n) {
-        this.this$0 = this$0;
-        super(context, set, n);
     }
     
     protected FrameLayout$LayoutParams generateDefaultLayoutParams() {
@@ -55,9 +44,5 @@ public class StickyGridHeadersBaseAdapterWrapper$HeaderFillerView extends FrameL
             view.measure(getChildMeasureSpec(View$MeasureSpec.makeMeasureSpec(this.this$0.mGridView.getWidth(), 1073741824), 0, ((ViewGroup$LayoutParams)layoutParams).width), childMeasureSpec);
         }
         this.setMeasuredDimension(View$MeasureSpec.getSize(n), view.getMeasuredHeight());
-    }
-    
-    public void setHeaderId(final int mHeaderId) {
-        this.mHeaderId = mHeaderId;
     }
 }

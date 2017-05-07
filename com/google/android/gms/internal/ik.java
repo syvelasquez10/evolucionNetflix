@@ -28,14 +28,6 @@ public final class ik
         }
     }
     
-    public static String aG(final String s) {
-        return "urn:x-cast:" + s;
-    }
-    
-    public static long b(final double n) {
-        return (long)(1000.0 * n);
-    }
-    
     public static String b(final Locale locale) {
         final StringBuilder sb = new StringBuilder(20);
         sb.append(locale.getLanguage());
@@ -48,9 +40,5 @@ public final class ik
             sb.append('-').append(variant);
         }
         return sb.toString();
-    }
-    
-    public static double o(final long n) {
-        return n / 1000.0;
     }
 }

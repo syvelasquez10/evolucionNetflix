@@ -61,6 +61,7 @@ class FalkorAgent$1 extends BroadcastReceiver
                 }
                 if ("com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP".equals(action)) {
                     Log.i("FalkorAgent", "Refreshing CW for LOCAL_PLAYER_PLAY_STOP...");
+                    this.this$0.cmp.updateBookmarkPosition(Asset.fromIntent(intent));
                     this.this$0.refreshCw();
                 }
             }

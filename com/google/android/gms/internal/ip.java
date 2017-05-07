@@ -44,26 +44,10 @@ public class ip
         return ip.GX;
     }
     
-    public void a(final String s, final Object... array) {
-        if (this.fS()) {
-            Log.v(this.mTag, this.e(s, array));
-        }
-    }
-    
     public void a(final Throwable t, final String s, final Object... array) {
         if (this.fR() || ip.GX) {
             Log.d(this.mTag, this.e(s, array), t);
         }
-    }
-    
-    public void aK(String format) {
-        if (TextUtils.isEmpty((CharSequence)format)) {
-            format = null;
-        }
-        else {
-            format = String.format("[%s] ", format);
-        }
-        this.Ha = format;
     }
     
     public void b(final String s, final Object... array) {
@@ -72,19 +56,7 @@ public class ip
         }
     }
     
-    public void c(final String s, final Object... array) {
-        Log.i(this.mTag, this.e(s, array));
-    }
-    
-    public void d(final String s, final Object... array) {
-        Log.w(this.mTag, this.e(s, array));
-    }
-    
     public boolean fR() {
         return this.GY;
-    }
-    
-    public boolean fS() {
-        return this.GZ;
     }
 }

@@ -14,8 +14,6 @@ import android.os.Parcelable$Creator;
 
 public class StatusCreator implements Parcelable$Creator<Status>
 {
-    public static final int CONTENT_DESCRIPTION = 0;
-    
     static void a(final Status status, final Parcel parcel, final int n) {
         final int d = b.D(parcel);
         b.c(parcel, 1, status.getStatusCode());

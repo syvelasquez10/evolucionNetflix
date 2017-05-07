@@ -19,17 +19,10 @@ import com.android.volley.Cache;
 
 public class DiskBasedCache implements Cache
 {
-    private static final int CACHE_VERSION = 2;
-    private static final int DEFAULT_DISK_USAGE_BYTES = 5242880;
-    private static final float HYSTERESIS_FACTOR = 0.9f;
     private final Map<String, DiskBasedCache$CacheHeader> mEntries;
     private final int mMaxCacheSizeInBytes;
     private final File mRootDirectory;
     private long mTotalSize;
-    
-    public DiskBasedCache(final File file) {
-        this(file, 5242880);
-    }
     
     public DiskBasedCache(final File mRootDirectory, final int mMaxCacheSizeInBytes) {
         this.mEntries = new LinkedHashMap<String, DiskBasedCache$CacheHeader>(16, 0.75f, true);
@@ -107,23 +100,6 @@ public class DiskBasedCache implements Cache
             throw new IOException("Expected " + n + " bytes, read " + i + " bytes");
         }
         return array;
-    }
-    
-    @Override
-    public void clear() {
-        int i = 0;
-        synchronized (this) {
-            final File[] listFiles = this.mRootDirectory.listFiles();
-            if (listFiles != null) {
-                while (i < listFiles.length) {
-                    listFiles[i].delete();
-                    ++i;
-                }
-            }
-            this.mEntries.clear();
-            this.mTotalSize = 0L;
-            VolleyLog.d("Cache cleared.", new Object[0]);
-        }
     }
     
     @Override
@@ -316,144 +292,144 @@ public class DiskBasedCache implements Cache
         //     2: aload_0        
         //     3: getfield        com/android/volley/toolbox/DiskBasedCache.mRootDirectory:Ljava/io/File;
         //     6: invokevirtual   java/io/File.exists:()Z
-        //     9: ifne            45
+        //     9: ifne            44
         //    12: aload_0        
         //    13: getfield        com/android/volley/toolbox/DiskBasedCache.mRootDirectory:Ljava/io/File;
         //    16: invokevirtual   java/io/File.mkdirs:()Z
-        //    19: ifne            42
-        //    22: ldc_w           "Unable to create cache dir %s"
-        //    25: iconst_1       
-        //    26: anewarray       Ljava/lang/Object;
-        //    29: dup            
-        //    30: iconst_0       
-        //    31: aload_0        
-        //    32: getfield        com/android/volley/toolbox/DiskBasedCache.mRootDirectory:Ljava/io/File;
-        //    35: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
-        //    38: aastore        
-        //    39: invokestatic    com/android/volley/VolleyLog.e:(Ljava/lang/String;[Ljava/lang/Object;)V
-        //    42: aload_0        
-        //    43: monitorexit    
-        //    44: return         
-        //    45: aload_0        
-        //    46: getfield        com/android/volley/toolbox/DiskBasedCache.mRootDirectory:Ljava/io/File;
-        //    49: invokevirtual   java/io/File.listFiles:()[Ljava/io/File;
-        //    52: astore          5
-        //    54: aload           5
-        //    56: ifnull          42
-        //    59: aload           5
-        //    61: arraylength    
-        //    62: istore_2       
-        //    63: iconst_0       
-        //    64: istore_1       
-        //    65: iload_1        
-        //    66: iload_2        
-        //    67: if_icmpge       42
-        //    70: aload           5
-        //    72: iload_1        
-        //    73: aaload         
-        //    74: astore          6
-        //    76: aconst_null    
-        //    77: astore_3       
-        //    78: new             Ljava/io/FileInputStream;
-        //    81: dup            
-        //    82: aload           6
-        //    84: invokespecial   java/io/FileInputStream.<init>:(Ljava/io/File;)V
-        //    87: astore          4
-        //    89: aload           4
-        //    91: astore_3       
-        //    92: aload           4
-        //    94: invokestatic    com/android/volley/toolbox/DiskBasedCache$CacheHeader.readHeader:(Ljava/io/InputStream;)Lcom/android/volley/toolbox/DiskBasedCache$CacheHeader;
-        //    97: astore          7
-        //    99: aload           4
-        //   101: astore_3       
-        //   102: aload           7
-        //   104: aload           6
-        //   106: invokevirtual   java/io/File.length:()J
-        //   109: putfield        com/android/volley/toolbox/DiskBasedCache$CacheHeader.size:J
-        //   112: aload           4
-        //   114: astore_3       
-        //   115: aload_0        
-        //   116: aload           7
-        //   118: getfield        com/android/volley/toolbox/DiskBasedCache$CacheHeader.key:Ljava/lang/String;
-        //   121: aload           7
-        //   123: invokespecial   com/android/volley/toolbox/DiskBasedCache.putEntry:(Ljava/lang/String;Lcom/android/volley/toolbox/DiskBasedCache$CacheHeader;)V
-        //   126: aload           4
-        //   128: ifnull          136
-        //   131: aload           4
-        //   133: invokevirtual   java/io/FileInputStream.close:()V
-        //   136: iload_1        
-        //   137: iconst_1       
-        //   138: iadd           
-        //   139: istore_1       
-        //   140: goto            65
-        //   143: astore_3       
-        //   144: aconst_null    
-        //   145: astore          4
-        //   147: aload           6
-        //   149: ifnull          161
-        //   152: aload           4
-        //   154: astore_3       
-        //   155: aload           6
-        //   157: invokevirtual   java/io/File.delete:()Z
-        //   160: pop            
-        //   161: aload           4
-        //   163: ifnull          136
-        //   166: aload           4
-        //   168: invokevirtual   java/io/FileInputStream.close:()V
-        //   171: goto            136
-        //   174: astore_3       
-        //   175: goto            136
-        //   178: astore          5
-        //   180: aload_3        
-        //   181: astore          4
-        //   183: aload           5
-        //   185: astore_3       
-        //   186: aload           4
-        //   188: ifnull          196
-        //   191: aload           4
-        //   193: invokevirtual   java/io/FileInputStream.close:()V
-        //   196: aload_3        
-        //   197: athrow         
-        //   198: astore_3       
-        //   199: aload_0        
-        //   200: monitorexit    
-        //   201: aload_3        
-        //   202: athrow         
-        //   203: astore_3       
-        //   204: goto            136
-        //   207: astore          4
-        //   209: goto            196
-        //   212: astore          5
-        //   214: aload_3        
-        //   215: astore          4
-        //   217: aload           5
-        //   219: astore_3       
-        //   220: goto            186
-        //   223: astore_3       
-        //   224: goto            147
+        //    19: ifne            41
+        //    22: ldc             "Unable to create cache dir %s"
+        //    24: iconst_1       
+        //    25: anewarray       Ljava/lang/Object;
+        //    28: dup            
+        //    29: iconst_0       
+        //    30: aload_0        
+        //    31: getfield        com/android/volley/toolbox/DiskBasedCache.mRootDirectory:Ljava/io/File;
+        //    34: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
+        //    37: aastore        
+        //    38: invokestatic    com/android/volley/VolleyLog.e:(Ljava/lang/String;[Ljava/lang/Object;)V
+        //    41: aload_0        
+        //    42: monitorexit    
+        //    43: return         
+        //    44: aload_0        
+        //    45: getfield        com/android/volley/toolbox/DiskBasedCache.mRootDirectory:Ljava/io/File;
+        //    48: invokevirtual   java/io/File.listFiles:()[Ljava/io/File;
+        //    51: astore          5
+        //    53: aload           5
+        //    55: ifnull          41
+        //    58: aload           5
+        //    60: arraylength    
+        //    61: istore_2       
+        //    62: iconst_0       
+        //    63: istore_1       
+        //    64: iload_1        
+        //    65: iload_2        
+        //    66: if_icmpge       41
+        //    69: aload           5
+        //    71: iload_1        
+        //    72: aaload         
+        //    73: astore          6
+        //    75: aconst_null    
+        //    76: astore_3       
+        //    77: new             Ljava/io/FileInputStream;
+        //    80: dup            
+        //    81: aload           6
+        //    83: invokespecial   java/io/FileInputStream.<init>:(Ljava/io/File;)V
+        //    86: astore          4
+        //    88: aload           4
+        //    90: astore_3       
+        //    91: aload           4
+        //    93: invokestatic    com/android/volley/toolbox/DiskBasedCache$CacheHeader.readHeader:(Ljava/io/InputStream;)Lcom/android/volley/toolbox/DiskBasedCache$CacheHeader;
+        //    96: astore          7
+        //    98: aload           4
+        //   100: astore_3       
+        //   101: aload           7
+        //   103: aload           6
+        //   105: invokevirtual   java/io/File.length:()J
+        //   108: putfield        com/android/volley/toolbox/DiskBasedCache$CacheHeader.size:J
+        //   111: aload           4
+        //   113: astore_3       
+        //   114: aload_0        
+        //   115: aload           7
+        //   117: getfield        com/android/volley/toolbox/DiskBasedCache$CacheHeader.key:Ljava/lang/String;
+        //   120: aload           7
+        //   122: invokespecial   com/android/volley/toolbox/DiskBasedCache.putEntry:(Ljava/lang/String;Lcom/android/volley/toolbox/DiskBasedCache$CacheHeader;)V
+        //   125: aload           4
+        //   127: ifnull          135
+        //   130: aload           4
+        //   132: invokevirtual   java/io/FileInputStream.close:()V
+        //   135: iload_1        
+        //   136: iconst_1       
+        //   137: iadd           
+        //   138: istore_1       
+        //   139: goto            64
+        //   142: astore_3       
+        //   143: aconst_null    
+        //   144: astore          4
+        //   146: aload           6
+        //   148: ifnull          160
+        //   151: aload           4
+        //   153: astore_3       
+        //   154: aload           6
+        //   156: invokevirtual   java/io/File.delete:()Z
+        //   159: pop            
+        //   160: aload           4
+        //   162: ifnull          135
+        //   165: aload           4
+        //   167: invokevirtual   java/io/FileInputStream.close:()V
+        //   170: goto            135
+        //   173: astore_3       
+        //   174: goto            135
+        //   177: astore          5
+        //   179: aload_3        
+        //   180: astore          4
+        //   182: aload           5
+        //   184: astore_3       
+        //   185: aload           4
+        //   187: ifnull          195
+        //   190: aload           4
+        //   192: invokevirtual   java/io/FileInputStream.close:()V
+        //   195: aload_3        
+        //   196: athrow         
+        //   197: astore_3       
+        //   198: aload_0        
+        //   199: monitorexit    
+        //   200: aload_3        
+        //   201: athrow         
+        //   202: astore_3       
+        //   203: goto            135
+        //   206: astore          4
+        //   208: goto            195
+        //   211: astore          5
+        //   213: aload_3        
+        //   214: astore          4
+        //   216: aload           5
+        //   218: astore_3       
+        //   219: goto            185
+        //   222: astore_3       
+        //   223: goto            146
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  2      42     198    203    Any
-        //  45     54     198    203    Any
-        //  59     63     198    203    Any
-        //  78     89     143    147    Ljava/io/IOException;
-        //  78     89     178    186    Any
-        //  92     99     223    227    Ljava/io/IOException;
-        //  92     99     212    223    Any
-        //  102    112    223    227    Ljava/io/IOException;
-        //  102    112    212    223    Any
-        //  115    126    223    227    Ljava/io/IOException;
-        //  115    126    212    223    Any
-        //  131    136    203    207    Ljava/io/IOException;
-        //  131    136    198    203    Any
-        //  155    161    212    223    Any
-        //  166    171    174    178    Ljava/io/IOException;
-        //  166    171    198    203    Any
-        //  191    196    207    212    Ljava/io/IOException;
-        //  191    196    198    203    Any
-        //  196    198    198    203    Any
+        //  2      41     197    202    Any
+        //  44     53     197    202    Any
+        //  58     62     197    202    Any
+        //  77     88     142    146    Ljava/io/IOException;
+        //  77     88     177    185    Any
+        //  91     98     222    226    Ljava/io/IOException;
+        //  91     98     211    222    Any
+        //  101    111    222    226    Ljava/io/IOException;
+        //  101    111    211    222    Any
+        //  114    125    222    226    Ljava/io/IOException;
+        //  114    125    211    222    Any
+        //  130    135    202    206    Ljava/io/IOException;
+        //  130    135    197    202    Any
+        //  154    160    211    222    Any
+        //  165    170    173    177    Ljava/io/IOException;
+        //  165    170    197    202    Any
+        //  190    195    206    211    Ljava/io/IOException;
+        //  190    195    197    202    Any
+        //  195    197    197    202    Any
         // 
         // The error that occurred was:
         // 
@@ -482,20 +458,6 @@ public class DiskBasedCache implements Cache
     }
     
     @Override
-    public void invalidate(final String s, final boolean b) {
-        synchronized (this) {
-            final Cache$Entry value = this.get(s);
-            if (value != null) {
-                value.softTtl = 0L;
-                if (b) {
-                    value.ttl = 0L;
-                }
-                this.put(s, value);
-            }
-        }
-    }
-    
-    @Override
     public void put(final String s, final Cache$Entry cache$Entry) {
         synchronized (this) {
             this.pruneIfNeeded(cache$Entry.data.length);
@@ -516,7 +478,6 @@ public class DiskBasedCache implements Cache
         }
     }
     
-    @Override
     public void remove(final String s) {
         synchronized (this) {
             final boolean delete = this.getFileForKey(s).delete();

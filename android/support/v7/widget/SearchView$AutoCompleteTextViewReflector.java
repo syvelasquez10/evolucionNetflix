@@ -4,7 +4,6 @@
 
 package android.support.v7.widget;
 
-import android.view.View;
 import android.os.ResultReceiver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
@@ -69,16 +68,5 @@ class SearchView$AutoCompleteTextViewReflector
             this.ensureImeVisible.invoke(autoCompleteTextView, b);
         }
         catch (Exception ex) {}
-    }
-    
-    void showSoftInputUnchecked(final InputMethodManager inputMethodManager, final View view, final int n) {
-        if (this.showSoftInputUnchecked != null) {
-            try {
-                this.showSoftInputUnchecked.invoke(inputMethodManager, n, null);
-                return;
-            }
-            catch (Exception ex) {}
-        }
-        inputMethodManager.showSoftInput(view, n);
     }
 }

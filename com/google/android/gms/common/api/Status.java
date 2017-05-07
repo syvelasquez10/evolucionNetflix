@@ -5,9 +5,6 @@
 package com.google.android.gms.common.api;
 
 import android.os.Parcel;
-import android.content.Intent;
-import android.app.Activity;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.internal.m;
 import android.app.PendingIntent;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
@@ -75,10 +72,6 @@ public final class Status implements Result, SafeParcelable
         return this.mPendingIntent;
     }
     
-    public PendingIntent getResolution() {
-        return this.mPendingIntent;
-    }
-    
     @Override
     public Status getStatus() {
         return this;
@@ -96,37 +89,13 @@ public final class Status implements Result, SafeParcelable
         return this.BR;
     }
     
-    @Deprecated
-    public ConnectionResult gu() {
-        return new ConnectionResult(this.HF, this.mPendingIntent);
-    }
-    
-    public boolean hasResolution() {
-        return this.mPendingIntent != null;
-    }
-    
     @Override
     public int hashCode() {
         return m.hashCode(this.BR, this.HF, this.Jt, this.mPendingIntent);
     }
     
-    public boolean isCanceled() {
-        return this.HF == 16;
-    }
-    
-    public boolean isInterrupted() {
-        return this.HF == 14;
-    }
-    
     public boolean isSuccess() {
         return this.HF <= 0;
-    }
-    
-    public void startResolutionForResult(final Activity activity, final int n) {
-        if (!this.hasResolution()) {
-            return;
-        }
-        activity.startIntentSenderForResult(this.mPendingIntent.getIntentSender(), n, (Intent)null, 0, 0, 0);
     }
     
     @Override

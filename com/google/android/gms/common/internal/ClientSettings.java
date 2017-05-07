@@ -18,35 +18,7 @@ public final class ClientSettings
         this.IG = ig;
     }
     
-    public String getAccountName() {
-        return this.Lk.getAccountName();
-    }
-    
-    public String getAccountNameOrDefault() {
-        return this.Lk.getAccountNameOrDefault();
-    }
-    
-    public int getGravityForPopups() {
-        return this.Lk.getGravityForPopups();
-    }
-    
-    public ClientSettings$ParcelableClientSettings getParcelableClientSettings() {
-        return this.Lk;
-    }
-    
-    public String getRealClientPackageName() {
-        return this.Lk.getRealClientPackageName();
-    }
-    
     public List<String> getScopes() {
         return this.Lk.getScopes();
-    }
-    
-    public String[] getScopesArray() {
-        return this.Lk.getScopes().toArray(new String[0]);
-    }
-    
-    public View getViewForPopups() {
-        return this.IG;
     }
 }

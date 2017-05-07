@@ -4,8 +4,6 @@
 
 package com.facebook;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import android.content.Context;
 import com.facebook.internal.FileLruCache$Limits;
 import org.json.JSONTokener;
@@ -26,13 +24,6 @@ import com.facebook.internal.FileLruCache;
 
 public class Response
 {
-    private static final String BODY_KEY = "body";
-    private static final String CODE_KEY = "code";
-    private static final int INVALID_SESSION_FACEBOOK_ERROR_CODE = 190;
-    public static final String NON_JSON_RESPONSE_PROPERTY = "FACEBOOK_NON_JSON_RESULT";
-    private static final String RESPONSE_CACHE_TAG = "ResponseCache";
-    private static final String RESPONSE_LOG_TAG = "Response";
-    public static final String SUCCESS_KEY = "success";
     private static FileLruCache responseCache;
     private final HttpURLConnection connection;
     private final FacebookRequestError error;
@@ -201,7 +192,7 @@ public class Response
         //    10: astore_3       
         //    11: aload_1        
         //    12: instanceof      Lcom/facebook/internal/CacheableRequestBatch;
-        //    15: ifeq            561
+        //    15: ifeq            562
         //    18: aload_1        
         //    19: checkcast       Lcom/facebook/internal/CacheableRequestBatch;
         //    22: astore          8
@@ -226,18 +217,18 @@ public class Response
         //    60: astore_2       
         //    61: aload           8
         //    63: invokevirtual   com/facebook/internal/CacheableRequestBatch.getForceRoundTrip:()Z
-        //    66: ifne            551
+        //    66: ifne            552
         //    69: aload           4
-        //    71: ifnull          551
+        //    71: ifnull          552
         //    74: aload_2        
         //    75: invokestatic    com/facebook/internal/Utility.isNullOrEmpty:(Ljava/lang/String;)Z
-        //    78: ifne            551
+        //    78: ifne            552
         //    81: aload           4
         //    83: aload_2        
         //    84: invokevirtual   com/facebook/internal/FileLruCache.get:(Ljava/lang/String;)Ljava/io/InputStream;
         //    87: astore_3       
         //    88: aload_3        
-        //    89: ifnull          133
+        //    89: ifnull          134
         //    92: aload_3        
         //    93: astore          5
         //    95: aload_3        
@@ -255,318 +246,318 @@ public class Response
         //   114: aload           8
         //   116: areturn        
         //   117: getstatic       com/facebook/LoggingBehavior.REQUESTS:Lcom/facebook/LoggingBehavior;
-        //   120: ldc             "ResponseCache"
-        //   122: ldc_w           "Not using cache for cacheable request because no key was specified"
-        //   125: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;Ljava/lang/String;Ljava/lang/String;)V
-        //   128: aload_3        
-        //   129: astore_2       
-        //   130: goto            61
-        //   133: aload_3        
-        //   134: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   137: aload_2        
-        //   138: astore          5
-        //   140: aload_3        
-        //   141: astore_2       
-        //   142: aload_2        
-        //   143: astore          7
-        //   145: aload_2        
-        //   146: astore          8
-        //   148: aload_2        
-        //   149: astore          9
-        //   151: aload_2        
-        //   152: astore          10
-        //   154: aload_2        
-        //   155: astore_3       
-        //   156: aload_0        
-        //   157: invokevirtual   java/net/HttpURLConnection.getResponseCode:()I
-        //   160: sipush          400
-        //   163: if_icmplt       270
-        //   166: aload_2        
-        //   167: astore          7
-        //   169: aload_2        
-        //   170: astore          8
-        //   172: aload_2        
-        //   173: astore          9
-        //   175: aload_2        
-        //   176: astore          10
-        //   178: aload_2        
-        //   179: astore_3       
-        //   180: aload_0        
-        //   181: invokevirtual   java/net/HttpURLConnection.getErrorStream:()Ljava/io/InputStream;
-        //   184: astore_2       
-        //   185: aload_2        
-        //   186: astore          7
-        //   188: aload_2        
-        //   189: astore          8
-        //   191: aload_2        
-        //   192: astore          9
-        //   194: aload_2        
-        //   195: astore          10
-        //   197: aload_2        
-        //   198: astore_3       
-        //   199: aload_2        
-        //   200: aload_0        
-        //   201: aload_1        
-        //   202: iconst_0       
-        //   203: invokestatic    com/facebook/Response.createResponsesFromStream:(Ljava/io/InputStream;Ljava/net/HttpURLConnection;Lcom/facebook/RequestBatch;Z)Ljava/util/List;
-        //   206: astore          4
-        //   208: aload_2        
-        //   209: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   212: aload           4
-        //   214: areturn        
-        //   215: astore_3       
-        //   216: aconst_null    
-        //   217: astore_3       
-        //   218: aload_3        
-        //   219: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   222: aload_2        
-        //   223: astore          5
-        //   225: aload_3        
-        //   226: astore_2       
-        //   227: goto            142
-        //   230: astore_3       
-        //   231: aload           5
-        //   233: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   236: aload_2        
-        //   237: astore_3       
-        //   238: aload           5
-        //   240: astore_2       
-        //   241: aload_3        
-        //   242: astore          5
-        //   244: goto            142
-        //   247: astore_3       
-        //   248: aload           6
-        //   250: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   253: aload_2        
-        //   254: astore          5
-        //   256: aload           6
-        //   258: astore_2       
-        //   259: goto            142
-        //   262: astore_0       
-        //   263: aload           7
-        //   265: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   268: aload_0        
-        //   269: athrow         
-        //   270: aload_2        
-        //   271: astore          7
-        //   273: aload_2        
-        //   274: astore          8
-        //   276: aload_2        
-        //   277: astore          9
-        //   279: aload_2        
-        //   280: astore          10
-        //   282: aload_2        
-        //   283: astore_3       
-        //   284: aload_0        
-        //   285: invokevirtual   java/net/HttpURLConnection.getInputStream:()Ljava/io/InputStream;
-        //   288: astore          6
-        //   290: aload           6
-        //   292: astore_2       
-        //   293: aload           4
-        //   295: ifnull          185
-        //   298: aload           6
-        //   300: astore_2       
-        //   301: aload           5
-        //   303: ifnull          185
-        //   306: aload           6
-        //   308: astore_2       
-        //   309: aload           6
-        //   311: ifnull          185
-        //   314: aload           6
-        //   316: astore          7
-        //   318: aload           6
-        //   320: astore          8
-        //   322: aload           6
-        //   324: astore          9
-        //   326: aload           6
-        //   328: astore          10
-        //   330: aload           6
-        //   332: astore_3       
-        //   333: aload           4
-        //   335: aload           5
-        //   337: aload           6
-        //   339: invokevirtual   com/facebook/internal/FileLruCache.interceptAndPut:(Ljava/lang/String;Ljava/io/InputStream;)Ljava/io/InputStream;
-        //   342: astore          4
-        //   344: aload           6
-        //   346: astore_2       
-        //   347: aload           4
-        //   349: ifnull          185
-        //   352: aload           4
-        //   354: astore_2       
-        //   355: goto            185
-        //   358: astore_2       
-        //   359: aload           7
-        //   361: astore_3       
-        //   362: getstatic       com/facebook/LoggingBehavior.REQUESTS:Lcom/facebook/LoggingBehavior;
-        //   365: ldc             "Response"
-        //   367: ldc_w           "Response <Error>: %s"
-        //   370: iconst_1       
-        //   371: anewarray       Ljava/lang/Object;
-        //   374: dup            
-        //   375: iconst_0       
-        //   376: aload_2        
-        //   377: aastore        
-        //   378: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V
-        //   381: aload           7
-        //   383: astore_3       
-        //   384: aload_1        
-        //   385: aload_0        
-        //   386: aload_2        
-        //   387: invokestatic    com/facebook/Response.constructErrorResponses:(Ljava/util/List;Ljava/net/HttpURLConnection;Lcom/facebook/FacebookException;)Ljava/util/List;
-        //   390: astore_0       
-        //   391: aload           7
-        //   393: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   396: aload_0        
-        //   397: areturn        
-        //   398: astore_2       
-        //   399: aload           8
-        //   401: astore_3       
-        //   402: getstatic       com/facebook/LoggingBehavior.REQUESTS:Lcom/facebook/LoggingBehavior;
-        //   405: ldc             "Response"
-        //   407: ldc_w           "Response <Error>: %s"
-        //   410: iconst_1       
-        //   411: anewarray       Ljava/lang/Object;
-        //   414: dup            
-        //   415: iconst_0       
-        //   416: aload_2        
-        //   417: aastore        
-        //   418: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V
-        //   421: aload           8
-        //   423: astore_3       
-        //   424: aload_1        
-        //   425: aload_0        
-        //   426: new             Lcom/facebook/FacebookException;
-        //   429: dup            
-        //   430: aload_2        
-        //   431: invokespecial   com/facebook/FacebookException.<init>:(Ljava/lang/Throwable;)V
-        //   434: invokestatic    com/facebook/Response.constructErrorResponses:(Ljava/util/List;Ljava/net/HttpURLConnection;Lcom/facebook/FacebookException;)Ljava/util/List;
-        //   437: astore_0       
-        //   438: aload           8
-        //   440: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   443: aload_0        
-        //   444: areturn        
-        //   445: astore_2       
-        //   446: aload           9
-        //   448: astore_3       
-        //   449: getstatic       com/facebook/LoggingBehavior.REQUESTS:Lcom/facebook/LoggingBehavior;
-        //   452: ldc             "Response"
-        //   454: ldc_w           "Response <Error>: %s"
-        //   457: iconst_1       
-        //   458: anewarray       Ljava/lang/Object;
-        //   461: dup            
-        //   462: iconst_0       
-        //   463: aload_2        
-        //   464: aastore        
-        //   465: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V
-        //   468: aload           9
-        //   470: astore_3       
-        //   471: aload_1        
-        //   472: aload_0        
-        //   473: new             Lcom/facebook/FacebookException;
-        //   476: dup            
-        //   477: aload_2        
-        //   478: invokespecial   com/facebook/FacebookException.<init>:(Ljava/lang/Throwable;)V
-        //   481: invokestatic    com/facebook/Response.constructErrorResponses:(Ljava/util/List;Ljava/net/HttpURLConnection;Lcom/facebook/FacebookException;)Ljava/util/List;
-        //   484: astore_0       
-        //   485: aload           9
-        //   487: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   490: aload_0        
-        //   491: areturn        
-        //   492: astore_2       
-        //   493: aload           10
-        //   495: astore_3       
-        //   496: getstatic       com/facebook/LoggingBehavior.REQUESTS:Lcom/facebook/LoggingBehavior;
-        //   499: ldc             "Response"
-        //   501: ldc_w           "Response <Error>: %s"
-        //   504: iconst_1       
-        //   505: anewarray       Ljava/lang/Object;
-        //   508: dup            
-        //   509: iconst_0       
-        //   510: aload_2        
-        //   511: aastore        
-        //   512: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V
-        //   515: aload           10
-        //   517: astore_3       
-        //   518: aload_1        
-        //   519: aload_0        
-        //   520: new             Lcom/facebook/FacebookException;
-        //   523: dup            
-        //   524: aload_2        
-        //   525: invokespecial   com/facebook/FacebookException.<init>:(Ljava/lang/Throwable;)V
-        //   528: invokestatic    com/facebook/Response.constructErrorResponses:(Ljava/util/List;Ljava/net/HttpURLConnection;Lcom/facebook/FacebookException;)Ljava/util/List;
-        //   531: astore_0       
-        //   532: aload           10
-        //   534: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   537: aload_0        
-        //   538: areturn        
-        //   539: astore_0       
-        //   540: aload_3        
-        //   541: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   544: aload_0        
-        //   545: athrow         
-        //   546: astore          5
-        //   548: goto            218
-        //   551: aconst_null    
-        //   552: astore_3       
-        //   553: aload_2        
-        //   554: astore          5
-        //   556: aload_3        
-        //   557: astore_2       
-        //   558: goto            142
-        //   561: aconst_null    
-        //   562: astore          4
-        //   564: aconst_null    
-        //   565: astore_2       
-        //   566: aload_3        
-        //   567: astore          5
-        //   569: goto            142
+        //   120: ldc_w           "ResponseCache"
+        //   123: ldc_w           "Not using cache for cacheable request because no key was specified"
+        //   126: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;Ljava/lang/String;Ljava/lang/String;)V
+        //   129: aload_3        
+        //   130: astore_2       
+        //   131: goto            61
+        //   134: aload_3        
+        //   135: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //   138: aload_2        
+        //   139: astore          5
+        //   141: aload_3        
+        //   142: astore_2       
+        //   143: aload_2        
+        //   144: astore          7
+        //   146: aload_2        
+        //   147: astore          8
+        //   149: aload_2        
+        //   150: astore          9
+        //   152: aload_2        
+        //   153: astore          10
+        //   155: aload_2        
+        //   156: astore_3       
+        //   157: aload_0        
+        //   158: invokevirtual   java/net/HttpURLConnection.getResponseCode:()I
+        //   161: sipush          400
+        //   164: if_icmplt       271
+        //   167: aload_2        
+        //   168: astore          7
+        //   170: aload_2        
+        //   171: astore          8
+        //   173: aload_2        
+        //   174: astore          9
+        //   176: aload_2        
+        //   177: astore          10
+        //   179: aload_2        
+        //   180: astore_3       
+        //   181: aload_0        
+        //   182: invokevirtual   java/net/HttpURLConnection.getErrorStream:()Ljava/io/InputStream;
+        //   185: astore_2       
+        //   186: aload_2        
+        //   187: astore          7
+        //   189: aload_2        
+        //   190: astore          8
+        //   192: aload_2        
+        //   193: astore          9
+        //   195: aload_2        
+        //   196: astore          10
+        //   198: aload_2        
+        //   199: astore_3       
+        //   200: aload_2        
+        //   201: aload_0        
+        //   202: aload_1        
+        //   203: iconst_0       
+        //   204: invokestatic    com/facebook/Response.createResponsesFromStream:(Ljava/io/InputStream;Ljava/net/HttpURLConnection;Lcom/facebook/RequestBatch;Z)Ljava/util/List;
+        //   207: astore          4
+        //   209: aload_2        
+        //   210: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //   213: aload           4
+        //   215: areturn        
+        //   216: astore_3       
+        //   217: aconst_null    
+        //   218: astore_3       
+        //   219: aload_3        
+        //   220: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //   223: aload_2        
+        //   224: astore          5
+        //   226: aload_3        
+        //   227: astore_2       
+        //   228: goto            143
+        //   231: astore_3       
+        //   232: aload           5
+        //   234: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //   237: aload_2        
+        //   238: astore_3       
+        //   239: aload           5
+        //   241: astore_2       
+        //   242: aload_3        
+        //   243: astore          5
+        //   245: goto            143
+        //   248: astore_3       
+        //   249: aload           6
+        //   251: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //   254: aload_2        
+        //   255: astore          5
+        //   257: aload           6
+        //   259: astore_2       
+        //   260: goto            143
+        //   263: astore_0       
+        //   264: aload           7
+        //   266: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //   269: aload_0        
+        //   270: athrow         
+        //   271: aload_2        
+        //   272: astore          7
+        //   274: aload_2        
+        //   275: astore          8
+        //   277: aload_2        
+        //   278: astore          9
+        //   280: aload_2        
+        //   281: astore          10
+        //   283: aload_2        
+        //   284: astore_3       
+        //   285: aload_0        
+        //   286: invokevirtual   java/net/HttpURLConnection.getInputStream:()Ljava/io/InputStream;
+        //   289: astore          6
+        //   291: aload           6
+        //   293: astore_2       
+        //   294: aload           4
+        //   296: ifnull          186
+        //   299: aload           6
+        //   301: astore_2       
+        //   302: aload           5
+        //   304: ifnull          186
+        //   307: aload           6
+        //   309: astore_2       
+        //   310: aload           6
+        //   312: ifnull          186
+        //   315: aload           6
+        //   317: astore          7
+        //   319: aload           6
+        //   321: astore          8
+        //   323: aload           6
+        //   325: astore          9
+        //   327: aload           6
+        //   329: astore          10
+        //   331: aload           6
+        //   333: astore_3       
+        //   334: aload           4
+        //   336: aload           5
+        //   338: aload           6
+        //   340: invokevirtual   com/facebook/internal/FileLruCache.interceptAndPut:(Ljava/lang/String;Ljava/io/InputStream;)Ljava/io/InputStream;
+        //   343: astore          4
+        //   345: aload           6
+        //   347: astore_2       
+        //   348: aload           4
+        //   350: ifnull          186
+        //   353: aload           4
+        //   355: astore_2       
+        //   356: goto            186
+        //   359: astore_2       
+        //   360: aload           7
+        //   362: astore_3       
+        //   363: getstatic       com/facebook/LoggingBehavior.REQUESTS:Lcom/facebook/LoggingBehavior;
+        //   366: ldc             "Response"
+        //   368: ldc_w           "Response <Error>: %s"
+        //   371: iconst_1       
+        //   372: anewarray       Ljava/lang/Object;
+        //   375: dup            
+        //   376: iconst_0       
+        //   377: aload_2        
+        //   378: aastore        
+        //   379: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V
+        //   382: aload           7
+        //   384: astore_3       
+        //   385: aload_1        
+        //   386: aload_0        
+        //   387: aload_2        
+        //   388: invokestatic    com/facebook/Response.constructErrorResponses:(Ljava/util/List;Ljava/net/HttpURLConnection;Lcom/facebook/FacebookException;)Ljava/util/List;
+        //   391: astore_0       
+        //   392: aload           7
+        //   394: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //   397: aload_0        
+        //   398: areturn        
+        //   399: astore_2       
+        //   400: aload           8
+        //   402: astore_3       
+        //   403: getstatic       com/facebook/LoggingBehavior.REQUESTS:Lcom/facebook/LoggingBehavior;
+        //   406: ldc             "Response"
+        //   408: ldc_w           "Response <Error>: %s"
+        //   411: iconst_1       
+        //   412: anewarray       Ljava/lang/Object;
+        //   415: dup            
+        //   416: iconst_0       
+        //   417: aload_2        
+        //   418: aastore        
+        //   419: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V
+        //   422: aload           8
+        //   424: astore_3       
+        //   425: aload_1        
+        //   426: aload_0        
+        //   427: new             Lcom/facebook/FacebookException;
+        //   430: dup            
+        //   431: aload_2        
+        //   432: invokespecial   com/facebook/FacebookException.<init>:(Ljava/lang/Throwable;)V
+        //   435: invokestatic    com/facebook/Response.constructErrorResponses:(Ljava/util/List;Ljava/net/HttpURLConnection;Lcom/facebook/FacebookException;)Ljava/util/List;
+        //   438: astore_0       
+        //   439: aload           8
+        //   441: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //   444: aload_0        
+        //   445: areturn        
+        //   446: astore_2       
+        //   447: aload           9
+        //   449: astore_3       
+        //   450: getstatic       com/facebook/LoggingBehavior.REQUESTS:Lcom/facebook/LoggingBehavior;
+        //   453: ldc             "Response"
+        //   455: ldc_w           "Response <Error>: %s"
+        //   458: iconst_1       
+        //   459: anewarray       Ljava/lang/Object;
+        //   462: dup            
+        //   463: iconst_0       
+        //   464: aload_2        
+        //   465: aastore        
+        //   466: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V
+        //   469: aload           9
+        //   471: astore_3       
+        //   472: aload_1        
+        //   473: aload_0        
+        //   474: new             Lcom/facebook/FacebookException;
+        //   477: dup            
+        //   478: aload_2        
+        //   479: invokespecial   com/facebook/FacebookException.<init>:(Ljava/lang/Throwable;)V
+        //   482: invokestatic    com/facebook/Response.constructErrorResponses:(Ljava/util/List;Ljava/net/HttpURLConnection;Lcom/facebook/FacebookException;)Ljava/util/List;
+        //   485: astore_0       
+        //   486: aload           9
+        //   488: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //   491: aload_0        
+        //   492: areturn        
+        //   493: astore_2       
+        //   494: aload           10
+        //   496: astore_3       
+        //   497: getstatic       com/facebook/LoggingBehavior.REQUESTS:Lcom/facebook/LoggingBehavior;
+        //   500: ldc             "Response"
+        //   502: ldc_w           "Response <Error>: %s"
+        //   505: iconst_1       
+        //   506: anewarray       Ljava/lang/Object;
+        //   509: dup            
+        //   510: iconst_0       
+        //   511: aload_2        
+        //   512: aastore        
+        //   513: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V
+        //   516: aload           10
+        //   518: astore_3       
+        //   519: aload_1        
+        //   520: aload_0        
+        //   521: new             Lcom/facebook/FacebookException;
+        //   524: dup            
+        //   525: aload_2        
+        //   526: invokespecial   com/facebook/FacebookException.<init>:(Ljava/lang/Throwable;)V
+        //   529: invokestatic    com/facebook/Response.constructErrorResponses:(Ljava/util/List;Ljava/net/HttpURLConnection;Lcom/facebook/FacebookException;)Ljava/util/List;
+        //   532: astore_0       
+        //   533: aload           10
+        //   535: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //   538: aload_0        
+        //   539: areturn        
+        //   540: astore_0       
+        //   541: aload_3        
+        //   542: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //   545: aload_0        
+        //   546: athrow         
+        //   547: astore          5
+        //   549: goto            219
+        //   552: aconst_null    
+        //   553: astore_3       
+        //   554: aload_2        
+        //   555: astore          5
+        //   557: aload_3        
+        //   558: astore_2       
+        //   559: goto            143
+        //   562: aconst_null    
+        //   563: astore          4
+        //   565: aconst_null    
+        //   566: astore_2       
+        //   567: aload_3        
+        //   568: astore          5
+        //   570: goto            143
         //    Signature:
         //  (Ljava/net/HttpURLConnection;Lcom/facebook/RequestBatch;)Ljava/util/List<Lcom/facebook/Response;>;
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                            
         //  -----  -----  -----  -----  --------------------------------
-        //  81     88     215    218    Lcom/facebook/FacebookException;
-        //  81     88     230    247    Lorg/json/JSONException;
-        //  81     88     247    262    Ljava/io/IOException;
-        //  81     88     262    270    Any
-        //  101    110    546    551    Lcom/facebook/FacebookException;
-        //  101    110    230    247    Lorg/json/JSONException;
-        //  101    110    247    262    Ljava/io/IOException;
-        //  101    110    262    270    Any
-        //  156    166    358    398    Lcom/facebook/FacebookException;
-        //  156    166    398    445    Lorg/json/JSONException;
-        //  156    166    445    492    Ljava/io/IOException;
-        //  156    166    492    539    Ljava/lang/SecurityException;
-        //  156    166    539    546    Any
-        //  180    185    358    398    Lcom/facebook/FacebookException;
-        //  180    185    398    445    Lorg/json/JSONException;
-        //  180    185    445    492    Ljava/io/IOException;
-        //  180    185    492    539    Ljava/lang/SecurityException;
-        //  180    185    539    546    Any
-        //  199    208    358    398    Lcom/facebook/FacebookException;
-        //  199    208    398    445    Lorg/json/JSONException;
-        //  199    208    445    492    Ljava/io/IOException;
-        //  199    208    492    539    Ljava/lang/SecurityException;
-        //  199    208    539    546    Any
-        //  284    290    358    398    Lcom/facebook/FacebookException;
-        //  284    290    398    445    Lorg/json/JSONException;
-        //  284    290    445    492    Ljava/io/IOException;
-        //  284    290    492    539    Ljava/lang/SecurityException;
-        //  284    290    539    546    Any
-        //  333    344    358    398    Lcom/facebook/FacebookException;
-        //  333    344    398    445    Lorg/json/JSONException;
-        //  333    344    445    492    Ljava/io/IOException;
-        //  333    344    492    539    Ljava/lang/SecurityException;
-        //  333    344    539    546    Any
-        //  362    381    539    546    Any
-        //  384    391    539    546    Any
-        //  402    421    539    546    Any
-        //  424    438    539    546    Any
-        //  449    468    539    546    Any
-        //  471    485    539    546    Any
-        //  496    515    539    546    Any
-        //  518    532    539    546    Any
+        //  81     88     216    219    Lcom/facebook/FacebookException;
+        //  81     88     231    248    Lorg/json/JSONException;
+        //  81     88     248    263    Ljava/io/IOException;
+        //  81     88     263    271    Any
+        //  101    110    547    552    Lcom/facebook/FacebookException;
+        //  101    110    231    248    Lorg/json/JSONException;
+        //  101    110    248    263    Ljava/io/IOException;
+        //  101    110    263    271    Any
+        //  157    167    359    399    Lcom/facebook/FacebookException;
+        //  157    167    399    446    Lorg/json/JSONException;
+        //  157    167    446    493    Ljava/io/IOException;
+        //  157    167    493    540    Ljava/lang/SecurityException;
+        //  157    167    540    547    Any
+        //  181    186    359    399    Lcom/facebook/FacebookException;
+        //  181    186    399    446    Lorg/json/JSONException;
+        //  181    186    446    493    Ljava/io/IOException;
+        //  181    186    493    540    Ljava/lang/SecurityException;
+        //  181    186    540    547    Any
+        //  200    209    359    399    Lcom/facebook/FacebookException;
+        //  200    209    399    446    Lorg/json/JSONException;
+        //  200    209    446    493    Ljava/io/IOException;
+        //  200    209    493    540    Ljava/lang/SecurityException;
+        //  200    209    540    547    Any
+        //  285    291    359    399    Lcom/facebook/FacebookException;
+        //  285    291    399    446    Lorg/json/JSONException;
+        //  285    291    446    493    Ljava/io/IOException;
+        //  285    291    493    540    Ljava/lang/SecurityException;
+        //  285    291    540    547    Any
+        //  334    345    359    399    Lcom/facebook/FacebookException;
+        //  334    345    399    446    Lorg/json/JSONException;
+        //  334    345    446    493    Ljava/io/IOException;
+        //  334    345    493    540    Ljava/lang/SecurityException;
+        //  334    345    540    547    Any
+        //  363    382    540    547    Any
+        //  385    392    540    547    Any
+        //  403    422    540    547    Any
+        //  425    439    540    547    Any
+        //  450    469    540    547    Any
+        //  472    486    540    547    Any
+        //  497    516    540    547    Any
+        //  519    533    540    547    Any
         // 
         // The error that occurred was:
         // 
@@ -604,10 +595,6 @@ public class Response
         return Response.responseCache;
     }
     
-    public final HttpURLConnection getConnection() {
-        return this.connection;
-    }
-    
     public final FacebookRequestError getError() {
         return this.error;
     }
@@ -624,67 +611,6 @@ public class Response
             throw new NullPointerException("Must pass in a valid interface that extends GraphObject");
         }
         return this.graphObject.cast(clazz);
-    }
-    
-    public final GraphObjectList<GraphObject> getGraphObjectList() {
-        return this.graphObjectList;
-    }
-    
-    public final <T extends GraphObject> GraphObjectList<T> getGraphObjectListAs(final Class<T> clazz) {
-        if (this.graphObjectList == null) {
-            return null;
-        }
-        return this.graphObjectList.castToListOf(clazz);
-    }
-    
-    public final boolean getIsFromCache() {
-        return this.isFromCache;
-    }
-    
-    public String getRawResponse() {
-        return this.rawResponse;
-    }
-    
-    public Request getRequest() {
-        return this.request;
-    }
-    
-    public Request getRequestForPagedResults(final Response$PagingDirection response$PagingDirection) {
-        while (true) {
-            Label_0111: {
-                if (this.graphObject == null) {
-                    break Label_0111;
-                }
-                final Response$PagingInfo paging = this.graphObject.cast(Response$PagedResults.class).getPaging();
-                if (paging == null) {
-                    break Label_0111;
-                }
-                String s;
-                if (response$PagingDirection == Response$PagingDirection.NEXT) {
-                    s = paging.getNext();
-                }
-                else {
-                    s = paging.getPrevious();
-                }
-                if (!Utility.isNullOrEmpty(s)) {
-                    if (s != null) {
-                        if (s.equals(this.request.getUrlForSingleRequest())) {
-                            return null;
-                        }
-                    }
-                    try {
-                        return new Request(this.request.getSession(), new URL(s));
-                    }
-                    catch (MalformedURLException ex) {
-                        return null;
-                    }
-                    break Label_0111;
-                }
-                return null;
-            }
-            String s = null;
-            continue;
-        }
     }
     
     @Override

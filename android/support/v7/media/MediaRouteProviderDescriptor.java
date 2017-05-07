@@ -12,7 +12,6 @@ import android.os.Bundle;
 
 public final class MediaRouteProviderDescriptor
 {
-    private static final String KEY_ROUTES = "routes";
     private final Bundle mBundle;
     private List<MediaRouteDescriptor> mRoutes;
     
@@ -42,10 +41,6 @@ public final class MediaRouteProviderDescriptor
             return new MediaRouteProviderDescriptor(bundle, null);
         }
         return null;
-    }
-    
-    public Bundle asBundle() {
-        return this.mBundle;
     }
     
     public List<MediaRouteDescriptor> getRoutes() {

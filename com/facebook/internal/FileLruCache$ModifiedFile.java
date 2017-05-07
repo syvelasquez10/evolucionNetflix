@@ -8,8 +8,6 @@ import java.io.File;
 
 final class FileLruCache$ModifiedFile implements Comparable<FileLruCache$ModifiedFile>
 {
-    private static final int HASH_MULTIPLIER = 37;
-    private static final int HASH_SEED = 29;
     private final File file;
     private final long modified;
     

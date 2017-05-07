@@ -9,7 +9,5 @@ import java.util.List;
 
 public interface GraphObjectList<T> extends List<T>
 {
-     <U extends GraphObject> GraphObjectList<U> castToListOf(final Class<U> p0);
-    
     JSONArray getInnerJSONArray();
 }

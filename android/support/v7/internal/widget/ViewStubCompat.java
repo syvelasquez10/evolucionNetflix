@@ -46,18 +46,6 @@ public final class ViewStubCompat extends View
     public void draw(final Canvas canvas) {
     }
     
-    public int getInflatedId() {
-        return this.mInflatedId;
-    }
-    
-    public LayoutInflater getLayoutInflater() {
-        return this.mInflater;
-    }
-    
-    public int getLayoutResource() {
-        return this.mLayoutResource;
-    }
-    
     public View inflate() {
         final ViewParent parent = this.getParent();
         if (parent == null || !(parent instanceof ViewGroup)) {
@@ -98,20 +86,8 @@ public final class ViewStubCompat extends View
         this.setMeasuredDimension(0, 0);
     }
     
-    public void setInflatedId(final int mInflatedId) {
-        this.mInflatedId = mInflatedId;
-    }
-    
     public void setLayoutInflater(final LayoutInflater mInflater) {
         this.mInflater = mInflater;
-    }
-    
-    public void setLayoutResource(final int mLayoutResource) {
-        this.mLayoutResource = mLayoutResource;
-    }
-    
-    public void setOnInflateListener(final ViewStubCompat$OnInflateListener mInflateListener) {
-        this.mInflateListener = mInflateListener;
     }
     
     public void setVisibility(final int n) {

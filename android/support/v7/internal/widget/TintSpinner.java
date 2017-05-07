@@ -17,10 +17,6 @@ public class TintSpinner extends Spinner
         TINT_ATTRS = new int[] { 16842964, 16843126 };
     }
     
-    public TintSpinner(final Context context) {
-        this(context, null);
-    }
-    
     public TintSpinner(final Context context, final AttributeSet set) {
         this(context, set, 16842881);
     }

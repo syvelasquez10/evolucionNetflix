@@ -14,14 +14,12 @@ import android.support.v4.util.SparseArrayCompat;
 
 class LoaderManagerImpl extends LoaderManager
 {
-    static boolean DEBUG = false;
-    static final String TAG = "LoaderManager";
+    static boolean DEBUG;
     FragmentActivity mActivity;
     boolean mCreatingLoader;
     final SparseArrayCompat<LoaderManagerImpl$LoaderInfo> mInactiveLoaders;
     final SparseArrayCompat<LoaderManagerImpl$LoaderInfo> mLoaders;
     boolean mRetaining;
-    boolean mRetainingStarted;
     boolean mStarted;
     final String mWho;
     
@@ -162,7 +160,6 @@ class LoaderManagerImpl extends LoaderManager
         this.mStarted = false;
     }
     
-    @Override
     public void dump(final String s, final FileDescriptor fileDescriptor, final PrintWriter printWriter, final String[] array) {
         final int n = 0;
         if (this.mLoaders.size() > 0) {

@@ -27,7 +27,6 @@ import com.facebook.widget.WebDialog;
 
 class AuthorizationClient$WebViewAuthHandler extends AuthorizationClient$AuthHandler
 {
-    private static final long serialVersionUID = 1L;
     private String applicationId;
     private String e2e;
     private transient WebDialog loginDialog;

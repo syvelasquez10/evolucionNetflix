@@ -13,7 +13,6 @@ import java.util.HashMap;
 
 public class Logger
 {
-    public static final String LOG_TAG_BASE = "FacebookSDK.";
     private static final HashMap<String, String> stringsToReplace;
     private final LoggingBehavior behavior;
     private StringBuilder contents;
@@ -95,22 +94,8 @@ public class Logger
         }
     }
     
-    public void append(final StringBuilder sb) {
-        if (this.shouldLog()) {
-            this.contents.append((CharSequence)sb);
-        }
-    }
-    
     public void appendKeyValue(final String s, final Object o) {
         this.append("  %s:\t%s\n", s, o);
-    }
-    
-    public String getContents() {
-        return replaceStrings(this.contents.toString());
-    }
-    
-    public int getPriority() {
-        return this.priority;
     }
     
     public void log() {
@@ -120,10 +105,5 @@ public class Logger
     
     public void logString(final String s) {
         log(this.behavior, this.priority, this.tag, s);
-    }
-    
-    public void setPriority(final int priority) {
-        Validate.oneOf(priority, "value", 7, 3, 6, 4, 2, 5);
-        this.priority = priority;
     }
 }

@@ -16,7 +16,6 @@ import java.util.ArrayList;
 class SystemMediaRouteProvider$LegacyImpl extends SystemMediaRouteProvider
 {
     private static final ArrayList<IntentFilter> CONTROL_FILTERS;
-    private static final int PLAYBACK_STREAM = 3;
     private final AudioManager mAudioManager;
     private int mLastReportedVolume;
     private final SystemMediaRouteProvider$LegacyImpl$VolumeChangeReceiver mVolumeChangeReceiver;

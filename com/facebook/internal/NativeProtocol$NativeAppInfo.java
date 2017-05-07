@@ -12,9 +12,6 @@ import java.util.HashSet;
 
 abstract class NativeProtocol$NativeAppInfo
 {
-    private static final String FBI_HASH = "a4b7452e2ed8f5f191058ca7bbfd26b0d3214bfc";
-    private static final String FBL_HASH = "5e8f16062ea3cd2c4a0d547876baa6f38cabf625";
-    private static final String FBR_HASH = "8a3c4b262d721acd49a4bf97d5213199c86fa2b9";
     private static final HashSet<String> validAppSignatureHashes;
     
     static {

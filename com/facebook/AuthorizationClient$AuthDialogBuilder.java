@@ -11,8 +11,6 @@ import com.facebook.widget.WebDialog$Builder;
 
 class AuthorizationClient$AuthDialogBuilder extends WebDialog$Builder
 {
-    private static final String OAUTH_DIALOG = "oauth";
-    static final String REDIRECT_URI = "fbconnect://success";
     private String e2e;
     private boolean isRerequest;
     

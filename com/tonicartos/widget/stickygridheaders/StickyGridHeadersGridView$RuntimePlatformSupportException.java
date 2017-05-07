@@ -35,7 +35,6 @@ import android.widget.GridView;
 
 class StickyGridHeadersGridView$RuntimePlatformSupportException extends RuntimeException
 {
-    private static final long serialVersionUID = -6512098808936536538L;
     final /* synthetic */ StickyGridHeadersGridView this$0;
     
     public StickyGridHeadersGridView$RuntimePlatformSupportException(final StickyGridHeadersGridView this$0, final Exception ex) {

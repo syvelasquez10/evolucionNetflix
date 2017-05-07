@@ -7,7 +7,6 @@ package com.google.android.gms.internal;
 import android.os.IInterface;
 import android.os.RemoteException;
 import android.text.TextUtils;
-import com.google.android.gms.cast.LaunchOptions;
 import com.google.android.gms.common.internal.j;
 import com.google.android.gms.common.internal.d$e;
 import com.google.android.gms.common.internal.k;
@@ -153,16 +152,6 @@ public final class ij extends d<in>
         }
     }
     
-    private void e(final BaseImplementation$b<Status> gk) {
-        synchronized (ij.GM) {
-            if (this.GK != null) {
-                gk.b(new Status(2001));
-                return;
-            }
-            this.GK = gk;
-        }
-    }
-    
     private void fC() {
         this.GA = false;
         this.GB = -1;
@@ -186,19 +175,8 @@ public final class ij extends d<in>
         }
     }
     
-    public void G(final boolean b) {
-        this.gS().a(b, this.FA, this.FB);
-    }
-    
     protected in L(final IBinder binder) {
         return in$a.M(binder);
-    }
-    
-    public void a(final double n) {
-        if (Double.isInfinite(n) || Double.isNaN(n)) {
-            throw new IllegalArgumentException("Volume cannot be " + n);
-        }
-        this.gS().a(n, this.FA, this.FB);
     }
     
     @Override
@@ -247,16 +225,6 @@ public final class ij extends d<in>
             // monitorexit(this.Gu)
             this.gS().aI(s);
         }
-    }
-    
-    public void a(final String s, final LaunchOptions launchOptions, final BaseImplementation$b<Cast$ApplicationConnectionResult> baseImplementation$b) {
-        this.c(baseImplementation$b);
-        this.gS().a(s, launchOptions);
-    }
-    
-    public void a(final String s, final BaseImplementation$b<Status> baseImplementation$b) {
-        this.e(baseImplementation$b);
-        this.gS().aH(s);
     }
     
     public void a(final String s, final String s2, final BaseImplementation$b<Status> baseImplementation$b) {
@@ -379,11 +347,6 @@ public final class ij extends d<in>
         this.gS().l(s, s2);
     }
     
-    public void d(final BaseImplementation$b<Status> baseImplementation$b) {
-        this.e(baseImplementation$b);
-        this.gS().fQ();
-    }
-    
     @Override
     public void disconnect() {
         ij.Gr.b("disconnect(); ServiceListener=%s, isConnected=%b", this.Gw, this.isConnected());
@@ -417,15 +380,6 @@ public final class ij extends d<in>
         return super.fD();
     }
     
-    public void fE() {
-        this.gS().fE();
-    }
-    
-    public double fF() {
-        this.fH();
-        return this.FA;
-    }
-    
     public ApplicationMetadata getApplicationMetadata() {
         this.fH();
         return this.Gs;
@@ -444,10 +398,5 @@ public final class ij extends d<in>
     @Override
     protected String getStartServiceAction() {
         return "com.google.android.gms.cast.service.BIND_CAST_DEVICE_CONTROLLER_SERVICE";
-    }
-    
-    public boolean isMute() {
-        this.fH();
-        return this.FB;
     }
 }

@@ -22,7 +22,6 @@ import android.content.Intent;
 
 class AuthorizationClient$KatanaProxyAuthHandler extends AuthorizationClient$KatanaAuthHandler
 {
-    private static final long serialVersionUID = 1L;
     private String applicationId;
     final /* synthetic */ AuthorizationClient this$0;
     

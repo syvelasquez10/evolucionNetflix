@@ -79,77 +79,12 @@ class ViewPropertyAnimatorCompat$BaseViewPropertyAnimatorCompatImpl implements V
     }
     
     @Override
-    public void alphaBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
     public void cancel(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view) {
         this.postStartMessage(viewPropertyAnimatorCompat, view);
     }
     
     @Override
-    public long getDuration(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view) {
-        return 0L;
-    }
-    
-    @Override
-    public Interpolator getInterpolator(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view) {
-        return null;
-    }
-    
-    @Override
-    public long getStartDelay(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view) {
-        return 0L;
-    }
-    
-    @Override
-    public void rotation(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void rotationBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void rotationX(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void rotationXBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void rotationY(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void rotationYBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void scaleX(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void scaleXBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
     public void scaleY(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void scaleYBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
         this.postStartMessage(viewPropertyAnimatorCompat, view);
     }
     
@@ -164,10 +99,6 @@ class ViewPropertyAnimatorCompat$BaseViewPropertyAnimatorCompatImpl implements V
     @Override
     public void setListener(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final ViewPropertyAnimatorListener viewPropertyAnimatorListener) {
         view.setTag(2113929216, (Object)viewPropertyAnimatorListener);
-    }
-    
-    @Override
-    public void setStartDelay(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final long n) {
     }
     
     @Override
@@ -186,53 +117,7 @@ class ViewPropertyAnimatorCompat$BaseViewPropertyAnimatorCompatImpl implements V
     }
     
     @Override
-    public void translationXBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
     public void translationY(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void translationYBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void withEndAction(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final Runnable runnable) {
-        viewPropertyAnimatorCompat.mEndAction = runnable;
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void withLayer(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view) {
-    }
-    
-    @Override
-    public void withStartAction(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final Runnable runnable) {
-        viewPropertyAnimatorCompat.mStartAction = runnable;
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void x(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void xBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void y(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
-        this.postStartMessage(viewPropertyAnimatorCompat, view);
-    }
-    
-    @Override
-    public void yBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
         this.postStartMessage(viewPropertyAnimatorCompat, view);
     }
 }

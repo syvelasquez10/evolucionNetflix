@@ -4,7 +4,6 @@
 
 package android.support.v4.widget;
 
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
 import android.support.v4.view.VelocityTrackerCompat;
@@ -18,22 +17,6 @@ import android.view.animation.Interpolator;
 
 public class ViewDragHelper
 {
-    private static final int BASE_SETTLE_DURATION = 256;
-    public static final int DIRECTION_ALL = 3;
-    public static final int DIRECTION_HORIZONTAL = 1;
-    public static final int DIRECTION_VERTICAL = 2;
-    public static final int EDGE_ALL = 15;
-    public static final int EDGE_BOTTOM = 8;
-    public static final int EDGE_LEFT = 1;
-    public static final int EDGE_RIGHT = 2;
-    private static final int EDGE_SIZE = 20;
-    public static final int EDGE_TOP = 4;
-    public static final int INVALID_POINTER = -1;
-    private static final int MAX_SETTLE_DURATION = 600;
-    public static final int STATE_DRAGGING = 1;
-    public static final int STATE_IDLE = 0;
-    public static final int STATE_SETTLING = 2;
-    private static final String TAG = "ViewDragHelper";
     private static final Interpolator sInterpolator;
     private int mActivePointerId;
     private final ViewDragHelper$Callback mCallback;
@@ -412,21 +395,6 @@ public class ViewDragHelper
         this.setDragState(0);
     }
     
-    protected boolean canScroll(final View view, final boolean b, final int n, final int n2, final int n3, final int n4) {
-        if (view instanceof ViewGroup) {
-            final ViewGroup viewGroup = (ViewGroup)view;
-            final int scrollX = view.getScrollX();
-            final int scrollY = view.getScrollY();
-            for (int i = viewGroup.getChildCount() - 1; i >= 0; --i) {
-                final View child = viewGroup.getChildAt(i);
-                if (n3 + scrollX >= child.getLeft() && n3 + scrollX < child.getRight() && n4 + scrollY >= child.getTop() && n4 + scrollY < child.getBottom() && this.canScroll(child, true, n, n2, n3 + scrollX - child.getLeft(), n4 + scrollY - child.getTop())) {
-                    return true;
-                }
-            }
-        }
-        return b && (ViewCompat.canScrollHorizontally(view, -n) || ViewCompat.canScrollVertically(view, -n2));
-    }
-    
     public void cancel() {
         this.mActivePointerId = -1;
         this.clearMotionHistory();
@@ -550,28 +518,12 @@ public class ViewDragHelper
         return null;
     }
     
-    public void flingCapturedView(final int n, final int n2, final int n3, final int n4) {
-        if (!this.mReleaseInProgress) {
-            throw new IllegalStateException("Cannot flingCapturedView outside of a call to Callback#onViewReleased");
-        }
-        this.mScroller.fling(this.mCapturedView.getLeft(), this.mCapturedView.getTop(), (int)VelocityTrackerCompat.getXVelocity(this.mVelocityTracker, this.mActivePointerId), (int)VelocityTrackerCompat.getYVelocity(this.mVelocityTracker, this.mActivePointerId), n, n3, n2, n4);
-        this.setDragState(2);
-    }
-    
-    public int getActivePointerId() {
-        return this.mActivePointerId;
-    }
-    
     public View getCapturedView() {
         return this.mCapturedView;
     }
     
     public int getEdgeSize() {
         return this.mEdgeSize;
-    }
-    
-    public float getMinVelocity() {
-        return this.mMinVelocity;
     }
     
     public int getTouchSlop() {
@@ -584,29 +536,6 @@ public class ViewDragHelper
     
     public boolean isCapturedViewUnder(final int n, final int n2) {
         return this.isViewUnder(this.mCapturedView, n, n2);
-    }
-    
-    public boolean isEdgeTouched(final int n) {
-        final boolean b = false;
-        final int length = this.mInitialEdgesTouched.length;
-        int n2 = 0;
-        boolean b2;
-        while (true) {
-            b2 = b;
-            if (n2 >= length) {
-                break;
-            }
-            if (this.isEdgeTouched(n, n2)) {
-                b2 = true;
-                break;
-            }
-            ++n2;
-        }
-        return b2;
-    }
-    
-    public boolean isEdgeTouched(final int n, final int n2) {
-        return this.isPointerDown(n2) && (this.mInitialEdgesTouched[n2] & n) != 0x0;
     }
     
     public boolean isPointerDown(final int n) {

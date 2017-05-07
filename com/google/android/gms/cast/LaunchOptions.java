@@ -67,14 +67,6 @@ public class LaunchOptions implements SafeParcelable
         return m.hashCode(this.Fb, this.Fc);
     }
     
-    public void setLanguage(final String fc) {
-        this.Fc = fc;
-    }
-    
-    public void setRelaunchIfRunning(final boolean fb) {
-        this.Fb = fb;
-    }
-    
     @Override
     public String toString() {
         return String.format("LaunchOptions(relaunchIfRunning=%b, language=%s)", this.Fb, this.Fc);

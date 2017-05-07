@@ -4,7 +4,6 @@
 
 package com.google.android.gms.common.internal;
 
-import android.text.TextUtils;
 import android.os.Looper;
 
 public final class n
@@ -15,21 +14,9 @@ public final class n
         }
     }
     
-    public static void K(final boolean b) {
-        if (!b) {
-            throw new IllegalArgumentException();
-        }
-    }
-    
     public static void a(final boolean b, final Object o) {
         if (!b) {
             throw new IllegalStateException(String.valueOf(o));
-        }
-    }
-    
-    public static void a(final boolean b, final String s, final Object... array) {
-        if (!b) {
-            throw new IllegalStateException(String.format(s, array));
         }
     }
     
@@ -45,13 +32,6 @@ public final class n
         }
     }
     
-    public static String aZ(final String s) {
-        if (TextUtils.isEmpty((CharSequence)s)) {
-            throw new IllegalArgumentException("Given String is empty or null");
-        }
-        return s;
-    }
-    
     public static <T> T b(final T t, final Object o) {
         if (t == null) {
             throw new NullPointerException(String.valueOf(o));
@@ -59,22 +39,9 @@ public final class n
         return t;
     }
     
-    public static String b(final String s, final Object o) {
-        if (TextUtils.isEmpty((CharSequence)s)) {
-            throw new IllegalArgumentException(String.valueOf(o));
-        }
-        return s;
-    }
-    
     public static void b(final boolean b, final Object o) {
         if (!b) {
             throw new IllegalArgumentException(String.valueOf(o));
-        }
-    }
-    
-    public static void b(final boolean b, final String s, final Object... array) {
-        if (!b) {
-            throw new IllegalArgumentException(String.format(s, array));
         }
     }
     

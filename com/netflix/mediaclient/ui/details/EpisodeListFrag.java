@@ -220,6 +220,10 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper$C
         return this.manager;
     }
     
+    String getShowId() {
+        return this.showId;
+    }
+    
     @Override
     public VideoDetailsViewGroup getVideoDetailsViewGroup() {
         return this.detailsViewGroup;

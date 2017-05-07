@@ -5,13 +5,9 @@
 package android.support.v7.widget;
 
 import android.support.v4.widget.PopupWindowCompat;
-import android.os.Build$VERSION;
-import android.widget.PopupWindow$OnDismissListener;
-import android.widget.AdapterView;
-import android.view.KeyEvent$DispatcherState;
-import android.view.KeyEvent;
-import android.widget.ListView;
 import android.view.View$OnTouchListener;
+import android.widget.PopupWindow$OnDismissListener;
+import android.widget.ListView;
 import android.view.ViewParent;
 import android.view.ViewGroup;
 import android.view.View$MeasureSpec;
@@ -24,7 +20,6 @@ import android.support.v4.text.TextUtilsCompat;
 import android.support.v7.internal.widget.AppCompatPopupWindow;
 import android.support.v7.appcompat.R$styleable;
 import android.util.AttributeSet;
-import android.support.v7.appcompat.R$attr;
 import android.util.Log;
 import android.graphics.Rect;
 import android.widget.PopupWindow;

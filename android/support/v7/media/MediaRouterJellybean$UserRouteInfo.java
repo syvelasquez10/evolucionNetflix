@@ -5,16 +5,10 @@
 package android.support.v7.media;
 
 import android.media.MediaRouter$VolumeCallback;
-import android.media.RemoteControlClient;
 import android.media.MediaRouter$UserRouteInfo;
-import android.graphics.drawable.Drawable;
 
 public final class MediaRouterJellybean$UserRouteInfo
 {
-    public static void setIconDrawable(final Object o, final Drawable iconDrawable) {
-        ((MediaRouter$UserRouteInfo)o).setIconDrawable(iconDrawable);
-    }
-    
     public static void setName(final Object o, final CharSequence name) {
         ((MediaRouter$UserRouteInfo)o).setName(name);
     }
@@ -25,14 +19,6 @@ public final class MediaRouterJellybean$UserRouteInfo
     
     public static void setPlaybackType(final Object o, final int playbackType) {
         ((MediaRouter$UserRouteInfo)o).setPlaybackType(playbackType);
-    }
-    
-    public static void setRemoteControlClient(final Object o, final Object o2) {
-        ((MediaRouter$UserRouteInfo)o).setRemoteControlClient((RemoteControlClient)o2);
-    }
-    
-    public static void setStatus(final Object o, final CharSequence status) {
-        ((MediaRouter$UserRouteInfo)o).setStatus(status);
     }
     
     public static void setVolume(final Object o, final int volume) {

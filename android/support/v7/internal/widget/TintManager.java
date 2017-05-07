@@ -21,7 +21,6 @@ public class TintManager
 {
     private static final TintManager$ColorFilterLruCache COLOR_FILTER_CACHE;
     private static final int[] CONTAINERS_WITH_TINT_CHILDREN;
-    private static final boolean DEBUG = false;
     static final PorterDuff$Mode DEFAULT_MODE;
     private static final String TAG;
     private static final int[] TINT_COLOR_BACKGROUND_MULTIPLY;

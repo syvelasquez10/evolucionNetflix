@@ -23,10 +23,6 @@ public class SupportErrorDialogFragment extends DialogFragment
         this.HG = null;
     }
     
-    public static SupportErrorDialogFragment newInstance(final Dialog dialog) {
-        return newInstance(dialog, null);
-    }
-    
     public static SupportErrorDialogFragment newInstance(Dialog mDialog, final DialogInterface$OnCancelListener hg) {
         final SupportErrorDialogFragment supportErrorDialogFragment = new SupportErrorDialogFragment();
         mDialog = n.b(mDialog, "Cannot display null dialog");

@@ -10,8 +10,8 @@ import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
 import android.view.ViewGroup$MarginLayoutParams;
 import android.graphics.Canvas;
-import android.view.ViewGroup$LayoutParams;
 import android.support.v4.view.ViewCompat;
+import android.view.ViewGroup$LayoutParams;
 import android.content.res.TypedArray;
 import android.view.ViewConfiguration;
 import android.support.v4.widget.ViewDragHelper$Callback;
@@ -28,10 +28,6 @@ import android.view.ViewGroup;
 public class SlidingUpPanelLayout extends ViewGroup
 {
     private static final int[] DEFAULT_ATTRS;
-    private static final int DEFAULT_FADE_COLOR = -1728053248;
-    private static final int DEFAULT_MIN_FLING_VELOCITY = 400;
-    private static final int DEFAULT_PANEL_HEIGHT = 68;
-    private static final int DEFAULT_SHADOW_HEIGHT = 4;
     private static final String TAG;
     private float mAnchorPoint;
     private boolean mCanSlide;
@@ -195,27 +191,6 @@ public class SlidingUpPanelLayout extends ViewGroup
         this.dispatchOnPanelSlide(this.mSlideableView);
     }
     
-    protected boolean canScroll(final View view, final boolean b, final int n, final int n2, final int n3) {
-        if (view instanceof ViewGroup) {
-            final ViewGroup viewGroup = (ViewGroup)view;
-            final int scrollX = view.getScrollX();
-            final int scrollY = view.getScrollY();
-            for (int i = viewGroup.getChildCount() - 1; i >= 0; --i) {
-                final View child = viewGroup.getChildAt(i);
-                if (n2 + scrollX >= child.getLeft() && n2 + scrollX < child.getRight() && n3 + scrollY >= child.getTop() && n3 + scrollY < child.getBottom() && this.canScroll(child, true, n, n2 + scrollX - child.getLeft(), n3 + scrollY - child.getTop())) {
-                    return true;
-                }
-            }
-        }
-        Label_0144: {
-            break Label_0144;
-        }
-        if (!b || !ViewCompat.canScrollHorizontally(view, -n)) {
-            return false;
-        }
-        return true;
-    }
-    
     protected boolean checkLayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
         return viewGroup$LayoutParams instanceof SlidingUpPanelLayout$LayoutParams && super.checkLayoutParams(viewGroup$LayoutParams);
     }
@@ -342,22 +317,6 @@ public class SlidingUpPanelLayout extends ViewGroup
         return (ViewGroup$LayoutParams)new SlidingUpPanelLayout$LayoutParams(viewGroup$LayoutParams);
     }
     
-    public int getCoveredFadeColor() {
-        return this.mCoveredFadeColor;
-    }
-    
-    public int getPanelHeight() {
-        return this.mPanelHeight;
-    }
-    
-    public void hidePane() {
-        if (this.mSlideableView == null) {
-            return;
-        }
-        this.mSlideableView.setVisibility(8);
-        this.requestLayout();
-    }
-    
     public boolean isAnchored() {
         return this.mSlideState == SlidingUpPanelLayout$SlideState.ANCHORED;
     }
@@ -375,10 +334,6 @@ public class SlidingUpPanelLayout extends ViewGroup
             b = false;
         }
         return b;
-    }
-    
-    public boolean isSlideable() {
-        return this.mCanSlide;
     }
     
     protected void onAttachedToWindow() {
@@ -659,23 +614,8 @@ public class SlidingUpPanelLayout extends ViewGroup
         }
     }
     
-    public void setAnchorPoint(final float mAnchorPoint) {
-        if (mAnchorPoint > 0.0f && mAnchorPoint < 1.0f) {
-            this.mAnchorPoint = mAnchorPoint;
-        }
-    }
-    
-    public void setCoveredFadeColor(final int mCoveredFadeColor) {
-        this.mCoveredFadeColor = mCoveredFadeColor;
-        this.invalidate();
-    }
-    
     public void setDragView(final View mDragView) {
         this.mDragView = mDragView;
-    }
-    
-    public void setEnableDragViewTouchEvents(final boolean mIsUsingDragViewTouchEvents) {
-        this.mIsUsingDragViewTouchEvents = mIsUsingDragViewTouchEvents;
     }
     
     public void setPanelHeight(final int mPanelHeight) {
@@ -689,10 +629,6 @@ public class SlidingUpPanelLayout extends ViewGroup
     
     public void setShadowDrawable(final Drawable mShadowDrawable) {
         this.mShadowDrawable = mShadowDrawable;
-    }
-    
-    public void setSlidingEnabled(final boolean mIsSlidingEnabled) {
-        this.mIsSlidingEnabled = mIsSlidingEnabled;
     }
     
     public void showPane() {

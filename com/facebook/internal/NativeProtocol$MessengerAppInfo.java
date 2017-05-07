@@ -6,8 +6,6 @@ package com.facebook.internal;
 
 class NativeProtocol$MessengerAppInfo extends NativeProtocol$NativeAppInfo
 {
-    static final String MESSENGER_PACKAGE = "com.facebook.orca";
-    
     private NativeProtocol$MessengerAppInfo() {
         super(null);
     }
