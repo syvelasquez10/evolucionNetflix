@@ -5,10 +5,10 @@
 package com.google.android.gms.ads.internal.overlay;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-@zzgk
+@zzgr
 public final class AdLauncherIntentInfoParcel implements SafeParcelable
 {
     public static final zzb CREATOR;
@@ -17,23 +17,23 @@ public final class AdLauncherIntentInfoParcel implements SafeParcelable
     public final String packageName;
     public final String url;
     public final int versionCode;
-    public final String zzAa;
-    public final String zzzY;
-    public final String zzzZ;
+    public final String zzAL;
+    public final String zzAM;
+    public final String zzAN;
     
     static {
         CREATOR = new zzb();
     }
     
-    public AdLauncherIntentInfoParcel(final int versionCode, final String intentAction, final String url, final String mimeType, final String packageName, final String zzzY, final String zzzZ, final String zzAa) {
+    public AdLauncherIntentInfoParcel(final int versionCode, final String intentAction, final String url, final String mimeType, final String packageName, final String zzAL, final String zzAM, final String zzAN) {
         this.versionCode = versionCode;
         this.intentAction = intentAction;
         this.url = url;
         this.mimeType = mimeType;
         this.packageName = packageName;
-        this.zzzY = zzzY;
-        this.zzzZ = zzzZ;
-        this.zzAa = zzAa;
+        this.zzAL = zzAL;
+        this.zzAM = zzAM;
+        this.zzAN = zzAN;
     }
     
     public AdLauncherIntentInfoParcel(final String s, final String s2, final String s3, final String s4, final String s5, final String s6, final String s7) {

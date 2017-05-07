@@ -13,29 +13,29 @@ import android.content.ServiceConnection;
 
 public class zza implements ServiceConnection
 {
-    boolean zzYg;
-    private final BlockingQueue<IBinder> zzYh;
+    boolean zzZW;
+    private final BlockingQueue<IBinder> zzZX;
     
     public zza() {
-        this.zzYg = false;
-        this.zzYh = new LinkedBlockingQueue<IBinder>();
+        this.zzZW = false;
+        this.zzZX = new LinkedBlockingQueue<IBinder>();
     }
     
     public void onServiceConnected(final ComponentName componentName, final IBinder binder) {
-        this.zzYh.add(binder);
+        this.zzZX.add(binder);
     }
     
     public void onServiceDisconnected(final ComponentName componentName) {
     }
     
-    public IBinder zzmS() {
+    public IBinder zzno() {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             throw new IllegalStateException("BlockingServiceConnection.getService() called on main thread");
         }
-        if (this.zzYg) {
+        if (this.zzZW) {
             throw new IllegalStateException();
         }
-        this.zzYg = true;
-        return this.zzYh.take();
+        this.zzZW = true;
+        return this.zzZX.take();
     }
 }

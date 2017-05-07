@@ -44,6 +44,7 @@ import com.netflix.mediaclient.protocol.netflixcom.NetflixComHandlerFactory;
 import com.netflix.mediaclient.protocol.nflx.NflxHandler$Response;
 import com.google.android.gms.auth.api.credentials.Credential;
 import android.content.BroadcastReceiver;
+import java.util.concurrent.atomic.AtomicBoolean;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;

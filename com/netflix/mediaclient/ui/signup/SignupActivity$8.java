@@ -16,6 +16,7 @@ import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -65,6 +66,6 @@ class SignupActivity$8 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131165551), this.this$0.getString(2131165485), null)));
+        this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131165549), this.this$0.getString(2131165483), null)));
     }
 }

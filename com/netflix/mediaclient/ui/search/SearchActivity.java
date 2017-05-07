@@ -164,7 +164,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void showEmpty() {
-        this.leWrapper.showErrorView(2131165476, false, false);
+        this.leWrapper.showErrorView(2131165474, false, false);
         this.fragGroup.setVisibility(4);
         this.searchActionBar.hideProgressSpinner();
     }
@@ -205,7 +205,7 @@ public class SearchActivity extends NetflixActivity
         if (BrowseExperience.isKubrickKids()) {
             return 2131165770;
         }
-        return 2131165610;
+        return 2131165608;
     }
     
     @Override
@@ -270,7 +270,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     public void showError() {
-        this.leWrapper.showErrorView(2131165414, true, false);
+        this.leWrapper.showErrorView(2131165412, true, false);
         this.fragGroup.setVisibility(4);
         this.searchActionBar.hideProgressSpinner();
     }

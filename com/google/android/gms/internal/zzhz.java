@@ -4,17 +4,26 @@
 
 package com.google.android.gms.internal;
 
-import android.os.HandlerThread;
+import java.util.concurrent.Future;
 
-public class zzhz
+@zzgr
+public abstract class zzhz
 {
-    private HandlerThread zzIn;
-    private int zzIo;
-    private final Object zzpc;
+    private volatile Thread zzIl;
+    private boolean zzIm;
+    private final Runnable zzx;
     
     public zzhz() {
-        this.zzIn = null;
-        this.zzIo = 0;
-        this.zzpc = new Object();
+        this.zzx = new zzhz$1(this);
+        this.zzIm = false;
+    }
+    
+    public abstract void zzbn();
+    
+    public final Future zzgz() {
+        if (this.zzIm) {
+            return zzic.zza(1, this.zzx);
+        }
+        return zzic.zza(this.zzx);
     }
 }

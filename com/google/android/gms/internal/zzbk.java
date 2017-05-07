@@ -23,20 +23,20 @@ import android.view.View;
 import android.app.Activity;
 import com.google.android.gms.ads.internal.util.client.zzb;
 
-@zzgk
+@zzgr
 public class zzbk extends Thread
 {
     private boolean zzam;
-    private final Object zzpc;
-    private final int zzrC;
-    private final int zzrE;
-    private boolean zzrO;
-    private final zzbj zzrP;
-    private final zzbi zzrQ;
-    private final zzgj zzrR;
-    private final int zzrS;
-    private final int zzrT;
-    private final int zzrU;
+    private final Object zzpd;
+    private final int zzrN;
+    private final int zzrP;
+    private boolean zzrZ;
+    private final zzbj zzsa;
+    private final zzbi zzsb;
+    private final zzgq zzsc;
+    private final int zzsd;
+    private final int zzse;
+    private final int zzsf;
     
     @Override
     public void run() {
@@ -47,36 +47,36 @@ public class zzbk extends Thread
                     if (!this.zzcu()) {
                         break Label_0085;
                     }
-                    final Object o = this.zzrP.getActivity();
+                    final Object o = this.zzsa.getActivity();
                     if (o == null) {
-                        zzb.zzaC("ContentFetchThread: no activity");
+                        zzb.zzaF("ContentFetchThread: no activity");
                         continue Label_0050_Outer;
                     }
                     break Label_0085;
                 }
                 catch (Throwable t) {
                     zzb.zzb("Error in ContentFetchTask", t);
-                    this.zzrR.zza(t, true);
+                    this.zzsc.zza(t, true);
                 }
             Label_0090_Outer:
                 while (true) {
-                    final Object o = this.zzpc;
+                    final Object o = this.zzpd;
                     synchronized (o) {
-                        while (this.zzrO) {
+                        while (this.zzrZ) {
                             try {
-                                zzb.zzaC("ContentFetchTask: waiting");
-                                this.zzpc.wait();
+                                zzb.zzaF("ContentFetchTask: waiting");
+                                this.zzpd.wait();
                             }
                             catch (InterruptedException ex) {}
                         }
                         continue Label_0050_Outer;
                         while (true) {
-                            Thread.sleep(this.zzrS * 1000);
+                            Thread.sleep(this.zzsd * 1000);
                             continue Label_0090_Outer;
-                            this.zza((Activity)o);
-                            continue;
-                            zzb.zzaC("ContentFetchTask: sleeping");
+                            zzb.zzaF("ContentFetchTask: sleeping");
                             this.zzcw();
+                            continue;
+                            this.zza((Activity)o);
                             continue;
                         }
                     }
@@ -100,7 +100,7 @@ public class zzbk extends Thread
             }
             return new zzbk$zza(this, 0, 0);
         }
-        else if (view instanceof WebView && !(view instanceof zzip)) {
+        else if (view instanceof WebView && !(view instanceof zziz)) {
             zzbh.zzcp();
             if (this.zza((WebView)view, zzbh)) {
                 return new zzbk$zza(this, 0, 1);
@@ -114,8 +114,8 @@ public class zzbk extends Thread
                 int n2 = 0;
                 while (i < viewGroup.getChildCount()) {
                     final zzbk$zza zza = this.zza(viewGroup.getChildAt(i), zzbh);
-                    n2 += zza.zzsb;
-                    n += zza.zzsc;
+                    n2 += zza.zzsm;
+                    n += zza.zzsn;
                     ++i;
                 }
                 return new zzbk$zza(this, n2, n);
@@ -153,15 +153,15 @@ public class zzbk extends Thread
                 }
             }
             if (zzbh.zzcl()) {
-                this.zzrQ.zzb(zzbh);
+                this.zzsb.zzb(zzbh);
             }
         }
         catch (JSONException ex) {
-            zzb.zzaC("Json string may be malformed.");
+            zzb.zzaF("Json string may be malformed.");
         }
         catch (Throwable t) {
             zzb.zza("Failed to get webview content.", t);
-            this.zzrR.zza(t, true);
+            this.zzsc.zza(t, true);
         }
     }
     
@@ -170,7 +170,7 @@ public class zzbk extends Thread
     }
     
     boolean zza(final WebView webView, final zzbh zzbh) {
-        if (!zzlv.zzpV()) {
+        if (!zzmx.zzqB()) {
             return false;
         }
         zzbh.zzcp();
@@ -180,7 +180,7 @@ public class zzbk extends Thread
     
     boolean zzcu() {
         try {
-            final Context context = this.zzrP.getContext();
+            final Context context = this.zzsa.getContext();
             if (context == null) {
                 return false;
             }
@@ -211,9 +211,9 @@ public class zzbk extends Thread
     }
     
     public void zzcw() {
-        synchronized (this.zzpc) {
-            this.zzrO = true;
-            zzb.zzaC("ContentFetchThread: paused, mPause = " + this.zzrO);
+        synchronized (this.zzpd) {
+            this.zzrZ = true;
+            zzb.zzaF("ContentFetchThread: paused, mPause = " + this.zzrZ);
         }
     }
     
@@ -227,19 +227,19 @@ public class zzbk extends Thread
     
     void zzg(final View view) {
         try {
-            final zzbh zzbh = new zzbh(this.zzrC, this.zzrT, this.zzrE, this.zzrU);
+            final zzbh zzbh = new zzbh(this.zzrN, this.zzse, this.zzrP, this.zzsf);
             final zzbk$zza zza = this.zza(view, zzbh);
             zzbh.zzcq();
-            if (zza.zzsb == 0 && zza.zzsc == 0) {
+            if (zza.zzsm == 0 && zza.zzsn == 0) {
                 return;
             }
-            if ((zza.zzsc != 0 || zzbh.zzcr() != 0) && (zza.zzsc != 0 || !this.zzrQ.zza(zzbh))) {
-                this.zzrQ.zzc(zzbh);
+            if ((zza.zzsn != 0 || zzbh.zzcr() != 0) && (zza.zzsn != 0 || !this.zzsb.zza(zzbh))) {
+                this.zzsb.zzc(zzbh);
             }
         }
         catch (Exception ex) {
             zzb.zzb("Exception in fetchContentOnUIThread", ex);
-            this.zzrR.zza(ex, true);
+            this.zzsc.zza(ex, true);
         }
     }
     

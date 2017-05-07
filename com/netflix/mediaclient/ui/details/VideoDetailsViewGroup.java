@@ -325,7 +325,7 @@ public class VideoDetailsViewGroup extends LinearLayout
         this.videoId = details.getId();
         this.details = details;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        this.updateImage(details, netflixActivity, String.format(this.getResources().getString(2131165357), details.getTitle()));
+        this.updateImage(details, netflixActivity, String.format(this.getResources().getString(2131165355), details.getTitle()));
         this.updateRelatedTitle(details);
         this.updateTitle(details);
         this.updateBasicInfo(videoDetailsViewGroup$DetailsStringProvider);
@@ -351,7 +351,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void updateRelatedTitle(final VideoDetails videoDetails) {
         if (this.relatedTitle != null) {
-            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131165538, new Object[] { videoDetails.getTitle() }));
+            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131165536, new Object[] { videoDetails.getTitle() }));
         }
     }
     

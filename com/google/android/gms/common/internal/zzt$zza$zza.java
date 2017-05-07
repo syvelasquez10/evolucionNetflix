@@ -9,14 +9,14 @@ import android.os.IBinder;
 
 class zzt$zza$zza implements zzt
 {
-    private IBinder zznI;
+    private IBinder zznJ;
     
-    zzt$zza$zza(final IBinder zznI) {
-        this.zznI = zznI;
+    zzt$zza$zza(final IBinder zznJ) {
+        this.zznJ = zznJ;
     }
     
     public IBinder asBinder() {
-        return this.zznI;
+        return this.zznJ;
     }
     
     @Override
@@ -32,7 +32,7 @@ class zzt$zza$zza implements zzt
             else {
                 obtain.writeInt(0);
             }
-            this.zznI.transact(2, obtain, obtain2, 0);
+            this.zznJ.transact(2, obtain, obtain2, 0);
             obtain2.readException();
         }
         finally {

@@ -18,7 +18,7 @@ public abstract class Api$zza<T extends Api$zzb, O>
     
     public abstract T zza(final Context p0, final Looper p1, final zzf p2, final O p3, final GoogleApiClient$ConnectionCallbacks p4, final GoogleApiClient$OnConnectionFailedListener p5);
     
-    public List<Scope> zzl(final O o) {
+    public List<Scope> zzm(final O o) {
         return Collections.emptyList();
     }
 }

@@ -20,7 +20,7 @@ final class BrowseExperience$7 extends BrowseExperience$ExperienceMap
         ((HashMap<String, Boolean>)this).put("SHOULD_INCLUDE_CHARACTER_LEAVES_BOOL", true);
         ((HashMap<String, ImageLoader$StaticImgConfig>)this).put("IMAGE_LOADER_CONFIG_ENUM", ImageLoader$StaticImgConfig.LIGHT);
         ((HashMap<String, ImageLoader$StaticImgConfig>)this).put("IMAGE_LOADER_CONFIG_NO_PLACEHOLDER_ENUM", ImageLoader$StaticImgConfig.LIGHT_NO_PLACEHOLDER);
-        ((HashMap<String, Boolean>)this).put("SHOULD_SHOW_LARGE_PEAK_FOR_KIDS_TOP_TEN", true);
+        ((HashMap<String, Boolean>)this).put("SHOULD_SHOW_LARGE_PEAK_FOR_KIDS_TOP_TEN", false);
         ((HashMap<String, Boolean>)this).put("USE_LOLOMO_VERT_ART", false);
         ((HashMap<String, Boolean>)this).put("USE_KIDS_GENRES_LOMO", true);
     }

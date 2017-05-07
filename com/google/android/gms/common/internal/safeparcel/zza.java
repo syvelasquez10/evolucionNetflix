@@ -13,7 +13,7 @@ import android.os.Parcel;
 
 public class zza
 {
-    public static String[] zzA(final Parcel parcel, int zza) {
+    public static String[] zzB(final Parcel parcel, int zza) {
         zza = zza(parcel, zza);
         final int dataPosition = parcel.dataPosition();
         if (zza == 0) {
@@ -24,7 +24,7 @@ public class zza
         return stringArray;
     }
     
-    public static ArrayList<Integer> zzB(final Parcel parcel, int i) {
+    public static ArrayList<Integer> zzC(final Parcel parcel, int i) {
         final int zza = zza(parcel, i);
         final int dataPosition = parcel.dataPosition();
         if (zza == 0) {
@@ -39,7 +39,7 @@ public class zza
         return list;
     }
     
-    public static ArrayList<String> zzC(final Parcel parcel, int zza) {
+    public static ArrayList<String> zzD(final Parcel parcel, int zza) {
         zza = zza(parcel, zza);
         final int dataPosition = parcel.dataPosition();
         if (zza == 0) {
@@ -75,16 +75,16 @@ public class zza
         }
     }
     
-    public static int zzai(final Parcel parcel) {
+    public static int zzao(final Parcel parcel) {
         return parcel.readInt();
     }
     
-    public static int zzaj(final Parcel parcel) {
-        final int zzai = zzai(parcel);
-        final int zza = zza(parcel, zzai);
+    public static int zzap(final Parcel parcel) {
+        final int zzao = zzao(parcel);
+        final int zza = zza(parcel, zzao);
         final int dataPosition = parcel.dataPosition();
-        if (zzbH(zzai) != 20293) {
-            throw new zza$zza("Expected object header. Got 0x" + Integer.toHexString(zzai), parcel);
+        if (zzbM(zzao) != 20293) {
+            throw new zza$zza("Expected object header. Got 0x" + Integer.toHexString(zzao), parcel);
         }
         final int n = dataPosition + zza;
         if (n < dataPosition || n > parcel.dataSize()) {
@@ -108,7 +108,7 @@ public class zza
         return (T[])typedArray;
     }
     
-    public static int zzbH(final int n) {
+    public static int zzbM(final int n) {
         return 0xFFFF & n;
     }
     
@@ -143,12 +143,12 @@ public class zza
         return parcel.readFloat();
     }
     
-    public static double zzm(final Parcel parcel, final int n) {
+    public static double zzn(final Parcel parcel, final int n) {
         zza(parcel, n, 8);
         return parcel.readDouble();
     }
     
-    public static String zzo(final Parcel parcel, int zza) {
+    public static String zzp(final Parcel parcel, int zza) {
         zza = zza(parcel, zza);
         final int dataPosition = parcel.dataPosition();
         if (zza == 0) {
@@ -159,7 +159,7 @@ public class zza
         return string;
     }
     
-    public static IBinder zzp(final Parcel parcel, int zza) {
+    public static IBinder zzq(final Parcel parcel, int zza) {
         zza = zza(parcel, zza);
         final int dataPosition = parcel.dataPosition();
         if (zza == 0) {
@@ -170,7 +170,7 @@ public class zza
         return strongBinder;
     }
     
-    public static Bundle zzq(final Parcel parcel, int zza) {
+    public static Bundle zzr(final Parcel parcel, int zza) {
         zza = zza(parcel, zza);
         final int dataPosition = parcel.dataPosition();
         if (zza == 0) {
@@ -181,7 +181,7 @@ public class zza
         return bundle;
     }
     
-    public static byte[] zzr(final Parcel parcel, int zza) {
+    public static byte[] zzs(final Parcel parcel, int zza) {
         zza = zza(parcel, zza);
         final int dataPosition = parcel.dataPosition();
         if (zza == 0) {

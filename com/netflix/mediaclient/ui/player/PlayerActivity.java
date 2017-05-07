@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
@@ -12,6 +13,7 @@ import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceled
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.Asset;
@@ -23,11 +25,12 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.app.Activity;
 import android.annotation.TargetApi;
+import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 
 @TargetApi(14)
-public class PlayerActivity extends FragmentHostActivity implements NetflixDialogFrag$DialogCanceledListenerProvider
+public class PlayerActivity extends FragmentHostActivity implements NetflixDialogFrag$DialogCanceledListenerProvider, PlayContextProvider
 {
     static final String EXTRA_GET_DETAILS_EPISODE_DETAILS = "extra_get_details_EPISODE_DETAILS";
     static final String EXTRA_GET_DETAILS_IS_EPISODE = "extra_get_details_is_episode";
@@ -90,6 +93,11 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
         playVideo(netflixActivity, Asset.create(playable, playContext, !PlayerActivity.PIN_VERIFIED));
     }
     
+    private boolean shouldResumePreviousPlay(final Intent intent) {
+        final Asset assetFromIntent = this.getAssetFromIntent();
+        return assetFromIntent != null && StringUtils.safeEquals(Asset.fromIntent(intent).getPlayableId(), assetFromIntent.getPlayableId());
+    }
+    
     public static Intent toIntent(final NetflixActivity netflixActivity, final Asset asset) {
         final Intent intent = new Intent((Context)netflixActivity, (Class)PlayerActivity.class);
         intent.addFlags(131072);
@@ -99,6 +107,9 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
     }
     
     protected void cleanupAndExit() {
+        if (this.playerFragment == null) {
+            return;
+        }
         this.playerFragment.cleanupAndExit();
     }
     
@@ -131,12 +142,23 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
     
     @Override
     public NetflixDialogFrag$DialogCanceledListener getDialogCanceledListener() {
+        if (this.playerFragment == null) {
+            return null;
+        }
         return this.playerFragment.getDialogCanceledListener();
     }
     
     @Override
     public AbsEpisodeView$EpisodeRowListener getEpisodeRowListener() {
+        if (this.playerFragment == null) {
+            return null;
+        }
         return this.playerFragment.getEpisodeRowListener();
+    }
+    
+    @Override
+    public PlayContext getPlayContext() {
+        return this.getAssetFromIntent();
     }
     
     protected PlayerFragment getPlayerFragment() {
@@ -150,7 +172,7 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
     
     @Override
     protected boolean handleBackPressed() {
-        return this.playerFragment.handleBackPressed();
+        return this.playerFragment != null && this.playerFragment.handleBackPressed();
     }
     
     @Override
@@ -174,13 +196,21 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
     
     @Override
     public boolean onKeyDown(final int n, final KeyEvent keyEvent) {
-        return this.playerFragment.onKeyDown(n, keyEvent) || super.onKeyDown(n, keyEvent);
+        return (this.playerFragment != null && this.playerFragment.onKeyDown(n, keyEvent)) || super.onKeyDown(n, keyEvent);
     }
     
     @Override
     protected void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
+        if (this.shouldResumePreviousPlay(intent)) {
+            Log.d("PlayerActivity", "Got same video ID - resuming the playback...");
+            return;
+        }
         this.setIntent(intent);
+        if (this.playerFragment == null) {
+            ErrorLoggingManager.logHandledException("SPY-8343 - PlayerActivity received onNewIntent() prior to onCreate() - skipping to avoid crash");
+            return;
+        }
         if (intent.hasExtra("extra_get_details_video_id")) {
             this.playerFragment.setExternalBundle(PlayerFragment.getBundle(intent.getStringExtra("extra_get_details_video_id"), intent.getStringExtra("extra_get_details_video_type"), intent.getParcelableExtra("extra_get_details_play_context")));
         }
@@ -192,6 +222,9 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
     
     @Override
     public void onPlayVerified(final boolean b, final PlayVerifierVault playVerifierVault) {
+        if (this.playerFragment == null) {
+            return;
+        }
         this.playerFragment.onPlayVerified(b, playVerifierVault);
     }
     
@@ -200,12 +233,16 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
     }
     
     public void onWindowFocusChanged(final boolean b) {
-        this.playerFragment.onWindowFocusChanged(b);
+        if (this.playerFragment != null) {
+            this.playerFragment.onWindowFocusChanged(b);
+        }
     }
     
     @Override
     public void performUpAction() {
-        this.playerFragment.performUpAction();
+        if (this.playerFragment != null) {
+            this.playerFragment.performUpAction();
+        }
     }
     
     @Override
@@ -230,5 +267,9 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
     @Override
     public boolean showSignOutInMenu() {
         return false;
+    }
+    
+    public void updateIntent(final Asset asset) {
+        asset.toIntent(this.getIntent());
     }
 }

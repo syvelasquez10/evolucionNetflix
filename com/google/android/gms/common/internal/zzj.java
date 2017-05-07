@@ -15,15 +15,15 @@ import java.io.FileDescriptor;
 import android.content.ServiceConnection;
 import android.util.Log;
 import java.util.Iterator;
-import java.util.ArrayList;
 import com.google.android.gms.common.api.GoogleApiClient$zza;
 import java.util.concurrent.atomic.AtomicInteger;
 import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
-import com.google.android.gms.common.api.Scope;
-import java.util.Set;
+import java.util.ArrayList;
 import com.google.android.gms.common.GoogleApiAvailability;
 import android.os.Looper;
+import com.google.android.gms.common.api.Scope;
+import java.util.Set;
 import android.accounts.Account;
 import android.os.Handler;
 import android.content.Context;
@@ -32,56 +32,70 @@ import android.os.IInterface;
 
 public abstract class zzj<T extends IInterface> implements Api$zzb, zzk$zza
 {
-    public static final String[] zzadF;
+    public static final String[] zzafI;
     private final Context mContext;
     final Handler mHandler;
-    private final Account zzOY;
-    private final Looper zzYV;
-    private final zzf zzZH;
-    private final GoogleApiAvailability zzZi;
-    private final Set<Scope> zzZp;
-    private int zzadA;
-    private final GoogleApiClient$ConnectionCallbacks zzadB;
-    private final GoogleApiClient$OnConnectionFailedListener zzadC;
-    private final int zzadD;
-    protected AtomicInteger zzadE;
-    private final zzl zzadu;
-    private zzs zzadv;
-    private GoogleApiClient$zza zzadw;
-    private T zzadx;
-    private final ArrayList<zzj$zzc<?>> zzady;
-    private zzj$zze zzadz;
-    private final Object zzpc;
+    private final Account zzQd;
+    private final Set<Scope> zzTm;
+    private final Looper zzaaO;
+    private final GoogleApiAvailability zzaaP;
+    private final zzf zzabI;
+    private T zzafA;
+    private final ArrayList<zzj$zzc<?>> zzafB;
+    private zzj$zze zzafC;
+    private int zzafD;
+    private final GoogleApiClient$ConnectionCallbacks zzafE;
+    private final GoogleApiClient$OnConnectionFailedListener zzafF;
+    private final int zzafG;
+    protected AtomicInteger zzafH;
+    private final zzl zzafx;
+    private zzs zzafy;
+    private GoogleApiClient$zza zzafz;
+    private final Object zzpd;
     
     static {
-        zzadF = new String[] { "service_esmobile", "service_googleme" };
+        zzafI = new String[] { "service_esmobile", "service_googleme" };
     }
     
     protected zzj(final Context context, final Looper looper, final int n, final zzf zzf, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
-        this(context, looper, zzl.zzak(context), GoogleApiAvailability.getInstance(), n, zzf, zzx.zzv(googleApiClient$ConnectionCallbacks), zzx.zzv(googleApiClient$OnConnectionFailedListener));
+        this(context, looper, zzl.zzal(context), GoogleApiAvailability.getInstance(), n, zzf, zzx.zzw(googleApiClient$ConnectionCallbacks), zzx.zzw(googleApiClient$OnConnectionFailedListener));
     }
     
-    protected zzj(final Context context, final Looper looper, final zzl zzl, final GoogleApiAvailability googleApiAvailability, final int zzadD, final zzf zzf, final GoogleApiClient$ConnectionCallbacks zzadB, final GoogleApiClient$OnConnectionFailedListener zzadC) {
-        this.zzpc = new Object();
-        this.zzady = new ArrayList<zzj$zzc<?>>();
-        this.zzadA = 1;
-        this.zzadE = new AtomicInteger(0);
+    protected zzj(final Context context, final Looper looper, final zzl zzl, final GoogleApiAvailability googleApiAvailability, final int zzafG, final zzf zzf, final GoogleApiClient$ConnectionCallbacks zzafE, final GoogleApiClient$OnConnectionFailedListener zzafF) {
+        this.zzpd = new Object();
+        this.zzafB = new ArrayList<zzj$zzc<?>>();
+        this.zzafD = 1;
+        this.zzafH = new AtomicInteger(0);
         this.mContext = zzx.zzb(context, "Context must not be null");
-        this.zzYV = zzx.zzb(looper, "Looper must not be null");
-        this.zzadu = zzx.zzb(zzl, "Supervisor must not be null");
-        this.zzZi = zzx.zzb(googleApiAvailability, "API availability must not be null");
+        this.zzaaO = zzx.zzb(looper, "Looper must not be null");
+        this.zzafx = zzx.zzb(zzl, "Supervisor must not be null");
+        this.zzaaP = zzx.zzb(googleApiAvailability, "API availability must not be null");
         this.mHandler = new zzj$zzb(this, looper);
-        this.zzadD = zzadD;
-        this.zzZH = zzx.zzv(zzf);
-        this.zzOY = zzf.getAccount();
-        this.zzZp = this.zzb(zzf.zzoj());
-        this.zzadB = zzadB;
-        this.zzadC = zzadC;
+        this.zzafG = zzafG;
+        this.zzabI = zzx.zzw(zzf);
+        this.zzQd = zzf.getAccount();
+        this.zzTm = this.zza(zzf.zzoL());
+        this.zzafE = zzafE;
+        this.zzafF = zzafF;
+    }
+    
+    private Set<Scope> zza(final Set<Scope> set) {
+        final Set<Scope> zzb = this.zzb(set);
+        if (zzb == null) {
+            return zzb;
+        }
+        final Iterator<Scope> iterator = zzb.iterator();
+        while (iterator.hasNext()) {
+            if (!set.contains(iterator.next())) {
+                throw new IllegalStateException("Expanding scopes is not permitted, use implied scopes instead");
+            }
+        }
+        return zzb;
     }
     
     private boolean zza(final int n, final int n2, final T t) {
-        synchronized (this.zzpc) {
-            if (this.zzadA != n) {
+        synchronized (this.zzpd) {
+            if (this.zzafD != n) {
                 return false;
             }
             this.zzb(n2, t);
@@ -89,31 +103,17 @@ public abstract class zzj<T extends IInterface> implements Api$zzb, zzk$zza
         }
     }
     
-    private Set<Scope> zzb(final Set<Scope> set) {
-        final Set<Scope> zza = this.zza(set);
-        if (zza == null) {
-            return zza;
-        }
-        final Iterator<Scope> iterator = zza.iterator();
-        while (iterator.hasNext()) {
-            if (!set.contains(iterator.next())) {
-                throw new IllegalStateException("Expanding scopes is not permitted, use implied scopes instead");
-            }
-        }
-        return zza;
-    }
-    
-    private void zzb(final int zzadA, final T zzadx) {
+    private void zzb(final int zzafD, final T zzafA) {
         boolean b = true;
         int n;
-        if (zzadA == 3) {
+        if (zzafD == 3) {
             n = 1;
         }
         else {
             n = 0;
         }
         int n2;
-        if (zzadx != null) {
+        if (zzafA != null) {
             n2 = 1;
         }
         else {
@@ -123,13 +123,13 @@ public abstract class zzj<T extends IInterface> implements Api$zzb, zzk$zza
             b = false;
         }
         while (true) {
-            zzx.zzZ(b);
+            zzx.zzaa(b);
             Label_0104: {
-                synchronized (this.zzpc) {
-                    this.zzc(this.zzadA = zzadA, this.zzadx = zzadx);
-                    switch (zzadA) {
+                synchronized (this.zzpd) {
+                    this.zzc(this.zzafD = zzafD, this.zzafA = zzafA);
+                    switch (zzafD) {
                         case 2: {
-                            this.zzov();
+                            this.zzoX();
                             return;
                         }
                         case 3: {
@@ -143,64 +143,64 @@ public abstract class zzj<T extends IInterface> implements Api$zzb, zzk$zza
                         }
                     }
                 }
-                this.zzou();
+                this.zzoW();
                 return;
             }
-            this.zzow();
+            this.zzoY();
         }
     }
     
-    private void zzov() {
-        if (this.zzadz != null) {
-            Log.e("GmsClient", "Calling connect() while still connected, missing disconnect() for " + this.zzfA());
-            this.zzadu.zzb(this.zzfA(), (ServiceConnection)this.zzadz, this.zzot());
-            this.zzadE.incrementAndGet();
+    private void zzoX() {
+        if (this.zzafC != null) {
+            Log.e("GmsClient", "Calling connect() while still connected, missing disconnect() for " + this.zzfK());
+            this.zzafx.zzb(this.zzfK(), (ServiceConnection)this.zzafC, this.zzoV());
+            this.zzafH.incrementAndGet();
         }
-        this.zzadz = new zzj$zze(this, this.zzadE.get());
-        if (!this.zzadu.zza(this.zzfA(), (ServiceConnection)this.zzadz, this.zzot())) {
-            Log.e("GmsClient", "unable to connect to service: " + this.zzfA());
-            this.mHandler.sendMessage(this.mHandler.obtainMessage(3, this.zzadE.get(), 9));
+        this.zzafC = new zzj$zze(this, this.zzafH.get());
+        if (!this.zzafx.zza(this.zzfK(), (ServiceConnection)this.zzafC, this.zzoV())) {
+            Log.e("GmsClient", "unable to connect to service: " + this.zzfK());
+            this.mHandler.sendMessage(this.mHandler.obtainMessage(3, this.zzafH.get(), 9));
         }
     }
     
-    private void zzow() {
-        if (this.zzadz != null) {
-            this.zzadu.zzb(this.zzfA(), (ServiceConnection)this.zzadz, this.zzot());
-            this.zzadz = null;
+    private void zzoY() {
+        if (this.zzafC != null) {
+            this.zzafx.zzb(this.zzfK(), (ServiceConnection)this.zzafC, this.zzoV());
+            this.zzafC = null;
         }
     }
     
     @Override
     public void disconnect() {
-        this.zzadE.incrementAndGet();
-        synchronized (this.zzady) {
-            for (int size = this.zzady.size(), i = 0; i < size; ++i) {
-                this.zzady.get(i).zzoG();
+        this.zzafH.incrementAndGet();
+        synchronized (this.zzafB) {
+            for (int size = this.zzafB.size(), i = 0; i < size; ++i) {
+                this.zzafB.get(i).zzpi();
             }
-            this.zzady.clear();
-            // monitorexit(this.zzady)
+            this.zzafB.clear();
+            // monitorexit(this.zzafB)
             this.zzb(1, null);
         }
     }
     
     @Override
-    public void dump(final String s, final FileDescriptor fileDescriptor, final PrintWriter printWriter, String[] zzadx) {
+    public void dump(final String s, final FileDescriptor fileDescriptor, final PrintWriter printWriter, String[] zzafA) {
     Label_0137:
         while (true) {
             while (true) {
                 Label_0127: {
                     Label_0117: {
                         Label_0107: {
-                            synchronized (this.zzpc) {
-                                final int zzadA = this.zzadA;
-                                zzadx = (String[])(Object)this.zzadx;
-                                // monitorexit(this.zzpc)
+                            synchronized (this.zzpd) {
+                                final int zzafD = this.zzafD;
+                                zzafA = (String[])(Object)this.zzafA;
+                                // monitorexit(this.zzpd)
                                 printWriter.append(s).append("mConnectState=");
-                                switch (zzadA) {
+                                switch (zzafD) {
                                     default: {
                                         printWriter.print("UNKNOWN");
                                         printWriter.append(" mService=");
-                                        if (zzadx == null) {
+                                        if (zzafA == null) {
                                             printWriter.println("null");
                                             return;
                                         }
@@ -233,7 +233,7 @@ public abstract class zzj<T extends IInterface> implements Api$zzb, zzk$zza
                 continue;
             }
         }
-        printWriter.append(this.zzfB()).append("@").println(Integer.toHexString(System.identityHashCode(((IInterface)(Object)zzadx).asBinder())));
+        printWriter.append(this.zzfL()).append("@").println(Integer.toHexString(System.identityHashCode(((IInterface)(Object)zzafA).asBinder())));
     }
     
     public final Context getContext() {
@@ -241,14 +241,14 @@ public abstract class zzj<T extends IInterface> implements Api$zzb, zzk$zza
     }
     
     public final Looper getLooper() {
-        return this.zzYV;
+        return this.zzaaO;
     }
     
     @Override
     public boolean isConnected() {
         while (true) {
-            synchronized (this.zzpc) {
-                if (this.zzadA == 3) {
+            synchronized (this.zzpd) {
+                if (this.zzafD == 3) {
                     return true;
                 }
             }
@@ -258,8 +258,8 @@ public abstract class zzj<T extends IInterface> implements Api$zzb, zzk$zza
     
     public boolean isConnecting() {
         while (true) {
-            synchronized (this.zzpc) {
-                if (this.zzadA == 2) {
+            synchronized (this.zzpd) {
+                if (this.zzafD == 2) {
                     return true;
                 }
             }
@@ -273,11 +273,7 @@ public abstract class zzj<T extends IInterface> implements Api$zzb, zzk$zza
     protected void onConnectionSuspended(final int n) {
     }
     
-    protected abstract T zzV(final IBinder p0);
-    
-    protected Set<Scope> zza(final Set<Scope> set) {
-        return set;
-    }
+    protected abstract T zzW(final IBinder p0);
     
     protected void zza(final int p0, final Bundle p1, final int p2) {
         // 
@@ -424,19 +420,19 @@ public abstract class zzj<T extends IInterface> implements Api$zzb, zzk$zza
     
     @Override
     public void zza(final GoogleApiClient$zza googleApiClient$zza) {
-        this.zzadw = zzx.zzb(googleApiClient$zza, "Connection progress callbacks cannot be null.");
+        this.zzafz = zzx.zzb(googleApiClient$zza, "Connection progress callbacks cannot be null.");
         this.zzb(2, null);
     }
     
     @Override
     public void zza(final zzp zzp) {
-        final ValidateAccountRequest validateAccountRequest = new ValidateAccountRequest(zzp, this.zzZp.toArray(new Scope[this.zzZp.size()]), this.mContext.getPackageName(), this.zzoB());
+        final ValidateAccountRequest validateAccountRequest = new ValidateAccountRequest(zzp, this.zzTm.toArray(new Scope[this.zzTm.size()]), this.mContext.getPackageName(), this.zzpd());
         try {
-            this.zzadv.zza(new zzj$zzd(this, this.zzadE.get()), validateAccountRequest);
+            this.zzafy.zza(new zzj$zzd(this, this.zzafH.get()), validateAccountRequest);
         }
         catch (DeadObjectException ex2) {
             Log.w("GmsClient", "service died");
-            this.zzbz(1);
+            this.zzbE(1);
         }
         catch (RemoteException ex) {
             Log.w("GmsClient", "Remote exception occurred", (Throwable)ex);
@@ -446,28 +442,36 @@ public abstract class zzj<T extends IInterface> implements Api$zzb, zzk$zza
     @Override
     public void zza(final zzp zzp, final Set<Scope> set) {
         try {
-            final GetServiceRequest zzg = new GetServiceRequest(this.zzadD).zzck(this.mContext.getPackageName()).zzg(this.zzli());
+            final GetServiceRequest zzg = new GetServiceRequest(this.zzafG).zzcl(this.mContext.getPackageName()).zzg(this.zzly());
             if (set != null) {
                 zzg.zzd(set);
             }
-            if (this.zzlm()) {
-                zzg.zzb(this.zzog()).zzc(zzp);
+            if (this.zzlN()) {
+                zzg.zzc(this.zzoI()).zzc(zzp);
             }
-            else if (this.zzoC()) {
-                zzg.zzb(this.zzOY);
+            else if (this.zzpe()) {
+                zzg.zzc(this.zzQd);
             }
-            this.zzadv.zza(new zzj$zzd(this, this.zzadE.get()), zzg);
+            this.zzafy.zza(new zzj$zzd(this, this.zzafH.get()), zzg);
         }
         catch (DeadObjectException ex2) {
             Log.w("GmsClient", "service died");
-            this.zzbz(1);
+            this.zzbE(1);
         }
         catch (RemoteException ex) {
             Log.w("GmsClient", "Remote exception occurred", (Throwable)ex);
         }
     }
     
-    protected void zzbA(final int p0) {
+    protected Set<Scope> zzb(final Set<Scope> set) {
+        return set;
+    }
+    
+    public void zzbE(final int n) {
+        this.mHandler.sendMessage(this.mHandler.obtainMessage(4, this.zzafH.get(), n));
+    }
+    
+    protected void zzbF(final int p0) {
         // 
         // This method could not be decompiled.
         // 
@@ -536,73 +540,77 @@ public abstract class zzj<T extends IInterface> implements Api$zzb, zzk$zza
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public void zzbz(final int n) {
-        this.mHandler.sendMessage(this.mHandler.obtainMessage(4, this.zzadE.get(), n));
-    }
-    
     protected void zzc(final int n, final T t) {
     }
     
-    protected abstract String zzfA();
+    protected abstract String zzfK();
     
-    protected abstract String zzfB();
+    protected abstract String zzfL();
     
-    protected Bundle zzli() {
+    @Override
+    public boolean zzlN() {
+        return false;
+    }
+    
+    protected Bundle zzly() {
         return new Bundle();
     }
     
     @Override
-    public boolean zzlm() {
-        return false;
+    public Bundle zzmS() {
+        return null;
     }
     
     @Override
-    public Bundle zzmw() {
-        return null;
-    }
-    
-    public final T zzoA() {
-        synchronized (this.zzpc) {
-            if (this.zzadA == 4) {
-                throw new DeadObjectException();
-            }
+    public IBinder zznz() {
+        if (this.zzafy == null) {
+            return null;
         }
-        this.zzoz();
-        zzx.zza(this.zzadx != null, "Client is connected but service is null");
-        final IInterface zzadx = this.zzadx;
-        // monitorexit(o)
-        return (T)zzadx;
+        return this.zzafy.asBinder();
     }
     
-    protected Bundle zzoB() {
-        return null;
-    }
-    
-    public boolean zzoC() {
-        return false;
-    }
-    
-    public final Account zzog() {
-        if (this.zzOY != null) {
-            return this.zzOY;
+    public final Account zzoI() {
+        if (this.zzQd != null) {
+            return this.zzQd;
         }
         return new Account("<<default account>>", "com.google");
     }
     
-    protected final String zzot() {
-        return this.zzZH.zzom();
+    protected final String zzoV() {
+        return this.zzabI.zzoO();
     }
     
-    protected void zzou() {
+    protected void zzoW() {
     }
     
-    protected final zzf zzoy() {
-        return this.zzZH;
+    protected final zzf zzpa() {
+        return this.zzabI;
     }
     
-    protected final void zzoz() {
+    protected final void zzpb() {
         if (!this.isConnected()) {
             throw new IllegalStateException("Not connected. Call connect() and wait for onConnected() to be called.");
         }
+    }
+    
+    public final T zzpc() {
+        synchronized (this.zzpd) {
+            if (this.zzafD == 4) {
+                throw new DeadObjectException();
+            }
+        }
+        this.zzpb();
+        zzx.zza(this.zzafA != null, "Client is connected but service is null");
+        final IInterface zzafA = this.zzafA;
+        // monitorexit(o)
+        return (T)zzafA;
+    }
+    
+    protected Bundle zzpd() {
+        return null;
+    }
+    
+    public boolean zzpe() {
+        return false;
     }
 }

@@ -13,65 +13,65 @@ import android.os.Parcelable$Creator;
 
 public class zze implements Parcelable$Creator<PasswordSpecification>
 {
-    static void zza(final PasswordSpecification passwordSpecification, final Parcel parcel, int zzak) {
-        zzak = zzb.zzak(parcel);
-        zzb.zza(parcel, 1, passwordSpecification.zzRq, false);
+    static void zza(final PasswordSpecification passwordSpecification, final Parcel parcel, int zzaq) {
+        zzaq = zzb.zzaq(parcel);
+        zzb.zza(parcel, 1, passwordSpecification.zzSv, false);
         zzb.zzc(parcel, 1000, passwordSpecification.mVersionCode);
-        zzb.zzb(parcel, 2, passwordSpecification.zzRr, false);
-        zzb.zza(parcel, 3, passwordSpecification.zzRs, false);
-        zzb.zzc(parcel, 4, passwordSpecification.zzRt);
-        zzb.zzc(parcel, 5, passwordSpecification.zzRu);
-        zzb.zzH(parcel, zzak);
+        zzb.zzb(parcel, 2, passwordSpecification.zzSw, false);
+        zzb.zza(parcel, 3, passwordSpecification.zzSx, false);
+        zzb.zzc(parcel, 4, passwordSpecification.zzSy);
+        zzb.zzc(parcel, 5, passwordSpecification.zzSz);
+        zzb.zzI(parcel, zzaq);
     }
     
-    public PasswordSpecification zzH(final Parcel parcel) {
-        List<Integer> zzB = null;
+    public PasswordSpecification zzI(final Parcel parcel) {
+        List<Integer> zzC = null;
         int zzg = 0;
-        final int zzaj = zza.zzaj(parcel);
+        final int zzap = zza.zzap(parcel);
         int zzg2 = 0;
-        List<String> zzC = null;
-        String zzo = null;
+        List<String> zzD = null;
+        String zzp = null;
         int zzg3 = 0;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = zza.zzai(parcel);
-            switch (zza.zzbH(zzai)) {
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = zza.zzao(parcel);
+            switch (zza.zzbM(zzao)) {
                 default: {
-                    zza.zzb(parcel, zzai);
+                    zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzo = zza.zzo(parcel, zzai);
+                    zzp = zza.zzp(parcel, zzao);
                     continue;
                 }
                 case 1000: {
-                    zzg3 = zza.zzg(parcel, zzai);
+                    zzg3 = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 2: {
-                    zzC = zza.zzC(parcel, zzai);
+                    zzD = zza.zzD(parcel, zzao);
                     continue;
                 }
                 case 3: {
-                    zzB = zza.zzB(parcel, zzai);
+                    zzC = zza.zzC(parcel, zzao);
                     continue;
                 }
                 case 4: {
-                    zzg2 = zza.zzg(parcel, zzai);
+                    zzg2 = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 5: {
-                    zzg = zza.zzg(parcel, zzai);
+                    zzg = zza.zzg(parcel, zzao);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
-        return new PasswordSpecification(zzg3, zzo, zzC, zzB, zzg2, zzg);
+        return new PasswordSpecification(zzg3, zzp, zzD, zzC, zzg2, zzg);
     }
     
-    public PasswordSpecification[] zzax(final int n) {
+    public PasswordSpecification[] zzaz(final int n) {
         return new PasswordSpecification[n];
     }
 }

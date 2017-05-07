@@ -5,34 +5,34 @@
 package com.google.android.gms.ads.internal.client;
 
 import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 
-@zzgk
-public final class zzc extends zzn$zza
+@zzgr
+public final class zzc extends zzo$zza
 {
-    private final AdListener zzso;
+    private final AdListener zzsz;
     
-    public zzc(final AdListener zzso) {
-        this.zzso = zzso;
+    public zzc(final AdListener zzsz) {
+        this.zzsz = zzsz;
     }
     
     public void onAdClosed() {
-        this.zzso.onAdClosed();
+        this.zzsz.onAdClosed();
     }
     
     public void onAdFailedToLoad(final int n) {
-        this.zzso.onAdFailedToLoad(n);
+        this.zzsz.onAdFailedToLoad(n);
     }
     
     public void onAdLeftApplication() {
-        this.zzso.onAdLeftApplication();
+        this.zzsz.onAdLeftApplication();
     }
     
     public void onAdLoaded() {
-        this.zzso.onAdLoaded();
+        this.zzsz.onAdLoaded();
     }
     
     public void onAdOpened() {
-        this.zzso.onAdOpened();
+        this.zzsz.onAdOpened();
     }
 }

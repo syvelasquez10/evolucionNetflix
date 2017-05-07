@@ -230,7 +230,7 @@ public class ProfileSelectionActivity extends NetflixActivity
         }
         netflixActionBar.setLogoType(logoType);
         if (this.isProfileEditMode) {
-            this.getNetflixActionBar().setTitle(this.getResources().getString(2131165595));
+            this.getNetflixActionBar().setTitle(this.getResources().getString(2131165593));
         }
         this.getNetflixActionBar().setDisplayHomeAsUpEnabled(this.isProfileEditMode);
         final ViewPropertyAnimator animate = this.topTextHeader.animate();
@@ -455,7 +455,7 @@ public class ProfileSelectionActivity extends NetflixActivity
             return;
         }
         super.onCreateOptionsMenu(menu, menu2);
-        final MenuItem add = menu.add(0, 2131623944, 0, (CharSequence)this.getString(2131165594));
+        final MenuItem add = menu.add(0, 2131623944, 0, (CharSequence)this.getString(2131165592));
         add.setShowAsAction(1);
         add.setIcon(2130837753);
         add.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new ProfileSelectionActivity$3(this));

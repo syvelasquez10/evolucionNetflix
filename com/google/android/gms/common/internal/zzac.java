@@ -14,30 +14,30 @@ import android.os.IInterface;
 
 public class zzac<T extends IInterface> extends zzj<T>
 {
-    private final Api$zzd<T> zzaep;
+    private final Api$zzd<T> zzagt;
     
-    public zzac(final Context context, final Looper looper, final int n, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener, final zzf zzf, final Api$zzd zzaep) {
+    public zzac(final Context context, final Looper looper, final int n, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener, final zzf zzf, final Api$zzd zzagt) {
         super(context, looper, n, zzf, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
-        this.zzaep = (Api$zzd<T>)zzaep;
+        this.zzagt = (Api$zzd<T>)zzagt;
     }
     
     @Override
-    protected T zzV(final IBinder binder) {
-        return this.zzaep.zzV(binder);
+    protected T zzW(final IBinder binder) {
+        return this.zzagt.zzW(binder);
     }
     
     @Override
     protected void zzc(final int n, final T t) {
-        this.zzaep.zza(n, t);
+        this.zzagt.zza(n, t);
     }
     
     @Override
-    protected String zzfA() {
-        return this.zzaep.zzfA();
+    protected String zzfK() {
+        return this.zzagt.zzfK();
     }
     
     @Override
-    protected String zzfB() {
-        return this.zzaep.zzfB();
+    protected String zzfL() {
+        return this.zzagt.zzfL();
     }
 }

@@ -15,21 +15,21 @@ public class LaunchOptions implements SafeParcelable
 {
     public static final Parcelable$Creator<LaunchOptions> CREATOR;
     private final int mVersionCode;
-    private boolean zzUb;
-    private String zzUc;
+    private boolean zzVS;
+    private String zzVT;
     
     static {
-        CREATOR = (Parcelable$Creator)new zzc();
+        CREATOR = (Parcelable$Creator)new zzd();
     }
     
     public LaunchOptions() {
         this(1, false, zzf.zzb(Locale.getDefault()));
     }
     
-    LaunchOptions(final int mVersionCode, final boolean zzUb, final String zzUc) {
+    LaunchOptions(final int mVersionCode, final boolean zzVS, final String zzVT) {
         this.mVersionCode = mVersionCode;
-        this.zzUb = zzUb;
-        this.zzUc = zzUc;
+        this.zzVS = zzVS;
+        this.zzVT = zzVT;
     }
     
     public int describeContents() {
@@ -43,7 +43,7 @@ public class LaunchOptions implements SafeParcelable
                 return false;
             }
             final LaunchOptions launchOptions = (LaunchOptions)o;
-            if (this.zzUb != launchOptions.zzUb || !zzf.zza(this.zzUc, launchOptions.zzUc)) {
+            if (this.zzVS != launchOptions.zzVS || !zzf.zza(this.zzVT, launchOptions.zzVT)) {
                 return false;
             }
         }
@@ -51,11 +51,11 @@ public class LaunchOptions implements SafeParcelable
     }
     
     public String getLanguage() {
-        return this.zzUc;
+        return this.zzVT;
     }
     
     public boolean getRelaunchIfRunning() {
-        return this.zzUb;
+        return this.zzVS;
     }
     
     int getVersionCode() {
@@ -64,15 +64,15 @@ public class LaunchOptions implements SafeParcelable
     
     @Override
     public int hashCode() {
-        return zzw.hashCode(this.zzUb, this.zzUc);
+        return zzw.hashCode(this.zzVS, this.zzVT);
     }
     
     @Override
     public String toString() {
-        return String.format("LaunchOptions(relaunchIfRunning=%b, language=%s)", this.zzUb, this.zzUc);
+        return String.format("LaunchOptions(relaunchIfRunning=%b, language=%s)", this.zzVS, this.zzVT);
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        zzc.zza(this, parcel, n);
+        zzd.zza(this, parcel, n);
     }
 }

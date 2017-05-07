@@ -14,19 +14,19 @@ public final class WebImage implements SafeParcelable
 {
     public static final Parcelable$Creator<WebImage> CREATOR;
     private final int mVersionCode;
-    private final Uri zzacb;
-    private final int zznP;
+    private final Uri zzaeg;
     private final int zznQ;
+    private final int zznR;
     
     static {
         CREATOR = (Parcelable$Creator)new zzb();
     }
     
-    WebImage(final int mVersionCode, final Uri zzacb, final int zznP, final int zznQ) {
+    WebImage(final int mVersionCode, final Uri zzaeg, final int zznQ, final int zznR) {
         this.mVersionCode = mVersionCode;
-        this.zzacb = zzacb;
-        this.zznP = zznP;
+        this.zzaeg = zzaeg;
         this.zznQ = zznQ;
+        this.zznR = zznR;
     }
     
     public int describeContents() {
@@ -40,7 +40,7 @@ public final class WebImage implements SafeParcelable
                 return false;
             }
             final WebImage webImage = (WebImage)o;
-            if (!zzw.equal(this.zzacb, webImage.zzacb) || this.zznP != webImage.zznP || this.zznQ != webImage.zznQ) {
+            if (!zzw.equal(this.zzaeg, webImage.zzaeg) || this.zznQ != webImage.zznQ || this.zznR != webImage.zznR) {
                 return false;
             }
         }
@@ -48,11 +48,11 @@ public final class WebImage implements SafeParcelable
     }
     
     public int getHeight() {
-        return this.zznQ;
+        return this.zznR;
     }
     
     public Uri getUrl() {
-        return this.zzacb;
+        return this.zzaeg;
     }
     
     int getVersionCode() {
@@ -60,17 +60,17 @@ public final class WebImage implements SafeParcelable
     }
     
     public int getWidth() {
-        return this.zznP;
+        return this.zznQ;
     }
     
     @Override
     public int hashCode() {
-        return zzw.hashCode(this.zzacb, this.zznP, this.zznQ);
+        return zzw.hashCode(this.zzaeg, this.zznQ, this.zznR);
     }
     
     @Override
     public String toString() {
-        return String.format("Image %dx%d %s", this.zznP, this.zznQ, this.zzacb.toString());
+        return String.format("Image %dx%d %s", this.zznQ, this.zznR, this.zzaeg.toString());
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

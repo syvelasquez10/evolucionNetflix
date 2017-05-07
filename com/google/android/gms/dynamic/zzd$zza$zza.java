@@ -8,13 +8,13 @@ import android.os.IBinder;
 
 class zzd$zza$zza implements zzd
 {
-    private IBinder zznI;
+    private IBinder zznJ;
     
-    zzd$zza$zza(final IBinder zznI) {
-        this.zznI = zznI;
+    zzd$zza$zza(final IBinder zznJ) {
+        this.zznJ = zznJ;
     }
     
     public IBinder asBinder() {
-        return this.zznI;
+        return this.zznJ;
     }
 }

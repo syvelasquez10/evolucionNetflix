@@ -11,20 +11,16 @@ import com.google.android.gms.common.api.Api$zzc;
 
 public final class zzk
 {
-    public static final Api$zzc<zze> zzQf;
-    public static final String zzXs;
-    public static final String zzXt;
-    public static final Charset zzXu;
+    public static final Api$zzc<zze> zzRk;
+    public static final Charset zzZk;
     
     static {
-        zzQf = new Api$zzc<zze>();
-        zzXs = zzf.zzbM("com.google.cast.receiver");
-        zzXt = zzf.zzbM("com.google.cast.tp.connection");
+        zzRk = new Api$zzc<zze>();
         Charset forName = null;
         while (true) {
             try {
                 forName = Charset.forName("UTF-8");
-                zzXu = forName;
+                zzZk = forName;
             }
             catch (UnsupportedCharsetException ex) {
                 continue;

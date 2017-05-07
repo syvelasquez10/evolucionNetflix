@@ -12,24 +12,24 @@ import android.os.Parcelable;
 public final class BinderWrapper implements Parcelable
 {
     public static final Parcelable$Creator<BinderWrapper> CREATOR;
-    private IBinder zzacE;
+    private IBinder zzaeJ;
     
     static {
         CREATOR = (Parcelable$Creator)new BinderWrapper$1();
     }
     
     public BinderWrapper() {
-        this.zzacE = null;
+        this.zzaeJ = null;
     }
     
-    public BinderWrapper(final IBinder zzacE) {
-        this.zzacE = null;
-        this.zzacE = zzacE;
+    public BinderWrapper(final IBinder zzaeJ) {
+        this.zzaeJ = null;
+        this.zzaeJ = zzaeJ;
     }
     
     private BinderWrapper(final Parcel parcel) {
-        this.zzacE = null;
-        this.zzacE = parcel.readStrongBinder();
+        this.zzaeJ = null;
+        this.zzaeJ = parcel.readStrongBinder();
     }
     
     public int describeContents() {
@@ -37,6 +37,6 @@ public final class BinderWrapper implements Parcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        parcel.writeStrongBinder(this.zzacE);
+        parcel.writeStrongBinder(this.zzaeJ);
     }
 }

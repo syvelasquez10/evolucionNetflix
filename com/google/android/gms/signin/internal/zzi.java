@@ -7,10 +7,8 @@ package com.google.android.gms.signin.internal;
 import com.google.android.gms.common.internal.ResolveAccountResponse;
 import com.google.android.gms.common.internal.ResolveAccountRequest;
 import com.google.android.gms.common.internal.zzt;
-import android.os.RemoteException;
 import android.app.PendingIntent;
 import com.google.android.gms.common.ConnectionResult;
-import android.util.Log;
 import com.google.android.gms.common.internal.AuthAccountRequest;
 import com.google.android.gms.common.internal.zzx;
 import com.google.android.gms.common.api.Scope;
@@ -18,6 +16,8 @@ import java.util.Set;
 import com.google.android.gms.common.internal.zzp;
 import android.os.IInterface;
 import android.os.IBinder;
+import android.os.RemoteException;
+import android.util.Log;
 import com.google.android.gms.common.api.GoogleApiClient$zza;
 import com.google.android.gms.common.internal.zzj$zzf;
 import android.os.Parcelable;
@@ -27,39 +27,41 @@ import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListe
 import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import android.os.Looper;
 import android.content.Context;
-import com.google.android.gms.signin.zze;
+import com.google.android.gms.internal.zzqx;
 import java.util.concurrent.ExecutorService;
-import com.google.android.gms.signin.zzd;
+import com.google.android.gms.internal.zzqw;
 import com.google.android.gms.common.internal.zzj;
 
-public class zzi extends zzj<zzf> implements zzd
+public class zzi extends zzj<zzf> implements zzqw
 {
-    private final com.google.android.gms.common.internal.zzf zzZH;
-    private final boolean zzaOn;
-    private final ExecutorService zzaOo;
-    private final zze zzade;
-    private Integer zzadf;
+    private final boolean zzaVl;
+    private final ExecutorService zzaVm;
+    private final zzqx zzaaT;
+    private final com.google.android.gms.common.internal.zzf zzabI;
+    private Integer zzafj;
     
-    public zzi(final Context context, final Looper looper, final boolean zzaOn, final com.google.android.gms.common.internal.zzf zzZH, final zze zze, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener, final ExecutorService zzaOo) {
-        super(context, looper, 44, zzZH, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
-        this.zzaOn = zzaOn;
-        this.zzZH = zzZH;
-        this.zzade = zzZH.zzoo();
-        this.zzadf = zzZH.zzop();
-        this.zzaOo = zzaOo;
+    public zzi(final Context context, final Looper looper, final boolean zzaVl, final com.google.android.gms.common.internal.zzf zzabI, final zzqx zzaaT, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener, final ExecutorService zzaVm) {
+        super(context, looper, 44, zzabI, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
+        this.zzaVl = zzaVl;
+        this.zzabI = zzabI;
+        this.zzaaT = zzaaT;
+        this.zzafj = zzabI.zzoR();
+        this.zzaVm = zzaVm;
     }
     
-    public static Bundle zza(final zze zze, final Integer n, final ExecutorService executorService) {
+    public static Bundle zza(final zzqx zzqx, final Integer n, final ExecutorService executorService) {
         final Bundle bundle = new Bundle();
-        bundle.putBoolean("com.google.android.gms.signin.internal.offlineAccessRequested", zze.zzzo());
-        bundle.putBoolean("com.google.android.gms.signin.internal.idTokenRequested", zze.zzzp());
-        bundle.putString("com.google.android.gms.signin.internal.serverClientId", zze.zzlG());
-        if (zze.zzzq() != null) {
-            bundle.putParcelable("com.google.android.gms.signin.internal.signInCallbacks", (Parcelable)new BinderWrapper(new zzi$zza(zze, executorService).asBinder()));
+        bundle.putBoolean("com.google.android.gms.signin.internal.offlineAccessRequested", zzqx.zzCf());
+        bundle.putBoolean("com.google.android.gms.signin.internal.idTokenRequested", zzqx.zzlY());
+        bundle.putString("com.google.android.gms.signin.internal.serverClientId", zzqx.zzmb());
+        if (zzqx.zzCg() != null) {
+            bundle.putParcelable("com.google.android.gms.signin.internal.signInCallbacks", (Parcelable)new BinderWrapper(new zzi$zza(zzqx, executorService).asBinder()));
         }
         if (n != null) {
             bundle.putInt("com.google.android.gms.common.internal.ClientSettings.sessionId", (int)n);
         }
+        bundle.putBoolean("com.google.android.gms.signin.internal.usePromptModeForAuthCode", zzqx.zzCh());
+        bundle.putBoolean("com.google.android.gms.signin.internal.forceCodeForRefreshToken", zzqx.zzma());
         return bundle;
     }
     
@@ -69,10 +71,20 @@ public class zzi extends zzj<zzf> implements zzd
     }
     
     @Override
-    public void zza(final zzp zzp, final Set<Scope> set, final com.google.android.gms.signin.internal.zze zze) {
+    public void zzCe() {
+        try {
+            this.zzpc().zzjq(this.zzafj);
+        }
+        catch (RemoteException ex) {
+            Log.w("SignInClientImpl", "Remote service probably died when clearAccountFromSessionStore is called");
+        }
+    }
+    
+    @Override
+    public void zza(final zzp ex, final Set<Scope> set, final zze zze) {
         zzx.zzb(zze, "Expecting a valid ISignInCallbacks");
         try {
-            this.zzoA().zza(new AuthAccountRequest(zzp, set), zze);
+            this.zzpc().zza(new AuthAccountRequest((zzp)ex, set), zze);
         }
         catch (RemoteException ex) {
             Log.w("SignInClientImpl", "Remote service probably died when authAccount is called");
@@ -80,7 +92,7 @@ public class zzi extends zzj<zzf> implements zzd
                 zze.zza(new ConnectionResult(8, null), new AuthAccountResult());
             }
             catch (RemoteException ex2) {
-                Log.wtf("SignInClientImpl", "ISignInCallbacks#onAuthAccount should be executed from the same process, unexpected RemoteException.");
+                Log.wtf("SignInClientImpl", "ISignInCallbacks#onAuthAccount should be executed from the same process, unexpected RemoteException.", (Throwable)ex);
             }
         }
     }
@@ -88,7 +100,7 @@ public class zzi extends zzj<zzf> implements zzd
     @Override
     public void zza(final zzp zzp, final boolean b) {
         try {
-            this.zzoA().zza(zzp, this.zzadf, b);
+            this.zzpc().zza(zzp, this.zzafj, b);
         }
         catch (RemoteException ex) {
             Log.w("SignInClientImpl", "Remote service probably died when saveDefaultAccount is called");
@@ -99,7 +111,7 @@ public class zzi extends zzj<zzf> implements zzd
     public void zza(final zzt zzt) {
         zzx.zzb(zzt, "Expecting a valid IResolveAccountCallbacks");
         try {
-            this.zzoA().zza(new ResolveAccountRequest(this.zzZH.zzog(), this.zzadf), zzt);
+            this.zzpc().zza(new ResolveAccountRequest(this.zzabI.zzoI(), this.zzafj), zzt);
         }
         catch (RemoteException ex) {
             Log.w("SignInClientImpl", "Remote service probably died when resolveAccount is called");
@@ -107,46 +119,36 @@ public class zzi extends zzj<zzf> implements zzd
                 zzt.zzb(new ResolveAccountResponse(8));
             }
             catch (RemoteException ex2) {
-                Log.wtf("SignInClientImpl", "IResolveAccountCallbacks#onAccountResolutionComplete should be executed from the same process, unexpected RemoteException.");
+                Log.wtf("SignInClientImpl", "IResolveAccountCallbacks#onAccountResolutionComplete should be executed from the same process, unexpected RemoteException.", (Throwable)ex);
             }
         }
     }
     
-    protected zzf zzdI(final IBinder binder) {
-        return zzf$zza.zzdH(binder);
+    protected zzf zzdO(final IBinder binder) {
+        return zzf$zza.zzdN(binder);
     }
     
     @Override
-    protected String zzfA() {
+    protected String zzfK() {
         return "com.google.android.gms.signin.service.START";
     }
     
     @Override
-    protected String zzfB() {
+    protected String zzfL() {
         return "com.google.android.gms.signin.internal.ISignInService";
     }
     
     @Override
-    protected Bundle zzli() {
-        final Bundle zza = zza(this.zzade, this.zzZH.zzop(), this.zzaOo);
-        if (!this.getContext().getPackageName().equals(this.zzZH.zzol())) {
-            zza.putString("com.google.android.gms.signin.internal.realClientPackageName", this.zzZH.zzol());
+    public boolean zzlN() {
+        return this.zzaVl;
+    }
+    
+    @Override
+    protected Bundle zzly() {
+        final Bundle zza = zza(this.zzaaT, this.zzabI.zzoR(), this.zzaVm);
+        if (!this.getContext().getPackageName().equals(this.zzabI.zzoN())) {
+            zza.putString("com.google.android.gms.signin.internal.realClientPackageName", this.zzabI.zzoN());
         }
         return zza;
-    }
-    
-    @Override
-    public boolean zzlm() {
-        return this.zzaOn;
-    }
-    
-    @Override
-    public void zzzn() {
-        try {
-            this.zzoA().zzja(this.zzadf);
-        }
-        catch (RemoteException ex) {
-            Log.w("SignInClientImpl", "Remote service probably died when clearAccountFromSessionStore is called");
-        }
     }
 }

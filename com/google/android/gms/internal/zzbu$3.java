@@ -13,6 +13,6 @@ final class zzbu$3 extends zzbu<Long>
     }
     
     public Long zzd(final SharedPreferences sharedPreferences) {
-        return sharedPreferences.getLong(this.getKey(), (long)this.zzdd());
+        return sharedPreferences.getLong(this.getKey(), (long)this.zzde());
     }
 }

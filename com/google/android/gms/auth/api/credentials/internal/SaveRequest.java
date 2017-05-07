@@ -13,15 +13,15 @@ public final class SaveRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<SaveRequest> CREATOR;
     final int mVersionCode;
-    private final Credential zzRx;
+    private final Credential zzSD;
     
     static {
         CREATOR = (Parcelable$Creator)new zzi();
     }
     
-    SaveRequest(final int mVersionCode, final Credential zzRx) {
+    SaveRequest(final int mVersionCode, final Credential zzSD) {
         this.mVersionCode = mVersionCode;
-        this.zzRx = zzRx;
+        this.zzSD = zzSD;
     }
     
     public SaveRequest(final Credential credential) {
@@ -33,7 +33,7 @@ public final class SaveRequest implements SafeParcelable
     }
     
     public Credential getCredential() {
-        return this.zzRx;
+        return this.zzSD;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

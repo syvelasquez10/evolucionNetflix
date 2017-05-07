@@ -19,11 +19,11 @@ public final class ApplicationMetadata implements SafeParcelable
     public static final Parcelable$Creator<ApplicationMetadata> CREATOR;
     String mName;
     private final int mVersionCode;
-    String zzSX;
-    List<String> zzSY;
-    String zzSZ;
-    Uri zzTa;
-    List<WebImage> zzvL;
+    String zzUM;
+    List<String> zzUN;
+    String zzUO;
+    Uri zzUP;
+    List<WebImage> zzwp;
     
     static {
         CREATOR = (Parcelable$Creator)new zza();
@@ -31,18 +31,18 @@ public final class ApplicationMetadata implements SafeParcelable
     
     private ApplicationMetadata() {
         this.mVersionCode = 1;
-        this.zzvL = new ArrayList<WebImage>();
-        this.zzSY = new ArrayList<String>();
+        this.zzwp = new ArrayList<WebImage>();
+        this.zzUN = new ArrayList<String>();
     }
     
-    ApplicationMetadata(final int mVersionCode, final String zzSX, final String mName, final List<WebImage> zzvL, final List<String> zzSY, final String zzSZ, final Uri zzTa) {
+    ApplicationMetadata(final int mVersionCode, final String zzUM, final String mName, final List<WebImage> zzwp, final List<String> zzUN, final String zzUO, final Uri zzUP) {
         this.mVersionCode = mVersionCode;
-        this.zzSX = zzSX;
+        this.zzUM = zzUM;
         this.mName = mName;
-        this.zzvL = zzvL;
-        this.zzSY = zzSY;
-        this.zzSZ = zzSZ;
-        this.zzTa = zzTa;
+        this.zzwp = zzwp;
+        this.zzUN = zzUN;
+        this.zzUO = zzUO;
+        this.zzUP = zzUP;
     }
     
     public int describeContents() {
@@ -56,7 +56,7 @@ public final class ApplicationMetadata implements SafeParcelable
                 return false;
             }
             final ApplicationMetadata applicationMetadata = (ApplicationMetadata)o;
-            if (!zzf.zza(this.zzSX, applicationMetadata.zzSX) || !zzf.zza(this.zzvL, applicationMetadata.zzvL) || !zzf.zza(this.mName, applicationMetadata.mName) || !zzf.zza(this.zzSY, applicationMetadata.zzSY) || !zzf.zza(this.zzSZ, applicationMetadata.zzSZ) || !zzf.zza(this.zzTa, applicationMetadata.zzTa)) {
+            if (!zzf.zza(this.zzUM, applicationMetadata.zzUM) || !zzf.zza(this.zzwp, applicationMetadata.zzwp) || !zzf.zza(this.mName, applicationMetadata.mName) || !zzf.zza(this.zzUN, applicationMetadata.zzUN) || !zzf.zza(this.zzUO, applicationMetadata.zzUO) || !zzf.zza(this.zzUP, applicationMetadata.zzUP)) {
                 return false;
             }
         }
@@ -64,11 +64,11 @@ public final class ApplicationMetadata implements SafeParcelable
     }
     
     public String getApplicationId() {
-        return this.zzSX;
+        return this.zzUM;
     }
     
     public List<WebImage> getImages() {
-        return this.zzvL;
+        return this.zzwp;
     }
     
     public String getName() {
@@ -76,7 +76,7 @@ public final class ApplicationMetadata implements SafeParcelable
     }
     
     public String getSenderAppIdentifier() {
-        return this.zzSZ;
+        return this.zzUO;
     }
     
     int getVersionCode() {
@@ -85,36 +85,36 @@ public final class ApplicationMetadata implements SafeParcelable
     
     @Override
     public int hashCode() {
-        return zzw.hashCode(this.mVersionCode, this.zzSX, this.mName, this.zzvL, this.zzSY, this.zzSZ, this.zzTa);
+        return zzw.hashCode(this.mVersionCode, this.zzUM, this.mName, this.zzwp, this.zzUN, this.zzUO, this.zzUP);
     }
     
     @Override
     public String toString() {
         final int n = 0;
-        final StringBuilder append = new StringBuilder().append("applicationId: ").append(this.zzSX).append(", name: ").append(this.mName).append(", images.count: ");
+        final StringBuilder append = new StringBuilder().append("applicationId: ").append(this.zzUM).append(", name: ").append(this.mName).append(", images.count: ");
         int size;
-        if (this.zzvL == null) {
+        if (this.zzwp == null) {
             size = 0;
         }
         else {
-            size = this.zzvL.size();
+            size = this.zzwp.size();
         }
         final StringBuilder append2 = append.append(size).append(", namespaces.count: ");
         int size2;
-        if (this.zzSY == null) {
+        if (this.zzUN == null) {
             size2 = n;
         }
         else {
-            size2 = this.zzSY.size();
+            size2 = this.zzUN.size();
         }
-        return append2.append(size2).append(", senderAppIdentifier: ").append(this.zzSZ).append(", senderAppLaunchUrl: ").append(this.zzTa).toString();
+        return append2.append(size2).append(", senderAppIdentifier: ").append(this.zzUO).append(", senderAppLaunchUrl: ").append(this.zzUP).toString();
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
         zza.zza(this, parcel, n);
     }
     
-    public Uri zzlM() {
-        return this.zzTa;
+    public Uri zzmj() {
+        return this.zzUP;
     }
 }

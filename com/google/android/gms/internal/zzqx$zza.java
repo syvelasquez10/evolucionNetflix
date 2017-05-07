@@ -4,9 +4,18 @@
 
 package com.google.android.gms.internal;
 
-public enum zzqx$zza
+import com.google.android.gms.common.api.GoogleApiClient$ServerAuthCodeCallbacks;
+
+public final class zzqx$zza
 {
-    zzaUq, 
-    zzaUr, 
-    zzaUs;
+    private String zzaSe;
+    private boolean zzaVd;
+    private boolean zzaVe;
+    private GoogleApiClient$ServerAuthCodeCallbacks zzaVf;
+    private boolean zzaVg;
+    private boolean zzaVh;
+    
+    public zzqx zzCi() {
+        return new zzqx(this.zzaVd, this.zzaVe, this.zzaSe, this.zzaVf, this.zzaVg, this.zzaVh, null);
+    }
 }

@@ -34,6 +34,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag$HeroSlideshow;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
 import android.annotation.SuppressLint;
+import com.netflix.mediaclient.util.api.Api16Util;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 import android.support.v7.widget.RecyclerView;
@@ -97,7 +98,7 @@ class KubrickKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
         super.setInitialToolbarColor();
         final View viewById = this.recyclerView.getRootView().findViewById(2131624049);
         if (viewById != null) {
-            viewById.setBackground(this.getBackroundResource(viewById));
+            Api16Util.setBackgroundDrawableCompat(viewById, this.getBackroundResource(viewById));
         }
     }
 }

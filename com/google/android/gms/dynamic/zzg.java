@@ -11,27 +11,27 @@ import android.content.Context;
 
 public abstract class zzg<T>
 {
-    private final String zzana;
-    private T zzanb;
+    private final String zzapA;
+    private T zzapB;
     
-    protected zzg(final String zzana) {
-        this.zzana = zzana;
+    protected zzg(final String zzapA) {
+        this.zzapA = zzapA;
     }
     
-    protected final T zzar(Context remoteContext) {
+    protected final T zzas(Context remoteContext) {
         Label_0058: {
-            if (this.zzanb != null) {
+            if (this.zzapB != null) {
                 break Label_0058;
             }
-            zzx.zzv(remoteContext);
+            zzx.zzw(remoteContext);
             remoteContext = GooglePlayServicesUtil.getRemoteContext(remoteContext);
             if (remoteContext == null) {
                 throw new zzg$zza("Could not get remote context.");
             }
             final ClassLoader classLoader = remoteContext.getClassLoader();
             try {
-                this.zzanb = this.zzd((IBinder)classLoader.loadClass(this.zzana).newInstance());
-                return this.zzanb;
+                this.zzapB = this.zzd((IBinder)classLoader.loadClass(this.zzapA).newInstance());
+                return this.zzapB;
             }
             catch (ClassNotFoundException ex) {
                 throw new zzg$zza("Could not load creator class.", ex);

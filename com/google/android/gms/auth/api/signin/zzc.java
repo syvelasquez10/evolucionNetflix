@@ -4,52 +4,87 @@
 
 package com.google.android.gms.auth.api.signin;
 
-import java.util.ArrayList;
 import com.google.android.gms.common.internal.safeparcel.zza$zza;
+import android.net.Uri;
 import com.google.android.gms.common.internal.safeparcel.zza;
-import com.google.android.gms.common.api.Scope;
-import java.util.List;
+import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.zzb;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class zzc implements Parcelable$Creator<GoogleSignInConfig>
+public class zzc implements Parcelable$Creator<GoogleSignInAccount>
 {
-    static void zza(final GoogleSignInConfig googleSignInConfig, final Parcel parcel, int zzak) {
-        zzak = zzb.zzak(parcel);
-        zzb.zzc(parcel, 1, googleSignInConfig.versionCode);
-        zzb.zzc(parcel, 2, googleSignInConfig.zzlE(), false);
-        zzb.zzH(parcel, zzak);
+    static void zza(final GoogleSignInAccount googleSignInAccount, final Parcel parcel, final int n) {
+        final int zzaq = zzb.zzaq(parcel);
+        zzb.zzc(parcel, 1, googleSignInAccount.versionCode);
+        zzb.zza(parcel, 2, googleSignInAccount.getId(), false);
+        zzb.zza(parcel, 3, googleSignInAccount.getIdToken(), false);
+        zzb.zza(parcel, 4, googleSignInAccount.getEmail(), false);
+        zzb.zza(parcel, 5, googleSignInAccount.getDisplayName(), false);
+        zzb.zza(parcel, 6, (Parcelable)googleSignInAccount.zzlT(), n, false);
+        zzb.zza(parcel, 7, googleSignInAccount.zzlU(), false);
+        zzb.zza(parcel, 8, googleSignInAccount.zzlV());
+        zzb.zzI(parcel, zzaq);
     }
     
-    public GoogleSignInConfig zzP(final Parcel parcel) {
-        final int zzaj = zza.zzaj(parcel);
+    public GoogleSignInAccount zzQ(final Parcel parcel) {
+        String zzp = null;
+        final int zzap = zza.zzap(parcel);
         int zzg = 0;
-        ArrayList<Scope> zzc = null;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = zza.zzai(parcel);
-            switch (zza.zzbH(zzai)) {
+        long zzi = 0L;
+        Uri uri = null;
+        String zzp2 = null;
+        String zzp3 = null;
+        String zzp4 = null;
+        String zzp5 = null;
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = zza.zzao(parcel);
+            switch (zza.zzbM(zzao)) {
                 default: {
-                    zza.zzb(parcel, zzai);
+                    zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzg = zza.zzg(parcel, zzai);
+                    zzg = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 2: {
-                    zzc = zza.zzc(parcel, zzai, Scope.CREATOR);
+                    zzp5 = zza.zzp(parcel, zzao);
+                    continue;
+                }
+                case 3: {
+                    zzp4 = zza.zzp(parcel, zzao);
+                    continue;
+                }
+                case 4: {
+                    zzp3 = zza.zzp(parcel, zzao);
+                    continue;
+                }
+                case 5: {
+                    zzp2 = zza.zzp(parcel, zzao);
+                    continue;
+                }
+                case 6: {
+                    uri = zza.zza(parcel, zzao, (android.os.Parcelable$Creator<Uri>)Uri.CREATOR);
+                    continue;
+                }
+                case 7: {
+                    zzp = zza.zzp(parcel, zzao);
+                    continue;
+                }
+                case 8: {
+                    zzi = zza.zzi(parcel, zzao);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
-        return new GoogleSignInConfig(zzg, zzc);
+        return new GoogleSignInAccount(zzg, zzp5, zzp4, zzp3, zzp2, uri, zzp, zzi);
     }
     
-    public GoogleSignInConfig[] zzaF(final int n) {
-        return new GoogleSignInConfig[n];
+    public GoogleSignInAccount[] zzaH(final int n) {
+        return new GoogleSignInAccount[n];
     }
 }

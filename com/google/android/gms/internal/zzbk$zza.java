@@ -4,16 +4,16 @@
 
 package com.google.android.gms.internal;
 
-@zzgk
+@zzgr
 class zzbk$zza
 {
-    final /* synthetic */ zzbk zzrW;
-    final int zzsb;
-    final int zzsc;
+    final /* synthetic */ zzbk zzsh;
+    final int zzsm;
+    final int zzsn;
     
-    zzbk$zza(final zzbk zzrW, final int zzsb, final int zzsc) {
-        this.zzrW = zzrW;
-        this.zzsb = zzsb;
-        this.zzsc = zzsc;
+    zzbk$zza(final zzbk zzsh, final int zzsm, final int zzsn) {
+        this.zzsh = zzsh;
+        this.zzsm = zzsm;
+        this.zzsn = zzsn;
     }
 }

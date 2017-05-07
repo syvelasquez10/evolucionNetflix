@@ -350,10 +350,10 @@ public class SearchResultsFrag extends NetflixFrag
             final TextView labelSuggestions = this.labelSuggestions;
             String text;
             if (SearchUtils.shouldUpperCaseTitleLabels()) {
-                text = this.getString(2131165553).toUpperCase(Locale.US);
+                text = this.getString(2131165551).toUpperCase(Locale.US);
             }
             else {
-                text = this.getString(2131165553);
+                text = this.getString(2131165551);
             }
             labelSuggestions.setText((CharSequence)text);
         }
@@ -361,15 +361,15 @@ public class SearchResultsFrag extends NetflixFrag
             final TextView labelPeople = this.labelPeople;
             String text2;
             if (SearchUtils.shouldUpperCaseTitleLabels()) {
-                text2 = this.getString(2131165490).toUpperCase(Locale.US);
+                text2 = this.getString(2131165488).toUpperCase(Locale.US);
             }
             else {
-                text2 = this.getString(2131165490);
+                text2 = this.getString(2131165488);
             }
             labelPeople.setText((CharSequence)text2);
         }
         if (this.labelVideos != null) {
-            this.labelVideos.setText((CharSequence)this.getString(2131165469).toUpperCase(Locale.US));
+            this.labelVideos.setText((CharSequence)this.getString(2131165467).toUpperCase(Locale.US));
         }
     }
     

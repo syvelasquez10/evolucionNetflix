@@ -6,13 +6,13 @@ package com.google.android.gms.common.internal;
 
 public class zzd
 {
-    public static final boolean zzacF;
+    public static final boolean zzaeK;
     
     static {
-        zzacF = zzjk();
+        zzaeK = zzjA();
     }
     
-    private static final boolean zzjk() {
+    private static final boolean zzjA() {
         return false;
     }
 }

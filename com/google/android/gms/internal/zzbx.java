@@ -6,26 +6,26 @@ package com.google.android.gms.internal;
 
 import android.content.SharedPreferences;
 
-@zzgk
+@zzgr
 public class zzbx
 {
-    private final Object zzpc;
-    private boolean zzpr;
-    private SharedPreferences zztU;
+    private boolean zzpA;
+    private final Object zzpd;
+    private SharedPreferences zzuj;
     
     public zzbx() {
-        this.zzpc = new Object();
-        this.zzpr = false;
-        this.zztU = null;
+        this.zzpd = new Object();
+        this.zzpA = false;
+        this.zzuj = null;
     }
     
     public <T> T zzd(final zzbu<T> zzbu) {
-        synchronized (this.zzpc) {
-            if (!this.zzpr) {
-                return zzbu.zzdd();
+        synchronized (this.zzpd) {
+            if (!this.zzpA) {
+                return zzbu.zzde();
             }
-            // monitorexit(this.zzpc)
-            return zzbu.zza(this.zztU);
+            // monitorexit(this.zzpd)
+            return zzbu.zza(this.zzuj);
         }
     }
 }

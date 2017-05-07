@@ -7,27 +7,27 @@ package com.google.android.gms.internal;
 import android.content.SharedPreferences;
 import com.google.android.gms.ads.internal.zzp;
 
-@zzgk
+@zzgr
 public abstract class zzbu<T>
 {
-    private final String zztP;
-    private final T zztQ;
+    private final String zzue;
+    private final T zzuf;
     
-    private zzbu(final String zztP, final T zztQ) {
-        this.zztP = zztP;
-        this.zztQ = zztQ;
-        zzp.zzbF().zza(this);
+    private zzbu(final String zzue, final T zzuf) {
+        this.zzue = zzue;
+        this.zzuf = zzuf;
+        zzp.zzbD().zza(this);
     }
     
     public static zzbu<String> zzP(final String s) {
         final zzbu<String> zzc = zzc(s, null);
-        zzp.zzbF().zzb(zzc);
+        zzp.zzbD().zzb(zzc);
         return zzc;
     }
     
     public static zzbu<String> zzQ(final String s) {
         final zzbu<String> zzc = zzc(s, null);
-        zzp.zzbF().zzc(zzc);
+        zzp.zzbD().zzc(zzc);
         return zzc;
     }
     
@@ -48,16 +48,16 @@ public abstract class zzbu<T>
     }
     
     public T get() {
-        return zzp.zzbG().zzd(this);
+        return zzp.zzbE().zzd(this);
     }
     
     public String getKey() {
-        return this.zztP;
+        return this.zzue;
     }
     
     protected abstract T zza(final SharedPreferences p0);
     
-    public T zzdd() {
-        return this.zztQ;
+    public T zzde() {
+        return this.zzuf;
     }
 }

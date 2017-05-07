@@ -11,41 +11,41 @@ import com.google.android.gms.common.internal.zzx;
 
 public class zzl
 {
-    private static boolean zzXv;
+    private static boolean zzZl;
     protected final String mTag;
-    private final boolean zzXw;
-    private boolean zzXx;
-    private boolean zzXy;
-    private String zzXz;
+    private final boolean zzZm;
+    private boolean zzZn;
+    private boolean zzZo;
+    private String zzZp;
     
     static {
-        zzl.zzXv = false;
+        zzl.zzZl = false;
     }
     
     public zzl(final String s) {
-        this(s, zzmL());
+        this(s, zznh());
     }
     
-    public zzl(final String mTag, final boolean zzXx) {
+    public zzl(final String mTag, final boolean zzZn) {
         zzx.zzh(mTag, "The log tag cannot be null or empty.");
         this.mTag = mTag;
-        this.zzXw = (mTag.length() <= 23);
-        this.zzXx = zzXx;
-        this.zzXy = false;
+        this.zzZm = (mTag.length() <= 23);
+        this.zzZn = zzZn;
+        this.zzZo = false;
     }
     
-    public static boolean zzmL() {
-        return zzl.zzXv;
+    public static boolean zznh() {
+        return zzl.zzZl;
     }
     
     public void zzb(final String s, final Object... array) {
-        if (this.zzmJ() || zzl.zzXv) {
+        if (this.zznf() || zzl.zzZl) {
             Log.d(this.mTag, this.zzg(s, array));
         }
     }
     
     public void zzb(final Throwable t, final String s, final Object... array) {
-        if (this.zzmJ() || zzl.zzXv) {
+        if (this.zznf() || zzl.zzZl) {
             Log.d(this.mTag, this.zzg(s, array), t);
         }
     }
@@ -55,13 +55,13 @@ public class zzl
             format = String.format(Locale.ROOT, format, array);
         }
         String string = format;
-        if (!TextUtils.isEmpty((CharSequence)this.zzXz)) {
-            string = this.zzXz + format;
+        if (!TextUtils.isEmpty((CharSequence)this.zzZp)) {
+            string = this.zzZp + format;
         }
         return string;
     }
     
-    public boolean zzmJ() {
-        return this.zzXx || (this.zzXw && Log.isLoggable(this.mTag, 3));
+    public boolean zznf() {
+        return this.zzZn || (this.zzZm && Log.isLoggable(this.mTag, 3));
     }
 }

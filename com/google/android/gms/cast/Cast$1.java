@@ -20,6 +20,6 @@ final class Cast$1 extends Api$zza<zze, Cast$CastOptions>
     @Override
     public zze zza(final Context context, final Looper looper, final zzf zzf, final Cast$CastOptions cast$CastOptions, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
         zzx.zzb(cast$CastOptions, "Setting the API options is required.");
-        return new zze(context, looper, zzf, cast$CastOptions.zzTg, cast$CastOptions.zzTi, cast$CastOptions.zzTh, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
+        return new zze(context, looper, zzf, cast$CastOptions.zzUV, cast$CastOptions.zzUX, cast$CastOptions.zzUW, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
     }
 }

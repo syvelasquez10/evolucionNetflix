@@ -36,11 +36,11 @@ class MovieDetailsFrag$4 implements VideoDetailsViewGroup$DetailsStringProvider
         if (StringUtils.isEmpty(this.val$details.getGenres())) {
             return null;
         }
-        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131165447, this.val$details.getGenres());
+        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131165445, this.val$details.getGenres());
     }
     
     @Override
     public CharSequence getStarringText() {
-        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131165549, this.val$details.getActors());
+        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131165547, this.val$details.getActors());
     }
 }

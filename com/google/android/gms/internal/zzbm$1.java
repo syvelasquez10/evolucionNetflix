@@ -8,10 +8,10 @@ import java.util.Comparator;
 
 class zzbm$1 implements Comparator<String>
 {
-    final /* synthetic */ zzbm zzsi;
+    final /* synthetic */ zzbm zzst;
     
-    zzbm$1(final zzbm zzsi) {
-        this.zzsi = zzsi;
+    zzbm$1(final zzbm zzst) {
+        this.zzst = zzst;
     }
     
     @Override

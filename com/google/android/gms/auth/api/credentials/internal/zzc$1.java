@@ -13,21 +13,21 @@ import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
 
 class zzc$1 extends zzd<CredentialRequestResult>
 {
-    final /* synthetic */ CredentialRequest zzRy;
-    final /* synthetic */ zzc zzRz;
+    final /* synthetic */ CredentialRequest zzSE;
+    final /* synthetic */ zzc zzSF;
     
-    zzc$1(final zzc zzRz, final GoogleApiClient googleApiClient, final CredentialRequest zzRy) {
-        this.zzRz = zzRz;
-        this.zzRy = zzRy;
+    zzc$1(final zzc zzSF, final GoogleApiClient googleApiClient, final CredentialRequest zzSE) {
+        this.zzSF = zzSF;
+        this.zzSE = zzSE;
         super(googleApiClient);
     }
     
     @Override
     protected void zza(final Context context, final zzh zzh) {
-        zzh.zza(new zzc$1$1(this), this.zzRy);
+        zzh.zza(new zzc$1$1(this), this.zzSE);
     }
     
-    protected CredentialRequestResult zzn(final Status status) {
-        return com.google.android.gms.auth.api.credentials.internal.zzb.zzm(status);
+    protected CredentialRequestResult zzi(final Status status) {
+        return zzb.zzh(status);
     }
 }

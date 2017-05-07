@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.android.activity;
 
+import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$ReturnToDialScreenFrom;
 import android.content.Context;
 import com.netflix.mediaclient.ui.voip.ContactUsActivity;
 import android.view.View;
@@ -18,6 +20,11 @@ class NetflixActivity$2 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        this.this$0.startActivity(ContactUsActivity.createStartIntent((Context)this.this$0));
+        final Intent startIntent = ContactUsActivity.createStartIntent((Context)this.this$0);
+        if (this.this$0.getUiScreen() != null) {
+            startIntent.putExtra("source", this.this$0.getUiScreen().name());
+        }
+        startIntent.putExtra("from", CustomerServiceLogging$ReturnToDialScreenFrom.fab.name());
+        this.this$0.startActivity(startIntent);
     }
 }

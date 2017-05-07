@@ -4,23 +4,29 @@
 
 package com.google.android.gms.common.stats;
 
-public class zzd
+import android.content.ComponentName;
+
+public final class zzd
 {
     public static int LOG_LEVEL_OFF;
-    public static int zzafJ;
-    public static int zzafK;
-    public static int zzafL;
-    public static int zzafM;
-    public static int zzafN;
-    public static int zzafO;
+    public static final ComponentName zzahN;
+    public static int zzahO;
+    public static int zzahP;
+    public static int zzahQ;
+    public static int zzahR;
+    public static int zzahS;
+    public static int zzahT;
+    public static int zzahU;
     
     static {
+        zzahN = new ComponentName("com.google.android.gms", "com.google.android.gms.common.stats.GmsCoreStatsService");
         zzd.LOG_LEVEL_OFF = 0;
-        zzd.zzafJ = 1;
-        zzd.zzafK = 2;
-        zzd.zzafL = 4;
-        zzd.zzafM = 8;
-        zzd.zzafN = 16;
-        zzd.zzafO = 32;
+        zzd.zzahO = 1;
+        zzd.zzahP = 2;
+        zzd.zzahQ = 4;
+        zzd.zzahR = 8;
+        zzd.zzahS = 16;
+        zzd.zzahT = 32;
+        zzd.zzahU = 1;
     }
 }

@@ -8,16 +8,16 @@ import android.view.View;
 
 class zzbk$1 implements Runnable
 {
-    final /* synthetic */ View zzrV;
-    final /* synthetic */ zzbk zzrW;
+    final /* synthetic */ View zzsg;
+    final /* synthetic */ zzbk zzsh;
     
-    zzbk$1(final zzbk zzrW, final View zzrV) {
-        this.zzrW = zzrW;
-        this.zzrV = zzrV;
+    zzbk$1(final zzbk zzsh, final View zzsg) {
+        this.zzsh = zzsh;
+        this.zzsg = zzsg;
     }
     
     @Override
     public void run() {
-        this.zzrW.zzg(this.zzrV);
+        this.zzsh.zzg(this.zzsg);
     }
 }

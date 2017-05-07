@@ -4,9 +4,11 @@
 
 package com.google.android.gms.internal;
 
-public interface zzlm
+public final class zzlm<L>
 {
-    long currentTimeMillis();
+    private volatile L mListener;
     
-    long elapsedRealtime();
+    public void clear() {
+        this.mListener = null;
+    }
 }

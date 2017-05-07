@@ -148,10 +148,10 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
             return list;
         }
         if (netflixActivity.showSettingsInMenu()) {
-            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131165532), new StandardSlidingMenu$7(netflixActivity)));
+            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131165530), new StandardSlidingMenu$7(netflixActivity)));
         }
         if (netflixActivity.showAboutInMenu()) {
-            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131165387), new StandardSlidingMenu$8(netflixActivity)));
+            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131165385), new StandardSlidingMenu$8(netflixActivity)));
         }
         if (netflixActivity.showContactUsInSlidingMenu() && netflixActivity.getServiceManager().getVoip() != null && netflixActivity.getServiceManager().getVoip().isEnabled()) {
             list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131165716), new StandardSlidingMenu$9(netflixActivity)));
@@ -167,7 +167,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
             Log.w("StandardSlidingMenu", append.append(enabled).toString());
         }
         if (netflixActivity.showSignOutInMenu()) {
-            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131165536), new StandardSlidingMenu$10(netflixActivity)));
+            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131165534), new StandardSlidingMenu$10(netflixActivity)));
         }
         if (Log.isLoggable()) {
             Log.d("StandardSlidingMenu", "App section should exist " + list.size());
@@ -177,7 +177,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     
     private View createHomeRow() {
         final View inflate = this.activity.getLayoutInflater().inflate(2130903241, (ViewGroup)null);
-        (this.homeText = (TextView)inflate.findViewById(2131624385)).setText(2131165450);
+        (this.homeText = (TextView)inflate.findViewById(2131624385)).setText(2131165448);
         inflate.setBackgroundResource(2130837937);
         inflate.setOnClickListener(this.onHomeClickListener);
         inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder(this.homeText, inflate.findViewById(2131624386)));

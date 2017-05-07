@@ -7,6 +7,7 @@ package com.google.android.gms.cast.internal;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.BinderWrapper;
 import android.text.TextUtils;
+import com.google.android.gms.cast.JoinOptions;
 import android.os.IInterface;
 import android.os.IBinder;
 import com.google.android.gms.common.ConnectionResult;
@@ -19,7 +20,7 @@ import android.os.Looper;
 import android.content.Context;
 import com.google.android.gms.cast.Cast$ApplicationConnectionResult;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.zzc$zzb;
+import com.google.android.gms.internal.zzlb$zzb;
 import android.os.Bundle;
 import java.util.concurrent.atomic.AtomicLong;
 import com.google.android.gms.cast.Cast$MessageReceivedCallback;
@@ -31,270 +32,268 @@ import com.google.android.gms.common.internal.zzj;
 
 public final class zze extends zzj<zzi>
 {
-    private static final zzl zzTy;
-    private static final Object zzXf;
-    private static final Object zzXg;
-    private final Cast$Listener zzTk;
-    private double zzUJ;
-    private boolean zzUK;
-    private ApplicationMetadata zzWN;
-    private final CastDevice zzWO;
-    private final Map<String, Cast$MessageReceivedCallback> zzWP;
-    private final long zzWQ;
-    private zze$zzb zzWR;
-    private String zzWS;
-    private boolean zzWT;
-    private boolean zzWU;
-    private boolean zzWV;
-    private int zzWW;
-    private int zzWX;
-    private final AtomicLong zzWY;
-    private String zzWZ;
-    private String zzXa;
-    private Bundle zzXb;
-    private final Map<Long, zzc$zzb<Status>> zzXc;
-    private zzc$zzb<Cast$ApplicationConnectionResult> zzXd;
-    private zzc$zzb<Status> zzXe;
+    private static final zzl zzVo;
+    private static final Object zzYX;
+    private static final Object zzYY;
+    private final Cast$Listener zzUZ;
+    private double zzWA;
+    private boolean zzWB;
+    private ApplicationMetadata zzYF;
+    private final CastDevice zzYG;
+    private final Map<String, Cast$MessageReceivedCallback> zzYH;
+    private final long zzYI;
+    private zze$zzb zzYJ;
+    private String zzYK;
+    private boolean zzYL;
+    private boolean zzYM;
+    private boolean zzYN;
+    private int zzYO;
+    private int zzYP;
+    private final AtomicLong zzYQ;
+    private String zzYR;
+    private String zzYS;
+    private Bundle zzYT;
+    private final Map<Long, zzlb$zzb<Status>> zzYU;
+    private zzlb$zzb<Cast$ApplicationConnectionResult> zzYV;
+    private zzlb$zzb<Status> zzYW;
     
     static {
-        zzTy = new zzl("CastClientImpl");
-        zzXf = new Object();
-        zzXg = new Object();
+        zzVo = new zzl("CastClientImpl");
+        zzYX = new Object();
+        zzYY = new Object();
     }
     
-    public zze(final Context context, final Looper looper, final zzf zzf, final CastDevice zzWO, final long zzWQ, final Cast$Listener zzTk, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
+    public zze(final Context context, final Looper looper, final zzf zzf, final CastDevice zzYG, final long zzYI, final Cast$Listener zzUZ, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
         super(context, looper, 10, zzf, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
-        this.zzWO = zzWO;
-        this.zzTk = zzTk;
-        this.zzWQ = zzWQ;
-        this.zzWP = new HashMap<String, Cast$MessageReceivedCallback>();
-        this.zzWY = new AtomicLong(0L);
-        this.zzXc = new HashMap<Long, zzc$zzb<Status>>();
-        this.zzmv();
+        this.zzYG = zzYG;
+        this.zzUZ = zzUZ;
+        this.zzYI = zzYI;
+        this.zzYH = new HashMap<String, Cast$MessageReceivedCallback>();
+        this.zzYQ = new AtomicLong(0L);
+        this.zzYU = new HashMap<Long, zzlb$zzb<Status>>();
+        this.zzmR();
     }
     
     private void zza(final ApplicationStatus applicationStatus) {
-        final String zzms = applicationStatus.zzms();
+        final String zzmO = applicationStatus.zzmO();
         boolean b;
-        if (!com.google.android.gms.cast.internal.zzf.zza(zzms, this.zzWS)) {
-            this.zzWS = zzms;
+        if (!com.google.android.gms.cast.internal.zzf.zza(zzmO, this.zzYK)) {
+            this.zzYK = zzmO;
             b = true;
         }
         else {
             b = false;
         }
-        zze.zzTy.zzb("hasChanged=%b, mFirstApplicationStatusUpdate=%b", b, this.zzWT);
-        if (this.zzTk != null && (b || this.zzWT)) {
-            this.zzTk.onApplicationStatusChanged();
+        zze.zzVo.zzb("hasChanged=%b, mFirstApplicationStatusUpdate=%b", b, this.zzYL);
+        if (this.zzUZ != null && (b || this.zzYL)) {
+            this.zzUZ.onApplicationStatusChanged();
         }
-        this.zzWT = false;
+        this.zzYL = false;
     }
     
     private void zza(final DeviceStatus deviceStatus) {
         final ApplicationMetadata applicationMetadata = deviceStatus.getApplicationMetadata();
-        if (!com.google.android.gms.cast.internal.zzf.zza(applicationMetadata, this.zzWN)) {
-            this.zzWN = applicationMetadata;
-            this.zzTk.onApplicationMetadataChanged(this.zzWN);
+        if (!com.google.android.gms.cast.internal.zzf.zza(applicationMetadata, this.zzYF)) {
+            this.zzYF = applicationMetadata;
+            this.zzUZ.onApplicationMetadataChanged(this.zzYF);
         }
-        final double zzmy = deviceStatus.zzmy();
+        final double zzmU = deviceStatus.zzmU();
         boolean b;
-        if (zzmy != Double.NaN && Math.abs(zzmy - this.zzUJ) > 1.0E-7) {
-            this.zzUJ = zzmy;
+        if (zzmU != Double.NaN && Math.abs(zzmU - this.zzWA) > 1.0E-7) {
+            this.zzWA = zzmU;
             b = true;
         }
         else {
             b = false;
         }
-        final boolean zzmH = deviceStatus.zzmH();
-        if (zzmH != this.zzUK) {
-            this.zzUK = zzmH;
+        final boolean zznd = deviceStatus.zznd();
+        if (zznd != this.zzWB) {
+            this.zzWB = zznd;
             b = true;
         }
-        zze.zzTy.zzb("hasVolumeChanged=%b, mFirstDeviceStatusUpdate=%b", b, this.zzWU);
-        if (this.zzTk != null && (b || this.zzWU)) {
-            this.zzTk.onVolumeChanged();
+        zze.zzVo.zzb("hasVolumeChanged=%b, mFirstDeviceStatusUpdate=%b", b, this.zzYM);
+        if (this.zzUZ != null && (b || this.zzYM)) {
+            this.zzUZ.onVolumeChanged();
         }
-        final int zzmz = deviceStatus.zzmz();
+        final int zzmV = deviceStatus.zzmV();
         boolean b2;
-        if (zzmz != this.zzWW) {
-            this.zzWW = zzmz;
+        if (zzmV != this.zzYO) {
+            this.zzYO = zzmV;
             b2 = true;
         }
         else {
             b2 = false;
         }
-        zze.zzTy.zzb("hasActiveInputChanged=%b, mFirstDeviceStatusUpdate=%b", b2, this.zzWU);
-        if (this.zzTk != null && (b2 || this.zzWU)) {
-            this.zzTk.onActiveInputStateChanged(this.zzWW);
+        zze.zzVo.zzb("hasActiveInputChanged=%b, mFirstDeviceStatusUpdate=%b", b2, this.zzYM);
+        if (this.zzUZ != null && (b2 || this.zzYM)) {
+            this.zzUZ.onActiveInputStateChanged(this.zzYO);
         }
-        final int zzmA = deviceStatus.zzmA();
+        final int zzmW = deviceStatus.zzmW();
         boolean b3;
-        if (zzmA != this.zzWX) {
-            this.zzWX = zzmA;
+        if (zzmW != this.zzYP) {
+            this.zzYP = zzmW;
             b3 = true;
         }
         else {
             b3 = false;
         }
-        zze.zzTy.zzb("hasStandbyStateChanged=%b, mFirstDeviceStatusUpdate=%b", b3, this.zzWU);
-        if (this.zzTk != null && (b3 || this.zzWU)) {
-            this.zzTk.onStandbyStateChanged(this.zzWX);
+        zze.zzVo.zzb("hasStandbyStateChanged=%b, mFirstDeviceStatusUpdate=%b", b3, this.zzYM);
+        if (this.zzUZ != null && (b3 || this.zzYM)) {
+            this.zzUZ.onStandbyStateChanged(this.zzYP);
         }
-        this.zzWU = false;
+        this.zzYM = false;
     }
     
-    private void zzc(final zzc$zzb<Cast$ApplicationConnectionResult> zzXd) {
-        synchronized (zze.zzXf) {
-            if (this.zzXd != null) {
-                this.zzXd.zzn(new zze$zza(new Status(2002)));
+    private void zza(final zzlb$zzb<Cast$ApplicationConnectionResult> zzYV) {
+        synchronized (zze.zzYX) {
+            if (this.zzYV != null) {
+                this.zzYV.zzp(new zze$zza(new Status(2002)));
             }
-            this.zzXd = zzXd;
+            this.zzYV = zzYV;
         }
     }
     
-    private void zze(final zzc$zzb<Status> zzXe) {
-        synchronized (zze.zzXg) {
-            if (this.zzXe != null) {
-                zzXe.zzn(new Status(2001));
+    private void zzc(final zzlb$zzb<Status> zzYW) {
+        synchronized (zze.zzYY) {
+            if (this.zzYW != null) {
+                zzYW.zzp(new Status(2001));
                 return;
             }
-            this.zzXe = zzXe;
+            this.zzYW = zzYW;
         }
     }
     
-    private void zzmB() {
-        zze.zzTy.zzb("removing all MessageReceivedCallbacks", new Object[0]);
-        synchronized (this.zzWP) {
-            this.zzWP.clear();
+    private void zzmR() {
+        this.zzYN = false;
+        this.zzYO = -1;
+        this.zzYP = -1;
+        this.zzYF = null;
+        this.zzYK = null;
+        this.zzWA = 0.0;
+        this.zzWB = false;
+    }
+    
+    private void zzmX() {
+        zze.zzVo.zzb("removing all MessageReceivedCallbacks", new Object[0]);
+        synchronized (this.zzYH) {
+            this.zzYH.clear();
         }
     }
     
-    private void zzmC() {
-        if (!this.zzWV || this.zzWR == null || this.zzWR.isDisposed()) {
+    private void zzmY() {
+        if (!this.zzYN || this.zzYJ == null || this.zzYJ.isDisposed()) {
             throw new IllegalStateException("Not connected to a device");
         }
     }
     
-    private void zzmv() {
-        this.zzWV = false;
-        this.zzWW = -1;
-        this.zzWX = -1;
-        this.zzWN = null;
-        this.zzWS = null;
-        this.zzUJ = 0.0;
-        this.zzUK = false;
-    }
-    
     @Override
     public void disconnect() {
-        zze.zzTy.zzb("disconnect(); ServiceListener=%s, isConnected=%b", this.zzWR, this.isConnected());
-        final zze$zzb zzWR = this.zzWR;
-        this.zzWR = null;
-        if (zzWR == null || zzWR.zzmG() == null) {
-            zze.zzTy.zzb("already disposed, so short-circuiting", new Object[0]);
+        zze.zzVo.zzb("disconnect(); ServiceListener=%s, isConnected=%b", this.zzYJ, this.isConnected());
+        final zze$zzb zzYJ = this.zzYJ;
+        this.zzYJ = null;
+        if (zzYJ == null || zzYJ.zznc() == null) {
+            zze.zzVo.zzb("already disposed, so short-circuiting", new Object[0]);
             return;
         }
-        this.zzmB();
+        this.zzmX();
         try {
-            if (this.isConnected() || this.isConnecting()) {
-                this.zzoA().disconnect();
-            }
+            this.zzpc().disconnect();
         }
-        catch (RemoteException ex) {
-            zze.zzTy.zzb((Throwable)ex, "Error while disconnecting the controller interface: %s", ex.getMessage());
-        }
-        finally {
-            super.disconnect();
-        }
+        catch (IllegalStateException ex) {}
+        catch (RemoteException zzYJ) {}
     }
     
     public ApplicationMetadata getApplicationMetadata() {
-        this.zzmC();
-        return this.zzWN;
+        this.zzmY();
+        return this.zzYF;
     }
     
     public String getApplicationStatus() {
-        this.zzmC();
-        return this.zzWS;
+        this.zzmY();
+        return this.zzYK;
     }
     
     public void onConnectionFailed(final ConnectionResult connectionResult) {
         super.onConnectionFailed(connectionResult);
-        this.zzmB();
+        this.zzmX();
     }
     
     @Override
     protected void zza(final int n, final IBinder binder, final Bundle bundle, final int n2) {
-        zze.zzTy.zzb("in onPostInitHandler; statusCode=%d", n);
+        zze.zzVo.zzb("in onPostInitHandler; statusCode=%d", n);
         if (n == 0 || n == 1001) {
-            this.zzWV = true;
-            this.zzWT = true;
-            this.zzWU = true;
+            this.zzYN = true;
+            this.zzYL = true;
+            this.zzYM = true;
         }
         else {
-            this.zzWV = false;
+            this.zzYN = false;
         }
         int n3 = n;
         if (n == 1001) {
-            (this.zzXb = new Bundle()).putBoolean("com.google.android.gms.cast.EXTRA_APP_NO_LONGER_RUNNING", true);
+            (this.zzYT = new Bundle()).putBoolean("com.google.android.gms.cast.EXTRA_APP_NO_LONGER_RUNNING", true);
             n3 = 0;
         }
         super.zza(n3, binder, bundle, n2);
     }
     
     public void zza(final String s, final Cast$MessageReceivedCallback cast$MessageReceivedCallback) {
-        com.google.android.gms.cast.internal.zzf.zzbL(s);
-        this.zzbK(s);
+        com.google.android.gms.cast.internal.zzf.zzbM(s);
+        this.zzbL(s);
         if (cast$MessageReceivedCallback == null) {
             return;
         }
-        synchronized (this.zzWP) {
-            this.zzWP.put(s, cast$MessageReceivedCallback);
-            // monitorexit(this.zzWP)
-            this.zzoA().zzbP(s);
+        synchronized (this.zzYH) {
+            this.zzYH.put(s, cast$MessageReceivedCallback);
+            // monitorexit(this.zzYH)
+            this.zzpc().zzbQ(s);
         }
     }
     
-    public void zza(final String s, final zzc$zzb<Status> zzc$zzb) {
-        this.zze(zzc$zzb);
-        this.zzoA().zzbO(s);
+    public void zza(final String s, final zzlb$zzb<Status> zzlb$zzb) {
+        this.zzc(zzlb$zzb);
+        this.zzpc().zzbP(s);
     }
     
-    public void zza(final String s, final String s2, final zzc$zzb<Status> zzc$zzb) {
+    public void zza(final String s, final String s2, final JoinOptions joinOptions, final zzlb$zzb<Cast$ApplicationConnectionResult> zzlb$zzb) {
+        this.zza(zzlb$zzb);
+        JoinOptions joinOptions2 = joinOptions;
+        if (joinOptions == null) {
+            joinOptions2 = new JoinOptions();
+        }
+        this.zzpc().zza(s, s2, joinOptions2);
+    }
+    
+    public void zza(final String s, final String s2, final zzlb$zzb<Status> zzlb$zzb) {
         if (TextUtils.isEmpty((CharSequence)s2)) {
             throw new IllegalArgumentException("The message payload cannot be null or empty");
         }
         if (s2.length() > 65536) {
             throw new IllegalArgumentException("Message exceeds maximum size");
         }
-        com.google.android.gms.cast.internal.zzf.zzbL(s);
-        this.zzmC();
-        final long incrementAndGet = this.zzWY.incrementAndGet();
+        com.google.android.gms.cast.internal.zzf.zzbM(s);
+        this.zzmY();
+        final long incrementAndGet = this.zzYQ.incrementAndGet();
         try {
-            this.zzXc.put(incrementAndGet, zzc$zzb);
-            this.zzoA().zza(s, s2, incrementAndGet);
+            this.zzYU.put(incrementAndGet, zzlb$zzb);
+            this.zzpc().zzb(s, s2, incrementAndGet);
         }
         catch (Throwable t) {
-            this.zzXc.remove(incrementAndGet);
+            this.zzYU.remove(incrementAndGet);
             throw t;
         }
     }
     
-    public void zza(final String s, final boolean b, final zzc$zzb<Cast$ApplicationConnectionResult> zzc$zzb) {
-        this.zzc(zzc$zzb);
-        this.zzoA().zzf(s, b);
+    public void zza(final String s, final boolean b, final zzlb$zzb<Cast$ApplicationConnectionResult> zzlb$zzb) {
+        this.zza(zzlb$zzb);
+        this.zzpc().zzf(s, b);
     }
     
     protected zzi zzaA(final IBinder binder) {
         return zzi$zza.zzaB(binder);
     }
     
-    public void zzb(final String s, final String s2, final zzc$zzb<Cast$ApplicationConnectionResult> zzc$zzb) {
-        this.zzc(zzc$zzb);
-        this.zzoA().zzt(s, s2);
-    }
-    
-    public void zzbK(final String p0) {
+    public void zzbL(final String p0) {
         // 
         // This method could not be decompiled.
         // 
@@ -309,12 +308,12 @@ public final class zze extends zzj<zzi>
         //    14: invokespecial   java/lang/IllegalArgumentException.<init>:(Ljava/lang/String;)V
         //    17: athrow         
         //    18: aload_0        
-        //    19: getfield        com/google/android/gms/cast/internal/zze.zzWP:Ljava/util/Map;
+        //    19: getfield        com/google/android/gms/cast/internal/zze.zzYH:Ljava/util/Map;
         //    22: astore_2       
         //    23: aload_2        
         //    24: monitorenter   
         //    25: aload_0        
-        //    26: getfield        com/google/android/gms/cast/internal/zze.zzWP:Ljava/util/Map;
+        //    26: getfield        com/google/android/gms/cast/internal/zze.zzYH:Ljava/util/Map;
         //    29: aload_1        
         //    30: invokeinterface java/util/Map.remove:(Ljava/lang/Object;)Ljava/lang/Object;
         //    35: checkcast       Lcom/google/android/gms/cast/Cast$MessageReceivedCallback;
@@ -324,10 +323,10 @@ public final class zze extends zzj<zzi>
         //    41: aload_3        
         //    42: ifnull          58
         //    45: aload_0        
-        //    46: invokevirtual   com/google/android/gms/cast/internal/zze.zzoA:()Landroid/os/IInterface;
+        //    46: invokevirtual   com/google/android/gms/cast/internal/zze.zzpc:()Landroid/os/IInterface;
         //    49: checkcast       Lcom/google/android/gms/cast/internal/zzi;
         //    52: aload_1        
-        //    53: invokeinterface com/google/android/gms/cast/internal/zzi.zzbQ:(Ljava/lang/String;)V
+        //    53: invokeinterface com/google/android/gms/cast/internal/zzi.zzbR:(Ljava/lang/String;)V
         //    58: return         
         //    59: astore_1       
         //    60: aload_2        
@@ -335,7 +334,7 @@ public final class zze extends zzj<zzi>
         //    62: aload_1        
         //    63: athrow         
         //    64: astore_2       
-        //    65: getstatic       com/google/android/gms/cast/internal/zze.zzTy:Lcom/google/android/gms/cast/internal/zzl;
+        //    65: getstatic       com/google/android/gms/cast/internal/zze.zzVo:Lcom/google/android/gms/cast/internal/zzl;
         //    68: aload_2        
         //    69: ldc_w           "Error unregistering namespace (%s): %s"
         //    72: iconst_2       
@@ -385,39 +384,39 @@ public final class zze extends zzj<zzi>
     }
     
     @Override
-    protected String zzfA() {
+    protected String zzfK() {
         return "com.google.android.gms.cast.service.BIND_CAST_DEVICE_CONTROLLER_SERVICE";
     }
     
     @Override
-    protected String zzfB() {
+    protected String zzfL() {
         return "com.google.android.gms.cast.internal.ICastDeviceController";
     }
     
     @Override
-    protected Bundle zzli() {
+    protected Bundle zzly() {
         final Bundle bundle = new Bundle();
-        zze.zzTy.zzb("getRemoteService(): mLastApplicationId=%s, mLastSessionId=%s", this.zzWZ, this.zzXa);
-        this.zzWO.putInBundle(bundle);
-        bundle.putLong("com.google.android.gms.cast.EXTRA_CAST_FLAGS", this.zzWQ);
-        this.zzWR = new zze$zzb(this);
-        bundle.putParcelable("listener", (Parcelable)new BinderWrapper(this.zzWR.asBinder()));
-        if (this.zzWZ != null) {
-            bundle.putString("last_application_id", this.zzWZ);
-            if (this.zzXa != null) {
-                bundle.putString("last_session_id", this.zzXa);
+        zze.zzVo.zzb("getRemoteService(): mLastApplicationId=%s, mLastSessionId=%s", this.zzYR, this.zzYS);
+        this.zzYG.putInBundle(bundle);
+        bundle.putLong("com.google.android.gms.cast.EXTRA_CAST_FLAGS", this.zzYI);
+        this.zzYJ = new zze$zzb(this);
+        bundle.putParcelable("listener", (Parcelable)new BinderWrapper(this.zzYJ.asBinder()));
+        if (this.zzYR != null) {
+            bundle.putString("last_application_id", this.zzYR);
+            if (this.zzYS != null) {
+                bundle.putString("last_session_id", this.zzYS);
             }
         }
         return bundle;
     }
     
     @Override
-    public Bundle zzmw() {
-        if (this.zzXb != null) {
-            final Bundle zzXb = this.zzXb;
-            this.zzXb = null;
-            return zzXb;
+    public Bundle zzmS() {
+        if (this.zzYT != null) {
+            final Bundle zzYT = this.zzYT;
+            this.zzYT = null;
+            return zzYT;
         }
-        return super.zzmw();
+        return super.zzmS();
     }
 }

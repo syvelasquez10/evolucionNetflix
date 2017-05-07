@@ -4,32 +4,32 @@
 
 package com.google.android.gms.ads.internal.overlay;
 
-import com.google.android.gms.internal.zzhu;
+import com.google.android.gms.internal.zzid;
 
 class zzq implements Runnable
 {
     private boolean mCancelled;
-    private zzk zzAy;
+    private zzk zzCo;
     
-    zzq(final zzk zzAy) {
+    zzq(final zzk zzCo) {
         this.mCancelled = false;
-        this.zzAy = zzAy;
+        this.zzCo = zzCo;
     }
     
     public void cancel() {
         this.mCancelled = true;
-        zzhu.zzHK.removeCallbacks((Runnable)this);
+        zzid.zzIE.removeCallbacks((Runnable)this);
     }
     
     @Override
     public void run() {
         if (!this.mCancelled) {
-            this.zzAy.zzeR();
-            this.zzfa();
+            this.zzCo.zzeX();
+            this.zzfg();
         }
     }
     
-    public void zzfa() {
-        zzhu.zzHK.postDelayed((Runnable)this, 250L);
+    public void zzfg() {
+        zzid.zzIE.postDelayed((Runnable)this, 250L);
     }
 }

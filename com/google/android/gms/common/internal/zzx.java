@@ -9,21 +9,21 @@ import android.os.Looper;
 
 public final class zzx
 {
-    public static void zzY(final boolean b) {
-        if (!b) {
-            throw new IllegalStateException();
-        }
-    }
-    
     public static void zzZ(final boolean b) {
         if (!b) {
-            throw new IllegalArgumentException();
+            throw new IllegalStateException();
         }
     }
     
     public static void zza(final boolean b, final Object o) {
         if (!b) {
             throw new IllegalStateException(String.valueOf(o));
+        }
+    }
+    
+    public static void zzaa(final boolean b) {
+        if (!b) {
+            throw new IllegalArgumentException();
         }
     }
     
@@ -40,26 +40,19 @@ public final class zzx
         }
     }
     
-    public static int zzbD(final int n) {
-        if (n == 0) {
-            throw new IllegalArgumentException("Given Integer is zero");
-        }
-        return n;
-    }
-    
-    public static void zzch(final String s) {
+    public static void zzci(final String s) {
         if (Looper.myLooper() != Looper.getMainLooper()) {
             throw new IllegalStateException(s);
         }
     }
     
-    public static void zzci(final String s) {
+    public static void zzcj(final String s) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             throw new IllegalStateException(s);
         }
     }
     
-    public static String zzcs(final String s) {
+    public static String zzcr(final String s) {
         if (TextUtils.isEmpty((CharSequence)s)) {
             throw new IllegalArgumentException("Given String is empty or null");
         }
@@ -73,7 +66,7 @@ public final class zzx
         return s;
     }
     
-    public static <T> T zzv(final T t) {
+    public static <T> T zzw(final T t) {
         if (t == null) {
             throw new NullPointerException("null reference");
         }

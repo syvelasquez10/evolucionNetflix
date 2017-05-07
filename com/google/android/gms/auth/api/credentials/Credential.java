@@ -19,39 +19,35 @@ public class Credential implements SafeParcelable
     public static final Parcelable$Creator<Credential> CREATOR;
     private final String mName;
     final int mVersionCode;
-    private final String zzRa;
-    private final String zzRb;
-    private final Uri zzRc;
-    private final List<IdToken> zzRd;
-    private final String zzRe;
-    private final String zzRf;
-    private final String zzRg;
-    private final String zzRh;
-    private final String zzwj;
+    private final Uri zzSh;
+    private final List<IdToken> zzSi;
+    private final String zzSj;
+    private final String zzSk;
+    private final String zzSl;
+    private final String zzSm;
+    private final String zzwN;
     
     static {
         CREATOR = (Parcelable$Creator)new zza();
     }
     
-    Credential(final int mVersionCode, final String zzRa, final String zzRb, final String s, final String mName, final Uri zzRc, final List<IdToken> list, final String zzRe, final String zzRf, final String zzRg, final String zzRh) {
+    Credential(final int mVersionCode, final String s, final String mName, final Uri zzSh, final List<IdToken> list, final String zzSj, final String zzSk, final String zzSl, final String zzSm) {
         this.mVersionCode = mVersionCode;
-        this.zzRa = zzRa;
-        this.zzRb = zzRb;
-        this.zzwj = zzx.zzv(s);
+        this.zzwN = zzx.zzw(s);
         this.mName = mName;
-        this.zzRc = zzRc;
-        List<IdToken> zzRd;
+        this.zzSh = zzSh;
+        List<IdToken> zzSi;
         if (list == null) {
-            zzRd = Collections.emptyList();
+            zzSi = Collections.emptyList();
         }
         else {
-            zzRd = Collections.unmodifiableList((List<? extends IdToken>)list);
+            zzSi = Collections.unmodifiableList((List<? extends IdToken>)list);
         }
-        this.zzRd = zzRd;
-        this.zzRe = zzRe;
-        this.zzRf = zzRf;
-        this.zzRg = zzRg;
-        this.zzRh = zzRh;
+        this.zzSi = zzSi;
+        this.zzSj = zzSj;
+        this.zzSk = zzSk;
+        this.zzSl = zzSl;
+        this.zzSm = zzSm;
     }
     
     public int describeContents() {
@@ -65,7 +61,7 @@ public class Credential implements SafeParcelable
                 return false;
             }
             final Credential credential = (Credential)o;
-            if (!TextUtils.equals((CharSequence)this.zzwj, (CharSequence)credential.zzwj) || !TextUtils.equals((CharSequence)this.mName, (CharSequence)credential.mName) || !zzw.equal(this.zzRc, credential.zzRc) || !TextUtils.equals((CharSequence)this.zzRe, (CharSequence)credential.zzRe) || !TextUtils.equals((CharSequence)this.zzRf, (CharSequence)credential.zzRf) || !TextUtils.equals((CharSequence)this.zzRg, (CharSequence)credential.zzRg)) {
+            if (!TextUtils.equals((CharSequence)this.zzwN, (CharSequence)credential.zzwN) || !TextUtils.equals((CharSequence)this.mName, (CharSequence)credential.mName) || !zzw.equal(this.zzSh, credential.zzSh) || !TextUtils.equals((CharSequence)this.zzSj, (CharSequence)credential.zzSj) || !TextUtils.equals((CharSequence)this.zzSk, (CharSequence)credential.zzSk) || !TextUtils.equals((CharSequence)this.zzSl, (CharSequence)credential.zzSl)) {
                 return false;
             }
         }
@@ -73,15 +69,19 @@ public class Credential implements SafeParcelable
     }
     
     public String getAccountType() {
-        return this.zzRf;
+        return this.zzSk;
     }
     
     public String getGeneratedPassword() {
-        return this.zzRg;
+        return this.zzSl;
     }
     
     public String getId() {
-        return this.zzwj;
+        return this.zzwN;
+    }
+    
+    public List<IdToken> getIdTokens() {
+        return this.zzSi;
     }
     
     public String getName() {
@@ -89,35 +89,23 @@ public class Credential implements SafeParcelable
     }
     
     public String getPassword() {
-        return this.zzRe;
+        return this.zzSj;
     }
     
     public Uri getProfilePictureUri() {
-        return this.zzRc;
+        return this.zzSh;
     }
     
     @Override
     public int hashCode() {
-        return zzw.hashCode(this.zzwj, this.mName, this.zzRc, this.zzRe, this.zzRf, this.zzRg);
+        return zzw.hashCode(this.zzwN, this.mName, this.zzSh, this.zzSj, this.zzSk, this.zzSl);
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
         zza.zza(this, parcel, n);
     }
     
-    public String zzlr() {
-        return this.zzRa;
-    }
-    
-    public String zzls() {
-        return this.zzRb;
-    }
-    
-    public List<IdToken> zzlt() {
-        return this.zzRd;
-    }
-    
-    public String zzlu() {
-        return this.zzRh;
+    public String zzlI() {
+        return this.zzSm;
     }
 }

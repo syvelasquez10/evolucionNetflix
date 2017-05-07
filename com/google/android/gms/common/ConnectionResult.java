@@ -15,24 +15,34 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class ConnectionResult implements SafeParcelable
 {
     public static final Parcelable$Creator<ConnectionResult> CREATOR;
-    public static final ConnectionResult zzYi;
+    public static final ConnectionResult zzZY;
     private final PendingIntent mPendingIntent;
     final int mVersionCode;
-    private final int zzWu;
+    private final int zzYm;
+    private final String zzZZ;
     
     static {
-        zzYi = new ConnectionResult(0, null);
+        zzZY = new ConnectionResult(0);
         CREATOR = (Parcelable$Creator)new zzb();
     }
     
-    ConnectionResult(final int mVersionCode, final int zzWu, final PendingIntent mPendingIntent) {
+    public ConnectionResult(final int n) {
+        this(n, null, null);
+    }
+    
+    ConnectionResult(final int mVersionCode, final int zzYm, final PendingIntent mPendingIntent, final String zzZZ) {
         this.mVersionCode = mVersionCode;
-        this.zzWu = zzWu;
+        this.zzYm = zzYm;
         this.mPendingIntent = mPendingIntent;
+        this.zzZZ = zzZZ;
     }
     
     public ConnectionResult(final int n, final PendingIntent pendingIntent) {
-        this(1, n, pendingIntent);
+        this(n, pendingIntent, null);
+    }
+    
+    public ConnectionResult(final int n, final PendingIntent pendingIntent, final String s) {
+        this(1, n, pendingIntent, s);
     }
     
     static String getStatusString(final int n) {
@@ -94,6 +104,9 @@ public final class ConnectionResult implements SafeParcelable
             case 18: {
                 return "SERVICE_UPDATING";
             }
+            case 19: {
+                return "SERVICE_MISSING_PERMISSION";
+            }
         }
     }
     
@@ -108,7 +121,7 @@ public final class ConnectionResult implements SafeParcelable
                 return false;
             }
             final ConnectionResult connectionResult = (ConnectionResult)o;
-            if (this.zzWu != connectionResult.zzWu || !zzw.equal(this.mPendingIntent, connectionResult.mPendingIntent)) {
+            if (this.zzYm != connectionResult.zzYm || !zzw.equal(this.mPendingIntent, connectionResult.mPendingIntent) || !zzw.equal(this.zzZZ, connectionResult.zzZZ)) {
                 return false;
             }
         }
@@ -116,7 +129,11 @@ public final class ConnectionResult implements SafeParcelable
     }
     
     public int getErrorCode() {
-        return this.zzWu;
+        return this.zzYm;
+    }
+    
+    public String getErrorMessage() {
+        return this.zzZZ;
     }
     
     public PendingIntent getResolution() {
@@ -124,16 +141,16 @@ public final class ConnectionResult implements SafeParcelable
     }
     
     public boolean hasResolution() {
-        return this.zzWu != 0 && this.mPendingIntent != null;
+        return this.zzYm != 0 && this.mPendingIntent != null;
     }
     
     @Override
     public int hashCode() {
-        return zzw.hashCode(this.zzWu, this.mPendingIntent);
+        return zzw.hashCode(this.zzYm, this.mPendingIntent, this.zzZZ);
     }
     
     public boolean isSuccess() {
-        return this.zzWu == 0;
+        return this.zzYm == 0;
     }
     
     public void startResolutionForResult(final Activity activity, final int n) {
@@ -145,7 +162,7 @@ public final class ConnectionResult implements SafeParcelable
     
     @Override
     public String toString() {
-        return zzw.zzu(this).zzg("statusCode", getStatusString(this.zzWu)).zzg("resolution", this.mPendingIntent).toString();
+        return zzw.zzv(this).zzg("statusCode", getStatusString(this.zzYm)).zzg("resolution", this.mPendingIntent).zzg("message", this.zzZZ).toString();
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

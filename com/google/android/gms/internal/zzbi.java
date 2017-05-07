@@ -8,22 +8,22 @@ import com.google.android.gms.ads.internal.util.client.zzb;
 import java.util.Iterator;
 import java.util.List;
 
-@zzgk
+@zzgr
 public class zzbi
 {
-    private final Object zzpc;
-    private int zzrM;
-    private List<zzbh> zzrN;
+    private final Object zzpd;
+    private int zzrX;
+    private List<zzbh> zzrY;
     
     public boolean zza(final zzbh zzbh) {
-        synchronized (this.zzpc) {
-            return this.zzrN.contains(zzbh);
+        synchronized (this.zzpd) {
+            return this.zzrY.contains(zzbh);
         }
     }
     
     public boolean zzb(final zzbh zzbh) {
-        synchronized (this.zzpc) {
-            final Iterator<zzbh> iterator = this.zzrN.iterator();
+        synchronized (this.zzpd) {
+            final Iterator<zzbh> iterator = this.zzrY.iterator();
             while (iterator.hasNext()) {
                 final zzbh zzbh2 = iterator.next();
                 if (zzbh != zzbh2 && zzbh2.zzcm().equals(zzbh.zzcm())) {
@@ -36,13 +36,13 @@ public class zzbi
     }
     
     public void zzc(final zzbh zzbh) {
-        synchronized (this.zzpc) {
-            if (this.zzrN.size() >= 10) {
-                zzb.zzaC("Queue is full, current size = " + this.zzrN.size());
-                this.zzrN.remove(0);
+        synchronized (this.zzpd) {
+            if (this.zzrY.size() >= 10) {
+                zzb.zzaF("Queue is full, current size = " + this.zzrY.size());
+                this.zzrY.remove(0);
             }
-            zzbh.zzg(this.zzrM++);
-            this.zzrN.add(zzbh);
+            zzbh.zzg(this.zzrX++);
+            this.zzrY.add(zzbh);
         }
     }
 }

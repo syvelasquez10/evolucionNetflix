@@ -15,40 +15,40 @@ import android.os.Parcelable$Creator;
 public class zzf implements Parcelable$Creator<DeleteRequest>
 {
     static void zza(final DeleteRequest deleteRequest, final Parcel parcel, final int n) {
-        final int zzak = zzb.zzak(parcel);
+        final int zzaq = zzb.zzaq(parcel);
         zzb.zza(parcel, 1, (Parcelable)deleteRequest.getCredential(), n, false);
         zzb.zzc(parcel, 1000, deleteRequest.mVersionCode);
-        zzb.zzH(parcel, zzak);
+        zzb.zzI(parcel, zzaq);
     }
     
-    public DeleteRequest zzI(final Parcel parcel) {
-        final int zzaj = zza.zzaj(parcel);
+    public DeleteRequest zzJ(final Parcel parcel) {
+        final int zzap = zza.zzap(parcel);
         int zzg = 0;
         Credential credential = null;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = zza.zzai(parcel);
-            switch (zza.zzbH(zzai)) {
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = zza.zzao(parcel);
+            switch (zza.zzbM(zzao)) {
                 default: {
-                    zza.zzb(parcel, zzai);
+                    zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    credential = zza.zza(parcel, zzai, Credential.CREATOR);
+                    credential = zza.zza(parcel, zzao, Credential.CREATOR);
                     continue;
                 }
                 case 1000: {
-                    zzg = zza.zzg(parcel, zzai);
+                    zzg = zza.zzg(parcel, zzao);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
         return new DeleteRequest(zzg, credential);
     }
     
-    public DeleteRequest[] zzay(final int n) {
+    public DeleteRequest[] zzaA(final int n) {
         return new DeleteRequest[n];
     }
 }

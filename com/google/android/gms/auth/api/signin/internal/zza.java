@@ -4,13 +4,8 @@
 
 package com.google.android.gms.auth.api.signin.internal;
 
-import android.content.Intent;
-import com.google.android.gms.common.api.Status;
-import android.os.IInterface;
+import com.google.android.gms.auth.api.signin.zzd;
 
-public interface zza extends IInterface
+public class zza implements zzd
 {
-    void zza(final Status p0, final Intent p1);
-    
-    void zzp(final Status p0);
 }

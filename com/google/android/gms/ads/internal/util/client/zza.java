@@ -6,21 +6,21 @@ package com.google.android.gms.ads.internal.util.client;
 
 import android.util.TypedValue;
 import android.view.Display;
-import com.google.android.gms.internal.zzlv;
+import com.google.android.gms.internal.zzmx;
 import android.view.WindowManager;
 import android.util.DisplayMetrics;
 import android.content.Context;
 import android.os.Looper;
 import android.os.Handler;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 
-@zzgk
+@zzgr
 public class zza
 {
-    public static final Handler zzIy;
+    public static final Handler zzJt;
     
     static {
-        zzIy = new Handler(Looper.getMainLooper());
+        zzJt = new Handler(Looper.getMainLooper());
     }
     
     public boolean zzS(final Context context) {
@@ -37,7 +37,7 @@ public class zza
         final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         final Display defaultDisplay = ((WindowManager)context.getSystemService("window")).getDefaultDisplay();
         Label_0086: {
-            if (!zzlv.zzpT()) {
+            if (!zzmx.zzqz()) {
                 break Label_0086;
             }
             defaultDisplay.getRealMetrics(displayMetrics);
@@ -95,7 +95,7 @@ public class zza
         return this.zzb(displayMetrics, n);
     }
     
-    public boolean zzgI() {
+    public boolean zzgT() {
         return Looper.myLooper() == Looper.getMainLooper();
     }
 }

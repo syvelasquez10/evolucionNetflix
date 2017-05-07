@@ -9,27 +9,27 @@ import android.os.IBinder;
 
 public final class zzj$zzd extends zzr$zza
 {
-    private zzj zzadJ;
-    private final int zzadK;
+    private zzj zzafM;
+    private final int zzafN;
     
-    public zzj$zzd(final zzj zzadJ, final int zzadK) {
-        this.zzadJ = zzadJ;
-        this.zzadK = zzadK;
+    public zzj$zzd(final zzj zzafM, final int zzafN) {
+        this.zzafM = zzafM;
+        this.zzafN = zzafN;
     }
     
-    private void zzoH() {
-        this.zzadJ = null;
+    private void zzpj() {
+        this.zzafM = null;
     }
     
     public void zza(final int n, final IBinder binder, final Bundle bundle) {
-        zzx.zzb(this.zzadJ, "onPostInitComplete can be called only once per call to getRemoteService");
-        this.zzadJ.zza(n, binder, bundle, this.zzadK);
-        this.zzoH();
+        zzx.zzb(this.zzafM, "onPostInitComplete can be called only once per call to getRemoteService");
+        this.zzafM.zza(n, binder, bundle, this.zzafN);
+        this.zzpj();
     }
     
     public void zzb(final int n, final Bundle bundle) {
-        zzx.zzb(this.zzadJ, "onAccountValidationComplete can be called only once per call to validateAccount");
-        this.zzadJ.zza(n, bundle, this.zzadK);
-        this.zzoH();
+        zzx.zzb(this.zzafM, "onAccountValidationComplete can be called only once per call to validateAccount");
+        this.zzafM.zza(n, bundle, this.zzafN);
+        this.zzpj();
     }
 }

@@ -4,7 +4,7 @@
 
 package com.google.android.gms.ads.internal.reward.client;
 
-import com.google.android.gms.internal.zzeh$zza;
+import com.google.android.gms.internal.zzem$zza;
 import com.google.android.gms.dynamic.zzd$zza;
 import android.os.Parcel;
 import android.os.IInterface;
@@ -13,7 +13,7 @@ import android.os.Binder;
 
 public abstract class zzc$zza extends Binder implements zzc
 {
-    public static zzc zzaa(final IBinder binder) {
+    public static zzc zzab(final IBinder binder) {
         if (binder == null) {
             return null;
         }
@@ -35,7 +35,7 @@ public abstract class zzc$zza extends Binder implements zzc
             }
             case 1: {
                 parcel.enforceInterface("com.google.android.gms.ads.internal.reward.client.IRewardedVideoAdCreator");
-                final IBinder zza = this.zza(zzd$zza.zzbk(parcel.readStrongBinder()), zzeh$zza.zzE(parcel.readStrongBinder()), parcel.readInt());
+                final IBinder zza = this.zza(zzd$zza.zzbk(parcel.readStrongBinder()), zzem$zza.zzE(parcel.readStrongBinder()), parcel.readInt());
                 parcel2.writeNoException();
                 parcel2.writeStrongBinder(zza);
                 return true;

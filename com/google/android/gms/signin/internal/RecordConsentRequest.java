@@ -14,19 +14,19 @@ public class RecordConsentRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<RecordConsentRequest> CREATOR;
     final int mVersionCode;
-    private final Account zzOY;
-    private final String zzRU;
-    private final Scope[] zzaOm;
+    private final Account zzQd;
+    private final String zzTl;
+    private final Scope[] zzaVk;
     
     static {
         CREATOR = (Parcelable$Creator)new zzg();
     }
     
-    RecordConsentRequest(final int mVersionCode, final Account zzOY, final Scope[] zzaOm, final String zzRU) {
+    RecordConsentRequest(final int mVersionCode, final Account zzQd, final Scope[] zzaVk, final String zzTl) {
         this.mVersionCode = mVersionCode;
-        this.zzOY = zzOY;
-        this.zzaOm = zzaOm;
-        this.zzRU = zzRU;
+        this.zzQd = zzQd;
+        this.zzaVk = zzaVk;
+        this.zzTl = zzTl;
     }
     
     public int describeContents() {
@@ -34,18 +34,18 @@ public class RecordConsentRequest implements SafeParcelable
     }
     
     public Account getAccount() {
-        return this.zzOY;
+        return this.zzQd;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
         zzg.zza(this, parcel, n);
     }
     
-    public String zzlG() {
-        return this.zzRU;
+    public Scope[] zzCj() {
+        return this.zzaVk;
     }
     
-    public Scope[] zzzs() {
-        return this.zzaOm;
+    public String zzmb() {
+        return this.zzTl;
     }
 }

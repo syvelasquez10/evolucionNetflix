@@ -26,7 +26,7 @@ public class ProxyRequest implements SafeParcelable
     public final long timeoutMillis;
     public final String url;
     final int versionCode;
-    Bundle zzRE;
+    Bundle zzSK;
     
     static {
         CREATOR = (Parcelable$Creator)new zzb();
@@ -41,13 +41,13 @@ public class ProxyRequest implements SafeParcelable
         LAST_CODE = 7;
     }
     
-    ProxyRequest(final int versionCode, final String url, final int httpMethod, final long timeoutMillis, final byte[] body, final Bundle zzRE) {
+    ProxyRequest(final int versionCode, final String url, final int httpMethod, final long timeoutMillis, final byte[] body, final Bundle zzSK) {
         this.versionCode = versionCode;
         this.url = url;
         this.httpMethod = httpMethod;
         this.timeoutMillis = timeoutMillis;
         this.body = body;
-        this.zzRE = zzRE;
+        this.zzSK = zzSK;
     }
     
     public int describeContents() {

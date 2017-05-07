@@ -4,52 +4,58 @@
 
 package com.google.android.gms.internal;
 
-import java.util.Iterator;
-import com.google.android.gms.ads.internal.zzp;
-import java.util.LinkedList;
-import java.util.List;
+import com.google.android.gms.ads.internal.util.client.zzb;
+import java.util.HashMap;
+import com.google.android.gms.ads.internal.zze;
+import java.util.Map;
 
-@zzgk
-public class zzdq implements Iterable<zzdp>
+@zzgr
+public class zzdq implements zzdk
 {
-    private final List<zzdp> zzxu;
+    static final Map<String, Integer> zzxS;
+    private final zze zzxQ;
+    private final zzfc zzxR;
     
-    public zzdq() {
-        this.zzxu = new LinkedList<zzdp>();
+    static {
+        (zzxS = new HashMap<String, Integer>()).put("resize", 1);
+        zzdq.zzxS.put("playVideo", 2);
+        zzdq.zzxS.put("storePicture", 3);
+        zzdq.zzxS.put("createCalendarEvent", 4);
+        zzdq.zzxS.put("setOrientationProperties", 5);
+        zzdq.zzxS.put("closeResizedAd", 6);
     }
     
-    private zzdp zzc(final zzip zzip) {
-        for (final zzdp zzdp : zzp.zzbK()) {
-            if (zzdp.zzoL == zzip) {
-                return zzdp;
-            }
-        }
-        return null;
+    public zzdq(final zze zzxQ, final zzfc zzxR) {
+        this.zzxQ = zzxQ;
+        this.zzxR = zzxR;
     }
     
     @Override
-    public Iterator<zzdp> iterator() {
-        return this.zzxu.iterator();
-    }
-    
-    public void zza(final zzdp zzdp) {
-        this.zzxu.add(zzdp);
-    }
-    
-    public boolean zza(final zzip zzip) {
-        final zzdp zzc = this.zzc(zzip);
-        if (zzc != null) {
-            zzc.zzxr.abort();
-            return true;
+    public void zza(final zziz zziz, final Map<String, String> map) {
+        final int intValue = zzdq.zzxS.get(map.get("a"));
+        if (intValue != 5 && this.zzxQ != null && !this.zzxQ.zzbe()) {
+            this.zzxQ.zzp(null);
+            return;
         }
-        return false;
-    }
-    
-    public void zzb(final zzdp zzdp) {
-        this.zzxu.remove(zzdp);
-    }
-    
-    public boolean zzb(final zzip zzip) {
-        return this.zzc(zzip) != null;
+        switch (intValue) {
+            default: {
+                zzb.zzaG("Unknown MRAID command called.");
+            }
+            case 1: {
+                this.zzxR.zzg(map);
+            }
+            case 4: {
+                new zzfb(zziz, map).execute();
+            }
+            case 3: {
+                new zzfe(zziz, map).execute();
+            }
+            case 5: {
+                new zzfd(zziz, map).execute();
+            }
+            case 6: {
+                this.zzxR.zzn(true);
+            }
+        }
     }
 }

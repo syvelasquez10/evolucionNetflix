@@ -14,39 +14,39 @@ import java.util.Collection;
 import android.text.TextUtils;
 import java.util.Iterator;
 import java.util.ArrayList;
-import java.util.TreeSet;
 import java.util.List;
+import java.util.TreeSet;
 
 public class PasswordSpecification$zza
 {
-    private final List<String> zzRr;
-    private final List<Integer> zzRs;
-    private int zzRt;
-    private int zzRu;
-    private final TreeSet<Character> zzRw;
+    private final TreeSet<Character> zzSB;
+    private final List<String> zzSw;
+    private final List<Integer> zzSx;
+    private int zzSy;
+    private int zzSz;
     
     public PasswordSpecification$zza() {
-        this.zzRw = new TreeSet<Character>();
-        this.zzRr = new ArrayList<String>();
-        this.zzRs = new ArrayList<Integer>();
-        this.zzRt = 12;
-        this.zzRu = 16;
+        this.zzSB = new TreeSet<Character>();
+        this.zzSw = new ArrayList<String>();
+        this.zzSx = new ArrayList<Integer>();
+        this.zzSy = 12;
+        this.zzSz = 16;
     }
     
-    private void zzly() {
-        final Iterator<Integer> iterator = this.zzRs.iterator();
+    private void zzlL() {
+        final Iterator<Integer> iterator = this.zzSx.iterator();
         int n = 0;
         while (iterator.hasNext()) {
             n += iterator.next();
         }
-        if (n > this.zzRu) {
+        if (n > this.zzSz) {
             throw new PasswordSpecification$zzb("required character count cannot be greater than the max password size");
         }
     }
     
-    private void zzlz() {
+    private void zzlM() {
         final boolean[] array = new boolean[95];
-        final Iterator<String> iterator = this.zzRr.iterator();
+        final Iterator<String> iterator = this.zzSw.iterator();
         while (iterator.hasNext()) {
             final char[] charArray = iterator.next().toCharArray();
             for (int length = charArray.length, i = 0; i < length; ++i) {
@@ -76,7 +76,7 @@ public class PasswordSpecification$zza
     }
     
     public PasswordSpecification$zza zzbD(final String s) {
-        this.zzRw.addAll(this.zzr(s, "allowedChars"));
+        this.zzSB.addAll(this.zzr(s, "allowedChars"));
         return this;
     }
     
@@ -84,29 +84,29 @@ public class PasswordSpecification$zza
         if (n < 1) {
             throw new PasswordSpecification$zzb("count must be at least 1");
         }
-        this.zzRr.add(zzb(this.zzr(s, "requiredChars")));
-        this.zzRs.add(n);
+        this.zzSw.add(zzb(this.zzr(s, "requiredChars")));
+        this.zzSx.add(n);
         return this;
     }
     
-    public PasswordSpecification$zza zzh(final int zzRt, final int zzRu) {
-        if (zzRt < 1) {
+    public PasswordSpecification$zza zzg(final int zzSy, final int zzSz) {
+        if (zzSy < 1) {
             throw new PasswordSpecification$zzb("minimumSize must be at least 1");
         }
-        if (zzRt > zzRu) {
+        if (zzSy > zzSz) {
             throw new PasswordSpecification$zzb("maximumSize must be greater than or equal to minimumSize");
         }
-        this.zzRt = zzRt;
-        this.zzRu = zzRu;
+        this.zzSy = zzSy;
+        this.zzSz = zzSz;
         return this;
     }
     
-    public PasswordSpecification zzlx() {
-        if (this.zzRw.isEmpty()) {
+    public PasswordSpecification zzlK() {
+        if (this.zzSB.isEmpty()) {
             throw new PasswordSpecification$zzb("no allowed characters specified");
         }
-        this.zzly();
-        this.zzlz();
-        return new PasswordSpecification(1, zzb(this.zzRw), this.zzRr, this.zzRs, this.zzRt, this.zzRu);
+        this.zzlL();
+        this.zzlM();
+        return new PasswordSpecification(1, zzb(this.zzSB), this.zzSw, this.zzSx, this.zzSy, this.zzSz);
     }
 }

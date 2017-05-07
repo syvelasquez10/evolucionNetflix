@@ -16,46 +16,46 @@ import android.os.Parcelable$Creator;
 public class zzb implements Parcelable$Creator<FacebookSignInConfig>
 {
     static void zza(final FacebookSignInConfig facebookSignInConfig, final Parcel parcel, final int n) {
-        final int zzak = com.google.android.gms.common.internal.safeparcel.zzb.zzak(parcel);
+        final int zzaq = com.google.android.gms.common.internal.safeparcel.zzb.zzaq(parcel);
         com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 1, facebookSignInConfig.versionCode);
-        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 2, (Parcelable)facebookSignInConfig.zzlD(), n, false);
-        com.google.android.gms.common.internal.safeparcel.zzb.zzb(parcel, 3, facebookSignInConfig.zzlE(), false);
-        com.google.android.gms.common.internal.safeparcel.zzb.zzH(parcel, zzak);
+        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 2, (Parcelable)facebookSignInConfig.zzlR(), n, false);
+        com.google.android.gms.common.internal.safeparcel.zzb.zzb(parcel, 3, facebookSignInConfig.zzlS(), false);
+        com.google.android.gms.common.internal.safeparcel.zzb.zzI(parcel, zzaq);
     }
     
-    public FacebookSignInConfig zzO(final Parcel parcel) {
-        ArrayList<String> zzC = null;
-        final int zzaj = zza.zzaj(parcel);
+    public FacebookSignInConfig zzP(final Parcel parcel) {
+        ArrayList<String> zzD = null;
+        final int zzap = zza.zzap(parcel);
         int zzg = 0;
         Intent intent = null;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = zza.zzai(parcel);
-            switch (zza.zzbH(zzai)) {
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = zza.zzao(parcel);
+            switch (zza.zzbM(zzao)) {
                 default: {
-                    zza.zzb(parcel, zzai);
+                    zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzg = zza.zzg(parcel, zzai);
+                    zzg = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 2: {
-                    intent = zza.zza(parcel, zzai, (android.os.Parcelable$Creator<Intent>)Intent.CREATOR);
+                    intent = zza.zza(parcel, zzao, (android.os.Parcelable$Creator<Intent>)Intent.CREATOR);
                     continue;
                 }
                 case 3: {
-                    zzC = zza.zzC(parcel, zzai);
+                    zzD = zza.zzD(parcel, zzao);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
-        return new FacebookSignInConfig(zzg, intent, zzC);
+        return new FacebookSignInConfig(zzg, intent, zzD);
     }
     
-    public FacebookSignInConfig[] zzaE(final int n) {
+    public FacebookSignInConfig[] zzaG(final int n) {
         return new FacebookSignInConfig[n];
     }
 }

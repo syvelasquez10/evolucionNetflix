@@ -12,6 +12,7 @@ import com.google.android.gms.common.api.GoogleApiClient$Builder;
 import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.content.IntentSender$SendIntentException;
 import android.app.Activity;
@@ -82,14 +83,14 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
         final String string2 = this.passwordView.getText().toString();
         boolean b = false;
         if (this.passwordIsInvalid(string2)) {
-            final String string3 = this.getString(2131165384);
+            final String string3 = this.getString(2131165382);
             this.reportCancel(string3);
             this.passwordView.setError((CharSequence)string3);
             o = this.passwordView;
             b = true;
         }
         if (this.emailIsInvalid(string)) {
-            final String string4 = this.getString(2131165383);
+            final String string4 = this.getString(2131165381);
             this.reportCancel(string4);
             this.emailView.setError((CharSequence)string4);
             o = this.emailView;
@@ -110,7 +111,7 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
             Log.i("LoginActivity", "Locking orientation to: " + screenSensorOrientation);
         }
         this.setRequestedOrientation(screenSensorOrientation);
-        this.statusMessageView.setText(2131165572);
+        this.statusMessageView.setText(2131165570);
         this.showProgress(true);
         serviceManager.loginUser(string, string2, this.loginQueryCallback);
     }
@@ -148,6 +149,7 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
             if (googleApiClient != null) {
                 break Label_0018;
             }
+        Block_3_Outer:
             while (true) {
                 Object o;
                 String string;
@@ -156,15 +158,21 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
                     Label_0015: {
                         return;
                     }
-                    // iftrue(Label_0015:, !this.saveCredentials)
-                    Log.d("LoginActivity", "Trying to save credentials to GPS");
-                    this.saveCredentials = false;
-                    o = this.emailView.getText().toString();
-                    string = this.passwordView.getText().toString();
                     // iftrue(Label_0092:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
-                    Log.w("LoginActivity", "Credential is empty, do not save it.");
-                    return;
+                    while (true) {
+                        while (true) {
+                            Log.w("LoginActivity", "Credential is empty, do not save it.");
+                            return;
+                            Log.d("LoginActivity", "Trying to save credentials to GPS");
+                            this.saveCredentials = false;
+                            o = this.emailView.getText().toString();
+                            string = this.passwordView.getText().toString();
+                            continue Block_3_Outer;
+                        }
+                        continue;
+                    }
                 }
+                // iftrue(Label_0015:, !this.saveCredentials)
                 finally {
                 }
                 // monitorexit(this)
@@ -215,7 +223,7 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
         }
         this.setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showDebugToast(2131165535);
+            this.showDebugToast(2131165533);
             this.saveCredentials();
             return;
         }
@@ -343,6 +351,11 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
     }
     
     @Override
+    protected CustomerServiceLogging$EntryPoint getEntryPoint() {
+        return CustomerServiceLogging$EntryPoint.login;
+    }
+    
+    @Override
     public IClientLogging$ModalView getUiScreen() {
         return IClientLogging$ModalView.login;
     }
@@ -380,19 +393,19 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
     protected String handleUserAgentErrors(final Status status) {
         final StatusCode statusCode = status.getStatusCode();
         if (statusCode == StatusCode.NRD_LOGIN_ACTIONID_4 || statusCode == StatusCode.NRD_LOGIN_ACTIONID_8) {
-            final String string = this.getString(2131165451);
+            final String string = this.getString(2131165449);
             this.passwordView.setError((CharSequence)string);
             this.reportError(status, string);
             return string;
         }
         if (statusCode == StatusCode.NRD_LOGIN_ACTIONID_2) {
-            final String string2 = this.getString(2131165569) + " (" + statusCode.getValue() + ")";
+            final String string2 = this.getString(2131165567) + " (" + statusCode.getValue() + ")";
             this.displayUserAgentDialog(string2, null, false);
             this.reportError(status, string2);
             return string2;
         }
         if (statusCode == StatusCode.NETWORK_ERROR) {
-            final String string3 = this.getString(2131165571) + " (" + statusCode.getValue() + ")";
+            final String string3 = this.getString(2131165569) + " (" + statusCode.getValue() + ")";
             this.displayUserAgentDialog(string3, null, true);
             this.reportError(status, string3);
             return string3;

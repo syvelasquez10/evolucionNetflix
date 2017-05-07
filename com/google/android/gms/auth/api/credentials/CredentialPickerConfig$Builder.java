@@ -7,10 +7,10 @@ package com.google.android.gms.auth.api.credentials;
 public class CredentialPickerConfig$Builder
 {
     private boolean mShowCancelButton;
-    private boolean zzRi;
+    private boolean zzSn;
     
     public CredentialPickerConfig$Builder() {
-        this.zzRi = false;
+        this.zzSn = false;
         this.mShowCancelButton = true;
     }
     

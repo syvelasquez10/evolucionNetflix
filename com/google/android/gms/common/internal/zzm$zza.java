@@ -9,12 +9,12 @@ import android.content.ComponentName;
 
 final class zzm$zza
 {
-    private final String zzOj;
-    private final ComponentName zzadY;
+    private final String zzPp;
+    private final ComponentName zzagb;
     
     public zzm$zza(final String s) {
-        this.zzOj = zzx.zzcs(s);
-        this.zzadY = null;
+        this.zzPp = zzx.zzcr(s);
+        this.zzagb = null;
     }
     
     @Override
@@ -24,7 +24,7 @@ final class zzm$zza
                 return false;
             }
             final zzm$zza zzm$zza = (zzm$zza)o;
-            if (!zzw.equal(this.zzOj, zzm$zza.zzOj) || !zzw.equal(this.zzadY, zzm$zza.zzadY)) {
+            if (!zzw.equal(this.zzPp, zzm$zza.zzPp) || !zzw.equal(this.zzagb, zzm$zza.zzagb)) {
                 return false;
             }
         }
@@ -33,21 +33,21 @@ final class zzm$zza
     
     @Override
     public int hashCode() {
-        return zzw.hashCode(this.zzOj, this.zzadY);
+        return zzw.hashCode(this.zzPp, this.zzagb);
     }
     
     @Override
     public String toString() {
-        if (this.zzOj == null) {
-            return this.zzadY.flattenToString();
+        if (this.zzPp == null) {
+            return this.zzagb.flattenToString();
         }
-        return this.zzOj;
+        return this.zzPp;
     }
     
-    public Intent zzoK() {
-        if (this.zzOj != null) {
-            return new Intent(this.zzOj).setPackage("com.google.android.gms");
+    public Intent zzpm() {
+        if (this.zzPp != null) {
+            return new Intent(this.zzPp).setPackage("com.google.android.gms");
         }
-        return new Intent().setComponent(this.zzadY);
+        return new Intent().setComponent(this.zzagb);
     }
 }

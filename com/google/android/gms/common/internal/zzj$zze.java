@@ -13,15 +13,15 @@ import java.io.PrintWriter;
 import java.io.FileDescriptor;
 import android.util.Log;
 import java.util.Iterator;
-import java.util.ArrayList;
 import com.google.android.gms.common.api.GoogleApiClient$zza;
 import java.util.concurrent.atomic.AtomicInteger;
 import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
-import com.google.android.gms.common.api.Scope;
-import java.util.Set;
+import java.util.ArrayList;
 import com.google.android.gms.common.GoogleApiAvailability;
 import android.os.Looper;
+import com.google.android.gms.common.api.Scope;
+import java.util.Set;
 import android.accounts.Account;
 import android.os.Handler;
 import android.content.Context;
@@ -33,21 +33,21 @@ import android.content.ServiceConnection;
 
 public final class zzj$zze implements ServiceConnection
 {
-    final /* synthetic */ zzj zzadH;
-    private final int zzadK;
+    final /* synthetic */ zzj zzafK;
+    private final int zzafN;
     
-    public zzj$zze(final zzj zzadH, final int zzadK) {
-        this.zzadH = zzadH;
-        this.zzadK = zzadK;
+    public zzj$zze(final zzj zzafK, final int zzafN) {
+        this.zzafK = zzafK;
+        this.zzafN = zzafN;
     }
     
     public void onServiceConnected(final ComponentName componentName, final IBinder binder) {
         zzx.zzb(binder, "Expecting a valid IBinder");
-        this.zzadH.zzadv = zzs$zza.zzaK(binder);
-        this.zzadH.zzbA(this.zzadK);
+        this.zzafK.zzafy = zzs$zza.zzaK(binder);
+        this.zzafK.zzbF(this.zzafN);
     }
     
     public void onServiceDisconnected(final ComponentName componentName) {
-        this.zzadH.mHandler.sendMessage(this.zzadH.mHandler.obtainMessage(4, this.zzadK, 1));
+        this.zzafK.mHandler.sendMessage(this.zzafK.mHandler.obtainMessage(4, this.zzafN, 1));
     }
 }

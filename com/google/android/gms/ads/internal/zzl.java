@@ -12,44 +12,62 @@ import android.os.Parcelable$Creator;
 
 public class zzl implements Parcelable$Creator<InterstitialAdParameterParcel>
 {
-    static void zza(final InterstitialAdParameterParcel interstitialAdParameterParcel, final Parcel parcel, int zzak) {
-        zzak = zzb.zzak(parcel);
+    static void zza(final InterstitialAdParameterParcel interstitialAdParameterParcel, final Parcel parcel, int zzaq) {
+        zzaq = zzb.zzaq(parcel);
         zzb.zzc(parcel, 1, interstitialAdParameterParcel.versionCode);
-        zzb.zza(parcel, 2, interstitialAdParameterParcel.zzpk);
-        zzb.zza(parcel, 3, interstitialAdParameterParcel.zzpl);
-        zzb.zzH(parcel, zzak);
+        zzb.zza(parcel, 2, interstitialAdParameterParcel.zzpt);
+        zzb.zza(parcel, 3, interstitialAdParameterParcel.zzpu);
+        zzb.zza(parcel, 4, interstitialAdParameterParcel.zzpv, false);
+        zzb.zza(parcel, 5, interstitialAdParameterParcel.zzpw);
+        zzb.zza(parcel, 6, interstitialAdParameterParcel.zzpx);
+        zzb.zzI(parcel, zzaq);
     }
     
     public InterstitialAdParameterParcel zza(final Parcel parcel) {
         boolean zzc = false;
-        final int zzaj = zza.zzaj(parcel);
+        final int zzap = zza.zzap(parcel);
+        String zzp = null;
+        float zzl = 0.0f;
         boolean zzc2 = false;
+        boolean zzc3 = false;
         int zzg = 0;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = zza.zzai(parcel);
-            switch (zza.zzbH(zzai)) {
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = zza.zzao(parcel);
+            switch (zza.zzbM(zzao)) {
                 default: {
-                    zza.zzb(parcel, zzai);
+                    zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzg = zza.zzg(parcel, zzai);
+                    zzg = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 2: {
-                    zzc2 = zza.zzc(parcel, zzai);
+                    zzc3 = zza.zzc(parcel, zzao);
                     continue;
                 }
                 case 3: {
-                    zzc = zza.zzc(parcel, zzai);
+                    zzc2 = zza.zzc(parcel, zzao);
+                    continue;
+                }
+                case 4: {
+                    zzp = zza.zzp(parcel, zzao);
+                    continue;
+                }
+                case 5: {
+                    zzc = zza.zzc(parcel, zzao);
+                    continue;
+                }
+                case 6: {
+                    zzl = zza.zzl(parcel, zzao);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
-        return new InterstitialAdParameterParcel(zzg, zzc2, zzc);
+        return new InterstitialAdParameterParcel(zzg, zzc3, zzc2, zzp, zzc, zzl);
     }
     
     public InterstitialAdParameterParcel[] zzf(final int n) {

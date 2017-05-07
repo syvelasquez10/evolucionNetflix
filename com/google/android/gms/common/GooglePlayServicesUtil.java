@@ -7,25 +7,25 @@ package com.google.android.gms.common;
 import android.os.Build;
 import java.util.Iterator;
 import android.content.pm.PackageInstaller$SessionInfo;
-import com.google.android.gms.common.internal.zzn;
 import android.content.pm.PackageManager;
+import android.app.AppOpsManager;
+import android.os.UserManager;
 import android.content.pm.ApplicationInfo;
 import android.text.TextUtils;
 import android.os.Bundle;
 import android.app.NotificationManager;
 import android.util.Log;
-import android.app.AppOpsManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentActivity;
 import android.content.Intent;
 import android.content.DialogInterface$OnClickListener;
 import com.google.android.gms.common.internal.zzh;
 import com.google.android.gms.common.internal.zzg;
 import android.app.AlertDialog$Builder;
 import android.util.TypedValue;
-import com.google.android.gms.internal.zzlk;
-import com.google.android.gms.internal.zzlv;
-import android.support.v4.app.FragmentManager;
+import com.google.android.gms.internal.zzmx;
+import com.google.android.gms.internal.zzml;
 import android.app.Dialog;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 import android.content.DialogInterface$OnCancelListener;
 import android.app.Activity;
@@ -38,23 +38,25 @@ public final class GooglePlayServicesUtil
 {
     @Deprecated
     public static final int GOOGLE_PLAY_SERVICES_VERSION_CODE;
-    public static boolean zzYu;
-    public static boolean zzYv;
-    private static int zzYw;
-    private static String zzYx;
-    private static Integer zzYy;
-    static final AtomicBoolean zzYz;
-    private static final Object zzpm;
+    public static boolean zzaal;
+    public static boolean zzaam;
+    private static int zzaan;
+    private static String zzaao;
+    private static Integer zzaap;
+    static final AtomicBoolean zzaaq;
+    private static final AtomicBoolean zzaar;
+    private static final Object zzpy;
     
     static {
-        GOOGLE_PLAY_SERVICES_VERSION_CODE = zzmW();
-        GooglePlayServicesUtil.zzYu = false;
-        GooglePlayServicesUtil.zzYv = false;
-        GooglePlayServicesUtil.zzYw = -1;
-        zzpm = new Object();
-        GooglePlayServicesUtil.zzYx = null;
-        GooglePlayServicesUtil.zzYy = null;
-        zzYz = new AtomicBoolean();
+        GOOGLE_PLAY_SERVICES_VERSION_CODE = zzns();
+        GooglePlayServicesUtil.zzaal = false;
+        GooglePlayServicesUtil.zzaam = false;
+        GooglePlayServicesUtil.zzaan = -1;
+        zzpy = new Object();
+        GooglePlayServicesUtil.zzaao = null;
+        GooglePlayServicesUtil.zzaap = null;
+        zzaaq = new AtomicBoolean();
+        zzaar = new AtomicBoolean();
     }
     
     public static Context getRemoteContext(Context packageContext) {
@@ -83,7 +85,7 @@ public final class GooglePlayServicesUtil
         // 
         // Original Bytecode:
         // 
-        //     0: getstatic       com/google/android/gms/common/internal/zzd.zzacF:Z
+        //     0: getstatic       com/google/android/gms/common/internal/zzd.zzaeK:Z
         //     3: ifeq            8
         //     6: iconst_0       
         //     7: ireturn        
@@ -107,20 +109,20 @@ public final class GooglePlayServicesUtil
         //    43: bipush          64
         //    45: invokevirtual   android/content/pm/PackageManager.getPackageInfo:(Ljava/lang/String;I)Landroid/content/pm/PackageInfo;
         //    48: astore_2       
-        //    49: invokestatic    com/google/android/gms/common/zzd.zzmY:()Lcom/google/android/gms/common/zzd;
+        //    49: invokestatic    com/google/android/gms/common/zzd.zznu:()Lcom/google/android/gms/common/zzd;
         //    52: astore          4
         //    54: aload_2        
         //    55: getfield        android/content/pm/PackageInfo.versionCode:I
-        //    58: invokestatic    com/google/android/gms/internal/zzlk.zzbX:(I)Z
+        //    58: invokestatic    com/google/android/gms/internal/zzml.zzcb:(I)Z
         //    61: ifne            71
         //    64: aload_0        
-        //    65: invokestatic    com/google/android/gms/internal/zzlk.zzao:(Landroid/content/Context;)Z
+        //    65: invokestatic    com/google/android/gms/internal/zzml.zzan:(Landroid/content/Context;)Z
         //    68: ifeq            117
         //    71: aload           4
         //    73: aload_2        
-        //    74: getstatic       com/google/android/gms/common/zzc$zzbu.zzYt:[Lcom/google/android/gms/common/zzc$zza;
+        //    74: getstatic       com/google/android/gms/common/zzc$zzbz.zzaak:[Lcom/google/android/gms/common/zzc$zza;
         //    77: invokevirtual   com/google/android/gms/common/zzd.zza:(Landroid/content/pm/PackageInfo;[Lcom/google/android/gms/common/zzc$zza;)Lcom/google/android/gms/common/zzc$zza;
-        //    80: ifnonnull       233
+        //    80: ifnonnull       190
         //    83: ldc             "GooglePlayServicesUtil"
         //    85: ldc             "Google Play services signature invalid."
         //    87: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
@@ -143,125 +145,105 @@ public final class GooglePlayServicesUtil
         //   117: aload           4
         //   119: aload_3        
         //   120: ldc             "com.android.vending"
-        //   122: bipush          64
-        //   124: invokevirtual   android/content/pm/PackageManager.getPackageInfo:(Ljava/lang/String;I)Landroid/content/pm/PackageInfo;
-        //   127: getstatic       com/google/android/gms/common/zzc$zzbu.zzYt:[Lcom/google/android/gms/common/zzc$zza;
-        //   130: invokevirtual   com/google/android/gms/common/zzd.zza:(Landroid/content/pm/PackageInfo;[Lcom/google/android/gms/common/zzc$zza;)Lcom/google/android/gms/common/zzc$zza;
-        //   133: astore          5
-        //   135: aload           5
-        //   137: ifnonnull       193
-        //   140: ldc             "GooglePlayServicesUtil"
-        //   142: ldc             "Google Play Store signature invalid."
-        //   144: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
-        //   147: pop            
-        //   148: bipush          9
-        //   150: ireturn        
-        //   151: astore          5
-        //   153: aload_0        
-        //   154: ldc             "com.android.vending"
-        //   156: invokestatic    com/google/android/gms/common/GooglePlayServicesUtil.zzh:(Landroid/content/Context;Ljava/lang/String;)Z
-        //   159: ifeq            222
-        //   162: ldc             "GooglePlayServicesUtil"
-        //   164: ldc             "Google Play Store is updating."
-        //   166: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
-        //   169: pop            
-        //   170: aload           4
-        //   172: aload_2        
-        //   173: getstatic       com/google/android/gms/common/zzc$zzbu.zzYt:[Lcom/google/android/gms/common/zzc$zza;
-        //   176: invokevirtual   com/google/android/gms/common/zzd.zza:(Landroid/content/pm/PackageInfo;[Lcom/google/android/gms/common/zzc$zza;)Lcom/google/android/gms/common/zzc$zza;
-        //   179: ifnonnull       233
-        //   182: ldc             "GooglePlayServicesUtil"
-        //   184: ldc             "Google Play services signature invalid."
-        //   186: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
-        //   189: pop            
-        //   190: bipush          9
-        //   192: ireturn        
-        //   193: aload           4
-        //   195: aload_2        
-        //   196: iconst_1       
-        //   197: anewarray       Lcom/google/android/gms/common/zzc$zza;
-        //   200: dup            
-        //   201: iconst_0       
-        //   202: aload           5
-        //   204: aastore        
-        //   205: invokevirtual   com/google/android/gms/common/zzd.zza:(Landroid/content/pm/PackageInfo;[Lcom/google/android/gms/common/zzc$zza;)Lcom/google/android/gms/common/zzc$zza;
-        //   208: ifnonnull       233
-        //   211: ldc             "GooglePlayServicesUtil"
-        //   213: ldc             "Google Play services signature invalid."
-        //   215: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
-        //   218: pop            
-        //   219: bipush          9
-        //   221: ireturn        
-        //   222: ldc             "GooglePlayServicesUtil"
-        //   224: ldc             "Google Play Store is neither installed nor updating."
-        //   226: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
-        //   229: pop            
-        //   230: bipush          9
-        //   232: ireturn        
-        //   233: getstatic       com/google/android/gms/common/GooglePlayServicesUtil.GOOGLE_PLAY_SERVICES_VERSION_CODE:I
-        //   236: invokestatic    com/google/android/gms/internal/zzlk.zzbV:(I)I
-        //   239: istore_1       
-        //   240: aload_2        
-        //   241: getfield        android/content/pm/PackageInfo.versionCode:I
-        //   244: invokestatic    com/google/android/gms/internal/zzlk.zzbV:(I)I
-        //   247: iload_1        
-        //   248: if_icmpge       292
-        //   251: ldc             "GooglePlayServicesUtil"
-        //   253: new             Ljava/lang/StringBuilder;
-        //   256: dup            
-        //   257: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   260: ldc             "Google Play services out of date.  Requires "
-        //   262: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   265: getstatic       com/google/android/gms/common/GooglePlayServicesUtil.GOOGLE_PLAY_SERVICES_VERSION_CODE:I
-        //   268: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
-        //   271: ldc             " but found "
-        //   273: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   276: aload_2        
-        //   277: getfield        android/content/pm/PackageInfo.versionCode:I
-        //   280: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
-        //   283: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   286: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
-        //   289: pop            
-        //   290: iconst_2       
-        //   291: ireturn        
-        //   292: aload_2        
-        //   293: getfield        android/content/pm/PackageInfo.applicationInfo:Landroid/content/pm/ApplicationInfo;
-        //   296: astore_2       
-        //   297: aload_2        
-        //   298: astore_0       
-        //   299: aload_2        
-        //   300: ifnonnull       311
-        //   303: aload_3        
-        //   304: ldc             "com.google.android.gms"
-        //   306: iconst_0       
-        //   307: invokevirtual   android/content/pm/PackageManager.getApplicationInfo:(Ljava/lang/String;I)Landroid/content/pm/ApplicationInfo;
-        //   310: astore_0       
-        //   311: aload_0        
-        //   312: getfield        android/content/pm/ApplicationInfo.enabled:Z
-        //   315: ifne            335
-        //   318: iconst_3       
-        //   319: ireturn        
-        //   320: astore_0       
-        //   321: ldc             "GooglePlayServicesUtil"
-        //   323: ldc             "Google Play services missing when getting application info."
-        //   325: invokestatic    android/util/Log.wtf:(Ljava/lang/String;Ljava/lang/String;)I
-        //   328: pop            
-        //   329: aload_0        
-        //   330: invokevirtual   android/content/pm/PackageManager$NameNotFoundException.printStackTrace:()V
-        //   333: iconst_1       
-        //   334: ireturn        
-        //   335: iconst_0       
-        //   336: ireturn        
+        //   122: sipush          8256
+        //   125: invokevirtual   android/content/pm/PackageManager.getPackageInfo:(Ljava/lang/String;I)Landroid/content/pm/PackageInfo;
+        //   128: getstatic       com/google/android/gms/common/zzc$zzbz.zzaak:[Lcom/google/android/gms/common/zzc$zza;
+        //   131: invokevirtual   com/google/android/gms/common/zzd.zza:(Landroid/content/pm/PackageInfo;[Lcom/google/android/gms/common/zzc$zza;)Lcom/google/android/gms/common/zzc$zza;
+        //   134: astore_0       
+        //   135: aload_0        
+        //   136: ifnonnull       162
+        //   139: ldc             "GooglePlayServicesUtil"
+        //   141: ldc             "Google Play Store signature invalid."
+        //   143: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
+        //   146: pop            
+        //   147: bipush          9
+        //   149: ireturn        
+        //   150: astore_0       
+        //   151: ldc             "GooglePlayServicesUtil"
+        //   153: ldc             "Google Play Store is neither installed nor updating."
+        //   155: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
+        //   158: pop            
+        //   159: bipush          9
+        //   161: ireturn        
+        //   162: aload           4
+        //   164: aload_2        
+        //   165: iconst_1       
+        //   166: anewarray       Lcom/google/android/gms/common/zzc$zza;
+        //   169: dup            
+        //   170: iconst_0       
+        //   171: aload_0        
+        //   172: aastore        
+        //   173: invokevirtual   com/google/android/gms/common/zzd.zza:(Landroid/content/pm/PackageInfo;[Lcom/google/android/gms/common/zzc$zza;)Lcom/google/android/gms/common/zzc$zza;
+        //   176: ifnonnull       190
+        //   179: ldc             "GooglePlayServicesUtil"
+        //   181: ldc             "Google Play services signature invalid."
+        //   183: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
+        //   186: pop            
+        //   187: bipush          9
+        //   189: ireturn        
+        //   190: getstatic       com/google/android/gms/common/GooglePlayServicesUtil.GOOGLE_PLAY_SERVICES_VERSION_CODE:I
+        //   193: invokestatic    com/google/android/gms/internal/zzml.zzca:(I)I
+        //   196: istore_1       
+        //   197: aload_2        
+        //   198: getfield        android/content/pm/PackageInfo.versionCode:I
+        //   201: invokestatic    com/google/android/gms/internal/zzml.zzca:(I)I
+        //   204: iload_1        
+        //   205: if_icmpge       249
+        //   208: ldc             "GooglePlayServicesUtil"
+        //   210: new             Ljava/lang/StringBuilder;
+        //   213: dup            
+        //   214: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   217: ldc             "Google Play services out of date.  Requires "
+        //   219: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   222: getstatic       com/google/android/gms/common/GooglePlayServicesUtil.GOOGLE_PLAY_SERVICES_VERSION_CODE:I
+        //   225: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //   228: ldc             " but found "
+        //   230: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   233: aload_2        
+        //   234: getfield        android/content/pm/PackageInfo.versionCode:I
+        //   237: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //   240: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   243: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
+        //   246: pop            
+        //   247: iconst_2       
+        //   248: ireturn        
+        //   249: aload_2        
+        //   250: getfield        android/content/pm/PackageInfo.applicationInfo:Landroid/content/pm/ApplicationInfo;
+        //   253: astore_2       
+        //   254: aload_2        
+        //   255: astore_0       
+        //   256: aload_2        
+        //   257: ifnonnull       268
+        //   260: aload_3        
+        //   261: ldc             "com.google.android.gms"
+        //   263: iconst_0       
+        //   264: invokevirtual   android/content/pm/PackageManager.getApplicationInfo:(Ljava/lang/String;I)Landroid/content/pm/ApplicationInfo;
+        //   267: astore_0       
+        //   268: aload_0        
+        //   269: getfield        android/content/pm/ApplicationInfo.enabled:Z
+        //   272: ifne            289
+        //   275: iconst_3       
+        //   276: ireturn        
+        //   277: astore_0       
+        //   278: ldc             "GooglePlayServicesUtil"
+        //   280: ldc             "Google Play services missing when getting application info."
+        //   282: aload_0        
+        //   283: invokestatic    android/util/Log.wtf:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   286: pop            
+        //   287: iconst_1       
+        //   288: ireturn        
+        //   289: iconst_0       
+        //   290: ireturn        
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                                                     
         //  -----  -----  -----  -----  ---------------------------------------------------------
         //  13     24     94     106    Ljava/lang/Throwable;
         //  40     49     106    117    Landroid/content/pm/PackageManager$NameNotFoundException;
-        //  117    135    151    193    Landroid/content/pm/PackageManager$NameNotFoundException;
-        //  140    148    151    193    Landroid/content/pm/PackageManager$NameNotFoundException;
-        //  193    219    151    193    Landroid/content/pm/PackageManager$NameNotFoundException;
-        //  303    311    320    335    Landroid/content/pm/PackageManager$NameNotFoundException;
+        //  117    135    150    162    Landroid/content/pm/PackageManager$NameNotFoundException;
+        //  139    147    150    162    Landroid/content/pm/PackageManager$NameNotFoundException;
+        //  162    187    150    162    Landroid/content/pm/PackageManager$NameNotFoundException;
+        //  260    268    277    289    Landroid/content/pm/PackageManager$NameNotFoundException;
         // 
         // The error that occurred was:
         // 
@@ -313,33 +295,13 @@ public final class GooglePlayServicesUtil
         return showErrorDialogFragment(n, activity, null, n2, dialogInterface$OnCancelListener);
     }
     
-    public static boolean showErrorDialogFragment(final int n, Activity activity, Fragment zza, final int n2, final DialogInterface$OnCancelListener dialogInterface$OnCancelListener) {
-        int n3 = 0;
-        zza = (Fragment)zza(n, activity, zza, n2, dialogInterface$OnCancelListener);
+    public static boolean showErrorDialogFragment(final int n, final Activity activity, final Fragment fragment, final int n2, final DialogInterface$OnCancelListener dialogInterface$OnCancelListener) {
+        final Dialog zza = zza(n, activity, fragment, n2, dialogInterface$OnCancelListener);
         if (zza == null) {
             return false;
         }
-        while (true) {
-            try {
-                n3 = ((activity instanceof FragmentActivity) ? 1 : 0);
-                if (n3 != 0) {
-                    activity = (Activity)((FragmentActivity)activity).getSupportFragmentManager();
-                    SupportErrorDialogFragment.newInstance((Dialog)zza, dialogInterface$OnCancelListener).show((FragmentManager)activity, "GooglePlayServicesErrorDialog");
-                }
-                else {
-                    if (!zzlv.zzpO()) {
-                        throw new RuntimeException("This Activity does not support Fragments.");
-                    }
-                    activity = (Activity)activity.getFragmentManager();
-                    ErrorDialogFragment.newInstance((Dialog)zza, dialogInterface$OnCancelListener).show((android.app.FragmentManager)activity, "GooglePlayServicesErrorDialog");
-                }
-                return true;
-            }
-            catch (NoClassDefFoundError noClassDefFoundError) {
-                continue;
-            }
-            break;
-        }
+        zza(activity, dialogInterface$OnCancelListener, "GooglePlayServicesErrorDialog", zza);
+        return true;
     }
     
     private static Dialog zza(final int n, final Activity activity, final Fragment fragment, final int n2, final DialogInterface$OnCancelListener onCancelListener) {
@@ -348,11 +310,11 @@ public final class GooglePlayServicesUtil
             return null;
         }
         int n3 = n;
-        if (zzlk.zzao((Context)activity) && (n3 = n) == 2) {
+        if (zzml.zzan((Context)activity) && (n3 = n) == 2) {
             n3 = 42;
         }
         AlertDialog$Builder alertDialog$Builder2 = alertDialog$Builder;
-        if (zzlv.zzpR()) {
+        if (zzmx.zzqx()) {
             final TypedValue typedValue = new TypedValue();
             activity.getTheme().resolveAttribute(16843529, typedValue, true);
             alertDialog$Builder2 = alertDialog$Builder;
@@ -364,17 +326,17 @@ public final class GooglePlayServicesUtil
         if ((alertDialog$Builder3 = alertDialog$Builder2) == null) {
             alertDialog$Builder3 = new AlertDialog$Builder((Context)activity);
         }
-        alertDialog$Builder3.setMessage((CharSequence)zzg.zzb((Context)activity, n3, zzaf((Context)activity)));
+        alertDialog$Builder3.setMessage((CharSequence)zzg.zzc((Context)activity, n3, zzaf((Context)activity)));
         if (onCancelListener != null) {
             alertDialog$Builder3.setOnCancelListener(onCancelListener);
         }
-        final Intent zzbc = zzbc(n3);
+        final Intent zza = GoogleApiAvailability.getInstance().zza((Context)activity, n3, "d");
         zzh zzh;
         if (fragment == null) {
-            zzh = new zzh(activity, zzbc, n2);
+            zzh = new zzh(activity, zza, n2);
         }
         else {
-            zzh = new zzh(fragment, zzbc, n2);
+            zzh = new zzh(fragment, zza, n2);
         }
         final String zzh2 = zzg.zzh((Context)activity, n3);
         if (zzh2 != null) {
@@ -387,65 +349,46 @@ public final class GooglePlayServicesUtil
         return (Dialog)alertDialog$Builder3.create();
     }
     
-    public static boolean zza(final Context context, int n, final String s) {
-        final boolean b = false;
-        Label_0030: {
-            if (!zzlv.zzpV()) {
-                break Label_0030;
-            }
-            final AppOpsManager appOpsManager = (AppOpsManager)context.getSystemService("appops");
+    public static void zza(Activity supportFragmentManager, final DialogInterface$OnCancelListener dialogInterface$OnCancelListener, final String s, final Dialog dialog) {
+        while (true) {
             try {
-                appOpsManager.checkPackage(n, s);
-                boolean b2 = true;
-                Label_0028: {
-                    return b2;
+                final int n = (supportFragmentManager instanceof FragmentActivity) ? 1 : 0;
+                if (n != 0) {
+                    supportFragmentManager = (Activity)((FragmentActivity)supportFragmentManager).getSupportFragmentManager();
+                    SupportErrorDialogFragment.newInstance(dialog, dialogInterface$OnCancelListener).show((FragmentManager)supportFragmentManager, s);
+                    return;
                 }
-                // iftrue(Label_0028:, packagesForUid == null)
-                // iftrue(Label_0028:, s == null)
-            Block_5:
-                while (true) {
-                    b2 = b;
-                    break Block_5;
-                    final String[] packagesForUid = context.getPackageManager().getPackagesForUid(n);
-                    b2 = b;
-                    continue;
-                }
-                n = 0;
-                // iftrue(Label_0028:, n >= packagesForUid.length)
-            Block_6:
-                while (true) {
-                    b2 = b;
-                    break Block_6;
-                    Label_0076:
-                    ++n;
-                    continue;
-                }
-                // iftrue(Label_0076:, !s.equals((Object)packagesForUid[n]))
-                return true;
             }
-            catch (SecurityException ex) {
-                return false;
+            catch (NoClassDefFoundError noClassDefFoundError) {
+                final int n = 0;
+                continue;
             }
+            break;
         }
+        if (zzmx.zzqu()) {
+            ErrorDialogFragment.newInstance(dialog, dialogInterface$OnCancelListener).show(supportFragmentManager.getFragmentManager(), s);
+            return;
+        }
+        throw new RuntimeException("This Activity does not support Fragments.");
     }
     
     @Deprecated
     public static void zzaa(final Context context) {
-        final int googlePlayServicesAvailable = isGooglePlayServicesAvailable(context);
+        final int googlePlayServicesAvailable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context);
         if (googlePlayServicesAvailable == 0) {
             return;
         }
-        final Intent zzbc = zzbc(googlePlayServicesAvailable);
+        final Intent zza = GoogleApiAvailability.getInstance().zza(context, googlePlayServicesAvailable, "e");
         Log.e("GooglePlayServicesUtil", "GooglePlayServices not available due to error " + googlePlayServicesAvailable);
-        if (zzbc == null) {
+        if (zza == null) {
             throw new GooglePlayServicesNotAvailableException(googlePlayServicesAvailable);
         }
-        throw new GooglePlayServicesRepairableException(googlePlayServicesAvailable, "Google Play Services not available", zzbc);
+        throw new GooglePlayServicesRepairableException(googlePlayServicesAvailable, "Google Play Services not available", zza);
     }
     
     @Deprecated
     public static void zzac(final Context context) {
-        if (GooglePlayServicesUtil.zzYz.getAndSet(true)) {
+        if (GooglePlayServicesUtil.zzaaq.getAndSet(true)) {
             return;
         }
         try {
@@ -455,42 +398,45 @@ public final class GooglePlayServicesUtil
     }
     
     private static void zzad(final Context context) {
-        while (true) {
-            final Context context2;
-        Label_0163:
+        if (!GooglePlayServicesUtil.zzaar.get()) {
             while (true) {
-                synchronized (GooglePlayServicesUtil.zzpm) {
-                    if (GooglePlayServicesUtil.zzYx == null) {
-                        GooglePlayServicesUtil.zzYx = context.getPackageName();
-                        try {
-                            final Bundle metaData = context.getPackageManager().getApplicationInfo(context.getPackageName(), 128).metaData;
-                            if (metaData != null) {
-                                GooglePlayServicesUtil.zzYy = metaData.getInt("com.google.android.gms.version");
+                final Context context2;
+            Label_0173:
+                while (true) {
+                    synchronized (GooglePlayServicesUtil.zzpy) {
+                        if (GooglePlayServicesUtil.zzaao == null) {
+                            GooglePlayServicesUtil.zzaao = context.getPackageName();
+                            try {
+                                final Bundle metaData = context.getPackageManager().getApplicationInfo(context.getPackageName(), 128).metaData;
+                                if (metaData != null) {
+                                    GooglePlayServicesUtil.zzaap = metaData.getInt("com.google.android.gms.version");
+                                }
+                                else {
+                                    GooglePlayServicesUtil.zzaap = null;
+                                }
+                                final Integer zzaap = GooglePlayServicesUtil.zzaap;
+                                // monitorexit(GooglePlayServicesUtil.zzpy)
+                                if (zzaap == null) {
+                                    throw new IllegalStateException("A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name=\"com.google.android.gms.version\" android:value=\"@integer/google_play_services_version\" />");
+                                }
+                                break Label_0173;
                             }
-                            else {
-                                GooglePlayServicesUtil.zzYy = null;
+                            catch (PackageManager$NameNotFoundException ex) {
+                                Log.wtf("GooglePlayServicesUtil", "This should never happen.", (Throwable)ex);
+                                continue;
                             }
-                            final Integer zzYy = GooglePlayServicesUtil.zzYy;
-                            // monitorexit(GooglePlayServicesUtil.zzpm)
-                            if (zzYy == null) {
-                                throw new IllegalStateException("A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name=\"com.google.android.gms.version\" android:value=\"@integer/google_play_services_version\" />");
-                            }
-                            break Label_0163;
-                        }
-                        catch (PackageManager$NameNotFoundException ex) {
-                            Log.wtf("GooglePlayServicesUtil", "This should never happen.", (Throwable)ex);
                             continue;
                         }
-                        continue;
                     }
+                    if (!GooglePlayServicesUtil.zzaao.equals(context2.getPackageName())) {
+                        throw new IllegalArgumentException("isGooglePlayServicesAvailable should only be called with Context from your application's package. A previous call used package '" + GooglePlayServicesUtil.zzaao + "' and this call used package '" + context2.getPackageName() + "'.");
+                    }
+                    continue;
                 }
-                if (!GooglePlayServicesUtil.zzYx.equals(context2.getPackageName())) {
-                    throw new IllegalArgumentException("isGooglePlayServicesAvailable should only be called with Context from your application's package. A previous call used package '" + GooglePlayServicesUtil.zzYx + "' and this call used package '" + context2.getPackageName() + "'.");
+                if ((int)context2 != GooglePlayServicesUtil.GOOGLE_PLAY_SERVICES_VERSION_CODE) {
+                    throw new IllegalStateException("The meta-data tag in your app's AndroidManifest.xml does not have the right value.  Expected " + GooglePlayServicesUtil.GOOGLE_PLAY_SERVICES_VERSION_CODE + " but" + " found " + context2 + ".  You must have the" + " following declaration within the <application> element: " + "    <meta-data android:name=\"" + "com.google.android.gms.version" + "\" android:value=\"@integer/google_play_services_version\" />");
                 }
-                continue;
-            }
-            if ((int)context2 != GooglePlayServicesUtil.GOOGLE_PLAY_SERVICES_VERSION_CODE) {
-                throw new IllegalStateException("The meta-data tag in your app's AndroidManifest.xml does not have the right value.  Expected " + GooglePlayServicesUtil.GOOGLE_PLAY_SERVICES_VERSION_CODE + " but" + " found " + context2 + ".  You must have the" + " following declaration within the <application> element: " + "    <meta-data android:name=\"" + "com.google.android.gms.version" + "\" android:value=\"@integer/google_play_services_version\" />");
+                break;
             }
         }
     }
@@ -519,78 +465,113 @@ public final class GooglePlayServicesUtil
         }
     }
     
-    public static boolean zzb(final PackageManager packageManager) {
-        synchronized (GooglePlayServicesUtil.zzpm) {
-        Label_0050:
-            while (true) {
-                if (GooglePlayServicesUtil.zzYw != -1) {
-                    break Label_0050;
-                }
-                while (true) {
-                    try {
-                        if (zzd.zzmY().zza(packageManager.getPackageInfo("com.google.android.gms", 64), zzc.zzYm[1]) != null) {
-                            GooglePlayServicesUtil.zzYw = 1;
-                        }
-                        else {
-                            GooglePlayServicesUtil.zzYw = 0;
-                        }
-                        // monitorexit(GooglePlayServicesUtil.zzpm)
-                        if (GooglePlayServicesUtil.zzYw != 0) {
-                            return true;
-                        }
-                        break;
-                    }
-                    catch (PackageManager$NameNotFoundException ex) {
-                        GooglePlayServicesUtil.zzYw = 0;
-                        continue Label_0050;
-                    }
-                    continue Label_0050;
-                }
-                break;
+    public static boolean zzah(final Context context) {
+        if (zzmx.zzqA()) {
+            final Bundle applicationRestrictions = ((UserManager)context.getSystemService("user")).getApplicationRestrictions(context.getPackageName());
+            if (applicationRestrictions != null && "true".equals(applicationRestrictions.getString("restricted_profile"))) {
+                return true;
             }
         }
         return false;
     }
     
-    @Deprecated
-    public static boolean zzb(final PackageManager packageManager, final String s) {
-        return zzd.zzmY().zzb(packageManager, s);
-    }
-    
-    @Deprecated
-    public static Intent zzbc(final int n) {
-        switch (n) {
-            default: {
-                return null;
+    public static boolean zzb(final Context context, int n, final String s) {
+        final boolean b = false;
+        Label_0030: {
+            if (!zzmx.zzqB()) {
+                break Label_0030;
             }
-            case 1:
-            case 2: {
-                return zzn.zzcp("com.google.android.gms");
+            final AppOpsManager appOpsManager = (AppOpsManager)context.getSystemService("appops");
+            try {
+                appOpsManager.checkPackage(n, s);
+                boolean b2 = true;
+                Label_0028: {
+                    return b2;
+                }
+                // iftrue(Label_0076:, !s.equals((Object)packagesForUid[n]))
+                // iftrue(Label_0028:, packagesForUid == null)
+                // iftrue(Label_0028:, n >= packagesForUid.length)
+                while (true) {
+                    while (true) {
+                        return true;
+                        Label_0076:
+                        ++n;
+                        Label_0055: {
+                            break Label_0055;
+                            b2 = b;
+                            n = 0;
+                        }
+                        b2 = b;
+                        continue;
+                    }
+                    final String[] packagesForUid = context.getPackageManager().getPackagesForUid(n);
+                    b2 = b;
+                    continue;
+                }
             }
-            case 42: {
-                return zzn.zzoM();
-            }
-            case 3: {
-                return zzn.zzcn("com.google.android.gms");
+            // iftrue(Label_0028:, s == null)
+            catch (SecurityException ex) {
+                return false;
             }
         }
     }
     
+    public static boolean zzb(final PackageManager packageManager) {
+        while (true) {
+            boolean b = true;
+            synchronized (GooglePlayServicesUtil.zzpy) {
+            Label_0052:
+                while (true) {
+                    if (GooglePlayServicesUtil.zzaan != -1) {
+                        break Label_0052;
+                    }
+                    while (true) {
+                        try {
+                            if (zzd.zznu().zza(packageManager.getPackageInfo("com.google.android.gms", 64), zzc.zzaad[1]) != null) {
+                                GooglePlayServicesUtil.zzaan = 1;
+                            }
+                            else {
+                                GooglePlayServicesUtil.zzaan = 0;
+                            }
+                            if (GooglePlayServicesUtil.zzaan != 0) {
+                                return b;
+                            }
+                            break;
+                        }
+                        catch (PackageManager$NameNotFoundException ex) {
+                            GooglePlayServicesUtil.zzaan = 0;
+                            continue Label_0052;
+                        }
+                        continue Label_0052;
+                    }
+                    break;
+                }
+            }
+            b = false;
+            return b;
+        }
+    }
+    
+    @Deprecated
+    public static boolean zzb(final PackageManager packageManager, final String s) {
+        return zzd.zznu().zzb(packageManager, s);
+    }
+    
     public static boolean zzc(final PackageManager packageManager) {
-        return zzb(packageManager) || !zzmX();
+        return zzb(packageManager) || !zznt();
     }
     
     @Deprecated
     public static boolean zzd(final Context context, final int n) {
-        return n == 18 || (n == 1 && zzh(context, "com.google.android.gms"));
+        return n == 18 || (n == 1 && zzj(context, "com.google.android.gms"));
     }
     
     public static boolean zze(final Context context, final int n) {
-        return zza(context, n, "com.google.android.gms") && zzb(context.getPackageManager(), "com.google.android.gms");
+        return zzb(context, n, "com.google.android.gms") && zzb(context.getPackageManager(), "com.google.android.gms");
     }
     
-    public static boolean zzh(final Context context, final String s) {
-        if (zzlv.zzpX()) {
+    static boolean zzj(final Context context, final String s) {
+        if (zzmx.zzqD()) {
             final Iterator<PackageInstaller$SessionInfo> iterator = context.getPackageManager().getPackageInstaller().getAllSessions().iterator();
             while (iterator.hasNext()) {
                 if (s.equals(iterator.next().getAppPackageName())) {
@@ -598,25 +579,25 @@ public final class GooglePlayServicesUtil
                 }
             }
         }
-        else {
-            final PackageManager packageManager = context.getPackageManager();
-            try {
-                if (packageManager.getApplicationInfo(s, 8192).enabled) {
-                    return true;
-                }
-            }
-            catch (PackageManager$NameNotFoundException ex) {}
+        if (zzah(context)) {
+            return false;
         }
-        return false;
+        final PackageManager packageManager = context.getPackageManager();
+        try {
+            return packageManager.getApplicationInfo(s, 8192).enabled;
+        }
+        catch (PackageManager$NameNotFoundException ex) {
+            return false;
+        }
     }
     
-    private static int zzmW() {
-        return 7895000;
+    private static int zzns() {
+        return 8115000;
     }
     
-    public static boolean zzmX() {
-        if (GooglePlayServicesUtil.zzYu) {
-            return GooglePlayServicesUtil.zzYv;
+    public static boolean zznt() {
+        if (GooglePlayServicesUtil.zzaal) {
+            return GooglePlayServicesUtil.zzaam;
         }
         return "user".equals(Build.TYPE);
     }

@@ -96,13 +96,13 @@ class RecommendToFriendsFrag$FriendsListAdapter extends BaseAdapter
         recommendToFriendsFrag$FriendsListAdapter$Holder.fbIcon.setVisibility(8);
         recommendToFriendsFrag$FriendsListAdapter$Holder.friendWatchedStatus.setVisibility(8);
         if (!this.this$0.mLoadMoreAvailable && (this.this$0.mFriends == null || this.this$0.mFriends.size() == 0)) {
-            recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131165380);
+            recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131165378);
             recommendToFriendsFrag$FriendsListAdapter$Holder.name.setSingleLine(false);
             recommendToFriendsFrag$FriendsListAdapter$Holder.name.setGravity(17);
         }
         else {
             if (this.this$0.mLoadMoreAvailable && imageResource == this.getCount() - 1) {
-                recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131165379);
+                recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131165377);
                 recommendToFriendsFrag$FriendsListAdapter$Holder.name.setSingleLine(false);
                 recommendToFriendsFrag$FriendsListAdapter$Holder.name.setGravity(17);
                 this.this$0.loadMoreFriends();

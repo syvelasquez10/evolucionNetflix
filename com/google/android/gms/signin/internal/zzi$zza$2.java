@@ -7,29 +7,29 @@ package com.google.android.gms.signin.internal;
 import com.google.android.gms.common.api.Scope;
 import java.util.List;
 import com.google.android.gms.common.api.GoogleApiClient$ServerAuthCodeCallbacks;
-import com.google.android.gms.signin.zze;
+import com.google.android.gms.internal.zzqx;
 import java.util.concurrent.ExecutorService;
 import android.os.RemoteException;
 import android.util.Log;
 
 class zzi$zza$2 implements Runnable
 {
-    final /* synthetic */ String zzaOq;
-    final /* synthetic */ zzf zzaOr;
-    final /* synthetic */ zzi$zza zzaOs;
-    final /* synthetic */ String zzaOt;
+    final /* synthetic */ String zzaVo;
+    final /* synthetic */ zzf zzaVp;
+    final /* synthetic */ zzi$zza zzaVq;
+    final /* synthetic */ String zzaVr;
     
-    zzi$zza$2(final zzi$zza zzaOs, final String zzaOq, final String zzaOt, final zzf zzaOr) {
-        this.zzaOs = zzaOs;
-        this.zzaOq = zzaOq;
-        this.zzaOt = zzaOt;
-        this.zzaOr = zzaOr;
+    zzi$zza$2(final zzi$zza zzaVq, final String zzaVo, final String zzaVr, final zzf zzaVp) {
+        this.zzaVq = zzaVq;
+        this.zzaVo = zzaVo;
+        this.zzaVr = zzaVr;
+        this.zzaVp = zzaVp;
     }
     
     @Override
     public void run() {
         try {
-            this.zzaOr.zzaq(this.zzaOs.zzzq().onUploadServerAuthCode(this.zzaOq, this.zzaOt));
+            this.zzaVp.zzaq(this.zzaVq.zzCg().onUploadServerAuthCode(this.zzaVo, this.zzaVr));
         }
         catch (RemoteException ex) {
             Log.e("SignInClientImpl", "RemoteException thrown when processing uploadServerAuthCode callback", (Throwable)ex);

@@ -9,11 +9,11 @@ import android.os.IInterface;
 
 public interface Api$zzd<T extends IInterface>
 {
-    T zzV(final IBinder p0);
+    T zzW(final IBinder p0);
     
     void zza(final int p0, final T p1);
     
-    String zzfA();
+    String zzfK();
     
-    String zzfB();
+    String zzfL();
 }

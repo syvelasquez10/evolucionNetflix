@@ -17,11 +17,11 @@ import com.google.android.gms.common.internal.zzj;
 
 public final class zze extends zzj<zzh>
 {
-    private final Auth$AuthCredentialsOptions zzRD;
+    private final Auth$AuthCredentialsOptions zzSJ;
     
-    public zze(final Context context, final Looper looper, final zzf zzf, final Auth$AuthCredentialsOptions zzRD, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
+    public zze(final Context context, final Looper looper, final zzf zzf, final Auth$AuthCredentialsOptions zzSJ, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
         super(context, looper, 68, zzf, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
-        this.zzRD = zzRD;
+        this.zzSJ = zzSJ;
     }
     
     protected zzh zzar(final IBinder binder) {
@@ -29,20 +29,20 @@ public final class zze extends zzj<zzh>
     }
     
     @Override
-    protected String zzfA() {
+    protected String zzfK() {
         return "com.google.android.gms.auth.api.credentials.service.START";
     }
     
     @Override
-    protected String zzfB() {
+    protected String zzfL() {
         return "com.google.android.gms.auth.api.credentials.internal.ICredentialsService";
     }
     
     @Override
-    protected Bundle zzli() {
-        if (this.zzRD == null) {
+    protected Bundle zzly() {
+        if (this.zzSJ == null) {
             return new Bundle();
         }
-        return this.zzRD.zzli();
+        return this.zzSJ.zzly();
     }
 }

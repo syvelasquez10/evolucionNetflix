@@ -4,6 +4,11 @@
 
 package com.netflix.mediaclient.ui.voip;
 
+import com.netflix.mediaclient.service.logging.client.model.Error;
+import android.content.Context;
+import com.netflix.mediaclient.util.log.CustomerServiceLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$Action;
 import android.net.Uri;
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
@@ -28,6 +33,7 @@ class LandingPageScreen
         setData.addFlags(268435456);
         if (setData.resolveActivity(this.mOwner.getPackageManager()) != null) {
             this.mOwner.startActivity(setData);
+            CustomerServiceLogUtils.reportHelpRequestSessionEnded((Context)this.mOwner, CustomerServiceLogging$Action.url, s, IClientLogging$CompletionReason.success, null);
             return;
         }
         Log.e("VoipActivity", "Unable to launchHelp");

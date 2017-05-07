@@ -5,30 +5,29 @@
 package com.google.android.gms.ads.internal.overlay;
 
 import android.view.ViewParent;
-import android.view.View;
-import com.google.android.gms.internal.zzip;
+import com.google.android.gms.internal.zziz;
 import android.view.ViewGroup;
 import android.view.ViewGroup$LayoutParams;
 import android.content.Context;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 
-@zzgk
+@zzgr
 public class zzd$zzc
 {
     public final Context context;
     public final int index;
-    public final ViewGroup$LayoutParams zzAM;
-    public final ViewGroup zzAN;
+    public final ViewGroup$LayoutParams zzBw;
+    public final ViewGroup zzBx;
     
-    public zzd$zzc(final zzip zzip) {
-        this.zzAM = zzip.getLayoutParams();
-        final ViewParent parent = zzip.getParent();
-        this.context = zzip.zzgO();
+    public zzd$zzc(final zziz zziz) {
+        this.zzBw = zziz.getLayoutParams();
+        final ViewParent parent = zziz.getParent();
+        this.context = zziz.zzha();
         if (parent != null && parent instanceof ViewGroup) {
-            this.zzAN = (ViewGroup)parent;
-            this.index = this.zzAN.indexOfChild((View)zzip.getWebView());
-            this.zzAN.removeView((View)zzip.getWebView());
-            zzip.zzC(true);
+            this.zzBx = (ViewGroup)parent;
+            this.index = this.zzBx.indexOfChild(zziz.getView());
+            this.zzBx.removeView(zziz.getView());
+            zziz.zzC(true);
             return;
         }
         throw new zzd$zza("Could not get the parent of the WebView for an overlay.");

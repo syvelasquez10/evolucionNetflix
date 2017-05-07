@@ -9,14 +9,14 @@ import com.google.android.gms.common.api.Api$ApiOptions$HasOptions;
 
 public final class Cast$CastOptions implements Api$ApiOptions$HasOptions
 {
-    final CastDevice zzTg;
-    final Cast$Listener zzTh;
-    private final int zzTi;
+    final CastDevice zzUV;
+    final Cast$Listener zzUW;
+    private final int zzUX;
     
     private Cast$CastOptions(final Cast$CastOptions$Builder cast$CastOptions$Builder) {
-        this.zzTg = cast$CastOptions$Builder.zzTj;
-        this.zzTh = cast$CastOptions$Builder.zzTk;
-        this.zzTi = cast$CastOptions$Builder.zzTl;
+        this.zzUV = cast$CastOptions$Builder.zzUY;
+        this.zzUW = cast$CastOptions$Builder.zzUZ;
+        this.zzUX = cast$CastOptions$Builder.zzVa;
     }
     
     @Deprecated

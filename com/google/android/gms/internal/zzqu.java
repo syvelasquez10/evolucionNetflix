@@ -4,49 +4,35 @@
 
 package com.google.android.gms.internal;
 
-import java.net.URL;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
+import com.google.android.gms.signin.internal.zzh;
+import com.google.android.gms.common.api.Api$ApiOptions$NoOptions;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.api.Api$zza;
+import com.google.android.gms.signin.internal.zzi;
+import com.google.android.gms.common.api.Api$zzc;
+import com.google.android.gms.common.api.Api;
 
-class zzqu implements zzqv
+public final class zzqu
 {
-    private HttpURLConnection zzaUn;
+    public static final Api<zzqx> API;
+    public static final Api$zzc<zzi> zzRk;
+    public static final Api$zza<zzi, zzqx> zzRl;
+    public static final Scope zzTe;
+    public static final Scope zzTf;
+    static final Api$zza<zzi, Api$ApiOptions$NoOptions> zzaUX;
+    public static final zzqv zzaUY;
+    public static final Api<Api$ApiOptions$NoOptions> zzaiH;
+    public static final Api$zzc<zzi> zzapF;
     
-    private InputStream zzc(final HttpURLConnection httpURLConnection) {
-        final int responseCode = httpURLConnection.getResponseCode();
-        if (responseCode == 200) {
-            return httpURLConnection.getInputStream();
-        }
-        final String string = "Bad response: " + responseCode;
-        if (responseCode == 404) {
-            throw new FileNotFoundException(string);
-        }
-        throw new IOException(string);
-    }
-    
-    private void zzd(final HttpURLConnection httpURLConnection) {
-        if (httpURLConnection != null) {
-            httpURLConnection.disconnect();
-        }
-    }
-    
-    @Override
-    public void close() {
-        this.zzd(this.zzaUn);
-    }
-    
-    @Override
-    public InputStream zzfs(final String s) {
-        this.zzaUn = this.zzft(s);
-        return this.zzc(this.zzaUn);
-    }
-    
-    HttpURLConnection zzft(final String s) {
-        final HttpURLConnection httpURLConnection = (HttpURLConnection)new URL(s).openConnection();
-        httpURLConnection.setReadTimeout(20000);
-        httpURLConnection.setConnectTimeout(20000);
-        return httpURLConnection;
+    static {
+        zzRk = new Api$zzc<zzi>();
+        zzapF = new Api$zzc<zzi>();
+        zzRl = new zzqu$1();
+        zzaUX = new zzqu$2();
+        zzTe = new Scope("profile");
+        zzTf = new Scope("email");
+        API = new Api<zzqx>("SignIn.API", (Api$zza<C, zzqx>)zzqu.zzRl, (Api$zzc<C>)zzqu.zzRk);
+        zzaiH = new Api<Api$ApiOptions$NoOptions>("SignIn.INTERNAL_API", (Api$zza<C, Api$ApiOptions$NoOptions>)zzqu.zzaUX, (Api$zzc<C>)zzqu.zzapF);
+        zzaUY = new zzh();
     }
 }

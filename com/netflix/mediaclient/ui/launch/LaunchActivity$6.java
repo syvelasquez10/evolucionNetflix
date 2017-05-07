@@ -4,58 +4,22 @@
 
 package com.netflix.mediaclient.ui.launch;
 
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.android.app.Status;
+import com.google.android.gms.auth.api.credentials.Credential;
+import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
-final class LaunchActivity$6 implements Video
+class LaunchActivity$6 extends SimpleManagerCallback
 {
-    @Override
-    public String getBoxshotUrl() {
-        return null;
+    final /* synthetic */ LaunchActivity this$0;
+    final /* synthetic */ Credential val$credential;
+    
+    LaunchActivity$6(final LaunchActivity this$0, final Credential val$credential) {
+        this.this$0 = this$0;
+        this.val$credential = val$credential;
     }
     
     @Override
-    public VideoType getErrorType() {
-        return null;
-    }
-    
-    @Override
-    public String getHorzDispSmallUrl() {
-        return null;
-    }
-    
-    @Override
-    public String getHorzDispUrl() {
-        return null;
-    }
-    
-    @Override
-    public String getId() {
-        return "70140457";
-    }
-    
-    @Override
-    public String getSquareUrl() {
-        return null;
-    }
-    
-    @Override
-    public String getStoryDispUrl() {
-        return null;
-    }
-    
-    @Override
-    public String getTitle() {
-        return "Dummy Title";
-    }
-    
-    @Override
-    public String getTvCardUrl() {
-        return null;
-    }
-    
-    @Override
-    public VideoType getType() {
-        return VideoType.SHOW;
+    public void onLoginComplete(final Status status) {
+        this.this$0.runOnUiThread((Runnable)new LaunchActivity$6$1(this, status));
     }
 }

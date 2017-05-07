@@ -7,6 +7,7 @@ package com.google.android.gms.cast.internal;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.BinderWrapper;
 import android.text.TextUtils;
+import com.google.android.gms.cast.JoinOptions;
 import android.os.IInterface;
 import android.os.IBinder;
 import com.google.android.gms.common.ConnectionResult;
@@ -19,7 +20,7 @@ import android.os.Looper;
 import android.content.Context;
 import com.google.android.gms.cast.Cast$ApplicationConnectionResult;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.zzc$zzb;
+import com.google.android.gms.internal.zzlb$zzb;
 import android.os.Bundle;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.Map;
@@ -31,28 +32,28 @@ import com.google.android.gms.cast.Cast$MessageReceivedCallback;
 
 class zze$zzb$4 implements Runnable
 {
-    final /* synthetic */ String zzTb;
-    final /* synthetic */ zze zzXl;
-    final /* synthetic */ zze$zzb zzXn;
-    final /* synthetic */ String zzXq;
+    final /* synthetic */ String zzUQ;
+    final /* synthetic */ zze zzZd;
+    final /* synthetic */ zze$zzb zzZf;
+    final /* synthetic */ String zzZi;
     
-    zze$zzb$4(final zze$zzb zzXn, final zze zzXl, final String zzTb, final String zzXq) {
-        this.zzXn = zzXn;
-        this.zzXl = zzXl;
-        this.zzTb = zzTb;
-        this.zzXq = zzXq;
+    zze$zzb$4(final zze$zzb zzZf, final zze zzZd, final String zzUQ, final String zzZi) {
+        this.zzZf = zzZf;
+        this.zzZd = zzZd;
+        this.zzUQ = zzUQ;
+        this.zzZi = zzZi;
     }
     
     @Override
     public void run() {
-        synchronized (this.zzXl.zzWP) {
-            final Cast$MessageReceivedCallback cast$MessageReceivedCallback = this.zzXl.zzWP.get(this.zzTb);
-            // monitorexit(zze.zze(this.zzXl))
+        synchronized (this.zzZd.zzYH) {
+            final Cast$MessageReceivedCallback cast$MessageReceivedCallback = this.zzZd.zzYH.get(this.zzUQ);
+            // monitorexit(zze.zze(this.zzZd))
             if (cast$MessageReceivedCallback != null) {
-                cast$MessageReceivedCallback.onMessageReceived(this.zzXl.zzWO, this.zzTb, this.zzXq);
+                cast$MessageReceivedCallback.onMessageReceived(this.zzZd.zzYG, this.zzUQ, this.zzZi);
                 return;
             }
         }
-        zze.zzTy.zzb("Discarded message for unknown namespace '%s'", this.zzTb);
+        zze.zzVo.zzb("Discarded message for unknown namespace '%s'", this.zzUQ);
     }
 }

@@ -6,20 +6,20 @@ package com.google.android.gms.common.internal;
 
 import android.util.Log;
 import android.content.res.Resources;
-import com.google.android.gms.internal.zzlp;
+import com.google.android.gms.internal.zzmq;
 import com.google.android.gms.R$string;
 import android.content.Context;
 
 public final class zzg
 {
-    public static String zzb(final Context context, final int n, final String s) {
+    public static String zzc(final Context context, final int n, final String s) {
         final Resources resources = context.getResources();
         switch (n) {
             default: {
                 return resources.getString(R$string.common_google_play_services_unknown_issue);
             }
             case 1: {
-                if (zzlp.zzb(resources)) {
+                if (zzmq.zzb(resources)) {
                     return resources.getString(R$string.common_google_play_services_install_text_tablet, new Object[] { s });
                 }
                 return resources.getString(R$string.common_google_play_services_install_text_phone, new Object[] { s });

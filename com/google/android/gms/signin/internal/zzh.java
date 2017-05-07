@@ -4,8 +4,8 @@
 
 package com.google.android.gms.signin.internal;
 
-import com.google.android.gms.signin.zzc;
+import com.google.android.gms.internal.zzqv;
 
-public class zzh implements zzc
+public class zzh implements zzqv
 {
 }

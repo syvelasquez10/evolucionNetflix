@@ -12,31 +12,31 @@ import com.google.android.gms.ads.internal.util.client.zzb;
 import android.database.sqlite.SQLiteDatabase;
 import android.content.Context;
 import java.util.Locale;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 
-@zzgk
+@zzgr
 public class zzh
 {
-    private static final String zzCj;
-    private static zzh zzCl;
-    private static final Object zzpc;
-    private final zzh$zza zzCk;
+    private static final String zzCW;
+    private static zzh zzCY;
+    private static final Object zzpd;
+    private final zzh$zza zzCX;
     
     static {
-        zzCj = String.format(Locale.US, "CREATE TABLE IF NOT EXISTS %s ( %s INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, %s TEXT NOT NULL, %s TEXT NOT NULL, %s INTEGER)", "InAppPurchase", "purchase_id", "product_id", "developer_payload", "record_time");
-        zzpc = new Object();
+        zzCW = String.format(Locale.US, "CREATE TABLE IF NOT EXISTS %s ( %s INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, %s TEXT NOT NULL, %s TEXT NOT NULL, %s INTEGER)", "InAppPurchase", "purchase_id", "product_id", "developer_payload", "record_time");
+        zzpd = new Object();
     }
     
     zzh(final Context context) {
-        this.zzCk = new zzh$zza(this, context, "google_inapp_purchase.db");
+        this.zzCX = new zzh$zza(this, context, "google_inapp_purchase.db");
     }
     
-    public static zzh zzx(final Context context) {
-        synchronized (zzh.zzpc) {
-            if (zzh.zzCl == null) {
-                zzh.zzCl = new zzh(context);
+    public static zzh zzw(final Context context) {
+        synchronized (zzh.zzpd) {
+            if (zzh.zzCY == null) {
+                zzh.zzCY = new zzh(context);
             }
-            return zzh.zzCl;
+            return zzh.zzCY;
         }
     }
     
@@ -50,7 +50,7 @@ public class zzh
         //     1: astore_3       
         //     2: aconst_null    
         //     3: astore_2       
-        //     4: getstatic       com/google/android/gms/ads/internal/purchase/zzh.zzpc:Ljava/lang/Object;
+        //     4: getstatic       com/google/android/gms/ads/internal/purchase/zzh.zzpd:Ljava/lang/Object;
         //     7: astore          5
         //     9: aload           5
         //    11: monitorenter   
@@ -116,7 +116,7 @@ public class zzh
         //   127: invokevirtual   android/database/sqlite/SQLiteException.getMessage:()Ljava/lang/String;
         //   130: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
         //   133: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   136: invokestatic    com/google/android/gms/ads/internal/util/client/zzb.zzaE:(Ljava/lang/String;)V
+        //   136: invokestatic    com/google/android/gms/ads/internal/util/client/zzb.zzaH:(Ljava/lang/String;)V
         //   139: aload_2        
         //   140: ifnull          104
         //   143: aload_2        
@@ -178,10 +178,10 @@ public class zzh
     
     public SQLiteDatabase getWritableDatabase() {
         try {
-            return this.zzCk.getWritableDatabase();
+            return this.zzCX.getWritableDatabase();
         }
         catch (SQLiteException ex) {
-            zzb.zzaE("Error opening writable conversion tracking database");
+            zzb.zzaH("Error opening writable conversion tracking database");
             return null;
         }
     }
@@ -198,14 +198,14 @@ public class zzh
             return;
         }
         final SQLiteDatabase writableDatabase;
-        synchronized (zzh.zzpc) {
+        synchronized (zzh.zzpd) {
             writableDatabase = this.getWritableDatabase();
             if (writableDatabase == null) {
                 return;
             }
         }
         final zzf zzf2;
-        writableDatabase.delete("InAppPurchase", String.format(Locale.US, "%s = %d", "purchase_id", zzf2.zzCd), (String[])null);
+        writableDatabase.delete("InAppPurchase", String.format(Locale.US, "%s = %d", "purchase_id", zzf2.zzCQ), (String[])null);
     }
     // monitorexit(o)
     
@@ -214,7 +214,7 @@ public class zzh
             return;
         }
         final SQLiteDatabase writableDatabase;
-        synchronized (zzh.zzpc) {
+        synchronized (zzh.zzpd) {
             writableDatabase = this.getWritableDatabase();
             if (writableDatabase == null) {
                 return;
@@ -222,23 +222,23 @@ public class zzh
         }
         final ContentValues contentValues = new ContentValues();
         final zzf zzf2;
-        contentValues.put("product_id", zzf2.zzCf);
-        contentValues.put("developer_payload", zzf2.zzCe);
+        contentValues.put("product_id", zzf2.zzCS);
+        contentValues.put("developer_payload", zzf2.zzCR);
         contentValues.put("record_time", SystemClock.elapsedRealtime());
-        zzf2.zzCd = writableDatabase.insert("InAppPurchase", (String)null, contentValues);
+        zzf2.zzCQ = writableDatabase.insert("InAppPurchase", (String)null, contentValues);
         if (this.getRecordCount() > 20000L) {
-            this.zzfi();
+            this.zzfo();
         }
     }
     // monitorexit(o)
     
-    public void zzfi() {
+    public void zzfo() {
         // 
         // This method could not be decompiled.
         // 
         // Original Bytecode:
         // 
-        //     0: getstatic       com/google/android/gms/ads/internal/purchase/zzh.zzpc:Ljava/lang/Object;
+        //     0: getstatic       com/google/android/gms/ads/internal/purchase/zzh.zzpd:Ljava/lang/Object;
         //     3: astore          4
         //     5: aload           4
         //     7: monitorenter   
@@ -301,7 +301,7 @@ public class zzh
         //   101: invokevirtual   android/database/sqlite/SQLiteException.getMessage:()Ljava/lang/String;
         //   104: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
         //   107: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   110: invokestatic    com/google/android/gms/ads/internal/util/client/zzb.zzaE:(Ljava/lang/String;)V
+        //   110: invokestatic    com/google/android/gms/ads/internal/util/client/zzb.zzaH:(Ljava/lang/String;)V
         //   113: aload_2        
         //   114: ifnull          73
         //   117: aload_2        

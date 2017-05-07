@@ -4,37 +4,20 @@
 
 package com.google.android.gms.auth.api.signin.internal;
 
+import android.content.Intent;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import android.os.IInterface;
-import android.os.IBinder;
-import com.google.android.gms.common.internal.zzx;
-import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
-import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
-import com.google.android.gms.common.internal.zzf;
-import android.os.Looper;
-import android.content.Context;
-import com.google.android.gms.auth.api.signin.zze;
-import com.google.android.gms.common.internal.zzj;
 
-public class zzd extends zzj<zzb>
+public interface zzd extends IInterface
 {
-    private final zze zzRS;
+    void zza(final GoogleSignInAccount p0, final Status p1);
     
-    public zzd(final Context context, final Looper looper, final zzf zzf, final zze zze, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
-        super(context, looper, 87, zzf, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
-        this.zzRS = zzx.zzv(zze);
-    }
+    void zza(final Status p0, final Intent p1);
     
-    protected zzb zzaz(final IBinder binder) {
-        return zzb$zza.zzay(binder);
-    }
+    void zzk(final Status p0);
     
-    @Override
-    protected String zzfA() {
-        return "com.google.android.gms.auth.api.signin.service.START";
-    }
+    void zzl(final Status p0);
     
-    @Override
-    protected String zzfB() {
-        return "com.google.android.gms.auth.api.signin.internal.ISignInService";
-    }
+    void zzm(final Status p0);
 }

@@ -6,23 +6,23 @@ package com.google.android.gms.ads;
 
 import android.view.ViewGroup$LayoutParams;
 import android.view.View;
-import com.google.android.gms.internal.zzfd;
+import com.google.android.gms.internal.zzfj;
 import android.os.Bundle;
 import android.os.RemoteException;
 import com.google.android.gms.ads.internal.util.client.zzb;
-import com.google.android.gms.internal.zzfe;
+import com.google.android.gms.internal.zzfk;
 import android.app.Activity;
 
 public class AdActivity extends Activity
 {
-    private zzfe zznJ;
+    private zzfk zznK;
     
     private void zzaE() {
-        if (this.zznJ == null) {
+        if (this.zznK == null) {
             return;
         }
         try {
-            this.zznJ.zzaE();
+            this.zznK.zzaE();
         }
         catch (RemoteException ex) {
             zzb.zzd("Could not forward setContentViewSet to ad overlay:", (Throwable)ex);
@@ -30,19 +30,19 @@ public class AdActivity extends Activity
     }
     
     public void onBackPressed() {
-        boolean zzez = true;
+        boolean zzeF = true;
         while (true) {
             try {
-                if (this.zznJ != null) {
-                    zzez = this.zznJ.zzez();
+                if (this.zznK != null) {
+                    zzeF = this.zznK.zzeF();
                 }
-                if (zzez) {
+                if (zzeF) {
                     super.onBackPressed();
                 }
             }
             catch (RemoteException ex) {
                 zzb.zzd("Could not forward onBackPressed to ad overlay:", (Throwable)ex);
-                zzez = zzez;
+                zzeF = zzeF;
                 continue;
             }
             break;
@@ -51,14 +51,14 @@ public class AdActivity extends Activity
     
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.zznJ = zzfd.zzb(this);
-        if (this.zznJ == null) {
-            zzb.zzaE("Could not create ad overlay.");
+        this.zznK = zzfj.zzb(this);
+        if (this.zznK == null) {
+            zzb.zzaH("Could not create ad overlay.");
             this.finish();
             return;
         }
         try {
-            this.zznJ.onCreate(bundle);
+            this.zznK.onCreate(bundle);
         }
         catch (RemoteException ex) {
             zzb.zzd("Could not forward onCreate to ad overlay:", (Throwable)ex);
@@ -69,8 +69,8 @@ public class AdActivity extends Activity
     protected void onDestroy() {
         while (true) {
             try {
-                if (this.zznJ != null) {
-                    this.zznJ.onDestroy();
+                if (this.zznK != null) {
+                    this.zznK.onDestroy();
                 }
                 super.onDestroy();
             }
@@ -85,8 +85,8 @@ public class AdActivity extends Activity
     protected void onPause() {
         while (true) {
             try {
-                if (this.zznJ != null) {
-                    this.zznJ.onPause();
+                if (this.zznK != null) {
+                    this.zznK.onPause();
                 }
                 super.onPause();
             }
@@ -102,8 +102,8 @@ public class AdActivity extends Activity
     protected void onRestart() {
         super.onRestart();
         try {
-            if (this.zznJ != null) {
-                this.zznJ.onRestart();
+            if (this.zznK != null) {
+                this.zznK.onRestart();
             }
         }
         catch (RemoteException ex) {
@@ -115,8 +115,8 @@ public class AdActivity extends Activity
     protected void onResume() {
         super.onResume();
         try {
-            if (this.zznJ != null) {
-                this.zznJ.onResume();
+            if (this.zznK != null) {
+                this.zznK.onResume();
             }
         }
         catch (RemoteException ex) {
@@ -128,8 +128,8 @@ public class AdActivity extends Activity
     protected void onSaveInstanceState(final Bundle bundle) {
         while (true) {
             try {
-                if (this.zznJ != null) {
-                    this.zznJ.onSaveInstanceState(bundle);
+                if (this.zznK != null) {
+                    this.zznK.onSaveInstanceState(bundle);
                 }
                 super.onSaveInstanceState(bundle);
             }
@@ -145,8 +145,8 @@ public class AdActivity extends Activity
     protected void onStart() {
         super.onStart();
         try {
-            if (this.zznJ != null) {
-                this.zznJ.onStart();
+            if (this.zznK != null) {
+                this.zznK.onStart();
             }
         }
         catch (RemoteException ex) {
@@ -158,8 +158,8 @@ public class AdActivity extends Activity
     protected void onStop() {
         while (true) {
             try {
-                if (this.zznJ != null) {
-                    this.zznJ.onStop();
+                if (this.zznK != null) {
+                    this.zznK.onStop();
                 }
                 super.onStop();
             }

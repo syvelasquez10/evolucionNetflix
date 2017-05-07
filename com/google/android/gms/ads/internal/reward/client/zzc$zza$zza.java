@@ -5,24 +5,24 @@
 package com.google.android.gms.ads.internal.reward.client;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.zzeh;
+import com.google.android.gms.internal.zzem;
 import com.google.android.gms.dynamic.zzd;
 import android.os.IBinder;
 
 class zzc$zza$zza implements zzc
 {
-    private IBinder zznI;
+    private IBinder zznJ;
     
-    zzc$zza$zza(final IBinder zznI) {
-        this.zznI = zznI;
+    zzc$zza$zza(final IBinder zznJ) {
+        this.zznJ = zznJ;
     }
     
     public IBinder asBinder() {
-        return this.zznI;
+        return this.zznJ;
     }
     
     @Override
-    public IBinder zza(final zzd zzd, final zzeh zzeh, final int n) {
+    public IBinder zza(final zzd zzd, final zzem zzem, final int n) {
         final IBinder binder = null;
         final Parcel obtain = Parcel.obtain();
         final Parcel obtain2 = Parcel.obtain();
@@ -37,12 +37,12 @@ class zzc$zza$zza implements zzc
             }
             obtain.writeStrongBinder(binder2);
             IBinder binder3 = binder;
-            if (zzeh != null) {
-                binder3 = zzeh.asBinder();
+            if (zzem != null) {
+                binder3 = zzem.asBinder();
             }
             obtain.writeStrongBinder(binder3);
             obtain.writeInt(n);
-            this.zznI.transact(1, obtain, obtain2, 0);
+            this.zznJ.transact(1, obtain, obtain2, 0);
             obtain2.readException();
             return obtain2.readStrongBinder();
         }

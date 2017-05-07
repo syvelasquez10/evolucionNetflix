@@ -4,13 +4,11 @@
 
 package com.google.android.gms.internal;
 
+import android.os.IBinder;
+import com.google.android.gms.dynamic.zzd;
 import android.os.IInterface;
 
 public interface zzfl extends IInterface
 {
-    String getProductId();
-    
-    void recordPlayBillingResolution(final int p0);
-    
-    void recordResolution(final int p0);
+    IBinder zze(final zzd p0);
 }

@@ -35,20 +35,20 @@ public class SocialVideoRecommendation extends SocialNotification
         final int n = (int)System.currentTimeMillis();
         final Intent intentForBroadcastReceiver = DetailsActivityLauncher.getIntentForBroadcastReceiver(socialNotificationSummary.getVideoType(), socialNotificationSummary.getId(), socialNotificationSummary.getVideoId(), socialNotificationSummary.getVideoTitle(), new PlayContextImp(socialNotificationsListSummary.getRequestId(), socialNotificationsListSummary.getMDPTrackId(), 0, 0), null, messageData);
         NotificationUtils.addNotificationSourceToIntent(intentForBroadcastReceiver);
-        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837717, context.getString(2131165619), PendingIntent.getBroadcast(context.getApplicationContext(), n, intentForBroadcastReceiver, 134217728)));
+        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837717, context.getString(2131165617), PendingIntent.getBroadcast(context.getApplicationContext(), n, intentForBroadcastReceiver, 134217728)));
         final Intent sayThanksIntent = SendThanksToSocialNotificationActionHandler.getSayThanksIntent(context, socialNotificationSummary.getId(), socialNotificationSummary.getStoryId(), true, messageData);
         NotificationUtils.addNotificationSourceToIntent(sayThanksIntent);
-        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837790, context.getString(2131165621), PendingIntent.getBroadcast(context.getApplicationContext(), n, sayThanksIntent, 134217728)));
+        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837790, context.getString(2131165619), PendingIntent.getBroadcast(context.getApplicationContext(), n, sayThanksIntent, 134217728)));
         final Intent coldStartIntentForService = PlayerActivity.createColdStartIntentForService(socialNotificationSummary.getVideoId(), socialNotificationSummary.getVideoType(), new PlayContextImp(socialNotificationsListSummary.getRequestId(), socialNotificationsListSummary.getPlayerTrackId(), 0, 0));
         NotificationUtils.addNotificationSourceToIntent(coldStartIntentForService);
-        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837741, context.getString(2131165620), PendingIntent.getBroadcast(context.getApplicationContext(), n, coldStartIntentForService, 134217728)));
+        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837741, context.getString(2131165618), PendingIntent.getBroadcast(context.getApplicationContext(), n, coldStartIntentForService, 134217728)));
     }
     
     @Override
     protected void addNotificationText(final NotificationCompat$Builder notificationCompat$Builder, final NotificationCompat$BigPictureStyle notificationCompat$BigPictureStyle, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         String s;
         if (StringUtils.isEmpty(socialNotificationSummary.getMessageString())) {
-            s = context.getResources().getString(2131165630);
+            s = context.getResources().getString(2131165628);
         }
         else {
             s = "\"" + socialNotificationSummary.getMessageString() + "\"";
@@ -76,7 +76,7 @@ public class SocialVideoRecommendation extends SocialNotification
     public void initView(final NotificationViewHolder notificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         boolean enabled = true;
         super.initView(notificationViewHolder, socialNotificationSummary, context);
-        notificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131165631, new Object[] { "" })));
+        notificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131165629, new Object[] { "" })));
         if (notificationViewHolder.getLeftButton() != null) {
             notificationViewHolder.getLeftButton().setVisibility(0);
             final Button leftButton = notificationViewHolder.getLeftButton();
@@ -87,10 +87,10 @@ public class SocialVideoRecommendation extends SocialNotification
             final Button leftButton2 = notificationViewHolder.getLeftButton();
             int text;
             if (socialNotificationSummary.getWasThanked()) {
-                text = 2131165627;
+                text = 2131165625;
             }
             else {
-                text = 2131165626;
+                text = 2131165624;
             }
             leftButton2.setText(text);
         }

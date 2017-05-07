@@ -5,29 +5,29 @@
 package com.google.android.gms.ads.internal.util.client;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-@zzgk
+@zzgr
 public final class VersionInfoParcel implements SafeParcelable
 {
     public static final zzc CREATOR;
     public final int versionCode;
-    public int zzIA;
-    public int zzIB;
-    public boolean zzIC;
-    public String zzIz;
+    public String zzJu;
+    public int zzJv;
+    public int zzJw;
+    public boolean zzJx;
     
     static {
         CREATOR = new zzc();
     }
     
-    VersionInfoParcel(final int versionCode, final String zzIz, final int zzIA, final int zzIB, final boolean zzIC) {
+    VersionInfoParcel(final int versionCode, final String zzJu, final int zzJv, final int zzJw, final boolean zzJx) {
         this.versionCode = versionCode;
-        this.zzIz = zzIz;
-        this.zzIA = zzIA;
-        this.zzIB = zzIB;
-        this.zzIC = zzIC;
+        this.zzJu = zzJu;
+        this.zzJv = zzJv;
+        this.zzJw = zzJw;
+        this.zzJx = zzJx;
     }
     
     public int describeContents() {

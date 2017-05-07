@@ -11,29 +11,27 @@ import android.net.Uri;
 public class Credential$Builder
 {
     private String mName;
-    private String zzRa;
-    private String zzRb;
-    private Uri zzRc;
-    private List<IdToken> zzRd;
-    private String zzRe;
-    private String zzRf;
-    private String zzRg;
-    private String zzRh;
-    private final String zzwj;
+    private Uri zzSh;
+    private List<IdToken> zzSi;
+    private String zzSj;
+    private String zzSk;
+    private String zzSl;
+    private String zzSm;
+    private final String zzwN;
     
-    public Credential$Builder(final String zzwj) {
-        this.zzwj = zzwj;
+    public Credential$Builder(final String zzwN) {
+        this.zzwN = zzwN;
     }
     
     public Credential build() {
-        if (!TextUtils.isEmpty((CharSequence)this.zzRe) && !TextUtils.isEmpty((CharSequence)this.zzRf)) {
+        if (!TextUtils.isEmpty((CharSequence)this.zzSj) && !TextUtils.isEmpty((CharSequence)this.zzSk)) {
             throw new IllegalStateException("Only one of password or accountType may be set");
         }
-        return new Credential(2, this.zzRa, this.zzRb, this.zzwj, this.mName, this.zzRc, this.zzRd, this.zzRe, this.zzRf, this.zzRg, this.zzRh);
+        return new Credential(3, this.zzwN, this.mName, this.zzSh, this.zzSi, this.zzSj, this.zzSk, this.zzSl, this.zzSm);
     }
     
-    public Credential$Builder setPassword(final String zzRe) {
-        this.zzRe = zzRe;
+    public Credential$Builder setPassword(final String zzSj) {
+        this.zzSj = zzSj;
         return this;
     }
 }

@@ -15,15 +15,15 @@ import java.io.FileDescriptor;
 import android.content.ServiceConnection;
 import android.util.Log;
 import java.util.Iterator;
-import java.util.ArrayList;
 import com.google.android.gms.common.api.GoogleApiClient$zza;
 import java.util.concurrent.atomic.AtomicInteger;
 import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
-import com.google.android.gms.common.api.Scope;
-import java.util.Set;
+import java.util.ArrayList;
 import com.google.android.gms.common.GoogleApiAvailability;
 import android.os.Looper;
+import com.google.android.gms.common.api.Scope;
+import java.util.Set;
 import android.accounts.Account;
 import android.os.Handler;
 import android.content.Context;
@@ -33,25 +33,25 @@ import android.os.IInterface;
 public abstract class zzj$zzc<TListener>
 {
     private TListener mListener;
-    final /* synthetic */ zzj zzadH;
-    private boolean zzadI;
+    final /* synthetic */ zzj zzafK;
+    private boolean zzafL;
     
-    public zzj$zzc(final zzj zzadH, final TListener mListener) {
-        this.zzadH = zzadH;
+    public zzj$zzc(final zzj zzafK, final TListener mListener) {
+        this.zzafK = zzafK;
         this.mListener = mListener;
-        this.zzadI = false;
+        this.zzafL = false;
     }
     
     public void unregister() {
-        this.zzoG();
-        synchronized (this.zzadH.zzady) {
-            this.zzadH.zzady.remove(this);
+        this.zzpi();
+        synchronized (this.zzafK.zzafB) {
+            this.zzafK.zzafB.remove(this);
         }
     }
     
-    protected abstract void zzoE();
+    protected abstract void zzpg();
     
-    public void zzoF() {
+    public void zzph() {
         // 
         // This method could not be decompiled.
         // 
@@ -63,7 +63,7 @@ public abstract class zzj$zzc<TListener>
         //     3: getfield        com/google/android/gms/common/internal/zzj$zzc.mListener:Ljava/lang/Object;
         //     6: astore_1       
         //     7: aload_0        
-        //     8: getfield        com/google/android/gms/common/internal/zzj$zzc.zzadI:Z
+        //     8: getfield        com/google/android/gms/common/internal/zzj$zzc.zzafL:Z
         //    11: ifeq            44
         //    14: ldc             "GmsClient"
         //    16: new             Ljava/lang/StringBuilder;
@@ -84,12 +84,12 @@ public abstract class zzj$zzc<TListener>
         //    47: ifnull          81
         //    50: aload_0        
         //    51: aload_1        
-        //    52: invokevirtual   com/google/android/gms/common/internal/zzj$zzc.zzs:(Ljava/lang/Object;)V
+        //    52: invokevirtual   com/google/android/gms/common/internal/zzj$zzc.zzt:(Ljava/lang/Object;)V
         //    55: aload_0        
         //    56: monitorenter   
         //    57: aload_0        
         //    58: iconst_1       
-        //    59: putfield        com/google/android/gms/common/internal/zzj$zzc.zzadI:Z
+        //    59: putfield        com/google/android/gms/common/internal/zzj$zzc.zzafL:Z
         //    62: aload_0        
         //    63: monitorexit    
         //    64: aload_0        
@@ -102,11 +102,11 @@ public abstract class zzj$zzc<TListener>
         //    73: athrow         
         //    74: astore_1       
         //    75: aload_0        
-        //    76: invokevirtual   com/google/android/gms/common/internal/zzj$zzc.zzoE:()V
+        //    76: invokevirtual   com/google/android/gms/common/internal/zzj$zzc.zzpg:()V
         //    79: aload_1        
         //    80: athrow         
         //    81: aload_0        
-        //    82: invokevirtual   com/google/android/gms/common/internal/zzj$zzc.zzoE:()V
+        //    82: invokevirtual   com/google/android/gms/common/internal/zzj$zzc.zzpg:()V
         //    85: goto            55
         //    88: astore_1       
         //    89: aload_0        
@@ -149,11 +149,11 @@ public abstract class zzj$zzc<TListener>
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public void zzoG() {
+    public void zzpi() {
         synchronized (this) {
             this.mListener = null;
         }
     }
     
-    protected abstract void zzs(final TListener p0);
+    protected abstract void zzt(final TListener p0);
 }

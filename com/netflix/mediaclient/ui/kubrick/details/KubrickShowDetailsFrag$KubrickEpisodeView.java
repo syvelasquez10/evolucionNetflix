@@ -79,7 +79,7 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
                 return;
             }
             this.runtime.setVisibility(0);
-            this.runtime.setText((CharSequence)this.getResources().getString(2131165483, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
+            this.runtime.setText((CharSequence)this.getResources().getString(2131165481, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
         }
     }
     
@@ -89,7 +89,7 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
     
     @Override
     protected CharSequence createTitleText(final EpisodeDetails episodeDetails) {
-        return this.getResources().getString(2131165386, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        return this.getResources().getString(2131165384, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
     }
     
     protected void disablePlay() {

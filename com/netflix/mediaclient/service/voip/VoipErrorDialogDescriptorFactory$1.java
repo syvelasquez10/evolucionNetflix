@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.voip;
 
+import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.ui.voip.ContactUsActivity;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
@@ -19,6 +21,8 @@ final class VoipErrorDialogDescriptorFactory$1 implements Runnable
     @Override
     public void run() {
         Log.d("ErrorManager", "Start Contact us activity!");
-        this.val$context.startActivity(ContactUsActivity.createStartIntentWithAutoDial(this.val$context));
+        final Intent startIntentWithAutoDial = ContactUsActivity.createStartIntentWithAutoDial(this.val$context);
+        startIntentWithAutoDial.putExtra("source", IClientLogging$ModalView.contactUs.name());
+        this.val$context.startActivity(startIntentWithAutoDial);
     }
 }

@@ -4,76 +4,91 @@
 
 package com.google.android.gms.internal;
 
-import org.json.JSONException;
-import com.google.android.gms.ads.internal.util.client.zzb;
-import org.json.JSONObject;
+import android.app.AlertDialog$Builder;
+import android.content.DialogInterface$OnClickListener;
+import com.google.android.gms.R$string;
+import com.google.android.gms.ads.internal.zzp;
+import android.provider.CalendarContract$Events;
+import android.content.Intent;
+import android.text.TextUtils;
+import java.util.Map;
+import android.content.Context;
 
-@zzgk
-public class zzfb
+@zzgr
+public class zzfb extends zzfh
 {
-    private final zzip zzoL;
-    private final String zzzX;
+    private final Context mContext;
+    private final Map<String, String> zzvS;
+    private String zzzV;
+    private long zzzW;
+    private long zzzX;
+    private String zzzY;
+    private String zzzZ;
     
-    public zzfb(final zzip zzip) {
-        this(zzip, "");
+    public zzfb(final zziz zziz, final Map<String, String> zzvS) {
+        super(zziz, "createCalendarEvent");
+        this.zzvS = zzvS;
+        this.mContext = (Context)zziz.zzgZ();
+        this.zzec();
     }
     
-    public zzfb(final zzip zzoL, final String zzzX) {
-        this.zzoL = zzoL;
-        this.zzzX = zzzX;
+    private String zzah(final String s) {
+        if (TextUtils.isEmpty((CharSequence)this.zzvS.get(s))) {
+            return "";
+        }
+        return this.zzvS.get(s);
     }
     
-    public void zza(final int n, final int n2, final int n3, final int n4, final float n5, final int n6) {
+    private long zzai(String s) {
+        s = this.zzvS.get(s);
+        if (s == null) {
+            return -1L;
+        }
         try {
-            this.zzoL.zzb("onScreenInfoChanged", new JSONObject().put("width", n).put("height", n2).put("maxSizeWidth", n3).put("maxSizeHeight", n4).put("density", (double)n5).put("rotation", n6));
+            return Long.parseLong(s);
         }
-        catch (JSONException ex) {
-            zzb.zzb("Error occured while obtaining screen information.", (Throwable)ex);
-        }
-    }
-    
-    public void zzah(final String s) {
-        try {
-            this.zzoL.zzb("onError", new JSONObject().put("message", (Object)s).put("action", (Object)this.zzzX));
-        }
-        catch (JSONException ex) {
-            zzb.zzb("Error occurred while dispatching error event.", (Throwable)ex);
+        catch (NumberFormatException ex) {
+            return -1L;
         }
     }
     
-    public void zzai(final String s) {
-        try {
-            this.zzoL.zzb("onReadyEventReceived", new JSONObject().put("js", (Object)s));
-        }
-        catch (JSONException ex) {
-            zzb.zzb("Error occured while dispatching ready Event.", (Throwable)ex);
-        }
+    private void zzec() {
+        this.zzzV = this.zzah("description");
+        this.zzzY = this.zzah("summary");
+        this.zzzW = this.zzai("start_ticks");
+        this.zzzX = this.zzai("end_ticks");
+        this.zzzZ = this.zzah("location");
     }
     
-    public void zzaj(final String s) {
-        try {
-            this.zzoL.zzb("onStateChanged", new JSONObject().put("state", (Object)s));
+    Intent createIntent() {
+        final Intent setData = new Intent("android.intent.action.EDIT").setData(CalendarContract$Events.CONTENT_URI);
+        setData.putExtra("title", this.zzzV);
+        setData.putExtra("eventLocation", this.zzzZ);
+        setData.putExtra("description", this.zzzY);
+        if (this.zzzW > -1L) {
+            setData.putExtra("beginTime", this.zzzW);
         }
-        catch (JSONException ex) {
-            zzb.zzb("Error occured while dispatching state change.", (Throwable)ex);
+        if (this.zzzX > -1L) {
+            setData.putExtra("endTime", this.zzzX);
         }
+        setData.setFlags(268435456);
+        return setData;
     }
     
-    public void zzb(final int n, final int n2, final int n3, final int n4) {
-        try {
-            this.zzoL.zzb("onSizeChanged", new JSONObject().put("x", n).put("y", n2).put("width", n3).put("height", n4));
+    public void execute() {
+        if (this.mContext == null) {
+            this.zzak("Activity context is not available.");
+            return;
         }
-        catch (JSONException ex) {
-            zzb.zzb("Error occured while dispatching size change.", (Throwable)ex);
+        if (!zzp.zzbv().zzL(this.mContext).zzdb()) {
+            this.zzak("This feature is not available on the device.");
+            return;
         }
-    }
-    
-    public void zzc(final int n, final int n2, final int n3, final int n4) {
-        try {
-            this.zzoL.zzb("onDefaultPositionReceived", new JSONObject().put("x", n).put("y", n2).put("width", n3).put("height", n4));
-        }
-        catch (JSONException ex) {
-            zzb.zzb("Error occured while dispatching default position.", (Throwable)ex);
-        }
+        final AlertDialog$Builder zzK = zzp.zzbv().zzK(this.mContext);
+        zzK.setTitle((CharSequence)zzp.zzby().zzd(R$string.create_calendar_title, "Create calendar event"));
+        zzK.setMessage((CharSequence)zzp.zzby().zzd(R$string.create_calendar_message, "Allow Ad to create a calendar event?"));
+        zzK.setPositiveButton((CharSequence)zzp.zzby().zzd(R$string.accept, "Accept"), (DialogInterface$OnClickListener)new zzfb$1(this));
+        zzK.setNegativeButton((CharSequence)zzp.zzby().zzd(R$string.decline, "Decline"), (DialogInterface$OnClickListener)new zzfb$2(this));
+        zzK.create().show();
     }
 }

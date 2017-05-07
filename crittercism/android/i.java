@@ -179,20 +179,17 @@ public final class i
                 try {
                     ad ad = new ad(socketImplFactory, this.h, this.i);
                     a(ad);
+                    // iftrue(Label_0158:, class1 == null)
                     while (true) {
-                        while (true) {
-                            this.d = ad;
-                            return true;
-                            ad = new ad(class1, this.h, this.i);
-                            Socket.setSocketImplFactory(ad);
-                            continue;
-                        }
+                        this.d = ad;
                         return true;
+                        ad = new ad(class1, this.h, this.i);
+                        Socket.setSocketImplFactory(ad);
                         continue;
                     }
+                    // iftrue(Label_0079:, !socketImplFactory instanceof ad)
+                    return true;
                 }
-                // iftrue(Label_0079:, !socketImplFactory instanceof ad)
-                // iftrue(Label_0158:, class1 == null)
                 catch (cl cl3) {
                     a("Unable to install OPTIMZ for http connections", cl3);
                     return false;

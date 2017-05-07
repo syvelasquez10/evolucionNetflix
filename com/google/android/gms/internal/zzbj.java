@@ -9,15 +9,15 @@ import android.content.Context;
 import android.app.Activity;
 import android.app.Application$ActivityLifecycleCallbacks;
 
-@zzgk
+@zzgr
 public class zzbj implements Application$ActivityLifecycleCallbacks
 {
     private Activity mActivity;
     private Context mContext;
-    private final Object zzpc;
+    private final Object zzpd;
     
     private void setActivity(final Activity mActivity) {
-        synchronized (this.zzpc) {
+        synchronized (this.zzpd) {
             if (!mActivity.getClass().getName().startsWith("com.google.android.gms.ads")) {
                 this.mActivity = mActivity;
             }
@@ -36,7 +36,7 @@ public class zzbj implements Application$ActivityLifecycleCallbacks
     }
     
     public void onActivityDestroyed(final Activity activity) {
-        synchronized (this.zzpc) {
+        synchronized (this.zzpd) {
             if (this.mActivity == null) {
                 return;
             }

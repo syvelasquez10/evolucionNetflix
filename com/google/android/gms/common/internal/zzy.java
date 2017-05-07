@@ -15,46 +15,46 @@ import android.os.Parcelable$Creator;
 public class zzy implements Parcelable$Creator<ResolveAccountRequest>
 {
     static void zza(final ResolveAccountRequest resolveAccountRequest, final Parcel parcel, final int n) {
-        final int zzak = zzb.zzak(parcel);
+        final int zzaq = zzb.zzaq(parcel);
         zzb.zzc(parcel, 1, resolveAccountRequest.mVersionCode);
         zzb.zza(parcel, 2, (Parcelable)resolveAccountRequest.getAccount(), n, false);
         zzb.zzc(parcel, 3, resolveAccountRequest.getSessionId());
-        zzb.zzH(parcel, zzak);
+        zzb.zzI(parcel, zzaq);
     }
     
-    public ResolveAccountRequest zzaf(final Parcel parcel) {
+    public ResolveAccountRequest zzal(final Parcel parcel) {
         int zzg = 0;
-        final int zzaj = zza.zzaj(parcel);
+        final int zzap = zza.zzap(parcel);
         Account account = null;
         int zzg2 = 0;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = zza.zzai(parcel);
-            switch (zza.zzbH(zzai)) {
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = zza.zzao(parcel);
+            switch (zza.zzbM(zzao)) {
                 default: {
-                    zza.zzb(parcel, zzai);
+                    zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzg2 = zza.zzg(parcel, zzai);
+                    zzg2 = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 2: {
-                    account = zza.zza(parcel, zzai, (android.os.Parcelable$Creator<Account>)Account.CREATOR);
+                    account = zza.zza(parcel, zzao, (android.os.Parcelable$Creator<Account>)Account.CREATOR);
                     continue;
                 }
                 case 3: {
-                    zzg = zza.zzg(parcel, zzai);
+                    zzg = zza.zzg(parcel, zzao);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
         return new ResolveAccountRequest(zzg2, account, zzg);
     }
     
-    public ResolveAccountRequest[] zzbE(final int n) {
+    public ResolveAccountRequest[] zzbJ(final int n) {
         return new ResolveAccountRequest[n];
     }
 }

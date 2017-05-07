@@ -8,32 +8,32 @@ import com.google.android.gms.ads.internal.util.client.zzb;
 import java.util.Iterator;
 import java.util.ArrayList;
 
-@zzgk
+@zzgr
 public class zzbh
 {
-    private final Object zzpc;
-    private final int zzrC;
-    private final int zzrD;
-    private final int zzrE;
-    private final zzbm zzrF;
-    private ArrayList<String> zzrG;
-    private int zzrH;
-    private int zzrI;
-    private int zzrJ;
-    private int zzrK;
-    private String zzrL;
+    private final Object zzpd;
+    private final int zzrN;
+    private final int zzrO;
+    private final int zzrP;
+    private final zzbm zzrQ;
+    private ArrayList<String> zzrR;
+    private int zzrS;
+    private int zzrT;
+    private int zzrU;
+    private int zzrV;
+    private String zzrW;
     
-    public zzbh(final int zzrC, final int zzrD, final int zzrE, final int n) {
-        this.zzpc = new Object();
-        this.zzrG = new ArrayList<String>();
-        this.zzrH = 0;
-        this.zzrI = 0;
-        this.zzrJ = 0;
-        this.zzrL = "";
-        this.zzrC = zzrC;
-        this.zzrD = zzrD;
-        this.zzrE = zzrE;
-        this.zzrF = new zzbm(n);
+    public zzbh(final int zzrN, final int zzrO, final int zzrP, final int n) {
+        this.zzpd = new Object();
+        this.zzrR = new ArrayList<String>();
+        this.zzrS = 0;
+        this.zzrT = 0;
+        this.zzrU = 0;
+        this.zzrW = "";
+        this.zzrN = zzrN;
+        this.zzrO = zzrO;
+        this.zzrP = zzrP;
+        this.zzrQ = new zzbm(n);
     }
     
     private String zza(final ArrayList<String> list, final int n) {
@@ -61,12 +61,12 @@ public class zzbh
     }
     
     private void zzx(final String s) {
-        if (s == null || s.length() < this.zzrE) {
+        if (s == null || s.length() < this.zzrP) {
             return;
         }
-        synchronized (this.zzpc) {
-            this.zzrG.add(s);
-            this.zzrH += s.length();
+        synchronized (this.zzpd) {
+            this.zzrR.add(s);
+            this.zzrS += s.length();
         }
     }
     
@@ -91,17 +91,17 @@ public class zzbh
     
     @Override
     public String toString() {
-        return "ActivityContent fetchId: " + this.zzrI + " score:" + this.zzrK + " total_length:" + this.zzrH + "\n text: " + this.zza(this.zzrG, 200) + "\n signture: " + this.zzrL;
+        return "ActivityContent fetchId: " + this.zzrT + " score:" + this.zzrV + " total_length:" + this.zzrS + "\n text: " + this.zza(this.zzrR, 200) + "\n signture: " + this.zzrW;
     }
     
     int zza(final int n, final int n2) {
-        return this.zzrC * n + this.zzrD * n2;
+        return this.zzrN * n + this.zzrO * n2;
     }
     
     public boolean zzcl() {
         while (true) {
-            synchronized (this.zzpc) {
-                if (this.zzrJ == 0) {
+            synchronized (this.zzpd) {
+                if (this.zzrU == 0) {
                     return true;
                 }
             }
@@ -110,44 +110,44 @@ public class zzbh
     }
     
     public String zzcm() {
-        return this.zzrL;
+        return this.zzrW;
     }
     
     public void zzco() {
-        synchronized (this.zzpc) {
-            --this.zzrJ;
+        synchronized (this.zzpd) {
+            --this.zzrU;
         }
     }
     
     public void zzcp() {
-        synchronized (this.zzpc) {
-            ++this.zzrJ;
+        synchronized (this.zzpd) {
+            ++this.zzrU;
         }
     }
     
     public void zzcq() {
-        synchronized (this.zzpc) {
-            final int zza = this.zza(this.zzrH, this.zzrI);
-            if (zza > this.zzrK) {
-                this.zzrK = zza;
-                this.zzrL = this.zzrF.zza(this.zzrG);
+        synchronized (this.zzpd) {
+            final int zza = this.zza(this.zzrS, this.zzrT);
+            if (zza > this.zzrV) {
+                this.zzrV = zza;
+                this.zzrW = this.zzrQ.zza(this.zzrR);
             }
         }
     }
     
     int zzcr() {
-        return this.zzrH;
+        return this.zzrS;
     }
     
-    public void zzg(final int zzrI) {
-        this.zzrI = zzrI;
+    public void zzg(final int zzrT) {
+        this.zzrT = zzrT;
     }
     
     public void zzv(final String s) {
         this.zzx(s);
-        synchronized (this.zzpc) {
-            if (this.zzrJ < 0) {
-                zzb.zzaC("ActivityContent: negative number of WebViews.");
+        synchronized (this.zzpd) {
+            if (this.zzrU < 0) {
+                zzb.zzaF("ActivityContent: negative number of WebViews.");
             }
             this.zzcq();
         }

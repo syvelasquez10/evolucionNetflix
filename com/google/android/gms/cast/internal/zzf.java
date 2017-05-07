@@ -10,10 +10,10 @@ import java.util.regex.Pattern;
 
 public final class zzf
 {
-    private static final Pattern zzXr;
+    private static final Pattern zzZj;
     
     static {
-        zzXr = Pattern.compile("urn:x-cast:[-A-Za-z0-9_]+(\\.[-A-Za-z0-9_]+)*");
+        zzZj = Pattern.compile("urn:x-cast:[-A-Za-z0-9_]+(\\.[-A-Za-z0-9_]+)*");
     }
     
     public static <T> boolean zza(final T t, final T t2) {
@@ -38,7 +38,7 @@ public final class zzf
         return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_' || c == '-';
     }
     
-    public static void zzbL(final String s) {
+    public static void zzbM(final String s) {
         if (TextUtils.isEmpty((CharSequence)s)) {
             throw new IllegalArgumentException("Namespace cannot be null or empty");
         }
@@ -53,12 +53,8 @@ public final class zzf
         }
     }
     
-    public static String zzbM(final String s) {
-        return "urn:x-cast:" + s;
-    }
-    
-    public static String zzbN(final String s) {
-        if (zzf.zzXr.matcher(s).matches()) {
+    public static String zzbO(final String s) {
+        if (zzf.zzZj.matcher(s).matches()) {
             return s;
         }
         final StringBuilder sb = new StringBuilder(s.length());

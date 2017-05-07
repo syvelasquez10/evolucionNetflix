@@ -18,38 +18,38 @@ public class GetServiceRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<GetServiceRequest> CREATOR;
     final int version;
-    final int zzadn;
-    int zzado;
-    String zzadp;
-    IBinder zzadq;
-    Scope[] zzadr;
-    Bundle zzads;
-    Account zzadt;
+    final int zzafq;
+    int zzafr;
+    String zzafs;
+    IBinder zzaft;
+    Scope[] zzafu;
+    Bundle zzafv;
+    Account zzafw;
     
     static {
         CREATOR = (Parcelable$Creator)new zzi();
     }
     
-    public GetServiceRequest(final int zzadn) {
+    public GetServiceRequest(final int zzafq) {
         this.version = 2;
-        this.zzado = GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE;
-        this.zzadn = zzadn;
+        this.zzafr = GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE;
+        this.zzafq = zzafq;
     }
     
-    GetServiceRequest(final int version, final int zzadn, final int zzado, final String zzadp, final IBinder zzadq, final Scope[] zzadr, final Bundle zzads, final Account zzadt) {
+    GetServiceRequest(final int version, final int zzafq, final int zzafr, final String zzafs, final IBinder zzaft, final Scope[] zzafu, final Bundle zzafv, final Account zzafw) {
         this.version = version;
-        this.zzadn = zzadn;
-        this.zzado = zzado;
-        this.zzadp = zzadp;
+        this.zzafq = zzafq;
+        this.zzafr = zzafr;
+        this.zzafs = zzafs;
         if (version < 2) {
-            this.zzadt = this.zzaG(zzadq);
+            this.zzafw = this.zzaG(zzaft);
         }
         else {
-            this.zzadq = zzadq;
-            this.zzadt = zzadt;
+            this.zzaft = zzaft;
+            this.zzafw = zzafw;
         }
-        this.zzadr = zzadr;
-        this.zzads = zzads;
+        this.zzafu = zzafu;
+        this.zzafv = zzafv;
     }
     
     private Account zzaG(final IBinder binder) {
@@ -68,30 +68,30 @@ public class GetServiceRequest implements SafeParcelable
         zzi.zza(this, parcel, n);
     }
     
-    public GetServiceRequest zzb(final Account zzadt) {
-        this.zzadt = zzadt;
+    public GetServiceRequest zzc(final Account zzafw) {
+        this.zzafw = zzafw;
         return this;
     }
     
     public GetServiceRequest zzc(final zzp zzp) {
         if (zzp != null) {
-            this.zzadq = zzp.asBinder();
+            this.zzaft = zzp.asBinder();
         }
         return this;
     }
     
-    public GetServiceRequest zzck(final String zzadp) {
-        this.zzadp = zzadp;
+    public GetServiceRequest zzcl(final String zzafs) {
+        this.zzafs = zzafs;
         return this;
     }
     
     public GetServiceRequest zzd(final Collection<Scope> collection) {
-        this.zzadr = collection.toArray(new Scope[collection.size()]);
+        this.zzafu = collection.toArray(new Scope[collection.size()]);
         return this;
     }
     
-    public GetServiceRequest zzg(final Bundle zzads) {
-        this.zzads = zzads;
+    public GetServiceRequest zzg(final Bundle zzafv) {
+        this.zzafv = zzafv;
         return this;
     }
 }

@@ -9,28 +9,28 @@ import android.webkit.ValueCallback;
 
 class zzbk$2 implements Runnable
 {
-    final /* synthetic */ zzbk zzrW;
-    ValueCallback<String> zzrX;
-    final /* synthetic */ zzbh zzrY;
-    final /* synthetic */ WebView zzrZ;
+    final /* synthetic */ zzbk zzsh;
+    ValueCallback<String> zzsi;
+    final /* synthetic */ zzbh zzsj;
+    final /* synthetic */ WebView zzsk;
     
-    zzbk$2(final zzbk zzrW, final zzbh zzrY, final WebView zzrZ) {
-        this.zzrW = zzrW;
-        this.zzrY = zzrY;
-        this.zzrZ = zzrZ;
-        this.zzrX = (ValueCallback<String>)new zzbk$2$1(this);
+    zzbk$2(final zzbk zzsh, final zzbh zzsj, final WebView zzsk) {
+        this.zzsh = zzsh;
+        this.zzsj = zzsj;
+        this.zzsk = zzsk;
+        this.zzsi = (ValueCallback<String>)new zzbk$2$1(this);
     }
     
     @Override
     public void run() {
-        if (!this.zzrZ.getSettings().getJavaScriptEnabled()) {
+        if (!this.zzsk.getSettings().getJavaScriptEnabled()) {
             return;
         }
         try {
-            this.zzrZ.evaluateJavascript("(function() { return  {text:document.body.innerText}})();", (ValueCallback)this.zzrX);
+            this.zzsk.evaluateJavascript("(function() { return  {text:document.body.innerText}})();", (ValueCallback)this.zzsi);
         }
         catch (Throwable t) {
-            this.zzrX.onReceiveValue((Object)"");
+            this.zzsi.onReceiveValue((Object)"");
         }
     }
 }

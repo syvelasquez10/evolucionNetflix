@@ -34,11 +34,11 @@ public class KubrickKidsCharacterDetailsFrag$StringProvider implements VideoDeta
         if (StringUtils.isEmpty(this.details.getGenres())) {
             return null;
         }
-        return StringUtils.createBoldLabeledText(this.context, 2131165447, this.details.getGenres());
+        return StringUtils.createBoldLabeledText(this.context, 2131165445, this.details.getGenres());
     }
     
     @Override
     public CharSequence getStarringText() {
-        return StringUtils.createBoldLabeledText(this.context, 2131165549, this.details.getActors());
+        return StringUtils.createBoldLabeledText(this.context, 2131165547, this.details.getActors());
     }
 }

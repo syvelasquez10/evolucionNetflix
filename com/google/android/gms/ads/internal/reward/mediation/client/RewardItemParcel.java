@@ -5,25 +5,25 @@
 package com.google.android.gms.ads.internal.reward.mediation.client;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-@zzgk
+@zzgr
 public final class RewardItemParcel implements SafeParcelable
 {
     public static final zzc CREATOR;
     public final String type;
     public final int versionCode;
-    public final int zzGE;
+    public final int zzHv;
     
     static {
         CREATOR = new zzc();
     }
     
-    public RewardItemParcel(final int versionCode, final String type, final int zzGE) {
+    public RewardItemParcel(final int versionCode, final String type, final int zzHv) {
         this.versionCode = versionCode;
         this.type = type;
-        this.zzGE = zzGE;
+        this.zzHv = zzHv;
     }
     
     public int describeContents() {

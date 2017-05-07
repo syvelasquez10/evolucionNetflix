@@ -12,30 +12,30 @@ import android.content.ComponentName;
 import android.os.RemoteException;
 import com.google.android.gms.ads.internal.zzp;
 import android.content.Intent;
-import com.google.android.gms.internal.zzfl;
+import com.google.android.gms.internal.zzfr;
 import android.content.Context;
 import android.app.Activity;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 import android.content.ServiceConnection;
-import com.google.android.gms.internal.zzfn$zza;
+import com.google.android.gms.internal.zzft$zza;
 
-@zzgk
-public class zze extends zzfn$zza implements ServiceConnection
+@zzgr
+public class zze extends zzft$zza implements ServiceConnection
 {
     private final Activity mActivity;
-    private zzb zzBQ;
-    zzh zzBR;
-    private zzk zzBT;
-    private Context zzBY;
-    private zzfl zzBZ;
-    private zzf zzCa;
-    private zzj zzCb;
-    private String zzCc;
+    private zzb zzCD;
+    zzh zzCE;
+    private zzk zzCG;
+    private Context zzCL;
+    private zzfr zzCM;
+    private zzf zzCN;
+    private zzj zzCO;
+    private String zzCP;
     
     public zze(final Activity mActivity) {
-        this.zzCc = null;
+        this.zzCP = null;
         this.mActivity = mActivity;
-        this.zzBR = zzh.zzx(this.mActivity.getApplicationContext());
+        this.zzCE = zzh.zzw(this.mActivity.getApplicationContext());
     }
     
     public void onActivityResult(int zzd, final int n, final Intent intent) {
@@ -44,49 +44,49 @@ public class zze extends zzfn$zza implements ServiceConnection
         }
         boolean b = false;
         try {
-            zzd = zzp.zzbH().zzd(intent);
+            zzd = zzp.zzbF().zzd(intent);
             while (true) {
                 Label_0090: {
                     if (n != -1) {
                         break Label_0090;
                     }
-                    zzp.zzbH();
+                    zzp.zzbF();
                     if (zzd != 0) {
                         break Label_0090;
                     }
-                    if (this.zzBT.zza(this.zzCc, n, intent)) {
+                    if (this.zzCG.zza(this.zzCP, n, intent)) {
                         b = true;
                     }
-                    this.zzBZ.recordPlayBillingResolution(zzd);
+                    this.zzCM.recordPlayBillingResolution(zzd);
                     this.mActivity.finish();
-                    this.zza(this.zzBZ.getProductId(), b, n, intent);
+                    this.zza(this.zzCM.getProductId(), b, n, intent);
                     return;
                 }
-                this.zzBR.zza(this.zzCa);
+                this.zzCE.zza(this.zzCN);
                 continue;
             }
         }
         catch (RemoteException ex) {
-            com.google.android.gms.ads.internal.util.client.zzb.zzaE("Fail to process purchase result.");
+            com.google.android.gms.ads.internal.util.client.zzb.zzaH("Fail to process purchase result.");
             this.mActivity.finish();
         }
         finally {
-            this.zzCc = null;
+            this.zzCP = null;
         }
     }
     
     public void onCreate() {
         final GInAppPurchaseManagerInfoParcel zzc = GInAppPurchaseManagerInfoParcel.zzc(this.mActivity.getIntent());
-        this.zzCb = zzc.zzBL;
-        this.zzBT = zzc.zzqw;
-        this.zzBZ = zzc.zzBJ;
-        this.zzBQ = new zzb(this.mActivity.getApplicationContext());
-        this.zzBY = zzc.zzBK;
+        this.zzCO = zzc.zzCy;
+        this.zzCG = zzc.zzqE;
+        this.zzCM = zzc.zzCw;
+        this.zzCD = new zzb(this.mActivity.getApplicationContext());
+        this.zzCL = zzc.zzCx;
         if (this.mActivity.getResources().getConfiguration().orientation == 2) {
-            this.mActivity.setRequestedOrientation(zzp.zzbz().zzgv());
+            this.mActivity.setRequestedOrientation(zzp.zzbx().zzgG());
         }
         else {
-            this.mActivity.setRequestedOrientation(zzp.zzbz().zzgw());
+            this.mActivity.setRequestedOrientation(zzp.zzbx().zzgH());
         }
         final Intent intent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
         intent.setPackage("com.android.vending");
@@ -95,24 +95,24 @@ public class zze extends zzfn$zza implements ServiceConnection
     
     public void onDestroy() {
         this.mActivity.unbindService((ServiceConnection)this);
-        this.zzBQ.destroy();
+        this.zzCD.destroy();
     }
     
     public void onServiceConnected(ComponentName zzb, final IBinder binder) {
-        this.zzBQ.zzM(binder);
+        this.zzCD.zzN(binder);
         try {
-            this.zzCc = this.zzBT.zzfk();
-            zzb = (IntentSender$SendIntentException)this.zzBQ.zzb(this.mActivity.getPackageName(), this.zzBZ.getProductId(), this.zzCc);
+            this.zzCP = this.zzCG.zzfq();
+            zzb = (IntentSender$SendIntentException)this.zzCD.zzb(this.mActivity.getPackageName(), this.zzCM.getProductId(), this.zzCP);
             final PendingIntent pendingIntent = (PendingIntent)((Bundle)zzb).getParcelable("BUY_INTENT");
             if (pendingIntent == null) {
-                final int zzc = zzp.zzbH().zzc((Bundle)zzb);
-                this.zzBZ.recordPlayBillingResolution(zzc);
-                this.zza(this.zzBZ.getProductId(), false, zzc, null);
+                final int zzc = zzp.zzbF().zzc((Bundle)zzb);
+                this.zzCM.recordPlayBillingResolution(zzc);
+                this.zza(this.zzCM.getProductId(), false, zzc, null);
                 this.mActivity.finish();
                 return;
             }
-            this.zzCa = new zzf(this.zzBZ.getProductId(), this.zzCc);
-            this.zzBR.zzb(this.zzCa);
+            this.zzCN = new zzf(this.zzCM.getProductId(), this.zzCP);
+            this.zzCE.zzb(this.zzCN);
             this.mActivity.startIntentSenderForResult(pendingIntent.getIntentSender(), 1001, new Intent(), (int)Integer.valueOf(0), (int)Integer.valueOf(0), (int)Integer.valueOf(0));
         }
         catch (RemoteException ex) {}
@@ -122,13 +122,13 @@ public class zze extends zzfn$zza implements ServiceConnection
     }
     
     public void onServiceDisconnected(final ComponentName componentName) {
-        com.google.android.gms.ads.internal.util.client.zzb.zzaD("In-app billing service disconnected.");
-        this.zzBQ.destroy();
+        com.google.android.gms.ads.internal.util.client.zzb.zzaG("In-app billing service disconnected.");
+        this.zzCD.destroy();
     }
     
     protected void zza(final String s, final boolean b, final int n, final Intent intent) {
-        if (this.zzCb != null) {
-            this.zzCb.zza(s, b, n, intent, this.zzCa);
+        if (this.zzCO != null) {
+            this.zzCO.zza(s, b, n, intent, this.zzCN);
         }
     }
 }

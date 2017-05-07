@@ -19,17 +19,17 @@ import android.os.Handler$Callback;
 final class zzm extends zzl implements Handler$Callback
 {
     private final Handler mHandler;
-    private final HashMap<zzm$zza, zzm$zzb> zzadV;
-    private final zzb zzadW;
-    private final long zzadX;
-    private final Context zzqO;
+    private final HashMap<zzm$zza, zzm$zzb> zzafY;
+    private final zzb zzafZ;
+    private final long zzaga;
+    private final Context zzqZ;
     
     zzm(final Context context) {
-        this.zzadV = new HashMap<zzm$zza, zzm$zzb>();
-        this.zzqO = context.getApplicationContext();
+        this.zzafY = new HashMap<zzm$zza, zzm$zzb>();
+        this.zzqZ = context.getApplicationContext();
         this.mHandler = new Handler(context.getMainLooper(), (Handler$Callback)this);
-        this.zzadW = zzb.zzpD();
-        this.zzadX = 5000L;
+        this.zzafZ = zzb.zzqh();
+        this.zzaga = 5000L;
     }
     
     private boolean zza(final zzm$zza zzm$zza, final ServiceConnection serviceConnection, final String s) {
@@ -37,13 +37,13 @@ final class zzm extends zzl implements Handler$Callback
             zzx.zzb(serviceConnection, "ServiceConnection must not be null");
             while (true) {
                 zzm$zzb zzm$zzb;
-                synchronized (this.zzadV) {
-                    zzm$zzb = this.zzadV.get(zzm$zza);
+                synchronized (this.zzafY) {
+                    zzm$zzb = this.zzafY.get(zzm$zza);
                     if (zzm$zzb == null) {
                         zzm$zzb = new zzm$zzb(this, zzm$zza);
                         zzm$zzb.zza(serviceConnection, s);
-                        zzm$zzb.zzcl(s);
-                        this.zzadV.put(zzm$zza, zzm$zzb);
+                        zzm$zzb.zzcm(s);
+                        this.zzafY.put(zzm$zza, zzm$zzb);
                         final zzm$zzb zzm$zzb2 = zzm$zzb;
                         return zzm$zzb2.isBound();
                     }
@@ -60,7 +60,7 @@ final class zzm extends zzl implements Handler$Callback
                         continue;
                     }
                     case 2: {
-                        zzm$zzb.zzcl(s);
+                        zzm$zzb.zzcm(s);
                         final zzm$zzb zzm$zzb2 = zzm$zzb;
                         continue;
                     }
@@ -77,8 +77,8 @@ final class zzm extends zzl implements Handler$Callback
     private void zzb(final zzm$zza zzm$zza, final ServiceConnection serviceConnection, final String s) {
         zzx.zzb(serviceConnection, "ServiceConnection must not be null");
         final zzm$zzb zzm$zzb;
-        synchronized (this.zzadV) {
-            zzm$zzb = this.zzadV.get(zzm$zza);
+        synchronized (this.zzafY) {
+            zzm$zzb = this.zzafY.get(zzm$zza);
             if (zzm$zzb == null) {
                 throw new IllegalStateException("Nonexistent connection status for service config: " + zzm$zza);
             }
@@ -88,8 +88,8 @@ final class zzm extends zzl implements Handler$Callback
             throw new IllegalStateException("Trying to unbind a GmsServiceConnection  that was not bound before.  config=" + t);
         }
         zzm$zzb.zzb(serviceConnection, s);
-        if (zzm$zzb.zzoL()) {
-            this.mHandler.sendMessageDelayed(this.mHandler.obtainMessage(0, (Object)zzm$zzb), this.zzadX);
+        if (zzm$zzb.zzpn()) {
+            this.mHandler.sendMessageDelayed(this.mHandler.obtainMessage(0, (Object)zzm$zzb), this.zzaga);
         }
     }
     // monitorexit(hashMap)
@@ -101,12 +101,12 @@ final class zzm extends zzl implements Handler$Callback
             }
             case 0: {
                 final zzm$zzb zzm$zzb = (zzm$zzb)message.obj;
-                synchronized (this.zzadV) {
-                    if (zzm$zzb.zzoL()) {
+                synchronized (this.zzafY) {
+                    if (zzm$zzb.zzpn()) {
                         if (zzm$zzb.isBound()) {
-                            zzm$zzb.zzcm("GmsClientSupervisor");
+                            zzm$zzb.zzcn("GmsClientSupervisor");
                         }
-                        this.zzadV.remove(zzm$zzb.zzaec);
+                        this.zzafY.remove(zzm$zzb.zzagf);
                     }
                     return true;
                 }

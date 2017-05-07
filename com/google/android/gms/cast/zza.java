@@ -16,70 +16,70 @@ import android.os.Parcelable$Creator;
 public class zza implements Parcelable$Creator<ApplicationMetadata>
 {
     static void zza(final ApplicationMetadata applicationMetadata, final Parcel parcel, final int n) {
-        final int zzak = zzb.zzak(parcel);
+        final int zzaq = zzb.zzaq(parcel);
         zzb.zzc(parcel, 1, applicationMetadata.getVersionCode());
         zzb.zza(parcel, 2, applicationMetadata.getApplicationId(), false);
         zzb.zza(parcel, 3, applicationMetadata.getName(), false);
         zzb.zzc(parcel, 4, applicationMetadata.getImages(), false);
-        zzb.zzb(parcel, 5, applicationMetadata.zzSY, false);
+        zzb.zzb(parcel, 5, applicationMetadata.zzUN, false);
         zzb.zza(parcel, 6, applicationMetadata.getSenderAppIdentifier(), false);
-        zzb.zza(parcel, 7, (Parcelable)applicationMetadata.zzlM(), n, false);
-        zzb.zzH(parcel, zzak);
+        zzb.zza(parcel, 7, (Parcelable)applicationMetadata.zzmj(), n, false);
+        zzb.zzI(parcel, zzaq);
     }
     
-    public ApplicationMetadata zzR(final Parcel parcel) {
+    public ApplicationMetadata zzW(final Parcel parcel) {
         Uri uri = null;
-        final int zzaj = com.google.android.gms.common.internal.safeparcel.zza.zzaj(parcel);
+        final int zzap = com.google.android.gms.common.internal.safeparcel.zza.zzap(parcel);
         int zzg = 0;
-        String zzo = null;
-        List<String> zzC = null;
+        String zzp = null;
+        List<String> zzD = null;
         List<WebImage> zzc = null;
-        String zzo2 = null;
-        String zzo3 = null;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = com.google.android.gms.common.internal.safeparcel.zza.zzai(parcel);
-            switch (com.google.android.gms.common.internal.safeparcel.zza.zzbH(zzai)) {
+        String zzp2 = null;
+        String zzp3 = null;
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = com.google.android.gms.common.internal.safeparcel.zza.zzao(parcel);
+            switch (com.google.android.gms.common.internal.safeparcel.zza.zzbM(zzao)) {
                 default: {
-                    com.google.android.gms.common.internal.safeparcel.zza.zzb(parcel, zzai);
+                    com.google.android.gms.common.internal.safeparcel.zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzg = com.google.android.gms.common.internal.safeparcel.zza.zzg(parcel, zzai);
+                    zzg = com.google.android.gms.common.internal.safeparcel.zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 2: {
-                    zzo3 = com.google.android.gms.common.internal.safeparcel.zza.zzo(parcel, zzai);
+                    zzp3 = com.google.android.gms.common.internal.safeparcel.zza.zzp(parcel, zzao);
                     continue;
                 }
                 case 3: {
-                    zzo2 = com.google.android.gms.common.internal.safeparcel.zza.zzo(parcel, zzai);
+                    zzp2 = com.google.android.gms.common.internal.safeparcel.zza.zzp(parcel, zzao);
                     continue;
                 }
                 case 4: {
-                    zzc = com.google.android.gms.common.internal.safeparcel.zza.zzc(parcel, zzai, WebImage.CREATOR);
+                    zzc = com.google.android.gms.common.internal.safeparcel.zza.zzc(parcel, zzao, WebImage.CREATOR);
                     continue;
                 }
                 case 5: {
-                    zzC = com.google.android.gms.common.internal.safeparcel.zza.zzC(parcel, zzai);
+                    zzD = com.google.android.gms.common.internal.safeparcel.zza.zzD(parcel, zzao);
                     continue;
                 }
                 case 6: {
-                    zzo = com.google.android.gms.common.internal.safeparcel.zza.zzo(parcel, zzai);
+                    zzp = com.google.android.gms.common.internal.safeparcel.zza.zzp(parcel, zzao);
                     continue;
                 }
                 case 7: {
-                    uri = com.google.android.gms.common.internal.safeparcel.zza.zza(parcel, zzai, (android.os.Parcelable$Creator<Uri>)Uri.CREATOR);
+                    uri = com.google.android.gms.common.internal.safeparcel.zza.zza(parcel, zzao, (android.os.Parcelable$Creator<Uri>)Uri.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
-        return new ApplicationMetadata(zzg, zzo3, zzo2, zzc, zzC, zzo, uri);
+        return new ApplicationMetadata(zzg, zzp3, zzp2, zzc, zzD, zzp, uri);
     }
     
-    public ApplicationMetadata[] zzaH(final int n) {
+    public ApplicationMetadata[] zzaN(final int n) {
         return new ApplicationMetadata[n];
     }
 }

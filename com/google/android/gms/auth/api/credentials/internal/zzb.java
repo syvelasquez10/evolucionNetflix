@@ -10,25 +10,25 @@ import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
 
 public final class zzb implements CredentialRequestResult
 {
-    private final Status zzQA;
-    private final Credential zzRx;
+    private final Status zzSC;
+    private final Credential zzSD;
     
-    public zzb(final Status zzQA, final Credential zzRx) {
-        this.zzQA = zzQA;
-        this.zzRx = zzRx;
+    public zzb(final Status zzSC, final Credential zzSD) {
+        this.zzSC = zzSC;
+        this.zzSD = zzSD;
     }
     
-    public static zzb zzm(final Status status) {
+    public static zzb zzh(final Status status) {
         return new zzb(status, null);
     }
     
     @Override
     public Credential getCredential() {
-        return this.zzRx;
+        return this.zzSD;
     }
     
     @Override
     public Status getStatus() {
-        return this.zzQA;
+        return this.zzSC;
     }
 }

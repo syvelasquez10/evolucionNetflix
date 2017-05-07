@@ -135,7 +135,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     }
     
     public void handleStop() {
-        if (!this.mNetflixActivity.isFinishing()) {
+        if (!this.mNetflixActivity.isFinishing() && this.mNetflixActivity.getServiceManager() != null && ServiceManagerUtils.isMdxAgentAvailable(this.mNetflixActivity.getServiceManager())) {
             this.stopAllNotifications();
             this.mNetflixActivity.startService(this.createIntent("com.netflix.mediaclient.intent.action.MDX_STOP"));
             this.mNetflixActivity.finish();
@@ -168,7 +168,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void initInfoContainer(final Activity activity) {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(activity.getText(2131165502));
+            this.mInfoTitleView.setText(activity.getText(2131165500));
             this.mInfoTitleView.setVisibility(4);
         }
         if (this.mTimerView != null) {

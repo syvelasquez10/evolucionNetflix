@@ -4,20 +4,21 @@
 
 package com.google.android.gms.cast.internal;
 
+import com.google.android.gms.cast.JoinOptions;
 import com.google.android.gms.cast.LaunchOptions;
 import android.os.Parcel;
 import android.os.IBinder;
 
 class zzi$zza$zza implements zzi
 {
-    private IBinder zznI;
+    private IBinder zznJ;
     
-    zzi$zza$zza(final IBinder zznI) {
-        this.zznI = zznI;
+    zzi$zza$zza(final IBinder zznJ) {
+        this.zznJ = zznJ;
     }
     
     public IBinder asBinder() {
-        return this.zznI;
+        return this.zznJ;
     }
     
     @Override
@@ -25,7 +26,7 @@ class zzi$zza$zza implements zzi
         final Parcel obtain = Parcel.obtain();
         try {
             obtain.writeInterfaceToken("com.google.android.gms.cast.internal.ICastDeviceController");
-            this.zznI.transact(1, obtain, (Parcel)null, 1);
+            this.zznJ.transact(1, obtain, (Parcel)null, 1);
         }
         finally {
             obtain.recycle();
@@ -44,7 +45,7 @@ class zzi$zza$zza implements zzi
                 n3 = 0;
             }
             obtain.writeInt(n3);
-            this.zznI.transact(7, obtain, (Parcel)null, 1);
+            this.zznJ.transact(7, obtain, (Parcel)null, 1);
         }
         finally {
             obtain.recycle();
@@ -64,7 +65,7 @@ class zzi$zza$zza implements zzi
             else {
                 obtain.writeInt(0);
             }
-            this.zznI.transact(13, obtain, (Parcel)null, 1);
+            this.zznJ.transact(13, obtain, (Parcel)null, 1);
         }
         finally {
             obtain.recycle();
@@ -72,14 +73,20 @@ class zzi$zza$zza implements zzi
     }
     
     @Override
-    public void zza(final String s, final String s2, final long n) {
+    public void zza(final String s, final String s2, final JoinOptions joinOptions) {
         final Parcel obtain = Parcel.obtain();
         try {
             obtain.writeInterfaceToken("com.google.android.gms.cast.internal.ICastDeviceController");
             obtain.writeString(s);
             obtain.writeString(s2);
-            obtain.writeLong(n);
-            this.zznI.transact(9, obtain, (Parcel)null, 1);
+            if (joinOptions != null) {
+                obtain.writeInt(1);
+                joinOptions.writeToParcel(obtain, 0);
+            }
+            else {
+                obtain.writeInt(0);
+            }
+            this.zznJ.transact(14, obtain, (Parcel)null, 1);
         }
         finally {
             obtain.recycle();
@@ -94,7 +101,7 @@ class zzi$zza$zza implements zzi
             obtain.writeString(s);
             obtain.writeByteArray(array);
             obtain.writeLong(n);
-            this.zznI.transact(10, obtain, (Parcel)null, 1);
+            this.zznJ.transact(10, obtain, (Parcel)null, 1);
         }
         finally {
             obtain.recycle();
@@ -124,7 +131,7 @@ class zzi$zza$zza implements zzi
                 n3 = 0;
             }
             obtain.writeInt(n3);
-            this.zznI.transact(8, obtain, (Parcel)null, 1);
+            this.zznJ.transact(8, obtain, (Parcel)null, 1);
         }
         finally {
             obtain.recycle();
@@ -132,12 +139,14 @@ class zzi$zza$zza implements zzi
     }
     
     @Override
-    public void zzbO(final String s) {
+    public void zzb(final String s, final String s2, final long n) {
         final Parcel obtain = Parcel.obtain();
         try {
             obtain.writeInterfaceToken("com.google.android.gms.cast.internal.ICastDeviceController");
             obtain.writeString(s);
-            this.zznI.transact(5, obtain, (Parcel)null, 1);
+            obtain.writeString(s2);
+            obtain.writeLong(n);
+            this.zznJ.transact(9, obtain, (Parcel)null, 1);
         }
         finally {
             obtain.recycle();
@@ -150,7 +159,7 @@ class zzi$zza$zza implements zzi
         try {
             obtain.writeInterfaceToken("com.google.android.gms.cast.internal.ICastDeviceController");
             obtain.writeString(s);
-            this.zznI.transact(11, obtain, (Parcel)null, 1);
+            this.zznJ.transact(5, obtain, (Parcel)null, 1);
         }
         finally {
             obtain.recycle();
@@ -163,7 +172,20 @@ class zzi$zza$zza implements zzi
         try {
             obtain.writeInterfaceToken("com.google.android.gms.cast.internal.ICastDeviceController");
             obtain.writeString(s);
-            this.zznI.transact(12, obtain, (Parcel)null, 1);
+            this.zznJ.transact(11, obtain, (Parcel)null, 1);
+        }
+        finally {
+            obtain.recycle();
+        }
+    }
+    
+    @Override
+    public void zzbR(final String s) {
+        final Parcel obtain = Parcel.obtain();
+        try {
+            obtain.writeInterfaceToken("com.google.android.gms.cast.internal.ICastDeviceController");
+            obtain.writeString(s);
+            this.zznJ.transact(12, obtain, (Parcel)null, 1);
         }
         finally {
             obtain.recycle();
@@ -181,7 +203,7 @@ class zzi$zza$zza implements zzi
                 n = 0;
             }
             obtain.writeInt(n);
-            this.zznI.transact(2, obtain, (Parcel)null, 1);
+            this.zznJ.transact(2, obtain, (Parcel)null, 1);
         }
         finally {
             obtain.recycle();
@@ -189,11 +211,11 @@ class zzi$zza$zza implements zzi
     }
     
     @Override
-    public void zzmI() {
+    public void zzmT() {
         final Parcel obtain = Parcel.obtain();
         try {
             obtain.writeInterfaceToken("com.google.android.gms.cast.internal.ICastDeviceController");
-            this.zznI.transact(4, obtain, (Parcel)null, 1);
+            this.zznJ.transact(6, obtain, (Parcel)null, 1);
         }
         finally {
             obtain.recycle();
@@ -201,11 +223,11 @@ class zzi$zza$zza implements zzi
     }
     
     @Override
-    public void zzmx() {
+    public void zzne() {
         final Parcel obtain = Parcel.obtain();
         try {
             obtain.writeInterfaceToken("com.google.android.gms.cast.internal.ICastDeviceController");
-            this.zznI.transact(6, obtain, (Parcel)null, 1);
+            this.zznJ.transact(4, obtain, (Parcel)null, 1);
         }
         finally {
             obtain.recycle();
@@ -219,7 +241,7 @@ class zzi$zza$zza implements zzi
             obtain.writeInterfaceToken("com.google.android.gms.cast.internal.ICastDeviceController");
             obtain.writeString(s);
             obtain.writeString(s2);
-            this.zznI.transact(3, obtain, (Parcel)null, 1);
+            this.zznJ.transact(3, obtain, (Parcel)null, 1);
         }
         finally {
             obtain.recycle();

@@ -8,13 +8,13 @@ import android.webkit.ValueCallback;
 
 class zzbk$2$1 implements ValueCallback<String>
 {
-    final /* synthetic */ zzbk$2 zzsa;
+    final /* synthetic */ zzbk$2 zzsl;
     
-    zzbk$2$1(final zzbk$2 zzsa) {
-        this.zzsa = zzsa;
+    zzbk$2$1(final zzbk$2 zzsl) {
+        this.zzsl = zzsl;
     }
     
     public void zzy(final String s) {
-        this.zzsa.zzrW.zza(this.zzsa.zzrY, this.zzsa.zzrZ, s);
+        this.zzsl.zzsh.zza(this.zzsl.zzsj, this.zzsl.zzsk, s);
     }
 }

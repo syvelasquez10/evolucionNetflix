@@ -11,12 +11,12 @@ import com.google.android.gms.common.internal.zzf;
 import android.os.Looper;
 import android.content.Context;
 import com.google.android.gms.common.api.Api$ApiOptions$NoOptions;
-import com.google.android.gms.internal.zzjs;
+import com.google.android.gms.internal.zzkb;
 import com.google.android.gms.common.api.Api$zza;
 
-final class Auth$3 extends Api$zza<zzjs, Api$ApiOptions$NoOptions>
+final class Auth$3 extends Api$zza<zzkb, Api$ApiOptions$NoOptions>
 {
-    public zzjs zzd(final Context context, final Looper looper, final zzf zzf, final Api$ApiOptions$NoOptions api$ApiOptions$NoOptions, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
-        return new zzjs(context, looper, zzf, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
+    public zzkb zzc(final Context context, final Looper looper, final zzf zzf, final Api$ApiOptions$NoOptions api$ApiOptions$NoOptions, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
+        return new zzkb(context, looper, zzf, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
     }
 }

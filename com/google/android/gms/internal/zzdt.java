@@ -4,7 +4,29 @@
 
 package com.google.android.gms.internal;
 
-public interface zzdt
+import com.google.android.gms.ads.internal.zzp;
+
+@zzgr
+public class zzdt extends zzhz
 {
-    zzdr zza(final zzip p0, final int p1, final String p2);
+    final zziz zzoM;
+    final zzdv zzxY;
+    private final String zzxZ;
+    
+    zzdt(final zziz zzoM, final zzdv zzxY, final String zzxZ) {
+        this.zzoM = zzoM;
+        this.zzxY = zzxY;
+        this.zzxZ = zzxZ;
+        zzp.zzbI().zza(this);
+    }
+    
+    @Override
+    public void zzbn() {
+        try {
+            this.zzxY.zzab(this.zzxZ);
+        }
+        finally {
+            zzid.zzIE.post((Runnable)new zzdt$1(this));
+        }
+    }
 }

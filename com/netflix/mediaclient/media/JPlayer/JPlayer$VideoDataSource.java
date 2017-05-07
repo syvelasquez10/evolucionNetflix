@@ -67,13 +67,13 @@ public class JPlayer$VideoDataSource implements MediaDecoderPipe$InputDataSource
                             byteBuffer.limit(mediaDecoderPipe$InputDataSource$BufferMeta.size);
                             byteBuffer.position(0);
                             return mediaDecoderPipe$InputDataSource$BufferMeta;
+                            mediaDecoderPipe$InputDataSource$BufferMeta.flags = player$InputBufInfo.mFlags;
+                            mediaDecoderPipe$InputDataSource$BufferMeta.size = player$InputBufInfo.mDataSize;
+                            continue Label_0196_Outer;
                             mediaDecoderPipe$InputDataSource$BufferMeta.flags = 256;
                             mediaDecoderPipe$InputDataSource$BufferMeta.size = 0;
                             this.this$0.configureVideoPipe();
                             this.this$0.mSwitchingPending = true;
-                            continue Label_0196_Outer;
-                            mediaDecoderPipe$InputDataSource$BufferMeta.flags = player$InputBufInfo.mFlags;
-                            mediaDecoderPipe$InputDataSource$BufferMeta.size = player$InputBufInfo.mDataSize;
                             continue Label_0196_Outer;
                         }
                         catch (IllegalArgumentException ex) {

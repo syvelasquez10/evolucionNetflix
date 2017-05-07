@@ -18,6 +18,7 @@ import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -168,7 +169,7 @@ public class SignupActivity$NFAndroidJS
         catch (JSONException ex) {
             Log.e("SignupActivity", "Failed to LoginToApp", (Throwable)ex);
             this.this$0.mSignupOngoing = false;
-            this.this$0.provideDialog(this.this$0.getString(2131165616), this.this$0.mHandleError);
+            this.this$0.provideDialog(this.this$0.getString(2131165614), this.this$0.mHandleError);
             return;
         }
         Log.d("SignupActivity", "loginToApp, invalid state to Login, bailing out");

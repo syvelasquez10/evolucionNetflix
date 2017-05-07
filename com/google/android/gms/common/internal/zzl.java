@@ -9,19 +9,19 @@ import android.content.Context;
 
 public abstract class zzl
 {
-    private static final Object zzadT;
-    private static zzl zzadU;
+    private static final Object zzafW;
+    private static zzl zzafX;
     
     static {
-        zzadT = new Object();
+        zzafW = new Object();
     }
     
-    public static zzl zzak(final Context context) {
-        synchronized (zzl.zzadT) {
-            if (zzl.zzadU == null) {
-                zzl.zzadU = new zzm(context.getApplicationContext());
+    public static zzl zzal(final Context context) {
+        synchronized (zzl.zzafW) {
+            if (zzl.zzafX == null) {
+                zzl.zzafX = new zzm(context.getApplicationContext());
             }
-            return zzl.zzadU;
+            return zzl.zzafX;
         }
     }
     

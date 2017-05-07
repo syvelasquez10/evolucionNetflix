@@ -12,56 +12,56 @@ import android.os.Parcelable$Creator;
 
 public class zza implements Parcelable$Creator<GInAppPurchaseManagerInfoParcel>
 {
-    static void zza(final GInAppPurchaseManagerInfoParcel gInAppPurchaseManagerInfoParcel, final Parcel parcel, int zzak) {
-        zzak = zzb.zzak(parcel);
+    static void zza(final GInAppPurchaseManagerInfoParcel gInAppPurchaseManagerInfoParcel, final Parcel parcel, int zzaq) {
+        zzaq = zzb.zzaq(parcel);
         zzb.zzc(parcel, 1, gInAppPurchaseManagerInfoParcel.versionCode);
-        zzb.zza(parcel, 3, gInAppPurchaseManagerInfoParcel.zzfd(), false);
-        zzb.zza(parcel, 4, gInAppPurchaseManagerInfoParcel.zzfe(), false);
-        zzb.zza(parcel, 5, gInAppPurchaseManagerInfoParcel.zzff(), false);
-        zzb.zza(parcel, 6, gInAppPurchaseManagerInfoParcel.zzfc(), false);
-        zzb.zzH(parcel, zzak);
+        zzb.zza(parcel, 3, gInAppPurchaseManagerInfoParcel.zzfj(), false);
+        zzb.zza(parcel, 4, gInAppPurchaseManagerInfoParcel.zzfk(), false);
+        zzb.zza(parcel, 5, gInAppPurchaseManagerInfoParcel.zzfl(), false);
+        zzb.zza(parcel, 6, gInAppPurchaseManagerInfoParcel.zzfi(), false);
+        zzb.zzI(parcel, zzaq);
     }
     
-    public GInAppPurchaseManagerInfoParcel zzi(final Parcel parcel) {
-        IBinder zzp = null;
-        final int zzaj = com.google.android.gms.common.internal.safeparcel.zza.zzaj(parcel);
+    public GInAppPurchaseManagerInfoParcel zzh(final Parcel parcel) {
+        IBinder zzq = null;
+        final int zzap = com.google.android.gms.common.internal.safeparcel.zza.zzap(parcel);
         int zzg = 0;
-        IBinder zzp2 = null;
-        IBinder zzp3 = null;
-        IBinder zzp4 = null;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = com.google.android.gms.common.internal.safeparcel.zza.zzai(parcel);
-            switch (com.google.android.gms.common.internal.safeparcel.zza.zzbH(zzai)) {
+        IBinder zzq2 = null;
+        IBinder zzq3 = null;
+        IBinder zzq4 = null;
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = com.google.android.gms.common.internal.safeparcel.zza.zzao(parcel);
+            switch (com.google.android.gms.common.internal.safeparcel.zza.zzbM(zzao)) {
                 default: {
-                    com.google.android.gms.common.internal.safeparcel.zza.zzb(parcel, zzai);
+                    com.google.android.gms.common.internal.safeparcel.zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzg = com.google.android.gms.common.internal.safeparcel.zza.zzg(parcel, zzai);
+                    zzg = com.google.android.gms.common.internal.safeparcel.zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 3: {
-                    zzp4 = com.google.android.gms.common.internal.safeparcel.zza.zzp(parcel, zzai);
+                    zzq4 = com.google.android.gms.common.internal.safeparcel.zza.zzq(parcel, zzao);
                     continue;
                 }
                 case 4: {
-                    zzp3 = com.google.android.gms.common.internal.safeparcel.zza.zzp(parcel, zzai);
+                    zzq3 = com.google.android.gms.common.internal.safeparcel.zza.zzq(parcel, zzao);
                     continue;
                 }
                 case 5: {
-                    zzp2 = com.google.android.gms.common.internal.safeparcel.zza.zzp(parcel, zzai);
+                    zzq2 = com.google.android.gms.common.internal.safeparcel.zza.zzq(parcel, zzao);
                     continue;
                 }
                 case 6: {
-                    zzp = com.google.android.gms.common.internal.safeparcel.zza.zzp(parcel, zzai);
+                    zzq = com.google.android.gms.common.internal.safeparcel.zza.zzq(parcel, zzao);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
-        return new GInAppPurchaseManagerInfoParcel(zzg, zzp4, zzp3, zzp2, zzp);
+        return new GInAppPurchaseManagerInfoParcel(zzg, zzq4, zzq3, zzq2, zzq);
     }
     
     public GInAppPurchaseManagerInfoParcel[] zzx(final int n) {

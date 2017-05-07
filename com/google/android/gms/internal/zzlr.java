@@ -4,54 +4,55 @@
 
 package com.google.android.gms.internal;
 
-import java.io.IOException;
-import java.io.Closeable;
-import java.io.OutputStream;
-import java.io.InputStream;
-
-public final class zzlr
+public abstract class zzlr<T>
 {
-    public static long zza(final InputStream inputStream, final OutputStream outputStream) {
-        return zza(inputStream, outputStream, false);
+    private static zzlr$zza zzadc;
+    private static int zzadd;
+    private static String zzade;
+    private static final Object zzpy;
+    private T zzOX;
+    protected final String zzue;
+    protected final T zzuf;
+    
+    static {
+        zzpy = new Object();
+        zzlr.zzadc = null;
+        zzlr.zzadd = 0;
+        zzlr.zzade = "com.google.android.providers.gsf.permission.READ_GSERVICES";
     }
     
-    public static long zza(final InputStream inputStream, final OutputStream outputStream, final boolean b) {
-        return zza(inputStream, outputStream, b, 1024);
+    protected zzlr(final String zzue, final T zzuf) {
+        this.zzOX = null;
+        this.zzue = zzue;
+        this.zzuf = zzuf;
     }
     
-    public static long zza(final InputStream inputStream, final OutputStream outputStream, final boolean b, int read) {
-        final byte[] array = new byte[read];
-        long n = 0L;
-        try {
-            while (true) {
-                read = inputStream.read(array, 0, array.length);
-                if (read == -1) {
-                    break;
-                }
-                n += read;
-                outputStream.write(array, 0, read);
-            }
-        }
-        finally {
-            if (b) {
-                zzb(inputStream);
-                zzb(outputStream);
-            }
-        }
-        if (b) {
-            zzb(inputStream);
-            zzb(outputStream);
-        }
-        return n;
+    public static boolean isInitialized() {
+        return zzlr.zzadc != null;
     }
     
-    public static void zzb(final Closeable closeable) {
-        if (closeable == null) {
-            return;
-        }
-        try {
-            closeable.close();
-        }
-        catch (IOException ex) {}
+    public static zzlr<Integer> zza(final String s, final Integer n) {
+        return new zzlr$3(s, n);
     }
+    
+    public static zzlr<Long> zza(final String s, final Long n) {
+        return new zzlr$2(s, n);
+    }
+    
+    public static int zzoo() {
+        return zzlr.zzadd;
+    }
+    
+    public static zzlr<String> zzu(final String s, final String s2) {
+        return new zzlr$5(s, s2);
+    }
+    
+    public final T get() {
+        if (this.zzOX != null) {
+            return this.zzOX;
+        }
+        return this.zzbY(this.zzue);
+    }
+    
+    protected abstract T zzbY(final String p0);
 }

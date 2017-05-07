@@ -13,7 +13,7 @@ public class zza extends zzg$zza
         throw new UnsupportedOperationException();
     }
     
-    public void zzl(final Status status) {
+    public void zzg(final Status status) {
         throw new UnsupportedOperationException();
     }
 }

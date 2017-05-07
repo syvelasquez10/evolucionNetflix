@@ -42,6 +42,7 @@ import com.netflix.mediaclient.ui.login.LogoutActivity;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.servicemgr.IClientLogging;

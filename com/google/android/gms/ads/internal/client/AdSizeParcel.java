@@ -9,41 +9,43 @@ import android.os.Parcel;
 import android.util.DisplayMetrics;
 import com.google.android.gms.ads.AdSize;
 import android.content.Context;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-@zzgk
-public final class AdSizeParcel implements SafeParcelable
+@zzgr
+public class AdSizeParcel implements SafeParcelable
 {
-    public static final zzh CREATOR;
+    public static final zzi CREATOR;
     public final int height;
     public final int heightPixels;
     public final int versionCode;
     public final int width;
     public final int widthPixels;
-    public final String zzsG;
-    public final boolean zzsH;
-    public final AdSizeParcel[] zzsI;
-    public final boolean zzsJ;
+    public final String zzte;
+    public final boolean zztf;
+    public final AdSizeParcel[] zztg;
+    public final boolean zzth;
+    public final boolean zzti;
     
     static {
-        CREATOR = new zzh();
+        CREATOR = new zzi();
     }
     
     public AdSizeParcel() {
-        this(3, "interstitial_mb", 0, 0, true, 0, 0, null, false);
+        this(4, "interstitial_mb", 0, 0, true, 0, 0, null, false, false);
     }
     
-    AdSizeParcel(final int versionCode, final String zzsG, final int height, final int heightPixels, final boolean zzsH, final int width, final int widthPixels, final AdSizeParcel[] zzsI, final boolean zzsJ) {
+    AdSizeParcel(final int versionCode, final String zzte, final int height, final int heightPixels, final boolean zztf, final int width, final int widthPixels, final AdSizeParcel[] zztg, final boolean zzth, final boolean zzti) {
         this.versionCode = versionCode;
-        this.zzsG = zzsG;
+        this.zzte = zzte;
         this.height = height;
         this.heightPixels = heightPixels;
-        this.zzsH = zzsH;
+        this.zztf = zztf;
         this.width = width;
         this.widthPixels = widthPixels;
-        this.zzsI = zzsI;
-        this.zzsJ = zzsJ;
+        this.zztg = zztg;
+        this.zzth = zzth;
+        this.zzti = zzti;
     }
     
     public AdSizeParcel(final Context context, final AdSize adSize) {
@@ -52,10 +54,17 @@ public final class AdSizeParcel implements SafeParcelable
     
     public AdSizeParcel(final Context context, final AdSize[] array) {
         final AdSize adSize = array[0];
-        this.versionCode = 3;
-        this.zzsH = false;
-        this.width = adSize.getWidth();
-        this.height = adSize.getHeight();
+        this.versionCode = 4;
+        this.zztf = false;
+        this.zzti = adSize.isFluid();
+        if (this.zzti) {
+            this.width = AdSize.BANNER.getWidth();
+            this.height = AdSize.BANNER.getHeight();
+        }
+        else {
+            this.width = adSize.getWidth();
+            this.height = adSize.getHeight();
+        }
         boolean b;
         if (this.width == -1) {
             b = true;
@@ -73,8 +82,8 @@ public final class AdSizeParcel implements SafeParcelable
         final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         int width;
         if (b) {
-            if (zzk.zzcE().zzS(context) && zzk.zzcE().zzT(context)) {
-                this.widthPixels = zza(displayMetrics) - zzk.zzcE().zzU(context);
+            if (zzl.zzcF().zzS(context) && zzl.zzcF().zzT(context)) {
+                this.widthPixels = zza(displayMetrics) - zzl.zzcF().zzU(context);
             }
             else {
                 this.widthPixels = zza(displayMetrics);
@@ -87,7 +96,7 @@ public final class AdSizeParcel implements SafeParcelable
         }
         else {
             width = this.width;
-            this.widthPixels = zzk.zzcE().zza(displayMetrics, this.width);
+            this.widthPixels = zzl.zzcF().zza(displayMetrics, this.width);
         }
         int n2;
         if (b2) {
@@ -96,23 +105,26 @@ public final class AdSizeParcel implements SafeParcelable
         else {
             n2 = this.height;
         }
-        this.heightPixels = zzk.zzcE().zza(displayMetrics, n2);
+        this.heightPixels = zzl.zzcF().zza(displayMetrics, n2);
         if (b || b2) {
-            this.zzsG = width + "x" + n2 + "_as";
+            this.zzte = width + "x" + n2 + "_as";
+        }
+        else if (this.zzti) {
+            this.zzte = "320x50_mb";
         }
         else {
-            this.zzsG = adSize.toString();
+            this.zzte = adSize.toString();
         }
         if (array.length > 1) {
-            this.zzsI = new AdSizeParcel[array.length];
+            this.zztg = new AdSizeParcel[array.length];
             for (int i = 0; i < array.length; ++i) {
-                this.zzsI[i] = new AdSizeParcel(context, array[i]);
+                this.zztg[i] = new AdSizeParcel(context, array[i]);
             }
         }
         else {
-            this.zzsI = null;
+            this.zztg = null;
         }
-        this.zzsJ = false;
+        this.zzth = false;
     }
     
     public static int zza(final DisplayMetrics displayMetrics) {
@@ -139,10 +151,10 @@ public final class AdSizeParcel implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        zzh.zza(this, parcel, n);
+        zzi.zza(this, parcel, n);
     }
     
-    public AdSize zzcC() {
-        return zza.zza(this.width, this.height, this.zzsG);
+    public AdSize zzcD() {
+        return zza.zza(this.width, this.height, this.zzte);
     }
 }

@@ -12,47 +12,47 @@ import android.os.Parcelable$Creator;
 
 public class zzd implements Parcelable$Creator<IdToken>
 {
-    static void zza(final IdToken idToken, final Parcel parcel, int zzak) {
-        zzak = zzb.zzak(parcel);
+    static void zza(final IdToken idToken, final Parcel parcel, int zzaq) {
+        zzaq = zzb.zzaq(parcel);
         zzb.zza(parcel, 1, idToken.getAccountType(), false);
         zzb.zzc(parcel, 1000, idToken.mVersionCode);
-        zzb.zza(parcel, 2, idToken.zzlv(), false);
-        zzb.zzH(parcel, zzak);
+        zzb.zza(parcel, 2, idToken.getIdToken(), false);
+        zzb.zzI(parcel, zzaq);
     }
     
-    public IdToken zzG(final Parcel parcel) {
-        String zzo = null;
-        final int zzaj = zza.zzaj(parcel);
+    public IdToken zzH(final Parcel parcel) {
+        String zzp = null;
+        final int zzap = zza.zzap(parcel);
         int zzg = 0;
-        String zzo2 = null;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = zza.zzai(parcel);
-            switch (zza.zzbH(zzai)) {
+        String zzp2 = null;
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = zza.zzao(parcel);
+            switch (zza.zzbM(zzao)) {
                 default: {
-                    zza.zzb(parcel, zzai);
+                    zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzo2 = zza.zzo(parcel, zzai);
+                    zzp2 = zza.zzp(parcel, zzao);
                     continue;
                 }
                 case 1000: {
-                    zzg = zza.zzg(parcel, zzai);
+                    zzg = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 2: {
-                    zzo = zza.zzo(parcel, zzai);
+                    zzp = zza.zzp(parcel, zzao);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
-        return new IdToken(zzg, zzo2, zzo);
+        return new IdToken(zzg, zzp2, zzp);
     }
     
-    public IdToken[] zzaw(final int n) {
+    public IdToken[] zzay(final int n) {
         return new IdToken[n];
     }
 }

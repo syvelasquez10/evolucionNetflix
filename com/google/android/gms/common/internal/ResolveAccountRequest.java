@@ -13,17 +13,17 @@ public class ResolveAccountRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<ResolveAccountRequest> CREATOR;
     final int mVersionCode;
-    private final Account zzOY;
-    private final int zzaem;
+    private final Account zzQd;
+    private final int zzagp;
     
     static {
         CREATOR = (Parcelable$Creator)new zzy();
     }
     
-    ResolveAccountRequest(final int mVersionCode, final Account zzOY, final int zzaem) {
+    ResolveAccountRequest(final int mVersionCode, final Account zzQd, final int zzagp) {
         this.mVersionCode = mVersionCode;
-        this.zzOY = zzOY;
-        this.zzaem = zzaem;
+        this.zzQd = zzQd;
+        this.zzagp = zzagp;
     }
     
     public ResolveAccountRequest(final Account account, final int n) {
@@ -35,11 +35,11 @@ public class ResolveAccountRequest implements SafeParcelable
     }
     
     public Account getAccount() {
-        return this.zzOY;
+        return this.zzQd;
     }
     
     public int getSessionId() {
-        return this.zzaem;
+        return this.zzagp;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

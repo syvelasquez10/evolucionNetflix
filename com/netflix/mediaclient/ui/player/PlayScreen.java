@@ -224,11 +224,16 @@ public class PlayScreen implements Screen
     }
     
     public void changeActionState(final boolean b, final boolean b2) {
-        if (this.mTopPanel != null) {
-            this.mTopPanel.changeActionState(b);
+        if (!this.mController.isActivityValid()) {
+            Log.i("screen", "changeActionState() was called when activity is already not in valid state - skipping...");
         }
-        if (this.mBottomPanel != null) {
-            this.mBottomPanel.changeActionState(b, b2);
+        else {
+            if (this.mTopPanel != null) {
+                this.mTopPanel.changeActionState(b);
+            }
+            if (this.mBottomPanel != null) {
+                this.mBottomPanel.changeActionState(b, b2);
+            }
         }
     }
     
@@ -320,44 +325,45 @@ public class PlayScreen implements Screen
     
     protected void moveToState(final PlayerUiState playerUiState) {
         while (true) {
-            while (true) {
-                Label_0108: {
-                    synchronized (this) {
-                        if (this.mState == playerUiState) {
+            Label_0079: {
+                synchronized (this) {
+                    if (this.mController == null || !this.mController.isActivityValid()) {
+                        Log.w("screen", "moveToState() mController is already in finishing state, do nothing");
+                    }
+                    else {
+                        if (this.mState != playerUiState) {
+                            break Label_0079;
+                        }
+                        if (Log.isLoggable()) {
                             Log.d("screen", "moveToState() Already in this state, do nothing: " + playerUiState);
                         }
-                        else {
-                            if ((this.mPendingState = playerUiState) != PlayerUiState.Loading) {
-                                break Label_0108;
-                            }
-                            this.moveToLoading();
-                            this.mState = playerUiState;
-                            this.mPendingState = null;
-                            if (Log.isLoggable()) {
-                                Log.i("screen", "moveToState() finished moving to state: " + this.mState);
-                            }
-                        }
-                        return;
                     }
+                    return;
                 }
-                if (playerUiState == PlayerUiState.Playing) {
-                    this.moveToLoaded();
-                    continue;
-                }
-                if (playerUiState == PlayerUiState.PlayingWithTrickPlayOverlay) {
-                    this.moveToLoadedTapped();
-                    continue;
-                }
-                if (playerUiState == PlayerUiState.PostPlay) {
-                    this.moveToPostPlay();
-                    continue;
-                }
-                if (playerUiState == PlayerUiState.Interrupter) {
-                    this.moveToInterrupted();
-                    continue;
-                }
+            }
+            final PlayerUiState playerUiState2;
+            if ((this.mPendingState = playerUiState2) == PlayerUiState.Loading) {
+                this.moveToLoading();
+            }
+            else if (playerUiState2 == PlayerUiState.Playing) {
+                this.moveToLoaded();
+            }
+            else if (playerUiState2 == PlayerUiState.PlayingWithTrickPlayOverlay) {
+                this.moveToLoadedTapped();
+            }
+            else if (playerUiState2 == PlayerUiState.PostPlay) {
+                this.moveToPostPlay();
+            }
+            else if (playerUiState2 == PlayerUiState.Interrupter) {
+                this.moveToInterrupted();
+            }
+            else {
                 Log.e("screen", "Invalid state set, ignoring");
-                continue;
+            }
+            this.mState = playerUiState2;
+            this.mPendingState = null;
+            if (Log.isLoggable()) {
+                Log.i("screen", "moveToState() finished moving to state: " + this.mState);
             }
         }
     }
@@ -526,6 +532,9 @@ public class PlayScreen implements Screen
     }
     
     public void showBif(final ByteBuffer byteBuffer) {
+        if (this.mController == null || !this.mController.isActivityValid()) {
+            return;
+        }
         this.mBottomPanel.getCurrentTime().setBifDownloaded(byteBuffer != null);
         if (byteBuffer == null || this.mBif == null) {
             Log.d("screen", "bif data is null");
@@ -559,6 +568,9 @@ public class PlayScreen implements Screen
     }
     
     public void startBif(final ByteBuffer byteBuffer) {
+        if (this.mController == null || !this.mController.isActivityValid()) {
+            return;
+        }
         if (this.mController.isTablet()) {
             this.mBifAnim = AnimationUtils.startViewAppearanceAnimation(this.mTabletBifsLayout, true);
         }
@@ -569,13 +581,18 @@ public class PlayScreen implements Screen
     }
     
     void startCurrentTime(final ByteBuffer byteBuffer) {
-        final BottomPanel mBottomPanel = this.mBottomPanel;
-        if (mBottomPanel != null && mBottomPanel.getCurrentTime() != null) {
-            mBottomPanel.getCurrentTime().start(byteBuffer);
+        if (this.mController != null && this.mController.isActivityValid()) {
+            final BottomPanel mBottomPanel = this.mBottomPanel;
+            if (mBottomPanel != null && mBottomPanel.getCurrentTime() != null) {
+                mBottomPanel.getCurrentTime().start(byteBuffer);
+            }
         }
     }
     
     public void stopBif() {
+        if (this.mController == null || !this.mController.isActivityValid()) {
+            return;
+        }
         if (!this.mController.isTablet()) {
             AnimationUtils.startViewAppearanceAnimation((View)this.mBif, false);
             return;
@@ -589,9 +606,11 @@ public class PlayScreen implements Screen
     }
     
     void stopCurrentTime(final boolean b) {
-        final BottomPanel mBottomPanel = this.mBottomPanel;
-        if (mBottomPanel != null && mBottomPanel.getCurrentTime() != null) {
-            mBottomPanel.getCurrentTime().stop(b);
+        if (this.mController != null && this.mController.isActivityValid()) {
+            final BottomPanel mBottomPanel = this.mBottomPanel;
+            if (mBottomPanel != null && mBottomPanel.getCurrentTime() != null) {
+                mBottomPanel.getCurrentTime().stop(b);
+            }
         }
     }
 }

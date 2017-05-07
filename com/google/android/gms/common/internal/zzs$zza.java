@@ -380,7 +380,7 @@ public abstract class zzs$zza extends Binder implements zzs
             }
             case 28: {
                 parcel.enforceInterface("com.google.android.gms.common.internal.IGmsServiceBroker");
-                this.zzoN();
+                this.zzpp();
                 parcel2.writeNoException();
                 return true;
             }

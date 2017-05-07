@@ -16,30 +16,30 @@ public class zzh implements DialogInterface$OnClickListener
 {
     private final Activity mActivity;
     private final Intent mIntent;
-    private final Fragment zzadh;
-    private final int zzadi;
+    private final int zzaaY;
+    private final Fragment zzafl;
     
-    public zzh(final Activity mActivity, final Intent mIntent, final int zzadi) {
+    public zzh(final Activity mActivity, final Intent mIntent, final int zzaaY) {
         this.mActivity = mActivity;
-        this.zzadh = null;
+        this.zzafl = null;
         this.mIntent = mIntent;
-        this.zzadi = zzadi;
+        this.zzaaY = zzaaY;
     }
     
-    public zzh(final Fragment zzadh, final Intent mIntent, final int zzadi) {
+    public zzh(final Fragment zzafl, final Intent mIntent, final int zzaaY) {
         this.mActivity = null;
-        this.zzadh = zzadh;
+        this.zzafl = zzafl;
         this.mIntent = mIntent;
-        this.zzadi = zzadi;
+        this.zzaaY = zzaaY;
     }
     
     public void onClick(final DialogInterface dialogInterface, final int n) {
         try {
-            if (this.mIntent != null && this.zzadh != null) {
-                this.zzadh.startActivityForResult(this.mIntent, this.zzadi);
+            if (this.mIntent != null && this.zzafl != null) {
+                this.zzafl.startActivityForResult(this.mIntent, this.zzaaY);
             }
             else if (this.mIntent != null) {
-                this.mActivity.startActivityForResult(this.mIntent, this.zzadi);
+                this.mActivity.startActivityForResult(this.mIntent, this.zzaaY);
             }
             dialogInterface.dismiss();
         }

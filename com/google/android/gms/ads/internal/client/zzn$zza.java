@@ -12,7 +12,7 @@ import android.os.Binder;
 public abstract class zzn$zza extends Binder implements zzn
 {
     public zzn$zza() {
-        this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.client.IAdListener");
+        this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.client.IAdClickListener");
     }
     
     public IBinder asBinder() {
@@ -25,36 +25,12 @@ public abstract class zzn$zza extends Binder implements zzn
                 return super.onTransact(n, parcel, parcel2, n2);
             }
             case 1598968902: {
-                parcel2.writeString("com.google.android.gms.ads.internal.client.IAdListener");
+                parcel2.writeString("com.google.android.gms.ads.internal.client.IAdClickListener");
                 return true;
             }
             case 1: {
-                parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdListener");
-                this.onAdClosed();
-                parcel2.writeNoException();
-                return true;
-            }
-            case 2: {
-                parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdListener");
-                this.onAdFailedToLoad(parcel.readInt());
-                parcel2.writeNoException();
-                return true;
-            }
-            case 3: {
-                parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdListener");
-                this.onAdLeftApplication();
-                parcel2.writeNoException();
-                return true;
-            }
-            case 4: {
-                parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdListener");
-                this.onAdLoaded();
-                parcel2.writeNoException();
-                return true;
-            }
-            case 5: {
-                parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdListener");
-                this.onAdOpened();
+                parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdClickListener");
+                this.onAdClicked();
                 parcel2.writeNoException();
                 return true;
             }

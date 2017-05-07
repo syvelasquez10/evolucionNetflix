@@ -8,43 +8,50 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 import java.util.Map;
 import java.util.HashMap;
-import android.view.ViewGroup$LayoutParams;
-import android.widget.FrameLayout$LayoutParams;
 import com.google.android.gms.common.internal.zzb;
+import android.view.ViewGroup$LayoutParams;
 import android.view.View;
-import com.google.android.gms.internal.zzcc;
-import com.google.android.gms.internal.zzcd;
+import android.widget.FrameLayout$LayoutParams;
+import com.google.android.gms.internal.zzce;
+import com.google.android.gms.internal.zzcg;
 import android.content.Context;
-import com.google.android.gms.internal.zzip;
+import com.google.android.gms.internal.zziz;
 import android.widget.TextView;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 import android.widget.FrameLayout;
 
-@zzgk
+@zzgr
 public class zzk extends FrameLayout implements zzh
 {
-    private final FrameLayout zzBb;
-    private final zzq zzBc;
-    private zzi zzBd;
-    private boolean zzBe;
-    private boolean zzBf;
-    private TextView zzBg;
-    private long zzBh;
-    private String zzBj;
-    private final zzip zzoL;
-    private String zzxs;
+    private final FrameLayout zzBN;
+    private final zzq zzBO;
+    private zzi zzBP;
+    private boolean zzBQ;
+    private boolean zzBR;
+    private TextView zzBS;
+    private long zzBT;
+    private String zzBV;
+    private final zziz zzoM;
+    private String zzxZ;
     
-    public zzk(final Context context, final zzip zzoL, final int n, final zzcd zzcd, final zzcc zzcc) {
+    public zzk(final Context context, final zziz zzoM, final int n, final zzcg zzcg, final zzce zzce) {
         super(context);
-        this.zzoL = zzoL;
-        this.addView((View)(this.zzBb = new FrameLayout(context)));
-        zzb.zzr(zzoL.zzgP());
-        this.zzBd = zzoL.zzgP().zzoG.zza(context, zzoL, n, zzcd, zzcc);
-        this.zzBb.addView((View)this.zzBd, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1, 17));
-        (this.zzBg = new TextView(context)).setBackgroundColor(-16777216);
-        this.zzeS();
-        (this.zzBc = new zzq(this)).zzfa();
-        this.zzBd.zza(this);
+        this.zzoM = zzoM;
+        this.addView((View)(this.zzBN = new FrameLayout(context)), (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1));
+        zzb.zzs(zzoM.zzhb());
+        this.zzBP = zzoM.zzhb().zzoH.zza(context, zzoM, n, zzcg, zzce);
+        if (this.zzBP != null) {
+            this.zzBN.addView((View)this.zzBP, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1, 17));
+        }
+        (this.zzBS = new TextView(context)).setBackgroundColor(-16777216);
+        this.zzeY();
+        (this.zzBO = new zzq(this)).zzfg();
+        if (this.zzBP != null) {
+            this.zzBP.zza(this);
+        }
+        if (this.zzBP == null) {
+            this.zzh("AdVideoUnderlay Error", "Allocating player failed.");
+        }
     }
     
     private void zza(String s, final String... array) {
@@ -64,115 +71,150 @@ public class zzk extends FrameLayout implements zzh
             }
             ++i;
         }
-        this.zzoL.zzc("onVideoEvent", hashMap);
+        this.zzoM.zzb("onVideoEvent", hashMap);
     }
     
-    public static void zzd(final zzip zzip) {
+    public static void zzd(final zziz zziz) {
         final HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("event", "no_video_view");
-        zzip.zzc("onVideoEvent", hashMap);
+        zziz.zzb("onVideoEvent", hashMap);
     }
     
-    private void zzeS() {
-        if (!this.zzeU()) {
-            this.zzBb.addView((View)this.zzBg, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1));
-            this.zzBb.bringChildToFront((View)this.zzBg);
+    private void zzeY() {
+        if (!this.zzfa()) {
+            this.zzBN.addView((View)this.zzBS, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1));
+            this.zzBN.bringChildToFront((View)this.zzBS);
         }
     }
     
-    private void zzeT() {
-        if (this.zzeU()) {
-            this.zzBb.removeView((View)this.zzBg);
+    private void zzeZ() {
+        if (this.zzfa()) {
+            this.zzBN.removeView((View)this.zzBS);
         }
     }
     
-    private boolean zzeU() {
-        return this.zzBg.getParent() != null;
+    private boolean zzfa() {
+        return this.zzBS.getParent() != null;
     }
     
-    private void zzeW() {
-        if (this.zzoL.zzgN() != null && this.zzBe && !this.zzBf) {
-            this.zzoL.zzgN().getWindow().clearFlags(128);
-            this.zzBe = false;
+    private void zzfc() {
+        if (this.zzoM.zzgZ() != null && this.zzBQ && !this.zzBR) {
+            this.zzoM.zzgZ().getWindow().clearFlags(128);
+            this.zzBQ = false;
         }
     }
     
     public void destroy() {
-        this.zzBc.cancel();
-        this.zzBd.stop();
-        this.zzeW();
+        this.zzBO.cancel();
+        if (this.zzBP != null) {
+            this.zzBP.stop();
+        }
+        this.zzfc();
     }
     
     public void pause() {
-        this.zzBd.pause();
+        if (this.zzBP == null) {
+            return;
+        }
+        this.zzBP.pause();
     }
     
     public void play() {
-        this.zzBd.play();
+        if (this.zzBP == null) {
+            return;
+        }
+        this.zzBP.play();
     }
     
     public void seekTo(final int n) {
-        this.zzBd.seekTo(n);
+        if (this.zzBP == null) {
+            return;
+        }
+        this.zzBP.seekTo(n);
     }
     
-    public void setMimeType(final String zzBj) {
-        this.zzBj = zzBj;
+    public void setMimeType(final String zzBV) {
+        this.zzBV = zzBV;
     }
     
     public void zza(final float n) {
-        this.zzBd.zza(n);
+        if (this.zzBP == null) {
+            return;
+        }
+        this.zzBP.zza(n);
     }
     
-    public void zzak(final String zzxs) {
-        this.zzxs = zzxs;
+    public void zzan(final String zzxZ) {
+        this.zzxZ = zzxZ;
     }
     
-    public void zzd(final MotionEvent motionEvent) {
-        this.zzBd.dispatchTouchEvent(motionEvent);
-    }
-    
-    public void zze(final int n, final int n2, final int n3, final int n4) {
+    public void zzd(final int n, final int n2, final int n3, final int n4) {
         if (n3 == 0 || n4 == 0) {
             return;
         }
         final FrameLayout$LayoutParams layoutParams = new FrameLayout$LayoutParams(n3 + 2, n4 + 2);
         layoutParams.setMargins(n - 1, n2 - 1, 0, 0);
-        this.zzBb.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
+        this.zzBN.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
         this.requestLayout();
     }
     
-    public void zzeP() {
-        if (!TextUtils.isEmpty((CharSequence)this.zzxs)) {
-            this.zzBd.setMimeType(this.zzBj);
-            this.zzBd.setVideoPath(this.zzxs);
+    public void zzd(final MotionEvent motionEvent) {
+        if (this.zzBP == null) {
+            return;
+        }
+        this.zzBP.dispatchTouchEvent(motionEvent);
+    }
+    
+    public void zzeV() {
+        if (this.zzBP == null) {
+            return;
+        }
+        if (!TextUtils.isEmpty((CharSequence)this.zzxZ)) {
+            this.zzBP.setMimeType(this.zzBV);
+            this.zzBP.setVideoPath(this.zzxZ);
             return;
         }
         this.zza("no_src", new String[0]);
     }
     
-    public void zzeQ() {
-        final TextView textView = new TextView(this.zzBd.getContext());
-        textView.setText((CharSequence)("AdMob - " + this.zzBd.zzek()));
+    public void zzeW() {
+        if (this.zzBP == null) {
+            return;
+        }
+        final TextView textView = new TextView(this.zzBP.getContext());
+        textView.setText((CharSequence)("AdMob - " + this.zzBP.zzer()));
         textView.setTextColor(-65536);
         textView.setBackgroundColor(-256);
-        this.zzBb.addView((View)textView, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2, 17));
-        this.zzBb.bringChildToFront((View)textView);
+        this.zzBN.addView((View)textView, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2, 17));
+        this.zzBN.bringChildToFront((View)textView);
     }
     
-    void zzeR() {
-        final long zzBh = this.zzBd.getCurrentPosition();
-        if (this.zzBh != zzBh && zzBh > 0L) {
-            this.zzeT();
-            this.zza("timeupdate", "time", String.valueOf(zzBh / 1000.0f));
-            this.zzBh = zzBh;
+    void zzeX() {
+        if (this.zzBP != null) {
+            final long zzBT = this.zzBP.getCurrentPosition();
+            if (this.zzBT != zzBT && zzBT > 0L) {
+                this.zzeZ();
+                this.zza("timeupdate", "time", String.valueOf(zzBT / 1000.0f));
+                this.zzBT = zzBT;
+            }
         }
     }
     
-    public void zzeq() {
-        this.zzBd.zzeq();
+    public void zzex() {
+        if (this.zzBP == null) {
+            return;
+        }
+        this.zzBP.zzex();
     }
     
-    public void zzer() {
-        this.zzBd.zzer();
+    public void zzey() {
+        if (this.zzBP == null) {
+            return;
+        }
+        this.zzBP.zzey();
+    }
+    
+    public void zzh(final String s, final String s2) {
+        this.zza("error", "what", s, "extra", s2);
     }
 }

@@ -57,7 +57,7 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
     
     public static void createNotification(final Context context, final Payload payload, final ImageLoader imageLoader, final int n) {
         final long when = payload.getWhen();
-        final String title = payload.getTitle(context.getString(2131165365));
+        final String title = payload.getTitle(context.getString(2131165363));
         final String ticker = payload.getTicker(title);
         final Notification$Builder notification$Builder = new Notification$Builder(context);
         notification$Builder.setContentIntent(NotificationBuilder.getNotificationOpenedIntent(context, payload));

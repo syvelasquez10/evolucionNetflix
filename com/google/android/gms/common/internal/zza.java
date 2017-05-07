@@ -14,8 +14,8 @@ import android.content.Context;
 public class zza extends zzp$zza
 {
     private Context mContext;
-    private Account zzOY;
-    int zzacB;
+    private Account zzQd;
+    int zzaeG;
     
     public static Account zzb(final zzp zzp) {
         Account account = null;
@@ -37,17 +37,17 @@ public class zza extends zzp$zza
     }
     
     public boolean equals(final Object o) {
-        return this == o || (o instanceof zza && this.zzOY.equals((Object)((zza)o).zzOY));
+        return this == o || (o instanceof zza && this.zzQd.equals((Object)((zza)o).zzQd));
     }
     
     public Account getAccount() {
         final int callingUid = Binder.getCallingUid();
-        if (callingUid == this.zzacB) {
-            return this.zzOY;
+        if (callingUid == this.zzaeG) {
+            return this.zzQd;
         }
         if (GooglePlayServicesUtil.zze(this.mContext, callingUid)) {
-            this.zzacB = callingUid;
-            return this.zzOY;
+            this.zzaeG = callingUid;
+            return this.zzQd;
         }
         throw new SecurityException("Caller is not GooglePlayServices");
     }

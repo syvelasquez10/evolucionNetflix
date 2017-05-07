@@ -13,33 +13,33 @@ public final class CredentialRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<CredentialRequest> CREATOR;
     final int mVersionCode;
-    private final boolean zzRj;
-    private final String[] zzRk;
-    private final CredentialPickerConfig zzRl;
-    private final CredentialPickerConfig zzRm;
+    private final boolean zzSo;
+    private final String[] zzSp;
+    private final CredentialPickerConfig zzSq;
+    private final CredentialPickerConfig zzSr;
     
     static {
         CREATOR = (Parcelable$Creator)new zzc();
     }
     
-    CredentialRequest(final int mVersionCode, final boolean zzRj, final String[] array, final CredentialPickerConfig credentialPickerConfig, final CredentialPickerConfig credentialPickerConfig2) {
+    CredentialRequest(final int mVersionCode, final boolean zzSo, final String[] array, final CredentialPickerConfig credentialPickerConfig, final CredentialPickerConfig credentialPickerConfig2) {
         this.mVersionCode = mVersionCode;
-        this.zzRj = zzRj;
-        this.zzRk = zzx.zzv(array);
+        this.zzSo = zzSo;
+        this.zzSp = zzx.zzw(array);
         CredentialPickerConfig build = credentialPickerConfig;
         if (credentialPickerConfig == null) {
             build = new CredentialPickerConfig$Builder().build();
         }
-        this.zzRl = build;
+        this.zzSq = build;
         CredentialPickerConfig build2;
         if ((build2 = credentialPickerConfig2) == null) {
             build2 = new CredentialPickerConfig$Builder().build();
         }
-        this.zzRm = build2;
+        this.zzSr = build2;
     }
     
     private CredentialRequest(final CredentialRequest$Builder credentialRequest$Builder) {
-        this(2, credentialRequest$Builder.zzRj, credentialRequest$Builder.zzRk, credentialRequest$Builder.zzRl, credentialRequest$Builder.zzRm);
+        this(2, credentialRequest$Builder.zzSo, credentialRequest$Builder.zzSp, credentialRequest$Builder.zzSq, credentialRequest$Builder.zzSr);
     }
     
     public int describeContents() {
@@ -47,19 +47,19 @@ public final class CredentialRequest implements SafeParcelable
     }
     
     public String[] getAccountTypes() {
-        return this.zzRk;
+        return this.zzSp;
     }
     
     public CredentialPickerConfig getCredentialHintPickerConfig() {
-        return this.zzRm;
+        return this.zzSr;
     }
     
     public CredentialPickerConfig getCredentialPickerConfig() {
-        return this.zzRl;
+        return this.zzSq;
     }
     
     public boolean getSupportsPasswordLogin() {
-        return this.zzRj;
+        return this.zzSo;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

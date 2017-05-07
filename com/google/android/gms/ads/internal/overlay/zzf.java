@@ -17,127 +17,127 @@ import android.os.Parcelable$Creator;
 public class zzf implements Parcelable$Creator<AdOverlayInfoParcel>
 {
     static void zza(final AdOverlayInfoParcel adOverlayInfoParcel, final Parcel parcel, final int n) {
-        final int zzak = zzb.zzak(parcel);
+        final int zzaq = zzb.zzaq(parcel);
         zzb.zzc(parcel, 1, adOverlayInfoParcel.versionCode);
-        zzb.zza(parcel, 2, (Parcelable)adOverlayInfoParcel.zzAO, n, false);
-        zzb.zza(parcel, 3, adOverlayInfoParcel.zzeE(), false);
-        zzb.zza(parcel, 4, adOverlayInfoParcel.zzeF(), false);
-        zzb.zza(parcel, 5, adOverlayInfoParcel.zzeG(), false);
-        zzb.zza(parcel, 6, adOverlayInfoParcel.zzeH(), false);
-        zzb.zza(parcel, 7, adOverlayInfoParcel.zzAT, false);
-        zzb.zza(parcel, 8, adOverlayInfoParcel.zzAU);
-        zzb.zza(parcel, 9, adOverlayInfoParcel.zzAV, false);
-        zzb.zza(parcel, 10, adOverlayInfoParcel.zzeJ(), false);
+        zzb.zza(parcel, 2, (Parcelable)adOverlayInfoParcel.zzBA, n, false);
+        zzb.zza(parcel, 3, adOverlayInfoParcel.zzeK(), false);
+        zzb.zza(parcel, 4, adOverlayInfoParcel.zzeL(), false);
+        zzb.zza(parcel, 5, adOverlayInfoParcel.zzeM(), false);
+        zzb.zza(parcel, 6, adOverlayInfoParcel.zzeN(), false);
+        zzb.zza(parcel, 7, adOverlayInfoParcel.zzBF, false);
+        zzb.zza(parcel, 8, adOverlayInfoParcel.zzBG);
+        zzb.zza(parcel, 9, adOverlayInfoParcel.zzBH, false);
+        zzb.zza(parcel, 10, adOverlayInfoParcel.zzeP(), false);
         zzb.zzc(parcel, 11, adOverlayInfoParcel.orientation);
-        zzb.zzc(parcel, 12, adOverlayInfoParcel.zzAX);
+        zzb.zzc(parcel, 12, adOverlayInfoParcel.zzBJ);
         zzb.zza(parcel, 13, adOverlayInfoParcel.url, false);
-        zzb.zza(parcel, 14, (Parcelable)adOverlayInfoParcel.zzqb, n, false);
-        zzb.zza(parcel, 15, adOverlayInfoParcel.zzeI(), false);
-        zzb.zza(parcel, 17, (Parcelable)adOverlayInfoParcel.zzBa, n, false);
-        zzb.zza(parcel, 16, adOverlayInfoParcel.zzAZ, false);
-        zzb.zzH(parcel, zzak);
+        zzb.zza(parcel, 14, (Parcelable)adOverlayInfoParcel.zzqj, n, false);
+        zzb.zza(parcel, 15, adOverlayInfoParcel.zzeO(), false);
+        zzb.zza(parcel, 17, (Parcelable)adOverlayInfoParcel.zzBM, n, false);
+        zzb.zza(parcel, 16, adOverlayInfoParcel.zzBL, false);
+        zzb.zzI(parcel, zzaq);
     }
     
-    public AdOverlayInfoParcel zzh(final Parcel parcel) {
-        final int zzaj = zza.zzaj(parcel);
+    public AdOverlayInfoParcel zzg(final Parcel parcel) {
+        final int zzap = zza.zzap(parcel);
         int zzg = 0;
         AdLauncherIntentInfoParcel adLauncherIntentInfoParcel = null;
-        IBinder zzp = null;
-        IBinder zzp2 = null;
-        IBinder zzp3 = null;
-        IBinder zzp4 = null;
-        String zzo = null;
+        IBinder zzq = null;
+        IBinder zzq2 = null;
+        IBinder zzq3 = null;
+        IBinder zzq4 = null;
+        String zzp = null;
         boolean zzc = false;
-        String zzo2 = null;
-        IBinder zzp5 = null;
+        String zzp2 = null;
+        IBinder zzq5 = null;
         int zzg2 = 0;
         int zzg3 = 0;
-        String zzo3 = null;
+        String zzp3 = null;
         VersionInfoParcel versionInfoParcel = null;
-        IBinder zzp6 = null;
-        String zzo4 = null;
+        IBinder zzq6 = null;
+        String zzp4 = null;
         InterstitialAdParameterParcel interstitialAdParameterParcel = null;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = zza.zzai(parcel);
-            switch (zza.zzbH(zzai)) {
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = zza.zzao(parcel);
+            switch (zza.zzbM(zzao)) {
                 default: {
-                    zza.zzb(parcel, zzai);
+                    zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzg = zza.zzg(parcel, zzai);
+                    zzg = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 2: {
-                    adLauncherIntentInfoParcel = zza.zza(parcel, zzai, (android.os.Parcelable$Creator<AdLauncherIntentInfoParcel>)AdLauncherIntentInfoParcel.CREATOR);
+                    adLauncherIntentInfoParcel = zza.zza(parcel, zzao, (android.os.Parcelable$Creator<AdLauncherIntentInfoParcel>)AdLauncherIntentInfoParcel.CREATOR);
                     continue;
                 }
                 case 3: {
-                    zzp = zza.zzp(parcel, zzai);
+                    zzq = zza.zzq(parcel, zzao);
                     continue;
                 }
                 case 4: {
-                    zzp2 = zza.zzp(parcel, zzai);
+                    zzq2 = zza.zzq(parcel, zzao);
                     continue;
                 }
                 case 5: {
-                    zzp3 = zza.zzp(parcel, zzai);
+                    zzq3 = zza.zzq(parcel, zzao);
                     continue;
                 }
                 case 6: {
-                    zzp4 = zza.zzp(parcel, zzai);
+                    zzq4 = zza.zzq(parcel, zzao);
                     continue;
                 }
                 case 7: {
-                    zzo = zza.zzo(parcel, zzai);
+                    zzp = zza.zzp(parcel, zzao);
                     continue;
                 }
                 case 8: {
-                    zzc = zza.zzc(parcel, zzai);
+                    zzc = zza.zzc(parcel, zzao);
                     continue;
                 }
                 case 9: {
-                    zzo2 = zza.zzo(parcel, zzai);
+                    zzp2 = zza.zzp(parcel, zzao);
                     continue;
                 }
                 case 10: {
-                    zzp5 = zza.zzp(parcel, zzai);
+                    zzq5 = zza.zzq(parcel, zzao);
                     continue;
                 }
                 case 11: {
-                    zzg2 = zza.zzg(parcel, zzai);
+                    zzg2 = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 12: {
-                    zzg3 = zza.zzg(parcel, zzai);
+                    zzg3 = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 13: {
-                    zzo3 = zza.zzo(parcel, zzai);
+                    zzp3 = zza.zzp(parcel, zzao);
                     continue;
                 }
                 case 14: {
-                    versionInfoParcel = zza.zza(parcel, zzai, (android.os.Parcelable$Creator<VersionInfoParcel>)VersionInfoParcel.CREATOR);
+                    versionInfoParcel = zza.zza(parcel, zzao, (android.os.Parcelable$Creator<VersionInfoParcel>)VersionInfoParcel.CREATOR);
                     continue;
                 }
                 case 15: {
-                    zzp6 = zza.zzp(parcel, zzai);
+                    zzq6 = zza.zzq(parcel, zzao);
                     continue;
                 }
                 case 17: {
-                    interstitialAdParameterParcel = zza.zza(parcel, zzai, (android.os.Parcelable$Creator<InterstitialAdParameterParcel>)InterstitialAdParameterParcel.CREATOR);
+                    interstitialAdParameterParcel = zza.zza(parcel, zzao, (android.os.Parcelable$Creator<InterstitialAdParameterParcel>)InterstitialAdParameterParcel.CREATOR);
                     continue;
                 }
                 case 16: {
-                    zzo4 = zza.zzo(parcel, zzai);
+                    zzp4 = zza.zzp(parcel, zzao);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
-        return new AdOverlayInfoParcel(zzg, adLauncherIntentInfoParcel, zzp, zzp2, zzp3, zzp4, zzo, zzc, zzo2, zzp5, zzg2, zzg3, zzo3, versionInfoParcel, zzp6, zzo4, interstitialAdParameterParcel);
+        return new AdOverlayInfoParcel(zzg, adLauncherIntentInfoParcel, zzq, zzq2, zzq3, zzq4, zzp, zzc, zzp2, zzq5, zzg2, zzg3, zzp3, versionInfoParcel, zzq6, zzp4, interstitialAdParameterParcel);
     }
     
     public AdOverlayInfoParcel[] zzw(final int n) {

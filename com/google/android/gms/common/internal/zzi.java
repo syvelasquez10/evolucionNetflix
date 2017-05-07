@@ -18,76 +18,76 @@ import android.os.Parcelable$Creator;
 public class zzi implements Parcelable$Creator<GetServiceRequest>
 {
     static void zza(final GetServiceRequest getServiceRequest, final Parcel parcel, final int n) {
-        final int zzak = zzb.zzak(parcel);
+        final int zzaq = zzb.zzaq(parcel);
         zzb.zzc(parcel, 1, getServiceRequest.version);
-        zzb.zzc(parcel, 2, getServiceRequest.zzadn);
-        zzb.zzc(parcel, 3, getServiceRequest.zzado);
-        zzb.zza(parcel, 4, getServiceRequest.zzadp, false);
-        zzb.zza(parcel, 5, getServiceRequest.zzadq, false);
-        zzb.zza(parcel, 6, getServiceRequest.zzadr, n, false);
-        zzb.zza(parcel, 7, getServiceRequest.zzads, false);
-        zzb.zza(parcel, 8, (Parcelable)getServiceRequest.zzadt, n, false);
-        zzb.zzH(parcel, zzak);
+        zzb.zzc(parcel, 2, getServiceRequest.zzafq);
+        zzb.zzc(parcel, 3, getServiceRequest.zzafr);
+        zzb.zza(parcel, 4, getServiceRequest.zzafs, false);
+        zzb.zza(parcel, 5, getServiceRequest.zzaft, false);
+        zzb.zza(parcel, 6, getServiceRequest.zzafu, n, false);
+        zzb.zza(parcel, 7, getServiceRequest.zzafv, false);
+        zzb.zza(parcel, 8, (Parcelable)getServiceRequest.zzafw, n, false);
+        zzb.zzI(parcel, zzaq);
     }
     
-    public GetServiceRequest zzae(final Parcel parcel) {
+    public GetServiceRequest zzak(final Parcel parcel) {
         int zzg = 0;
         Account account = null;
-        final int zzaj = zza.zzaj(parcel);
-        Bundle zzq = null;
+        final int zzap = zza.zzap(parcel);
+        Bundle zzr = null;
         Scope[] array = null;
-        IBinder zzp = null;
-        String zzo = null;
+        IBinder zzq = null;
+        String zzp = null;
         int zzg2 = 0;
         int zzg3 = 0;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = zza.zzai(parcel);
-            switch (zza.zzbH(zzai)) {
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = zza.zzao(parcel);
+            switch (zza.zzbM(zzao)) {
                 default: {
-                    zza.zzb(parcel, zzai);
+                    zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzg3 = zza.zzg(parcel, zzai);
+                    zzg3 = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 2: {
-                    zzg2 = zza.zzg(parcel, zzai);
+                    zzg2 = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 3: {
-                    zzg = zza.zzg(parcel, zzai);
+                    zzg = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 4: {
-                    zzo = zza.zzo(parcel, zzai);
+                    zzp = zza.zzp(parcel, zzao);
                     continue;
                 }
                 case 5: {
-                    zzp = zza.zzp(parcel, zzai);
+                    zzq = zza.zzq(parcel, zzao);
                     continue;
                 }
                 case 6: {
-                    array = zza.zzb(parcel, zzai, Scope.CREATOR);
+                    array = zza.zzb(parcel, zzao, Scope.CREATOR);
                     continue;
                 }
                 case 7: {
-                    zzq = zza.zzq(parcel, zzai);
+                    zzr = zza.zzr(parcel, zzao);
                     continue;
                 }
                 case 8: {
-                    account = zza.zza(parcel, zzai, (android.os.Parcelable$Creator<Account>)Account.CREATOR);
+                    account = zza.zza(parcel, zzao, (android.os.Parcelable$Creator<Account>)Account.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
-        return new GetServiceRequest(zzg3, zzg2, zzg, zzo, zzp, array, zzq, account);
+        return new GetServiceRequest(zzg3, zzg2, zzg, zzp, zzq, array, zzr, account);
     }
     
-    public GetServiceRequest[] zzby(final int n) {
+    public GetServiceRequest[] zzbD(final int n) {
         return new GetServiceRequest[n];
     }
 }

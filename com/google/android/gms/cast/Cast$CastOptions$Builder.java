@@ -8,16 +8,16 @@ import com.google.android.gms.common.internal.zzx;
 
 public final class Cast$CastOptions$Builder
 {
-    CastDevice zzTj;
-    Cast$Listener zzTk;
-    private int zzTl;
+    CastDevice zzUY;
+    Cast$Listener zzUZ;
+    private int zzVa;
     
-    public Cast$CastOptions$Builder(final CastDevice zzTj, final Cast$Listener zzTk) {
-        zzx.zzb(zzTj, "CastDevice parameter cannot be null");
-        zzx.zzb(zzTk, "CastListener parameter cannot be null");
-        this.zzTj = zzTj;
-        this.zzTk = zzTk;
-        this.zzTl = 0;
+    public Cast$CastOptions$Builder(final CastDevice zzUY, final Cast$Listener zzUZ) {
+        zzx.zzb(zzUY, "CastDevice parameter cannot be null");
+        zzx.zzb(zzUZ, "CastListener parameter cannot be null");
+        this.zzUY = zzUY;
+        this.zzUZ = zzUZ;
+        this.zzVa = 0;
     }
     
     public Cast$CastOptions build() {
@@ -26,10 +26,10 @@ public final class Cast$CastOptions$Builder
     
     public Cast$CastOptions$Builder setVerboseLoggingEnabled(final boolean b) {
         if (b) {
-            this.zzTl |= 0x1;
+            this.zzVa |= 0x1;
             return this;
         }
-        this.zzTl &= 0xFFFFFFFE;
+        this.zzVa &= 0xFFFFFFFE;
         return this;
     }
 }

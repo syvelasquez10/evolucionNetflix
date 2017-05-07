@@ -36,7 +36,7 @@ public abstract class zzj$zza extends Binder implements zzj
             }
             case 1: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                this.zzaU(parcel.readInt());
+                this.zzbb(parcel.readInt());
                 return true;
             }
             case 2: {
@@ -55,7 +55,7 @@ public abstract class zzj$zza extends Binder implements zzj
             }
             case 3: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                this.zzaV(parcel.readInt());
+                this.zzbc(parcel.readInt());
                 return true;
             }
             case 4: {
@@ -81,12 +81,12 @@ public abstract class zzj$zza extends Binder implements zzj
             }
             case 7: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                this.zzaX(parcel.readInt());
+                this.zzbe(parcel.readInt());
                 return true;
             }
             case 8: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceControllerListener");
-                this.zzaW(parcel.readInt());
+                this.zzbd(parcel.readInt());
                 return true;
             }
             case 9: {

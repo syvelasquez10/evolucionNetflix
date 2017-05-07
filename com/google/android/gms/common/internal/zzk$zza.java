@@ -10,5 +10,5 @@ public interface zzk$zza
 {
     boolean isConnected();
     
-    Bundle zzmw();
+    Bundle zzmS();
 }

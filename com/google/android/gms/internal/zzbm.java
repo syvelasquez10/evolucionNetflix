@@ -15,16 +15,16 @@ import java.util.Arrays;
 
 public class zzbm
 {
-    private final int zzse;
-    private final int zzsf;
-    private final int zzsg;
-    private final zzbl zzsh;
+    private final int zzsp;
+    private final int zzsq;
+    private final int zzsr;
+    private final zzbl zzss;
     
-    public zzbm(final int zzsf) {
-        this.zzsh = new zzbo();
-        this.zzsf = zzsf;
-        this.zzse = 6;
-        this.zzsg = 0;
+    public zzbm(final int zzsq) {
+        this.zzss = new zzbo();
+        this.zzsq = zzsq;
+        this.zzsp = 6;
+        this.zzsr = 0;
     }
     
     private String zzA(String zzcz) {
@@ -34,10 +34,10 @@ public class zzbm
         }
         zzcz = (String)this.zzcz();
         Arrays.sort(split, new zzbm$1(this));
-        for (int n = 0; n < split.length && n < this.zzsf; ++n) {
+        for (int n = 0; n < split.length && n < this.zzsq; ++n) {
             if (split[n].trim().length() != 0) {
                 try {
-                    ((zzbm$zza)zzcz).write(this.zzsh.zzz(split[n]));
+                    ((zzbm$zza)zzcz).write(this.zzss.zzz(split[n]));
                     continue;
                 }
                 catch (IOException ex) {
@@ -55,16 +55,16 @@ public class zzbm
             return "";
         }
         zzcz = (String)this.zzcz();
-        final PriorityQueue<zzbp$zza> priorityQueue = new PriorityQueue<zzbp$zza>(this.zzsf, new zzbm$2(this));
+        final PriorityQueue<zzbp$zza> priorityQueue = new PriorityQueue<zzbp$zza>(this.zzsq, new zzbm$2(this));
         for (int i = 0; i < split.length; ++i) {
             final String[] zzD = zzbn.zzD(split[i]);
-            if (zzD.length >= this.zzse) {
-                zzbp.zza(zzD, this.zzsf, this.zzse, priorityQueue);
+            if (zzD.length >= this.zzsp) {
+                zzbp.zza(zzD, this.zzsq, this.zzsp, priorityQueue);
             }
         }
         for (final zzbp$zza zzbp$zza : priorityQueue) {
             try {
-                ((zzbm$zza)zzcz).write(this.zzsh.zzz(zzbp$zza.zzsm));
+                ((zzbm$zza)zzcz).write(this.zzss.zzz(zzbp$zza.zzsx));
                 continue;
             }
             catch (IOException ex) {
@@ -82,7 +82,7 @@ public class zzbm
             sb.append(iterator.next().toLowerCase(Locale.US));
             sb.append('\n');
         }
-        switch (this.zzsg) {
+        switch (this.zzsr) {
             default: {
                 return "";
             }

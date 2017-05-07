@@ -4,9 +4,7 @@
 
 package com.google.android.gms.internal;
 
-import java.util.Map;
-
 public interface zzdg
 {
-    void zza(final zzip p0, final Map<String, String> p1);
+    void onAppEvent(final String p0, final String p1);
 }

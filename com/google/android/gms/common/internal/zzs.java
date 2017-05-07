@@ -88,9 +88,9 @@ public interface zzs extends IInterface
     
     void zzo(final zzr p0, final int p1, final String p2, final Bundle p3);
     
-    void zzoN();
-    
     void zzp(final zzr p0, final int p1, final String p2, final Bundle p3);
+    
+    void zzpp();
     
     void zzq(final zzr p0, final int p1, final String p2, final Bundle p3);
     

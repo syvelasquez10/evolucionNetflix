@@ -5,18 +5,13 @@
 package com.google.android.gms.internal;
 
 import com.google.android.gms.ads.doubleclick.CustomRenderedAd;
-import com.google.android.gms.ads.doubleclick.OnCustomRenderedAdLoadedListener;
 
-@zzgk
-public final class zzci extends zzch$zza
+@zzgr
+public class zzci implements CustomRenderedAd
 {
-    private final OnCustomRenderedAdLoadedListener zztr;
+    private final zzcj zzvZ;
     
-    public zzci(final OnCustomRenderedAdLoadedListener zztr) {
-        this.zztr = zztr;
-    }
-    
-    public void zza(final zzcg zzcg) {
-        this.zztr.onCustomRenderedAdLoaded(new zzcf(zzcg));
+    public zzci(final zzcj zzvZ) {
+        this.zzvZ = zzvZ;
     }
 }

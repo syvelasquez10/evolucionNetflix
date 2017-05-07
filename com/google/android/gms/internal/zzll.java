@@ -4,29 +4,55 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Process;
-import com.google.android.gms.common.internal.zzd;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager$NameNotFoundException;
+import android.net.Uri;
+import android.content.Intent;
+import android.content.IntentFilter;
+import com.google.android.gms.common.GoogleApiAvailability;
 import android.content.Context;
+import android.content.BroadcastReceiver;
 
-public class zzll
+abstract class zzll extends BroadcastReceiver
 {
-    public static boolean zzi(final Context context, final String s) {
-        boolean b = false;
-        final PackageManager packageManager = context.getPackageManager();
-        try {
-            if ((packageManager.getApplicationInfo(s, 0).flags & 0x200000) != 0x0) {
-                b = true;
-            }
-            return b;
+    protected Context mContext;
+    
+    public static <T extends zzll> T zza(final Context context, final T t) {
+        return zza(context, t, GoogleApiAvailability.getInstance());
+    }
+    
+    public static <T extends zzll> T zza(final Context mContext, final T t, final GoogleApiAvailability googleApiAvailability) {
+        final IntentFilter intentFilter = new IntentFilter("android.intent.action.PACKAGE_ADDED");
+        intentFilter.addDataScheme("package");
+        mContext.registerReceiver((BroadcastReceiver)t, intentFilter);
+        t.mContext = mContext;
+        zzll zzll = t;
+        if (!googleApiAvailability.zzj(mContext, "com.google.android.gms")) {
+            t.zzoi();
+            t.unregister();
+            zzll = null;
         }
-        catch (PackageManager$NameNotFoundException ex) {
-            return false;
+        return (T)zzll;
+    }
+    
+    public void onReceive(final Context context, final Intent intent) {
+        final Uri data = intent.getData();
+        Object schemeSpecificPart = null;
+        if (data != null) {
+            schemeSpecificPart = data.getSchemeSpecificPart();
+        }
+        if ("com.google.android.gms".equals(schemeSpecificPart)) {
+            this.zzoi();
+            this.unregister();
         }
     }
     
-    public static boolean zzjk() {
-        return zzd.zzacF && zzkq.isInitialized() && zzkq.zznM() == Process.myUid();
+    public void unregister() {
+        synchronized (this) {
+            if (this.mContext != null) {
+                this.mContext.unregisterReceiver((BroadcastReceiver)this);
+            }
+            this.mContext = null;
+        }
     }
+    
+    protected abstract void zzoi();
 }

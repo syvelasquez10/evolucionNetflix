@@ -97,7 +97,7 @@ class ProfileSelectionActivity$ProfileAvatarAdapter extends BaseAdapter
         final UserProfile item = this.getItem(visibility);
         if (visibility == this.this$0.profiles.size()) {
             profileSelectionActivity$Holder.img.setImageResource(2130837921);
-            profileSelectionActivity$Holder.title.setText(2131165584);
+            profileSelectionActivity$Holder.title.setText(2131165582);
             profileSelectionActivity$Holder.topEditImg.setVisibility(8);
             return inflate;
         }

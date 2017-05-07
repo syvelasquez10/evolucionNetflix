@@ -10,14 +10,14 @@ import android.os.IBinder;
 
 class zzp$zza$zza implements zzp
 {
-    private IBinder zznI;
+    private IBinder zznJ;
     
-    zzp$zza$zza(final IBinder zznI) {
-        this.zznI = zznI;
+    zzp$zza$zza(final IBinder zznJ) {
+        this.zznJ = zznJ;
     }
     
     public IBinder asBinder() {
-        return this.zznI;
+        return this.zznJ;
     }
     
     @Override
@@ -26,7 +26,7 @@ class zzp$zza$zza implements zzp
         final Parcel obtain2 = Parcel.obtain();
         try {
             obtain.writeInterfaceToken("com.google.android.gms.common.internal.IAccountAccessor");
-            this.zznI.transact(2, obtain, obtain2, 0);
+            this.zznJ.transact(2, obtain, obtain2, 0);
             obtain2.readException();
             Account account;
             if (obtain2.readInt() != 0) {

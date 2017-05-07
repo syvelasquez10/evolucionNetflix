@@ -9,6 +9,6 @@ import java.util.Set;
 
 public final class zzf$zza
 {
-    public final Set<Scope> zzZp;
-    public final boolean zzadg;
+    public final Set<Scope> zzTm;
+    public final boolean zzafk;
 }

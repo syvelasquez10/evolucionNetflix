@@ -44,7 +44,7 @@ class UserAgent$SendRecommendationsTask$1 extends SimpleUserAgentWebCallback
             }
             String s;
             if (n == 0) {
-                s = this.this$1.this$0.getContext().getString(2131165608, new Object[] { firstName });
+                s = this.this$1.this$0.getContext().getString(2131165606, new Object[] { firstName });
             }
             else {
                 s = this.this$1.this$0.getContext().getResources().getQuantityString(2131230732, n, new Object[] { n, firstName });

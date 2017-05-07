@@ -16,7 +16,7 @@ public final class zzw
         return Arrays.hashCode(array);
     }
     
-    public static zzw$zza zzu(final Object o) {
+    public static zzw$zza zzv(final Object o) {
         return new zzw$zza(o, null);
     }
 }

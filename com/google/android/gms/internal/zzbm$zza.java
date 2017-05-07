@@ -10,12 +10,12 @@ import java.io.ByteArrayOutputStream;
 
 class zzbm$zza
 {
-    ByteArrayOutputStream zzsj;
-    Base64OutputStream zzsk;
+    ByteArrayOutputStream zzsu;
+    Base64OutputStream zzsv;
     
     public zzbm$zza() {
-        this.zzsj = new ByteArrayOutputStream(4096);
-        this.zzsk = new Base64OutputStream((OutputStream)this.zzsj, 10);
+        this.zzsu = new ByteArrayOutputStream(4096);
+        this.zzsv = new Base64OutputStream((OutputStream)this.zzsu, 10);
     }
     
     @Override
@@ -26,21 +26,21 @@ class zzbm$zza
         // Original Bytecode:
         // 
         //     0: aload_0        
-        //     1: getfield        com/google/android/gms/internal/zzbm$zza.zzsk:Landroid/util/Base64OutputStream;
+        //     1: getfield        com/google/android/gms/internal/zzbm$zza.zzsv:Landroid/util/Base64OutputStream;
         //     4: invokevirtual   android/util/Base64OutputStream.close:()V
         //     7: aload_0        
-        //     8: getfield        com/google/android/gms/internal/zzbm$zza.zzsj:Ljava/io/ByteArrayOutputStream;
+        //     8: getfield        com/google/android/gms/internal/zzbm$zza.zzsu:Ljava/io/ByteArrayOutputStream;
         //    11: invokevirtual   java/io/ByteArrayOutputStream.close:()V
         //    14: aload_0        
-        //    15: getfield        com/google/android/gms/internal/zzbm$zza.zzsj:Ljava/io/ByteArrayOutputStream;
+        //    15: getfield        com/google/android/gms/internal/zzbm$zza.zzsu:Ljava/io/ByteArrayOutputStream;
         //    18: invokevirtual   java/io/ByteArrayOutputStream.toString:()Ljava/lang/String;
         //    21: astore_1       
         //    22: aload_0        
         //    23: aconst_null    
-        //    24: putfield        com/google/android/gms/internal/zzbm$zza.zzsj:Ljava/io/ByteArrayOutputStream;
+        //    24: putfield        com/google/android/gms/internal/zzbm$zza.zzsu:Ljava/io/ByteArrayOutputStream;
         //    27: aload_0        
         //    28: aconst_null    
-        //    29: putfield        com/google/android/gms/internal/zzbm$zza.zzsk:Landroid/util/Base64OutputStream;
+        //    29: putfield        com/google/android/gms/internal/zzbm$zza.zzsv:Landroid/util/Base64OutputStream;
         //    32: aload_1        
         //    33: areturn        
         //    34: astore_1       
@@ -54,19 +54,19 @@ class zzbm$zza
         //    48: invokestatic    com/google/android/gms/ads/internal/util/client/zzb.zzb:(Ljava/lang/String;Ljava/lang/Throwable;)V
         //    51: aload_0        
         //    52: aconst_null    
-        //    53: putfield        com/google/android/gms/internal/zzbm$zza.zzsj:Ljava/io/ByteArrayOutputStream;
+        //    53: putfield        com/google/android/gms/internal/zzbm$zza.zzsu:Ljava/io/ByteArrayOutputStream;
         //    56: aload_0        
         //    57: aconst_null    
-        //    58: putfield        com/google/android/gms/internal/zzbm$zza.zzsk:Landroid/util/Base64OutputStream;
+        //    58: putfield        com/google/android/gms/internal/zzbm$zza.zzsv:Landroid/util/Base64OutputStream;
         //    61: ldc             ""
         //    63: areturn        
         //    64: astore_1       
         //    65: aload_0        
         //    66: aconst_null    
-        //    67: putfield        com/google/android/gms/internal/zzbm$zza.zzsj:Ljava/io/ByteArrayOutputStream;
+        //    67: putfield        com/google/android/gms/internal/zzbm$zza.zzsu:Ljava/io/ByteArrayOutputStream;
         //    70: aload_0        
         //    71: aconst_null    
-        //    72: putfield        com/google/android/gms/internal/zzbm$zza.zzsk:Landroid/util/Base64OutputStream;
+        //    72: putfield        com/google/android/gms/internal/zzbm$zza.zzsv:Landroid/util/Base64OutputStream;
         //    75: aload_1        
         //    76: athrow         
         //    Exceptions:
@@ -104,6 +104,6 @@ class zzbm$zza
     }
     
     public void write(final byte[] array) {
-        this.zzsk.write(array);
+        this.zzsv.write(array);
     }
 }

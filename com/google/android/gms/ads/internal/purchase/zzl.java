@@ -16,9 +16,9 @@ import com.google.android.gms.ads.internal.util.client.zzb;
 import android.util.Base64;
 import java.security.Signature;
 import java.security.PublicKey;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 
-@zzgk
+@zzgr
 public class zzl
 {
     public static boolean zza(final PublicKey publicKey, final String s, final String s2) {
@@ -46,7 +46,7 @@ public class zzl
         }
     }
     
-    public static PublicKey zzan(final String s) {
+    public static PublicKey zzaq(final String s) {
         try {
             return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.decode(s, 0)));
         }
@@ -64,6 +64,6 @@ public class zzl
             zzb.e("Purchase verification failed: missing data.");
             return false;
         }
-        return zza(zzan(s), s2, s3);
+        return zza(zzaq(s), s2, s3);
     }
 }

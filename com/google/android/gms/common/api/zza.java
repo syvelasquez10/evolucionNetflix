@@ -4,11 +4,19 @@
 
 package com.google.android.gms.common.api;
 
-import android.os.Looper;
+import java.util.WeakHashMap;
+import android.app.Activity;
+import java.util.Map;
 
-public abstract class zza<R extends Result> extends zzb<R> implements OptionalPendingResult<R>
+public abstract class zza
 {
-    protected zza(final Looper looper) {
-        super(looper);
+    private static final Map<Activity, zza> zzaaZ;
+    private static final Object zzpy;
+    
+    static {
+        zzaaZ = new WeakHashMap<Activity, zza>();
+        zzpy = new Object();
     }
+    
+    public abstract void remove(final int p0);
 }

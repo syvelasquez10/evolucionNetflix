@@ -6,9 +6,13 @@ package com.google.android.gms.common.api;
 
 import java.util.concurrent.TimeUnit;
 
-public interface PendingResult<R extends Result>
+public abstract class PendingResult<R extends Result>
 {
-    void setResultCallback(final ResultCallback<R> p0);
+    public abstract void setResultCallback(final ResultCallback<? super R> p0);
     
-    void setResultCallback(final ResultCallback<R> p0, final long p1, final TimeUnit p2);
+    public abstract void setResultCallback(final ResultCallback<? super R> p0, final long p1, final TimeUnit p2);
+    
+    public Integer zznF() {
+        throw new UnsupportedOperationException();
+    }
 }

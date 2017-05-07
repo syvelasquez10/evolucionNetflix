@@ -52,7 +52,7 @@ public class SettingsFragment extends PreferenceFragment
     private void changePlayer(final PlayerType playerType) {
         if (playerType == null) {
             Log.w("SettingsFragment", "Invalid player type choosen! This should not happen, report it.");
-            new AlertDialog$Builder((Context)this.activity).setTitle((CharSequence)"").setMessage(2131165763).setPositiveButton(2131165485, (DialogInterface$OnClickListener)null).show();
+            new AlertDialog$Builder((Context)this.activity).setTitle((CharSequence)"").setMessage(2131165763).setPositiveButton(2131165483, (DialogInterface$OnClickListener)null).show();
             return;
         }
         new BackgroundTask().execute(new SettingsFragment$3(this, playerType));
@@ -65,7 +65,7 @@ public class SettingsFragment extends PreferenceFragment
     private void handleCastAppIdSettings() {
         final Preference preference = this.findPreference((CharSequence)"ui.castAppId");
         if (preference != null) {
-            preference.setSummary((CharSequence)((Object)this.getText(2131165401) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
+            preference.setSummary((CharSequence)((Object)this.getText(2131165399) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
             preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new SettingsFragment$5(this));
         }
     }

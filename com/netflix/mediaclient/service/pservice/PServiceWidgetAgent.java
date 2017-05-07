@@ -766,7 +766,7 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     
     private String getVideoTitle(final Context context, final PDiskData$ListType pDiskData$ListType, final PVideo pVideo) {
         if (PDiskData$ListType.CW.equals(pDiskData$ListType) && VideoType.SHOW.equals(pVideo.videoType)) {
-            return context.getString(2131165509, new Object[] { pVideo.title, pVideo.playableSeasonNumber, pVideo.playableEpisodeNumber });
+            return context.getString(2131165507, new Object[] { pVideo.title, pVideo.playableSeasonNumber, pVideo.playableEpisodeNumber });
         }
         return pVideo.title;
     }

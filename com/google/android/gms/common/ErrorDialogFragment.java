@@ -16,28 +16,28 @@ import android.app.DialogFragment;
 public class ErrorDialogFragment extends DialogFragment
 {
     private Dialog mDialog;
-    private DialogInterface$OnCancelListener zzYj;
+    private DialogInterface$OnCancelListener zzaaa;
     
     public ErrorDialogFragment() {
         this.mDialog = null;
-        this.zzYj = null;
+        this.zzaaa = null;
     }
     
-    public static ErrorDialogFragment newInstance(Dialog mDialog, final DialogInterface$OnCancelListener zzYj) {
+    public static ErrorDialogFragment newInstance(Dialog mDialog, final DialogInterface$OnCancelListener zzaaa) {
         final ErrorDialogFragment errorDialogFragment = new ErrorDialogFragment();
         mDialog = zzx.zzb(mDialog, "Cannot display null dialog");
         mDialog.setOnCancelListener((DialogInterface$OnCancelListener)null);
         mDialog.setOnDismissListener((DialogInterface$OnDismissListener)null);
         errorDialogFragment.mDialog = mDialog;
-        if (zzYj != null) {
-            errorDialogFragment.zzYj = zzYj;
+        if (zzaaa != null) {
+            errorDialogFragment.zzaaa = zzaaa;
         }
         return errorDialogFragment;
     }
     
     public void onCancel(final DialogInterface dialogInterface) {
-        if (this.zzYj != null) {
-            this.zzYj.onCancel(dialogInterface);
+        if (this.zzaaa != null) {
+            this.zzaaa.onCancel(dialogInterface);
         }
     }
     

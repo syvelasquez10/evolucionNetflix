@@ -17,7 +17,7 @@ import android.os.Binder;
 
 public abstract class zzf$zza extends Binder implements zzf
 {
-    public static zzf zzdH(final IBinder binder) {
+    public static zzf zzdN(final IBinder binder) {
         if (binder == null) {
             return null;
         }
@@ -48,7 +48,7 @@ public abstract class zzf$zza extends Binder implements zzf
                 if (parcel.readInt() != 0) {
                     authAccountRequest = (AuthAccountRequest)AuthAccountRequest.CREATOR.createFromParcel(parcel);
                 }
-                this.zza(authAccountRequest, zze$zza.zzdG(parcel.readStrongBinder()));
+                this.zza(authAccountRequest, zze$zza.zzdM(parcel.readStrongBinder()));
                 parcel2.writeNoException();
                 return true;
             }
@@ -80,7 +80,7 @@ public abstract class zzf$zza extends Binder implements zzf
             }
             case 7: {
                 parcel.enforceInterface("com.google.android.gms.signin.internal.ISignInService");
-                this.zzja(parcel.readInt());
+                this.zzjq(parcel.readInt());
                 parcel2.writeNoException();
                 return true;
             }
@@ -91,7 +91,7 @@ public abstract class zzf$zza extends Binder implements zzf
                 if (parcel.readInt() != 0) {
                     account2 = (Account)Account.CREATOR.createFromParcel(parcel);
                 }
-                this.zza(n, account2, zze$zza.zzdG(parcel.readStrongBinder()));
+                this.zza(n, account2, zze$zza.zzdM(parcel.readStrongBinder()));
                 parcel2.writeNoException();
                 return true;
             }
@@ -112,13 +112,13 @@ public abstract class zzf$zza extends Binder implements zzf
                 if (parcel.readInt() != 0) {
                     recordConsentRequest2 = (RecordConsentRequest)RecordConsentRequest.CREATOR.createFromParcel(parcel);
                 }
-                this.zza(recordConsentRequest2, zze$zza.zzdG(parcel.readStrongBinder()));
+                this.zza(recordConsentRequest2, zze$zza.zzdM(parcel.readStrongBinder()));
                 parcel2.writeNoException();
                 return true;
             }
             case 11: {
                 parcel.enforceInterface("com.google.android.gms.signin.internal.ISignInService");
-                this.zza(zze$zza.zzdG(parcel.readStrongBinder()));
+                this.zza(zze$zza.zzdM(parcel.readStrongBinder()));
                 parcel2.writeNoException();
                 return true;
             }

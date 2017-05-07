@@ -4,19 +4,19 @@
 
 package com.google.android.gms.ads.internal.overlay;
 
-import com.google.android.gms.internal.zzip;
-import com.google.android.gms.internal.zziq$zza;
+import com.google.android.gms.internal.zziz;
+import com.google.android.gms.internal.zzja$zza;
 
-class zzd$1 implements zziq$zza
+class zzd$1 implements zzja$zza
 {
-    final /* synthetic */ zzd zzAL;
+    final /* synthetic */ zzd zzBv;
     
-    zzd$1(final zzd zzAL) {
-        this.zzAL = zzAL;
+    zzd$1(final zzd zzBv) {
+        this.zzBv = zzBv;
     }
     
     @Override
-    public void zza(final zzip zzip, final boolean b) {
-        zzip.zzeD();
+    public void zza(final zziz zziz, final boolean b) {
+        zziz.zzeJ();
     }
 }

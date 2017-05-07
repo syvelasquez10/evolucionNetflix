@@ -4,6 +4,7 @@
 
 package com.google.android.gms.cast.internal;
 
+import com.google.android.gms.cast.JoinOptions;
 import com.google.android.gms.cast.LaunchOptions;
 import android.os.Parcel;
 import android.os.IInterface;
@@ -55,17 +56,17 @@ public abstract class zzi$zza extends Binder implements zzi
             }
             case 4: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceController");
-                this.zzmI();
+                this.zzne();
                 return true;
             }
             case 5: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceController");
-                this.zzbO(parcel.readString());
+                this.zzbP(parcel.readString());
                 return true;
             }
             case 6: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceController");
-                this.zzmx();
+                this.zzmT();
                 return true;
             }
             case 7: {
@@ -85,7 +86,7 @@ public abstract class zzi$zza extends Binder implements zzi
             }
             case 9: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceController");
-                this.zza(parcel.readString(), parcel.readString(), parcel.readLong());
+                this.zzb(parcel.readString(), parcel.readString(), parcel.readLong());
                 return true;
             }
             case 10: {
@@ -95,12 +96,12 @@ public abstract class zzi$zza extends Binder implements zzi
             }
             case 11: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceController");
-                this.zzbP(parcel.readString());
+                this.zzbQ(parcel.readString());
                 return true;
             }
             case 12: {
                 parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceController");
-                this.zzbQ(parcel.readString());
+                this.zzbR(parcel.readString());
                 return true;
             }
             case 13: {
@@ -114,6 +115,20 @@ public abstract class zzi$zza extends Binder implements zzi
                     launchOptions = null;
                 }
                 this.zza(string2, launchOptions);
+                return true;
+            }
+            case 14: {
+                parcel.enforceInterface("com.google.android.gms.cast.internal.ICastDeviceController");
+                final String string3 = parcel.readString();
+                final String string4 = parcel.readString();
+                JoinOptions joinOptions;
+                if (parcel.readInt() != 0) {
+                    joinOptions = (JoinOptions)JoinOptions.CREATOR.createFromParcel(parcel);
+                }
+                else {
+                    joinOptions = null;
+                }
+                this.zza(string3, string4, joinOptions);
                 return true;
             }
         }

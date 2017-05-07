@@ -4,67 +4,45 @@
 
 package com.google.android.gms.internal;
 
-import android.os.IBinder;
-import com.google.android.gms.dynamic.zzg$zza;
-import android.os.RemoteException;
-import com.google.android.gms.dynamic.zze;
-import android.content.Context;
-import android.content.Intent;
-import com.google.android.gms.ads.internal.overlay.zzd;
+import com.google.android.gms.ads.internal.zzp;
 import com.google.android.gms.ads.internal.util.client.zzb;
-import android.app.Activity;
-import com.google.android.gms.dynamic.zzg;
+import java.util.Map;
 
-@zzgk
-public final class zzfd extends zzg<zzff>
+@zzgr
+public class zzfd
 {
-    private static final zzfd zzBC;
+    private final boolean zzAq;
+    private final String zzAr;
+    private final zziz zzoM;
     
-    static {
-        zzBC = new zzfd();
+    public zzfd(final zziz zzoM, final Map<String, String> map) {
+        this.zzoM = zzoM;
+        this.zzAr = map.get("forceOrientation");
+        if (map.containsKey("allowOrientationChange")) {
+            this.zzAq = Boolean.parseBoolean(map.get("allowOrientationChange"));
+            return;
+        }
+        this.zzAq = true;
     }
     
-    private zzfd() {
-        super("com.google.android.gms.ads.AdOverlayCreatorImpl");
-    }
-    
-    public static zzfe zzb(final Activity activity) {
-        try {
-            if (zzc(activity)) {
-                zzb.zzaC("Using AdOverlay from the client jar.");
-                return new zzd(activity);
-            }
-            return zzfd.zzBC.zzd(activity);
+    public void execute() {
+        if (this.zzoM == null) {
+            zzb.zzaH("AdWebView is null");
+            return;
         }
-        catch (zzfd$zza zzfd$zza) {
-            zzb.zzaE(zzfd$zza.getMessage());
-            return null;
+        int requestedOrientation;
+        if ("portrait".equalsIgnoreCase(this.zzAr)) {
+            requestedOrientation = zzp.zzbx().zzgH();
         }
-    }
-    
-    private static boolean zzc(final Activity activity) {
-        final Intent intent = activity.getIntent();
-        if (!intent.hasExtra("com.google.android.gms.ads.internal.overlay.useClientJar")) {
-            throw new zzfd$zza("Ad overlay requires the useClientJar flag in intent extras.");
+        else if ("landscape".equalsIgnoreCase(this.zzAr)) {
+            requestedOrientation = zzp.zzbx().zzgG();
         }
-        return intent.getBooleanExtra("com.google.android.gms.ads.internal.overlay.useClientJar", false);
-    }
-    
-    private zzfe zzd(final Activity activity) {
-        try {
-            return zzfe$zza.zzK(this.zzar((Context)activity).zze(zze.zzx(activity)));
+        else if (this.zzAq) {
+            requestedOrientation = -1;
         }
-        catch (RemoteException ex) {
-            zzb.zzd("Could not create remote AdOverlay.", (Throwable)ex);
-            return null;
+        else {
+            requestedOrientation = zzp.zzbx().zzgI();
         }
-        catch (zzg$zza zzg$zza) {
-            zzb.zzd("Could not create remote AdOverlay.", zzg$zza);
-            return null;
-        }
-    }
-    
-    protected zzff zzJ(final IBinder binder) {
-        return zzff$zza.zzL(binder);
+        this.zzoM.setRequestedOrientation(requestedOrientation);
     }
 }

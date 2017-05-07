@@ -12,7 +12,7 @@ import android.os.Binder;
 public abstract class zzv$zza extends Binder implements zzv
 {
     public zzv$zza() {
-        this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.client.IMobileAdsSettingManager");
+        this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.client.ICorrelationIdProvider");
     }
     
     public IBinder asBinder() {
@@ -25,21 +25,14 @@ public abstract class zzv$zza extends Binder implements zzv
                 return super.onTransact(n, parcel, parcel2, n2);
             }
             case 1598968902: {
-                parcel2.writeString("com.google.android.gms.ads.internal.client.IMobileAdsSettingManager");
+                parcel2.writeString("com.google.android.gms.ads.internal.client.ICorrelationIdProvider");
                 return true;
             }
             case 1: {
-                parcel.enforceInterface("com.google.android.gms.ads.internal.client.IMobileAdsSettingManager");
-                final String string = parcel.readString();
-                MobileAdsSettingsParcel zzd;
-                if (parcel.readInt() != 0) {
-                    zzd = MobileAdsSettingsParcel.CREATOR.zzd(parcel);
-                }
-                else {
-                    zzd = null;
-                }
-                this.zza(string, zzd);
+                parcel.enforceInterface("com.google.android.gms.ads.internal.client.ICorrelationIdProvider");
+                final long value = this.getValue();
                 parcel2.writeNoException();
+                parcel2.writeLong(value);
                 return true;
             }
         }

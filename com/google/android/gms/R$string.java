@@ -6,7 +6,7 @@ package com.google.android.gms;
 
 public final class R$string
 {
-    public static final int accept = 2131165671;
+    public static final int accept = 2131165669;
     public static final int common_android_wear_update_text = 2131165202;
     public static final int common_android_wear_update_title = 2131165203;
     public static final int common_google_play_services_api_unavailable_text = 2131165204;

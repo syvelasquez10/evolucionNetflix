@@ -13,15 +13,15 @@ public final class DeleteRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<DeleteRequest> CREATOR;
     final int mVersionCode;
-    private final Credential zzRx;
+    private final Credential zzSD;
     
     static {
         CREATOR = (Parcelable$Creator)new zzf();
     }
     
-    DeleteRequest(final int mVersionCode, final Credential zzRx) {
+    DeleteRequest(final int mVersionCode, final Credential zzSD) {
         this.mVersionCode = mVersionCode;
-        this.zzRx = zzRx;
+        this.zzSD = zzSD;
     }
     
     public int describeContents() {
@@ -29,7 +29,7 @@ public final class DeleteRequest implements SafeParcelable
     }
     
     public Credential getCredential() {
-        return this.zzRx;
+        return this.zzSD;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

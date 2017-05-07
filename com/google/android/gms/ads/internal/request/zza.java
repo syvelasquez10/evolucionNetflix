@@ -4,9 +4,9 @@
 
 package com.google.android.gms.ads.internal.request;
 
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 
-@zzgk
+@zzgr
 public class zza
 {
 }

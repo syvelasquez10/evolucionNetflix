@@ -5,27 +5,27 @@
 package com.google.android.gms.ads.internal.formats;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-@zzgk
+@zzgr
 public class NativeAdOptionsParcel implements SafeParcelable
 {
     public static final zzi CREATOR;
     public final int versionCode;
-    public final boolean zzwn;
-    public final int zzwo;
-    public final boolean zzwp;
+    public final boolean zzwR;
+    public final int zzwS;
+    public final boolean zzwT;
     
     static {
         CREATOR = new zzi();
     }
     
-    public NativeAdOptionsParcel(final int versionCode, final boolean zzwn, final int zzwo, final boolean zzwp) {
+    public NativeAdOptionsParcel(final int versionCode, final boolean zzwR, final int zzwS, final boolean zzwT) {
         this.versionCode = versionCode;
-        this.zzwn = zzwn;
-        this.zzwo = zzwo;
-        this.zzwp = zzwp;
+        this.zzwR = zzwR;
+        this.zzwS = zzwS;
+        this.zzwT = zzwT;
     }
     
     public int describeContents() {

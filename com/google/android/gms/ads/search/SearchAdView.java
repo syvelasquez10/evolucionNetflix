@@ -8,23 +8,23 @@ import android.content.Context;
 import android.view.View;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.internal.client.zzy;
+import com.google.android.gms.ads.internal.client.zzz;
 import android.view.ViewGroup;
 
 public final class SearchAdView extends ViewGroup
 {
-    private final zzy zznS;
+    private final zzz zznT;
     
     public AdListener getAdListener() {
-        return this.zznS.getAdListener();
+        return this.zznT.getAdListener();
     }
     
     public AdSize getAdSize() {
-        return this.zznS.getAdSize();
+        return this.zznT.getAdSize();
     }
     
     public String getAdUnitId() {
-        return this.zznS.getAdUnitId();
+        return this.zznT.getAdUnitId();
     }
     
     protected void onLayout(final boolean b, int n, int n2, final int n3, final int n4) {
@@ -62,14 +62,14 @@ public final class SearchAdView extends ViewGroup
     }
     
     public void setAdListener(final AdListener adListener) {
-        this.zznS.setAdListener(adListener);
+        this.zznT.setAdListener(adListener);
     }
     
     public void setAdSize(final AdSize adSize) {
-        this.zznS.setAdSizes(adSize);
+        this.zznT.setAdSizes(adSize);
     }
     
     public void setAdUnitId(final String adUnitId) {
-        this.zznS.setAdUnitId(adUnitId);
+        this.zznT.setAdUnitId(adUnitId);
     }
 }

@@ -93,14 +93,14 @@ public class KubrickHighDensityCwView extends RelativeLayout implements VideoVie
         }
         this.playContext = new PlayContextImp(trackable, progress);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131165357), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131165355), cwVideo.getTitle());
         this.playViewGroup.setContentDescription((CharSequence)format);
         this.title.setText((CharSequence)cwVideo.getTitle());
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.subtitle.setText((CharSequence)this.getContext().getString(2131165430, new Object[] { cwVideo.getSeasonNumber(), cwVideo.getEpisodeNumber(), cwVideo.getCurrentEpisodeTitle() }));
+            this.subtitle.setText((CharSequence)this.getContext().getString(2131165428, new Object[] { cwVideo.getSeasonNumber(), cwVideo.getEpisodeNumber(), cwVideo.getCurrentEpisodeTitle() }));
         }
         else {
-            this.subtitle.setText((CharSequence)this.getResources().getString(2131165483, new Object[] { TimeUtils.convertSecondsToMinutes(cwVideo.getRuntime()) }));
+            this.subtitle.setText((CharSequence)this.getResources().getString(2131165481, new Object[] { TimeUtils.convertSecondsToMinutes(cwVideo.getRuntime()) }));
         }
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView img = this.img;
@@ -122,7 +122,7 @@ public class KubrickHighDensityCwView extends RelativeLayout implements VideoVie
         }
         this.progress.setProgress(progress);
         this.playViewGroup.setOnClickListener((View$OnClickListener)new KubrickHighDensityCwView$1(this, cwVideo));
-        this.infoViewGroup.setContentDescription((CharSequence)String.format(this.getResources().getString(2131165418), cwVideo.getTitle()));
+        this.infoViewGroup.setContentDescription((CharSequence)String.format(this.getResources().getString(2131165416), cwVideo.getTitle()));
         this.clicker.update(this.infoViewGroup, cwVideo, this.img.getPressedStateHandler());
     }
 }

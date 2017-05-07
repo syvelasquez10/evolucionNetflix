@@ -12,59 +12,59 @@ import android.os.Parcelable$Creator;
 
 public class zzc implements Parcelable$Creator<VersionInfoParcel>
 {
-    static void zza(final VersionInfoParcel versionInfoParcel, final Parcel parcel, int zzak) {
-        zzak = zzb.zzak(parcel);
+    static void zza(final VersionInfoParcel versionInfoParcel, final Parcel parcel, int zzaq) {
+        zzaq = zzb.zzaq(parcel);
         zzb.zzc(parcel, 1, versionInfoParcel.versionCode);
-        zzb.zza(parcel, 2, versionInfoParcel.zzIz, false);
-        zzb.zzc(parcel, 3, versionInfoParcel.zzIA);
-        zzb.zzc(parcel, 4, versionInfoParcel.zzIB);
-        zzb.zza(parcel, 5, versionInfoParcel.zzIC);
-        zzb.zzH(parcel, zzak);
+        zzb.zza(parcel, 2, versionInfoParcel.zzJu, false);
+        zzb.zzc(parcel, 3, versionInfoParcel.zzJv);
+        zzb.zzc(parcel, 4, versionInfoParcel.zzJw);
+        zzb.zza(parcel, 5, versionInfoParcel.zzJx);
+        zzb.zzI(parcel, zzaq);
     }
     
-    public VersionInfoParcel[] zzN(final int n) {
+    public VersionInfoParcel[] zzO(final int n) {
         return new VersionInfoParcel[n];
     }
     
-    public VersionInfoParcel zzq(final Parcel parcel) {
+    public VersionInfoParcel zzp(final Parcel parcel) {
         boolean zzc = false;
-        final int zzaj = zza.zzaj(parcel);
-        String zzo = null;
+        final int zzap = zza.zzap(parcel);
+        String zzp = null;
         int zzg = 0;
         int zzg2 = 0;
         int zzg3 = 0;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = zza.zzai(parcel);
-            switch (zza.zzbH(zzai)) {
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = zza.zzao(parcel);
+            switch (zza.zzbM(zzao)) {
                 default: {
-                    zza.zzb(parcel, zzai);
+                    zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzg3 = zza.zzg(parcel, zzai);
+                    zzg3 = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 2: {
-                    zzo = zza.zzo(parcel, zzai);
+                    zzp = zza.zzp(parcel, zzao);
                     continue;
                 }
                 case 3: {
-                    zzg2 = zza.zzg(parcel, zzai);
+                    zzg2 = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 4: {
-                    zzg = zza.zzg(parcel, zzai);
+                    zzg = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 5: {
-                    zzc = zza.zzc(parcel, zzai);
+                    zzc = zza.zzc(parcel, zzao);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
-        return new VersionInfoParcel(zzg3, zzo, zzg2, zzg, zzc);
+        return new VersionInfoParcel(zzg3, zzp, zzg2, zzg, zzc);
     }
 }

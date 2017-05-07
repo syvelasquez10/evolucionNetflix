@@ -13,10 +13,10 @@ import android.content.pm.PackageInfo;
 
 public class zzd
 {
-    private static final zzd zzYA;
+    private static final zzd zzaas;
     
     static {
-        zzYA = new zzd();
+        zzaas = new zzd();
     }
     
     private boolean zza(final PackageInfo packageInfo, final boolean b) {
@@ -27,10 +27,10 @@ public class zzd
         final zzc$zzb zzc$zzb = new zzc$zzb(packageInfo.signatures[0].toByteArray());
         Set<zzc$zza> set;
         if (b) {
-            set = zzc.zzmT();
+            set = zzc.zznp();
         }
         else {
-            set = zzc.zzmU();
+            set = zzc.zznq();
         }
         if (set.contains(zzc$zzb)) {
             return true;
@@ -41,8 +41,8 @@ public class zzd
         return false;
     }
     
-    public static zzd zzmY() {
-        return zzd.zzYA;
+    public static zzd zznu() {
+        return zzd.zzaas;
     }
     
     zzc$zza zza(final PackageInfo packageInfo, final zzc$zza... array) {

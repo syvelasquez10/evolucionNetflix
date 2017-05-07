@@ -4,19 +4,19 @@
 
 package com.google.android.gms.ads.internal.purchase;
 
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 
-@zzgk
+@zzgr
 public final class zzf
 {
-    public long zzCd;
-    public final String zzCe;
-    public final String zzCf;
+    public long zzCQ;
+    public final String zzCR;
+    public final String zzCS;
     
-    public zzf(final long zzCd, final String zzCf, final String zzCe) {
-        this.zzCd = zzCd;
-        this.zzCf = zzCf;
-        this.zzCe = zzCe;
+    public zzf(final long zzCQ, final String zzCS, final String zzCR) {
+        this.zzCQ = zzCQ;
+        this.zzCS = zzCS;
+        this.zzCR = zzCR;
     }
     
     public zzf(final String s, final String s2) {

@@ -4,7 +4,7 @@
 
 package com.google.android.gms.internal;
 
-@zzgk
+@zzgr
 public class zzbw
 {
 }

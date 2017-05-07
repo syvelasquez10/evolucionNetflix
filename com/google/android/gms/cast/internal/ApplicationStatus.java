@@ -13,7 +13,7 @@ public class ApplicationStatus implements SafeParcelable
 {
     public static final Parcelable$Creator<ApplicationStatus> CREATOR;
     private final int mVersionCode;
-    private String zzWF;
+    private String zzYx;
     
     static {
         CREATOR = (Parcelable$Creator)new zza();
@@ -23,9 +23,9 @@ public class ApplicationStatus implements SafeParcelable
         this(1, null);
     }
     
-    ApplicationStatus(final int mVersionCode, final String zzWF) {
+    ApplicationStatus(final int mVersionCode, final String zzYx) {
         this.mVersionCode = mVersionCode;
-        this.zzWF = zzWF;
+        this.zzYx = zzYx;
     }
     
     public int describeContents() {
@@ -34,7 +34,7 @@ public class ApplicationStatus implements SafeParcelable
     
     @Override
     public boolean equals(final Object o) {
-        return o == this || (o instanceof ApplicationStatus && zzf.zza(this.zzWF, ((ApplicationStatus)o).zzWF));
+        return o == this || (o instanceof ApplicationStatus && zzf.zza(this.zzYx, ((ApplicationStatus)o).zzYx));
     }
     
     public int getVersionCode() {
@@ -43,14 +43,14 @@ public class ApplicationStatus implements SafeParcelable
     
     @Override
     public int hashCode() {
-        return zzw.hashCode(this.zzWF);
+        return zzw.hashCode(this.zzYx);
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
         zza.zza(this, parcel, n);
     }
     
-    public String zzms() {
-        return this.zzWF;
+    public String zzmO() {
+        return this.zzYx;
     }
 }

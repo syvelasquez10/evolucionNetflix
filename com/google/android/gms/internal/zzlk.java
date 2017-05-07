@@ -4,30 +4,19 @@
 
 package com.google.android.gms.internal;
 
-import android.content.Context;
-import java.util.regex.Pattern;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
-public final class zzlk
+public abstract class zzlk
 {
-    private static Pattern zzagc;
+    private static final ExecutorService zzacD;
     
     static {
-        zzlk.zzagc = null;
+        zzacD = Executors.newFixedThreadPool(2, new zzlk$zza(null));
     }
     
-    public static boolean zzao(final Context context) {
-        return context.getPackageManager().hasSystemFeature("android.hardware.type.watch");
-    }
-    
-    public static int zzbV(final int n) {
-        return n / 1000;
-    }
-    
-    public static int zzbW(final int n) {
-        return n % 1000 / 100;
-    }
-    
-    public static boolean zzbX(final int n) {
-        return zzbW(n) == 3;
+    public static ExecutorService zzoj() {
+        return zzlk.zzacD;
     }
 }

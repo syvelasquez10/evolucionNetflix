@@ -14,58 +14,58 @@ import android.os.Parcelable$Creator;
 public class zzc implements Parcelable$Creator<CredentialRequest>
 {
     static void zza(final CredentialRequest credentialRequest, final Parcel parcel, final int n) {
-        final int zzak = zzb.zzak(parcel);
+        final int zzaq = zzb.zzaq(parcel);
         zzb.zza(parcel, 1, credentialRequest.getSupportsPasswordLogin());
         zzb.zzc(parcel, 1000, credentialRequest.mVersionCode);
         zzb.zza(parcel, 2, credentialRequest.getAccountTypes(), false);
         zzb.zza(parcel, 3, (Parcelable)credentialRequest.getCredentialPickerConfig(), n, false);
         zzb.zza(parcel, 4, (Parcelable)credentialRequest.getCredentialHintPickerConfig(), n, false);
-        zzb.zzH(parcel, zzak);
+        zzb.zzI(parcel, zzaq);
     }
     
-    public CredentialRequest zzF(final Parcel parcel) {
+    public CredentialRequest zzG(final Parcel parcel) {
         boolean zzc = false;
         CredentialPickerConfig credentialPickerConfig = null;
-        final int zzaj = zza.zzaj(parcel);
+        final int zzap = zza.zzap(parcel);
         CredentialPickerConfig credentialPickerConfig2 = null;
-        String[] zzA = null;
+        String[] zzB = null;
         int zzg = 0;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = zza.zzai(parcel);
-            switch (zza.zzbH(zzai)) {
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = zza.zzao(parcel);
+            switch (zza.zzbM(zzao)) {
                 default: {
-                    zza.zzb(parcel, zzai);
+                    zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzc = zza.zzc(parcel, zzai);
+                    zzc = zza.zzc(parcel, zzao);
                     continue;
                 }
                 case 1000: {
-                    zzg = zza.zzg(parcel, zzai);
+                    zzg = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 2: {
-                    zzA = zza.zzA(parcel, zzai);
+                    zzB = zza.zzB(parcel, zzao);
                     continue;
                 }
                 case 3: {
-                    credentialPickerConfig2 = zza.zza(parcel, zzai, CredentialPickerConfig.CREATOR);
+                    credentialPickerConfig2 = zza.zza(parcel, zzao, CredentialPickerConfig.CREATOR);
                     continue;
                 }
                 case 4: {
-                    credentialPickerConfig = zza.zza(parcel, zzai, CredentialPickerConfig.CREATOR);
+                    credentialPickerConfig = zza.zza(parcel, zzao, CredentialPickerConfig.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
-        return new CredentialRequest(zzg, zzc, zzA, credentialPickerConfig2, credentialPickerConfig);
+        return new CredentialRequest(zzg, zzc, zzB, credentialPickerConfig2, credentialPickerConfig);
     }
     
-    public CredentialRequest[] zzav(final int n) {
+    public CredentialRequest[] zzax(final int n) {
         return new CredentialRequest[n];
     }
 }

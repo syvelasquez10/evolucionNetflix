@@ -4,19 +4,7 @@
 
 package com.google.android.gms.internal;
 
-import android.os.IInterface;
-
-public interface zzej extends IInterface
+@zzgr
+public class zzej
 {
-    void onAdClicked();
-    
-    void onAdClosed();
-    
-    void onAdFailedToLoad(final int p0);
-    
-    void onAdLeftApplication();
-    
-    void onAdLoaded();
-    
-    void onAdOpened();
 }

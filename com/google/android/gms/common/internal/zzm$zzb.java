@@ -19,28 +19,28 @@ import android.os.IBinder;
 final class zzm$zzb
 {
     private int mState;
-    private IBinder zzacE;
-    private ComponentName zzadY;
-    private final zzm$zzb$zza zzadZ;
-    private final Set<ServiceConnection> zzaea;
-    private boolean zzaeb;
-    private final zzm$zza zzaec;
-    final /* synthetic */ zzm zzaed;
+    private IBinder zzaeJ;
+    private ComponentName zzagb;
+    private final zzm$zzb$zza zzagc;
+    private final Set<ServiceConnection> zzagd;
+    private boolean zzage;
+    private final zzm$zza zzagf;
+    final /* synthetic */ zzm zzagg;
     
-    public zzm$zzb(final zzm zzaed, final zzm$zza zzaec) {
-        this.zzaed = zzaed;
-        this.zzaec = zzaec;
-        this.zzadZ = new zzm$zzb$zza(this);
-        this.zzaea = new HashSet<ServiceConnection>();
+    public zzm$zzb(final zzm zzagg, final zzm$zza zzagf) {
+        this.zzagg = zzagg;
+        this.zzagf = zzagf;
+        this.zzagc = new zzm$zzb$zza(this);
+        this.zzagd = new HashSet<ServiceConnection>();
         this.mState = 2;
     }
     
     public IBinder getBinder() {
-        return this.zzacE;
+        return this.zzaeJ;
     }
     
     public ComponentName getComponentName() {
-        return this.zzadY;
+        return this.zzagb;
     }
     
     public int getState() {
@@ -48,42 +48,42 @@ final class zzm$zzb
     }
     
     public boolean isBound() {
-        return this.zzaeb;
+        return this.zzage;
     }
     
     public void zza(final ServiceConnection serviceConnection, final String s) {
-        this.zzaed.zzadW.zza(this.zzaed.zzqO, serviceConnection, s, this.zzaec.zzoK());
-        this.zzaea.add(serviceConnection);
+        this.zzagg.zzafZ.zza(this.zzagg.zzqZ, serviceConnection, s, this.zzagf.zzpm());
+        this.zzagd.add(serviceConnection);
     }
     
     public boolean zza(final ServiceConnection serviceConnection) {
-        return this.zzaea.contains(serviceConnection);
+        return this.zzagd.contains(serviceConnection);
     }
     
     public void zzb(final ServiceConnection serviceConnection, final String s) {
-        this.zzaed.zzadW.zzb(this.zzaed.zzqO, serviceConnection);
-        this.zzaea.remove(serviceConnection);
+        this.zzagg.zzafZ.zzb(this.zzagg.zzqZ, serviceConnection);
+        this.zzagd.remove(serviceConnection);
     }
     
-    public void zzcl(final String s) {
-        this.zzaeb = this.zzaed.zzadW.zza(this.zzaed.zzqO, s, this.zzaec.zzoK(), (ServiceConnection)this.zzadZ, 129);
-        if (this.zzaeb) {
-            this.mState = 3;
+    public void zzcm(final String s) {
+        this.mState = 3;
+        if (this.zzage = this.zzagg.zzafZ.zza(this.zzagg.zzqZ, s, this.zzagf.zzpm(), (ServiceConnection)this.zzagc, 129)) {
             return;
         }
+        this.mState = 2;
         try {
-            this.zzaed.zzadW.zza(this.zzaed.zzqO, (ServiceConnection)this.zzadZ);
+            this.zzagg.zzafZ.zza(this.zzagg.zzqZ, (ServiceConnection)this.zzagc);
         }
         catch (IllegalArgumentException ex) {}
     }
     
-    public void zzcm(final String s) {
-        this.zzaed.zzadW.zza(this.zzaed.zzqO, (ServiceConnection)this.zzadZ);
-        this.zzaeb = false;
+    public void zzcn(final String s) {
+        this.zzagg.zzafZ.zza(this.zzagg.zzqZ, (ServiceConnection)this.zzagc);
+        this.zzage = false;
         this.mState = 2;
     }
     
-    public boolean zzoL() {
-        return this.zzaea.isEmpty();
+    public boolean zzpn() {
+        return this.zzagd.isEmpty();
     }
 }

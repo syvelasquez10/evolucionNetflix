@@ -10,35 +10,35 @@ import java.lang.ref.WeakReference;
 
 class AdvertisingIdClient$zza extends Thread
 {
-    private WeakReference<AdvertisingIdClient> zzoh;
-    private long zzoi;
-    CountDownLatch zzoj;
-    boolean zzok;
+    private WeakReference<AdvertisingIdClient> zzoi;
+    private long zzoj;
+    CountDownLatch zzok;
+    boolean zzol;
     
-    public AdvertisingIdClient$zza(final AdvertisingIdClient advertisingIdClient, final long zzoi) {
-        this.zzoh = new WeakReference<AdvertisingIdClient>(advertisingIdClient);
-        this.zzoi = zzoi;
-        this.zzoj = new CountDownLatch(1);
-        this.zzok = false;
+    public AdvertisingIdClient$zza(final AdvertisingIdClient advertisingIdClient, final long zzoj) {
+        this.zzoi = new WeakReference<AdvertisingIdClient>(advertisingIdClient);
+        this.zzoj = zzoj;
+        this.zzok = new CountDownLatch(1);
+        this.zzol = false;
         this.start();
     }
     
     private void disconnect() {
-        final AdvertisingIdClient advertisingIdClient = this.zzoh.get();
+        final AdvertisingIdClient advertisingIdClient = this.zzoi.get();
         if (advertisingIdClient != null) {
             advertisingIdClient.finish();
-            this.zzok = true;
+            this.zzol = true;
         }
     }
     
     public void cancel() {
-        this.zzoj.countDown();
+        this.zzok.countDown();
     }
     
     @Override
     public void run() {
         try {
-            if (!this.zzoj.await(this.zzoi, TimeUnit.MILLISECONDS)) {
+            if (!this.zzok.await(this.zzoj, TimeUnit.MILLISECONDS)) {
                 this.disconnect();
             }
         }
@@ -48,6 +48,6 @@ class AdvertisingIdClient$zza extends Thread
     }
     
     public boolean zzaK() {
-        return this.zzok;
+        return this.zzol;
     }
 }

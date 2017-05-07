@@ -4,14 +4,11 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.ads.purchase.InAppPurchase;
+import android.os.IBinder;
+import com.google.android.gms.dynamic.zzd;
+import android.os.IInterface;
 
-@zzgk
-public class zzfu implements InAppPurchase
+public interface zzfu extends IInterface
 {
-    private final zzfl zzBZ;
-    
-    public zzfu(final zzfl zzBZ) {
-        this.zzBZ = zzBZ;
-    }
+    IBinder zzf(final zzd p0);
 }

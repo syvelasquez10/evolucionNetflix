@@ -7,47 +7,47 @@ package com.google.android.gms.ads.internal.overlay;
 import android.view.ViewGroup$LayoutParams;
 import android.view.View;
 import android.widget.FrameLayout$LayoutParams;
-import com.google.android.gms.ads.internal.client.zzk;
+import com.google.android.gms.ads.internal.client.zzl;
 import android.content.Context;
 import android.widget.ImageButton;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 import android.view.View$OnClickListener;
 import android.widget.FrameLayout;
 
-@zzgk
+@zzgr
 public class zzm extends FrameLayout implements View$OnClickListener
 {
-    private final ImageButton zzBk;
-    private final zzo zzBl;
+    private final ImageButton zzBW;
+    private final zzo zzBX;
     
-    public zzm(final Context context, int zzb, final zzo zzBl) {
+    public zzm(final Context context, int zzb, final zzo zzBX) {
         super(context);
-        this.zzBl = zzBl;
+        this.zzBX = zzBX;
         this.setOnClickListener((View$OnClickListener)this);
-        (this.zzBk = new ImageButton(context)).setImageResource(17301527);
-        this.zzBk.setBackgroundColor(0);
-        this.zzBk.setOnClickListener((View$OnClickListener)this);
-        this.zzBk.setPadding(0, 0, 0, 0);
-        this.zzBk.setContentDescription((CharSequence)"Interstitial close button");
-        zzb = zzk.zzcE().zzb(context, zzb);
-        this.addView((View)this.zzBk, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(zzb, zzb, 17));
+        (this.zzBW = new ImageButton(context)).setImageResource(17301527);
+        this.zzBW.setBackgroundColor(0);
+        this.zzBW.setOnClickListener((View$OnClickListener)this);
+        this.zzBW.setPadding(0, 0, 0, 0);
+        this.zzBW.setContentDescription((CharSequence)"Interstitial close button");
+        zzb = zzl.zzcF().zzb(context, zzb);
+        this.addView((View)this.zzBW, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(zzb, zzb, 17));
     }
     
     public void onClick(final View view) {
-        if (this.zzBl != null) {
-            this.zzBl.zzey();
+        if (this.zzBX != null) {
+            this.zzBX.zzeE();
         }
     }
     
     public void zza(final boolean b, final boolean b2) {
         if (!b2) {
-            this.zzBk.setVisibility(0);
+            this.zzBW.setVisibility(0);
             return;
         }
         if (b) {
-            this.zzBk.setVisibility(4);
+            this.zzBW.setVisibility(4);
             return;
         }
-        this.zzBk.setVisibility(8);
+        this.zzBW.setVisibility(8);
     }
 }

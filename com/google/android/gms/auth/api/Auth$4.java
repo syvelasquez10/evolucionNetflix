@@ -10,14 +10,13 @@ import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import com.google.android.gms.common.internal.zzf;
 import android.os.Looper;
 import android.content.Context;
-import com.google.android.gms.auth.api.signin.zze;
-import com.google.android.gms.auth.api.signin.internal.zzd;
+import com.google.android.gms.common.api.Api$ApiOptions$NoOptions;
+import com.google.android.gms.internal.zzkf;
 import com.google.android.gms.common.api.Api$zza;
 
-final class Auth$4 extends Api$zza<zzd, zze>
+final class Auth$4 extends Api$zza<zzkf, Api$ApiOptions$NoOptions>
 {
-    @Override
-    public zzd zza(final Context context, final Looper looper, final zzf zzf, final zze zze, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
-        return new zzd(context, looper, zzf, zze, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
+    public zzkf zzd(final Context context, final Looper looper, final zzf zzf, final Api$ApiOptions$NoOptions api$ApiOptions$NoOptions, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
+        return new zzkf(context, looper, zzf, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
     }
 }

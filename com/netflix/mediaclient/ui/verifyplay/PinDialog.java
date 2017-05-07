@@ -146,7 +146,7 @@ public class PinDialog extends NetflixDialogFrag
     }
     
     private static void showConnectivityErrorDialog(final NetflixActivity netflixActivity, final Status status) {
-        new AlertDialog$Builder((Context)netflixActivity).setCancelable(false).setMessage((CharSequence)String.format("%s (%d)", netflixActivity.getString(2131165577), status.getStatusCode().getValue())).setPositiveButton(2131165485, (DialogInterface$OnClickListener)new PinDialog$2()).show();
+        new AlertDialog$Builder((Context)netflixActivity).setCancelable(false).setMessage((CharSequence)String.format("%s (%d)", netflixActivity.getString(2131165575), status.getStatusCode().getValue())).setPositiveButton(2131165483, (DialogInterface$OnClickListener)new PinDialog$2()).show();
     }
     
     private void showErrorIcon(final boolean mInError) {
@@ -193,7 +193,7 @@ public class PinDialog extends NetflixDialogFrag
         }
         mPinForgotView.setVisibility(visibility3);
         if (mInProgress) {
-            this.mPinMessage.setText(2131165495);
+            this.mPinMessage.setText(2131165493);
         }
     }
     
@@ -265,7 +265,7 @@ public class PinDialog extends NetflixDialogFrag
         alertDialog$Builder.setView(inflate);
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);
-        create.setButton(-2, (CharSequence)this.getString(2131165400), (DialogInterface$OnClickListener)new PinDialog$PinDialogOnCancel(this, null));
+        create.setButton(-2, (CharSequence)this.getString(2131165398), (DialogInterface$OnClickListener)new PinDialog$PinDialogOnCancel(this, null));
         this.mActive = true;
         return (Dialog)create;
     }
@@ -307,7 +307,7 @@ public class PinDialog extends NetflixDialogFrag
     }
     
     public void retryOnPinFailure() {
-        this.mPinMessage.setText(2131165491);
+        this.mPinMessage.setText(2131165489);
         this.mPinEditText.getText().clear();
         this.showErrorIcon(true);
         this.showSoftKeyboard(this.getServiceManager(), this.mPinEditText);

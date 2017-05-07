@@ -90,7 +90,7 @@ public class DeviceConfiguration
         this.mUserSessionDurationInSeconds = this.loadUserSessionTimeoutDuration();
         this.mBreadcrumbLoggingSpecification = BreadcrumbLoggingSpecification.loadFromPreferences(mContext);
         this.mErrorLoggingSpecification = ErrorLoggingSpecification.loadFromPreferences(mContext);
-        this.mVideoResolutionOverride = PreferenceUtils.getIntPref(this.mContext, "video_resolution_override", Integer.MAX_VALUE);
+        this.mVideoResolutionOverride = PreferenceUtils.getIntPref(this.mContext, "video_resolution_override", 0);
         this.mRateLimitForGcmBrowseEvents = PreferenceUtils.getIntPref(this.mContext, "gcm_browse_rate_limit", 0);
         this.mRateLimitForNListChangeEvents = PreferenceUtils.getIntPref(this.mContext, "gcm_tray_change_rate_limit", 0);
         this.mLocalPlaybackEnabled = PreferenceUtils.getBooleanPref(this.mContext, "playback_configuration_local_playback_enabled", DeviceUtils.isLocalPlaybackEnabled());

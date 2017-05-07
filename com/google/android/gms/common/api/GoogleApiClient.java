@@ -4,37 +4,46 @@
 
 package com.google.android.gms.common.api;
 
+import com.google.android.gms.internal.zzlb$zza;
 import android.os.Looper;
 import java.io.PrintWriter;
 import java.io.FileDescriptor;
 
-public interface GoogleApiClient
+public abstract class GoogleApiClient
 {
-    void connect();
+    public abstract void connect();
     
-    void disconnect();
+    public abstract void disconnect();
     
-    void dump(final String p0, final FileDescriptor p1, final PrintWriter p2, final String[] p3);
+    public abstract void dump(final String p0, final FileDescriptor p1, final PrintWriter p2, final String[] p3);
     
-    Looper getLooper();
+    public Looper getLooper() {
+        throw new UnsupportedOperationException();
+    }
     
-    boolean isConnected();
+    public int getSessionId() {
+        throw new UnsupportedOperationException();
+    }
     
-    boolean isConnecting();
+    public abstract boolean isConnected();
     
-    void reconnect();
+    public abstract boolean isConnecting();
     
-    void registerConnectionCallbacks(final GoogleApiClient$ConnectionCallbacks p0);
+    public abstract void reconnect();
     
-    void registerConnectionFailedListener(final GoogleApiClient$OnConnectionFailedListener p0);
+    public abstract void registerConnectionFailedListener(final GoogleApiClient$OnConnectionFailedListener p0);
     
-    void unregisterConnectionCallbacks(final GoogleApiClient$ConnectionCallbacks p0);
+    public abstract void unregisterConnectionFailedListener(final GoogleApiClient$OnConnectionFailedListener p0);
     
-    void unregisterConnectionFailedListener(final GoogleApiClient$OnConnectionFailedListener p0);
+    public <C extends Api$zzb> C zza(final Api$zzc<C> api$zzc) {
+        throw new UnsupportedOperationException();
+    }
     
-     <C extends Api$zzb> C zza(final Api$zzc<C> p0);
+    public <A extends Api$zzb, R extends Result, T extends zzlb$zza<R, A>> T zza(final T t) {
+        throw new UnsupportedOperationException();
+    }
     
-     <A extends Api$zzb, R extends Result, T extends zzc$zza<R, A>> T zza(final T p0);
-    
-     <A extends Api$zzb, T extends zzc$zza<? extends Result, A>> T zzb(final T p0);
+    public <A extends Api$zzb, T extends zzlb$zza<? extends Result, A>> T zzb(final T t) {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -159,7 +159,7 @@ public class SendAsFacebookMessageDialog extends NetflixDialogFrag
         this.mDlgBodyTextView = (TextView)inflate.findViewById(2131624530);
         (this.mDontaskCheckBox = (CheckBox)inflate.findViewById(2131624531)).setOnCheckedChangeListener((CompoundButton$OnCheckedChangeListener)new SendAsFacebookMessageDialog$1(this));
         this.tryUpdateUI();
-        return (Dialog)new AlertDialog$Builder((Context)this.getActivity()).setPositiveButton(2131165485, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$3(this)).setNegativeButton(2131165373, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$2(this)).setView(inflate).setCancelable(false).create();
+        return (Dialog)new AlertDialog$Builder((Context)this.getActivity()).setPositiveButton(2131165483, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$3(this)).setNegativeButton(2131165371, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$2(this)).setView(inflate).setCancelable(false).create();
     }
     
     @Override

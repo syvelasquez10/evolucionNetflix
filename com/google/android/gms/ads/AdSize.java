@@ -4,22 +4,23 @@
 
 package com.google.android.gms.ads;
 
-import com.google.android.gms.ads.internal.client.zzk;
 import com.google.android.gms.ads.internal.client.AdSizeParcel;
+import com.google.android.gms.ads.internal.client.zzl;
 import android.content.Context;
 
 public final class AdSize
 {
     public static final AdSize BANNER;
+    public static final AdSize FLUID;
     public static final AdSize FULL_BANNER;
     public static final AdSize LARGE_BANNER;
     public static final AdSize LEADERBOARD;
     public static final AdSize MEDIUM_RECTANGLE;
     public static final AdSize SMART_BANNER;
     public static final AdSize WIDE_SKYSCRAPER;
-    private final int zznP;
     private final int zznQ;
-    private final String zznR;
+    private final int zznR;
+    private final String zznS;
     
     static {
         BANNER = new AdSize(320, 50, "320x50_mb");
@@ -29,6 +30,7 @@ public final class AdSize
         MEDIUM_RECTANGLE = new AdSize(300, 250, "300x250_as");
         WIDE_SKYSCRAPER = new AdSize(160, 600, "160x600_as");
         SMART_BANNER = new AdSize(-1, -2, "smart_banner");
+        FLUID = new AdSize(-3, -4, "fluid");
     }
     
     public AdSize(final int n, final int n2) {
@@ -51,16 +53,16 @@ public final class AdSize
         this(n, n2, append.append(value2).append("_as").toString());
     }
     
-    AdSize(final int zznP, final int zznQ, final String zznR) {
-        if (zznP < 0 && zznP != -1) {
-            throw new IllegalArgumentException("Invalid width for AdSize: " + zznP);
+    AdSize(final int zznQ, final int zznR, final String zznS) {
+        if (zznQ < 0 && zznQ != -1 && zznQ != -3) {
+            throw new IllegalArgumentException("Invalid width for AdSize: " + zznQ);
         }
-        if (zznQ < 0 && zznQ != -2) {
-            throw new IllegalArgumentException("Invalid height for AdSize: " + zznQ);
+        if (zznR < 0 && zznR != -2 && zznR != -4) {
+            throw new IllegalArgumentException("Invalid height for AdSize: " + zznR);
         }
-        this.zznP = zznP;
         this.zznQ = zznQ;
         this.zznR = zznR;
+        this.zznS = zznS;
     }
     
     @Override
@@ -70,7 +72,7 @@ public final class AdSize
                 return false;
             }
             final AdSize adSize = (AdSize)o;
-            if (this.zznP != adSize.zznP || this.zznQ != adSize.zznQ || !this.zznR.equals(adSize.zznR)) {
+            if (this.zznQ != adSize.zznQ || this.zznR != adSize.zznR || !this.zznS.equals(adSize.zznS)) {
                 return false;
             }
         }
@@ -78,34 +80,54 @@ public final class AdSize
     }
     
     public int getHeight() {
-        return this.zznQ;
+        return this.zznR;
     }
     
     public int getHeightInPixels(final Context context) {
-        if (this.zznQ == -2) {
-            return AdSizeParcel.zzb(context.getResources().getDisplayMetrics());
+        switch (this.zznR) {
+            default: {
+                return zzl.zzcF().zzb(context, this.zznR);
+            }
+            case -2: {
+                return AdSizeParcel.zzb(context.getResources().getDisplayMetrics());
+            }
+            case -4:
+            case -3: {
+                return -1;
+            }
         }
-        return zzk.zzcE().zzb(context, this.zznQ);
     }
     
     public int getWidth() {
-        return this.zznP;
+        return this.zznQ;
     }
     
     public int getWidthInPixels(final Context context) {
-        if (this.zznP == -1) {
-            return AdSizeParcel.zza(context.getResources().getDisplayMetrics());
+        switch (this.zznQ) {
+            default: {
+                return zzl.zzcF().zzb(context, this.zznQ);
+            }
+            case -1: {
+                return AdSizeParcel.zza(context.getResources().getDisplayMetrics());
+            }
+            case -4:
+            case -3: {
+                return -1;
+            }
         }
-        return zzk.zzcE().zzb(context, this.zznP);
     }
     
     @Override
     public int hashCode() {
-        return this.zznR.hashCode();
+        return this.zznS.hashCode();
+    }
+    
+    public boolean isFluid() {
+        return this.zznQ == -3 && this.zznR == -4;
     }
     
     @Override
     public String toString() {
-        return this.zznR;
+        return this.zznS;
     }
 }

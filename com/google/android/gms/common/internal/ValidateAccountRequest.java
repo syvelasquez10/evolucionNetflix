@@ -16,23 +16,23 @@ public class ValidateAccountRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<ValidateAccountRequest> CREATOR;
     final int mVersionCode;
-    final IBinder zzacC;
-    private final Scope[] zzacD;
-    private final int zzaeq;
-    private final Bundle zzaer;
-    private final String zzaes;
+    private final String zzSb;
+    final IBinder zzaeH;
+    private final Scope[] zzaeI;
+    private final int zzagu;
+    private final Bundle zzagv;
     
     static {
         CREATOR = (Parcelable$Creator)new zzad();
     }
     
-    ValidateAccountRequest(final int mVersionCode, final int zzaeq, final IBinder zzacC, final Scope[] zzacD, final Bundle zzaer, final String zzaes) {
+    ValidateAccountRequest(final int mVersionCode, final int zzagu, final IBinder zzaeH, final Scope[] zzaeI, final Bundle zzagv, final String zzSb) {
         this.mVersionCode = mVersionCode;
-        this.zzaeq = zzaeq;
-        this.zzacC = zzacC;
-        this.zzacD = zzacD;
-        this.zzaer = zzaer;
-        this.zzaes = zzaes;
+        this.zzagu = zzagu;
+        this.zzaeH = zzaeH;
+        this.zzaeI = zzaeI;
+        this.zzagv = zzagv;
+        this.zzSb = zzSb;
     }
     
     public ValidateAccountRequest(final zzp zzp, final Scope[] array, final String s, final Bundle bundle) {
@@ -52,22 +52,22 @@ public class ValidateAccountRequest implements SafeParcelable
     }
     
     public String getCallingPackage() {
-        return this.zzaes;
+        return this.zzSb;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
         zzad.zza(this, parcel, n);
     }
     
-    public int zzoS() {
-        return this.zzaeq;
+    public int zzpu() {
+        return this.zzagu;
     }
     
-    public Scope[] zzoT() {
-        return this.zzacD;
+    public Scope[] zzpv() {
+        return this.zzaeI;
     }
     
-    public Bundle zzoU() {
-        return this.zzaer;
+    public Bundle zzpw() {
+        return this.zzagv;
     }
 }

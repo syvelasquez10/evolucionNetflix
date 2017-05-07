@@ -14,11 +14,11 @@ public final class Cast
 {
     public static final Api<Cast$CastOptions> API;
     public static final Cast$CastApi CastApi;
-    private static final Api$zza<zze, Cast$CastOptions> zzQg;
+    private static final Api$zza<zze, Cast$CastOptions> zzRl;
     
     static {
-        zzQg = new Cast$1();
-        API = new Api<Cast$CastOptions>("Cast.API", (Api$zza<C, Cast$CastOptions>)Cast.zzQg, (Api$zzc<C>)zzk.zzQf);
+        zzRl = new Cast$1();
+        API = new Api<Cast$CastOptions>("Cast.API", (Api$zza<C, Cast$CastOptions>)Cast.zzRl, (Api$zzc<C>)zzk.zzRk);
         CastApi = new Cast$CastApi$zza();
     }
 }

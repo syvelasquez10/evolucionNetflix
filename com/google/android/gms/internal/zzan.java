@@ -10,18 +10,13 @@ import android.net.Uri;
 
 public class zzan
 {
+    private static final String[] zznC;
     private String zznA;
     private String[] zznB;
-    private zzaj zznC;
-    private String zzny;
-    private String zznz;
+    private zzaj zznD;
     
-    public zzan(final zzaj zznC) {
-        this.zzny = "googleads.g.doubleclick.net";
-        this.zznz = "/pagead/ads";
-        this.zznA = "ad.doubleclick.net";
-        this.zznB = new String[] { ".doubleclick.net", ".googleadservices.com", ".googlesyndication.com" };
-        this.zznC = zznC;
+    static {
+        zznC = new String[] { "/aclk", "/pcs/click" };
     }
     
     private Uri zza(Uri zza, final Context context, final String s, final boolean b) {
@@ -45,10 +40,10 @@ public class zzan
         }
         String s2;
         if (b) {
-            s2 = this.zznC.zzb(context, s);
+            s2 = this.zznD.zzb(context, s);
         }
         else {
-            s2 = this.zznC.zzb(context);
+            s2 = this.zznD.zzb(context);
         }
         if (zza2) {
             return this.zzb(zza, "dc_ms", s2);
@@ -91,7 +86,7 @@ public class zzan
     }
     
     public void zza(final MotionEvent motionEvent) {
-        this.zznC.zza(motionEvent);
+        this.zznD.zza(motionEvent);
     }
     
     public boolean zza(final Uri uri) {
@@ -107,7 +102,7 @@ public class zzan
     }
     
     public zzaj zzab() {
-        return this.zznC;
+        return this.zznD;
     }
     
     public boolean zzb(final Uri uri) {
@@ -140,6 +135,23 @@ public class zzan
     }
     
     public boolean zzc(final Uri uri) {
-        return this.zzb(uri) && uri.getPath().endsWith("/aclk");
+        boolean b = false;
+        if (this.zzb(uri)) {
+            final String[] zznC = zzan.zznC;
+            final int length = zznC.length;
+            int n = 0;
+            while (true) {
+                b = b;
+                if (n >= length) {
+                    break;
+                }
+                if (uri.getPath().endsWith(zznC[n])) {
+                    b = true;
+                    break;
+                }
+                ++n;
+            }
+        }
+        return b;
     }
 }

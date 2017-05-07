@@ -4,18 +4,26 @@
 
 package com.google.android.gms.common.stats;
 
-import android.text.TextUtils;
-import android.os.Process;
-import android.os.PowerManager$WakeLock;
-
-public class zzf
+public abstract class zzf
 {
-    public static String zza(final PowerManager$WakeLock powerManager$WakeLock, final String s) {
-        final StringBuilder append = new StringBuilder().append(String.valueOf(Process.myPid() << 32 | System.identityHashCode(powerManager$WakeLock)));
-        String s2 = s;
-        if (TextUtils.isEmpty((CharSequence)s)) {
-            s2 = "";
-        }
-        return append.append(s2).toString();
+    public static int zzahY;
+    public static int zzahZ;
+    
+    static {
+        zzf.zzahY = 0;
+        zzf.zzahZ = 1;
     }
+    
+    public abstract int getEventType();
+    
+    public abstract long getTimeMillis();
+    
+    @Override
+    public String toString() {
+        return this.getTimeMillis() + "\t" + this.getEventType() + "\t" + this.zzqd() + this.zzqg();
+    }
+    
+    public abstract long zzqd();
+    
+    public abstract String zzqg();
 }

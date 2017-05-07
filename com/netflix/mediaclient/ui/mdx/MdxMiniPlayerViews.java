@@ -214,9 +214,9 @@ class MdxMiniPlayerViews
             viewsById = list;
         }
         this.playOrPauseCollapsed = (ImageView)this.content.findViewById(2131624336);
-        this.initCollapsedButton(this.languageCollapsed, 2131165704, 2131165344, 18);
-        this.initCollapsedButton(this.episodesCollapsed, 2131165705, 2131165343, 20);
-        this.initCollapsedButton(this.skipBackCollapsed, 2131165714, 2131165349, 24);
+        this.initCollapsedButton(this.languageCollapsed, 2131165704, 2131165342, 18);
+        this.initCollapsedButton(this.episodesCollapsed, 2131165705, 2131165341, 20);
+        this.initCollapsedButton(this.skipBackCollapsed, 2131165714, 2131165347, 24);
         (this.collapsedViews = new ArrayList<View>()).add((View)this.playOrPauseCollapsed);
         this.collapsedViews.add((View)this.skipBackCollapsed);
         this.collapsedViews.add((View)this.languageCollapsed);
@@ -642,7 +642,7 @@ class MdxMiniPlayerViews
     
     public void updateToEmptyState(final boolean controlsEnabled) {
         this.updateSubtitleText(null);
-        final String string = this.activity.getString(2131165453);
+        final String string = this.activity.getString(2131165451);
         this.title.setText((CharSequence)string);
         this.deviceName.setText((CharSequence)string);
         this.setControlsEnabled(controlsEnabled);

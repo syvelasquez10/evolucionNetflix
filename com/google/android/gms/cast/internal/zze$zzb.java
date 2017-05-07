@@ -7,6 +7,7 @@ package com.google.android.gms.cast.internal;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.BinderWrapper;
 import android.text.TextUtils;
+import com.google.android.gms.cast.JoinOptions;
 import android.os.IInterface;
 import android.os.IBinder;
 import com.google.android.gms.common.ConnectionResult;
@@ -27,35 +28,35 @@ import com.google.android.gms.cast.Cast$Listener;
 import com.google.android.gms.common.internal.zzj;
 import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.zzc$zzb;
+import com.google.android.gms.internal.zzlb$zzb;
 import java.util.concurrent.atomic.AtomicReference;
 import android.os.Handler;
 
 class zze$zzb extends zzj$zza
 {
     private final Handler mHandler;
-    private final AtomicReference<zze> zzXk;
+    private final AtomicReference<zze> zzZc;
     
     public zze$zzb(final zze zze) {
-        this.zzXk = new AtomicReference<zze>(zze);
+        this.zzZc = new AtomicReference<zze>(zze);
         this.mHandler = new Handler(zze.getLooper());
     }
     
     private void zza(final zze zze, final long n, final int n2) {
-        synchronized (zze.zzXc) {
-            final zzc$zzb<Status> zzc$zzb = zze.zzXc.remove(n);
+        synchronized (zze.zzYU) {
+            final zzlb$zzb<Status> zzlb$zzb = zze.zzYU.remove(n);
             // monitorexit(zze.zzg(zze))
-            if (zzc$zzb != null) {
-                zzc$zzb.zzn(new Status(n2));
+            if (zzlb$zzb != null) {
+                zzlb$zzb.zzp(new Status(n2));
             }
         }
     }
     
     private boolean zza(final zze zze, final int n) {
-        synchronized (zze.zzXg) {
-            if (zze.zzXe != null) {
-                zze.zzXe.zzn(new Status(n));
-                zze.zzXe = null;
+        synchronized (zze.zzYY) {
+            if (zze.zzYW != null) {
+                zze.zzYW.zzp(new Status(n));
+                zze.zzYW = null;
                 return true;
             }
             return false;
@@ -63,136 +64,136 @@ class zze$zzb extends zzj$zza
     }
     
     public boolean isDisposed() {
-        return this.zzXk.get() == null;
+        return this.zzZc.get() == null;
     }
     
     public void onApplicationDisconnected(final int n) {
-        final zze zze = this.zzXk.get();
+        final zze zze = this.zzZc.get();
         if (zze != null) {
-            zze.zzWZ = null;
-            zze.zzXa = null;
+            zze.zzYR = null;
+            zze.zzYS = null;
             this.zza(zze, n);
-            if (zze.zzTk != null) {
+            if (zze.zzUZ != null) {
                 this.mHandler.post((Runnable)new zze$zzb$1(this, zze, n));
             }
         }
     }
     
     public void zza(final ApplicationMetadata applicationMetadata, final String s, final String s2, final boolean b) {
-        final zze zze = this.zzXk.get();
+        final zze zze = this.zzZc.get();
         if (zze == null) {
             return;
         }
-        zze.zzWN = applicationMetadata;
-        zze.zzWZ = applicationMetadata.getApplicationId();
-        zze.zzXa = s2;
-        synchronized (com.google.android.gms.cast.internal.zze.zzXf) {
-            if (zze.zzXd != null) {
-                zze.zzXd.zzn(new zze$zza(new Status(0), applicationMetadata, s, s2, b));
-                zze.zzXd = null;
+        zze.zzYF = applicationMetadata;
+        zze.zzYR = applicationMetadata.getApplicationId();
+        zze.zzYS = s2;
+        synchronized (com.google.android.gms.cast.internal.zze.zzYX) {
+            if (zze.zzYV != null) {
+                zze.zzYV.zzp(new zze$zza(new Status(0), applicationMetadata, s, s2, b));
+                zze.zzYV = null;
             }
         }
     }
     
     public void zza(final String s, final double n, final boolean b) {
-        zze.zzTy.zzb("Deprecated callback: \"onStatusreceived\"", new Object[0]);
+        zze.zzVo.zzb("Deprecated callback: \"onStatusreceived\"", new Object[0]);
     }
     
     public void zza(final String s, final long n, final int n2) {
-        final zze zze = this.zzXk.get();
+        final zze zze = this.zzZc.get();
         if (zze == null) {
             return;
         }
         this.zza(zze, n, n2);
     }
     
-    public void zzaU(final int n) {
-        final zze zzmG = this.zzmG();
-        if (zzmG != null) {
-            zze.zzTy.zzb("ICastDeviceControllerListener.onDisconnected: %d", n);
-            if (n != 0) {
-                zzmG.zzbz(2);
-            }
-        }
-    }
-    
-    public void zzaV(final int n) {
-        final zze zze = this.zzXk.get();
-        if (zze == null) {
-            return;
-        }
-        synchronized (com.google.android.gms.cast.internal.zze.zzXf) {
-            if (zze.zzXd != null) {
-                zze.zzXd.zzn(new zze$zza(new Status(n)));
-                zze.zzXd = null;
-            }
-        }
-    }
-    
-    public void zzaW(final int n) {
-        final zze zze = this.zzXk.get();
-        if (zze == null) {
-            return;
-        }
-        this.zza(zze, n);
-    }
-    
-    public void zzaX(final int n) {
-        final zze zze = this.zzXk.get();
-        if (zze == null) {
-            return;
-        }
-        this.zza(zze, n);
-    }
-    
     public void zzb(final ApplicationStatus applicationStatus) {
-        final zze zze = this.zzXk.get();
+        final zze zze = this.zzZc.get();
         if (zze == null) {
             return;
         }
-        com.google.android.gms.cast.internal.zze.zzTy.zzb("onApplicationStatusChanged", new Object[0]);
+        com.google.android.gms.cast.internal.zze.zzVo.zzb("onApplicationStatusChanged", new Object[0]);
         this.mHandler.post((Runnable)new zze$zzb$3(this, zze, applicationStatus));
     }
     
     public void zzb(final DeviceStatus deviceStatus) {
-        final zze zze = this.zzXk.get();
+        final zze zze = this.zzZc.get();
         if (zze == null) {
             return;
         }
-        com.google.android.gms.cast.internal.zze.zzTy.zzb("onDeviceStatusChanged", new Object[0]);
+        com.google.android.gms.cast.internal.zze.zzVo.zzb("onDeviceStatusChanged", new Object[0]);
         this.mHandler.post((Runnable)new zze$zzb$2(this, zze, deviceStatus));
     }
     
     public void zzb(final String s, final byte[] array) {
-        if (this.zzXk.get() == null) {
+        if (this.zzZc.get() == null) {
             return;
         }
-        zze.zzTy.zzb("IGNORING: Receive (type=binary, ns=%s) <%d bytes>", s, array.length);
+        zze.zzVo.zzb("IGNORING: Receive (type=binary, ns=%s) <%d bytes>", s, array.length);
+    }
+    
+    public void zzbb(final int n) {
+        final zze zznc = this.zznc();
+        if (zznc != null) {
+            zze.zzVo.zzb("ICastDeviceControllerListener.onDisconnected: %d", n);
+            if (n != 0) {
+                zznc.zzbE(2);
+            }
+        }
+    }
+    
+    public void zzbc(final int n) {
+        final zze zze = this.zzZc.get();
+        if (zze == null) {
+            return;
+        }
+        synchronized (com.google.android.gms.cast.internal.zze.zzYX) {
+            if (zze.zzYV != null) {
+                zze.zzYV.zzp(new zze$zza(new Status(n)));
+                zze.zzYV = null;
+            }
+        }
+    }
+    
+    public void zzbd(final int n) {
+        final zze zze = this.zzZc.get();
+        if (zze == null) {
+            return;
+        }
+        this.zza(zze, n);
+    }
+    
+    public void zzbe(final int n) {
+        final zze zze = this.zzZc.get();
+        if (zze == null) {
+            return;
+        }
+        this.zza(zze, n);
     }
     
     public void zzd(final String s, final long n) {
-        final zze zze = this.zzXk.get();
+        final zze zze = this.zzZc.get();
         if (zze == null) {
             return;
         }
         this.zza(zze, n, 0);
     }
     
-    public zze zzmG() {
-        final zze zze = this.zzXk.getAndSet(null);
+    public zze zznc() {
+        final zze zze = this.zzZc.getAndSet(null);
         if (zze == null) {
             return null;
         }
-        zze.zzmv();
+        zze.zzmR();
         return zze;
     }
     
     public void zzs(final String s, final String s2) {
-        final zze zze = this.zzXk.get();
+        final zze zze = this.zzZc.get();
         if (zze == null) {
             return;
         }
-        com.google.android.gms.cast.internal.zze.zzTy.zzb("Receive (type=text, ns=%s) %s", s, s2);
+        com.google.android.gms.cast.internal.zze.zzVo.zzb("Receive (type=text, ns=%s) %s", s, s2);
         this.mHandler.post((Runnable)new zze$zzb$4(this, zze, s, s2));
     }
 }

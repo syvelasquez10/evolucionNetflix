@@ -7,11 +7,11 @@ package com.google.android.gms.internal;
 public class zzbp$zza
 {
     final long value;
-    final String zzsm;
+    final String zzsx;
     
-    zzbp$zza(final long value, final String zzsm) {
+    zzbp$zza(final long value, final String zzsx) {
         this.value = value;
-        this.zzsm = zzsm;
+        this.zzsx = zzsx;
     }
     
     @Override

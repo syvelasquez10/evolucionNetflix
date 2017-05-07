@@ -98,10 +98,10 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         if (!this.mProfileChangeRequestWasSent) {
             int n;
             if (this.mNewProfileCreation) {
-                n = 2131165585;
+                n = 2131165583;
             }
             else {
-                n = 2131165596;
+                n = 2131165594;
             }
             Toast.makeText((Context)this, n, 1).show();
         }
@@ -120,12 +120,12 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         }
         final String string = this.mName.getText().toString();
         if (string.contains("\"") || string.contains("<") || string.contains(">")) {
-            this.mName.setError((CharSequence)this.getString(2131165604));
+            this.mName.setError((CharSequence)this.getString(2131165602));
             return true;
         }
         for (final UserProfile userProfile : this.mServiceManager.getAllProfiles()) {
             if (string.equalsIgnoreCase(userProfile.getProfileName()) && !userProfile.getProfileGuid().equals(this.mInputProfileId)) {
-                this.mName.setError((CharSequence)this.getString(2131165593));
+                this.mName.setError((CharSequence)this.getString(2131165591));
                 return true;
             }
         }
@@ -169,10 +169,10 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         if (textView != null) {
             int text;
             if (this.mNewProfileCreation) {
-                text = 2131165584;
+                text = 2131165582;
             }
             else {
-                text = 2131165597;
+                text = 2131165595;
             }
             textView.setText(text);
         }

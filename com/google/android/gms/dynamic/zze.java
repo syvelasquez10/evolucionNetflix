@@ -43,7 +43,7 @@ public final class zze<T> extends zzd$zza
         throw new IllegalArgumentException("The concrete class implementing IObjectWrapper must have exactly *one* declared private field for the wrapped object.  Preferably, this is an instance of the ObjectWrapper<T> class.");
     }
     
-    public static <T> zzd zzx(final T t) {
+    public static <T> zzd zzy(final T t) {
         return new zze<Object>(t);
     }
 }

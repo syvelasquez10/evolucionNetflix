@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.kubrick_kids.details;
 
 import android.graphics.drawable.Drawable;
+import com.netflix.mediaclient.util.api.Api16Util;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.graphics.drawable.TransitionDrawable;
 import android.support.v7.widget.RecyclerView;
@@ -120,7 +121,7 @@ class KidsParallax extends DetailsPageParallaxScrollListener
         this.shadow = this.recyclerView.getRootView().findViewById(2131624064);
         final Drawable drawable = this.toolbarView.getResources().getDrawable(2130837826);
         if (drawable != null && this.toolbarView != null) {
-            this.toolbarView.setBackground(drawable);
+            Api16Util.setBackgroundDrawableCompat(this.toolbarView, drawable);
         }
     }
     

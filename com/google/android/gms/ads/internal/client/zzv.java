@@ -8,5 +8,5 @@ import android.os.IInterface;
 
 public interface zzv extends IInterface
 {
-    void zza(final String p0, final MobileAdsSettingsParcel p1);
+    long getValue();
 }

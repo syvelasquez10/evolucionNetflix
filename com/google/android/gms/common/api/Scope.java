@@ -13,16 +13,16 @@ public final class Scope implements SafeParcelable
 {
     public static final Parcelable$Creator<Scope> CREATOR;
     final int mVersionCode;
-    private final String zzaaC;
+    private final String zzaba;
     
     static {
-        CREATOR = (Parcelable$Creator)new zzm();
+        CREATOR = (Parcelable$Creator)new zzc();
     }
     
-    Scope(final int mVersionCode, final String zzaaC) {
-        zzx.zzh(zzaaC, "scopeUri must not be null or empty");
+    Scope(final int mVersionCode, final String zzaba) {
+        zzx.zzh(zzaba, "scopeUri must not be null or empty");
         this.mVersionCode = mVersionCode;
-        this.zzaaC = zzaaC;
+        this.zzaba = zzaba;
     }
     
     public Scope(final String s) {
@@ -35,24 +35,24 @@ public final class Scope implements SafeParcelable
     
     @Override
     public boolean equals(final Object o) {
-        return this == o || (o instanceof Scope && this.zzaaC.equals(((Scope)o).zzaaC));
+        return this == o || (o instanceof Scope && this.zzaba.equals(((Scope)o).zzaba));
     }
     
     @Override
     public int hashCode() {
-        return this.zzaaC.hashCode();
+        return this.zzaba.hashCode();
     }
     
     @Override
     public String toString() {
-        return this.zzaaC;
+        return this.zzaba;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        zzm.zza(this, parcel, n);
+        zzc.zza(this, parcel, n);
     }
     
     public String zznG() {
-        return this.zzaaC;
+        return this.zzaba;
     }
 }

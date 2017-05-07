@@ -13,6 +13,6 @@ final class zzbu$4 extends zzbu<String>
     }
     
     public String zze(final SharedPreferences sharedPreferences) {
-        return sharedPreferences.getString(this.getKey(), (String)this.zzdd());
+        return sharedPreferences.getString(this.getKey(), (String)this.zzde());
     }
 }

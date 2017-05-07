@@ -12,6 +12,7 @@ import com.google.android.gms.common.api.GoogleApiClient$Builder;
 import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
 import android.content.IntentSender$SendIntentException;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;

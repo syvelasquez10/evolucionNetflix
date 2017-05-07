@@ -4,14 +4,27 @@
 
 package com.google.android.gms.ads.internal.client;
 
-import android.os.IBinder;
-import com.google.android.gms.internal.zzeh;
-import com.google.android.gms.dynamic.zzd;
+import com.google.android.gms.internal.zzfs;
+import com.google.android.gms.internal.zzck;
 import android.os.IInterface;
 
 public interface zzs extends IInterface
 {
-    IBinder zza(final zzd p0, final AdSizeParcel p1, final String p2, final zzeh p3, final int p4);
+    String getMediationAdapterClassName();
     
-    IBinder zza(final zzd p0, final AdSizeParcel p1, final String p2, final zzeh p3, final int p4, final int p5);
+    void setManualImpressionsEnabled(final boolean p0);
+    
+    void zza(final AdSizeParcel p0);
+    
+    void zza(final zzn p0);
+    
+    void zza(final zzo p0);
+    
+    void zza(final zzu p0);
+    
+    void zza(final zzck p0);
+    
+    void zza(final zzfs p0);
+    
+    AdSizeParcel zzaN();
 }

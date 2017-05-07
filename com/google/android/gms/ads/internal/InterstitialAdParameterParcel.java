@@ -5,25 +5,31 @@
 package com.google.android.gms.ads.internal;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-@zzgk
+@zzgr
 public final class InterstitialAdParameterParcel implements SafeParcelable
 {
     public static final zzl CREATOR;
     public final int versionCode;
-    public final boolean zzpk;
-    public final boolean zzpl;
+    public final boolean zzpt;
+    public final boolean zzpu;
+    public final String zzpv;
+    public final boolean zzpw;
+    public final float zzpx;
     
     static {
         CREATOR = new zzl();
     }
     
-    InterstitialAdParameterParcel(final int versionCode, final boolean zzpk, final boolean zzpl) {
+    InterstitialAdParameterParcel(final int versionCode, final boolean zzpt, final boolean zzpu, final String zzpv, final boolean zzpw, final float zzpx) {
         this.versionCode = versionCode;
-        this.zzpk = zzpk;
-        this.zzpl = zzpl;
+        this.zzpt = zzpt;
+        this.zzpu = zzpu;
+        this.zzpv = zzpv;
+        this.zzpw = zzpw;
+        this.zzpx = zzpx;
     }
     
     public int describeContents() {

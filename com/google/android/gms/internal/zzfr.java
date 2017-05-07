@@ -4,19 +4,13 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.ads.purchase.InAppPurchase;
-import com.google.android.gms.ads.purchase.InAppPurchaseListener;
+import android.os.IInterface;
 
-@zzgk
-public final class zzfr extends zzfm$zza
+public interface zzfr extends IInterface
 {
-    private final InAppPurchaseListener zztp;
+    String getProductId();
     
-    public zzfr(final InAppPurchaseListener zztp) {
-        this.zztp = zztp;
-    }
+    void recordPlayBillingResolution(final int p0);
     
-    public void zza(final zzfl zzfl) {
-        this.zztp.onInAppPurchaseRequested(new zzfu(zzfl));
-    }
+    void recordResolution(final int p0);
 }

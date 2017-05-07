@@ -4,7 +4,7 @@
 
 package com.google.android.gms.signin.internal;
 
-import com.google.android.gms.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.ConnectionResult;
 
@@ -16,9 +16,9 @@ public class zzb extends zze$zza
     public void zza(final Status status, final GoogleSignInAccount googleSignInAccount) {
     }
     
-    public void zzbe(final Status status) {
+    public void zzbd(final Status status) {
     }
     
-    public void zzbf(final Status status) {
+    public void zzbe(final Status status) {
     }
 }

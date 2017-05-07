@@ -4,8 +4,7 @@
 
 package com.google.android.gms.internal;
 
-import android.net.Uri;
-import com.google.android.gms.dynamic.zzd;
+import com.google.android.gms.dynamic.zzd$zza;
 import android.os.Parcel;
 import android.os.IInterface;
 import android.os.IBinder;
@@ -13,11 +12,11 @@ import android.os.Binder;
 
 public abstract class zzcj$zza extends Binder implements zzcj
 {
-    public static zzcj zzt(final IBinder binder) {
+    public static zzcj zzr(final IBinder binder) {
         if (binder == null) {
             return null;
         }
-        final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.formats.client.INativeAdImage");
+        final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.customrenderedad.client.ICustomRenderedAd");
         if (queryLocalInterface != null && queryLocalInterface instanceof zzcj) {
             return (zzcj)queryLocalInterface;
         }
@@ -34,34 +33,39 @@ public abstract class zzcj$zza extends Binder implements zzcj
                 return super.onTransact(n, parcel, parcel2, n2);
             }
             case 1598968902: {
-                parcel2.writeString("com.google.android.gms.ads.internal.formats.client.INativeAdImage");
+                parcel2.writeString("com.google.android.gms.ads.internal.customrenderedad.client.ICustomRenderedAd");
                 return true;
             }
             case 1: {
-                parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeAdImage");
-                final zzd zzdr = this.zzdr();
+                parcel.enforceInterface("com.google.android.gms.ads.internal.customrenderedad.client.ICustomRenderedAd");
+                final String zzdr = this.zzdr();
                 parcel2.writeNoException();
-                IBinder binder;
-                if (zzdr != null) {
-                    binder = zzdr.asBinder();
-                }
-                else {
-                    binder = null;
-                }
-                parcel2.writeStrongBinder(binder);
+                parcel2.writeString(zzdr);
                 return true;
             }
             case 2: {
-                parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeAdImage");
-                final Uri uri = this.getUri();
+                parcel.enforceInterface("com.google.android.gms.ads.internal.customrenderedad.client.ICustomRenderedAd");
+                final String content = this.getContent();
                 parcel2.writeNoException();
-                if (uri != null) {
-                    parcel2.writeInt(1);
-                    uri.writeToParcel(parcel2, 1);
-                }
-                else {
-                    parcel2.writeInt(0);
-                }
+                parcel2.writeString(content);
+                return true;
+            }
+            case 3: {
+                parcel.enforceInterface("com.google.android.gms.ads.internal.customrenderedad.client.ICustomRenderedAd");
+                this.zza(zzd$zza.zzbk(parcel.readStrongBinder()));
+                parcel2.writeNoException();
+                return true;
+            }
+            case 4: {
+                parcel.enforceInterface("com.google.android.gms.ads.internal.customrenderedad.client.ICustomRenderedAd");
+                this.recordClick();
+                parcel2.writeNoException();
+                return true;
+            }
+            case 5: {
+                parcel.enforceInterface("com.google.android.gms.ads.internal.customrenderedad.client.ICustomRenderedAd");
+                this.recordImpression();
+                parcel2.writeNoException();
                 return true;
             }
         }

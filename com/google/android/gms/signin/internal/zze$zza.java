@@ -4,7 +4,7 @@
 
 package com.google.android.gms.signin.internal;
 
-import com.google.android.gms.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.ConnectionResult;
 import android.os.Parcel;
@@ -18,7 +18,7 @@ public abstract class zze$zza extends Binder implements zze
         this.attachInterface((IInterface)this, "com.google.android.gms.signin.internal.ISignInCallbacks");
     }
     
-    public static zze zzdG(final IBinder binder) {
+    public static zze zzdM(final IBinder binder) {
         if (binder == null) {
             return null;
         }
@@ -71,7 +71,7 @@ public abstract class zze$zza extends Binder implements zze
                 else {
                     status = null;
                 }
-                this.zzbe(status);
+                this.zzbd(status);
                 parcel2.writeNoException();
                 return true;
             }
@@ -84,7 +84,7 @@ public abstract class zze$zza extends Binder implements zze
                 else {
                     status2 = null;
                 }
-                this.zzbf(status2);
+                this.zzbe(status2);
                 parcel2.writeNoException();
                 return true;
             }

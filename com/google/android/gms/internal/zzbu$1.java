@@ -13,6 +13,6 @@ final class zzbu$1 extends zzbu<Boolean>
     }
     
     public Boolean zzb(final SharedPreferences sharedPreferences) {
-        return sharedPreferences.getBoolean(this.getKey(), (boolean)this.zzdd());
+        return sharedPreferences.getBoolean(this.getKey(), (boolean)this.zzde());
     }
 }

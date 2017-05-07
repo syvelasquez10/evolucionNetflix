@@ -10,14 +10,14 @@ import com.google.android.gms.common.internal.zzx;
 
 abstract class zzc$zza
 {
-    private int zzYp;
+    private int zzaag;
     
     protected zzc$zza(final byte[] array) {
         zzx.zzb(array.length == 25, "cert hash data has incorrect length");
-        this.zzYp = Arrays.hashCode(array);
+        this.zzaag = Arrays.hashCode(array);
     }
     
-    protected static byte[] zzbW(final String s) {
+    protected static byte[] zzbX(final String s) {
         try {
             return s.getBytes("ISO-8859-1");
         }
@@ -35,6 +35,6 @@ abstract class zzc$zza
     
     @Override
     public int hashCode() {
-        return this.zzYp;
+        return this.zzaag;
     }
 }

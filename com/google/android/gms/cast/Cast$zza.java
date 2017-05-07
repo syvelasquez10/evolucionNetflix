@@ -15,7 +15,7 @@ abstract class Cast$zza extends zzb<Cast$ApplicationConnectionResult>
         super(googleApiClient);
     }
     
-    public Cast$ApplicationConnectionResult zzq(final Status status) {
+    public Cast$ApplicationConnectionResult zzn(final Status status) {
         return new Cast$zza$1(this, status);
     }
 }

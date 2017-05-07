@@ -4,13 +4,24 @@
 
 package com.google.android.gms.internal;
 
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
+@zzgr
 public class zzca
 {
-    BlockingQueue<zzcd> zzvi;
+    BlockingQueue<zzcg> zzvD;
+    Map<String, zzcd> zzvG;
     
-    public boolean zza(final zzcd zzcd) {
-        return this.zzvi.offer(zzcd);
+    public zzcd zzR(final String s) {
+        final zzcd zzcd = this.zzvG.get(s);
+        if (zzcd != null) {
+            return zzcd;
+        }
+        return com.google.android.gms.internal.zzcd.zzvK;
+    }
+    
+    public boolean zza(final zzcg zzcg) {
+        return this.zzvD.offer(zzcg);
     }
 }

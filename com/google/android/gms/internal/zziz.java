@@ -4,34 +4,120 @@
 
 package com.google.android.gms.internal;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.HashMap;
+import com.google.android.gms.ads.internal.util.client.VersionInfoParcel;
+import android.app.Activity;
+import org.json.JSONObject;
 import java.util.Map;
+import com.google.android.gms.ads.internal.overlay.zzd;
+import com.google.android.gms.ads.internal.client.AdSizeParcel;
+import android.webkit.WebViewClient;
+import android.webkit.WebChromeClient;
+import android.view.View$OnTouchListener;
+import android.view.View$OnClickListener;
+import android.webkit.WebView;
+import android.view.View;
+import android.view.ViewParent;
+import android.view.ViewGroup$LayoutParams;
+import android.content.Context;
 
-public final class zziz extends zzod<zziz>
+@zzgr
+public interface zziz
 {
-    private Map<Integer, Double> zzLb;
+    Context getContext();
     
-    public zziz() {
-        this.zzLb = new HashMap<Integer, Double>(4);
-    }
+    ViewGroup$LayoutParams getLayoutParams();
     
-    @Override
-    public String toString() {
-        final HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        for (final Map.Entry<Integer, Double> entry : this.zzLb.entrySet()) {
-            hashMap.put("metric" + entry.getKey(), entry.getValue());
-        }
-        return zzod.zzA(hashMap);
-    }
+    void getLocationOnScreen(final int[] p0);
     
-    @Override
-    public void zza(final zziz zziz) {
-        zziz.zzLb.putAll(this.zzLb);
-    }
+    int getMeasuredHeight();
     
-    public Map<Integer, Double> zzhI() {
-        return Collections.unmodifiableMap((Map<? extends Integer, ? extends Double>)this.zzLb);
-    }
+    int getMeasuredWidth();
+    
+    ViewParent getParent();
+    
+    View getView();
+    
+    WebView getWebView();
+    
+    boolean isDestroyed();
+    
+    void loadDataWithBaseURL(final String p0, final String p1, final String p2, final String p3, final String p4);
+    
+    void loadUrl(final String p0);
+    
+    void measure(final int p0, final int p1);
+    
+    void setBackgroundColor(final int p0);
+    
+    void setContext(final Context p0);
+    
+    void setOnClickListener(final View$OnClickListener p0);
+    
+    void setOnTouchListener(final View$OnTouchListener p0);
+    
+    void setRequestedOrientation(final int p0);
+    
+    void setWebChromeClient(final WebChromeClient p0);
+    
+    void setWebViewClient(final WebViewClient p0);
+    
+    void zzC(final boolean p0);
+    
+    void zzD(final boolean p0);
+    
+    void zzE(final boolean p0);
+    
+    void zza(final AdSizeParcel p0);
+    
+    void zzaI(final String p0);
+    
+    AdSizeParcel zzaN();
+    
+    void zzb(final zzd p0);
+    
+    void zzb(final String p0, final Map<String, ?> p1);
+    
+    void zzb(final String p0, final JSONObject p1);
+    
+    void zzc(final zzd p0);
+    
+    void zzeJ();
+    
+    void zzgY();
+    
+    Activity zzgZ();
+    
+    Context zzha();
+    
+    com.google.android.gms.ads.internal.zzd zzhb();
+    
+    zzd zzhc();
+    
+    zzd zzhd();
+    
+    zzja zzhe();
+    
+    boolean zzhf();
+    
+    zzan zzhg();
+    
+    VersionInfoParcel zzhh();
+    
+    boolean zzhi();
+    
+    void zzhj();
+    
+    boolean zzhk();
+    
+    zziy zzhl();
+    
+    zzce zzhm();
+    
+    zzcf zzhn();
+    
+    void zzho();
+    
+    void zzhp();
+    
+    void zzv(final int p0);
 }

@@ -109,87 +109,11 @@ public class SparseArrayCompat<E> implements Cloneable
         }
     }
     
-    public void delete(int binarySearch) {
-        binarySearch = ContainerHelpers.binarySearch(this.mKeys, this.mSize, binarySearch);
-        if (binarySearch >= 0 && this.mValues[binarySearch] != SparseArrayCompat.DELETED) {
-            this.mValues[binarySearch] = SparseArrayCompat.DELETED;
-            this.mGarbage = true;
-        }
-    }
-    
-    public E get(final int n) {
-        return this.get(n, null);
-    }
-    
-    public E get(int binarySearch, final E e) {
-        binarySearch = ContainerHelpers.binarySearch(this.mKeys, this.mSize, binarySearch);
-        if (binarySearch < 0 || this.mValues[binarySearch] == SparseArrayCompat.DELETED) {
-            return e;
-        }
-        return (E)this.mValues[binarySearch];
-    }
-    
-    public int indexOfKey(final int n) {
-        if (this.mGarbage) {
-            this.gc();
-        }
-        return ContainerHelpers.binarySearch(this.mKeys, this.mSize, n);
-    }
-    
     public int keyAt(final int n) {
         if (this.mGarbage) {
             this.gc();
         }
         return this.mKeys[n];
-    }
-    
-    public void put(final int n, final E e) {
-        final int binarySearch = ContainerHelpers.binarySearch(this.mKeys, this.mSize, n);
-        if (binarySearch >= 0) {
-            this.mValues[binarySearch] = e;
-            return;
-        }
-        final int n2 = ~binarySearch;
-        if (n2 < this.mSize && this.mValues[n2] == SparseArrayCompat.DELETED) {
-            this.mKeys[n2] = n;
-            this.mValues[n2] = e;
-            return;
-        }
-        int n3 = n2;
-        if (this.mGarbage) {
-            n3 = n2;
-            if (this.mSize >= this.mKeys.length) {
-                this.gc();
-                n3 = ~ContainerHelpers.binarySearch(this.mKeys, this.mSize, n);
-            }
-        }
-        if (this.mSize >= this.mKeys.length) {
-            final int idealIntArraySize = ContainerHelpers.idealIntArraySize(this.mSize + 1);
-            final int[] mKeys = new int[idealIntArraySize];
-            final Object[] mValues = new Object[idealIntArraySize];
-            System.arraycopy(this.mKeys, 0, mKeys, 0, this.mKeys.length);
-            System.arraycopy(this.mValues, 0, mValues, 0, this.mValues.length);
-            this.mKeys = mKeys;
-            this.mValues = mValues;
-        }
-        if (this.mSize - n3 != 0) {
-            System.arraycopy(this.mKeys, n3, this.mKeys, n3 + 1, this.mSize - n3);
-            System.arraycopy(this.mValues, n3, this.mValues, n3 + 1, this.mSize - n3);
-        }
-        this.mKeys[n3] = n;
-        this.mValues[n3] = e;
-        ++this.mSize;
-    }
-    
-    public void remove(final int n) {
-        this.delete(n);
-    }
-    
-    public void removeAt(final int n) {
-        if (this.mValues[n] != SparseArrayCompat.DELETED) {
-            this.mValues[n] = SparseArrayCompat.DELETED;
-            this.mGarbage = true;
-        }
     }
     
     public int size() {

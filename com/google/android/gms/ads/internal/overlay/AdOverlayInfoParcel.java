@@ -13,137 +13,137 @@ import com.google.android.gms.dynamic.zzd$zza;
 import android.os.IBinder;
 import com.google.android.gms.ads.internal.util.client.VersionInfoParcel;
 import com.google.android.gms.ads.internal.InterstitialAdParameterParcel;
-import com.google.android.gms.internal.zzdi;
-import com.google.android.gms.internal.zzdd;
-import com.google.android.gms.internal.zzip;
+import com.google.android.gms.internal.zzdm;
+import com.google.android.gms.internal.zzdg;
+import com.google.android.gms.internal.zziz;
 import com.google.android.gms.ads.internal.client.zza;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-@zzgk
+@zzgr
 public final class AdOverlayInfoParcel implements SafeParcelable
 {
     public static final zzf CREATOR;
     public final int orientation;
     public final String url;
     public final int versionCode;
-    public final AdLauncherIntentInfoParcel zzAO;
-    public final zza zzAP;
-    public final zzg zzAQ;
-    public final zzip zzAR;
-    public final zzdd zzAS;
-    public final String zzAT;
-    public final boolean zzAU;
-    public final String zzAV;
-    public final zzn zzAW;
-    public final int zzAX;
-    public final zzdi zzAY;
-    public final String zzAZ;
-    public final InterstitialAdParameterParcel zzBa;
-    public final VersionInfoParcel zzqb;
+    public final AdLauncherIntentInfoParcel zzBA;
+    public final zza zzBB;
+    public final zzg zzBC;
+    public final zziz zzBD;
+    public final zzdg zzBE;
+    public final String zzBF;
+    public final boolean zzBG;
+    public final String zzBH;
+    public final zzn zzBI;
+    public final int zzBJ;
+    public final zzdm zzBK;
+    public final String zzBL;
+    public final InterstitialAdParameterParcel zzBM;
+    public final VersionInfoParcel zzqj;
     
     static {
         CREATOR = new zzf();
     }
     
-    AdOverlayInfoParcel(final int versionCode, final AdLauncherIntentInfoParcel zzAO, final IBinder binder, final IBinder binder2, final IBinder binder3, final IBinder binder4, final String zzAT, final boolean zzAU, final String zzAV, final IBinder binder5, final int orientation, final int zzAX, final String url, final VersionInfoParcel zzqb, final IBinder binder6, final String zzAZ, final InterstitialAdParameterParcel zzBa) {
+    AdOverlayInfoParcel(final int versionCode, final AdLauncherIntentInfoParcel zzBA, final IBinder binder, final IBinder binder2, final IBinder binder3, final IBinder binder4, final String zzBF, final boolean zzBG, final String zzBH, final IBinder binder5, final int orientation, final int zzBJ, final String url, final VersionInfoParcel zzqj, final IBinder binder6, final String zzBL, final InterstitialAdParameterParcel zzBM) {
         this.versionCode = versionCode;
-        this.zzAO = zzAO;
-        this.zzAP = zze.zzp(zzd$zza.zzbk(binder));
-        this.zzAQ = zze.zzp(zzd$zza.zzbk(binder2));
-        this.zzAR = zze.zzp(zzd$zza.zzbk(binder3));
-        this.zzAS = zze.zzp(zzd$zza.zzbk(binder4));
-        this.zzAT = zzAT;
-        this.zzAU = zzAU;
-        this.zzAV = zzAV;
-        this.zzAW = zze.zzp(zzd$zza.zzbk(binder5));
+        this.zzBA = zzBA;
+        this.zzBB = zze.zzp(zzd$zza.zzbk(binder));
+        this.zzBC = zze.zzp(zzd$zza.zzbk(binder2));
+        this.zzBD = zze.zzp(zzd$zza.zzbk(binder3));
+        this.zzBE = zze.zzp(zzd$zza.zzbk(binder4));
+        this.zzBF = zzBF;
+        this.zzBG = zzBG;
+        this.zzBH = zzBH;
+        this.zzBI = zze.zzp(zzd$zza.zzbk(binder5));
         this.orientation = orientation;
-        this.zzAX = zzAX;
+        this.zzBJ = zzBJ;
         this.url = url;
-        this.zzqb = zzqb;
-        this.zzAY = zze.zzp(zzd$zza.zzbk(binder6));
-        this.zzAZ = zzAZ;
-        this.zzBa = zzBa;
+        this.zzqj = zzqj;
+        this.zzBK = zze.zzp(zzd$zza.zzbk(binder6));
+        this.zzBL = zzBL;
+        this.zzBM = zzBM;
     }
     
-    public AdOverlayInfoParcel(final zza zzAP, final zzg zzAQ, final zzn zzAW, final zzip zzAR, final boolean zzAU, final int orientation, final VersionInfoParcel zzqb) {
+    public AdOverlayInfoParcel(final zza zzBB, final zzg zzBC, final zzn zzBI, final zziz zzBD, final boolean zzBG, final int orientation, final VersionInfoParcel zzqj) {
         this.versionCode = 4;
-        this.zzAO = null;
-        this.zzAP = zzAP;
-        this.zzAQ = zzAQ;
-        this.zzAR = zzAR;
-        this.zzAS = null;
-        this.zzAT = null;
-        this.zzAU = zzAU;
-        this.zzAV = null;
-        this.zzAW = zzAW;
+        this.zzBA = null;
+        this.zzBB = zzBB;
+        this.zzBC = zzBC;
+        this.zzBD = zzBD;
+        this.zzBE = null;
+        this.zzBF = null;
+        this.zzBG = zzBG;
+        this.zzBH = null;
+        this.zzBI = zzBI;
         this.orientation = orientation;
-        this.zzAX = 2;
+        this.zzBJ = 2;
         this.url = null;
-        this.zzqb = zzqb;
-        this.zzAY = null;
-        this.zzAZ = null;
-        this.zzBa = null;
+        this.zzqj = zzqj;
+        this.zzBK = null;
+        this.zzBL = null;
+        this.zzBM = null;
     }
     
-    public AdOverlayInfoParcel(final zza zzAP, final zzg zzAQ, final zzdd zzAS, final zzn zzAW, final zzip zzAR, final boolean zzAU, final int orientation, final String url, final VersionInfoParcel zzqb, final zzdi zzAY) {
+    public AdOverlayInfoParcel(final zza zzBB, final zzg zzBC, final zzdg zzBE, final zzn zzBI, final zziz zzBD, final boolean zzBG, final int orientation, final String url, final VersionInfoParcel zzqj, final zzdm zzBK) {
         this.versionCode = 4;
-        this.zzAO = null;
-        this.zzAP = zzAP;
-        this.zzAQ = zzAQ;
-        this.zzAR = zzAR;
-        this.zzAS = zzAS;
-        this.zzAT = null;
-        this.zzAU = zzAU;
-        this.zzAV = null;
-        this.zzAW = zzAW;
+        this.zzBA = null;
+        this.zzBB = zzBB;
+        this.zzBC = zzBC;
+        this.zzBD = zzBD;
+        this.zzBE = zzBE;
+        this.zzBF = null;
+        this.zzBG = zzBG;
+        this.zzBH = null;
+        this.zzBI = zzBI;
         this.orientation = orientation;
-        this.zzAX = 3;
+        this.zzBJ = 3;
         this.url = url;
-        this.zzqb = zzqb;
-        this.zzAY = zzAY;
-        this.zzAZ = null;
-        this.zzBa = null;
+        this.zzqj = zzqj;
+        this.zzBK = zzBK;
+        this.zzBL = null;
+        this.zzBM = null;
     }
     
-    public AdOverlayInfoParcel(final zza zzAP, final zzg zzAQ, final zzdd zzAS, final zzn zzAW, final zzip zzAR, final boolean zzAU, final int orientation, final String zzAV, final String zzAT, final VersionInfoParcel zzqb, final zzdi zzAY) {
+    public AdOverlayInfoParcel(final zza zzBB, final zzg zzBC, final zzdg zzBE, final zzn zzBI, final zziz zzBD, final boolean zzBG, final int orientation, final String zzBH, final String zzBF, final VersionInfoParcel zzqj, final zzdm zzBK) {
         this.versionCode = 4;
-        this.zzAO = null;
-        this.zzAP = zzAP;
-        this.zzAQ = zzAQ;
-        this.zzAR = zzAR;
-        this.zzAS = zzAS;
-        this.zzAT = zzAT;
-        this.zzAU = zzAU;
-        this.zzAV = zzAV;
-        this.zzAW = zzAW;
+        this.zzBA = null;
+        this.zzBB = zzBB;
+        this.zzBC = zzBC;
+        this.zzBD = zzBD;
+        this.zzBE = zzBE;
+        this.zzBF = zzBF;
+        this.zzBG = zzBG;
+        this.zzBH = zzBH;
+        this.zzBI = zzBI;
         this.orientation = orientation;
-        this.zzAX = 3;
+        this.zzBJ = 3;
         this.url = null;
-        this.zzqb = zzqb;
-        this.zzAY = zzAY;
-        this.zzAZ = null;
-        this.zzBa = null;
+        this.zzqj = zzqj;
+        this.zzBK = zzBK;
+        this.zzBL = null;
+        this.zzBM = null;
     }
     
-    public AdOverlayInfoParcel(final AdLauncherIntentInfoParcel zzAO, final zza zzAP, final zzg zzAQ, final zzn zzAW, final VersionInfoParcel zzqb) {
+    public AdOverlayInfoParcel(final AdLauncherIntentInfoParcel zzBA, final zza zzBB, final zzg zzBC, final zzn zzBI, final VersionInfoParcel zzqj) {
         this.versionCode = 4;
-        this.zzAO = zzAO;
-        this.zzAP = zzAP;
-        this.zzAQ = zzAQ;
-        this.zzAR = null;
-        this.zzAS = null;
-        this.zzAT = null;
-        this.zzAU = false;
-        this.zzAV = null;
-        this.zzAW = zzAW;
+        this.zzBA = zzBA;
+        this.zzBB = zzBB;
+        this.zzBC = zzBC;
+        this.zzBD = null;
+        this.zzBE = null;
+        this.zzBF = null;
+        this.zzBG = false;
+        this.zzBH = null;
+        this.zzBI = zzBI;
         this.orientation = -1;
-        this.zzAX = 4;
+        this.zzBJ = 4;
         this.url = null;
-        this.zzqb = zzqb;
-        this.zzAY = null;
-        this.zzAZ = null;
-        this.zzBa = null;
+        this.zzqj = zzqj;
+        this.zzBK = null;
+        this.zzBL = null;
+        this.zzBM = null;
     }
     
     public static void zza(final Intent intent, final AdOverlayInfoParcel adOverlayInfoParcel) {
@@ -171,27 +171,27 @@ public final class AdOverlayInfoParcel implements SafeParcelable
         zzf.zza(this, parcel, n);
     }
     
-    IBinder zzeE() {
-        return zze.zzx(this.zzAP).asBinder();
+    IBinder zzeK() {
+        return zze.zzy(this.zzBB).asBinder();
     }
     
-    IBinder zzeF() {
-        return zze.zzx(this.zzAQ).asBinder();
+    IBinder zzeL() {
+        return zze.zzy(this.zzBC).asBinder();
     }
     
-    IBinder zzeG() {
-        return zze.zzx(this.zzAR).asBinder();
+    IBinder zzeM() {
+        return zze.zzy(this.zzBD).asBinder();
     }
     
-    IBinder zzeH() {
-        return zze.zzx(this.zzAS).asBinder();
+    IBinder zzeN() {
+        return zze.zzy(this.zzBE).asBinder();
     }
     
-    IBinder zzeI() {
-        return zze.zzx(this.zzAY).asBinder();
+    IBinder zzeO() {
+        return zze.zzy(this.zzBK).asBinder();
     }
     
-    IBinder zzeJ() {
-        return zze.zzx(this.zzAW).asBinder();
+    IBinder zzeP() {
+        return zze.zzy(this.zzBI).asBinder();
     }
 }

@@ -22,25 +22,25 @@ import android.content.Context;
 
 public class AdvertisingIdClient
 {
-    private static boolean zzog;
+    private static boolean zzoh;
     private final Context mContext;
-    zza zzoa;
-    zzav zzob;
-    boolean zzoc;
-    Object zzod;
-    AdvertisingIdClient$zza zzoe;
-    final long zzof;
+    zza zzob;
+    zzav zzoc;
+    boolean zzod;
+    Object zzoe;
+    AdvertisingIdClient$zza zzof;
+    final long zzog;
     
     static {
-        AdvertisingIdClient.zzog = false;
+        AdvertisingIdClient.zzoh = false;
     }
     
-    public AdvertisingIdClient(final Context mContext, final long zzof) {
-        this.zzod = new Object();
-        zzx.zzv(mContext);
+    public AdvertisingIdClient(final Context mContext, final long zzog) {
+        this.zzoe = new Object();
+        zzx.zzw(mContext);
         this.mContext = mContext;
-        this.zzoc = false;
-        this.zzof = zzof;
+        this.zzod = false;
+        this.zzog = zzog;
     }
     
     public static AdvertisingIdClient$Info getAdvertisingIdInfo(Context context) {
@@ -56,7 +56,7 @@ public class AdvertisingIdClient
     
     static zzav zza(final Context context, final zza zza) {
         try {
-            return zzav$zza.zzb(zza.zzmS());
+            return zzav$zza.zzb(zza.zzno());
         }
         catch (InterruptedException ex) {
             throw new IOException("Interrupted exception");
@@ -73,21 +73,21 @@ public class AdvertisingIdClient
         // Original Bytecode:
         // 
         //     0: aload_0        
-        //     1: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzod:Ljava/lang/Object;
+        //     1: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzoe:Ljava/lang/Object;
         //     4: astore_1       
         //     5: aload_1        
         //     6: monitorenter   
         //     7: aload_0        
-        //     8: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzoe:Lcom/google/android/gms/ads/identifier/AdvertisingIdClient$zza;
+        //     8: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzof:Lcom/google/android/gms/ads/identifier/AdvertisingIdClient$zza;
         //    11: ifnull          28
         //    14: aload_0        
-        //    15: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzoe:Lcom/google/android/gms/ads/identifier/AdvertisingIdClient$zza;
+        //    15: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzof:Lcom/google/android/gms/ads/identifier/AdvertisingIdClient$zza;
         //    18: invokevirtual   com/google/android/gms/ads/identifier/AdvertisingIdClient$zza.cancel:()V
         //    21: aload_0        
-        //    22: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzoe:Lcom/google/android/gms/ads/identifier/AdvertisingIdClient$zza;
+        //    22: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzof:Lcom/google/android/gms/ads/identifier/AdvertisingIdClient$zza;
         //    25: invokevirtual   com/google/android/gms/ads/identifier/AdvertisingIdClient$zza.join:()V
         //    28: aload_0        
-        //    29: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzof:J
+        //    29: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzog:J
         //    32: lconst_0       
         //    33: lcmp           
         //    34: ifle            53
@@ -96,9 +96,9 @@ public class AdvertisingIdClient
         //    41: dup            
         //    42: aload_0        
         //    43: aload_0        
-        //    44: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzof:J
+        //    44: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzog:J
         //    47: invokespecial   com/google/android/gms/ads/identifier/AdvertisingIdClient$zza.<init>:(Lcom/google/android/gms/ads/identifier/AdvertisingIdClient;J)V
-        //    50: putfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzoe:Lcom/google/android/gms/ads/identifier/AdvertisingIdClient$zza;
+        //    50: putfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzof:Lcom/google/android/gms/ads/identifier/AdvertisingIdClient$zza;
         //    53: aload_1        
         //    54: monitorexit    
         //    55: return         
@@ -151,7 +151,7 @@ public class AdvertisingIdClient
         Label_0085: {
             try {
                 context.getPackageManager().getPackageInfo("com.android.vending", 0);
-                if (AdvertisingIdClient.zzog) {
+                if (AdvertisingIdClient.zzoh) {
                     Log.d("Ads", "Skipping gmscore version check");
                     switch (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)) {
                         default: {
@@ -173,7 +173,7 @@ public class AdvertisingIdClient
                 zza = new zza();
                 intent = new Intent("com.google.android.gms.ads.identifier.service.START");
                 intent.setPackage("com.google.android.gms");
-                final zzb zzb = com.google.android.gms.common.stats.zzb.zzpD();
+                final zzb zzb = com.google.android.gms.common.stats.zzb.zzqh();
                 final Context context2 = context;
                 final Intent intent2 = intent;
                 final Object o = zza;
@@ -190,7 +190,7 @@ public class AdvertisingIdClient
             }
         }
         try {
-            final zzb zzb = com.google.android.gms.common.stats.zzb.zzpD();
+            final zzb zzb = com.google.android.gms.common.stats.zzb.zzqh();
             final Context context2 = context;
             final Intent intent2 = intent;
             final Object o = zza;
@@ -220,36 +220,36 @@ public class AdvertisingIdClient
         // Original Bytecode:
         // 
         //     0: ldc             "Calling this from your main thread can lead to deadlock"
-        //     2: invokestatic    com/google/android/gms/common/internal/zzx.zzci:(Ljava/lang/String;)V
+        //     2: invokestatic    com/google/android/gms/common/internal/zzx.zzcj:(Ljava/lang/String;)V
         //     5: aload_0        
         //     6: monitorenter   
         //     7: aload_0        
         //     8: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.mContext:Landroid/content/Context;
         //    11: ifnull          21
         //    14: aload_0        
-        //    15: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzoa:Lcom/google/android/gms/common/zza;
+        //    15: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzob:Lcom/google/android/gms/common/zza;
         //    18: ifnonnull       24
         //    21: aload_0        
         //    22: monitorexit    
         //    23: return         
         //    24: aload_0        
-        //    25: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzoc:Z
+        //    25: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzod:Z
         //    28: ifeq            45
-        //    31: invokestatic    com/google/android/gms/common/stats/zzb.zzpD:()Lcom/google/android/gms/common/stats/zzb;
+        //    31: invokestatic    com/google/android/gms/common/stats/zzb.zzqh:()Lcom/google/android/gms/common/stats/zzb;
         //    34: aload_0        
         //    35: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.mContext:Landroid/content/Context;
         //    38: aload_0        
-        //    39: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzoa:Lcom/google/android/gms/common/zza;
+        //    39: getfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzob:Lcom/google/android/gms/common/zza;
         //    42: invokevirtual   com/google/android/gms/common/stats/zzb.zza:(Landroid/content/Context;Landroid/content/ServiceConnection;)V
         //    45: aload_0        
         //    46: iconst_0       
-        //    47: putfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzoc:Z
+        //    47: putfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzod:Z
         //    50: aload_0        
         //    51: aconst_null    
-        //    52: putfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzob:Lcom/google/android/gms/internal/zzav;
+        //    52: putfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzoc:Lcom/google/android/gms/internal/zzav;
         //    55: aload_0        
         //    56: aconst_null    
-        //    57: putfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzoa:Lcom/google/android/gms/common/zza;
+        //    57: putfield        com/google/android/gms/ads/identifier/AdvertisingIdClient.zzob:Lcom/google/android/gms/common/zza;
         //    60: aload_0        
         //    61: monitorexit    
         //    62: return         
@@ -303,22 +303,22 @@ public class AdvertisingIdClient
     }
     
     public AdvertisingIdClient$Info getInfo() {
-        zzx.zzci("Calling this from your main thread can lead to deadlock");
+        zzx.zzcj("Calling this from your main thread can lead to deadlock");
         // monitorexit(t)
         Label_0094: {
             synchronized (this) {
-                if (this.zzoc) {
+                if (this.zzod) {
                     break Label_0094;
                 }
-                synchronized (this.zzod) {
-                    if (this.zzoe == null || !this.zzoe.zzaK()) {
+                synchronized (this.zzoe) {
+                    if (this.zzof == null || !this.zzof.zzaK()) {
                         throw new IOException("AdvertisingIdClient is not connected.");
                     }
                 }
             }
             try {
                 this.zzb(false);
-                if (!this.zzoc) {
+                if (!this.zzod) {
                     throw new IOException("AdvertisingIdClient cannot reconnect.");
                 }
             }
@@ -326,10 +326,10 @@ public class AdvertisingIdClient
                 throw new IOException("AdvertisingIdClient cannot reconnect.", ex);
             }
         }
-        zzx.zzv(this.zzoa);
-        zzx.zzv(this.zzob);
+        zzx.zzw(this.zzob);
+        zzx.zzw(this.zzoc);
         try {
-            final AdvertisingIdClient$Info advertisingIdClient$Info = new AdvertisingIdClient$Info(this.zzob.getId(), this.zzob.zzc(true));
+            final AdvertisingIdClient$Info advertisingIdClient$Info = new AdvertisingIdClient$Info(this.zzoc.getId(), this.zzoc.zzc(true));
             // monitorexit(this)
             this.zzaJ();
             return advertisingIdClient$Info;
@@ -341,14 +341,14 @@ public class AdvertisingIdClient
     }
     
     protected void zzb(final boolean b) {
-        zzx.zzci("Calling this from your main thread can lead to deadlock");
+        zzx.zzcj("Calling this from your main thread can lead to deadlock");
         synchronized (this) {
-            if (this.zzoc) {
+            if (this.zzod) {
                 this.finish();
             }
-            this.zzoa = zzo(this.mContext);
-            this.zzob = zza(this.mContext, this.zzoa);
-            this.zzoc = true;
+            this.zzob = zzo(this.mContext);
+            this.zzoc = zza(this.mContext, this.zzob);
+            this.zzod = true;
             if (b) {
                 this.zzaJ();
             }

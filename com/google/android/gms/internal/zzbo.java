@@ -8,7 +8,7 @@ import java.security.MessageDigest;
 
 public class zzbo extends zzbl
 {
-    private MessageDigest zzsl;
+    private MessageDigest zzsw;
     
     byte[] zza(final String[] array) {
         final byte[] array2 = new byte[array.length];
@@ -25,17 +25,17 @@ public class zzbo extends zzbl
     public byte[] zzz(final String s) {
         while (true) {
             final byte[] zza = this.zza(s.split(" "));
-            this.zzsl = this.zzcy();
+            this.zzsw = this.zzcy();
             while (true) {
                 final byte[] digest;
-                synchronized (this.zzpc) {
-                    if (this.zzsl == null) {
-                        // monitorexit(this.zzpc)
+                synchronized (this.zzpd) {
+                    if (this.zzsw == null) {
+                        // monitorexit(this.zzpd)
                         return new byte[0];
                     }
-                    this.zzsl.reset();
-                    this.zzsl.update(zza);
-                    digest = this.zzsl.digest();
+                    this.zzsw.reset();
+                    this.zzsw.update(zza);
+                    digest = this.zzsw.digest();
                     final int length = 4;
                     if (digest.length > 4) {
                         final byte[] array = new byte[length];

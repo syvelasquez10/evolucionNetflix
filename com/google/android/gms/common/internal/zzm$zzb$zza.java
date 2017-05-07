@@ -19,35 +19,35 @@ import android.content.ServiceConnection;
 
 public class zzm$zzb$zza implements ServiceConnection
 {
-    final /* synthetic */ zzm$zzb zzaee;
+    final /* synthetic */ zzm$zzb zzagh;
     
-    public zzm$zzb$zza(final zzm$zzb zzaee) {
-        this.zzaee = zzaee;
+    public zzm$zzb$zza(final zzm$zzb zzagh) {
+        this.zzagh = zzagh;
     }
     
     public void onServiceConnected(final ComponentName componentName, final IBinder binder) {
-        synchronized (this.zzaee.zzaed.zzadV) {
-            this.zzaee.zzacE = binder;
-            this.zzaee.zzadY = componentName;
-            final Iterator<ServiceConnection> iterator = this.zzaee.zzaea.iterator();
+        synchronized (this.zzagh.zzagg.zzafY) {
+            this.zzagh.zzaeJ = binder;
+            this.zzagh.zzagb = componentName;
+            final Iterator<ServiceConnection> iterator = this.zzagh.zzagd.iterator();
             while (iterator.hasNext()) {
                 iterator.next().onServiceConnected(componentName, binder);
             }
         }
-        this.zzaee.mState = 1;
+        this.zzagh.mState = 1;
     }
     // monitorexit(hashMap)
     
     public void onServiceDisconnected(final ComponentName componentName) {
-        synchronized (this.zzaee.zzaed.zzadV) {
-            this.zzaee.zzacE = null;
-            this.zzaee.zzadY = componentName;
-            final Iterator<ServiceConnection> iterator = this.zzaee.zzaea.iterator();
+        synchronized (this.zzagh.zzagg.zzafY) {
+            this.zzagh.zzaeJ = null;
+            this.zzagh.zzagb = componentName;
+            final Iterator<ServiceConnection> iterator = this.zzagh.zzagd.iterator();
             while (iterator.hasNext()) {
                 iterator.next().onServiceDisconnected(componentName);
             }
         }
-        this.zzaee.mState = 2;
+        this.zzagh.mState = 2;
     }
     // monitorexit(hashMap)
 }

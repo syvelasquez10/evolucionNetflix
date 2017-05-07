@@ -6,31 +6,31 @@ package com.google.android.gms.ads.internal;
 
 import com.google.android.gms.ads.internal.util.client.zzb;
 import com.google.android.gms.internal.zzby;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 
-@zzgk
+@zzgr
 public class zze
 {
-    private zze$zza zzoH;
-    private boolean zzoI;
+    private zze$zza zzoI;
     private boolean zzoJ;
+    private boolean zzoK;
     
     public zze() {
-        this.zzoJ = zzby.zzud.get();
+        this.zzoK = zzby.zzus.get();
     }
     
-    public zze(final boolean zzoJ) {
-        this.zzoJ = zzoJ;
+    public zze(final boolean zzoK) {
+        this.zzoK = zzoK;
     }
     
     public boolean zzbe() {
-        return !this.zzoJ || this.zzoI;
+        return !this.zzoK || this.zzoJ;
     }
     
     public void zzp(final String s) {
-        zzb.zzaC("Action was blocked because no click was detected.");
-        if (this.zzoH != null) {
-            this.zzoH.zzq(s);
+        zzb.zzaF("Action was blocked because no click was detected.");
+        if (this.zzoI != null) {
+            this.zzoI.zzq(s);
         }
     }
 }

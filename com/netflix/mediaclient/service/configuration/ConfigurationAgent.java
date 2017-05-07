@@ -214,11 +214,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     private int getMaxResolutionConfigured() {
-        int videoResolutionOverride;
-        if ((videoResolutionOverride = this.mDeviceConfigOverride.getVideoResolutionOverride()) <= 0) {
-            videoResolutionOverride = Integer.MAX_VALUE;
-        }
-        return videoResolutionOverride;
+        return this.mDeviceConfigOverride.getVideoResolutionOverride();
     }
     
     public static String getMemLevel() {
@@ -611,16 +607,20 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @SuppressLint({ "NewApi" })
     @Override
     public VideoResolutionRange getVideoResolutionRange() {
-        int maxResolutionConfigured = this.getMaxResolutionConfigured();
+        int maxResolutionConfigured;
+        final int n = maxResolutionConfigured = this.getMaxResolutionConfigured();
         if (!this.isTablet()) {
-            maxResolutionConfigured = maxResolutionConfigured;
+            maxResolutionConfigured = n;
             if (!PlayerTypeFactory.isJPlayer2(this.getCurrentPlayerType())) {
-                final int n = maxResolutionConfigured = 384;
+                final int n2 = maxResolutionConfigured = 384;
                 if (Log.isLoggable()) {
                     Log.d("nf_configurationagent", "apply phone restriction, max height " + 384);
-                    maxResolutionConfigured = n;
+                    maxResolutionConfigured = n2;
                 }
             }
+        }
+        if (maxResolutionConfigured > 0) {
+            return VideoResolutionRange.getVideoResolutionRangeFromMaxHieght(maxResolutionConfigured);
         }
         if (AndroidUtils.getAndroidVersion() >= 17) {
             final Display[] displays = ((DisplayManager)this.getContext().getSystemService("display")).getDisplays();
@@ -633,7 +633,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
                     final DisplayMetrics displayMetrics = new DisplayMetrics();
                     display.getMetrics(displayMetrics);
                     final int heightPixels = displayMetrics.heightPixels;
-                    return VideoResolutionRange.getVideoResolutionRangeFromMaxHieght(Math.min(maxResolutionConfigured, heightPixels));
+                    return VideoResolutionRange.getVideoResolutionRangeFromMaxHieght(heightPixels);
                 }
             }
         }
@@ -641,7 +641,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             break Label_0201;
         }
         final int heightPixels = Integer.MAX_VALUE;
-        return VideoResolutionRange.getVideoResolutionRangeFromMaxHieght(Math.min(maxResolutionConfigured, heightPixels));
+        return VideoResolutionRange.getVideoResolutionRangeFromMaxHieght(heightPixels);
     }
     
     public boolean isAppVersionObsolete() {

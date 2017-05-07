@@ -4,7 +4,14 @@
 
 package com.google.android.gms.internal;
 
-@zzgk
-public class zzga
+import com.google.android.gms.ads.purchase.InAppPurchase;
+
+@zzgr
+public class zzga implements InAppPurchase
 {
+    private final zzfr zzCM;
+    
+    public zzga(final zzfr zzCM) {
+        this.zzCM = zzCM;
+    }
 }

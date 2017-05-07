@@ -13,7 +13,6 @@ import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.app.Status;
-import android.view.View;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
@@ -38,6 +37,8 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.util.DeviceUtils;
+import android.view.View;
+import com.netflix.mediaclient.util.api.Api16Util;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
@@ -118,7 +119,7 @@ class KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup exten
     
     private void setupViews() {
         final int detailsPageContentWidth = KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity());
-        this.getBackgroundImage().setBackground(this.getBackgroundResource());
+        Api16Util.setBackgroundDrawableCompat((View)this.getBackgroundImage(), this.getBackgroundResource());
         this.getBackgroundImage().getLayoutParams().width = detailsPageContentWidth;
         int height;
         if (DeviceUtils.isLandscape(this.getContext())) {
@@ -165,7 +166,7 @@ class KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup exten
             return;
         }
         final String storyUrl = kidsCharacterDetails.getStoryUrl();
-        NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.horzDispImg, storyUrl, IClientLogging$AssetType.boxArt, String.format(this.getResources().getString(2131165357), this.this$0.kidsCharacterDetails.getTitle()), BrowseExperience.getImageLoaderConfig(), true);
+        NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.horzDispImg, storyUrl, IClientLogging$AssetType.boxArt, String.format(this.getResources().getString(2131165355), this.this$0.kidsCharacterDetails.getTitle()), BrowseExperience.getImageLoaderConfig(), true);
         this.horzDispImg.setTag((Object)storyUrl);
     }
     
@@ -177,7 +178,7 @@ class KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup exten
     
     protected void updateCharacterImage() {
         if (this.characterView != null) {
-            NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.characterView, this.this$0.kidsCharacterDetails.getSquareUrl(), IClientLogging$AssetType.boxArt, String.format(this.getResources().getString(2131165357), this.this$0.kidsCharacterDetails.getTitle()), BrowseExperience.getImageLoaderConfig(), true);
+            NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.characterView, this.this$0.kidsCharacterDetails.getSquareUrl(), IClientLogging$AssetType.boxArt, String.format(this.getResources().getString(2131165355), this.this$0.kidsCharacterDetails.getTitle()), BrowseExperience.getImageLoaderConfig(), true);
         }
     }
 }

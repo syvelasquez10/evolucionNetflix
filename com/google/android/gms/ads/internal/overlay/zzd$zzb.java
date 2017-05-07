@@ -6,22 +6,22 @@ package com.google.android.gms.ads.internal.overlay;
 
 import android.view.MotionEvent;
 import android.content.Context;
-import com.google.android.gms.internal.zzhw;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzif;
+import com.google.android.gms.internal.zzgr;
 import android.widget.RelativeLayout;
 
-@zzgk
+@zzgr
 final class zzd$zzb extends RelativeLayout
 {
-    zzhw zzqF;
+    zzif zzqQ;
     
     public zzd$zzb(final Context context, final String s) {
         super(context);
-        this.zzqF = new zzhw(context, s);
+        this.zzqQ = new zzif(context, s);
     }
     
     public boolean onInterceptTouchEvent(final MotionEvent motionEvent) {
-        this.zzqF.zze(motionEvent);
+        this.zzqQ.zze(motionEvent);
         return false;
     }
 }

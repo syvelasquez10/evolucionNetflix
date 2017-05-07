@@ -4,18 +4,18 @@
 
 package com.google.android.gms.ads.internal.client;
 
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 
-@zzgk
-public final class zzb extends zzm$zza
+@zzgr
+public final class zzb extends zzn$zza
 {
-    private final zza zzsn;
+    private final zza zzsy;
     
-    public zzb(final zza zzsn) {
-        this.zzsn = zzsn;
+    public zzb(final zza zzsy) {
+        this.zzsy = zzsy;
     }
     
     public void onAdClicked() {
-        this.zzsn.onAdClicked();
+        this.zzsy.onAdClicked();
     }
 }

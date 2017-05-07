@@ -8,21 +8,29 @@ import android.view.View;
 import android.database.ContentObserver;
 import android.provider.Settings$System;
 import android.os.Bundle;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.view.View$OnClickListener;
 import android.support.design.widget.Snackbar;
 import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
+import com.netflix.mediaclient.service.logging.apm.model.Orientation;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.IVoip$Call;
+import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.util.log.CustomerServiceLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$Action;
 import com.netflix.mediaclient.util.PermissionUtils;
 import android.content.Context;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.IVoip;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$ReturnToDialScreenFrom;
 import android.widget.ViewFlipper;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
 import android.support.design.widget.FloatingActionButton;
 import com.netflix.mediaclient.servicemgr.IVoip$OutboundCallListener;
 import android.support.v4.app.ActivityCompat$OnRequestPermissionsResultCallback;
@@ -39,9 +47,12 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     private FloatingActionButton mDialButton;
     private boolean mDialerOnTop;
     private DialerScreen mDialerScreen;
+    private CustomerServiceLogging$EntryPoint mEntry;
     private ViewFlipper mFlipper;
+    private CustomerServiceLogging$ReturnToDialScreenFrom mFrom;
     private LandingPageScreen mLandingPage;
     private ServiceManager mServiceManager;
+    private IClientLogging$ModalView mSource;
     private IVoip mVoip;
     
     static {
@@ -60,6 +71,58 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
             Log.d("VoipActivity", "Start autodial, service manager exist");
             this.startDial();
         }
+    }
+    
+    private void checkForLogData(final Intent intent) {
+        if (intent != null) {
+            Log.d("VoipActivity", intent);
+            if (intent.getStringExtra("source") != null) {
+                this.mSource = IClientLogging$ModalView.valueOf(intent.getStringExtra("source"));
+                Log.d("VoipActivity", "Source found: " + this.mSource);
+            }
+            if (intent.getStringExtra("from") != null) {
+                this.mFrom = CustomerServiceLogging$ReturnToDialScreenFrom.valueOf(intent.getStringExtra("from"));
+                Log.d("VoipActivity", "From found: " + this.mFrom);
+            }
+            if (intent.getStringExtra("entry") != null) {
+                this.mEntry = CustomerServiceLogging$EntryPoint.valueOf(intent.getStringExtra("entry"));
+                Log.d("VoipActivity", "Entry point found: " + this.mEntry);
+            }
+        }
+    }
+    
+    private void checkIntent(final Intent intent) {
+        this.checkForLogData(intent);
+        this.checkForAutoDial(intent);
+    }
+    
+    private CustomerServiceLogging$EntryPoint createEntryPoint() {
+        if (this.mEntry != null) {
+            Log.d("VoipActivity", "Entry field is known, use it");
+            return this.mEntry;
+        }
+        Log.d("VoipActivity", "Return to help page from dial or from links");
+        return null;
+    }
+    
+    private CustomerServiceLogging$ReturnToDialScreenFrom createFrom() {
+        if (this.mFrom != null) {
+            Log.d("VoipActivity", "From field is known, use it");
+            return this.mFrom;
+        }
+        Log.d("VoipActivity", "From field is not known, use entry point");
+        if (this.mEntry != null) {
+            if (CustomerServiceLogging$EntryPoint.login == this.mEntry) {
+                Log.d("VoipActivity", "Use entry point login");
+                return CustomerServiceLogging$ReturnToDialScreenFrom.login;
+            }
+            if (CustomerServiceLogging$EntryPoint.nonMemberLanding == this.mEntry) {
+                Log.d("VoipActivity", "Use entry point nml");
+                return CustomerServiceLogging$ReturnToDialScreenFrom.nml;
+            }
+        }
+        Log.d("VoipActivity", "Entry point is not know, return null");
+        return null;
     }
     
     public static Intent createStartIntent(final Context context) {
@@ -81,8 +144,9 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
         }
         Log.d("VoipActivity", "Record audio permission has already been granted. Start dialing.");
         Log.d("VoipActivity", "startDial:: To dialer");
-        this.mDialerOnTop = true;
         this.mFlipper.showNext();
+        this.mDialerOnTop = true;
+        CustomerServiceLogUtils.reportHelpRequestSessionEnded((Context)this, CustomerServiceLogging$Action.dial, null, IClientLogging$CompletionReason.success, null);
         if (this.getVoip().isCallInProgress()) {
             Log.e("VoipActivity", "Call is already in progress, what to start?");
             return;
@@ -95,6 +159,11 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
             Log.e("VoipActivity", "Failed to dial", ex);
             this.callFailed(null, null, -1);
         }
+    }
+    
+    private void goToLandingPage() {
+        this.mFlipper.showPrevious();
+        this.mDialerOnTop = false;
     }
     
     private void initUI() {
@@ -123,10 +192,28 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
         Log.d("VoipActivity", "Call is not in progress, leave on landing page");
     }
     
+    private void reportEvent() {
+        Log.d("VoipActivity", "Back to ContactUsActivity");
+        if (this.mDialerOnTop) {
+            Log.d("VoipActivity", "Dialer visible, report back to ");
+            Orientation orientation;
+            if (DeviceUtils.isPortrait((Context)this)) {
+                orientation = Orientation.portrait;
+            }
+            else {
+                orientation = Orientation.landscape;
+            }
+            CustomerServiceLogUtils.reportBackToDialScreen((Context)this, this.mSource, orientation, this.createFrom());
+            return;
+        }
+        Log.d("VoipActivity", "Help section visible, report new help request session started");
+        CustomerServiceLogUtils.reportHelpRequestSessionStarted((Context)this, this.createEntryPoint());
+    }
+    
     private void requestAudioPermissions() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.RECORD_AUDIO")) {
             Log.i("VoipActivity", "Displaying audio permission rationale to provide additional context.");
-            Snackbar.make(this.mLandingPage.getFab(), 2131165674, -2).setAction(2131165485, (View$OnClickListener)new ContactUsActivity$2(this)).show();
+            Snackbar.make(this.mLandingPage.getFab(), 2131165672, -2).setAction(2131165483, (View$OnClickListener)new ContactUsActivity$2(this)).show();
             return;
         }
         ActivityCompat.requestPermissions(this, ContactUsActivity.PERMISSIONS_AUDIO, 0);
@@ -147,8 +234,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
         }
         if (this.mDialerOnTop) {
             Log.d("VoipActivity", "callDisconnected:: Back to landing page contact us");
-            this.mDialerOnTop = false;
-            this.mFlipper.showPrevious();
+            this.goToLandingPage();
         }
         else {
             Log.d("VoipActivity", "callDisconnected:: Already back to landing page contact us");
@@ -163,8 +249,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
         }
         if (this.mDialerOnTop) {
             Log.d("VoipActivity", "callEnded:: Back to landing page contact us");
-            this.mFlipper.showPrevious();
-            this.mDialerOnTop = false;
+            this.goToLandingPage();
         }
         else {
             Log.d("VoipActivity", "callEnded:: Already back to landing page contact us");
@@ -179,8 +264,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
         }
         if (this.mDialerOnTop) {
             Log.d("VoipActivity", "callFailed:: Back to landing page contact us");
-            this.mDialerOnTop = false;
-            this.mFlipper.showPrevious();
+            this.goToLandingPage();
         }
         else {
             Log.d("VoipActivity", "callFailed:: Already back to landing page contact us");
@@ -231,7 +315,8 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.checkForAutoDial(this.getIntent());
+        Log.d("VoipActivity", "onCreate");
+        this.checkIntent(this.getIntent());
         this.mAudioObserver = new ContactUsActivity$AudioObserver(this, (Context)this);
         this.setVolumeControlStream(0);
         this.getApplicationContext().getContentResolver().registerContentObserver(Settings$System.CONTENT_URI, true, (ContentObserver)this.mAudioObserver);
@@ -249,7 +334,10 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     @Override
     protected void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
-        this.checkForAutoDial(intent);
+        this.checkIntent(this.getIntent());
+        if (this.mServiceManager != null) {
+            this.reportEvent();
+        }
     }
     
     @Override
@@ -274,7 +362,34 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
             return;
         }
         Log.i("VoipActivity", "Audio permission was NOT granted.");
-        Snackbar.make(this.mLandingPage.getFab(), 2131165673, -1).show();
+        Snackbar.make(this.mLandingPage.getFab(), 2131165671, -1).show();
+    }
+    
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (this.mServiceManager != null) {
+            this.reportEvent();
+        }
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        this.mEntry = null;
+        this.mSource = null;
+        CustomerServiceLogging$Action customerServiceLogging$Action;
+        if (this.isFinishing()) {
+            customerServiceLogging$Action = CustomerServiceLogging$Action.back;
+        }
+        else {
+            customerServiceLogging$Action = CustomerServiceLogging$Action.home;
+        }
+        if (this.mDialerOnTop) {
+            CustomerServiceLogUtils.reportExitFromDialScreen((Context)this, customerServiceLogging$Action);
+            return;
+        }
+        CustomerServiceLogUtils.reportHelpRequestSessionEnded((Context)this, customerServiceLogging$Action, null, IClientLogging$CompletionReason.canceled, null);
     }
     
     public void performAction(final View view) {
@@ -287,6 +402,17 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
             return;
         }
         Log.w("VoipActivity", "Handled by nobody!");
+    }
+    
+    @Override
+    public void performUpAction() {
+        if (this.mDialerOnTop) {
+            CustomerServiceLogUtils.reportExitFromDialScreen((Context)this, CustomerServiceLogging$Action.up);
+        }
+        else {
+            CustomerServiceLogUtils.reportHelpRequestSessionEnded((Context)this, CustomerServiceLogging$Action.up, null, IClientLogging$CompletionReason.canceled, null);
+        }
+        super.performUpAction();
     }
     
     public boolean showMdxInMenu() {

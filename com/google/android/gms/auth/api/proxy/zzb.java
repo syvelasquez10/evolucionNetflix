@@ -12,65 +12,65 @@ import android.os.Parcelable$Creator;
 
 public class zzb implements Parcelable$Creator<ProxyRequest>
 {
-    static void zza(final ProxyRequest proxyRequest, final Parcel parcel, int zzak) {
-        zzak = com.google.android.gms.common.internal.safeparcel.zzb.zzak(parcel);
+    static void zza(final ProxyRequest proxyRequest, final Parcel parcel, int zzaq) {
+        zzaq = com.google.android.gms.common.internal.safeparcel.zzb.zzaq(parcel);
         com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 1, proxyRequest.url, false);
         com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 1000, proxyRequest.versionCode);
         com.google.android.gms.common.internal.safeparcel.zzb.zzc(parcel, 2, proxyRequest.httpMethod);
         com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 3, proxyRequest.timeoutMillis);
         com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 4, proxyRequest.body, false);
-        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 5, proxyRequest.zzRE, false);
-        com.google.android.gms.common.internal.safeparcel.zzb.zzH(parcel, zzak);
+        com.google.android.gms.common.internal.safeparcel.zzb.zza(parcel, 5, proxyRequest.zzSK, false);
+        com.google.android.gms.common.internal.safeparcel.zzb.zzI(parcel, zzaq);
     }
     
-    public ProxyRequest zzL(final Parcel parcel) {
+    public ProxyRequest zzM(final Parcel parcel) {
         int zzg = 0;
-        Bundle zzq = null;
-        final int zzaj = zza.zzaj(parcel);
+        Bundle zzr = null;
+        final int zzap = zza.zzap(parcel);
         long zzi = 0L;
-        byte[] zzr = null;
-        String zzo = null;
+        byte[] zzs = null;
+        String zzp = null;
         int zzg2 = 0;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = zza.zzai(parcel);
-            switch (zza.zzbH(zzai)) {
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = zza.zzao(parcel);
+            switch (zza.zzbM(zzao)) {
                 default: {
-                    zza.zzb(parcel, zzai);
+                    zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzo = zza.zzo(parcel, zzai);
+                    zzp = zza.zzp(parcel, zzao);
                     continue;
                 }
                 case 1000: {
-                    zzg2 = zza.zzg(parcel, zzai);
+                    zzg2 = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 2: {
-                    zzg = zza.zzg(parcel, zzai);
+                    zzg = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 3: {
-                    zzi = zza.zzi(parcel, zzai);
+                    zzi = zza.zzi(parcel, zzao);
                     continue;
                 }
                 case 4: {
-                    zzr = zza.zzr(parcel, zzai);
+                    zzs = zza.zzs(parcel, zzao);
                     continue;
                 }
                 case 5: {
-                    zzq = zza.zzq(parcel, zzai);
+                    zzr = zza.zzr(parcel, zzao);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
-        return new ProxyRequest(zzg2, zzo, zzg, zzi, zzr, zzq);
+        return new ProxyRequest(zzg2, zzp, zzg, zzi, zzs, zzr);
     }
     
-    public ProxyRequest[] zzaB(final int n) {
+    public ProxyRequest[] zzaD(final int n) {
         return new ProxyRequest[n];
     }
 }

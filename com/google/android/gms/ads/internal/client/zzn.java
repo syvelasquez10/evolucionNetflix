@@ -8,13 +8,5 @@ import android.os.IInterface;
 
 public interface zzn extends IInterface
 {
-    void onAdClosed();
-    
-    void onAdFailedToLoad(final int p0);
-    
-    void onAdLeftApplication();
-    
-    void onAdLoaded();
-    
-    void onAdOpened();
+    void onAdClicked();
 }

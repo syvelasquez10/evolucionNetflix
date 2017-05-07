@@ -4,9 +4,9 @@
 
 package com.google.android.gms.ads.internal.overlay;
 
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 
-@zzgk
+@zzgr
 final class zzd$zza extends Exception
 {
     public zzd$zza(final String s) {

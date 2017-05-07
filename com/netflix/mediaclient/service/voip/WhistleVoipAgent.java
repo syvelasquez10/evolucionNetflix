@@ -10,7 +10,11 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.vailsys.whistleengine.WhistleEngineDelegate$ConnectivityState;
+import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import java.util.Iterator;
+import com.netflix.mediaclient.util.log.CustomerServiceLogUtils;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$CallQuality;
 import com.netflix.mediaclient.servicemgr.IVoip$Call;
 import com.netflix.mediaclient.servicemgr.IVoip$AuthorizationTokens;
 import com.netflix.mediaclient.util.FileUtils;
@@ -299,8 +303,8 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     public void callConnected(final int n) {
         while (true) {
             while (true) {
-                Label_0208: {
-                    Label_0163: {
+                Label_0218: {
+                    Label_0173: {
                         synchronized (this) {
                             if (Log.isLoggable()) {
                                 Log.d("nf_voip", "Outbound call connected on line " + n);
@@ -311,7 +315,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                 }
                                 else {
                                     if (this.mCurrentCall.line != n) {
-                                        break Label_0163;
+                                        break Label_0173;
                                     }
                                     final Iterator<IVoip$OutboundCallListener> iterator = this.mListeners.iterator();
                                     while (iterator.hasNext()) {
@@ -320,11 +324,12 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                 }
                                 this.mConnectivityState = IVoip$ConnectivityState.GREEN;
                                 this.mNotificationManager.updateConnectedNotification();
+                                CustomerServiceLogUtils.reportCallConnected(this.getContext(), CustomerServiceLogging$CallQuality.green);
                                 Log.d("nf_voip", "Sets start time...");
                                 this.mStartTime = System.currentTimeMillis();
                                 return;
                             }
-                            break Label_0208;
+                            break Label_0218;
                         }
                     }
                     Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received connect on line " + n);
@@ -340,8 +345,8 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     public void callDisconnected(final int n) {
         while (true) {
             while (true) {
-                Label_0189: {
-                    Label_0144: {
+                Label_0200: {
+                    Label_0155: {
                         synchronized (this) {
                             if (Log.isLoggable()) {
                                 Log.d("nf_voip", "Outbound call disconnected on line " + n);
@@ -352,7 +357,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                 }
                                 else {
                                     if (this.mCurrentCall.line != n) {
-                                        break Label_0144;
+                                        break Label_0155;
                                     }
                                     final Iterator<IVoip$OutboundCallListener> iterator = this.mListeners.iterator();
                                     while (iterator.hasNext()) {
@@ -360,10 +365,11 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                     }
                                 }
                                 this.mConnectivityState = IVoip$ConnectivityState.NO_CONNECTION;
+                                CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), IClientLogging$CompletionReason.canceled, null);
                                 this.callCleanup();
                                 return;
                             }
-                            break Label_0189;
+                            break Label_0200;
                         }
                     }
                     Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received disconnect on line " + n);
@@ -409,6 +415,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         this.mCurrentCall = null;
         this.mConnectivityState = IVoip$ConnectivityState.NO_CONNECTION;
         this.stopEngine();
+        CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), IClientLogging$CompletionReason.success, null);
         this.callCleanup();
     }
     // monitorexit(this)
@@ -417,8 +424,8 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     public void callFailed(final int n, final String s, final int n2) {
         while (true) {
             while (true) {
-                Label_0241: {
-                    Label_0196: {
+                Label_0252: {
+                    Label_0207: {
                         synchronized (this) {
                             if (Log.isLoggable()) {
                                 Log.d("nf_voip", "Outbound call failed on line " + n + ", error " + s + ", sipCode " + n2);
@@ -430,7 +437,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                 }
                                 else {
                                     if (this.mCurrentCall.line != n) {
-                                        break Label_0196;
+                                        break Label_0207;
                                     }
                                     final Iterator<IVoip$OutboundCallListener> iterator = this.mListeners.iterator();
                                     while (iterator.hasNext()) {
@@ -439,10 +446,11 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                 }
                                 this.mCurrentCall = null;
                                 this.mConnectivityState = IVoip$ConnectivityState.NO_CONNECTION;
+                                CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), IClientLogging$CompletionReason.failed, null);
                                 this.callCleanup();
                                 return;
                             }
-                            break Label_0241;
+                            break Label_0252;
                         }
                     }
                     Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received call failed on line " + n);
@@ -490,19 +498,27 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         if (Log.isLoggable()) {
             Log.d("nf_voip", "connectivityUpdate for line " + n + ", state " + whistleEngineDelegate$ConnectivityState);
         }
+        final CustomerServiceLogging$CallQuality customerServiceLogging$CallQuality = null;
+        CustomerServiceLogging$CallQuality customerServiceLogging$CallQuality2;
         if (whistleEngineDelegate$ConnectivityState == WhistleEngineDelegate$ConnectivityState.GREEN) {
             this.mConnectivityState = IVoip$ConnectivityState.GREEN;
-            return;
+            customerServiceLogging$CallQuality2 = CustomerServiceLogging$CallQuality.green;
         }
-        if (whistleEngineDelegate$ConnectivityState == WhistleEngineDelegate$ConnectivityState.RED) {
+        else if (whistleEngineDelegate$ConnectivityState == WhistleEngineDelegate$ConnectivityState.RED) {
             this.mConnectivityState = IVoip$ConnectivityState.RED;
-            return;
+            customerServiceLogging$CallQuality2 = CustomerServiceLogging$CallQuality.red;
         }
-        if (whistleEngineDelegate$ConnectivityState == WhistleEngineDelegate$ConnectivityState.YELLOW) {
+        else if (whistleEngineDelegate$ConnectivityState == WhistleEngineDelegate$ConnectivityState.YELLOW) {
             this.mConnectivityState = IVoip$ConnectivityState.YELLOW;
-            return;
+            customerServiceLogging$CallQuality2 = CustomerServiceLogging$CallQuality.yellow;
         }
-        Log.e("nf_voip", "Uknown state!");
+        else {
+            Log.e("nf_voip", "Uknown state!");
+            customerServiceLogging$CallQuality2 = customerServiceLogging$CallQuality;
+        }
+        if (customerServiceLogging$CallQuality2 != null) {
+            CustomerServiceLogUtils.reportCallQualityChanged(this.getContext(), customerServiceLogging$CallQuality2);
+        }
     }
     
     @Override
@@ -514,16 +530,17 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     @Override
     public boolean dial() {
         while (true) {
-            Label_0065: {
+            Label_0072: {
                 synchronized (this) {
                     if (this.mDialRequested.get()) {
                         Log.d("nf_voip", "Request for dial is already in progress!");
                     }
                     else {
+                        CustomerServiceLogUtils.reportCallSessionStarted(this.getContext());
                         this.mDialRequested.set(true);
                         this.start();
                         if (this.mReady.get()) {
-                            break Label_0065;
+                            break Label_0072;
                         }
                         Log.d("nf_voip", "Wait to start dial when callback that VOIP service is started returns!");
                     }
@@ -724,6 +741,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     @Override
     public boolean terminate() {
         synchronized (this) {
+            CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), IClientLogging$CompletionReason.canceled, null);
             this.callCleanup();
             boolean b;
             if (this.mEngine == null) {

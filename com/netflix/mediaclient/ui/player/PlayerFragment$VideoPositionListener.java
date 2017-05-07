@@ -233,15 +233,15 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
     public void onStopTrackingTouch(final SeekBar seekBar) {
         boolean b;
         TimelineSeekBar timelineSeekBar;
-        PlayScreen access$800;
         boolean b2;
+        PlayScreen access$800;
         int access$801;
         Label_0183_Outer:Label_0054_Outer:
         while (true) {
             b = true;
         Label_0054:
             while (true) {
-            Label_0100_Outer:
+            Label_0183:
                 while (true) {
                     while (true) {
                         Label_0222: {
@@ -257,41 +257,43 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
                                 if (!this.mIsInCancelZone && !this.skipSeek(timelineSeekBar)) {
                                     break Label_0222;
                                 }
-                                break Label_0100_Outer;
-                                // iftrue(Label_0168:, !Log.isLoggable())
-                                // iftrue(Label_0121:, PlayerFragment.access$800(this.this$0) == null)
-                                Label_0168: {
-                                    while (true) {
-                                        while (true) {
-                                            this.this$0.mSubtitleManager.setSubtitleVisibility(true);
-                                            ((TimelineSeekBar)access$800).hideThumb(false);
-                                            Block_8: {
-                                                break Block_8;
-                                                access$800.stopCurrentTime(b2);
-                                                this.this$0.mState.resetTimeline();
-                                                return;
-                                            }
-                                            Log.d("PlayerFragment", "Stop current time " + b2);
-                                            break Label_0168;
-                                            this.this$0.mScreen.setTopPanelVisibility(true);
-                                            continue Label_0183_Outer;
-                                        }
-                                        continue Label_0100_Outer;
-                                    }
-                                }
-                                access$800 = this.this$0.mScreen;
+                                break Label_0183;
                                 // iftrue(Label_0246:, b2)
+                                // iftrue(Label_0168:, !Log.isLoggable())
                                 // iftrue(Label_0227:, b2)
-                                Block_9: {
-                                    break Block_9;
-                                    access$801 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getBottomPanel().getCurrentProgress());
-                                    ((TimelineSeekBar)access$800).setProgress(access$801);
-                                    Log.d("PlayerFragment", "Seek!");
-                                    this.this$0.doSeek(access$801);
-                                    continue Label_0054_Outer;
+                                // iftrue(Label_0121:, PlayerFragment.access$800(this.this$0) == null)
+                            Block_8_Outer:
+                                while (true) {
+                                    this.this$0.mScreen.setTopPanelVisibility(true);
+                                    while (true) {
+                                        Label_0121: {
+                                            break Label_0121;
+                                            while (true) {
+                                                while (true) {
+                                                    b2 = b;
+                                                    break Label_0183;
+                                                    access$800 = this.this$0.mScreen;
+                                                    continue Label_0183_Outer;
+                                                }
+                                                Log.d("PlayerFragment", "Stop current time " + b2);
+                                                continue Block_8_Outer;
+                                            }
+                                        }
+                                        this.this$0.mSubtitleManager.setSubtitleVisibility(true);
+                                        ((TimelineSeekBar)access$800).hideThumb(false);
+                                        continue Label_0054_Outer;
+                                    }
+                                    break Block_8_Outer;
+                                    access$800.stopCurrentTime(b2);
+                                    this.this$0.mState.resetTimeline();
+                                    return;
+                                    continue Label_0183_Outer;
                                 }
-                                b2 = b;
-                                continue Label_0100_Outer;
+                                access$801 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getBottomPanel().getCurrentProgress());
+                                ((TimelineSeekBar)access$800).setProgress(access$801);
+                                Log.d("PlayerFragment", "Seek!");
+                                this.this$0.doSeek(access$801);
+                                continue;
                             }
                         }
                         b2 = false;
@@ -300,12 +302,12 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
                             Log.d("PlayerFragment", "Do not seek!");
                         }
                         ((TimelineSeekBar)access$800).setProgress(((TimelineSeekBar)access$800).getProgress());
-                        continue Label_0054_Outer;
+                        continue;
                     }
                     Label_0246: {
                         b2 = false;
                     }
-                    continue Label_0100_Outer;
+                    continue Label_0183;
                 }
                 b2 = true;
                 continue Label_0054;

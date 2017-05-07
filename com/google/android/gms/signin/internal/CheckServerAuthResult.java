@@ -18,17 +18,17 @@ public class CheckServerAuthResult implements SafeParcelable
 {
     public static final Parcelable$Creator<CheckServerAuthResult> CREATOR;
     final int mVersionCode;
-    final boolean zzaOk;
-    final List<Scope> zzaOl;
+    final boolean zzaVi;
+    final List<Scope> zzaVj;
     
     static {
         CREATOR = (Parcelable$Creator)new zzc();
     }
     
-    CheckServerAuthResult(final int mVersionCode, final boolean zzaOk, final List<Scope> zzaOl) {
+    CheckServerAuthResult(final int mVersionCode, final boolean zzaVi, final List<Scope> zzaVj) {
         this.mVersionCode = mVersionCode;
-        this.zzaOk = zzaOk;
-        this.zzaOl = zzaOl;
+        this.zzaVi = zzaVi;
+        this.zzaVj = zzaVj;
     }
     
     public CheckServerAuthResult(final boolean b, final Set<Scope> set) {

@@ -5,7 +5,7 @@
 package com.google.android.gms.signin.internal;
 
 import com.google.android.gms.common.api.GoogleApiClient$ServerAuthCodeCallbacks;
-import com.google.android.gms.signin.zze;
+import com.google.android.gms.internal.zzqx;
 import java.util.concurrent.ExecutorService;
 import com.google.android.gms.common.api.GoogleApiClient$ServerAuthCodeCallbacks$CheckResult;
 import android.os.RemoteException;
@@ -19,23 +19,23 @@ import java.util.List;
 
 class zzi$zza$1 implements Runnable
 {
-    final /* synthetic */ List zzaOp;
-    final /* synthetic */ String zzaOq;
-    final /* synthetic */ zzf zzaOr;
-    final /* synthetic */ zzi$zza zzaOs;
+    final /* synthetic */ List zzaVn;
+    final /* synthetic */ String zzaVo;
+    final /* synthetic */ zzf zzaVp;
+    final /* synthetic */ zzi$zza zzaVq;
     
-    zzi$zza$1(final zzi$zza zzaOs, final List zzaOp, final String zzaOq, final zzf zzaOr) {
-        this.zzaOs = zzaOs;
-        this.zzaOp = zzaOp;
-        this.zzaOq = zzaOq;
-        this.zzaOr = zzaOr;
+    zzi$zza$1(final zzi$zza zzaVq, final List zzaVn, final String zzaVo, final zzf zzaVp) {
+        this.zzaVq = zzaVq;
+        this.zzaVn = zzaVn;
+        this.zzaVo = zzaVo;
+        this.zzaVp = zzaVp;
     }
     
     @Override
     public void run() {
         try {
-            final GoogleApiClient$ServerAuthCodeCallbacks$CheckResult onCheckServerAuthorization = this.zzaOs.zzzq().onCheckServerAuthorization(this.zzaOq, Collections.unmodifiableSet((Set<? extends Scope>)new HashSet<Scope>(this.zzaOp)));
-            this.zzaOr.zza(new CheckServerAuthResult(onCheckServerAuthorization.zznl(), onCheckServerAuthorization.zznm()));
+            final GoogleApiClient$ServerAuthCodeCallbacks$CheckResult onCheckServerAuthorization = this.zzaVq.zzCg().onCheckServerAuthorization(this.zzaVo, Collections.unmodifiableSet((Set<? extends Scope>)new HashSet<Scope>(this.zzaVn)));
+            this.zzaVp.zza(new CheckServerAuthResult(onCheckServerAuthorization.zznD(), onCheckServerAuthorization.zznE()));
         }
         catch (RemoteException ex) {
             Log.e("SignInClientImpl", "RemoteException thrown when processing checkServerAuthorization callback", (Throwable)ex);

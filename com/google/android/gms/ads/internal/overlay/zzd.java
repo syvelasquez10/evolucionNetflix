@@ -7,79 +7,72 @@ package com.google.android.gms.ads.internal.overlay;
 import android.view.ViewParent;
 import android.view.Window;
 import android.view.ViewGroup;
-import com.google.android.gms.internal.zziq$zza;
-import com.google.android.gms.internal.zzfc;
-import com.google.android.gms.internal.zzdk;
+import com.google.android.gms.internal.zzja$zza;
+import com.google.android.gms.internal.zzfi;
+import com.google.android.gms.internal.zzdo;
 import com.google.android.gms.ads.internal.client.zza;
 import com.google.android.gms.internal.zzan;
+import android.view.ViewGroup$LayoutParams;
 import android.widget.RelativeLayout$LayoutParams;
 import java.util.Collections;
-import android.view.ViewGroup$LayoutParams;
 import android.view.View;
 import com.google.android.gms.ads.internal.zzp;
 import android.content.Context;
+import com.google.android.gms.internal.zzby;
 import com.google.android.gms.ads.internal.util.client.zzb;
 import android.os.Bundle;
-import com.google.android.gms.internal.zzby;
 import android.graphics.Color;
-import android.widget.RelativeLayout;
-import com.google.android.gms.internal.zzip;
-import com.google.android.gms.internal.zzcc;
-import com.google.android.gms.internal.zzcd;
+import com.google.android.gms.internal.zziz;
 import android.webkit.WebChromeClient$CustomViewCallback;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.app.Activity;
-import com.google.android.gms.internal.zzgk;
-import com.google.android.gms.internal.zzfe$zza;
+import com.google.android.gms.internal.zzgr;
+import com.google.android.gms.internal.zzfk$zza;
 
-@zzgk
-public class zzd extends zzfe$zza implements zzo
+@zzgr
+public class zzd extends zzfk$zza implements zzo
 {
-    static final int zzAu;
+    static final int zzBh;
     private final Activity mActivity;
-    zzm zzAA;
-    boolean zzAB;
-    FrameLayout zzAC;
-    WebChromeClient$CustomViewCallback zzAD;
-    boolean zzAE;
-    boolean zzAF;
-    boolean zzAG;
-    int zzAH;
-    private boolean zzAI;
-    private boolean zzAJ;
-    private boolean zzAK;
-    private final zzcd zzAv;
-    private final zzcc zzAw;
-    AdOverlayInfoParcel zzAx;
-    zzk zzAy;
-    zzd$zzc zzAz;
-    zzip zzoL;
-    RelativeLayout zzzA;
+    RelativeLayout zzAn;
+    AdOverlayInfoParcel zzBi;
+    zzd$zzc zzBj;
+    zzm zzBk;
+    boolean zzBl;
+    FrameLayout zzBm;
+    WebChromeClient$CustomViewCallback zzBn;
+    boolean zzBo;
+    boolean zzBp;
+    boolean zzBq;
+    int zzBr;
+    private boolean zzBs;
+    private boolean zzBt;
+    private boolean zzBu;
+    zziz zzoM;
     
     static {
-        zzAu = Color.argb(0, 0, 0, 0);
+        zzBh = Color.argb(0, 0, 0, 0);
     }
     
     public zzd(final Activity mActivity) {
-        this.zzAB = false;
-        this.zzAE = false;
-        this.zzAF = false;
-        this.zzAG = false;
-        this.zzAH = 0;
-        this.zzAJ = false;
-        this.zzAK = true;
+        this.zzBl = false;
+        this.zzBo = false;
+        this.zzBp = false;
+        this.zzBq = false;
+        this.zzBr = 0;
+        this.zzBt = false;
+        this.zzBu = true;
         this.mActivity = mActivity;
-        this.zzAv = new zzcd(zzby.zzuB.get(), "show_interstitial", "interstitial");
-        this.zzAw = this.zzAv.zzdl();
     }
     
     public void close() {
-        this.zzAH = 2;
+        this.zzBr = 2;
         this.mActivity.finish();
     }
     
     public void onBackPressed() {
-        this.zzAH = 0;
+        this.zzBr = 0;
     }
     
     public void onCreate(final Bundle bundle) {
@@ -87,62 +80,65 @@ public class zzd extends zzfe$zza implements zzo
         if (bundle != null) {
             boolean1 = bundle.getBoolean("com.google.android.gms.ads.internal.overlay.hasResumed", false);
         }
-        this.zzAE = boolean1;
+        this.zzBo = boolean1;
         Label_0071: {
             try {
-                this.zzAx = AdOverlayInfoParcel.zzb(this.mActivity.getIntent());
-                if (this.zzAx == null) {
+                this.zzBi = AdOverlayInfoParcel.zzb(this.mActivity.getIntent());
+                if (this.zzBi == null) {
                     throw new zzd$zza("Could not get info for ad overlay.");
                 }
                 break Label_0071;
             }
             catch (zzd$zza zzd$zza) {
-                zzb.zzaE(zzd$zza.getMessage());
-                this.zzAH = 3;
+                zzb.zzaH(zzd$zza.getMessage());
+                this.zzBr = 3;
                 this.mActivity.finish();
             }
             return;
         }
-        if (this.zzAx.zzqb.zzIB > 7500000) {
-            this.zzAH = 3;
+        if (this.zzBi.zzqj.zzJw > 7500000) {
+            this.zzBr = 3;
         }
         if (this.mActivity.getIntent() != null) {
-            this.zzAK = this.mActivity.getIntent().getBooleanExtra("shouldCallOnOverlayOpened", true);
+            this.zzBu = this.mActivity.getIntent().getBooleanExtra("shouldCallOnOverlayOpened", true);
         }
-        if (this.zzAx.zzBa != null) {
-            this.zzAF = this.zzAx.zzBa.zzpk;
+        if (this.zzBi.zzBM != null) {
+            this.zzBp = this.zzBi.zzBM.zzpt;
         }
         else {
-            this.zzAF = false;
+            this.zzBp = false;
+        }
+        if (zzby.zzvz.get() && this.zzBp && this.zzBi.zzBM.zzpv != null) {
+            new zzd$zzd(this, null).zzgz();
         }
         if (bundle == null) {
-            if (this.zzAx.zzAQ != null && this.zzAK) {
-                this.zzAx.zzAQ.zzaW();
+            if (this.zzBi.zzBC != null && this.zzBu) {
+                this.zzBi.zzBC.zzaW();
             }
-            if (this.zzAx.zzAX != 1 && this.zzAx.zzAP != null) {
-                this.zzAx.zzAP.onAdClicked();
+            if (this.zzBi.zzBJ != 1 && this.zzBi.zzBB != null) {
+                this.zzBi.zzBB.onAdClicked();
             }
         }
-        this.zzzA = new zzd$zzb((Context)this.mActivity, this.zzAx.zzAZ);
-        switch (this.zzAx.zzAX) {
+        this.zzAn = new zzd$zzb((Context)this.mActivity, this.zzBi.zzBL);
+        switch (this.zzBi.zzBJ) {
             case 1: {
                 this.zzv(false);
             }
             case 2: {
-                this.zzAz = new zzd$zzc(this.zzAx.zzAR);
+                this.zzBj = new zzd$zzc(this.zzBi.zzBD);
                 this.zzv(false);
             }
             case 3: {
                 this.zzv(true);
             }
             case 4: {
-                if (this.zzAE) {
-                    this.zzAH = 3;
+                if (this.zzBo) {
+                    this.zzBr = 3;
                     this.mActivity.finish();
                     return;
                 }
-                if (!zzp.zzbu().zza((Context)this.mActivity, this.zzAx.zzAO, this.zzAx.zzAW)) {
-                    this.zzAH = 3;
+                if (!zzp.zzbs().zza((Context)this.mActivity, this.zzBi.zzBA, this.zzBi.zzBI)) {
+                    this.zzBr = 3;
                     this.mActivity.finish();
                 }
             }
@@ -153,177 +149,147 @@ public class zzd extends zzfe$zza implements zzo
     }
     
     public void onDestroy() {
-        if (this.zzAy != null) {
-            this.zzAy.destroy();
+        if (this.zzoM != null) {
+            this.zzAn.removeView(this.zzoM.getView());
         }
-        if (this.zzoL != null) {
-            this.zzzA.removeView((View)this.zzoL.getWebView());
-        }
-        this.zzeB();
+        this.zzeH();
     }
     
     public void onPause() {
-        if (this.zzAy != null) {
-            this.zzAy.pause();
+        this.zzeD();
+        if (this.zzoM != null && (!this.mActivity.isFinishing() || this.zzBj == null)) {
+            zzp.zzbx().zza(this.zzoM.getWebView());
         }
-        this.zzex();
-        if (this.zzoL != null && (!this.mActivity.isFinishing() || this.zzAz == null)) {
-            zzp.zzbz().zza(this.zzoL.getWebView());
-        }
-        this.zzeB();
+        this.zzeH();
     }
     
     public void onRestart() {
     }
     
     public void onResume() {
-        if (this.zzAx != null && this.zzAx.zzAX == 4) {
-            if (this.zzAE) {
-                this.zzAH = 3;
+        if (this.zzBi != null && this.zzBi.zzBJ == 4) {
+            if (this.zzBo) {
+                this.zzBr = 3;
                 this.mActivity.finish();
             }
             else {
-                this.zzAE = true;
+                this.zzBo = true;
             }
         }
-        if (this.zzoL != null && !this.zzoL.isDestroyed()) {
-            zzp.zzbz().zzb(this.zzoL.getWebView());
+        if (this.zzoM != null && !this.zzoM.isDestroyed()) {
+            zzp.zzbx().zzb(this.zzoM.getWebView());
             return;
         }
-        zzb.zzaE("The webview does not exit. Ignoring action.");
+        zzb.zzaH("The webview does not exit. Ignoring action.");
     }
     
     public void onSaveInstanceState(final Bundle bundle) {
-        bundle.putBoolean("com.google.android.gms.ads.internal.overlay.hasResumed", this.zzAE);
+        bundle.putBoolean("com.google.android.gms.ads.internal.overlay.hasResumed", this.zzBo);
     }
     
     public void onStart() {
     }
     
     public void onStop() {
-        this.zzeB();
+        this.zzeH();
     }
     
     public void setRequestedOrientation(final int requestedOrientation) {
         this.mActivity.setRequestedOrientation(requestedOrientation);
     }
     
-    public void zza(final int n, final int n2, final int n3, final int n4, final int n5) {
-        this.zzAv.zza(this.zzAw, "vpr");
-        final zzcc zzdl = this.zzAv.zzdl();
-        if (this.zzAy == null) {
-            this.zzAy = new zzk((Context)this.mActivity, this.zzoL, n5, this.zzAv, zzdl);
-            this.zzzA.addView((View)this.zzAy, 0, new ViewGroup$LayoutParams(-1, -1));
-            this.zzAy.zze(n, n2, n3, n4);
-            this.zzoL.zzgS().zzF(false);
-        }
-    }
-    
-    public void zza(final View view, final WebChromeClient$CustomViewCallback zzAD) {
-        (this.zzAC = new FrameLayout((Context)this.mActivity)).setBackgroundColor(-16777216);
-        this.zzAC.addView(view, -1, -1);
-        this.mActivity.setContentView((View)this.zzAC);
+    public void zza(final View view, final WebChromeClient$CustomViewCallback zzBn) {
+        (this.zzBm = new FrameLayout((Context)this.mActivity)).setBackgroundColor(-16777216);
+        this.zzBm.addView(view, -1, -1);
+        this.mActivity.setContentView((View)this.zzBm);
         this.zzaE();
-        this.zzAD = zzAD;
-        this.zzAB = true;
+        this.zzBn = zzBn;
+        this.zzBl = true;
     }
     
     public void zza(final boolean b, final boolean b2) {
-        if (this.zzAA != null) {
-            this.zzAA.zza(b, b2);
+        if (this.zzBk != null) {
+            this.zzBk.zza(b, b2);
         }
     }
     
     public void zzaE() {
-        this.zzAI = true;
+        this.zzBs = true;
     }
     
-    public void zzd(final int n, final int n2, final int n3, final int n4) {
-        if (this.zzAy != null) {
-            this.zzAy.zze(n, n2, n3, n4);
+    public void zzeD() {
+        if (this.zzBi != null && this.zzBl) {
+            this.setRequestedOrientation(this.zzBi.orientation);
         }
-    }
-    
-    public void zzeA() {
-        this.zzzA.removeView((View)this.zzAA);
-        this.zzu(true);
-    }
-    
-    protected void zzeB() {
-        if (this.mActivity.isFinishing() && !this.zzAJ) {
-            this.zzAJ = true;
-            if (zzp.zzbA().zzgc() != null) {
-                zzp.zzbA().zzgc().zza(this.zzAv);
-            }
-            if (this.zzoL != null) {
-                this.zzv(this.zzAH);
-                this.zzzA.removeView((View)this.zzoL.getWebView());
-                if (this.zzAz != null) {
-                    this.zzoL.setContext(this.zzAz.context);
-                    this.zzoL.zzC(false);
-                    this.zzAz.zzAN.addView((View)this.zzoL.getWebView(), this.zzAz.index, this.zzAz.zzAM);
-                    this.zzAz = null;
-                }
-                this.zzoL = null;
-            }
-            if (this.zzAx != null && this.zzAx.zzAQ != null) {
-                this.zzAx.zzAQ.zzaV();
-            }
-        }
-    }
-    
-    public void zzeC() {
-        if (this.zzAG) {
-            this.zzAG = false;
-            this.zzeD();
-        }
-    }
-    
-    protected void zzeD() {
-        this.zzoL.zzeD();
-    }
-    
-    public zzk zzew() {
-        return this.zzAy;
-    }
-    
-    public void zzex() {
-        if (this.zzAx != null && this.zzAB) {
-            this.setRequestedOrientation(this.zzAx.orientation);
-        }
-        if (this.zzAC != null) {
-            this.mActivity.setContentView((View)this.zzzA);
+        if (this.zzBm != null) {
+            this.mActivity.setContentView((View)this.zzAn);
             this.zzaE();
-            this.zzAC.removeAllViews();
-            this.zzAC = null;
+            this.zzBm.removeAllViews();
+            this.zzBm = null;
         }
-        if (this.zzAD != null) {
-            this.zzAD.onCustomViewHidden();
-            this.zzAD = null;
+        if (this.zzBn != null) {
+            this.zzBn.onCustomViewHidden();
+            this.zzBn = null;
         }
-        this.zzAB = false;
+        this.zzBl = false;
     }
     
     @Override
-    public void zzey() {
-        this.zzAH = 1;
+    public void zzeE() {
+        this.zzBr = 1;
         this.mActivity.finish();
     }
     
-    public boolean zzez() {
-        this.zzAH = 0;
-        boolean zzgY;
-        if (this.zzoL == null) {
-            zzgY = true;
+    public boolean zzeF() {
+        this.zzBr = 0;
+        boolean zzhk;
+        if (this.zzoM == null) {
+            zzhk = true;
         }
         else {
-            final boolean b = zzgY = this.zzoL.zzgY();
+            final boolean b = zzhk = this.zzoM.zzhk();
             if (!b) {
-                this.zzoL.zzc("onbackblocked", Collections.emptyMap());
+                this.zzoM.zzb("onbackblocked", Collections.emptyMap());
                 return b;
             }
         }
-        return zzgY;
+        return zzhk;
+    }
+    
+    public void zzeG() {
+        this.zzAn.removeView((View)this.zzBk);
+        this.zzu(true);
+    }
+    
+    protected void zzeH() {
+        if (this.mActivity.isFinishing() && !this.zzBt) {
+            this.zzBt = true;
+            if (this.zzoM != null) {
+                this.zzv(this.zzBr);
+                this.zzAn.removeView(this.zzoM.getView());
+                if (this.zzBj != null) {
+                    this.zzoM.setContext(this.zzBj.context);
+                    this.zzoM.zzC(false);
+                    this.zzBj.zzBx.addView(this.zzoM.getView(), this.zzBj.index, this.zzBj.zzBw);
+                    this.zzBj = null;
+                }
+                this.zzoM = null;
+            }
+            if (this.zzBi != null && this.zzBi.zzBC != null) {
+                this.zzBi.zzBC.zzaV();
+            }
+        }
+    }
+    
+    public void zzeI() {
+        if (this.zzBq) {
+            this.zzBq = false;
+            this.zzeJ();
+        }
+    }
+    
+    protected void zzeJ() {
+        this.zzoM.zzeJ();
     }
     
     public void zzu(final boolean b) {
@@ -334,7 +300,7 @@ public class zzd extends zzfe$zza implements zzo
         else {
             n = 32;
         }
-        this.zzAA = new zzm((Context)this.mActivity, n, this);
+        this.zzBk = new zzm((Context)this.mActivity, n, this);
         final RelativeLayout$LayoutParams relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(-2, -2);
         relativeLayout$LayoutParams.addRule(10);
         int n2;
@@ -345,82 +311,82 @@ public class zzd extends zzfe$zza implements zzo
             n2 = 9;
         }
         relativeLayout$LayoutParams.addRule(n2);
-        this.zzAA.zza(b, this.zzAx.zzAU);
-        this.zzzA.addView((View)this.zzAA, (ViewGroup$LayoutParams)relativeLayout$LayoutParams);
+        this.zzBk.zza(b, this.zzBi.zzBG);
+        this.zzAn.addView((View)this.zzBk, (ViewGroup$LayoutParams)relativeLayout$LayoutParams);
     }
     
     protected void zzv(final int n) {
-        this.zzoL.zzv(n);
+        this.zzoM.zzv(n);
     }
     
     protected void zzv(final boolean b) {
-        if (!this.zzAI) {
+        if (!this.zzBs) {
             this.mActivity.requestWindowFeature(1);
         }
         final Window window = this.mActivity.getWindow();
         if (window == null) {
             throw new zzd$zza("Invalid activity, no window available.");
         }
-        if (!this.zzAF || (this.zzAx.zzBa != null && this.zzAx.zzBa.zzpl)) {
+        if (!this.zzBp || (this.zzBi.zzBM != null && this.zzBi.zzBM.zzpu)) {
             window.setFlags(1024, 1024);
         }
-        final boolean zzbY = this.zzAx.zzAR.zzgS().zzbY();
-        this.zzAG = false;
+        final boolean zzbY = this.zzBi.zzBD.zzhe().zzbY();
+        this.zzBq = false;
         if (zzbY) {
-            if (this.zzAx.orientation == zzp.zzbz().zzgv()) {
-                this.zzAG = (this.mActivity.getResources().getConfiguration().orientation == 1);
+            if (this.zzBi.orientation == zzp.zzbx().zzgG()) {
+                this.zzBq = (this.mActivity.getResources().getConfiguration().orientation == 1);
             }
-            else if (this.zzAx.orientation == zzp.zzbz().zzgw()) {
-                this.zzAG = (this.mActivity.getResources().getConfiguration().orientation == 2);
+            else if (this.zzBi.orientation == zzp.zzbx().zzgH()) {
+                this.zzBq = (this.mActivity.getResources().getConfiguration().orientation == 2);
             }
         }
-        zzb.zzaC("Delay onShow to next orientation change: " + this.zzAG);
-        this.setRequestedOrientation(this.zzAx.orientation);
-        if (zzp.zzbz().zza(window)) {
-            zzb.zzaC("Hardware acceleration on the AdActivity window enabled.");
+        zzb.zzaF("Delay onShow to next orientation change: " + this.zzBq);
+        this.setRequestedOrientation(this.zzBi.orientation);
+        if (zzp.zzbx().zza(window)) {
+            zzb.zzaF("Hardware acceleration on the AdActivity window enabled.");
         }
-        if (!this.zzAF) {
-            this.zzzA.setBackgroundColor(-16777216);
+        if (!this.zzBp) {
+            this.zzAn.setBackgroundColor(-16777216);
         }
         else {
-            this.zzzA.setBackgroundColor(zzd.zzAu);
+            this.zzAn.setBackgroundColor(zzd.zzBh);
         }
-        this.mActivity.setContentView((View)this.zzzA);
+        this.mActivity.setContentView((View)this.zzAn);
         this.zzaE();
         if (b) {
-            this.zzoL = zzp.zzby().zza((Context)this.mActivity, this.zzAx.zzAR.zzaN(), true, zzbY, null, this.zzAx.zzqb);
-            this.zzoL.zzgS().zzb(null, null, this.zzAx.zzAS, this.zzAx.zzAW, true, this.zzAx.zzAY, null, this.zzAx.zzAR.zzgS().zzhb(), null);
-            this.zzoL.zzgS().zza(new zzd$1(this));
-            if (this.zzAx.url != null) {
-                this.zzoL.loadUrl(this.zzAx.url);
+            this.zzoM = zzp.zzbw().zza((Context)this.mActivity, this.zzBi.zzBD.zzaN(), true, zzbY, null, this.zzBi.zzqj);
+            this.zzoM.zzhe().zzb(null, null, this.zzBi.zzBE, this.zzBi.zzBI, true, this.zzBi.zzBK, null, this.zzBi.zzBD.zzhe().zzhq(), null);
+            this.zzoM.zzhe().zza(new zzd$1(this));
+            if (this.zzBi.url != null) {
+                this.zzoM.loadUrl(this.zzBi.url);
             }
             else {
-                if (this.zzAx.zzAV == null) {
+                if (this.zzBi.zzBH == null) {
                     throw new zzd$zza("No URL or HTML to display in ad overlay.");
                 }
-                this.zzoL.loadDataWithBaseURL(this.zzAx.zzAT, this.zzAx.zzAV, "text/html", "UTF-8", null);
+                this.zzoM.loadDataWithBaseURL(this.zzBi.zzBF, this.zzBi.zzBH, "text/html", "UTF-8", null);
             }
-            if (this.zzAx.zzAR != null) {
-                this.zzAx.zzAR.zzb(this);
+            if (this.zzBi.zzBD != null) {
+                this.zzBi.zzBD.zzc(this);
             }
         }
         else {
-            (this.zzoL = this.zzAx.zzAR).setContext((Context)this.mActivity);
+            (this.zzoM = this.zzBi.zzBD).setContext((Context)this.mActivity);
         }
-        this.zzoL.zza(this);
-        final ViewParent parent = this.zzoL.getParent();
+        this.zzoM.zzb(this);
+        final ViewParent parent = this.zzoM.getParent();
         if (parent != null && parent instanceof ViewGroup) {
-            ((ViewGroup)parent).removeView((View)this.zzoL.getWebView());
+            ((ViewGroup)parent).removeView(this.zzoM.getView());
         }
-        if (this.zzAF) {
-            this.zzoL.setBackgroundColor(zzd.zzAu);
+        if (this.zzBp) {
+            this.zzoM.setBackgroundColor(zzd.zzBh);
         }
-        this.zzzA.addView((View)this.zzoL.getWebView(), -1, -1);
-        if (!b && !this.zzAG) {
-            this.zzeD();
+        this.zzAn.addView(this.zzoM.getView(), -1, -1);
+        if (!b && !this.zzBq) {
+            this.zzeJ();
         }
         this.zzu(zzbY);
-        if (this.zzoL.zzgT()) {
+        if (this.zzoM.zzhf()) {
             this.zza(zzbY, true);
         }
     }

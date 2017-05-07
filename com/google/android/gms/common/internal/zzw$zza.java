@@ -9,19 +9,19 @@ import java.util.List;
 
 public final class zzw$zza
 {
-    private final Object zzIr;
-    private final List<String> zzael;
+    private final Object zzJm;
+    private final List<String> zzago;
     
     private zzw$zza(final Object o) {
-        this.zzIr = zzx.zzv(o);
-        this.zzael = new ArrayList<String>();
+        this.zzJm = zzx.zzw(o);
+        this.zzago = new ArrayList<String>();
     }
     
     @Override
     public String toString() {
-        final StringBuilder append = new StringBuilder(100).append(this.zzIr.getClass().getSimpleName()).append('{');
-        for (int size = this.zzael.size(), i = 0; i < size; ++i) {
-            append.append(this.zzael.get(i));
+        final StringBuilder append = new StringBuilder(100).append(this.zzJm.getClass().getSimpleName()).append('{');
+        for (int size = this.zzago.size(), i = 0; i < size; ++i) {
+            append.append(this.zzago.get(i));
             if (i < size - 1) {
                 append.append(", ");
             }
@@ -30,7 +30,7 @@ public final class zzw$zza
     }
     
     public zzw$zza zzg(final String s, final Object o) {
-        this.zzael.add(zzx.zzv(s) + "=" + String.valueOf(o));
+        this.zzago.add(zzx.zzw(s) + "=" + String.valueOf(o));
         return this;
     }
 }

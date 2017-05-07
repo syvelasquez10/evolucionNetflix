@@ -227,28 +227,24 @@ public final class Settings
                         return Response.createResponsesFromString("true", null, new RequestBatch(new Request[] { postRequest }), true).get(0);
                     }
                     return new Response(null, null, null, create2, true);
-                    Label_0329: {
-                        throw new FacebookException("Install attribution has been disabled on the server.");
+                    final Response executeAndWait;
+                    Label_0351: {
+                        executeAndWait = postRequest.executeAndWait();
                     }
-                    // iftrue(Label_0351:, Utility.queryAppSettings(s, false).supportsAttribution())
-                    // iftrue(Label_0329:, attributionIdentifiers != null && attributionIdentifiers.getAndroidAdvertiserId() != null || attributionIdentifiers.getAttributionId() != null)
+                    final SharedPreferences$Editor edit = sharedPreferences.edit();
+                    edit.putLong(string, System.currentTimeMillis());
                     // iftrue(Label_0417:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
-                    SharedPreferences$Editor edit = null;
-                    Response executeAndWait = null;
-                Label_0417:
-                    while (true) {
-                        edit.putString(string2, executeAndWait.getGraphObject().getInnerJSONObject().toString());
+                    edit.putString(string2, executeAndWait.getGraphObject().getInnerJSONObject().toString());
+                    // iftrue(Label_0351:, Utility.queryAppSettings(s, false).supportsAttribution())
+                    Label_0417: {
                         break Label_0417;
-                        throw new FacebookException("No attribution id available to send to server.");
-                        Label_0351: {
-                            executeAndWait = postRequest.executeAndWait();
-                        }
-                        edit = sharedPreferences.edit();
-                        edit.putLong(string, System.currentTimeMillis());
-                        continue;
+                        Label_0329:
+                        throw new FacebookException("Install attribution has been disabled on the server.");
                     }
                     edit.apply();
                     return executeAndWait;
+                    // iftrue(Label_0329:, attributionIdentifiers != null && attributionIdentifiers.getAndroidAdvertiserId() != null || attributionIdentifiers.getAttributionId() != null)
+                    throw new FacebookException("No attribution id available to send to server.");
                 }
                 catch (JSONException ex2) {
                     create2 = null;

@@ -330,17 +330,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         return onGetLayoutInflater;
     }
     
-    public LoaderManager getLoaderManager() {
-        if (this.mLoaderManager != null) {
-            return this.mLoaderManager;
-        }
-        if (this.mHost == null) {
-            throw new IllegalStateException("Fragment " + this + " not attached to Activity");
-        }
-        this.mCheckedForLoaderManager = true;
-        return this.mLoaderManager = this.mHost.getLoaderManager(this.mWho, this.mLoadersStarted, true);
-    }
-    
     public Object getReenterTransition() {
         if (this.mReenterTransition == Fragment.USE_DEFAULT_TRANSITION) {
             return this.getExitTransition();

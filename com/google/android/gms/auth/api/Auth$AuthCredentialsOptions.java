@@ -11,13 +11,13 @@ import com.google.android.gms.common.api.Api$ApiOptions$Optional;
 
 public final class Auth$AuthCredentialsOptions implements Api$ApiOptions$Optional
 {
-    private final String zzQX;
-    private final PasswordSpecification zzQY;
+    private final String zzRY;
+    private final PasswordSpecification zzRZ;
     
-    public Bundle zzli() {
+    public Bundle zzly() {
         final Bundle bundle = new Bundle();
-        bundle.putString("consumer_package", this.zzQX);
-        bundle.putParcelable("password_specification", (Parcelable)this.zzQY);
+        bundle.putString("consumer_package", this.zzRY);
+        bundle.putParcelable("password_specification", (Parcelable)this.zzRZ);
         return bundle;
     }
 }

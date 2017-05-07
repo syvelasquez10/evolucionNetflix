@@ -12,17 +12,17 @@ public final class IdToken implements SafeParcelable
 {
     public static final Parcelable$Creator<IdToken> CREATOR;
     final int mVersionCode;
-    private final String zzRf;
-    private final String zzRn;
+    private final String zzSk;
+    private final String zzSs;
     
     static {
         CREATOR = (Parcelable$Creator)new zzd();
     }
     
-    IdToken(final int mVersionCode, final String zzRf, final String zzRn) {
+    IdToken(final int mVersionCode, final String zzSk, final String zzSs) {
         this.mVersionCode = mVersionCode;
-        this.zzRf = zzRf;
-        this.zzRn = zzRn;
+        this.zzSk = zzSk;
+        this.zzSs = zzSs;
     }
     
     public int describeContents() {
@@ -30,14 +30,14 @@ public final class IdToken implements SafeParcelable
     }
     
     public String getAccountType() {
-        return this.zzRf;
+        return this.zzSk;
+    }
+    
+    public String getIdToken() {
+        return this.zzSs;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
         zzd.zza(this, parcel, n);
-    }
-    
-    public String zzlv() {
-        return this.zzRn;
     }
 }

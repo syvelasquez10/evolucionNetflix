@@ -15,17 +15,17 @@ public class AuthAccountRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<AuthAccountRequest> CREATOR;
     final int mVersionCode;
-    final IBinder zzacC;
-    final Scope[] zzacD;
+    final IBinder zzaeH;
+    final Scope[] zzaeI;
     
     static {
         CREATOR = (Parcelable$Creator)new zzc();
     }
     
-    AuthAccountRequest(final int mVersionCode, final IBinder zzacC, final Scope[] zzacD) {
+    AuthAccountRequest(final int mVersionCode, final IBinder zzaeH, final Scope[] zzaeI) {
         this.mVersionCode = mVersionCode;
-        this.zzacC = zzacC;
-        this.zzacD = zzacD;
+        this.zzaeH = zzaeH;
+        this.zzaeI = zzaeI;
     }
     
     public AuthAccountRequest(final zzp zzp, final Set<Scope> set) {

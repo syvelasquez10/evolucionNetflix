@@ -10,49 +10,49 @@ import android.support.v4.util.SimpleArrayMap;
 
 public class zze
 {
-    private final long zzafP;
-    private final int zzafQ;
-    private final SimpleArrayMap<String, Long> zzafR;
+    private final long zzahV;
+    private final int zzahW;
+    private final SimpleArrayMap<String, Long> zzahX;
     
     public zze() {
-        this.zzafP = 60000L;
-        this.zzafQ = 10;
-        this.zzafR = new SimpleArrayMap<String, Long>(10);
+        this.zzahV = 60000L;
+        this.zzahW = 10;
+        this.zzahX = new SimpleArrayMap<String, Long>(10);
     }
     
-    public zze(final int zzafQ, final long zzafP) {
-        this.zzafP = zzafP;
-        this.zzafQ = zzafQ;
-        this.zzafR = new SimpleArrayMap<String, Long>();
+    public zze(final int zzahW, final long zzahV) {
+        this.zzahV = zzahV;
+        this.zzahW = zzahW;
+        this.zzahX = new SimpleArrayMap<String, Long>();
     }
     
     private void zzb(final long n, final long n2) {
-        for (int i = this.zzafR.size() - 1; i >= 0; --i) {
-            if (n2 - this.zzafR.valueAt(i) > n) {
-                this.zzafR.removeAt(i);
+        for (int i = this.zzahX.size() - 1; i >= 0; --i) {
+            if (n2 - this.zzahX.valueAt(i) > n) {
+                this.zzahX.removeAt(i);
             }
         }
     }
     
-    public Long zzcy(final String s) {
+    public Long zzcx(final String s) {
         final long elapsedRealtime = SystemClock.elapsedRealtime();
-        long zzafP = this.zzafP;
+        long zzahV = this.zzahV;
         synchronized (this) {
-            while (this.zzafR.size() >= this.zzafQ) {
-                this.zzb(zzafP, elapsedRealtime);
-                zzafP /= 2L;
-                Log.w("ConnectionTracker", "The max capacity " + this.zzafQ + " is not enough. Current durationThreshold is: " + zzafP);
+            while (this.zzahX.size() >= this.zzahW) {
+                this.zzb(zzahV, elapsedRealtime);
+                zzahV /= 2L;
+                Log.w("ConnectionTracker", "The max capacity " + this.zzahW + " is not enough. Current durationThreshold is: " + zzahV);
             }
         }
         final String s2;
         // monitorexit(this)
-        return this.zzafR.put(s2, elapsedRealtime);
+        return this.zzahX.put(s2, elapsedRealtime);
     }
     
-    public boolean zzcz(final String s) {
+    public boolean zzcy(final String s) {
         while (true) {
             synchronized (this) {
-                if (this.zzafR.remove(s) != null) {
+                if (this.zzahX.remove(s) != null) {
                     return true;
                 }
             }

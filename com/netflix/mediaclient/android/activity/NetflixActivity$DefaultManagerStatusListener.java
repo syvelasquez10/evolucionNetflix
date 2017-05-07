@@ -38,6 +38,7 @@ import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.ui.login.LogoutActivity;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;

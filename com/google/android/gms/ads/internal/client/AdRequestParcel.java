@@ -9,57 +9,57 @@ import com.google.android.gms.common.internal.zzw;
 import android.location.Location;
 import java.util.List;
 import android.os.Bundle;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-@zzgk
+@zzgr
 public final class AdRequestParcel implements SafeParcelable
 {
-    public static final zzf CREATOR;
+    public static final zzg CREATOR;
     public final Bundle extras;
     public final int versionCode;
-    public final Bundle zzsA;
-    public final Bundle zzsB;
-    public final List<String> zzsC;
-    public final String zzsD;
-    public final String zzsE;
-    public final long zzsq;
-    public final int zzsr;
-    public final List<String> zzss;
-    public final boolean zzst;
-    public final int zzsu;
-    public final boolean zzsv;
-    public final String zzsw;
-    public final SearchAdRequestParcel zzsx;
-    public final Location zzsy;
-    public final String zzsz;
+    public final long zzsB;
+    public final int zzsC;
+    public final List<String> zzsD;
+    public final boolean zzsE;
+    public final int zzsF;
+    public final boolean zzsG;
+    public final String zzsH;
+    public final SearchAdRequestParcel zzsI;
+    public final Location zzsJ;
+    public final String zzsK;
+    public final Bundle zzsL;
+    public final Bundle zzsM;
+    public final List<String> zzsN;
+    public final String zzsO;
+    public final String zzsP;
     
     static {
-        CREATOR = new zzf();
+        CREATOR = new zzg();
     }
     
-    public AdRequestParcel(final int versionCode, final long zzsq, final Bundle bundle, final int zzsr, final List<String> zzss, final boolean zzst, final int zzsu, final boolean zzsv, final String zzsw, final SearchAdRequestParcel zzsx, final Location zzsy, final String zzsz, final Bundle zzsA, final Bundle zzsB, final List<String> zzsC, final String zzsD, final String zzsE) {
+    public AdRequestParcel(final int versionCode, final long zzsB, final Bundle bundle, final int zzsC, final List<String> zzsD, final boolean zzsE, final int zzsF, final boolean zzsG, final String zzsH, final SearchAdRequestParcel zzsI, final Location zzsJ, final String zzsK, final Bundle zzsL, final Bundle zzsM, final List<String> zzsN, final String zzsO, final String zzsP) {
         this.versionCode = versionCode;
-        this.zzsq = zzsq;
+        this.zzsB = zzsB;
         Bundle extras = bundle;
         if (bundle == null) {
             extras = new Bundle();
         }
         this.extras = extras;
-        this.zzsr = zzsr;
-        this.zzss = zzss;
-        this.zzst = zzst;
-        this.zzsu = zzsu;
-        this.zzsv = zzsv;
-        this.zzsw = zzsw;
-        this.zzsx = zzsx;
-        this.zzsy = zzsy;
-        this.zzsz = zzsz;
-        this.zzsA = zzsA;
-        this.zzsB = zzsB;
         this.zzsC = zzsC;
         this.zzsD = zzsD;
         this.zzsE = zzsE;
+        this.zzsF = zzsF;
+        this.zzsG = zzsG;
+        this.zzsH = zzsH;
+        this.zzsI = zzsI;
+        this.zzsJ = zzsJ;
+        this.zzsK = zzsK;
+        this.zzsL = zzsL;
+        this.zzsM = zzsM;
+        this.zzsN = zzsN;
+        this.zzsO = zzsO;
+        this.zzsP = zzsP;
     }
     
     public int describeContents() {
@@ -70,7 +70,7 @@ public final class AdRequestParcel implements SafeParcelable
     public boolean equals(final Object o) {
         if (o instanceof AdRequestParcel) {
             final AdRequestParcel adRequestParcel = (AdRequestParcel)o;
-            if (this.versionCode == adRequestParcel.versionCode && this.zzsq == adRequestParcel.zzsq && zzw.equal(this.extras, adRequestParcel.extras) && this.zzsr == adRequestParcel.zzsr && zzw.equal(this.zzss, adRequestParcel.zzss) && this.zzst == adRequestParcel.zzst && this.zzsu == adRequestParcel.zzsu && this.zzsv == adRequestParcel.zzsv && zzw.equal(this.zzsw, adRequestParcel.zzsw) && zzw.equal(this.zzsx, adRequestParcel.zzsx) && zzw.equal(this.zzsy, adRequestParcel.zzsy) && zzw.equal(this.zzsz, adRequestParcel.zzsz) && zzw.equal(this.zzsA, adRequestParcel.zzsA) && zzw.equal(this.zzsB, adRequestParcel.zzsB) && zzw.equal(this.zzsC, adRequestParcel.zzsC) && zzw.equal(this.zzsD, adRequestParcel.zzsD) && zzw.equal(this.zzsE, adRequestParcel.zzsE)) {
+            if (this.versionCode == adRequestParcel.versionCode && this.zzsB == adRequestParcel.zzsB && zzw.equal(this.extras, adRequestParcel.extras) && this.zzsC == adRequestParcel.zzsC && zzw.equal(this.zzsD, adRequestParcel.zzsD) && this.zzsE == adRequestParcel.zzsE && this.zzsF == adRequestParcel.zzsF && this.zzsG == adRequestParcel.zzsG && zzw.equal(this.zzsH, adRequestParcel.zzsH) && zzw.equal(this.zzsI, adRequestParcel.zzsI) && zzw.equal(this.zzsJ, adRequestParcel.zzsJ) && zzw.equal(this.zzsK, adRequestParcel.zzsK) && zzw.equal(this.zzsL, adRequestParcel.zzsL) && zzw.equal(this.zzsM, adRequestParcel.zzsM) && zzw.equal(this.zzsN, adRequestParcel.zzsN) && zzw.equal(this.zzsO, adRequestParcel.zzsO) && zzw.equal(this.zzsP, adRequestParcel.zzsP)) {
                 return true;
             }
         }
@@ -79,10 +79,10 @@ public final class AdRequestParcel implements SafeParcelable
     
     @Override
     public int hashCode() {
-        return zzw.hashCode(this.versionCode, this.zzsq, this.extras, this.zzsr, this.zzss, this.zzst, this.zzsu, this.zzsv, this.zzsw, this.zzsx, this.zzsy, this.zzsz, this.zzsA, this.zzsB, this.zzsC, this.zzsD, this.zzsE);
+        return zzw.hashCode(this.versionCode, this.zzsB, this.extras, this.zzsC, this.zzsD, this.zzsE, this.zzsF, this.zzsG, this.zzsH, this.zzsI, this.zzsJ, this.zzsK, this.zzsL, this.zzsM, this.zzsN, this.zzsO, this.zzsP);
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        zzf.zza(this, parcel, n);
+        zzg.zza(this, parcel, n);
     }
 }

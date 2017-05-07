@@ -12,5 +12,5 @@ public interface zzg extends IInterface
 {
     void zza(final Status p0, final Credential p1);
     
-    void zzl(final Status p0);
+    void zzg(final Status p0);
 }

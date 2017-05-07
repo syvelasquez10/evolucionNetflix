@@ -48,6 +48,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.BroadcastReceiver;
+import java.util.concurrent.atomic.AtomicBoolean;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
@@ -59,23 +60,28 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     private static final boolean HANG_ON_LOADING_SCREEN = false;
     private static final int PROFILE_GATE_SHOULD_BE_SHOWN_TIMES = 2;
     private static final int RC_READ = 2;
+    private static final int SMARTLOCK_TIMEOUT_MS = 30000;
     private static final boolean START_DETAILS_ACTIVITY_ON_LAUNCH = false;
     private static final String TAG = "LaunchActivity";
     private static final Video sampleVideo;
     private boolean isLoading;
     private GoogleApiClient mCredentialsApiClient;
     private String mHint;
+    private AtomicBoolean mLoginWorkflowInProgress;
+    private final Runnable mSmartLockTimeoutTask;
     private long mSplashScreenStarted;
     private long mStarted;
     private final BroadcastReceiver nflxBroadcastReceiver;
     
     static {
-        sampleVideo = new LaunchActivity$6();
+        sampleVideo = new LaunchActivity$7();
     }
     
     public LaunchActivity() {
         this.isLoading = true;
-        this.nflxBroadcastReceiver = new LaunchActivity$3(this);
+        this.mLoginWorkflowInProgress = new AtomicBoolean(false);
+        this.mSmartLockTimeoutTask = new LaunchActivity$3(this);
+        this.nflxBroadcastReceiver = new LaunchActivity$4(this);
     }
     
     private NflxHandler$Response canHandleIntent() {
@@ -116,7 +122,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         this.setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showDebugToast(this.getString(2131165535));
+            this.showDebugToast(this.getString(2131165533));
             return;
         }
         Log.e("LaunchActivity", "Login failed, redirect to LoginActivity with credential and status");
@@ -165,7 +171,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         if (this.shouldCreateUiSessions()) {
             applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.login, this.mStarted, display);
         }
-        this.getServiceManager().loginUser(credential.getId(), credential.getPassword(), new LaunchActivity$5(this, credential));
+        this.getServiceManager().loginUser(credential.getId(), credential.getPassword(), new LaunchActivity$6(this, credential));
     }
     
     private void handleUserLoginWithError(final ServiceManager serviceManager, final Credential credential, final com.netflix.mediaclient.android.app.Status status) {
@@ -186,6 +192,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         if (this.shouldUseAutoLogin()) {
             Log.d("LaunchActivity", "Google Play Services are available, try to retrieve credentials");
             (this.mCredentialsApiClient = new GoogleApiClient$Builder((Context)this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(Auth.CREDENTIALS_API).build()).connect();
+            this.handler.postDelayed(this.mSmartLockTimeoutTask, 30000L);
             return;
         }
         Log.d("LaunchActivity", "Google Play Services are not available, go with regular workflow");
@@ -193,6 +200,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void handleUserNotSignedInWithoutCredentials(final ServiceManager serviceManager) {
+        this.resetTimeout();
         if (serviceManager.getSignUpParams().isSignUpEnabled() && !this.getNetflixApplication().hasSignedUpOnce()) {
             this.handleUserSignUp(serviceManager);
             return;
@@ -254,6 +262,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void onCredentialRetrieved(final Credential credential) {
+        this.resetTimeout();
         if (Log.isLoggable()) {
             Log.d("LaunchActivity", "Google Play Services: Credential Retrieved: " + credential.getId());
             Log.d("LaunchActivity", "Google Play Services: Credential name: " + credential.getName());
@@ -266,6 +275,11 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     private void registerNflxReceiver() {
         Log.d("LaunchActivity", "Register receiver");
         IntentUtils.registerSafelyLocalBroadcastReceiver((Context)this, this.nflxBroadcastReceiver, "LocalIntentNflxUi", "com.netflix.mediaclient.intent.action.HANDLER_RESULT");
+    }
+    
+    private void resetTimeout() {
+        this.mLoginWorkflowInProgress.set(true);
+        this.handler.removeCallbacks(this.mSmartLockTimeoutTask);
     }
     
     private void resolveResult(final Status status) {
@@ -405,7 +419,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     @Override
     public void onConnected(final Bundle bundle) {
         Log.d("LaunchActivity", "onConnected, retrieve credentials if any");
-        Auth.CredentialsApi.request(this.mCredentialsApiClient, new CredentialRequest$Builder().setSupportsPasswordLogin(true).build()).setResultCallback(new LaunchActivity$4(this));
+        Auth.CredentialsApi.request(this.mCredentialsApiClient, new CredentialRequest$Builder().setSupportsPasswordLogin(true).build()).setResultCallback(new LaunchActivity$5(this));
     }
     
     @Override

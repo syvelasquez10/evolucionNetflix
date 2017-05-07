@@ -10,49 +10,43 @@ import com.google.android.gms.common.internal.safeparcel.zzb;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class zzc implements Parcelable$Creator<LaunchOptions>
+public class zzc implements Parcelable$Creator<JoinOptions>
 {
-    static void zza(final LaunchOptions launchOptions, final Parcel parcel, int zzak) {
-        zzak = zzb.zzak(parcel);
-        zzb.zzc(parcel, 1, launchOptions.getVersionCode());
-        zzb.zza(parcel, 2, launchOptions.getRelaunchIfRunning());
-        zzb.zza(parcel, 3, launchOptions.getLanguage(), false);
-        zzb.zzH(parcel, zzak);
+    static void zza(final JoinOptions joinOptions, final Parcel parcel, int zzaq) {
+        zzaq = zzb.zzaq(parcel);
+        zzb.zzc(parcel, 1, joinOptions.getVersionCode());
+        zzb.zzc(parcel, 2, joinOptions.getConnectionType());
+        zzb.zzI(parcel, zzaq);
     }
     
-    public LaunchOptions zzT(final Parcel parcel) {
-        boolean zzc = false;
-        final int zzaj = zza.zzaj(parcel);
-        String zzo = null;
+    public JoinOptions zzY(final Parcel parcel) {
         int zzg = 0;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = zza.zzai(parcel);
-            switch (zza.zzbH(zzai)) {
+        final int zzap = zza.zzap(parcel);
+        int zzg2 = 0;
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = zza.zzao(parcel);
+            switch (zza.zzbM(zzao)) {
                 default: {
-                    zza.zzb(parcel, zzai);
+                    zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzg = zza.zzg(parcel, zzai);
+                    zzg2 = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 2: {
-                    zzc = zza.zzc(parcel, zzai);
-                    continue;
-                }
-                case 3: {
-                    zzo = zza.zzo(parcel, zzai);
+                    zzg = zza.zzg(parcel, zzao);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
-        return new LaunchOptions(zzg, zzc, zzo);
+        return new JoinOptions(zzg2, zzg);
     }
     
-    public LaunchOptions[] zzaJ(final int n) {
-        return new LaunchOptions[n];
+    public JoinOptions[] zzaP(final int n) {
+        return new JoinOptions[n];
     }
 }

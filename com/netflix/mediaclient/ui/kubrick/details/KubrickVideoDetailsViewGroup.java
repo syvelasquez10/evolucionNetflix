@@ -170,7 +170,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
         else {
             final int runtime = kubrickVideo.getRuntime();
             if (runtime > 0) {
-                this.durationInfo.setText((CharSequence)resources.getString(2131165483, new Object[] { TimeUtils.convertSecondsToMinutes(runtime) }));
+                this.durationInfo.setText((CharSequence)resources.getString(2131165481, new Object[] { TimeUtils.convertSecondsToMinutes(runtime) }));
                 this.durationInfo.setVisibility(0);
                 return;
             }
@@ -432,16 +432,16 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             this.bookmarkProgressBar.setProgress(progress);
         }
         if (this.bookmarkDuration != null) {
-            this.bookmarkDuration.setText((CharSequence)this.getResources().getString(2131165483, new Object[] { TimeUtils.convertSecondsToMinutes(playable.getRuntime()) }));
+            this.bookmarkDuration.setText((CharSequence)this.getResources().getString(2131165481, new Object[] { TimeUtils.convertSecondsToMinutes(playable.getRuntime()) }));
         }
         if (this.bookmarkValue != null) {
-            this.bookmarkValue.setText((CharSequence)this.getResources().getString(2131165483, new Object[] { TimeUtils.convertSecondsToMinutes(playable.getPlayableBookmarkPosition()) }));
+            this.bookmarkValue.setText((CharSequence)this.getResources().getString(2131165481, new Object[] { TimeUtils.convertSecondsToMinutes(playable.getPlayableBookmarkPosition()) }));
         }
     }
     
     public void updateBookmarkTitle(final EpisodeDetails episodeDetails) {
         if (this.bookMarkTitle != null) {
-            this.bookMarkTitle.setText((CharSequence)this.getResources().getString(2131165430, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() }));
+            this.bookMarkTitle.setText((CharSequence)this.getResources().getString(2131165428, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() }));
             this.bookMarkTitle.setVisibility(0);
         }
     }

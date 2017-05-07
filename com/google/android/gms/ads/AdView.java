@@ -8,31 +8,31 @@ import com.google.android.gms.ads.internal.client.zza;
 import android.content.Context;
 import android.view.View;
 import com.google.android.gms.ads.purchase.InAppPurchaseListener;
-import com.google.android.gms.ads.internal.client.zzy;
+import com.google.android.gms.ads.internal.client.zzz;
 import android.view.ViewGroup;
 
 public final class AdView extends ViewGroup
 {
-    private final zzy zznS;
+    private final zzz zznT;
     
     public AdListener getAdListener() {
-        return this.zznS.getAdListener();
+        return this.zznT.getAdListener();
     }
     
     public AdSize getAdSize() {
-        return this.zznS.getAdSize();
+        return this.zznT.getAdSize();
     }
     
     public String getAdUnitId() {
-        return this.zznS.getAdUnitId();
+        return this.zznT.getAdUnitId();
     }
     
     public InAppPurchaseListener getInAppPurchaseListener() {
-        return this.zznS.getInAppPurchaseListener();
+        return this.zznT.getInAppPurchaseListener();
     }
     
     public String getMediationAdapterClassName() {
-        return this.zznS.getMediationAdapterClassName();
+        return this.zznT.getMediationAdapterClassName();
     }
     
     protected void onLayout(final boolean b, int n, int n2, final int n3, final int n4) {
@@ -70,24 +70,24 @@ public final class AdView extends ViewGroup
     }
     
     public void setAdListener(final AdListener adListener) {
-        this.zznS.setAdListener(adListener);
+        this.zznT.setAdListener(adListener);
         if (adListener != null && adListener instanceof zza) {
-            this.zznS.zza((zza)adListener);
+            this.zznT.zza((zza)adListener);
         }
         else if (adListener == null) {
-            this.zznS.zza((zza)null);
+            this.zznT.zza((zza)null);
         }
     }
     
     public void setAdSize(final AdSize adSize) {
-        this.zznS.setAdSizes(adSize);
+        this.zznT.setAdSizes(adSize);
     }
     
     public void setAdUnitId(final String adUnitId) {
-        this.zznS.setAdUnitId(adUnitId);
+        this.zznT.setAdUnitId(adUnitId);
     }
     
     public void setInAppPurchaseListener(final InAppPurchaseListener inAppPurchaseListener) {
-        this.zznS.setInAppPurchaseListener(inAppPurchaseListener);
+        this.zznT.setInAppPurchaseListener(inAppPurchaseListener);
     }
 }

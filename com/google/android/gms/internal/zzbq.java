@@ -11,7 +11,7 @@ import android.os.Environment;
 import com.google.android.gms.common.internal.zzx;
 import android.content.Context;
 
-@zzgk
+@zzgr
 public class zzbq
 {
     private final Context mContext;
@@ -21,7 +21,7 @@ public class zzbq
         this.mContext = mContext;
     }
     
-    public static boolean zzcZ() {
+    public static boolean zzda() {
         return "mounted".equals(Environment.getExternalStorageState());
     }
     
@@ -34,27 +34,27 @@ public class zzbq
         return b;
     }
     
-    public boolean zzcV() {
+    public boolean zzcW() {
         final Intent intent = new Intent("android.intent.action.DIAL");
         intent.setData(Uri.parse("tel:"));
         return this.zza(intent);
     }
     
-    public boolean zzcW() {
+    public boolean zzcX() {
         final Intent intent = new Intent("android.intent.action.VIEW");
         intent.setData(Uri.parse("sms:"));
         return this.zza(intent);
     }
     
-    public boolean zzcX() {
-        return zzcZ() && this.mContext.checkCallingOrSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE") == 0;
+    public boolean zzcY() {
+        return zzda() && this.mContext.checkCallingOrSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE") == 0;
     }
     
-    public boolean zzcY() {
+    public boolean zzcZ() {
         return true;
     }
     
-    public boolean zzda() {
+    public boolean zzdb() {
         final Intent setType = new Intent("android.intent.action.INSERT").setType("vnd.android.cursor.dir/event");
         return Build$VERSION.SDK_INT >= 14 && this.zza(setType);
     }

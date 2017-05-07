@@ -9,34 +9,34 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
 
-@zzgk
+@zzgr
 public class zzbv
 {
-    private final Collection<zzbu> zztR;
-    private final Collection<zzbu<String>> zztS;
-    private final Collection<zzbu<String>> zztT;
+    private final Collection<zzbu> zzug;
+    private final Collection<zzbu<String>> zzuh;
+    private final Collection<zzbu<String>> zzui;
     
     public zzbv() {
-        this.zztR = new ArrayList<zzbu>();
-        this.zztS = new ArrayList<zzbu<String>>();
-        this.zztT = new ArrayList<zzbu<String>>();
+        this.zzug = new ArrayList<zzbu>();
+        this.zzuh = new ArrayList<zzbu<String>>();
+        this.zzui = new ArrayList<zzbu<String>>();
     }
     
     public void zza(final zzbu zzbu) {
-        this.zztR.add(zzbu);
+        this.zzug.add(zzbu);
     }
     
     public void zzb(final zzbu<String> zzbu) {
-        this.zztS.add(zzbu);
+        this.zzuh.add(zzbu);
     }
     
     public void zzc(final zzbu<String> zzbu) {
-        this.zztT.add(zzbu);
+        this.zzui.add(zzbu);
     }
     
-    public List<String> zzde() {
+    public List<String> zzdf() {
         final ArrayList<String> list = new ArrayList<String>();
-        final Iterator<zzbu<String>> iterator = this.zztS.iterator();
+        final Iterator<zzbu<String>> iterator = this.zzuh.iterator();
         while (iterator.hasNext()) {
             final String s = iterator.next().get();
             if (s != null) {

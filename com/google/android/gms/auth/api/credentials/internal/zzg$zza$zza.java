@@ -11,14 +11,14 @@ import android.os.IBinder;
 
 class zzg$zza$zza implements zzg
 {
-    private IBinder zznI;
+    private IBinder zznJ;
     
-    zzg$zza$zza(final IBinder zznI) {
-        this.zznI = zznI;
+    zzg$zza$zza(final IBinder zznJ) {
+        this.zznJ = zznJ;
     }
     
     public IBinder asBinder() {
-        return this.zznI;
+        return this.zznJ;
     }
     
     @Override
@@ -39,7 +39,7 @@ class zzg$zza$zza implements zzg
                     if (credential != null) {
                         obtain.writeInt(1);
                         credential.writeToParcel(obtain, 0);
-                        this.zznI.transact(1, obtain, obtain2, 0);
+                        this.zznJ.transact(1, obtain, obtain2, 0);
                         obtain2.readException();
                         return;
                     }
@@ -55,7 +55,7 @@ class zzg$zza$zza implements zzg
     }
     
     @Override
-    public void zzl(final Status status) {
+    public void zzg(final Status status) {
         final Parcel obtain = Parcel.obtain();
         final Parcel obtain2 = Parcel.obtain();
         try {
@@ -67,7 +67,7 @@ class zzg$zza$zza implements zzg
             else {
                 obtain.writeInt(0);
             }
-            this.zznI.transact(2, obtain, obtain2, 0);
+            this.zznJ.transact(2, obtain, obtain2, 0);
             obtain2.readException();
         }
         finally {

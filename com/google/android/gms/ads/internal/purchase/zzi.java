@@ -9,12 +9,12 @@ import android.os.Bundle;
 import org.json.JSONException;
 import com.google.android.gms.ads.internal.util.client.zzb;
 import org.json.JSONObject;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 
-@zzgk
+@zzgr
 public class zzi
 {
-    public String zzal(String string) {
+    public String zzao(String string) {
         if (string == null) {
             return null;
         }
@@ -23,7 +23,7 @@ public class zzi
             return string;
         }
         catch (JSONException ex) {
-            zzb.zzaE("Fail to parse purchase data");
+            zzb.zzaH("Fail to parse purchase data");
             return null;
         }
     }
@@ -31,7 +31,7 @@ public class zzi
     public int zzc(final Bundle bundle) {
         final Object value = bundle.get("RESPONSE_CODE");
         if (value == null) {
-            zzb.zzaE("Bundle with null response code, assuming OK (known issue)");
+            zzb.zzaH("Bundle with null response code, assuming OK (known issue)");
             return 0;
         }
         if (value instanceof Integer) {
@@ -40,7 +40,7 @@ public class zzi
         if (value instanceof Long) {
             return (int)(long)value;
         }
-        zzb.zzaE("Unexpected type for intent response code. " + ((Long)value).getClass().getName());
+        zzb.zzaH("Unexpected type for intent response code. " + ((Long)value).getClass().getName());
         return 5;
     }
     
@@ -50,7 +50,7 @@ public class zzi
         }
         final Object value = intent.getExtras().get("RESPONSE_CODE");
         if (value == null) {
-            zzb.zzaE("Intent with no response code, assuming OK (known issue)");
+            zzb.zzaH("Intent with no response code, assuming OK (known issue)");
             return 0;
         }
         if (value instanceof Integer) {
@@ -59,7 +59,7 @@ public class zzi
         if (value instanceof Long) {
             return (int)(long)value;
         }
-        zzb.zzaE("Unexpected type for intent response code. " + ((Long)value).getClass().getName());
+        zzb.zzaH("Unexpected type for intent response code. " + ((Long)value).getClass().getName());
         return 5;
     }
     

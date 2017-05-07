@@ -6,8 +6,8 @@ package com.google.android.gms.common.internal;
 
 import android.os.Parcel;
 import android.app.PendingIntent;
-import android.os.IBinder;
 import com.google.android.gms.common.ConnectionResult;
+import android.os.IBinder;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
@@ -15,10 +15,10 @@ public class ResolveAccountResponse implements SafeParcelable
 {
     public static final Parcelable$Creator<ResolveAccountResponse> CREATOR;
     final int mVersionCode;
-    private boolean zzZF;
-    private ConnectionResult zzaaV;
-    IBinder zzacC;
-    private boolean zzaen;
+    private boolean zzabG;
+    IBinder zzaeH;
+    private ConnectionResult zzagq;
+    private boolean zzagr;
     
     static {
         CREATOR = (Parcelable$Creator)new zzz();
@@ -28,12 +28,12 @@ public class ResolveAccountResponse implements SafeParcelable
         this(new ConnectionResult(n, null));
     }
     
-    ResolveAccountResponse(final int mVersionCode, final IBinder zzacC, final ConnectionResult zzaaV, final boolean zzZF, final boolean zzaen) {
+    ResolveAccountResponse(final int mVersionCode, final IBinder zzaeH, final ConnectionResult zzagq, final boolean zzabG, final boolean zzagr) {
         this.mVersionCode = mVersionCode;
-        this.zzacC = zzacC;
-        this.zzaaV = zzaaV;
-        this.zzZF = zzZF;
-        this.zzaen = zzaen;
+        this.zzaeH = zzaeH;
+        this.zzagq = zzagq;
+        this.zzabG = zzabG;
+        this.zzagr = zzagr;
     }
     
     public ResolveAccountResponse(final ConnectionResult connectionResult) {
@@ -51,7 +51,7 @@ public class ResolveAccountResponse implements SafeParcelable
                 return false;
             }
             final ResolveAccountResponse resolveAccountResponse = (ResolveAccountResponse)o;
-            if (!this.zzaaV.equals(resolveAccountResponse.zzaaV) || !this.zzoO().equals(resolveAccountResponse.zzoO())) {
+            if (!this.zzagq.equals(resolveAccountResponse.zzagq) || !this.zzpq().equals(resolveAccountResponse.zzpq())) {
                 return false;
             }
         }
@@ -62,19 +62,19 @@ public class ResolveAccountResponse implements SafeParcelable
         zzz.zza(this, parcel, n);
     }
     
-    public zzp zzoO() {
-        return zzp$zza.zzaH(this.zzacC);
+    public zzp zzpq() {
+        return zzp$zza.zzaH(this.zzaeH);
     }
     
-    public ConnectionResult zzoP() {
-        return this.zzaaV;
+    public ConnectionResult zzpr() {
+        return this.zzagq;
     }
     
-    public boolean zzoQ() {
-        return this.zzZF;
+    public boolean zzps() {
+        return this.zzabG;
     }
     
-    public boolean zzoR() {
-        return this.zzaen;
+    public boolean zzpt() {
+        return this.zzagr;
     }
 }

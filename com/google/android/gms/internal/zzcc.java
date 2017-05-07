@@ -6,13 +6,25 @@ package com.google.android.gms.internal;
 
 public class zzcc
 {
-    private final long zzvo;
-    private final String zzvp;
-    private final zzcc zzvq;
+    public static zzce zza(final zzcg zzcg, final long n) {
+        if (zzcg == null) {
+            return null;
+        }
+        return zzcg.zzb(n);
+    }
     
-    public zzcc(final long zzvo, final String zzvp, final zzcc zzvq) {
-        this.zzvo = zzvo;
-        this.zzvp = zzvp;
-        this.zzvq = zzvq;
+    public static boolean zza(final zzcg zzcg, final zzce zzce, final long n, final String... array) {
+        return zzcg != null && zzce != null && zzcg.zza(zzce, n, array);
+    }
+    
+    public static boolean zza(final zzcg zzcg, final zzce zzce, final String... array) {
+        return zzcg != null && zzce != null && zzcg.zza(zzce, array);
+    }
+    
+    public static zzce zzb(final zzcg zzcg) {
+        if (zzcg == null) {
+            return null;
+        }
+        return zzcg.zzdn();
     }
 }

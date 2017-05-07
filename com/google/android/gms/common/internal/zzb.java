@@ -6,7 +6,7 @@ package com.google.android.gms.common.internal;
 
 public final class zzb
 {
-    public static void zzr(final Object o) {
+    public static void zzs(final Object o) {
         if (o == null) {
             throw new IllegalArgumentException("null reference");
         }

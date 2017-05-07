@@ -17,19 +17,19 @@ public interface zzj extends IInterface
     
     void zza(final String p0, final long p1, final int p2);
     
-    void zzaU(final int p0);
-    
-    void zzaV(final int p0);
-    
-    void zzaW(final int p0);
-    
-    void zzaX(final int p0);
-    
     void zzb(final ApplicationStatus p0);
     
     void zzb(final DeviceStatus p0);
     
     void zzb(final String p0, final byte[] p1);
+    
+    void zzbb(final int p0);
+    
+    void zzbc(final int p0);
+    
+    void zzbd(final int p0);
+    
+    void zzbe(final int p0);
     
     void zzd(final String p0, final long p1);
     

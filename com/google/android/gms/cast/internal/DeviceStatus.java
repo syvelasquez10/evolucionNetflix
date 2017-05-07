@@ -14,11 +14,11 @@ public class DeviceStatus implements SafeParcelable
 {
     public static final Parcelable$Creator<DeviceStatus> CREATOR;
     private final int mVersionCode;
-    private double zzUJ;
-    private boolean zzUK;
-    private int zzWW;
-    private int zzWX;
-    private ApplicationMetadata zzXh;
+    private double zzWA;
+    private boolean zzWB;
+    private int zzYO;
+    private int zzYP;
+    private ApplicationMetadata zzYZ;
     
     static {
         CREATOR = (Parcelable$Creator)new zzg();
@@ -28,13 +28,13 @@ public class DeviceStatus implements SafeParcelable
         this(3, Double.NaN, false, -1, null, -1);
     }
     
-    DeviceStatus(final int mVersionCode, final double zzUJ, final boolean zzUK, final int zzWW, final ApplicationMetadata zzXh, final int zzWX) {
+    DeviceStatus(final int mVersionCode, final double zzWA, final boolean zzWB, final int zzYO, final ApplicationMetadata zzYZ, final int zzYP) {
         this.mVersionCode = mVersionCode;
-        this.zzUJ = zzUJ;
-        this.zzUK = zzUK;
-        this.zzWW = zzWW;
-        this.zzXh = zzXh;
-        this.zzWX = zzWX;
+        this.zzWA = zzWA;
+        this.zzWB = zzWB;
+        this.zzYO = zzYO;
+        this.zzYZ = zzYZ;
+        this.zzYP = zzYP;
     }
     
     public int describeContents() {
@@ -48,7 +48,7 @@ public class DeviceStatus implements SafeParcelable
                 return false;
             }
             final DeviceStatus deviceStatus = (DeviceStatus)o;
-            if (this.zzUJ != deviceStatus.zzUJ || this.zzUK != deviceStatus.zzUK || this.zzWW != deviceStatus.zzWW || !zzf.zza(this.zzXh, deviceStatus.zzXh) || this.zzWX != deviceStatus.zzWX) {
+            if (this.zzWA != deviceStatus.zzWA || this.zzWB != deviceStatus.zzWB || this.zzYO != deviceStatus.zzYO || !zzf.zza(this.zzYZ, deviceStatus.zzYZ) || this.zzYP != deviceStatus.zzYP) {
                 return false;
             }
         }
@@ -56,7 +56,7 @@ public class DeviceStatus implements SafeParcelable
     }
     
     public ApplicationMetadata getApplicationMetadata() {
-        return this.zzXh;
+        return this.zzYZ;
     }
     
     public int getVersionCode() {
@@ -65,26 +65,26 @@ public class DeviceStatus implements SafeParcelable
     
     @Override
     public int hashCode() {
-        return zzw.hashCode(this.zzUJ, this.zzUK, this.zzWW, this.zzXh, this.zzWX);
+        return zzw.hashCode(this.zzWA, this.zzWB, this.zzYO, this.zzYZ, this.zzYP);
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
         zzg.zza(this, parcel, n);
     }
     
-    public int zzmA() {
-        return this.zzWX;
+    public double zzmU() {
+        return this.zzWA;
     }
     
-    public boolean zzmH() {
-        return this.zzUK;
+    public int zzmV() {
+        return this.zzYO;
     }
     
-    public double zzmy() {
-        return this.zzUJ;
+    public int zzmW() {
+        return this.zzYP;
     }
     
-    public int zzmz() {
-        return this.zzWW;
+    public boolean zznd() {
+        return this.zzWB;
     }
 }

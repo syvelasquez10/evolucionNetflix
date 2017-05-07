@@ -8,5 +8,5 @@ import android.os.IInterface;
 
 public interface zzu extends IInterface
 {
-    long getValue();
+    void onAppEvent(final String p0, final String p1);
 }

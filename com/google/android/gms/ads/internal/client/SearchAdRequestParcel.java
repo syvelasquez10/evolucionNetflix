@@ -5,49 +5,49 @@
 package com.google.android.gms.ads.internal.client;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.zzgk;
+import com.google.android.gms.internal.zzgr;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-@zzgk
+@zzgr
 public final class SearchAdRequestParcel implements SafeParcelable
 {
     public static final zzae CREATOR;
     public final int backgroundColor;
     public final int versionCode;
-    public final int zztA;
-    public final int zztB;
-    public final int zztC;
-    public final int zztD;
-    public final int zztE;
-    public final int zztF;
-    public final int zztG;
-    public final String zztH;
-    public final int zztI;
-    public final String zztJ;
-    public final int zztK;
-    public final int zztL;
-    public final String zztM;
+    public final int zztP;
+    public final int zztQ;
+    public final int zztR;
+    public final int zztS;
+    public final int zztT;
+    public final int zztU;
+    public final int zztV;
+    public final String zztW;
+    public final int zztX;
+    public final String zztY;
+    public final int zztZ;
+    public final int zzua;
+    public final String zzub;
     
     static {
         CREATOR = new zzae();
     }
     
-    SearchAdRequestParcel(final int versionCode, final int zztA, final int backgroundColor, final int zztB, final int zztC, final int zztD, final int zztE, final int zztF, final int zztG, final String zztH, final int zztI, final String zztJ, final int zztK, final int zztL, final String zztM) {
+    SearchAdRequestParcel(final int versionCode, final int zztP, final int backgroundColor, final int zztQ, final int zztR, final int zztS, final int zztT, final int zztU, final int zztV, final String zztW, final int zztX, final String zztY, final int zztZ, final int zzua, final String zzub) {
         this.versionCode = versionCode;
-        this.zztA = zztA;
+        this.zztP = zztP;
         this.backgroundColor = backgroundColor;
-        this.zztB = zztB;
-        this.zztC = zztC;
-        this.zztD = zztD;
-        this.zztE = zztE;
-        this.zztF = zztF;
-        this.zztG = zztG;
-        this.zztH = zztH;
-        this.zztI = zztI;
-        this.zztJ = zztJ;
-        this.zztK = zztK;
-        this.zztL = zztL;
-        this.zztM = zztM;
+        this.zztQ = zztQ;
+        this.zztR = zztR;
+        this.zztS = zztS;
+        this.zztT = zztT;
+        this.zztU = zztU;
+        this.zztV = zztV;
+        this.zztW = zztW;
+        this.zztX = zztX;
+        this.zztY = zztY;
+        this.zztZ = zztZ;
+        this.zzua = zzua;
+        this.zzub = zzub;
     }
     
     public int describeContents() {

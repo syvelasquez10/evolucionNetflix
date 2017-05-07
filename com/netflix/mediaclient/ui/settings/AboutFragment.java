@@ -44,14 +44,14 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
     
     private void updateAboutDevice() {
         Serializable s2;
-        final String s = (String)(s2 = this.getString(2131165479));
+        final String s = (String)(s2 = this.getString(2131165477));
         while (true) {
             try {
                 final PackageInfo packageInfo = this.activity.getPackageManager().getPackageInfo(this.activity.getPackageName(), 0);
                 s2 = s;
                 final Serializable s3 = s2 = packageInfo.versionName;
                 final int versionCode = packageInfo.versionCode;
-                s2 = new StringBuilder(this.getString(2131165562)).append(": ").append((String)s3);
+                s2 = new StringBuilder(this.getString(2131165560)).append(": ").append((String)s3);
                 if (versionCode > 0) {
                     ((StringBuilder)s2).append(" (code ").append(versionCode).append("),");
                 }
@@ -62,7 +62,7 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
                 this.findPreference((CharSequence)"ui.about").setSummary((CharSequence)((StringBuilder)s2).toString());
                 this.findPreference((CharSequence)"ui.about").setSelectable(false);
                 if (this.manager != null) {
-                    s2 = new StringBuilder().append(this.getString(2131165374)).append(": ").append(this.manager.getUserEmail());
+                    s2 = new StringBuilder().append(this.getString(2131165372)).append(": ").append(this.manager.getUserEmail());
                     this.findPreference((CharSequence)"ui.account").setSummary((CharSequence)((StringBuilder)s2).toString());
                     this.findPreference((CharSequence)"ui.account").setSelectable(false);
                 }

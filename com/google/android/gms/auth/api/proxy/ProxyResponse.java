@@ -18,17 +18,17 @@ public class ProxyResponse implements SafeParcelable
     public final PendingIntent recoveryAction;
     public final int statusCode;
     final int versionCode;
-    final Bundle zzRE;
+    final Bundle zzSK;
     
     static {
         CREATOR = (Parcelable$Creator)new zzc();
     }
     
-    ProxyResponse(final int versionCode, final int googlePlayServicesStatusCode, final PendingIntent recoveryAction, final int statusCode, final Bundle zzRE, final byte[] body) {
+    ProxyResponse(final int versionCode, final int googlePlayServicesStatusCode, final PendingIntent recoveryAction, final int statusCode, final Bundle zzSK, final byte[] body) {
         this.versionCode = versionCode;
         this.googlePlayServicesStatusCode = googlePlayServicesStatusCode;
         this.statusCode = statusCode;
-        this.zzRE = zzRE;
+        this.zzSK = zzSK;
         this.body = body;
         this.recoveryAction = recoveryAction;
     }

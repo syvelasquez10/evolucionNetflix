@@ -51,7 +51,7 @@ public class CommonStatusCodes
                 return "LICENSE_CHECK_FAILED";
             }
             case 13: {
-                return "ERROR_OPERATION_FAILED";
+                return "ERROR";
             }
             case 14: {
                 return "INTERRUPTED";
@@ -61,6 +61,9 @@ public class CommonStatusCodes
             }
             case 16: {
                 return "CANCELED";
+            }
+            case 17: {
+                return "API_NOT_CONNECTED";
             }
             case 3000: {
                 return "AUTH_API_INVALID_CREDENTIALS";

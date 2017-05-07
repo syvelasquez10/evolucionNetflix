@@ -4,34 +4,25 @@
 
 package com.google.android.gms.internal;
 
-@zzgk
-public final class zzdf
+import com.google.android.gms.ads.internal.util.client.zzb;
+import java.util.Map;
+
+@zzgr
+public final class zzdf implements zzdk
 {
-    public static final zzdg zzwI;
-    public static final zzdg zzwJ;
-    public static final zzdg zzwK;
-    public static final zzdg zzwL;
-    public static final zzdg zzwM;
-    public static final zzdg zzwN;
-    public static final zzdg zzwO;
-    public static final zzdg zzwP;
-    public static final zzdg zzwQ;
-    public static final zzdg zzwR;
-    public static final zzdg zzwS;
-    public static final zzdg zzwT;
+    private final zzdg zzxn;
     
-    static {
-        zzwI = new zzdf$1();
-        zzwJ = new zzdf$3();
-        zzwK = new zzdf$4();
-        zzwL = new zzdf$5();
-        zzwM = new zzdf$6();
-        zzwN = new zzdf$7();
-        zzwO = new zzdf$8();
-        zzwP = new zzdf$9();
-        zzwQ = new zzdf$10();
-        zzwR = new zzdf$2();
-        zzwS = new zzdo();
-        zzwT = new zzds();
+    public zzdf(final zzdg zzxn) {
+        this.zzxn = zzxn;
+    }
+    
+    @Override
+    public void zza(final zziz zziz, final Map<String, String> map) {
+        final String s = map.get("name");
+        if (s == null) {
+            zzb.zzaH("App event with no name parameter.");
+            return;
+        }
+        this.zzxn.onAppEvent(s, map.get("info"));
     }
 }

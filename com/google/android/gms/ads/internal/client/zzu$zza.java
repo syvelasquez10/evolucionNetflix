@@ -12,7 +12,7 @@ import android.os.Binder;
 public abstract class zzu$zza extends Binder implements zzu
 {
     public zzu$zza() {
-        this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.client.ICorrelationIdProvider");
+        this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.client.IAppEventListener");
     }
     
     public IBinder asBinder() {
@@ -25,14 +25,13 @@ public abstract class zzu$zza extends Binder implements zzu
                 return super.onTransact(n, parcel, parcel2, n2);
             }
             case 1598968902: {
-                parcel2.writeString("com.google.android.gms.ads.internal.client.ICorrelationIdProvider");
+                parcel2.writeString("com.google.android.gms.ads.internal.client.IAppEventListener");
                 return true;
             }
             case 1: {
-                parcel.enforceInterface("com.google.android.gms.ads.internal.client.ICorrelationIdProvider");
-                final long value = this.getValue();
+                parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAppEventListener");
+                this.onAppEvent(parcel.readString(), parcel.readString());
                 parcel2.writeNoException();
-                parcel2.writeLong(value);
                 return true;
             }
         }

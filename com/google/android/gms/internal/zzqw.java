@@ -4,18 +4,22 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Build$VERSION;
+import com.google.android.gms.common.internal.zzt;
+import com.google.android.gms.signin.internal.zze;
+import com.google.android.gms.common.api.Scope;
+import java.util.Set;
+import com.google.android.gms.common.internal.zzp;
+import com.google.android.gms.common.api.Api$zzb;
 
-public class zzqw
+public interface zzqw extends Api$zzb
 {
-    public zzqv zzBW() {
-        if (this.zzzz() < 8) {
-            return new zzqt();
-        }
-        return new zzqu();
-    }
+    void connect();
     
-    int zzzz() {
-        return Build$VERSION.SDK_INT;
-    }
+    void zzCe();
+    
+    void zza(final zzp p0, final Set<Scope> p1, final zze p2);
+    
+    void zza(final zzp p0, final boolean p1);
+    
+    void zza(final zzt p0);
 }

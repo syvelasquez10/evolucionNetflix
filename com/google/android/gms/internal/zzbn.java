@@ -12,11 +12,11 @@ public class zzbn
     public static int zzC(String o) {
         try {
             o = ((String)o).getBytes("UTF-8");
-            return zzlu.zza((byte[])o, 0, o.length, 0);
+            return zzmw.zza((byte[])o, 0, o.length, 0);
         }
         catch (UnsupportedEncodingException ex) {
             o = ((String)o).getBytes();
-            return zzlu.zza((byte[])o, 0, o.length, 0);
+            return zzmw.zza((byte[])o, 0, o.length, 0);
         }
     }
     

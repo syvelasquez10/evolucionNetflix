@@ -8,15 +8,15 @@ import java.util.Arrays;
 
 class zzc$zzb extends zzc$zza
 {
-    private final byte[] zzYq;
+    private final byte[] zzaah;
     
-    zzc$zzb(final byte[] zzYq) {
-        super(Arrays.copyOfRange(zzYq, 0, 25));
-        this.zzYq = zzYq;
+    zzc$zzb(final byte[] zzaah) {
+        super(Arrays.copyOfRange(zzaah, 0, 25));
+        this.zzaah = zzaah;
     }
     
     @Override
     byte[] getBytes() {
-        return this.zzYq;
+        return this.zzaah;
     }
 }

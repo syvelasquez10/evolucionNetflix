@@ -21,112 +21,100 @@ import android.os.Handler$Callback;
 public final class zzk implements Handler$Callback
 {
     private final Handler mHandler;
-    private final zzk$zza zzadM;
-    private final ArrayList<GoogleApiClient$ConnectionCallbacks> zzadN;
-    final ArrayList<GoogleApiClient$ConnectionCallbacks> zzadO;
-    private final ArrayList<GoogleApiClient$OnConnectionFailedListener> zzadP;
-    private volatile boolean zzadQ;
-    private final AtomicInteger zzadR;
-    private boolean zzadS;
-    private final Object zzpc;
+    private final zzk$zza zzafP;
+    private final ArrayList<GoogleApiClient$ConnectionCallbacks> zzafQ;
+    final ArrayList<GoogleApiClient$ConnectionCallbacks> zzafR;
+    private final ArrayList<GoogleApiClient$OnConnectionFailedListener> zzafS;
+    private volatile boolean zzafT;
+    private final AtomicInteger zzafU;
+    private boolean zzafV;
+    private final Object zzpd;
     
-    public zzk(final Looper looper, final zzk$zza zzadM) {
-        this.zzadN = new ArrayList<GoogleApiClient$ConnectionCallbacks>();
-        this.zzadO = new ArrayList<GoogleApiClient$ConnectionCallbacks>();
-        this.zzadP = new ArrayList<GoogleApiClient$OnConnectionFailedListener>();
-        this.zzadQ = false;
-        this.zzadR = new AtomicInteger(0);
-        this.zzadS = false;
-        this.zzpc = new Object();
-        this.zzadM = zzadM;
+    public zzk(final Looper looper, final zzk$zza zzafP) {
+        this.zzafQ = new ArrayList<GoogleApiClient$ConnectionCallbacks>();
+        this.zzafR = new ArrayList<GoogleApiClient$ConnectionCallbacks>();
+        this.zzafS = new ArrayList<GoogleApiClient$OnConnectionFailedListener>();
+        this.zzafT = false;
+        this.zzafU = new AtomicInteger(0);
+        this.zzafV = false;
+        this.zzpd = new Object();
+        this.zzafP = zzafP;
         this.mHandler = new Handler(looper, (Handler$Callback)this);
     }
     
     public boolean handleMessage(final Message message) {
         if (message.what == 1) {
             final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks = (GoogleApiClient$ConnectionCallbacks)message.obj;
-            synchronized (this.zzpc) {
-                if (this.zzadQ && this.zzadM.isConnected() && this.zzadN.contains(googleApiClient$ConnectionCallbacks)) {
-                    googleApiClient$ConnectionCallbacks.onConnected(this.zzadM.zzmw());
+            synchronized (this.zzpd) {
+                if (this.zzafT && this.zzafP.isConnected() && this.zzafQ.contains(googleApiClient$ConnectionCallbacks)) {
+                    googleApiClient$ConnectionCallbacks.onConnected(this.zzafP.zzmS());
                 }
                 return true;
             }
         }
-        Log.wtf("GmsClientEvents", "Don't know how to handle this message.");
+        Log.wtf("GmsClientEvents", "Don't know how to handle message: " + message.what, (Throwable)new Exception());
         return false;
     }
     
     public void registerConnectionCallbacks(final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks) {
-        zzx.zzv(googleApiClient$ConnectionCallbacks);
-        synchronized (this.zzpc) {
-            if (this.zzadN.contains(googleApiClient$ConnectionCallbacks)) {
+        zzx.zzw(googleApiClient$ConnectionCallbacks);
+        synchronized (this.zzpd) {
+            if (this.zzafQ.contains(googleApiClient$ConnectionCallbacks)) {
                 Log.w("GmsClientEvents", "registerConnectionCallbacks(): listener " + googleApiClient$ConnectionCallbacks + " is already registered");
             }
             else {
-                this.zzadN.add(googleApiClient$ConnectionCallbacks);
+                this.zzafQ.add(googleApiClient$ConnectionCallbacks);
             }
-            // monitorexit(this.zzpc)
-            if (this.zzadM.isConnected()) {
+            // monitorexit(this.zzpd)
+            if (this.zzafP.isConnected()) {
                 this.mHandler.sendMessage(this.mHandler.obtainMessage(1, (Object)googleApiClient$ConnectionCallbacks));
             }
         }
     }
     
     public void registerConnectionFailedListener(final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
-        zzx.zzv(googleApiClient$OnConnectionFailedListener);
-        synchronized (this.zzpc) {
-            if (this.zzadP.contains(googleApiClient$OnConnectionFailedListener)) {
+        zzx.zzw(googleApiClient$OnConnectionFailedListener);
+        synchronized (this.zzpd) {
+            if (this.zzafS.contains(googleApiClient$OnConnectionFailedListener)) {
                 Log.w("GmsClientEvents", "registerConnectionFailedListener(): listener " + googleApiClient$OnConnectionFailedListener + " is already registered");
             }
             else {
-                this.zzadP.add(googleApiClient$OnConnectionFailedListener);
-            }
-        }
-    }
-    
-    public void unregisterConnectionCallbacks(final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks) {
-        zzx.zzv(googleApiClient$ConnectionCallbacks);
-        synchronized (this.zzpc) {
-            if (!this.zzadN.remove(googleApiClient$ConnectionCallbacks)) {
-                Log.w("GmsClientEvents", "unregisterConnectionCallbacks(): listener " + googleApiClient$ConnectionCallbacks + " not found");
-            }
-            else if (this.zzadS) {
-                this.zzadO.add(googleApiClient$ConnectionCallbacks);
+                this.zzafS.add(googleApiClient$OnConnectionFailedListener);
             }
         }
     }
     
     public void unregisterConnectionFailedListener(final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
-        zzx.zzv(googleApiClient$OnConnectionFailedListener);
-        synchronized (this.zzpc) {
-            if (!this.zzadP.remove(googleApiClient$OnConnectionFailedListener)) {
+        zzx.zzw(googleApiClient$OnConnectionFailedListener);
+        synchronized (this.zzpd) {
+            if (!this.zzafS.remove(googleApiClient$OnConnectionFailedListener)) {
                 Log.w("GmsClientEvents", "unregisterConnectionFailedListener(): listener " + googleApiClient$OnConnectionFailedListener + " not found");
             }
         }
     }
     
-    public void zzbB(final int n) {
+    public void zzbG(final int n) {
         boolean b = false;
         if (Looper.myLooper() == this.mHandler.getLooper()) {
             b = true;
         }
         zzx.zza(b, "onUnintentionalDisconnection must only be called on the Handler thread");
         this.mHandler.removeMessages(1);
-        synchronized (this.zzpc) {
-            this.zzadS = true;
-            final ArrayList<GoogleApiClient$ConnectionCallbacks> list = new ArrayList<GoogleApiClient$ConnectionCallbacks>(this.zzadN);
-            final int value = this.zzadR.get();
+        synchronized (this.zzpd) {
+            this.zzafV = true;
+            final ArrayList<GoogleApiClient$ConnectionCallbacks> list = new ArrayList<GoogleApiClient$ConnectionCallbacks>(this.zzafQ);
+            final int value = this.zzafU.get();
             for (final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks : list) {
-                if (!this.zzadQ || this.zzadR.get() != value) {
+                if (!this.zzafT || this.zzafU.get() != value) {
                     break;
                 }
-                if (!this.zzadN.contains(googleApiClient$ConnectionCallbacks)) {
+                if (!this.zzafQ.contains(googleApiClient$ConnectionCallbacks)) {
                     continue;
                 }
                 googleApiClient$ConnectionCallbacks.onConnectionSuspended(n);
             }
-            this.zzadO.clear();
-            this.zzadS = false;
+            this.zzafR.clear();
+            this.zzafV = false;
         }
     }
     
@@ -149,30 +137,30 @@ public final class zzk implements Handler$Callback
                     Label_0211:
                         while (true) {
                             Label_0206: {
-                                synchronized (this.zzpc) {
-                                    if (this.zzadS) {
+                                synchronized (this.zzpd) {
+                                    if (this.zzafV) {
                                         break Label_0206;
                                     }
                                     b3 = true;
-                                    zzx.zzY(b3);
+                                    zzx.zzZ(b3);
                                     this.mHandler.removeMessages(1);
-                                    this.zzadS = true;
-                                    if (this.zzadO.size() == 0) {
+                                    this.zzafV = true;
+                                    if (this.zzafR.size() == 0) {
                                         b4 = b;
-                                        zzx.zzY(b4);
-                                        list = new ArrayList<GoogleApiClient$ConnectionCallbacks>(this.zzadN);
-                                        value = this.zzadR.get();
+                                        zzx.zzZ(b4);
+                                        list = new ArrayList<GoogleApiClient$ConnectionCallbacks>(this.zzafQ);
+                                        value = this.zzafU.get();
                                         for (final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks : list) {
-                                            if (!this.zzadQ || !this.zzadM.isConnected() || this.zzadR.get() != value) {
+                                            if (!this.zzafT || !this.zzafP.isConnected() || this.zzafU.get() != value) {
                                                 break;
                                             }
-                                            if (this.zzadO.contains(googleApiClient$ConnectionCallbacks)) {
+                                            if (this.zzafR.contains(googleApiClient$ConnectionCallbacks)) {
                                                 continue Label_0042_Outer;
                                             }
                                             googleApiClient$ConnectionCallbacks.onConnected(bundle);
                                         }
-                                        this.zzadO.clear();
-                                        this.zzadS = false;
+                                        this.zzafR.clear();
+                                        this.zzafV = false;
                                         return;
                                     }
                                     break Label_0211;
@@ -192,17 +180,17 @@ public final class zzk implements Handler$Callback
         }
     }
     
-    public void zzj(final ConnectionResult connectionResult) {
+    public void zzi(final ConnectionResult connectionResult) {
         zzx.zza(Looper.myLooper() == this.mHandler.getLooper(), "onConnectionFailure must only be called on the Handler thread");
         this.mHandler.removeMessages(1);
-        synchronized (this.zzpc) {
-            final ArrayList<GoogleApiClient$OnConnectionFailedListener> list = new ArrayList<GoogleApiClient$OnConnectionFailedListener>(this.zzadP);
-            final int value = this.zzadR.get();
+        synchronized (this.zzpd) {
+            final ArrayList<GoogleApiClient$OnConnectionFailedListener> list = new ArrayList<GoogleApiClient$OnConnectionFailedListener>(this.zzafS);
+            final int value = this.zzafU.get();
             for (final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener : list) {
-                if (!this.zzadQ || this.zzadR.get() != value) {
+                if (!this.zzafT || this.zzafU.get() != value) {
                     return;
                 }
-                if (!this.zzadP.contains(googleApiClient$OnConnectionFailedListener)) {
+                if (!this.zzafS.contains(googleApiClient$OnConnectionFailedListener)) {
                     continue;
                 }
                 googleApiClient$OnConnectionFailedListener.onConnectionFailed(connectionResult);
@@ -211,12 +199,12 @@ public final class zzk implements Handler$Callback
     }
     // monitorexit(o)
     
-    public void zzoI() {
-        this.zzadQ = false;
-        this.zzadR.incrementAndGet();
+    public void zzpk() {
+        this.zzafT = false;
+        this.zzafU.incrementAndGet();
     }
     
-    public void zzoJ() {
-        this.zzadQ = true;
+    public void zzpl() {
+        this.zzafT = true;
     }
 }

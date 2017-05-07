@@ -4,6 +4,7 @@
 
 package com.google.android.gms.common.api;
 
+import android.os.IBinder;
 import java.util.Set;
 import com.google.android.gms.common.internal.zzp;
 import java.io.PrintWriter;
@@ -23,5 +24,7 @@ public interface Api$zzb
     
     void zza(final zzp p0, final Set<Scope> p1);
     
-    boolean zzlm();
+    boolean zzlN();
+    
+    IBinder zznz();
 }

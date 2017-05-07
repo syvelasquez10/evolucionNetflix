@@ -16,58 +16,58 @@ import android.os.Parcelable$Creator;
 public class zzz implements Parcelable$Creator<ResolveAccountResponse>
 {
     static void zza(final ResolveAccountResponse resolveAccountResponse, final Parcel parcel, final int n) {
-        final int zzak = zzb.zzak(parcel);
+        final int zzaq = zzb.zzaq(parcel);
         zzb.zzc(parcel, 1, resolveAccountResponse.mVersionCode);
-        zzb.zza(parcel, 2, resolveAccountResponse.zzacC, false);
-        zzb.zza(parcel, 3, (Parcelable)resolveAccountResponse.zzoP(), n, false);
-        zzb.zza(parcel, 4, resolveAccountResponse.zzoQ());
-        zzb.zza(parcel, 5, resolveAccountResponse.zzoR());
-        zzb.zzH(parcel, zzak);
+        zzb.zza(parcel, 2, resolveAccountResponse.zzaeH, false);
+        zzb.zza(parcel, 3, (Parcelable)resolveAccountResponse.zzpr(), n, false);
+        zzb.zza(parcel, 4, resolveAccountResponse.zzps());
+        zzb.zza(parcel, 5, resolveAccountResponse.zzpt());
+        zzb.zzI(parcel, zzaq);
     }
     
-    public ResolveAccountResponse zzag(final Parcel parcel) {
+    public ResolveAccountResponse zzam(final Parcel parcel) {
         ConnectionResult connectionResult = null;
         boolean zzc = false;
-        final int zzaj = zza.zzaj(parcel);
+        final int zzap = zza.zzap(parcel);
         boolean zzc2 = false;
-        IBinder zzp = null;
+        IBinder zzq = null;
         int zzg = 0;
-        while (parcel.dataPosition() < zzaj) {
-            final int zzai = zza.zzai(parcel);
-            switch (zza.zzbH(zzai)) {
+        while (parcel.dataPosition() < zzap) {
+            final int zzao = zza.zzao(parcel);
+            switch (zza.zzbM(zzao)) {
                 default: {
-                    zza.zzb(parcel, zzai);
+                    zza.zzb(parcel, zzao);
                     continue;
                 }
                 case 1: {
-                    zzg = zza.zzg(parcel, zzai);
+                    zzg = zza.zzg(parcel, zzao);
                     continue;
                 }
                 case 2: {
-                    zzp = zza.zzp(parcel, zzai);
+                    zzq = zza.zzq(parcel, zzao);
                     continue;
                 }
                 case 3: {
-                    connectionResult = zza.zza(parcel, zzai, ConnectionResult.CREATOR);
+                    connectionResult = zza.zza(parcel, zzao, ConnectionResult.CREATOR);
                     continue;
                 }
                 case 4: {
-                    zzc2 = zza.zzc(parcel, zzai);
+                    zzc2 = zza.zzc(parcel, zzao);
                     continue;
                 }
                 case 5: {
-                    zzc = zza.zzc(parcel, zzai);
+                    zzc = zza.zzc(parcel, zzao);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != zzaj) {
-            throw new zza$zza("Overread allowed size end=" + zzaj, parcel);
+        if (parcel.dataPosition() != zzap) {
+            throw new zza$zza("Overread allowed size end=" + zzap, parcel);
         }
-        return new ResolveAccountResponse(zzg, zzp, connectionResult, zzc2, zzc);
+        return new ResolveAccountResponse(zzg, zzq, connectionResult, zzc2, zzc);
     }
     
-    public ResolveAccountResponse[] zzbF(final int n) {
+    public ResolveAccountResponse[] zzbK(final int n) {
         return new ResolveAccountResponse[n];
     }
 }

@@ -82,9 +82,9 @@ public final class TopPanel extends PlayerSection
         this.mdxTargetSelector.setTarget(localDevicePosition);
         final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(playerFragment.getActivity());
         mdxTargetSelectionDialog$Builder.setCancelable(false);
-        mdxTargetSelectionDialog$Builder.setTitle(2131165455);
+        mdxTargetSelectionDialog$Builder.setTitle(2131165453);
         mdxTargetSelectionDialog$Builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerFragment.getActivity()));
-        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerFragment.getString(2131165580), this.getCurrentTitle()));
+        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerFragment.getString(2131165578), this.getCurrentTitle()));
         mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new TopPanel$8(this, playerFragment, b));
         mdxTargetSelectionDialog$Builder.setOnCancelListener((DialogInterface$OnCancelListener)new TopPanel$9(this, playerFragment));
         return mdxTargetSelectionDialog$Builder.create();
@@ -102,7 +102,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initGeneric(final Menu menu) {
-        (this.mEpisodeSelector = menu.add(2131165343)).setVisible(this.mEpisodeSelectorEnabled);
+        (this.mEpisodeSelector = menu.add(2131165341)).setVisible(this.mEpisodeSelectorEnabled);
         this.mEpisodeSelector.setIcon(2130837719);
         this.mEpisodeSelector.setShowAsAction(2);
         this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$6(this));
@@ -112,14 +112,14 @@ public final class TopPanel extends PlayerSection
     
     private void initLanguages(final Menu menu) {
         this.mLanguageSelector = LanguageSelector.createInstance(this.playerFragment.getNetflixActivity(), this.playerFragment.getNetflixActivity().isTablet(), new TopPanel$3(this));
-        (this.mLanguage = menu.add(2131165344)).setVisible(this.showLanguageMenuItem());
+        (this.mLanguage = menu.add(2131165342)).setVisible(this.showLanguageMenuItem());
         this.mLanguage.setIcon(2130837786);
         this.mLanguage.setShowAsAction(2);
         this.mLanguage.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$4(this));
     }
     
     private void initMDX(final Menu menu) {
-        (this.mMdxTarget = menu.add(2131165345)).setIcon(2130837701);
+        (this.mMdxTarget = menu.add(2131165343)).setIcon(2130837701);
         this.mMdxTarget.setVisible(this.mMDXSelectorEnabled);
         this.mMdxTarget.setShowAsAction(2);
         this.mMdxTarget.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$7(this));
@@ -129,7 +129,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initSound(final Menu menu) {
-        (this.mSound = menu.add(2131165362)).setIcon(2130837791);
+        (this.mSound = menu.add(2131165360)).setIcon(2130837791);
         this.mSound.setShowAsAction(2);
         this.mSound.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$2(this));
     }

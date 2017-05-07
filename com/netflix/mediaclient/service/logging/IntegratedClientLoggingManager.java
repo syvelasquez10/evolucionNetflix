@@ -12,6 +12,7 @@ import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClientFact
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
 import com.netflix.mediaclient.util.LogUtils;
@@ -65,6 +66,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
     private ApmLoggingImpl mApmLogging;
     private ClientLoggingWebClient mClientLoggingWebClient;
     private final Context mContext;
+    private CustomerServiceLoggingImpl mCustomerServiceLogging;
     private DataRepository mDataRepository;
     private final Map<String, Random> mEventPerSessionRndGeneratorMap;
     private final IntegratedClientLoggingManager$ClientLoggingEventQueue mEventQueue;
@@ -367,8 +369,8 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
                 this.mSocialLogging.endAllActiveSessions();
                 this.mUIViewLogging.endAllActiveSessions();
                 this.mActionLogging.endAllActiveSessions();
-                this.mUIViewLogging.endAllActiveSessions();
                 this.mSearchLogging.endAllActiveSessions();
+                this.mCustomerServiceLogging.endAllActiveSessions();
                 this.mApmLogging.endAllActiveSessions();
                 this.resumeDelivery(false);
             }
@@ -409,6 +411,10 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         return this.mOwner.getNrdController().getNrdp().getLog().getAppId();
     }
     
+    public CustomerServiceLogging getCustomerServiceLogging() {
+        return this.mCustomerServiceLogging;
+    }
+    
     long getNextSequence() {
         return this.mSequence.getAndAdd(1L);
     }
@@ -430,7 +436,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         this.mApmLogging.handleConnectivityChange(this.mContext);
     }
     
-    void handleIntent(final Intent intent) {
+    public void handleIntent(final Intent intent) {
         final boolean portrait = DeviceUtils.isPortrait(this.mContext);
         if (this.mApmLogging.handleIntent(intent, portrait)) {
             Log.d("nf_log", "Handled by APM logger");
@@ -456,6 +462,10 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
             Log.d("nf_log", "Handled by social logging logger");
             return;
         }
+        if (this.mCustomerServiceLogging.handleIntent(intent)) {
+            Log.d("nf_log", "Handled by customer service logging logger");
+            return;
+        }
         Log.w("nf_log", "Action not handled!");
     }
     
@@ -474,6 +484,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         this.mSuspendLogging = new SuspendLoggingImpl(this);
         this.mSearchLogging = new SearchLogging(this, this.mOwner.getUser());
         this.mSocialLogging = new SocialLoggingImpl(this);
+        this.mCustomerServiceLogging = new CustomerServiceLoggingImpl(this);
         this.initDataRepository();
         this.registerReceivers();
     }

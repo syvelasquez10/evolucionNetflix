@@ -4,41 +4,40 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.dynamic.zzd$zza;
-import android.os.Parcel;
-import android.os.IInterface;
-import android.os.IBinder;
-import android.os.Binder;
-
-public abstract class zzff$zza extends Binder implements zzff
+public final class zzff$zza
 {
-    public static zzff zzL(final IBinder binder) {
-        if (binder == null) {
-            return null;
-        }
-        final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
-        if (queryLocalInterface != null && queryLocalInterface instanceof zzff) {
-            return (zzff)queryLocalInterface;
-        }
-        return new zzff$zza$zza(binder);
+    private boolean zzAv;
+    private boolean zzAw;
+    private boolean zzAx;
+    private boolean zzAy;
+    private boolean zzAz;
+    
+    public zzff zzeh() {
+        return new zzff(this, null);
     }
     
-    public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) {
-        switch (n) {
-            default: {
-                return super.onTransact(n, parcel, parcel2, n2);
-            }
-            case 1598968902: {
-                parcel2.writeString("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
-                return true;
-            }
-            case 1: {
-                parcel.enforceInterface("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
-                final IBinder zze = this.zze(zzd$zza.zzbk(parcel.readStrongBinder()));
-                parcel2.writeNoException();
-                parcel2.writeStrongBinder(zze);
-                return true;
-            }
-        }
+    public zzff$zza zzo(final boolean zzAv) {
+        this.zzAv = zzAv;
+        return this;
+    }
+    
+    public zzff$zza zzp(final boolean zzAw) {
+        this.zzAw = zzAw;
+        return this;
+    }
+    
+    public zzff$zza zzq(final boolean zzAx) {
+        this.zzAx = zzAx;
+        return this;
+    }
+    
+    public zzff$zza zzr(final boolean zzAy) {
+        this.zzAy = zzAy;
+        return this;
+    }
+    
+    public zzff$zza zzs(final boolean zzAz) {
+        this.zzAz = zzAz;
+        return this;
     }
 }

@@ -4,14 +4,29 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.ads.doubleclick.CustomRenderedAd;
+import java.util.HashMap;
+import java.util.Map;
 
-@zzgk
-public class zzcf implements CustomRenderedAd
+public class zzcf
 {
-    private final zzcg zzvy;
+    private final zzcg zzoo;
+    private final Map<String, zzce> zzvQ;
     
-    public zzcf(final zzcg zzvy) {
-        this.zzvy = zzvy;
+    public zzcf(final zzcg zzoo) {
+        this.zzoo = zzoo;
+        this.zzvQ = new HashMap<String, zzce>();
+    }
+    
+    public void zza(final String s, final zzce zzce) {
+        this.zzvQ.put(s, zzce);
+    }
+    
+    public void zza(final String s, final String s2, final long n) {
+        zzcc.zza(this.zzoo, this.zzvQ.get(s2), n, s);
+        this.zzvQ.put(s, zzcc.zza(this.zzoo, n));
+    }
+    
+    public zzcg zzdm() {
+        return this.zzoo;
     }
 }

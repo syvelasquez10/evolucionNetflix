@@ -29,5 +29,5 @@ public interface zzf extends IInterface
     
     void zzaq(final boolean p0);
     
-    void zzja(final int p0);
+    void zzjq(final int p0);
 }

@@ -8,18 +8,26 @@ import android.view.View;
 import android.database.ContentObserver;
 import android.provider.Settings$System;
 import android.os.Bundle;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.view.View$OnClickListener;
 import android.support.design.widget.Snackbar;
 import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
+import com.netflix.mediaclient.service.logging.apm.model.Orientation;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.IVoip$Call;
+import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.util.log.CustomerServiceLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$Action;
 import com.netflix.mediaclient.util.PermissionUtils;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.IVoip;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$ReturnToDialScreenFrom;
 import android.widget.ViewFlipper;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat$OnRequestPermissionsResultCallback;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -46,6 +54,7 @@ class ContactUsActivity$1 implements ManagerStatusListener
         if (this.this$0.mVoip != null) {
             this.this$0.mVoip.addOutboundCallListener(this.this$0);
         }
+        this.this$0.reportEvent();
     }
     
     @Override

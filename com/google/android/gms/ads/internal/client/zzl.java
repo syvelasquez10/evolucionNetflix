@@ -4,54 +4,50 @@
 
 package com.google.android.gms.ads.internal.client;
 
-import java.util.Random;
+import com.google.android.gms.ads.internal.reward.client.zzf;
+import com.google.android.gms.internal.zzda;
+import com.google.android.gms.ads.internal.util.client.zza;
+import com.google.android.gms.internal.zzgr;
 
-public class zzl extends zzu$zza
+@zzgr
+public class zzl
 {
-    private Object zzpc;
-    private final Random zzsT;
-    private long zzsU;
+    private static final Object zzpy;
+    private static zzl zztl;
+    private final zza zztm;
+    private final zze zztn;
+    private final zzm zzto;
+    private final zzad zztp;
+    private final zzda zztq;
+    private final zzf zztr;
     
-    public zzl() {
-        this.zzpc = new Object();
-        this.zzsT = new Random();
-        this.zzcK();
+    static {
+        zzpy = new Object();
+        zza(new zzl());
     }
     
-    public long getValue() {
-        return this.zzsU;
+    protected zzl() {
+        this.zztm = new zza();
+        this.zztn = new zze();
+        this.zzto = new zzm();
+        this.zztp = new zzad();
+        this.zztq = new zzda();
+        this.zztr = new zzf();
     }
     
-    public void zzcK() {
-        final Object zzpc = this.zzpc;
-        // monitorenter(zzpc)
-        int n = 3;
-        long zzsU = 0L;
-        while (true) {
-            final int n2 = n - 1;
-            Label_0065: {
-                if (n2 <= 0) {
-                    break Label_0065;
-                }
-                try {
-                    final long n3 = zzsU = this.zzsT.nextInt() + 2147483648L;
-                    n = n2;
-                    if (n3 == this.zzsU) {
-                        continue;
-                    }
-                    zzsU = n3;
-                    n = n2;
-                    if (n3 != 0L) {
-                        zzsU = n3;
-                        this.zzsU = zzsU;
-                        return;
-                    }
-                    continue;
-                }
-                finally {
-                }
-                // monitorexit(zzpc)
-            }
+    protected static void zza(final zzl zztl) {
+        synchronized (zzl.zzpy) {
+            zzl.zztl = zztl;
         }
+    }
+    
+    private static zzl zzcE() {
+        synchronized (zzl.zzpy) {
+            return zzl.zztl;
+        }
+    }
+    
+    public static zza zzcF() {
+        return zzcE().zztm;
     }
 }

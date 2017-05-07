@@ -13,7 +13,7 @@ import android.os.Binder;
 
 public abstract class zza$zza extends Binder implements zza
 {
-    public static zza zzad(final IBinder binder) {
+    public static zza zzae(final IBinder binder) {
         if (binder == null) {
             return null;
         }
@@ -76,14 +76,14 @@ public abstract class zza$zza extends Binder implements zza
             case 7: {
                 parcel.enforceInterface("com.google.android.gms.ads.internal.reward.mediation.client.IMediationRewardedVideoAdListener");
                 final zzd zzbk = zzd$zza.zzbk(parcel.readStrongBinder());
-                RewardItemParcel zzp;
+                RewardItemParcel zzo;
                 if (parcel.readInt() != 0) {
-                    zzp = RewardItemParcel.CREATOR.zzp(parcel);
+                    zzo = RewardItemParcel.CREATOR.zzo(parcel);
                 }
                 else {
-                    zzp = null;
+                    zzo = null;
                 }
-                this.zza(zzbk, zzp);
+                this.zza(zzbk, zzo);
                 parcel2.writeNoException();
                 return true;
             }

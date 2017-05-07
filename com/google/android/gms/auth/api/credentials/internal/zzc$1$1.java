@@ -9,14 +9,19 @@ import com.google.android.gms.common.api.Status;
 
 class zzc$1$1 extends zza
 {
-    final /* synthetic */ zzc$1 zzRA;
+    final /* synthetic */ zzc$1 zzSG;
     
-    zzc$1$1(final zzc$1 zzRA) {
-        this.zzRA = zzRA;
+    zzc$1$1(final zzc$1 zzSG) {
+        this.zzSG = zzSG;
     }
     
     @Override
     public void zza(final Status status, final Credential credential) {
-        this.zzRA.zza((R)new zzb(status, credential));
+        this.zzSG.zzb((R)new zzb(status, credential));
+    }
+    
+    @Override
+    public void zzg(final Status status) {
+        this.zzSG.zzb((R)zzb.zzh(status));
     }
 }

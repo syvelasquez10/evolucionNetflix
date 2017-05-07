@@ -13,20 +13,20 @@ public final class CredentialPickerConfig implements SafeParcelable
     public static final Parcelable$Creator<CredentialPickerConfig> CREATOR;
     private final boolean mShowCancelButton;
     final int mVersionCode;
-    private final boolean zzRi;
+    private final boolean zzSn;
     
     static {
         CREATOR = (Parcelable$Creator)new zzb();
     }
     
-    CredentialPickerConfig(final int mVersionCode, final boolean zzRi, final boolean mShowCancelButton) {
+    CredentialPickerConfig(final int mVersionCode, final boolean zzSn, final boolean mShowCancelButton) {
         this.mVersionCode = mVersionCode;
-        this.zzRi = zzRi;
+        this.zzSn = zzSn;
         this.mShowCancelButton = mShowCancelButton;
     }
     
     private CredentialPickerConfig(final CredentialPickerConfig$Builder credentialPickerConfig$Builder) {
-        this(1, credentialPickerConfig$Builder.zzRi, credentialPickerConfig$Builder.mShowCancelButton);
+        this(1, credentialPickerConfig$Builder.zzSn, credentialPickerConfig$Builder.mShowCancelButton);
     }
     
     public int describeContents() {
@@ -34,7 +34,7 @@ public final class CredentialPickerConfig implements SafeParcelable
     }
     
     public boolean shouldShowAddAccountButton() {
-        return this.zzRi;
+        return this.zzSn;
     }
     
     public boolean shouldShowCancelButton() {
